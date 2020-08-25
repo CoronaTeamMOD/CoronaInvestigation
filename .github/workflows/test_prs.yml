@@ -6,6 +6,23 @@ on:
     branches: [ dev, test, master ]
 
 jobs:
+  file_changes:
+    name: Check if the PR made changes to client or server (or both!)
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.filter.outputs.client }}
+      server: ${{ steps.filter.outputs.server }}
+    steps:
+    - uses: dorny/paths-filter@master
+      id: filter
+      with:
+        # Filters stored in own yaml file or inline yml
+        #filters: '.github/labeler.yml'
+          filters: |
+           server:
+            - 'server/**/*'
+           client:
+            - 'client/**/*'
   auto-label:
     name: Label client/server
     runs-on: ubuntu-latest
@@ -18,9 +35,9 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
   test-client:
-    needs: [auto-label]
+    needs: [file_changes]
     name: Run tests on client 
-    if: contains(github.event.pull_request.labels.*.name, 'client')
+    if: ${{ needs.file_changes.outputs.client == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Installing Dependencies
@@ -30,9 +47,9 @@ jobs:
         run: npm test
         working-directory: ./client
   test-server:
-    needs: [auto-label]
+    needs: [file_changes]
     name: Run tests on Server 
-    if: contains(github.event.pull_request.labels.*.name, 'server')
+    if: ${{ needs.file_changes.outputs.server == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Installing Dependencies
