@@ -1,4 +1,4 @@
 {
     "client": ["client/"],
-    "server": ["server/"],
+    "server": ["server/"]
 }
