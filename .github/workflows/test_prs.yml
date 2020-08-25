@@ -1,0 +1,40 @@
+name: HANDLE_PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [ dev, test, master ]
+
+jobs:
+  auto-label:
+    name: Label client/server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: banyan/auto-label@1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+  test-client:
+    needs: [auto-label]
+    name: Run tests on client 
+    if: contains(github.event.pull_request.labels.*.name, 'client')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installing Dependencies
+        run:  npm install
+        working-directory: ./client
+      - name: Running tests
+        run: npm test
+        working-directory: ./client
+  test-server:
+    needs: [auto-label]
+    name: Run tests on Server 
+    if: contains(github.event.pull_request.labels.*.name, 'server')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installing Dependencies
+        run:  npm install
+        working-directory: ./server
+      - name: Running tests
+        run: npm test
+        working-directory: ./server
