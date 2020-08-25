@@ -13,6 +13,9 @@ jobs:
       - uses: actions/labeler@master
         with:
             repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: print label
+        run: echo labels- "${{github.event.pull_request.labels}}"
+
   test-client:
     needs: [auto-label]
     name: Run tests on client 
