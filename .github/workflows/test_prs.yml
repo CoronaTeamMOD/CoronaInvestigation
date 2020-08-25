@@ -13,9 +13,10 @@ jobs:
       - uses: actions/labeler@master
         with:
             repo-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: print label
-        run: echo labels- "${{github.event.pull_request.labels}}"
-
+      - name: Dump GitHub context for DEBUG
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
   test-client:
     needs: [auto-label]
     name: Run tests on client 
