@@ -1,0 +1,5 @@
+client:
+  - any: ['client/**/*', '!client/.gitignore', '!client/README.md']
+
+server:
+  - any: ['server/**/*', '!server/.gitignore', '!server/README.md']

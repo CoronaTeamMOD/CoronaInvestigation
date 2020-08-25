@@ -10,10 +10,9 @@ jobs:
     name: Label client/server
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: banyan/auto-label@1.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      - uses: actions/labeler@v2
+          with:
+            repo-token: "${{ secrets.GITHUB_TOKEN }}"
   test-client:
     needs: [auto-label]
     name: Run tests on client 
