@@ -2,8 +2,8 @@ trigger:
 - shiranTestingCi
 steps:
   - script: |
-    cd client
-  displayName: 'move to client directory'
+      cd client
+    displayName: 'move to client directory'
 
   - task: NodeTool@0
     inputs:
