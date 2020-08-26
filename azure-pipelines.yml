@@ -11,7 +11,7 @@ steps:
     displayName: 'npm install cleint'
 
   - script: |
-      npm build
+      cd client && npm build
     displayName: 'build client'
 
   - task: ArchiveFiles@2
