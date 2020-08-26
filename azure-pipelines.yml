@@ -1,6 +1,10 @@
 trigger:
 - shiranTestingCi
 steps:
+  -script: |
+    cd client
+  displayName: 'move to client directory'
+
   - task: NodeTool@0
     inputs:
       versionSpec: '8.x'
@@ -11,7 +15,7 @@ steps:
     displayName: 'npm install'
 
   - script: |
-      npm run build
+      npm build
     displayName: 'build client'
 
   - task: ArchiveFiles@2
