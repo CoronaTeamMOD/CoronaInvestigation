@@ -40,8 +40,6 @@ stages:
       inputs:
         command: buildAndPush
         repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
 
     - task: PublishBuildArtifacts@1
       inputs:
