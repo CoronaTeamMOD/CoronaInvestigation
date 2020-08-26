@@ -1,5 +1,7 @@
 trigger:
 - shiranTestingCi
+variables:
+    dockerName: "manivShtok"
 steps:
   - task: NodeTool@0
     inputs:
@@ -7,12 +9,14 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      cd client && npm install
-    displayName: 'npm install cleint'
+      cd client 
+      npm install
+      npm run build
+    displayName: 'npm build client'
 
   - script: |
-      cd client && npm build
-    displayName: 'build client'
+      cd server && npm install
+    displayName: 'npm install server'
 
   - task: ArchiveFiles@2
     displayName: 'Archive files'
