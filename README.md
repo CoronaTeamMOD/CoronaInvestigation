@@ -21,10 +21,10 @@ This project enables investigators to accurately and conveniently process their 
 4. `npm start`
 
 ### Client with server
-1. `npm install `
+1. `npm install`
 2. check the **.env-sample** file **both in ther server/ folder and the client/ folder** for relevant configuration the server and client need and add those fields to a new **.env** file in the corresponding folder
 3. cd back into the project
-4. `npm start` 
+4. `npm run dev` 
 
 ## Create files and folders
 check appropriate READMEs in client and server, accordingly!
