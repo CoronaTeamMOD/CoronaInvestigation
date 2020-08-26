@@ -18,8 +18,6 @@ steps:
       npm run build
     displayName: 'build client'
 
-  -script: 
-
   - task: ArchiveFiles@2
     displayName: 'Archive files'
     inputs:
