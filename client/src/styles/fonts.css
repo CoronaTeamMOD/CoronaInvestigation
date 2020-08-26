@@ -1,0 +1,12 @@
+/* hebrew */
+@font-face {
+    font-family: 'Assistant';
+    font-weight: normal;
+    src: url('./Assistant.woff');
+}
+
+@font-face {
+    font-family: 'Assistant';
+    font-weight: lighter;
+    src: url('./Assistant-Light.woff');
+}
