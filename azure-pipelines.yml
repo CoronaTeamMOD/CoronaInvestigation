@@ -10,7 +10,7 @@ steps:
       npm install
     displayName: 'npm install'
 
-  -script: |
+  - script: |
       npm run build
     displayName: 'build client'
 
