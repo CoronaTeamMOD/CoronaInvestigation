@@ -8,7 +8,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
   
     return (
         <div className={classes.appToolbar}>
-            <TopToolbar></TopToolbar>
+            <TopToolbar/>
         </div>
     )
 }

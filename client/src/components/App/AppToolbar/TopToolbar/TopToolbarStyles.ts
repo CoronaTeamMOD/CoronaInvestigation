@@ -7,7 +7,7 @@ const useStyles = makeStyles({
         justifyContent: 'space-between',
 
     },
-    RightDiv: {
+    rightToolbarSection: {
         display: 'flex',
         flexDirection: 'row',
     },
@@ -16,7 +16,6 @@ const useStyles = makeStyles({
     },
     systemName: {
         margin: '0.5vw',
-        fontSize: '2vw'
     }
 });
 

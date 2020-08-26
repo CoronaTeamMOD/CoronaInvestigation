@@ -12,23 +12,25 @@ const TabManagement: React.FC = (): JSX.Element => {
   const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
     setCurrentTab(selectedTab);
   };
+
+  const tabNames = ['פרטים אישיים', 'בידוד ופרטים קליינים', 'חשיפה אפשרית וחו"ל', 'מקומות ומגעים'];
   
     return (
-        <Card className={classes.card}>
-        <Paper dir='rtl'>
-            <Tabs
-                value={currentTab}
-                indicatorColor='primary'
-                textColor='primary'
-                onChange={handleTabChange}
-            >
-                <Tab label='פרטים אישיים'/>
-                <Tab label='בידוד ופרטים קליינים'/>
-                <Tab label='חשיפה אפשרית וחו"ל'/>
-                <Tab label='משפחה ואנשים קרובים'/>
-                <Tab label='מקומות ומגעים'/>
-            </Tabs>
-        </Paper>
+        <Card className={classes.card} dir='rtl'>
+            <Paper>
+                <Tabs
+                    value={currentTab}
+                    indicatorColor='primary'
+                    textColor='primary'
+                    onChange={handleTabChange}
+                >
+                    {
+                        tabNames.map((tab) => {
+                            return <Tab label={tab} />
+                        })
+                    }
+                </Tabs>
+            </Paper>
         </Card>
     )
 }
