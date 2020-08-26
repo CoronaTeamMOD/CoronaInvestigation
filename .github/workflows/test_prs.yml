@@ -29,12 +29,12 @@ jobs:
       id: filter
       with:
         # Filters stored in own yaml file or inline yml
-        filters: '.github/labeler.yml'
-          #filters: |
-           #server:
-           # - 'server/**/*'
-           #client:
-            #- 'client/**/*'
+        #: todo: change to yml file name once it works
+        filters: |
+           server:
+            - 'server/**/*'
+           client:
+            - 'client/**/*'
           
   auto-label:
     name: Label updated pr with relevant services
