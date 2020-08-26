@@ -7,7 +7,6 @@ const App: React.FC = (): JSX.Element => {
     return (
         <div className='App'>
             <Typography>Coronal</Typography>
-            <Button onClick={() => Validator.phoneValidation('056-79743393')}>CLICK ME!</Button>
         </div>
     );
 }
