@@ -6,7 +6,9 @@ variables:
 stages:
 - stage:
   displayName: TestsAndBuildStage
-  steps:
+  jobs:
+  - job:
+    steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '8.x'
