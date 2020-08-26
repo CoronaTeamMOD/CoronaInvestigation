@@ -1,7 +1,6 @@
 import React from 'react';
-import { Typography, Icon } from '@material-ui/core';
 import { Toolbar } from '@material-ui/core';
-import HeadsetIcon from '@material-ui/icons/Headset';
+import { Typography } from '@material-ui/core';
 
 import useStyles from './TopToolbarStyles';
 
@@ -11,11 +10,9 @@ const TopToolbar: React.FC = (): JSX.Element => {
     return (
         <Toolbar className={classes.toolbar}>
             <Typography>שלום, שם שלך</Typography>
-            <div className={classes.systemName}>
-                <Typography>שם המערכת</Typography>
-                <Icon className={classes.logo}>
-                    <HeadsetIcon />
-                </Icon>
+            <div className={classes.RightDiv}>
+                <Typography><div className={classes.systemName}>שם המערכת</div></Typography>
+                <img alt='logo' className={classes.logo} src='./assets/img/logo1.png'></img>
             </div>
         </Toolbar>
     )

@@ -7,12 +7,16 @@ const useStyles = makeStyles({
         justifyContent: 'space-between',
 
     },
-    systemName: {
+    RightDiv: {
         display: 'flex',
         flexDirection: 'row',
     },
     logo: {
-        height: '3vh',
+        height: '8vh',
+    },
+    systemName: {
+        margin: '0.5vw',
+        fontSize: '2vw'
     }
 });
 

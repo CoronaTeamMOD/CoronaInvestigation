@@ -1,7 +1,10 @@
 import React from 'react';
-import { Paper, Tabs, Tab } from '@material-ui/core';
+import { Paper, Tabs, Tab, Card } from '@material-ui/core';
+
+import useStyles from './TabManagementStyles';
 
 const TabManagement: React.FC = (): JSX.Element => {
+    const classes = useStyles({});
     const defaultTab = 0;
 
     const [currentTab, setCurrentTab] = React.useState(defaultTab);
@@ -11,6 +14,7 @@ const TabManagement: React.FC = (): JSX.Element => {
   };
   
     return (
+        <Card className={classes.card}>
         <Paper dir='rtl'>
             <Tabs
                 value={currentTab}
@@ -25,6 +29,7 @@ const TabManagement: React.FC = (): JSX.Element => {
                 <Tab label='מקומות ומגעים'/>
             </Tabs>
         </Paper>
+        </Card>
     )
 }
 
