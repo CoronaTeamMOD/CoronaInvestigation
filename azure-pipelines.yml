@@ -1,0 +1,30 @@
+trigger:
+- shiranTestingCi
+steps:
+  - script: | #shit
+      'cd public'
+    displayName: 'check directory'
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install
+    displayName: 'npm install'
+
+  -script: |
+      npm run build
+    displayName: 'build client'
+
+  -script: 
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive files'
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+      includeRootFolder: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish artifacts: drop'
