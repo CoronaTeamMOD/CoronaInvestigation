@@ -1,7 +1,7 @@
 trigger:
 - shiranTestingCi
 steps:
-  -script: |
+  - script: |
     cd client
   displayName: 'move to client directory'
 
