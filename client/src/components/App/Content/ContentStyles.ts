@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/styles'
 
-import theme from '../../../styles/theme';
+import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     content: {
@@ -9,9 +9,10 @@ const useStyles = makeStyles({
     },
     finishInvestigationButton: {
         marginTop: '1vh',
-        marginLeft: '1.2vw',
         backgroundColor: theme.palette.primary.main,
-        color: 'white'
+        color: 'white',
+        borderRadius: '10vw',
+        height: '4vh',
     },
     buttonSection: {
         display: 'flex',
