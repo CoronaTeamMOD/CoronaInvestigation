@@ -1,7 +1,7 @@
 trigger:
 - shiranTestingCi
 variables:
-  azureSC: ''
+  azureSC: 'coronai'
   buildConfiguration: 'Release'
   location: 'North Europe'
   acrHostName: 'coronai.azurecr.io'
@@ -43,8 +43,9 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
+        containerregistrytype: Azure Container Registry
         repository: '$(arcName)'
-        azureSubscriptionEndpoint: 'AzureSC'
+        azureSubscriptionEndpoint: '$(azureSC)'
         azureontainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
