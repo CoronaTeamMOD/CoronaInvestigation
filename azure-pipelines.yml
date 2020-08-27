@@ -39,7 +39,7 @@ stages:
         npm run build
       displayName: 'npm build client'
 
-    - task: Docker@2
+    - task: Docker@1
       displayName: Build an image to container registry
       inputs:
         repository: '$(arcName)'
@@ -47,15 +47,15 @@ stages:
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
-        buildContext: '$(System.DefaultWorkingDirectory)/PublishedWebApp'
+        buildContext: '$(System.DefaultWorkingDirectory)'
 
-    # - task: Docker@1
-    #   displayName: push an image to container registry
-    #   inputs:
-    #     command: 'Push an image'
-    #     azureSubscriptionEndpoint: 'AzureSC'
-    #     azureContainerRegistry: '$(acrHostName)'
-    #     imageName: '$(imageName):(Build.BuildId)'
+    - task: Docker@1
+      displayName: push an image to container registry
+      inputs:
+        command: 'Push an image'
+        azureSubscriptionEndpoint: 'AzureSC'
+        azureContainerRegistry: '$(acrHostName)'
+        imageName: '$(imageName):(Build.BuildId)'
 
     - task: CopyFiles@2
       inputs:
