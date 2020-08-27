@@ -1,7 +1,5 @@
 import React from 'react';
-import { Typography, Button } from '@material-ui/core';
-
-import Validator from './Utils/Validations/Validator'
+import { Typography } from '@material-ui/core';
 
 const App: React.FC = (): JSX.Element => {
     return (
