@@ -23,8 +23,8 @@ stages:
       env: { GH_TOKEN: $(GitHubToken) }
       displayName: 'Semantic release'
 
-  - script: echo $(nextRelease)
-    displayName: 'Show next version'
+    - script: echo $(nextRelease)
+      displayName: 'Show next version'
 
     - script: |
         cd client 
