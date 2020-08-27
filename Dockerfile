@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy the file from your host to your current location.
 COPY package.json .
 
-COPY build .
+COPY client/build .
 
 COPY server .
 
