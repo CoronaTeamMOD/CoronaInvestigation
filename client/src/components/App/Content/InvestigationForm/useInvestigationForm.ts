@@ -4,6 +4,7 @@ import theme from 'styles/theme';
 import useStyles from './InvestigationFormStyles';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
+
 const useInvestigationForm = (): useInvestigationFormOutcome => {
     const classes = useStyles({});
 
@@ -42,7 +43,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     return {
-        confirmFinishInvestigation
+        confirmFinishInvestigation,
+        handleInvestigationFinish
     }
 };
 
