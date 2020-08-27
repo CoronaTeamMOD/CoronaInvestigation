@@ -7,16 +7,15 @@ const useStyles = makeStyles({
         backgroundColor: 'lightGrey',
         padding: '0.7vw',
     },
-    finishInvestigationButton: {
-        marginTop: '1vh',
-        marginLeft: '1.2vw',
-        backgroundColor: theme.palette.primary.main,
-        color: 'white'
-    },
     buttonSection: {
         display: 'flex',
         justifyContent: 'flex-end',
-    }
+    },
+    finishInvestigationButton: {
+        marginTop: '1vh',
+        backgroundColor: theme.palette.primary.main,
+        color: 'white'
+    },
 });
 
 export default useStyles;
