@@ -43,7 +43,7 @@ stages:
       displayName: Build an image to container registry
       inputs:
         repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(azureSC)'
+        azureSubscriptionEndpoint: 'AzureSC'
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
@@ -53,7 +53,7 @@ stages:
       displayName: push an image to container registry
       inputs:
         command: 'Push an image'
-        azureSubscriptionEndpoint: '$(azureSC)'
+        azureSubscriptionEndpoint: 'AzureSC'
         azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
 
