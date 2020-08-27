@@ -6,7 +6,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 
 import './index.css';
-import App from './App';
+import App from './components/App/App';
 import './styles/fonts.css';
 import theme from './styles/theme';
 
