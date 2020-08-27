@@ -8,6 +8,7 @@ stages:
   displayName: TestsAndBuildStage
   jobs:
   - job:
+    displayName: TestsAndBuildJob
     steps:
     - task: NodeTool@0
       inputs:
@@ -48,6 +49,20 @@ stages:
         ArtifactName: 'bundle'
         displayName: 'Publish artifacts: drop'
 
+  - job:
+    displayName: semanticReleaseJob
+    steps:
+    - script: |
+        npx -p semantic-release
+        -p @semantic-release/git
+        -p semantic-release-ado
+        semantic-release
+      env: { GH_TOKEN: $(GitHubToken) }
+      displayName: 'Semantic release'
+
+    - script: echo $(nextRelease)
+      displayName: 'Show next version'
+
 # - stage: 
 #   displayName: 'Deployment'
 #     dependsOn: Build
@@ -86,18 +101,3 @@ stages:
 #                 $(imagePullSecret)
 #               containers: |
 #                 $(containerRegistry)/$(imageRepository):$(tag)
-- stage:
-  displayName: semanticRelease
-  jobs:
-  - job:
-    steps:
-    - script: |
-        npx -p semantic-release
-        -p @semantic-release/git
-        -p semantic-release-ado
-        semantic-release
-      env: { GH_TOKEN: $(GitHubToken) }
-      displayName: 'Semantic release'
-
-    - script: echo $(nextRelease)
-      displayName: 'Show next version'
