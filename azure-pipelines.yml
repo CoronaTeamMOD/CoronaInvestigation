@@ -23,7 +23,7 @@ stages:
       env: { GH_TOKEN: $(GitHubToken) }
       displayName: 'Semantic release'
 
-    - script: echo $(secrets.GITHUB_TOKEN)
+    - script: echo $(GitHubToken)
       displayName: 'Show next version'
 
     - script: |
