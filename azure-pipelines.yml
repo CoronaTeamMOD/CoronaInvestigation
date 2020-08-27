@@ -91,7 +91,7 @@ stages:
   jobs:
   - job:
     steps:
-    - script: >
+    - script: |
       npx -p semantic-release
       -p @semantic-release/git
       -p semantic-release-ado
