@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/styles'
 
+import theme from '../../../styles/theme';
+
 const useStyles = makeStyles({
     content: {
         backgroundColor: 'lightGrey',
@@ -8,7 +10,7 @@ const useStyles = makeStyles({
     finishInvestigationButton: {
         marginTop: '1vh',
         marginLeft: '1.2vw',
-        backgroundColor: '#036480',
+        backgroundColor: theme.palette.primary.main,
         color: 'white'
     }
 });
