@@ -39,7 +39,7 @@ stages:
         command: buildAndPush
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'AzureSC'
-        containerRegistry: '$(acrHostName)'
+        azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
 
