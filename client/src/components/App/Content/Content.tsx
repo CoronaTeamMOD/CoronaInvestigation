@@ -10,7 +10,9 @@ const Content: React.FC = (): JSX.Element => {
     return (
         <div className={classes.content}>
             <TabManagement/>
-            <Button variant='contained' className={classes.finishInvestigationButton}>סיים חקירה</Button>
+            <div className={classes.buttonSection}>
+                <Button variant='contained' className={classes.finishInvestigationButton}>סיים חקירה</Button>
+            </div>
         </div>
     )
 }

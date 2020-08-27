@@ -12,6 +12,10 @@ const useStyles = makeStyles({
         marginLeft: '1.2vw',
         backgroundColor: theme.palette.primary.main,
         color: 'white'
+    },
+    buttonSection: {
+        display: 'flex',
+        justifyContent: 'flex-end',
     }
 });
 

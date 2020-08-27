@@ -9,11 +9,11 @@ const TopToolbar: React.FC = (): JSX.Element => {
   
     return (
         <Toolbar className={classes.toolbar}>
-            <Typography>שלום, שם שלך</Typography>
             <div className={classes.rightToolbarSection}>
-                <Typography variant='h4'><div className={classes.systemName}>שם המערכת</div></Typography>
                 <img alt='logo' className={classes.logo} src='./assets/img/logo.png'></img>
+                <Typography variant='h4'><div className={classes.systemName}>שם המערכת</div></Typography>
             </div>
+            <Typography>שלום, שם שלך</Typography>
         </Toolbar>
     )
 }

@@ -1,16 +1,22 @@
 import React from 'react';
-import { Paper, Tabs, Tab, Card } from '@material-ui/core';
+import rtl from 'jss-rtl';
+import { create } from 'jss';
+import { jssPreset } from '@material-ui/styles';
+import { Paper, Tabs, Tab, Card, StylesProvider } from '@material-ui/core';
+
+import TabObj from 'models/TabObj';
 
 import useStyles from './TabManagementStyles';
-import TabObj from '../../../../models/TabObj';
+
+const defaultTab: TabObj = {
+    id: 0,
+    name: 'פרטים אישיים'
+};
+
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] })
 
 const TabManagement: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    
-    const defaultTab: TabObj = {
-        id: 0,
-        name: 'פרטים אישיים'
-    }
 
     const [currentTab, setCurrentTab] = React.useState<TabObj>(defaultTab);
 
@@ -38,7 +44,8 @@ const TabManagement: React.FC = (): JSX.Element => {
     ];
   
     return (
-        <Card className={classes.card} dir='rtl'>
+        <StylesProvider jss={jss}>
+        <Card className={classes.card}>
             <Paper>
                 <Tabs
                     value={currentTab.id}
@@ -54,6 +61,7 @@ const TabManagement: React.FC = (): JSX.Element => {
                 </Tabs>
             </Paper>
         </Card>
+        </StylesProvider>
     )
 };
 
