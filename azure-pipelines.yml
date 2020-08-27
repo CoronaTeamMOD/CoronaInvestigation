@@ -43,10 +43,9 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        containerregistrytype: Azure Container Registry
         repository: '$(arcName)'
         azureSubscriptionEndpoint: '$(azureSC)'
-        azureontainerRegistry: '$(acrHostName)'
+        containerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
 
