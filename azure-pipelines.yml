@@ -1,7 +1,14 @@
 trigger:
 - shiranTestingCi
 variables:
-    dockerName: "manivShtok"
+  azureSC: ''
+  buildConfiguration: 'Release'
+  location: 'North Europe'
+  acrHostName: 'coronai.azurecr.io'
+  arcName: 'coronai'
+  rgName: 'spectrumFactory'
+  imageName: 'coronaiDocker'
+  imageName: 'coronai'
 
 stages:
 - stage:
@@ -15,16 +22,26 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
 
-    - script: >
-        npx -p semantic-release
-        -p @semantic-release/git
-        -p semantic-release-ado
-        semantic-release
-      env: { GH_TOKEN: $(GitHubToken) }
-      displayName: 'Semantic release'
+    # - script: >
+    #     npx -p semantic-release
+    #     -p @semantic-release/git
+    #     -p semantic-release-ado
+    #     semantic-release
+    #   env: { GH_TOKEN: $(GitHubToken) }
+    #   displayName: 'Semantic release'
 
-    - script: echo $(GH_TOKEN)
-      displayName: 'Show next version'
+    # - script: echo $(GH_TOKEN)
+    #   displayName: 'Show next version'
+    
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: 'AzureSC'
+        containerRegistry: '$(acrHostName)'
+        imageName: '$(imageName):(Build.BuildId)'
+        useDefaultContext: false
 
     - script: |
         cd client 
@@ -47,12 +64,7 @@ stages:
         Contents: 'server/**' # Pull the server directory
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         
-    # - task: Docker@2
-    #   displayName: Build and push an image to container registry
-    #   inputs:
-    #     command: buildAndPush
-    #     repository: $(imageRepository)
-    #     containerRegistry: $(dockerRegistryServiceConnection)
+
 
     - task: PublishBuildArtifacts@1
       inputs:
