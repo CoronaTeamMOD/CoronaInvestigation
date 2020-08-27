@@ -39,10 +39,6 @@ stages:
         npm run build
       displayName: 'npm build client'
 
-    - script: |
-        cd server && npm install
-      displayName: 'npm install server'
-
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:

@@ -7,13 +7,15 @@ WORKDIR /usr/src/app
 # Copy the file from your host to your current location.
 COPY package.json .
 
-COPY client/build .
+RUN mkdir client && mkdir server
 
-COPY server .
+COPY client/build ./client
+
+COPY server ./server
 
 RUN ls
 # Run the command inside your image filesystem.
-RUN cd ./server && npm install
+RUN cd server && npm install
 
 # Add metadata to the image to describe which port the container is listening on at runtime.
 EXPOSE 8080
