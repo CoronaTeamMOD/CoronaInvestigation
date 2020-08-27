@@ -1,5 +1,4 @@
-import Validator from "./Validator";
-
+import Validator from './Validator';
 
 describe('PhoneValidation Tests', () => {
 
