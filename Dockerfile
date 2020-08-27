@@ -7,11 +7,11 @@ WORKDIR /usr/src/app
 # Copy the file from your host to your current location.
 COPY package.json .
 
+COPY build .
+
+COPY server .
+
 RUN ls
-
-COPY build /usr/src/app/build
-
-COPY server /usr/src/app/server
 # Run the command inside your image filesystem.
 RUN cd ./server && npm install
 
