@@ -39,7 +39,7 @@ stages:
         command: buildAndPush
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'AzureSC'
-        containerRegistry: '$(acrHostName)'
+        azureContainerRegistry: '$(acrHostName)'
         imageName: '$(imageName):(Build.BuildId)'
         useDefaultContext: false
 
@@ -64,8 +64,6 @@ stages:
         Contents: 'server/**' # Pull the server directory
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         
-
-
     - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
