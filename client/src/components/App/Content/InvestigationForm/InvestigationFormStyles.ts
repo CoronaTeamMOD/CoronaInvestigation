@@ -18,6 +18,10 @@ const useStyles = makeStyles({
         borderRadius: '10vw',
         height: '4vh',
     },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    }
 });
 
 export default useStyles;
