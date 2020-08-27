@@ -22,10 +22,7 @@ const TabManagement: React.FC = (): JSX.Element => {
   };
 
     const tabs: TabObj[] = [
-        {
-            id: 0,
-            name: 'פרטים אישיים'
-        },
+        defaultTab,
         {
             id: 1,
             name: 'בידוד ופרטים קליניים'
