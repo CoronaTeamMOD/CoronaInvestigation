@@ -1,3 +1,3 @@
 export interface useContentOutcome {
-    confirmFinish: () => void;
+    confirmFinishInvestigation: () => void;
 };

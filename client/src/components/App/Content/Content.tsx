@@ -15,7 +15,7 @@ const Content: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const [currentTab, setCurrentTab] = React.useState<TabObj>(defaultTab);
-    const { confirmFinish } = useContent();
+    const { confirmFinishInvestigation } = useContent();
   
     return (
         <div className={classes.content}>
@@ -26,7 +26,7 @@ const Content: React.FC = (): JSX.Element => {
             {
                 currentTab.name === 'מקומות ומגעים' ?
                     <div className={classes.buttonSection}>
-                        <Button className={classes.finishInvestigationButton} onClick={() => confirmFinish()}>סיים חקירה</Button>
+                        <Button className={classes.finishInvestigationButton} onClick={() => confirmFinishInvestigation()}>סיים חקירה</Button>
                     </div> : ''
             }
         </div>

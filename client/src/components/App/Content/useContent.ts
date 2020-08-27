@@ -7,7 +7,7 @@ import { useContentOutcome } from './ContentInterfaces';
 const useContent = (): useContentOutcome => {
     const classes = useStyles({});
 
-    const confirmFinish = () => {
+    const confirmFinishInvestigation = () => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -42,7 +42,7 @@ const useContent = (): useContentOutcome => {
     };
 
     return {
-        confirmFinish
+        confirmFinishInvestigation
     }
 };
 
