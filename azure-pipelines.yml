@@ -16,12 +16,12 @@ stages:
       displayName: 'Install Node.js'
 
     - script: >
-      npx -p semantic-release
-      -p @semantic-release/git
-      -p semantic-release-ado
-      semantic-release
-    env: { GH_TOKEN: $(GitHubToken) }
-    displayName: 'Semantic release'
+        npx -p semantic-release
+        -p @semantic-release/git
+        -p semantic-release-ado
+        semantic-release
+      env: { GH_TOKEN: $(GitHubToken) }
+      displayName: 'Semantic release'
 
   - script: echo $(nextRelease)
     displayName: 'Show next version'
