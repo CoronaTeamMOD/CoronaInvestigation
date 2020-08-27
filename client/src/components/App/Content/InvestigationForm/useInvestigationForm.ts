@@ -1,10 +1,10 @@
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 
-import useStyles from './ContentStyles';
-import { useContentOutcome } from './ContentInterfaces';
+import useStyles from './InvestigationFormStyles';
+import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
-const useContent = (): useContentOutcome => {
+const useInvestigationForm = (): useInvestigationFormOutcome => {
     const classes = useStyles({});
 
     const confirmFinishInvestigation = () => {
@@ -46,4 +46,4 @@ const useContent = (): useContentOutcome => {
     }
 };
 
-export default useContent;
+export default useInvestigationForm;

@@ -1,3 +1,3 @@
-export interface useContentOutcome {
+export interface useInvestigationFormOutcome {
     confirmFinishInvestigation: () => void;
 };
