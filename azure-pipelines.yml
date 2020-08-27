@@ -33,16 +33,6 @@ stages:
     # - script: echo $(GH_TOKEN)
     #   displayName: 'Show next version'
 
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: 'AzureSC'
-        azureContainerRegistry: '$(acrHostName)'
-        imageName: '$(imageName):(Build.BuildId)'
-        useDefaultContext: false
-
     - script: |
         cd client 
         npm install
@@ -52,6 +42,16 @@ stages:
     - script: |
         cd server && npm install
       displayName: 'npm install server'
+
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: 'AzureSC'
+        azureontainerRegistry: '$(acrHostName)'
+        imageName: '$(imageName):(Build.BuildId)'
+        useDefaultContext: false
 
     - task: CopyFiles@2
       inputs:
