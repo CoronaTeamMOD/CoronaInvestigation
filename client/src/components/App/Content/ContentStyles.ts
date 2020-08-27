@@ -17,6 +17,10 @@ const useStyles = makeStyles({
     buttonSection: {
         display: 'flex',
         justifyContent: 'flex-end',
+    },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
     }
 });
 

@@ -7,18 +7,13 @@ import { Paper, Tabs, Tab, Card, StylesProvider } from '@material-ui/core';
 import TabObj from 'models/TabObj';
 
 import useStyles from './TabManagementStyles';
+import { defaultTab } from '../Content';
 
-const defaultTab: TabObj = {
-    id: 0,
-    name: 'פרטים אישיים'
-};
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] })
-
-const TabManagement: React.FC = (): JSX.Element => {
+const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
+    const { currentTab, setCurrentTab } = props;
     const classes = useStyles({});
-
-    const [currentTab, setCurrentTab] = React.useState<TabObj>(defaultTab);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
     setCurrentTab({
@@ -55,7 +50,7 @@ const TabManagement: React.FC = (): JSX.Element => {
                 >
                     {
                         tabs.map((tab) => {
-                            return <Tab label={tab.name} />
+                            return <Tab key={tab.id} label={tab.name} />
                         })
                     }
                 </Tabs>
@@ -66,3 +61,8 @@ const TabManagement: React.FC = (): JSX.Element => {
 };
 
 export default TabManagement;
+
+interface Props {
+    currentTab: TabObj
+    setCurrentTab: (currentTab: TabObj) => void;
+};
