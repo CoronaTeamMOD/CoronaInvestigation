@@ -42,7 +42,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
 
-        timeout(1900).then( ()=> history.push('/landing'));
+        timeout(1900).then(()=> history.push('/landing'));
     };
 
     return {
