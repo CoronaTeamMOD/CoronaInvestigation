@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import {BrowserRouter} from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 
@@ -18,7 +19,9 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <ApolloProvider client={client}>
             <ApolloHooksProvider client={client}>
-                <App />
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
             </ApolloHooksProvider>
         </ApolloProvider>
     </MuiThemeProvider>

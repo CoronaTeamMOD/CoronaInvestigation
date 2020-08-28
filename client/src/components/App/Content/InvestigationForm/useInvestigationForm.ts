@@ -1,10 +1,14 @@
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
+import { useHistory } from "react-router-dom";
+
+import {timeout} from 'Utils/Timout/Timout';
 
 import useStyles from './InvestigationFormStyles';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
+    let history = useHistory();
     const classes = useStyles({});
 
     const confirmFinishInvestigation = () => {
@@ -38,7 +42,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
 
-        // TODO: navigate to home page + wait until swal closes
+        timeout(1900).then( ()=> history.push('/landing'));
     };
 
     return {
