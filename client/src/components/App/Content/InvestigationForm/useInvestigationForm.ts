@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 import { useHistory } from "react-router-dom";
 
-import {timeout} from 'Utils/Timout/Timout';
+import {timeout} from 'Utils/Timeout/Timeout';
 
 import useStyles from './InvestigationFormStyles';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
