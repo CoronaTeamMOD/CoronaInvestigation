@@ -1,18 +1,17 @@
 import React from 'react';
-import {Route, Switch } from 'react-router-dom';
+import {Route, Switch, Redirect } from 'react-router-dom';
 
-import TabObj from 'models/TabObj';
-
-import InvestigationForm from './InvestigationForm/InvestigationForm';
 import LandingPage from  './LandingPage/LandingPage';
+import InvestigationForm from './InvestigationForm/InvestigationForm';
+import {investigationFormRoute, landingPageRoute} from 'Utils/Routes/Routes';
 
 const Content: React.FC = (): JSX.Element => {
   
     return (
         <Switch>
-            <Route path= "/investigation" component={InvestigationForm} />
-            <Route path= "/landing" component={LandingPage} />
-            <Route path= "/" component={LandingPage} />  
+            <Route path={investigationFormRoute} component={InvestigationForm} />
+            <Route path= {landingPageRoute} component={LandingPage} />
+            <Redirect from='/' to={landingPageRoute}/>
         </Switch>
     )
 }

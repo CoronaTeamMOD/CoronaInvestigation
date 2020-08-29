@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import {timeout} from 'Utils/Timeout/Timeout';
 
 import useStyles from './InvestigationFormStyles';
+import {landingPageRoute} from 'Utils/Routes/Routes';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
@@ -42,7 +43,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
 
-        timeout(1900).then(()=> history.push('/landing'));
+        timeout(1900).then(()=> history.push(landingPageRoute));
     };
 
     return {
