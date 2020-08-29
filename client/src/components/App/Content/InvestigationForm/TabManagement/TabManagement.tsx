@@ -7,7 +7,7 @@ import { Paper, Tabs, Tab, Card, StylesProvider } from '@material-ui/core';
 import TabObj from 'models/TabObj';
 
 import useStyles from './TabManagementStyles';
-import { defaultTab } from '../../Content';
+import { defaultTab } from '../InvestigationForm';
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 

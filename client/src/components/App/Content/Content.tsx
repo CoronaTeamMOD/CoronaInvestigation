@@ -1,17 +1,18 @@
 import React from 'react';
+import {Route, Switch, Redirect } from 'react-router-dom';
 
-import TabObj from 'models/TabObj';
+import LandingPage from  './LandingPage/LandingPage';
 import InvestigationForm from './InvestigationForm/InvestigationForm';
-
-export const defaultTab: TabObj = {
-    id: 0,
-    name: 'פרטים אישיים'
-};
+import {investigationFormRoute, landingPageRoute} from 'Utils/Routes/Routes';
 
 const Content: React.FC = (): JSX.Element => {
   
     return (
-        <InvestigationForm/>
+        <Switch>
+            <Route path={investigationFormRoute} component={InvestigationForm} />
+            <Route path= {landingPageRoute} component={LandingPage} />
+            <Redirect from='/' to={landingPageRoute}/>
+        </Switch>
     )
 }
 
