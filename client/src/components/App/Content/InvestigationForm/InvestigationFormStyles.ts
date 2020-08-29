@@ -4,8 +4,11 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     content: {
-        backgroundColor: 'lightGrey',
-        padding: '0.7vw',
+        height: '100vh',
+        backgroundColor: '#F3F6FB',
+    },
+    interactiveForm: {
+        padding: '2vh 1vw 1vh 1vw',
     },
     buttonSection: {
         display: 'flex',
