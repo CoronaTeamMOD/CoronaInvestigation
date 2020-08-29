@@ -2,10 +2,10 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 
 import TabObj from 'models/TabObj';
+import TabManagement from './TabManagement/TabManagement';
+import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
-import TabManagement from './TabManagement/TabManagement';
-import InvestigationInfoBar from '../InvestigationInfo/InvestigationInfoBar';
 
 export const defaultTab: TabObj = {
     id: 0,
