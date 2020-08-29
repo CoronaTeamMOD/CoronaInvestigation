@@ -5,7 +5,7 @@ import {create} from 'jss';
 import ApolloClient from 'apollo-boost';
 import {ApolloProvider} from 'react-apollo';
 import {BrowserRouter} from 'react-router-dom';
-import {MuiThemeProvider} from '@material-ui/core/styles';
+import {MuiThemeProvider, StylesProvider} from '@material-ui/core/styles';
 import {jssPreset} from '@material-ui/styles';
 import {ApolloProvider as ApolloHooksProvider} from '@apollo/react-hooks';
 
