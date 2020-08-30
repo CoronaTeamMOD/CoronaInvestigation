@@ -46,6 +46,7 @@ const InvestigatedPersonInfo = () => {
                 </div>
                 <div className={classes.managementControllers}>
                     <Button variant='contained' 
+                        color='primary'
                         className={classes.exitInvestigationButton}
                         onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה

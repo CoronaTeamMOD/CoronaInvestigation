@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/styles'
-import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     paper: {
@@ -35,7 +34,6 @@ const useStyles = makeStyles({
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
-        backgroundColor: theme.palette.primary.main,
     }, 
     managementControllers: {
         display: 'flex',
