@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     card: {
-        height: '82vh'
+        height: '75vh',
     }
 });
 
