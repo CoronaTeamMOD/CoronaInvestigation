@@ -2,9 +2,7 @@ name: HANDLE_PUSH
 
 on:
   push:
-    types: [opened, synchronize]
     branches: [ shiranTestingCi ]
-
 jobs: 
   file_changes:
     name: Check if the push made changes to client or server (or both!)
@@ -36,6 +34,7 @@ jobs:
     needs: [file_changes]
     name: Run client pipeline
     if: ${{ needs.file_changes.outputs.client == 'true' }}
+    steps:
     - uses: Azure/pipelines@v1
       with:
         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
@@ -46,6 +45,7 @@ jobs:
     needs: [file_changes]
     name: Run server pipeline
     if: ${{ needs.file_changes.outputs.server == 'true' }}
+    steps:
     - uses: Azure/pipelines@v1
       with:
         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
