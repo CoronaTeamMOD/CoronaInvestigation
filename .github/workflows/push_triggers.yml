@@ -33,6 +33,7 @@ jobs:
   run-client-pipeline:
     needs: [file_changes]
     name: Run client pipeline
+    runs-on: ubuntu-latest
     if: ${{ needs.file_changes.outputs.client == 'true' }}
     steps:
     - uses: Azure/pipelines@v1
@@ -44,6 +45,7 @@ jobs:
   run-server-pipeline:
     needs: [file_changes]
     name: Run server pipeline
+    runs-on: ubuntu-latest
     if: ${{ needs.file_changes.outputs.server == 'true' }}
     steps:
     - uses: Azure/pipelines@v1
