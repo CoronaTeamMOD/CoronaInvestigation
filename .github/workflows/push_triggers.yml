@@ -4,7 +4,7 @@ on:
   push:
     types: [opened, synchronize]
     branches: [ shiranTestingCi ]
-
+s:
 jobs: 
   file_changes:
     name: Check if the push made changes to client or server (or both!)
