@@ -6,6 +6,8 @@ import TabObj from 'models/TabObj';
 import useStyles from './TabManagementStyles';
 import { defaultTab } from '../InvestigationForm';
 
+import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
+
 const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = props;
     const classes = useStyles({});
@@ -21,7 +23,8 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
   const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
     setCurrentTab({
         id: selectedTab,
-        name: tabs[selectedTab].name
+        name: tabs[selectedTab].name, 
+        displayComponent: tabs[selectedTab].displayComponent
     });
   };
 
@@ -29,15 +32,18 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
         defaultTab,
         {
             id: 1,
-            name: 'בידוד ופרטים קליניים'
+            name: 'בידוד ופרטים קליניים', 
+            displayComponent: <ClinicalDetails />
         },
         {
             id: 2,
-            name: 'חשיפה אפשרית וחו"ל'
+            name: 'חשיפה אפשרית וחו"ל', 
+            displayComponent: <></>
         },
         {
             id: 3,
-            name: 'מקומות ומגעים'
+            name: 'מקומות ומגעים', 
+            displayComponent: <></>
         },
     ];
   
@@ -57,6 +63,13 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
                     }
                 </Tabs>
             </Paper>
+            {
+                tabs.map((tab) => (
+                    <Paper className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
+                        {tab.displayComponent}
+                    </Paper>
+                ))
+            }
         </Card>
     )
 };
