@@ -53,6 +53,7 @@ stages:
       displayName: Build and push server image to container registry
       inputs:
         command: buildAndPush
+        dockerfile: 'Dockerfile'
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'azureContainerRegistry'
         containerRegistry: 'azureContainerRegistry'
