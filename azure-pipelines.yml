@@ -1,5 +1,3 @@
-trigger:
-- shiranTestingCi
 variables:
   azureSC: 'coronai'
   buildConfiguration: 'Release'

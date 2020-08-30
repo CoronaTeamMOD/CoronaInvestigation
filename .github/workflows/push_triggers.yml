@@ -1,0 +1,54 @@
+name: HANDLE_PUSH
+
+on:
+  push:
+    types: [opened, synchronize]
+    branches: [ shiranTestingCi ]
+
+jobs: 
+  file_changes:
+    name: Check if the PR made changes to client or server (or both!)
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.filter.outputs.client }}
+      server: ${{ steps.filter.outputs.server }}
+    steps:
+    - uses: dorny/paths-filter@master
+      id: filter
+      with:
+        # Filters stored in own yaml file or inline yml
+        filters: '.github/labeler.yml'
+          #filters: |
+           #server:
+           # - 'server/**/*'
+           #client:
+            #- 'client/**/*'
+          
+  auto-label:
+    name: Label updated pr with relevant services
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@master
+        with:
+            repo-token: "${{ secrets.GITHUB_TOKEN }}"
+  
+  run-client-pipeline:
+    needs: [file_changes]
+    name: Run client pipeline
+    if: ${{ needs.file_changes.outputs.client == 'true' }}
+    - uses: Azure/pipelines@v1
+      with:
+        azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
+        azure-pipeline-name: 'client_pipeline' # name of the Azure pipeline to be triggered
+        azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+
+  run-server-pipeline:
+    needs: [file_changes]
+    name: Run client pipeline
+    if: ${{ needs.file_changes.outputs.server == 'true' }}
+    - uses: Azure/pipelines@v1
+      with:
+        azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
+        azure-pipeline-name: 'server_pipeline' # name of the Azure pipeline to be triggered
+        azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+
