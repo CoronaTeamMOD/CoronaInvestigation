@@ -63,7 +63,7 @@ stages:
         command: buildAndPush
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'azureContainerRegistry'
-        containerRegistry: '$(acrHostName)'
+        containerRegistry: 'azureContainerRegistry'
 
     - task: CopyFiles@2
       inputs:
