@@ -3,6 +3,7 @@ name: HANDLE_PUSH
 on:
   push:
     branches: [ shiranTestingCi ]
+    
 jobs: 
   file_changes:
     name: Check if the push made changes to client or server (or both!)
