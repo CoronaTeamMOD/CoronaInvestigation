@@ -5,10 +5,10 @@ import { postgraphile, makePluginHook } from 'postgraphile';
 
 const { genericOptions, DBConnectionsObject } = require('./config');
 
-interface IError {
-    message: any,
+interface postgraphileError {
+    message: string,
     locations: any,
-    stack: any
+    stack: string
 };
 
 const pluginHook = makePluginHook([OperationHooks, PgPubsub, GraphilePro]);
@@ -20,7 +20,7 @@ const postgraphileServices = Object.keys(DBConnectionsObject).map(key =>
         graphqlRoute: `/${key}/graphql`,
         graphiqlRoute: `/${key}/graphiql`,
         websocketMiddlewares: [],
-        handleErrors: (errors: IError[]) => (
+        handleErrors: (errors: postgraphileError[]) => (
             errors.map(error => (
                 {
                     message: error.message,
