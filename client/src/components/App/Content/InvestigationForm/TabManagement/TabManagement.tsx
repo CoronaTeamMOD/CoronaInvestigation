@@ -5,6 +5,7 @@ import TabObj from 'models/TabObj';
 
 import useStyles from './TabManagementStyles';
 import { defaultTab } from '../InvestigationForm';
+import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab'
 
 const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = props;
@@ -57,6 +58,8 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
                     }
                 </Tabs>
             </Paper>
+
+            <PersonalInfoTab />
         </Card>
     )
 };
