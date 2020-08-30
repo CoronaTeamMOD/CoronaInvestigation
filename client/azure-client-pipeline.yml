@@ -32,6 +32,7 @@ stages:
     #   displayName: 'Show next version'
 
     - script: |
+        cd client
         npm install
         npm run build
       displayName: 'npm build client'
@@ -58,7 +59,7 @@ stages:
       displayName: Build and push client image to container registry
       inputs:
         command: buildAndPush
-        dockerfile: 'Dockerfile'
+        dockerfile: '**/client/Dockerfile'
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'azureContainerRegistry'
         containerRegistry: 'azureContainerRegistry'
