@@ -40,8 +40,9 @@ const theme = createMuiTheme({
     typography: {
         fontSize: 16,
         fontFamily: 'Assistant',
-        fontWeightRegular: 'lighter'
+        fontWeightRegular: 400,
+        fontWeightMedium: 500,
     }
-})
+});
 
 export default theme;
