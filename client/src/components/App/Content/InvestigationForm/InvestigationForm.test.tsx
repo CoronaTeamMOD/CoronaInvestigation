@@ -43,7 +43,7 @@ describe('investigationForm tests', () => {
             customClass: {
                 title: 'makeStyles-swalTitle-5'
             }
-          });
+        });
     });
 
     it('Check that second swal was opened on acception', async () => {
@@ -74,7 +74,7 @@ describe('investigationForm tests', () => {
             },
             timer: 1750,
             showConfirmButton: false
-          });
+        });
     });
 
     it('Check that second swal was not opened on cancelation', async () => {
@@ -106,7 +106,7 @@ describe('investigationForm tests', () => {
             },
             timer: 1750,
             showConfirmButton: false
-          })
+        })
     });
     it('isLastTab should be false when hook is initialized', async () => {
         await testHooksFunction(() => {
@@ -126,7 +126,7 @@ describe('investigationForm tests', () => {
     });
     it('going to the last tab should change the button text', async () => {
         const wrapper = mount(<InvestigationForm />);
-        for (let i = 0; i < tabs.length; i++) {
+        for (let i = 0; i < tabs.length - 1; i++) {
             wrapper
                 .find(Button)
                 .simulate('click');
