@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 import {timeout} from 'Utils/Timeout/Timeout';
 

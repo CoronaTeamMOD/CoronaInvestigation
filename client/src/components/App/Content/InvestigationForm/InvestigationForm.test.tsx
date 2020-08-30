@@ -11,7 +11,7 @@ let investigationFormOutcome: useInvestigationFormOutcome;
 describe('investigationForm tests', () => {
     afterEach(() => jest.resetAllMocks());
 
-    it('check that swall was opened', async () => {
+    it('check that swal was opened', async () => {
 
         const myspy = jest.spyOn(Swal, 'fire');
 
@@ -35,7 +35,7 @@ describe('investigationForm tests', () => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
             customClass: {
-                title: 'makeStyles-swalTitle-4'
+                title: 'makeStyles-swalTitle-5'
             }
           });
     });
@@ -64,7 +64,7 @@ describe('investigationForm tests', () => {
             icon: 'success',
             title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
             customClass: {
-                title: 'makeStyles-swalTitle-4'
+                title: 'makeStyles-swalTitle-5'
             },
             timer: 1750,
             showConfirmButton: false
