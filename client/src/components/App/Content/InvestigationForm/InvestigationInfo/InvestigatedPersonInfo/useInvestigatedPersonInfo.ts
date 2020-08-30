@@ -1,11 +1,11 @@
 import Swal from 'sweetalert2';
-import theme from 'styles/theme';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
+import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
+import {landingPageRoute} from 'Utils/Routes/Routes';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import {landingPageRoute} from 'Utils/Routes/Routes';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
