@@ -6,7 +6,7 @@ const ConnectionFilterPlugin = require('postgraphile-plugin-connection-filter');
 
 const genericOptions = {
     watchPg: true,
-    graphiql: true,
+    graphiql: process.env.ENVIRONMENT !== 'prod',
     enhanceGraphiql: true,
     enableCors: true,
     appendPlugin: [ConnectionFilterPlugin],
@@ -14,7 +14,12 @@ const genericOptions = {
         connectionFilterRelations: true
     },
     retryOnInitFail: true,
-    bodySizeLimit: '5MB'
+    bodySizeLimit: '5MB',
+    ignoreRBAC: false,
+    disableQueryLog: process.env.ENVIRONMENT !== 'prod',
+    pgSettings: {
+        statement_timeout: '6000'
+    }
 };
 
 let connection = {};
@@ -29,11 +34,11 @@ if (process.env.ENVIRONMENT === 'preprod' || process.env.ENVIRONMENT === 'prod')
             cert: process.env.CERT,
             rejectUnauthorized: false
         }
-    }
+    };
 } else {
     connection = {
         connectionString: process.env.CONNECTION_STRING
-    }
+    };
 }
 
 const pgPool = new Pool({
@@ -48,7 +53,7 @@ const DBConnectionsObject = {
     }
 };
 
-export default {
+module.exports = {
     genericOptions,
     DBConnectionsObject,
 };

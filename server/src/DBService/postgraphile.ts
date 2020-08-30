@@ -1,5 +1,7 @@
+import GraphilePro from '@graphile/pro';
+import PgPubsub from '@graphile/pg-pubsub';
+import OperationHooks from '@graphile/operation-hooks';
 import { postgraphile, makePluginHook } from 'postgraphile';
-const { dafault: pgPubsub } = require('@graphile/pg-pubsub');
 
 const { genericOptions, DBConnectionsObject } = require('./config');
 
@@ -7,9 +9,9 @@ interface IError {
     message: any,
     locations: any,
     stack: any
-}
+};
 
-const pluginHook = makePluginHook([pgPubsub]);
+const pluginHook = makePluginHook([OperationHooks, PgPubsub, GraphilePro]);
 
 const postgraphileServices = Object.keys(DBConnectionsObject).map(key =>
     postgraphile(DBConnectionsObject[key].connection, DBConnectionsObject[key].scheme, {
