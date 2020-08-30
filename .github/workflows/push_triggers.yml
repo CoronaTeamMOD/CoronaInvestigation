@@ -12,7 +12,7 @@ jobs:
       client: ${{ steps.filter.outputs.client }}
       server: ${{ steps.filter.outputs.server }}
     steps:
-    - uses: dorny/paths-filter@master
+    - uses: dorny/paths-filter@v2.2.1
       id: filter
       with:
         # Filters stored in own yaml file or inline yml
