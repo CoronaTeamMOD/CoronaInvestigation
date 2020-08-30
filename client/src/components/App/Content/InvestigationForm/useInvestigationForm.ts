@@ -24,7 +24,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             customClass: {
                 title: classes.swalTitle
             }
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
                 handleInvestigationFinish();
             };
@@ -43,11 +43,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
 
-        timeout(1900).then(()=> history.push(landingPageRoute));
+        timeout(1900).then(() => history.push(landingPageRoute));
     };
 
     return {
-        confirmFinishInvestigation
+        confirmFinishInvestigation,
+        handleInvestigationFinish
     }
 };
 

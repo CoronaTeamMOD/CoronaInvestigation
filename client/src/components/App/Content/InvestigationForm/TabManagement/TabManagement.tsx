@@ -3,8 +3,8 @@ import {Paper, Tabs, Tab, Card, withStyles, createStyles} from '@material-ui/cor
 
 import TabObj from 'models/TabObj';
 
-import { defaultTab } from '../InvestigationForm';
 import useStyles from './TabManagementStyles';
+import { defaultTab } from '../InvestigationForm';
 
 const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = props;
