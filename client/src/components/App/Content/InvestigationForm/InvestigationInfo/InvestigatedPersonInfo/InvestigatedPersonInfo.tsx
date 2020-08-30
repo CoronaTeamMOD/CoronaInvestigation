@@ -1,11 +1,14 @@
 import React from 'react';
-import {Typography, Paper} from '@material-ui/core';
+import {Typography, Paper, Button} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
-import useStyles from './InvestigatedPersonInfoStyles';
+
 import InfoItemWithIcon from './InfoItemWithIcon';
+import useContent from './useInvestigatedPersonInfo';
+import useStyles from './InvestigatedPersonInfoStyles';
 
 const InvestigatedPersonInfo = () => {
     const classes = useStyles();
+    const { confirmExitUnfinishedInvestigation } = useContent();
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const name = 'לוי כהן';
@@ -27,18 +30,27 @@ const InvestigatedPersonInfo = () => {
                 </Typography>
             </div>
 
-            <div className={classes.additionalInfo}>
-                <InfoItemWithIcon name='גיל' value={age} icon={CakeOutlined}/>
-                <Divider/>
-                <InfoItemWithIcon name='תאריך הבדיקה' value={dateOfTest} icon={EventOutlined}/>
-                <Divider/>
-                <InfoItemWithIcon name='מין' value={gender} icon={Help}/>
-                <Divider/>
-                <InfoItemWithIcon name='סוג תעודה מזהה' value={idType} icon={Help}/>
-                <Divider/>
-                <InfoItemWithIcon name='מספר תעודה מזהה' value={idNumber} icon={Help}/>
-                <Divider/>
-                <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
+            <div className={classes.informationBar}>
+                <div className={classes.additionalInfo}>
+                    <InfoItemWithIcon name='גיל' value={age} icon={CakeOutlined}/>
+                    <Divider/>
+                    <InfoItemWithIcon name='תאריך הבדיקה' value={dateOfTest} icon={EventOutlined}/>
+                    <Divider/>
+                    <InfoItemWithIcon name='מין' value={gender} icon={Help}/>
+                    <Divider/>
+                    <InfoItemWithIcon name='סוג תעודה מזהה' value={idType} icon={Help}/>
+                    <Divider/>
+                    <InfoItemWithIcon name='מספר תעודה מזהה' value={idNumber} icon={Help}/>
+                    <Divider/>
+                    <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
+                </div>
+                <div className={classes.managementControllers}>
+                    <Button variant='contained' 
+                        className={classes.exitInvestigationButton}
+                        onClick={confirmExitUnfinishedInvestigation}>
+                        צא מחקירה
+                    </Button>
+                </div>
             </div>
         </Paper>
     );

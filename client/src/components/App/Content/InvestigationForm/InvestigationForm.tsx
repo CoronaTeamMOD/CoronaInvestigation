@@ -31,7 +31,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     currentTab.name === 'מקומות ומגעים' &&
                     <div className={classes.buttonSection}>
                         <Button className={classes.finishInvestigationButton}
-                                onClick={confirmFinishInvestigation}>סיים חקירה</Button>
+                            onClick={confirmFinishInvestigation}>
+                                סיים חקירה
+                        </Button>
                     </div> 
                 }
             </div>
