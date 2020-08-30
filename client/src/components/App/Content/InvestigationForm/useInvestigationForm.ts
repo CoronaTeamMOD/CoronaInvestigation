@@ -24,11 +24,11 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             customClass: {
                 title: classes.swalTitle
             }
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
                 handleInvestigationFinish();
             };
-        }).catch((err) => console.error(err));
+        });
     };
 
     const handleInvestigationFinish = () => {
@@ -41,9 +41,9 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             timer: 1750,
             showConfirmButton: false
         }
-).catch((err) => console.error(err));
+        );
 
-        timeout(1900).then(()=> history.push(landingPageRoute));
+        timeout(1900).then(() => history.push(landingPageRoute));
     };
 
     return {
