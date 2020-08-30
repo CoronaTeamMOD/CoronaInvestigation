@@ -4,11 +4,11 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     content: {
-        height: '100vh',
+        height: '92vh',
         backgroundColor: '#F3F6FB',
     },
     interactiveForm: {
-        padding: '2vh 1vw 1vh 1vw',
+        padding: '2vh 1vw 0 1vw',
     },
     buttonSection: {
         display: 'flex',
