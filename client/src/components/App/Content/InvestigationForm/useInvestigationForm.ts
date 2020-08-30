@@ -24,7 +24,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             if (result.value) {
                 handleInvestigationFinish();
             };
-        });
+        }).catch((err) => console.error(err));
     };
 
     const handleInvestigationFinish = () => {
@@ -37,7 +37,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             timer: 1750,
             showConfirmButton: false
         }
-        );
+        ).catch((err) => console.error(err));
 
         // TODO: navigate to home page + wait until swal closes
     };

@@ -1,19 +1,19 @@
-import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 import Swal from 'sweetalert2';
-import useInvestigationForm from './useInvestigationForm';
-import { testHooksFunction } from 'TestHooks';
-import swal from 'sweetalert2';
-import { act } from 'react-dom/test-utils';
-import { wait } from '@testing-library/react';
-
 import theme from 'styles/theme';
+import { act } from 'react-dom/test-utils';
+import { testHooksFunction } from 'TestHooks';
+
+import useInvestigationForm from './useInvestigationForm';
+import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 let investigationFormOutcome: useInvestigationFormOutcome;
 
 describe('investigationForm tests', () => {
-    it('', async () => {
+    afterEach(() => jest.resetAllMocks());
 
-        const myspy = jest.spyOn(swal, 'fire');
+    it('check that swall was opened', async () => {
+
+        const myspy = jest.spyOn(Swal, 'fire');
 
         await act(async () => {
             await testHooksFunction(() => {
@@ -37,28 +37,69 @@ describe('investigationForm tests', () => {
             customClass: {
                 title: 'makeStyles-swalTitle-4'
             }
-          })
+          });
     });
 
-    // it('', async () => {
+    it('Check that second swal was opened on acception', async () => {
+        jest.spyOn(Swal, 'fire').mockResolvedValue({
+            isConfirmed: true,
+            isDismissed: false,
+            value: true
+        });
 
-    //     jest.spyOn(swal, 'fire').mockResolvedValue({
-    //         isConfirmed: true,
-    //         isDismissed: false,
-    //         value: true
-    //     });
+        const myspy = jest.spyOn(Swal, 'fire');
 
-    //     await act(async () => {
-    //         await testHooksFunction(() => {
-    //             investigationFormOutcome = useInvestigationForm();
-    //             investigationFormOutcome.handleInvestigationFinish = jest.fn();
-    //         });
-    //     });
+        await act(async () => {
+            await testHooksFunction(() => {
+                investigationFormOutcome = useInvestigationForm();
+            });
+        });
 
-    //     await act(async () => {
-    //         await investigationFormOutcome.confirmFinishInvestigation();
-    //     });
-    //     jest.runAllTimers();
-    //     expect(investigationFormOutcome.handleInvestigationFinish).toHaveBeenCalled();
-    // });
+        await act(async () => {
+            await investigationFormOutcome.confirmFinishInvestigation();
+        });
+
+        expect(myspy).toHaveBeenCalled();
+        expect(myspy).toHaveBeenCalledWith({
+            icon: 'success',
+            title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
+            customClass: {
+                title: 'makeStyles-swalTitle-4'
+            },
+            timer: 1750,
+            showConfirmButton: false
+          });
+    });
+
+    it('Check that second swal was not opened on cancelation', async () => {
+        jest.spyOn(Swal, 'fire').mockResolvedValue({
+            isConfirmed: false,
+            isDismissed: true,
+            value: false
+        });
+
+        const myspy = jest.spyOn(Swal, 'fire');
+
+        await act(async () => {
+            await testHooksFunction(() => {
+                investigationFormOutcome = useInvestigationForm();
+                investigationFormOutcome.handleInvestigationFinish = jest.fn();
+            });
+        });
+
+        await act(async () => {
+            await investigationFormOutcome.confirmFinishInvestigation();
+        });
+
+        expect(myspy).toHaveBeenCalled();
+        expect(myspy).not.toHaveBeenCalledWith({
+            icon: 'success',
+            title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
+            customClass: {
+                title: 'makeStyles-swalTitle-4'
+            },
+            timer: 1750,
+            showConfirmButton: false
+          })
+    });
 });
