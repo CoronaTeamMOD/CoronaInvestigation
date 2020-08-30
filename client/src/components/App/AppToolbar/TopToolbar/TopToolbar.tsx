@@ -15,7 +15,7 @@ const TopToolbar: React.FC<Props> = (props: Props): JSX.Element => {
                 <img alt='logo' className={classes.logo} src='./assets/img/logo.png'></img>
                 <Typography variant='h4'><div className={classes.systemName}>שם המערכת</div></Typography>
             </div>
-    <Typography>שלום, {props.userName}</Typography>
+            <Typography>שלום, {props.userName}</Typography>
         </Toolbar>
     )
 }
