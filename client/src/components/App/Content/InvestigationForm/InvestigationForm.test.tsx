@@ -6,9 +6,10 @@ import { act } from 'react-dom/test-utils';
 import { Button } from '@material-ui/core';
 import { testHooksFunction } from 'TestHooks';
 
-import InvestigationForm, { CONTINUE_TO_NEXT_TAB, END_INVESTIGATION, LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { tabs} from "./TabManagement/TabManagement";
+import InvestigationForm, { CONTINUE_TO_NEXT_TAB, END_INVESTIGATION, LAST_TAB_ID } from './InvestigationForm';
 
 let investigationFormOutcome: useInvestigationFormOutcome;
 
@@ -125,15 +126,11 @@ describe('investigationForm tests', () => {
     });
     it('going to the last tab should change the button text', async () => {
         const wrapper = mount(<InvestigationForm />);
-        wrapper
-            .find(Button)
-            .simulate('click');
-        wrapper
-            .find(Button)
-            .simulate('click');
-        wrapper
-            .find(Button)
-            .simulate('click');
+        for (let i = 0; i < tabs.length; i++) {
+            wrapper
+                .find(Button)
+                .simulate('click');
+        }
         await act(() => {
             wrapper.update();
         });
