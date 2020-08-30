@@ -9,11 +9,11 @@ COPY package.json .
 
 RUN mkdir server
 
-COPY server ./server
+COPY * ./server
 
 RUN ls
 # Run the command inside your image filesystem.
-RUN cd server && npm install
+RUN npm install
 
 # Add metadata to the image to describe which port the container is listening on at runtime.
 EXPOSE 8080

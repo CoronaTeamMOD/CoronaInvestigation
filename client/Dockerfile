@@ -9,7 +9,7 @@ COPY package.json .
 
 RUN mkdir client
 
-COPY client/build ./client
+COPY build ./client
 
 RUN ls
 
