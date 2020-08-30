@@ -1,12 +1,17 @@
+import React from 'react';
+import { mount } from 'enzyme';
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 import { act } from 'react-dom/test-utils';
+import { Button } from '@material-ui/core';
 import { testHooksFunction } from 'TestHooks';
 
+import InvestigationForm, { CONTINUE_TO_NEXT_TAB, END_INVESTIGATION, LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 let investigationFormOutcome: useInvestigationFormOutcome;
+
 
 describe('investigationForm tests', () => {
     afterEach(() => jest.resetAllMocks());
@@ -101,5 +106,37 @@ describe('investigationForm tests', () => {
             timer: 1750,
             showConfirmButton: false
           })
+    });
+    it('isLastTab should be false when hook is initialized', async () => {
+        await testHooksFunction(() => {
+            investigationFormOutcome = useInvestigationForm();
+        });
+        expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
+    });
+    it('continuing to the next tab should not change the button text', async () => {
+        const wrapper = mount(<InvestigationForm />);
+        wrapper
+            .find(Button)
+            .simulate('click');
+        await act(() => {
+            wrapper.update();
+        });
+        expect(wrapper.find(Button).text()).toEqual(CONTINUE_TO_NEXT_TAB);
+    });
+    it('going to the last tab should change the button text', async () => {
+        const wrapper = mount(<InvestigationForm />);
+        wrapper
+            .find(Button)
+            .simulate('click');
+        wrapper
+            .find(Button)
+            .simulate('click');
+        wrapper
+            .find(Button)
+            .simulate('click');
+        await act(() => {
+            wrapper.update();
+        });
+        expect(wrapper.find(Button).text()).toEqual(END_INVESTIGATION);
     });
 });
