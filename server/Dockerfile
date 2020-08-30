@@ -9,7 +9,7 @@ COPY package.json .
 
 RUN mkdir server
 
-COPY * ./server
+COPY * ./server/
 
 RUN ls
 # Run the command inside your image filesystem.
