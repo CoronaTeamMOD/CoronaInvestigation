@@ -1,4 +1,4 @@
-on: [push]
+trigger: none
 
 variables:
   azureSC: 'coronai'
