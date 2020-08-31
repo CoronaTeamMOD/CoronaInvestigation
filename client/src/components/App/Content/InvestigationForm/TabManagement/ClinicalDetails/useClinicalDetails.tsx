@@ -7,7 +7,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
 
     return { 
-        isInIsolationToggle 
+        isInIsolationToggle
     };
 };
 
