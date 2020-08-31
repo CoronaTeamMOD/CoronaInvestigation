@@ -1,58 +1,58 @@
-name: HANDLE_PUSH
+# name: HANDLE_PUSH
 
-on:
-  push:
-    branches: [ shiranTestingCi ]
+# on:
+#   push:
+#     branches: [ shiranTestingCi ]
     
-jobs: 
-  file_changes:
-    name: Check if the push made changes to client or server (or both!)
-    runs-on: ubuntu-latest
-    outputs:
-      client: ${{ steps.filter.outputs.client }}
-      server: ${{ steps.filter.outputs.server }}
-    steps:
-    - uses: actions/checkout@v2
-    - uses: dorny/paths-filter@v2.2.1
-      id: filter
-      with:
-        # Filters stored in own yaml file or inline yml
-        # filters: '.github/labeler.yml'
-        filters: |
-           server:
-            - 'server/**/*'
-           client:
-            - 'client/**/*'
+# jobs: 
+#   file_changes:
+#     name: Check if the push made changes to client or server (or both!)
+#     runs-on: ubuntu-latest
+#     outputs:
+#       client: ${{ steps.filter.outputs.client }}
+#       server: ${{ steps.filter.outputs.server }}
+#     steps:
+#     - uses: actions/checkout@v2
+#     - uses: dorny/paths-filter@v2.2.1
+#       id: filter
+#       with:
+#         # Filters stored in own yaml file or inline yml
+#         # filters: '.github/labeler.yml'
+#         filters: |
+#            server:
+#             - 'server/**/*'
+#            client:
+#             - 'client/**/*'
           
-  auto-label:
-    name: Label updated push with relevant services
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/labeler@master
-        with:
-            repo-token: "${{ secrets.GITHUB_TOKEN }}"
+#   auto-label:
+#     name: Label updated push with relevant services
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/labeler@master
+#         with:
+#             repo-token: "${{ secrets.GITHUB_TOKEN }}"
   
-  run-client-pipeline:
-    needs: [file_changes]
-    name: Run client pipeline
-    runs-on: ubuntu-latest
-    if: ${{ needs.file_changes.outputs.client == 'true' }}
-    steps:
-    - uses: Azure/pipelines@v1
-      with:
-        azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
-        azure-pipeline-name: 'client_pipeline' # name of the Azure pipeline to be triggered
-        azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
+#   run-client-pipeline:
+#     needs: [file_changes]
+#     name: Run client pipeline
+#     runs-on: ubuntu-latest
+#     if: ${{ needs.file_changes.outputs.client == 'true' }}
+#     steps:
+#     - uses: Azure/pipelines@v1
+#       with:
+#         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
+#         azure-pipeline-name: 'client_pipeline' # name of the Azure pipeline to be triggered
+#         azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
 
-  run-server-pipeline:
-    needs: [file_changes]
-    name: Run server pipeline
-    runs-on: ubuntu-latest
-    if: ${{ needs.file_changes.outputs.server == 'true' }}
-    steps:
-    - uses: Azure/pipelines@v1
-      with:
-        azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
-        azure-pipeline-name: 'server_pipeline' # name of the Azure pipeline to be triggered
-        azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
+#   run-server-pipeline:
+#     needs: [file_changes]
+#     name: Run server pipeline
+#     runs-on: ubuntu-latest
+#     if: ${{ needs.file_changes.outputs.server == 'true' }}
+#     steps:
+#     - uses: Azure/pipelines@v1
+#       with:
+#         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
+#         azure-pipeline-name: 'server_pipeline' # name of the Azure pipeline to be triggered
+#         azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
 
