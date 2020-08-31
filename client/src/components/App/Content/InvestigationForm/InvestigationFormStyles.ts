@@ -1,4 +1,6 @@
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles'
+
+import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     content: {
@@ -14,9 +16,11 @@ const useStyles = makeStyles({
     },
     finishInvestigationButton: {
         marginTop: '1vh',
+        backgroundColor: theme.palette.primary.main,
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
+        width: '9vw',
     },
     swalTitle: {
         fontSize: '1.5vw',

@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     paper: {
@@ -34,14 +34,19 @@ const useStyles = makeStyles({
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
+        width: '7vw',
     }, 
     managementControllers: {
         display: 'flex',
-        flexDirection: 'column-reverse'
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
+    },
+    checkbox: {
+        marginTop: '0.25vh',
     }
 });
 

@@ -1,17 +1,42 @@
 import React from 'react';
-import {Paper, Tabs, Tab, Card, withStyles, createStyles} from '@material-ui/core';
+import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
-import TabObj from 'models/TabObj';
-
+import { Tab as TabObj } from 'models/Tab';
 import useStyles from './TabManagementStyles';
-import { defaultTab } from '../InvestigationForm';
-
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 
-const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
-    const { currentTab, setCurrentTab } = props;
-    const classes = useStyles({});
+export const defaultTab: TabObj = {
+    id: 0,
+    name: 'פרטים אישיים',
+    isDisabled: false,
+    displayComponent: <></>
+};
 
+export const tabs: TabObj[] = [
+    defaultTab,
+    {
+        id: 1,
+        name: 'בידוד ופרטים קליניים',
+        isDisabled: false,
+        displayComponent: <ClinicalDetails />
+    },
+    {
+        id: 2,
+        name: 'חשיפה אפשרית וחו"ל',
+        isDisabled: false,
+        displayComponent: <></>
+    },
+    {
+        id: 3,
+        name: 'מקומות ומגעים',
+        isDisabled: false,
+        displayComponent: <></>
+    },
+];
+
+const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
+    const { currentTab, setCurrentTab } = tabManagementProps;
+    const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
@@ -19,34 +44,12 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
             },
         }),
     )(Tab);
-
-  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-    setCurrentTab({
-        id: selectedTab,
-        name: tabs[selectedTab].name, 
-        displayComponent: tabs[selectedTab].displayComponent
-    });
-  };
-
-    const tabs: TabObj[] = [
-        defaultTab,
-        {
-            id: 1,
-            name: 'בידוד ופרטים קליניים', 
-            displayComponent: <ClinicalDetails />
-        },
-        {
-            id: 2,
-            name: 'חשיפה אפשרית וחו"ל', 
-            displayComponent: <></>
-        },
-        {
-            id: 3,
-            name: 'מקומות ומגעים', 
-            displayComponent: <></>
-        },
-    ];
   
+    const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
+      // TODO: isDisabled needs to be changed to false when all the mandatory fields are filled
+        setCurrentTab(tabs[selectedTab]);
+    };
+
     return (
         <Card className={classes.card}>
             <Paper>
@@ -58,7 +61,7 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab key={tab.id} label={tab.name} />
+                            return <StyledTab key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
                         })
                     }
                 </Tabs>
@@ -77,6 +80,6 @@ const TabManagement: React.FC<Props> = (props: Props): JSX.Element => {
 export default TabManagement;
 
 interface Props {
-    currentTab: TabObj
+    currentTab: TabObj;
     setCurrentTab: (currentTab: TabObj) => void;
 };
