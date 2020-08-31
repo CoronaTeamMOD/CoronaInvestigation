@@ -13,7 +13,6 @@ import InvestigationForm, { CONTINUE_TO_NEXT_TAB, END_INVESTIGATION, LAST_TAB_ID
 
 let investigationFormOutcome: useInvestigationFormOutcome;
 
-
 describe('investigationForm tests', () => {
     afterEach(() => jest.resetAllMocks());
 

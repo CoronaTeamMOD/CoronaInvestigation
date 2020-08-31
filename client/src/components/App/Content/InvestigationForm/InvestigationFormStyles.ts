@@ -20,6 +20,7 @@ const useStyles = makeStyles({
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
+        width: '9vw',
     },
     swalTitle: {
         fontSize: '1.5vw',

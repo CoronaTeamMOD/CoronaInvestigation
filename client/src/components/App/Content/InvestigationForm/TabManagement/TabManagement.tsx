@@ -1,16 +1,15 @@
 import React from 'react';
-import rtl from 'jss-rtl';
-import { create } from 'jss';
-import { jssPreset } from '@material-ui/styles';
-import {Paper, Tabs, Tab, Card, StylesProvider, createStyles, withStyles} from '@material-ui/core';
+import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import useStyles from './TabManagementStyles';
+import ContactsAndExposuresTab from "./ContactsAndExposurePlacesTab/ContactsAndExposureTab";
 
 export const defaultTab: TabObj = {
     id: 0,
     name: 'פרטים אישיים',
     isDisabled: false,
+    displayComponent: <></>
 };
 
 export const tabs: TabObj[] = [
@@ -19,20 +18,21 @@ export const tabs: TabObj[] = [
         id: 1,
         name: 'בידוד ופרטים קליניים',
         isDisabled: false,
+        displayComponent: <></>
     },
     {
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
+        displayComponent: <></>
     },
     {
         id: 3,
         name: 'מקומות ומגעים',
         isDisabled: false,
+        displayComponent: <ContactsAndExposuresTab />
     },
 ];
-
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = tabManagementProps;
@@ -66,6 +66,13 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     }
                 </Tabs>
             </Paper>
+            {
+                tabs.map(tab => (
+                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
+                        {tab.displayComponent}
+                    </Paper>
+                ))
+            }
         </Card>
     )
 };
