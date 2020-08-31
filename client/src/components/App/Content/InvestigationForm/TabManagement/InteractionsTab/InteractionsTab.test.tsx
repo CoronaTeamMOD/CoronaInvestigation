@@ -34,7 +34,7 @@ describe('useInteractionsTab tests', () => {
             it('get dates when both symptoms start and exposure date are available', async () => {
                 const endInvestigationDate = new Date();
                 const symptomsStartDate: Date = subDays(endInvestigationDate, 2);
-                const exposureDate = subDays(new Date(), 5);
+                const exposureDate = subDays(endInvestigationDate, 5);
                 const startInvestigationDateVariables = {
                     ...initialSymptomaticInvestigationDateVariables, symptomsStartDate, 
                     exposureDate, endInvestigationDate
@@ -46,7 +46,7 @@ describe('useInteractionsTab tests', () => {
 
             it('get dates when only exposure date available', async () => {
                 const endInvestigationDate = new Date();
-                const exposureDate = subDays(new Date(), 5);
+                const exposureDate = subDays(endInvestigationDate, 5);
                 const startInvestigationDateVariables = {
                     ...initialSymptomaticInvestigationDateVariables, endInvestigationDate, exposureDate
                 }
@@ -71,7 +71,7 @@ describe('useInteractionsTab tests', () => {
 
             it('get dates when exposure date available', async () => {
                 const endInvestigationDate = new Date();
-                const exposureDate = subDays(new Date(), 5);
+                const exposureDate = subDays(endInvestigationDate, 5);
                 const startInvestigationDateVariables = {
                     ...initialUnsymptomaticInvestigationDateVariables, endInvestigationDate, exposureDate
                 }

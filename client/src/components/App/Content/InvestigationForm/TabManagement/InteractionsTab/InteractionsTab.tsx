@@ -2,13 +2,13 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Card, Typography, Button } from '@material-ui/core';
 
-import useContent from './useInteractionsTab';
+import useInteractionsTab from './useInteractionsTab';
 import useStyles from './InteractionsTabStyles';
 import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 const InteractionsTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const { getDatesToInvestigate } = useContent();
+    const { getDatesToInvestigate } = useInteractionsTab();
 
     return (
         <StartInvestigationDateVariablesConsumer>

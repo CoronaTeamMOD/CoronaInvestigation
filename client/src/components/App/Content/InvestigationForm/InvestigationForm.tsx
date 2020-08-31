@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 
-import useContent from './useInvestigationForm';
+import useInvestigationForm from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
 import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
@@ -21,7 +21,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         currentTab,
         setCurrentTab,
         confirmFinishInvestigation
-    } = useContent();
+    } = useInvestigationForm();
 
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
             exposureDate, 
