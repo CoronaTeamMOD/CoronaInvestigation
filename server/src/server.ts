@@ -7,8 +7,8 @@ require('dotenv').config();
 
 const app = express();
 
-app.use('/mohapi', MOHApi);
-app.use('/clientToDBapi', ClientToDBApi)
+app.use('/mohApi', MOHApi);
+app.use('/clientToDBApi', ClientToDBApi)
 
 postgraphileServices.forEach(postgraphileService => {
     app.use(postgraphileService);
