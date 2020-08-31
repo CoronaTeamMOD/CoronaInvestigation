@@ -6,12 +6,13 @@ import { act } from 'react-dom/test-utils';
 import { Button } from '@material-ui/core';
 import { testHooksFunction } from 'TestHooks';
 
-import InvestigationForm from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { tabs} from "./TabManagement/TabManagement";
+import InvestigationForm, { CONTINUE_TO_NEXT_TAB, END_INVESTIGATION, LAST_TAB_ID } from './InvestigationForm';
 
 let investigationFormOutcome: useInvestigationFormOutcome;
-const finishInvestigationButtonClass: string = 'finishInvestigationButton';
+
 
 describe('investigationForm tests', () => {
     afterEach(() => jest.resetAllMocks());
@@ -42,7 +43,7 @@ describe('investigationForm tests', () => {
             customClass: {
                 title: 'makeStyles-swalTitle-5'
             }
-          });
+        });
     });
 
     it('Check that second swal was opened on acception', async () => {
@@ -73,7 +74,7 @@ describe('investigationForm tests', () => {
             },
             timer: 1750,
             showConfirmButton: false
-          });
+        });
     });
 
     it('Check that second swal was not opened on cancelation', async () => {
@@ -105,13 +106,13 @@ describe('investigationForm tests', () => {
             },
             timer: 1750,
             showConfirmButton: false
-          })
+        })
     });
     it('isLastTab should be false when hook is initialized', async () => {
         await testHooksFunction(() => {
             investigationFormOutcome = useInvestigationForm();
         });
-        expect(investigationFormOutcome.isLastTab).toBeFalsy();
+        expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
     });
     it('continuing to the next tab should not change the button text', async () => {
         const wrapper = mount(<InvestigationForm />);
@@ -121,22 +122,18 @@ describe('investigationForm tests', () => {
         await act(() => {
             wrapper.update();
         });
-        expect(wrapper.find(Button).text()).toEqual('המשך לשלב הבא');
+        expect(wrapper.find(Button).text()).toEqual(CONTINUE_TO_NEXT_TAB);
     });
     it('going to the last tab should change the button text', async () => {
         const wrapper = mount(<InvestigationForm />);
-        wrapper
-            .find(Button)
-            .simulate('click');
-        wrapper
-            .find(Button)
-            .simulate('click');
-        wrapper
-            .find(Button)
-            .simulate('click');
+        for (let i = 0; i < tabs.length - 1; i++) {
+            wrapper
+                .find(Button)
+                .simulate('click');
+        }
         await act(() => {
             wrapper.update();
         });
-        expect(wrapper.find(Button).text()).toEqual('סיים חקירה');
+        expect(wrapper.find(Button).text()).toEqual(END_INVESTIGATION);
     });
 });

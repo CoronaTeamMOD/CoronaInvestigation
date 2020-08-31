@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import {timeout} from 'Utils/Timeout/Timeout';
 import { Tab } from 'models/Tab';
 import useStyles from './InvestigationFormStyles';
-import { defaultTab, tabs } from './TabManagement/TabManagement';
+import { defaultTab } from './TabManagement/TabManagement';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
@@ -49,14 +49,9 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         timeout(1900).then(() => history.push(landingPageRoute));
     };
 
-    const continueToNextTabByClick = () => {
-        setCurrentTab(tabs[currentTab.id + 1])
-    }
-
     return {
         currentTab,
         setCurrentTab,
-        continueToNextTabByClick,
         confirmFinishInvestigation,
         handleInvestigationFinish
     }

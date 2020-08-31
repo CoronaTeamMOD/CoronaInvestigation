@@ -7,8 +7,8 @@ import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 
 export const LAST_TAB_ID = 3;
-const END_INVESTIGATION = 'סיים חקירה';
-const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+export const END_INVESTIGATION = 'סיים חקירה';
+export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -16,7 +16,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const {
         currentTab,
         setCurrentTab,
-        continueToNextTabByClick,
         confirmFinishInvestigation
     } = useContent();
 
