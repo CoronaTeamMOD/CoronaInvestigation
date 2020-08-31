@@ -2,14 +2,23 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     root: {
-
+        padding: '2vh 2vw',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
-    abroadPanel: {
-
+    verifiedPatientToggle: {
+        height: '3vh',
+        width: '5vw',
     },
-
-    optionalExposurePanel: {
-
+    noBtn: {
+        borderRadius: '0 25px 25px 0 !important'
+    },
+    yesBtn: {
+        borderRadius: '25px 0 0 25px !important'
+    },
+    nameTextField: {
+        
     }
 });
 
