@@ -1,8 +1,5 @@
 import React from 'react';
-import rtl from 'jss-rtl';
-import { create } from 'jss';
-import { jssPreset } from '@material-ui/styles';
-import {Paper, Tabs, Tab, Card, StylesProvider, createStyles, withStyles} from '@material-ui/core';
+import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import useStyles from './TabManagementStyles';
@@ -31,8 +28,6 @@ export const tabs: TabObj[] = [
         isDisabled: false,
     },
 ];
-
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = tabManagementProps;
