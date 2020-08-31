@@ -1,9 +1,11 @@
 import { makeStyles } from '@material-ui/styles';
+import {primaryBackgroundColor} from 'styles/theme';
+
 
 const useStyles = makeStyles({
     content: {
         height: '92vh',
-        backgroundColor: '#F3F6FB',
+        backgroundColor: primaryBackgroundColor,
     },
     interactiveForm: {
         padding: '2vh 1vw 0 1vw',
