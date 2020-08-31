@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, Paper, Button} from '@material-ui/core';
+import {Typography, Paper, Button, FormControlLabel, Checkbox} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
 import InfoItemWithIcon from './InfoItemWithIcon';
@@ -20,6 +20,18 @@ const InvestigatedPersonInfo = () => {
     const idType = 'תעודת זהות';
     const idNumber = '123456789';
     const isDeceased = 'לא';
+
+    const [isChecked, setIsChecked] = React.useState<boolean>(false);
+    
+    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (isChecked) {
+            // TODO: שינוי סטטוס החקירה ללא ניתן ליצור קשר
+        } else {
+            // TODO: שינוי סטטוס החקירה לטיפול
+        }
+        
+        setIsChecked(!isChecked);
+    };
 
     return (
         <Paper className={classes.paper}>
@@ -45,12 +57,25 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <Button variant='contained' 
+                    <Button variant='contained'
                         color='primary'
                         className={classes.exitInvestigationButton}
                         onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה
                     </Button>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isChecked}
+                                onChange={handleCheck}
+                                size='small'
+                                className={classes.checkbox}
+                                name='checked'
+                                color='primary'
+                            />
+                        }
+                        label='אין מענה במספר זה'
+                    />
                 </div>
             </div>
         </Paper>
