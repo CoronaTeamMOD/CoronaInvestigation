@@ -2,12 +2,14 @@ import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinic
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setIsInIsolation } = parameters;
+    const { setIsInIsolation, setHasSymptoms } = parameters;
 
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
+    const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
 
     return { 
-        isInIsolationToggle
+        isInIsolationToggle,
+        hasSymptomsToggle
     };
 };
 

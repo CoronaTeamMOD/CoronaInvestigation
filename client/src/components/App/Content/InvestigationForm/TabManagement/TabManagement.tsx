@@ -68,7 +68,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             </Paper>
             {
                 tabs.map((tab) => (
-                    <Paper className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
+                    <Paper key={tab.id} className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
                     </Paper>
                 ))

@@ -1,10 +1,11 @@
 import React from 'react';
-import {Typography, Paper, Button, FormControlLabel, Checkbox} from '@material-ui/core';
+import {Typography, Paper, Button} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
 import InfoItemWithIcon from './InfoItemWithIcon';
 import useContent from './useInvestigatedPersonInfo';
 import useStyles from './InvestigatedPersonInfoStyles';
+import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 
 const InvestigatedPersonInfo = () => {
     const classes = useStyles();
@@ -63,18 +64,10 @@ const InvestigatedPersonInfo = () => {
                         onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה
                     </Button>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={isChecked}
-                                onChange={handleCheck}
-                                size='small'
-                                className={classes.checkbox}
-                                name='checked'
-                                color='primary'
-                            />
-                        }
-                        label='אין מענה במספר זה'
+                    <CustomCheckbox
+                        isChecked={isChecked}
+                        handleCheck={handleCheck}
+                        text={'אין מענה במספר זה'}
                     />
                 </div>
             </div>
