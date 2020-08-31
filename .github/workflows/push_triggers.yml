@@ -42,7 +42,7 @@ jobs:
       with:
         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
         azure-pipeline-name: 'client_pipeline' # name of the Azure pipeline to be triggered
-        azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+        azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
 
   run-server-pipeline:
     needs: [file_changes]
@@ -54,5 +54,5 @@ jobs:
       with:
         azure-devops-project-url: 'https://dev.azure.com/spectrumFactory/CoronaI'
         azure-pipeline-name: 'server_pipeline' # name of the Azure pipeline to be triggered
-        azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+        azure-devops-token: 'l2zgpksl6kg3xvmc3rdrlc6lrf3p7ybtb4gqpfnozzv5wfpvofna'
 
