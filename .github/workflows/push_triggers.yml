@@ -19,7 +19,7 @@ jobs:
         # filters: '.github/labeler.yml'
         filters: |
            server:
-           - 'server/**/*'
+            - 'server/**/*'
            client:
             - 'client/**/*'
           
