@@ -1,4 +1,10 @@
-trigger: none
+trigger: 
+  branches:
+    include:
+    - shiranTestingCi
+  paths:
+    include:
+    - 'client/'
 
 variables:
   azureSC: 'coronai'
