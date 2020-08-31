@@ -4,7 +4,6 @@ import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/cor
 import { Tab as TabObj } from 'models/Tab';
 
 import useStyles from './TabManagementStyles';
-import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 
 export const defaultTab: TabObj = {
@@ -18,24 +17,21 @@ export const tabs: TabObj[] = [
     defaultTab,
     {
         id: 1,
-        name: 'בידוד ופרטים קליניים', 
-        displayComponent: <ClinicalDetails />,
+        name: 'בידוד ופרטים קליניים',
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <></>,
     },
     {
         id: 2,
-        name: 'חשיפה אפשרית וחו"ל', 
-        displayComponent: <></>,
+        name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <></>,
     },
     {
         id: 3,
         name: 'מקומות ומגעים', 
         displayComponent: <InteractionsTab/>,
         isDisabled: false,
-        displayComponent: <></>
     },
 ];
 
@@ -77,7 +73,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             </Paper>
             {
                 tabs.map((tab) => (
-                    <Paper key={tab.id} className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
+                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
                     </Paper>
                 ))

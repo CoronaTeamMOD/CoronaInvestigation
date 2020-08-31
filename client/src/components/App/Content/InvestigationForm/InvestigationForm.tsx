@@ -1,13 +1,11 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 
-import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-
 import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
 import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-import { StartInvestigationDateVariablesProvider } from './StartInvestigationDateVariables/StartInvestigationDateVariables';
+import { StartInvestigationDateVariablesProvider, StartInvestigationDateVariables } from './StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 export const LAST_TAB_ID = 3;
 export const END_INVESTIGATION = 'סיים חקירה';
