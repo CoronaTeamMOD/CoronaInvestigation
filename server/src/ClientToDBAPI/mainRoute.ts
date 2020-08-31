@@ -12,6 +12,6 @@ clientToDBRouter.use('/exposure', exposureRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
-clientToDBRouter.use('/clinicalDetails', personalDetailsRoute);
+clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 
 export default clientToDBRouter;
