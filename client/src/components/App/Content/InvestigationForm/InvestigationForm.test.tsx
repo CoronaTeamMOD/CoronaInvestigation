@@ -114,26 +114,4 @@ describe('investigationForm tests', () => {
         });
         expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
     });
-    it('continuing to the next tab should not change the button text', async () => {
-        const wrapper = mount(<InvestigationForm />);
-        wrapper
-            .find(Button)
-            .simulate('click');
-        await act(() => {
-            wrapper.update();
-        });
-        expect(wrapper.find(Button).text()).toEqual(CONTINUE_TO_NEXT_TAB);
-    });
-    it('going to the last tab should change the button text', async () => {
-        const wrapper = mount(<InvestigationForm />);
-        for (let i = 0; i < tabs.length - 1; i++) {
-            wrapper
-                .find(Button)
-                .simulate('click');
-        }
-        await act(() => {
-            wrapper.update();
-        });
-        expect(wrapper.find(Button).text()).toEqual(END_INVESTIGATION);
-    });
 });

@@ -51,7 +51,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     };
 
     return (
-        <StylesProvider jss={jss}>
         <Card className={classes.card}>
             <Paper>
                 <Tabs
@@ -68,7 +67,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 </Tabs>
             </Paper>
         </Card>
-        </StylesProvider>
     )
 };
 
