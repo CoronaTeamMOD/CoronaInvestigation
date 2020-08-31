@@ -8,6 +8,7 @@ export const defaultTab: TabObj = {
     id: 0,
     name: 'פרטים אישיים',
     isDisabled: false,
+    displayComponent: <></>
 };
 
 export const tabs: TabObj[] = [
@@ -16,16 +17,19 @@ export const tabs: TabObj[] = [
         id: 1,
         name: 'בידוד ופרטים קליניים',
         isDisabled: false,
+        displayComponent: <></>
     },
     {
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
+        displayComponent: <></>
     },
     {
         id: 3,
         name: 'מקומות ומגעים',
         isDisabled: false,
+        displayComponent: <></>
     },
 ];
 
@@ -61,6 +65,13 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     }
                 </Tabs>
             </Paper>
+            {
+                tabs.map(tab => (
+                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
+                        {tab.displayComponent}
+                    </Paper>
+                ))
+            }
         </Card>
     )
 };
