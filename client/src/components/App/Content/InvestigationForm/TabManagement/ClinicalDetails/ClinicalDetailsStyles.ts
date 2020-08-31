@@ -8,5 +8,8 @@ export const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'row',
         marginTop: '2vh',
+    },
+    smallGrid: {
+        width: '40vw'
     }
 });

@@ -14,10 +14,10 @@ const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
         <ToggleButtonGroup value={toggleValue} exclusive onChange={toggleChangeFunc}>
             <ToggleButton className={classes.toggle} value={false} style={toggleValue ? { backgroundColor: '' } : { backgroundColor: theme.palette.primary.main, color: 'white' }}>
                 {firstOption ? firstOption : 'לא'}
-                                </ToggleButton>
+            </ToggleButton>
             <ToggleButton className={classes.toggle} value={true} style={toggleValue ? { backgroundColor: theme.palette.primary.main, color: 'white' } : { backgroundColor: '' }}>
                 {secondOption ? secondOption : 'כן'}
-                                </ToggleButton>
+            </ToggleButton>
         </ToggleButtonGroup>
     );
 };

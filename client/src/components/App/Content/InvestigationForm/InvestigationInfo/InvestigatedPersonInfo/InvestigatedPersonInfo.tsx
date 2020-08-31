@@ -24,7 +24,7 @@ const InvestigatedPersonInfo = () => {
 
     const [isChecked, setIsChecked] = React.useState<boolean>(false);
     
-    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCheck = () => {
         if (isChecked) {
             // TODO: שינוי סטטוס החקירה ללא ניתן ליצור קשר
         } else {
@@ -66,7 +66,7 @@ const InvestigatedPersonInfo = () => {
                     </Button>
                     <CustomCheckbox
                         isChecked={isChecked}
-                        handleCheck={handleCheck}
+                        handleCheck={() => handleCheck()}
                         text={'אין מענה במספר זה'}
                     />
                 </div>

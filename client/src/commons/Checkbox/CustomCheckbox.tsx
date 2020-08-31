@@ -10,7 +10,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
             control={
                 <Checkbox
                     checked={isChecked}
-                    onChange={handleCheck}
+                    onChange={() => handleCheck()}
                     size='small'
                     name='checked'
                     color='primary'
@@ -25,6 +25,6 @@ export default CustomCheckbox;
 
 interface Props {
     isChecked: boolean;
-    handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleCheck: () => void;
     text: string;
 };
