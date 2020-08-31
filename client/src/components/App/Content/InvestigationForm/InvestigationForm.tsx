@@ -20,17 +20,17 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const [exposureDate, setExposureDate] = React.useState<Date>();
-    const [hasSymptoms, setHasSymptoms] = React.useState<Date>();
+    const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [currentTab, setCurrentTab] = React.useState<TabObj>(defaultTab);
     const { confirmFinishInvestigation } = useContent();
 
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
             exposureDate, 
-            hasSymptoms, 
+            symptomsStartDate, 
             setExposureDate,
-            setHasSymptoms
+            setSymptomsStartDate
         }),
-        [exposureDate, hasSymptoms, setHasSymptoms, setExposureDate]
+        [exposureDate, symptomsStartDate, setSymptomsStartDate, setExposureDate]
     )
 
     return (

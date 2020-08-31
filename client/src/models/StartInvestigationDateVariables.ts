@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface StartInvestiationDateVariables {
-    hasSymptoms: Date | undefined;
+    symptomsStartDate: Date | undefined;
     exposureDate: Date | undefined;
-    setHasSymptoms: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
     setExposureDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }
 
