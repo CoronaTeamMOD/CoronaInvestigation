@@ -1,11 +1,11 @@
-import { makeStyles } from '@material-ui/styles';
-import {primaryBackgroundColor} from 'styles/theme';
+import { makeStyles } from '@material-ui/styles'
 
+import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     content: {
         height: '92vh',
-        backgroundColor: primaryBackgroundColor,
+        backgroundColor: '#F3F6FB',
     },
     interactiveForm: {
         padding: '2vh 1vw 0 1vw',
@@ -15,11 +15,12 @@ const useStyles = makeStyles({
         justifyContent: 'flex-end',
     },
     finishInvestigationButton: {
-        margin: '1vh 0',
+        marginTop: '1vh',
+        backgroundColor: theme.palette.primary.main,
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
-        minWidth: '9vw',
+        width: '9vw',
     },
     swalTitle: {
         fontSize: '1.5vw',
