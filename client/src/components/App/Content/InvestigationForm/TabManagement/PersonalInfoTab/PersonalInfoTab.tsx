@@ -1,4 +1,5 @@
 import React from 'react';
+import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
@@ -19,38 +20,18 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     ]
   
     return (
-        <div className={classes.wrapper}>      
-            <Typography variant='body2' className={classes.box1} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box2} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box3} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box4} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box5} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box6} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box7} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-            <Typography variant='body2' className={classes.box8} >
-                <b><bdi>{personalInfoFields[0]}</bdi>: </b>
-            </Typography>
-
-            <div className={classes.PersonalInfoFieldsContainer}>
-                <div className={classes.rowContainer}>
-                    <TextField></TextField>
-                </div>
-            </div>
-        </div>
+        <Grid container spacing={3} className={classes.container}>
+            <Grid item xs={1}>
+                <Typography>
+                    <b>
+                        טלפון:
+                    </b>
+                </Typography>
+            </Grid>
+            <Grid item xs={3}>
+                <TextField required id="standard-required" placeholder="טלפון:" className={classes.borderRadius} variant="filled" />
+            </Grid>
+        </Grid>
     )
 };
 
