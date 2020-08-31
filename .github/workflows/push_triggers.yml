@@ -18,9 +18,9 @@ jobs:
         # Filters stored in own yaml file or inline yml
         # filters: '.github/labeler.yml'
         filters: |
-          server:
+           server:
             - 'server/**/*'
-          client:
+           client:
             - 'client/**/*'
           
   auto-label:
