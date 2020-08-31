@@ -34,7 +34,7 @@ const useStyles = makeStyles({
         color: 'white',
         borderRadius: '10vw',
         height: '4vh',
-    }, 
+    },
     managementControllers: {
         display: 'flex',
         flexDirection: 'column-reverse'

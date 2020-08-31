@@ -45,10 +45,10 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <Button variant='contained' 
-                        color='primary'
-                        className={classes.exitInvestigationButton}
-                        onClick={confirmExitUnfinishedInvestigation}>
+                    <Button variant='contained'
+                            color='primary'
+                            className={classes.exitInvestigationButton}
+                            onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה
                     </Button>
                 </div>
