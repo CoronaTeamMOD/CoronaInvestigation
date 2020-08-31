@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import MOHApi from './MOHAPI/mainRoute';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
@@ -6,6 +7,12 @@ import postgraphileServices from './DBService/postgraphile';
 require('dotenv').config();
 
 const app = express();
+
+app.use(
+    cors({
+        origin: JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`)
+    })
+);
 
 app.use('/mohApi', MOHApi);
 app.use('/clientToDBApi', ClientToDBApi)
