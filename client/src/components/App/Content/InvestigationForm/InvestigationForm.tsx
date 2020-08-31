@@ -28,7 +28,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     setCurrentTab={setCurrentTab}
                 />
                 <div className={classes.buttonSection}>
-                    <Button className={classes.finishInvestigationButton} onClick={() => {
+                    <Button variant='contained' className={classes.finishInvestigationButton} onClick={() => {
                         currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
                             setCurrentTab(tabs[currentTab.id + 1])
                     }}>
