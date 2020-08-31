@@ -3,12 +3,12 @@ import {Typography, Paper, Button, FormControlLabel, Checkbox} from '@material-u
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
 import InfoItemWithIcon from './InfoItemWithIcon';
-import useContent from './useInvestigatedPersonInfo';
 import useStyles from './InvestigatedPersonInfoStyles';
+import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
     const classes = useStyles();
-    const { confirmExitUnfinishedInvestigation } = useContent();
+    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const name = 'לוי כהן';

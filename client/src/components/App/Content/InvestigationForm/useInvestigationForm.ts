@@ -1,13 +1,14 @@
 import Swal from 'sweetalert2';
-import theme from 'styles/theme';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import {timeout} from 'Utils/Timeout/Timeout';
 import { Tab } from 'models/Tab';
+import theme from 'styles/theme';
+import {timeout} from 'Utils/Timeout/Timeout';
+import {landingPageRoute} from 'Utils/Routes/Routes';
+
 import useStyles from './InvestigationFormStyles';
 import { defaultTab } from './TabManagement/TabManagement';
-import {landingPageRoute} from 'Utils/Routes/Routes';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
