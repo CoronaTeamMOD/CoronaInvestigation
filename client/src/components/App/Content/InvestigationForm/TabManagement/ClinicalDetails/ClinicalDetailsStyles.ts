@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/styles';
 
-export const useStyle = makeStyles({
+export const useStyles = makeStyles({
     form: {
         padding: '2vh',
     }

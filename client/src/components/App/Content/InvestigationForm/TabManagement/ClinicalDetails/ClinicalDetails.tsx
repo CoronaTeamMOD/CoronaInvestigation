@@ -1,14 +1,13 @@
 import React from 'react';
-import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 
-import { useStyle } from './ClinicalDetailsStyles';
+import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import { StartInvestigationDateVariablesConsumer } from '../../StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
-
-    const classes = useStyle();
+    const classes = useStyles();
     
     const [isInIsolation, setIsInIsolation] = React.useState<boolean>(false);
     
@@ -37,30 +36,38 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </ToggleButton>
                             </ToggleButtonGroup>
                             <br />
-                            <Collapse style={{display: 'flex', flexDirection:'row'}} in={isInIsolation}>
+                            <Collapse style={{ display: 'flex', flexDirection: 'row' }} in={isInIsolation}>
                                 <Typography>
-                                    מתאריך: 
+                                    מתאריך:
                                     <TextField
-                                        id="date"
-                                        type="date"
-                                        defaultValue="2017-05-24"
+                                        id='date'
+                                        type='date'
+                                        defaultValue='2017-05-24'
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
                                     />
                                 </Typography>
                                 <Typography>
-                                    עד: 
+                                    עד:
                                     <TextField
-                                        id="date"
-                                        type="date"
-                                        defaultValue="2017-05-24"
+                                        id='date'
+                                        type='date'
+                                        defaultValue='2017-05-24'
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
                                     />
                                 </Typography>
                             </Collapse>
+                        </Grid>
+                        {/* האם יש סימפטומים */}
+                        <Grid item xs={2}>
+                            <Typography>
+                                <b>
+                                    האם יש סימפטומים:
+                                </b>
+                            </Typography>
                         </Grid>
                     </Grid>
                 )}
