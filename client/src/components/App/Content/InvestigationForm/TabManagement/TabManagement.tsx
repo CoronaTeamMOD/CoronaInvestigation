@@ -3,6 +3,7 @@ import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/cor
 
 import { Tab as TabObj } from 'models/Tab';
 import useStyles from './TabManagementStyles';
+import OptionalExposureAndAbroad from "./OptionalExposureAndAbroad/OptionalExposureAndAbroad";
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -23,7 +24,7 @@ export const tabs: TabObj[] = [
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <OptionalExposureAndAbroad/>
     },
     {
         id: 3,
