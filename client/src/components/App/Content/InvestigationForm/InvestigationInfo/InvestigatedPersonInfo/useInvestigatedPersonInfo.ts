@@ -24,7 +24,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             customClass: {
                 title: classes.swalTitle,
             }
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
                 handleInvestigationFinish();
             };
@@ -33,14 +33,14 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const handleInvestigationFinish = () => {
         Swal.fire({
-            icon: 'success',
-            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
-            customClass: {
-                title: classes.swalTitle,
-            },
-            timer: 1750,
-            showConfirmButton: false
-        }
+                icon: 'success',
+                title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
+                customClass: {
+                    title: classes.swalTitle,
+                },
+                timer: 1750,
+                showConfirmButton: false
+            }
         );
 
         timeout(1900).then(()=> history.push(landingPageRoute));
