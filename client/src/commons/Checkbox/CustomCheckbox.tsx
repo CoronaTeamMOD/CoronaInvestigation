@@ -1,9 +1,9 @@
 import React from 'react';
-import { FormControlLabel, Checkbox } from '@material-ui/core';
+import { FormControlLabel, Checkbox, CheckboxProps } from '@material-ui/core';
 
 const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { isChecked, handleCheck, text } = props;
+    const { isChecked, handleCheck, text, ...rest } = props;
 
     return (
         <FormControlLabel
@@ -14,6 +14,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
                     size='small'
                     name='checked'
                     color='primary'
+                    {...rest}
                 />
             }
             label={text}
@@ -23,8 +24,8 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default CustomCheckbox;
 
-interface Props {
+interface Props extends CheckboxProps {
     isChecked: boolean;
-    handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
     text: string;
+    handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
