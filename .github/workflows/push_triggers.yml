@@ -22,14 +22,6 @@ jobs:
             - 'server/**/*'
            client:
             - 'client/**/*'
-          
-  auto-label:
-    name: Label updated pr with relevant services
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/labeler@master
-        with:
-            repo-token: "${{ secrets.GITHUB_TOKEN }}"
   
   run-client-pipeline:
     needs: [file_changes]
