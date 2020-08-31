@@ -50,9 +50,6 @@ const useStyles = makeStyles({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
-    checkbox: {
-        // marginTop: '0.25vh',
-    }
 });
 
 export default useStyles;

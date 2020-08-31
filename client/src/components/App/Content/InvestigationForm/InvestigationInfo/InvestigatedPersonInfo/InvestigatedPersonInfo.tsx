@@ -70,7 +70,6 @@ const InvestigatedPersonInfo = () => {
                                 checked={isChecked}
                                 onChange={handleCheck}
                                 size='small'
-                                className={classes.checkbox}
                                 name='checked'
                                 color='primary'
                             />
