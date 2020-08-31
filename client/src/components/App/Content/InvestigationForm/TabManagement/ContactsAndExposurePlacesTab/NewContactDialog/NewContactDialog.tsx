@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
+import { Close as CloseIcon, AddCircle as AddCircleIcon} from '@material-ui/icons';
 import {
     Dialog, DialogTitle, DialogActions, Button, DialogContent,
     FormControl, Typography, IconButton, Select, MenuItem, Divider, TextField
@@ -7,7 +7,6 @@ import {
 
 import useStyles from './NewContactDialogStyles';
 import Location from 'models/LocationType';
-import { ADD_CONTACT } from '../ContactsAndExposureTab';
 
 const DIALOG_TITLE = 'יצירת מקום/מגע חדש';
 const LOCATION_TYPE = 'סוג אתר:';
@@ -15,6 +14,7 @@ const CONTACT_NAME = 'שם';
 const CONTACT_ID = 'ת.ז';
 const CONTACT_PHONE = 'מספר טלפון';
 const CANCEL_LABEL = 'ביטול';
+const ADD_CONTACT = 'הוסף מגע';
 
 const NewContactDialog: React.FC<Props> = (newContactDialogProps: Props) => {
     const [ isCreateContactEnabled, setIsCreateContactEnabled ] = useState(false);
@@ -76,6 +76,12 @@ const NewContactDialog: React.FC<Props> = (newContactDialogProps: Props) => {
                         <div className={classes.singleContactField}>
                             <Typography className={classes.fieldLabel}>{CONTACT_ID + ': '}</Typography>
                             <TextField className={classes.newContactFields} label={CONTACT_ID} value={contactedPersonID} onChange={handleIDChange}/>
+                        </div>
+                        <div>
+                            <IconButton>
+                                <AddCircleIcon />
+                            </IconButton>
+                            <Typography>{ADD_CONTACT}</Typography>
                         </div>
                     </FormControl>
                 </DialogContent>
