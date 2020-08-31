@@ -2,10 +2,9 @@ import { makeStyles } from '@material-ui/styles'
 import { Repeat } from '@material-ui/icons';
 
 const useStyles = makeStyles({
-    PersonalInfoFieldsContainer: {
+    PersonalInfoFieldContainer: {
         display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '2vw'
+        alignItems: 'center'
     },
     fieldsMargin: {
         marginTop: '3vh'
@@ -14,11 +13,34 @@ const useStyles = makeStyles({
         display: 'flex',
         marginTop: '3vh'
     },
-    container: {
-        padding: '2vh 3vw'
+    containerGrid: {
+        padding: '2vh 3vw',
+        maxWidth: '120vw'
+    },
+    selectReason: {
+        width: '10vw',
+        marginLeft: '1vw'
+    },
+    checkboxSize: {
+        width: 20,
+        height: 20,
+    },
+    fontSize15: {
+        fontSize: 15,
+    },
+    arrowToleft: {
+        right: 'unset',
+        left: '0px',
+        paddingRight: '0px'
+    },
+    placeHolder: {
+        left: 'unset'
+    },
+    writeReason: {
+        width: '18vw'
     },
     borderRadius: {
-        borderRadius: '2px'
+        borderRadius: '25px'
     }
 });
 
