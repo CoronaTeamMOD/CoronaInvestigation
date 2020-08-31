@@ -2,7 +2,10 @@ import React from 'react';
 import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
+
 import useStyles from './TabManagementStyles';
+import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
+import InteractionsTab from './InteractionsTab/InteractionsTab';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -15,19 +18,22 @@ export const tabs: TabObj[] = [
     defaultTab,
     {
         id: 1,
-        name: 'בידוד ופרטים קליניים',
+        name: 'בידוד ופרטים קליניים', 
+        displayComponent: <ClinicalDetails />,
         isDisabled: false,
         displayComponent: <></>
     },
     {
         id: 2,
-        name: 'חשיפה אפשרית וחו"ל',
+        name: 'חשיפה אפשרית וחו"ל', 
+        displayComponent: <></>,
         isDisabled: false,
         displayComponent: <></>
     },
     {
         id: 3,
-        name: 'מקומות ומגעים',
+        name: 'מקומות ומגעים', 
+        displayComponent: <InteractionsTab/>,
         isDisabled: false,
         displayComponent: <></>
     },
@@ -44,10 +50,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }),
     )(Tab);
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-      // TODO: isDisabled needs to be changed to false when all the mandatory fields are filled
-        setCurrentTab(tabs[selectedTab]);
-    };
+  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
+    setCurrentTab({
+        id: selectedTab,
+        name: tabs[selectedTab].name, 
+        displayComponent: tabs[selectedTab].displayComponent,
+        isDisabled: false,
+    });
+  };
 
     return (
         <Card className={classes.card}>
@@ -66,8 +76,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 </Tabs>
             </Paper>
             {
-                tabs.map(tab => (
-                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
+                tabs.map((tab) => (
+                    <Paper key={tab.id} className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
                     </Paper>
                 ))
