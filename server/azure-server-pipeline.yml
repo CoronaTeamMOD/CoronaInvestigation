@@ -65,6 +65,8 @@ stages:
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'azureContainerRegistry'
         containerRegistry: 'azureContainerRegistry'
+        tags: |
+          server
 
     - task: CopyFiles@2
       inputs:

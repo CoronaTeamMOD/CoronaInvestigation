@@ -71,6 +71,8 @@ stages:
         repository: '$(arcName)'
         azureSubscriptionEndpoint: 'azureContainerRegistry'
         containerRegistry: 'azureContainerRegistry'
+        tags: |
+          client
 
 # - stage: 
 #   displayName: 'Deployment'
