@@ -2,12 +2,19 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Repeat } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    tabInitialPadding: {
-        paddingTop: '2vh'
+    tabInitialContainer: {
+        paddingTop: '2vh',
+        overflowY: 'scroll',
+        height: '64vh'
     },
     PersonalInfoFieldContainer: {
         display: 'flex',
         alignItems: 'center'
+    },
+    personalInfoLastFieldContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: '1vh'
     },
     fieldsMargin: {
         marginTop: '3vh'
@@ -53,12 +60,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     ageText: {
         maxWidth: '4vw'
     },
-    inSuranceSelect: {
-        width: '6vw'
+    selectWidth: {
+        width: '7vw'
     },
     selectPlaceHolder: {
         left: 'unset',
         fontSize: 13
+    },
+    institutionName: {
+        width: '10vw'
     }
 }));
 

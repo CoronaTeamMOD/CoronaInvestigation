@@ -1,20 +1,20 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
-import { Typography } from '@material-ui/core';
+import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import { FormControl, InputLabel } from '@material-ui/core';
+import { Typography, RadioGroup, Radio } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-
-import useStyles from './PersonalInfoTabStyles';
+import { FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
+import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import relevantOccupations from 'models/enums/relevantOccupations'
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
+
+import useStyles from './PersonalInfoTabStyles';
 
 const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     const classes = useStyles({});
@@ -31,7 +31,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     ]
   
     return (
-        <div className={classes.tabInitialPadding}>
+        <div className={classes.tabInitialContainer}>
         <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
             <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                 <Typography className={classes.fontSize15}>
@@ -55,12 +55,17 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
             <Grid item xs={2}>
                 <FormControlLabel 
                     className={classes.unsetFormControlMargin}
-                    control={<CircleTextField 
-                        select
-                        id="reasonPhoneNotChecked" 
-                        className={classes.selectReason}
-                        size='small'
-                    />}
+                    control={
+                        <div className={classes.personalId}>
+                            <CircleSelect
+                                native
+                                value={""}
+                                placeholder={'שלום'}
+                                options={['1', '2', '3']}
+                                className={classes.selectWidth}
+                            />
+                        </div>
+                    }
                     label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>סיבה:</span>}
                     labelPlacement='start'
                 />
@@ -209,6 +214,78 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                     native
                     value={"Ten"}
                     options={['1', '2', '3']}
+                    className={classes.selectWidth}
+                />
+            </Grid>
+        </Grid>
+
+        <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Typography className={classes.fontSize15}>
+                    <b>
+                         קופת חולים:
+                    </b>
+                </Typography>
+            </Grid>
+            <Grid item xs={1}>
+                <CircleSelect
+                    native
+                    value={""}
+                    placeholder={'שלום'}
+                    options={['1', '2', '3']}
+                    className={classes.selectWidth}
+                />
+            </Grid>
+        </Grid>
+
+        <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Typography className={classes.fontSize15}>
+                    <b>
+                        כתובת:
+                    </b>
+                </Typography>
+            </Grid>
+            <Grid item xs={3}>
+                <CircleTextField 
+                    id="adress" 
+                    placeholder="מחכה לסנדי:" 
+                    size='small'
+                />
+            </Grid>
+        </Grid>
+
+        <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>          
+            <Grid item xs={2} className={classes.personalInfoLastFieldContainer}>
+                <Typography className={classes.fontSize15}>
+                    <b>
+                        האם עובד באחד מהבאים:
+                    </b>
+                </Typography>
+            </Grid>
+            <Grid item xs={2}>
+                <FormControl component="fieldset">
+                    <RadioGroup aria-label="gender" name="gender1" >
+                        <FormLabel component="legend" className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
+                        { 
+                            Object.values(relevantOccupations).map((occupation) => {
+                                return <FormControlLabel 
+                                            value={occupation} 
+                                            control={<Radio />} 
+                                            label={<span style={{ fontSize: '13px' }}>{occupation}</span>} 
+                                        />
+                            })
+                        }   
+                    </RadioGroup>
+                </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+                <CircleSelect
+                    native
+                    value={""}
+                    placeholder={'הזן שם מוסד'}
+                    options={['1', '2', '3']}
+                    className={classes.institutionName}
                 />
             </Grid>
         </Grid>

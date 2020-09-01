@@ -5,18 +5,20 @@ import useStyles from './CircleSelectStyles'
 
 const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
-    const {options, ...rest} = props;
+    const {options, placeholder, className, ...rest} = props;
+    const classNames = [className, classes.selectBorder];
 
     return (
         <FormControl variant="outlined" className={classes.formControl}>
             <Select
                 {...rest}
-                className={classes.selectBorder}
+                className={classNames.join(' ')}
                 classes={{ root: classes.unsetSelectColor }}
             >
+                <option key={-1} value={''} disabled>{placeholder}</option>
                 {
                     options.map((option, index) => {
-                        return <option value={index}>{option}</option>
+                        return <option key={index} value={index}>{option}</option>
                     })
                 }
             </Select>
@@ -27,5 +29,5 @@ const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
 export default CircleSelect;
 
 interface Props extends SelectProps {
-    options: string[];
+    options: string[]
 };
