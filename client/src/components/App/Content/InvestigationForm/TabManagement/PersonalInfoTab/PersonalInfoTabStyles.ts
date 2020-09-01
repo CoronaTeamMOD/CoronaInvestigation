@@ -2,6 +2,9 @@ import { makeStyles } from '@material-ui/styles'
 import { Repeat } from '@material-ui/icons';
 
 const useStyles = makeStyles({
+    tabInitialPadding: {
+        paddingTop: '2vh'
+    },
     PersonalInfoFieldContainer: {
         display: 'flex',
         alignItems: 'center'
@@ -14,13 +17,13 @@ const useStyles = makeStyles({
         marginTop: '3vh'
     },
     containerGrid: {
-        padding: '2vh 3vw',
-        maxWidth: '120vw',
-        maxHeight: '9vh'
+        padding: '0 3vw',
+        maxWidth: '100vw',
+        maxHeight: 'fit-content'
     },
     selectReason: {
         width: '10vw',
-        marginLeft: '1vw'
+        marginLeft: '0.5vw'
     },
     checkboxSize: {
         width: 20,
@@ -42,6 +45,23 @@ const useStyles = makeStyles({
     },
     borderRadius: {
         borderRadius: '25px'
+    },
+    personalId: {
+        width: '8vw',
+        marginLeft: '0.5vw'
+    },
+    unsetFormControlMargin: {
+        marginLeft: '0'
+    },
+    ageText: {
+        maxWidth: '4vw'
+    },
+    inSuranceSelect: {
+        width: '6vw'
+    },
+    selectPlaceHolder: {
+        left: 'unset',
+        fontSize: 13
     }
 });
 
