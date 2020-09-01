@@ -13,13 +13,7 @@ const useStyles = makeStyles({
     buttonSection: {
         display: 'flex',
         justifyContent: 'flex-end',
-    },
-    finishInvestigationButton: {
-        margin: '1vh 0',
-        color: 'white',
-        borderRadius: '10vw',
-        height: '4vh',
-        minWidth: '9vw',
+        margin: '1vh 0'
     },
     swalTitle: {
         fontSize: '1.5vw',

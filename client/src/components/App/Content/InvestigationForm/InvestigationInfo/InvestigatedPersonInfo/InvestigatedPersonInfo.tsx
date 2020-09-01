@@ -1,9 +1,11 @@
 import React from 'react';
-import {Typography, Paper, Button, FormControlLabel, Checkbox} from '@material-ui/core';
+import {Typography, Paper, FormControlLabel, Checkbox} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
-import InfoItemWithIcon from './InfoItemWithIcon';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+
 import useStyles from './InvestigatedPersonInfoStyles';
+import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
@@ -37,16 +39,11 @@ const InvestigatedPersonInfo = () => {
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                <CheckCircleOutline color='primary'/>
-                <Typography variant='h6' className={classes.investigationTitle}>
-                    {name}, {investigationId}
-                </Typography>
+                    <CheckCircleOutline color='primary'/>
+                    <Typography variant='h6' className={classes.investigationTitle}>
+                        {name}, {investigationId}
+                    </Typography>
                 </div>
-                <Button variant='contained' color='primary'
-                        className={classes.exitInvestigationButton}
-                        onClick={confirmExitUnfinishedInvestigation}>
-                    צא מחקירה
-                </Button>
             </div>
 
             <div className={classes.informationBar}>
@@ -64,6 +61,10 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
+                    <PrimaryButton
+                        onClick={confirmExitUnfinishedInvestigation}>
+                        צא מחקירה
+                    </PrimaryButton>
                     <FormControlLabel
                         control={
                             <Checkbox
