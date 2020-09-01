@@ -7,13 +7,13 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const { text, datePickerType, ...rest } = props;
+    const { lableText, datePickerType, ...rest } = props;
 
     return (
         <div className={classes.dateField}>
             {
-                text && <Typography>
-                    <b>{text + ':'}</b>
+                lableText && <Typography>
+                    <b>{lableText + ':'}</b>
                 </Typography>
             }
             <div className={classes.dateText}>
@@ -34,6 +34,6 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 export default DatePick;
 
 interface Props extends StandardTextFieldProps {
-    text?: string;
+    lableText?: string;
     datePickerType: 'date' | 'time';
 };

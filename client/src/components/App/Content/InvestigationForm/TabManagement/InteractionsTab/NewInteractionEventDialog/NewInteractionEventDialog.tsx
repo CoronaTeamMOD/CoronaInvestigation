@@ -4,11 +4,11 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typogr
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventVariables from 'models/InteractionEventVariables';
 
 import useStyles from './NewInteractionEventDialogStyles';
 
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 export interface Props {
     isOpen: boolean,
@@ -46,6 +46,11 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         setCanCreateEvent(eventStartTime !== undefined && eventEndTime !== undefined);
     }, [eventStartTime, eventEndTime]);
 
+    const onPlaceTypeChange = (event: React.ChangeEvent<any>) => setPlaceType(event.target.value);
+    const onEventStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEventStartTime(event.target.value);
+    const onEventEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEventEndTime(event.target.value);
+    const onCanBeExportedChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => setCanBeExported(val);
+
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
@@ -62,7 +67,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                         <Grid item xs={9}>
                             <Select
                                 value={placeType}
-                                onChange={(event: React.ChangeEvent<any>) => setPlaceType(event.target.value)}
+                                onChange={onPlaceTypeChange}
                                 className={classes.placeTypeSelect}
                             >
                                 {
@@ -83,7 +88,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <DatePick 
                                 datePickerType='time'
                                 value={eventStartTime || defaultTime}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventStartTime(event.target.value as string)}
+                                onChange={onEventStartTimeChange}
                             />
                         </Grid>
                     </div>
@@ -97,7 +102,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <DatePick 
                                 datePickerType='time' 
                                 value={eventEndTime || defaultTime}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventEndTime(event.target.value)}/>
+                                onChange={onEventEndTimeChange}/>
                         </Grid>
                     </div>
                     <div className={formClasses.rowDiv}>
@@ -110,7 +115,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <Toggle 
                                 className={classes.toggle}
                                 value={canBeExported} 
-                                onChange={(event, val) => setCanBeExported(val)}/>
+                                onChange={onCanBeExportedChange}/>
                         </Grid>
                     </div>
                 </Grid>
