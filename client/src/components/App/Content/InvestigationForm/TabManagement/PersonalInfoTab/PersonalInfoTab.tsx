@@ -11,6 +11,8 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import useStyles from './PersonalInfoTabStyles';
 
+import CircleTextField from '../../../../../../commons/CircleTextField/CircleTextField'
+
 const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     const classes = useStyles({});
 
@@ -35,7 +37,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                 </Typography>
             </Grid>
             <Grid item xs={1}>
-                <TextField required id="standard-required" placeholder="טלפון:" variant="outlined" size='small' InputProps={{className: classes.borderRadius}}/>
+                <CircleTextField id="standard-required" placeholder="טלפון:" size='small'/>
             </Grid>
             <Grid item xs={2}>
                 <FormControlLabel 
@@ -54,11 +56,10 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
             </Grid>
             <Grid item xs={2}>
                 <FormControlLabel
-                    control={<TextField 
+                    control={<CircleTextField 
                         select
-                        required id="standard-required" 
+                        id="standard-required" 
                         className={classes.selectReason}
-                        variant="outlined"
                         size='small'
                     />}
                     label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>סיבה:</span>}
@@ -66,7 +67,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                 />
             </Grid>
             <Grid item xs={4} className={classes.PersonalInfoFieldContainer}>
-                <TextField id="standard-required" placeholder="כתוב סיבה..." variant="outlined" size='small' className={classes.writeReason}/>
+                <CircleTextField id="standard-required" placeholder="כתוב סיבה..." size='small' className={classes.writeReason}/>
             </Grid>
         </Grid>
     )
