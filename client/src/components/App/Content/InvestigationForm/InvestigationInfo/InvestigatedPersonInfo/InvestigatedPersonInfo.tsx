@@ -35,11 +35,18 @@ const InvestigatedPersonInfo = () => {
 
     return (
         <Paper className={classes.paper}>
-            <div className={classes.investigationHeaderInfo}>
+            <div className={classes.headerTopPart}>
+                <div className={classes.investigationHeaderInfo}>
                 <CheckCircleOutline color='primary'/>
                 <Typography variant='h6' className={classes.investigationTitle}>
                     {name}, {investigationId}
                 </Typography>
+                </div>
+                <Button variant='contained' color='primary'
+                        className={classes.exitInvestigationButton}
+                        onClick={confirmExitUnfinishedInvestigation}>
+                    צא מחקירה
+                </Button>
             </div>
 
             <div className={classes.informationBar}>
@@ -57,25 +64,17 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <Button variant='contained'
-                        color='primary'
-                        className={classes.exitInvestigationButton}
-                        onClick={confirmExitUnfinishedInvestigation}>
-                        צא מחקירה
-                    </Button>
                     <FormControlLabel
                         control={
                             <Checkbox
                                 checked={isChecked}
                                 onChange={handleCheck}
                                 size='small'
-                                className={classes.checkbox}
                                 name='checked'
                                 color='primary'
                             />
                         }
-                        label='אין מענה במספר זה'
-                    />
+                        label='אין מענה במספר זה'/>
                 </div>
             </div>
         </Paper>
