@@ -39,16 +39,14 @@ const InvestigatedPersonInfo = () => {
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                <CheckCircleOutline color='primary'/>
-                <Typography variant='h6' className={classes.investigationTitle}>
-                    {name}, {investigationId}
-                </Typography>
+                    <CheckCircleOutline color='primary'/>
+                    <Typography variant='h6' className={classes.investigationTitle}>
+                        {name}, {investigationId}
+                    </Typography>
                 </div>
-                <Button variant='contained' color='primary'
-                        className={classes.exitInvestigationButton}
-                        onClick={confirmExitUnfinishedInvestigation}>
+                <PrimaryButton onClick={confirmExitUnfinishedInvestigation}>
                     צא מחקירה
-                </Button>
+                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
