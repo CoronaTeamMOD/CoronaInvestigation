@@ -33,7 +33,6 @@ const useStyles = makeStyles({
         display: 'flex',
         flexWrap: 'wrap',
         whiteSpace: 'pre',
-
     },
     exitInvestigationButton: {
         color: 'white',
