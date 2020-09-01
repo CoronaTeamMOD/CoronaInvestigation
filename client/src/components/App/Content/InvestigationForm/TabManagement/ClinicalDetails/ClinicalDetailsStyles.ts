@@ -11,5 +11,14 @@ export const useStyles = makeStyles({
     },
     smallGrid: {
         width: '40vw'
+    },
+    isolationAddress: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    textField: {
+        height: '1vh',
+        marginBottom: '32px',
+        marginLeft: '1vw',
     }
 });

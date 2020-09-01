@@ -13,4 +13,7 @@ export const useStyles = makeStyles({
     textField: {
         width: '12vw',
     },
+    text: {
+        marginTop: '2.3%',
+    },
 });

@@ -13,7 +13,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <div className={classes.dateField}>
             {
-                text && <Typography>
+                text && <Typography className={classes.text}>
                     <b>{text + ':'}</b>
                 </Typography>
             }

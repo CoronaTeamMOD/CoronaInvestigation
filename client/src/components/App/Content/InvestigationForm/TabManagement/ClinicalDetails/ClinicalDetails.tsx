@@ -5,70 +5,74 @@ import { Check } from 'models/Check';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import { StartInvestigationDateVariablesConsumer } from '../../StartInvestiationDateVariables/StartInvestigationDateVariables';
 
+const symptomsList: Check[] = [
+    {
+        id: 0,
+        name: 'first',
+        isChecked: false
+    },
+    {
+        id: 1,
+        name: 'second',
+        isChecked: false
+    },
+    {
+        id: 2,
+        name: 'third',
+        isChecked: false
+    },
+    {
+        id: 3,
+        name: 'fourth',
+        isChecked: false
+    },
+    {
+        id: 4,
+        name: 'אחר',
+        isChecked: false
+    },
+];
+
+const backgroundIllnessesList: Check[] = [
+    {
+        id: 0,
+        name: 'one',
+        isChecked: false
+    },
+    {
+        id: 1,
+        name: 'two',
+        isChecked: false
+    },
+    {
+        id: 2,
+        name: 'three',
+        isChecked: false
+    },
+    {
+        id: 3,
+        name: 'four',
+        isChecked: false
+    },
+    {
+        id: 4,
+        name: 'אחר',
+        isChecked: false
+    },
+
+];
+
+const hospitals: string[] = ['שיבא', 'איכילוב', 'אסף הרופא'];
+
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
-
-    const symptomsList: Check[] = [
-        {
-            id: 0,
-            name: 'first',
-            isChecked: false
-        },
-        {
-            id: 1,
-            name: 'second',
-            isChecked: false
-        },
-        {
-            id: 2,
-            name: 'third',
-            isChecked: false
-        },
-        {
-            id: 3,
-            name: 'fourth',
-            isChecked: false
-        },
-        {
-            id: 4,
-            name: 'אחר',
-            isChecked: false
-        },
-    ];
-
-    const backgroundIllnessesList: Check[] = [
-        {
-            id: 0,
-            name: 'one',
-            isChecked: false
-        },
-        {
-            id: 1,
-            name: 'two',
-            isChecked: false
-        },
-        {
-            id: 2,
-            name: 'three',
-            isChecked: false
-        },
-        {
-            id: 3,
-            name: 'four',
-            isChecked: false
-        },
-        {
-            id: 4,
-            name: 'אחר',
-            isChecked: false
-        },
-    ];
 
     const [isInIsolation, setIsInIsolation] = React.useState<boolean>(false);
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
@@ -84,6 +88,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [hospitalStartDate, setHospitalStartDate] = React.useState<string>('');
     const [hospitalEndDate, setHospitalEndDate] = React.useState<string>('');
     const [troubleIsolatingReason, setTroubleIsolatingReason] = React.useState<string>('');
+    const [hospital, setHospital] = React.useState<string>(hospitals[0]);
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, hasTroubleIsolatingToggle, wasHospitalizedToggle } = useClinicalDetails(
         {
@@ -105,7 +110,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         <StartInvestigationDateVariablesConsumer>
             {ctxt => (
                 <Grid className={classes.form} container justify='flex-start' alignItems='center'>
-                    {/* Is In Isolation row */}
+                    {/* האם שהית בבידוד */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>
@@ -141,6 +146,21 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Grid>
                     <br />
                     <br />
+                    {/* כתובת לבידוד נוכחי */}
+                    <Typography>
+                        <b>
+                            כתובת לבידוד נוכחי:
+                        </b>
+                    </Typography>
+                    <CircleTextField
+                        size='small'
+                        placeholder='כתובת'
+                        className={classes.textField}
+                    />
+                    <Grid item xs={12}>
+                    </Grid>
+                    <br />
+                    <br />
                     {/* האם בעייתי לקיים בידוד */}
                     <Grid item xs={2}>
                         <Typography>
@@ -158,7 +178,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 value={troubleIsolatingReason}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setTroubleIsolatingReason(event.target.value)}
                                 size='small'
-                                style={{height: '1vh', marginBottom: '3vh', marginRight: '1vw'}}
+                                className={classes.textField}
                                 placeholder='הכנס סיבה:'
                             />
                         </Collapse>
@@ -273,6 +293,18 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Grid>
                     <Grid item xs={10}>
                         <Collapse in={wasHospitalized}>
+                            <div className={classes.dates}>
+                                <Typography style={{marginTop: '0.7%'}}>
+                                    <b>
+                                        בית חולים:
+                                    </b>
+                                </Typography>
+                                <CircleSelect
+                                    options={hospitals}
+                                    value={hospital}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => setHospital(event.target.value as string)}
+                                />
+                            </div>
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
