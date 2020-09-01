@@ -102,8 +102,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const handleChecklistCheck = (checkId: number, checkList: Check[]) => {
         let updatedSymptoms = [...checkList];
         updatedSymptoms[checkId].isChecked = !updatedSymptoms[checkId].isChecked;
-        //setSymptoms(updatedSymptoms);
-        //setBackgroundIllnesses(updatedackgroundIllnesses);
     };
 
     return (
