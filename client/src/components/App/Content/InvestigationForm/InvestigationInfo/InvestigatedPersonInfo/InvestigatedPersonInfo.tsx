@@ -44,9 +44,6 @@ const InvestigatedPersonInfo = () => {
                         {name}, {investigationId}
                     </Typography>
                 </div>
-                <PrimaryButton onClick={confirmExitUnfinishedInvestigation}>
-                    צא מחקירה
-                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
