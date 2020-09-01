@@ -27,7 +27,7 @@ describe('investigatedPersonInfo tests', () => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
             customClass: {
-                title: 'makeStyles-swalTitle-9'
+                title: 'makeStyles-swalTitle-10'
             }
         };
 
@@ -35,7 +35,7 @@ describe('investigatedPersonInfo tests', () => {
             icon: 'success',
             title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
             customClass: {
-                title: 'makeStyles-swalTitle-9'
+                title: 'makeStyles-swalTitle-10'
             },
             timer: 1750,
             showConfirmButton: false
