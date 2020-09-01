@@ -1,14 +1,19 @@
 import React from 'react';
-import { KeyboardTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Select, MenuItem, Button } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, Select, MenuItem } from '@material-ui/core';
 
-import useStyles from './InteractionEventDialogStyles';
+import Toggle from 'commons/Toggle/Toggle';
+import DatePick from 'commons/DatePick/DatePick';
+import InteractionEventVariables from 'models/InteractionEventVariables';
+
+import useStyles from './NewInteractionEventDialogStyles';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 export interface Props {
     isOpen: boolean,
+    eventId: number,
+    onCancle: (eventId: number) => void;
+    onCreateEvent: (interactionEventVariables: InteractionEventVariables) => void;
 }
-
-const newConactEventTitle = 'יצירת מקום/מגע חדש'
 
 const selectData = [
     'מקום 1',
@@ -18,81 +23,109 @@ const selectData = [
     'מקום 5'
 ]
 
-const InteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
+const defaultTime : string = '00:00';
+
+const newConactEventTitle = 'יצירת מקום/מגע חדש'
+
+const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
+    
+    const { isOpen, eventId, onCancle, onCreateEvent } = props;
 
     const classes = useStyles({});
+    const [canCreateEvent, setCanCreateEvent] = React.useState<boolean>(false);
+    const [placeType, setPlaceType] = React.useState<string>(selectData[0]);
+    const [eventStartTime, setEventStartTime] = React.useState<string>();
+    const [eventEndTime, setEventEndTime] = React.useState<string>();
+    const [canBeExported, setCanBeExported] = React.useState<boolean>(false);
 
-    const [contactEvent, setContactEvent] = React.useState<string>(selectData[0]);
-
-    const handleChange = (event: any) => {
-        setContactEvent(event.target.value);
-    };
-
-    const { isOpen } = props;
+    React.useEffect(() => {
+        setCanCreateEvent(eventStartTime !== undefined && eventEndTime !== undefined);
+    }, [eventStartTime, eventEndTime]);
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
-            <DialogTitle className={classes.dialogTitle}>
-                <Typography variant='h6'>{newConactEventTitle}</Typography>
+            <DialogTitle className={classes.dialogTitleWrapper}>
+                {newConactEventTitle}
             </DialogTitle>
             <DialogContent>
-                <div className={classes.dialogContent}>
+                <Grid className={classes.form} container justify='flex-start'>
                     <div className={classes.rowDiv}>
-                        <Typography variant='subtitle1' className={classes.fieldName}>
-                            סוג אתר:
-                        </Typography>
-                        <Select
-                            value={contactEvent}
-                            onChange={handleChange}
-                            className={classes.placeSelect}
-                        >
-                            {
-                                selectData.map((placeName: string) => (
-                                    <MenuItem value={placeName}>{placeName}</MenuItem>
-                                ))
-                            }
-                        </Select>
+                        <Grid item xs={3}>
+                            <Typography variant='caption' className={classes.fieldName}>
+                                סוג אתר:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <Select
+                                value={placeType}
+                                onChange={(event: React.ChangeEvent<any>) => setPlaceType(event.target.value)}
+                                className={classes.placeTypeSelect}
+                            >
+                                {
+                                    selectData.map((placeName: string) => (
+                                        <MenuItem key={placeName} value={placeName}>{placeName}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </Grid>
                     </div>
                     <div className={classes.rowDiv}>
-                        <Typography variant='subtitle1' className={classes.fieldName}>
-                            משעה:
-                        </Typography>
-                        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardTimePicker
-                            margin="normal"
-                            id="time-picker"
-                            label="Time picker"
-                            value={new Date()}
-                            onChange={() => {}}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change time',
-                            }}
-                        />
-                        </MuiPickersUtilsProvider> */}
-                        </div>
-                        <div className={classes.rowDiv}>
-                            <Typography variant='subtitle1' className={classes.fieldName}>
+                        <Grid item xs={3}>
+                            <Typography variant='caption' className={classes.fieldName}>
+                                משעה:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <DatePick 
+                                datePickerType='time'
+                                value={eventStartTime || defaultTime}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventStartTime(event.target.value as string)}
+                            />
+                        </Grid>
+                    </div>
+                    <div className={classes.rowDiv}>
+                        <Grid item xs={3}>
+                            <Typography variant='caption' className={classes.fieldName}>
                                 עד שעה:
                             </Typography>
-                        </div>
-                </div>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <DatePick 
+                                datePickerType='time' 
+                                value={eventEndTime || defaultTime}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventEndTime(event.target.value)}/>
+                        </Grid>
+                    </div>
+                    <div className={classes.rowDiv}>
+                        <Grid item xs={3}>
+                            <Typography variant='caption' className={classes.fieldName}>
+                                האם מותר להחצנה?
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <Toggle 
+                                className={classes.toggle}
+                                value={canBeExported} 
+                                onChange={(event, val) => setCanBeExported(val)}/>
+                        </Grid>
+                    </div>
+                </Grid>
             </DialogContent>
             <DialogActions className={classes.dialogFooter}>
                 <Button 
-                    onClick={() => {}} 
+                    onClick={() => onCancle(eventId)} 
                     color='default' 
                     className={classes.cancleButton}>
                     בטל
                 </Button>
-                <Button variant='contained'
-                    color='primary'
-                    className={classes.addEventButton}
-                    onClick={() => {}}>
+                <PrimaryButton 
+                    disabled={!canCreateEvent}
+                    onClick={() => onCreateEvent({canBeExported, eventEndTime, eventStartTime, placeType})}>
                     צור מקום/מגע
-                </Button>
+                </PrimaryButton>
             </DialogActions>
         </Dialog>
     );
 };
 
-export default InteractionEventDialog;
+export default NewInteractionEventDialog;

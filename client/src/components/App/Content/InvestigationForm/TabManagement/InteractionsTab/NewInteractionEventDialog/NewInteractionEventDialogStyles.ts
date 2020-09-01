@@ -7,29 +7,10 @@ const useStyles = makeStyles({
         width: '50vw',
         height: '70vh',
     },
-    dialogTitle: {
+    dialogTitleWrapper: {
         backgroundColor: theme.palette.primary.dark,
         color: 'white',
         textAlign: 'left',
-        '& h6': {
-            fontWeight: 'lighter'
-        }
-    },
-    fieldName: {
-        fontWeight: 'bold'
-    },
-    dialogContent: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    rowDiv: {
-        display: 'flex',
-        flexDirection: 'row',
-        margin: '1vmin 0'
-    },
-    placeSelect: {
-        margin: '0 2vmin',
-        width: '9vw'
     },
     addEventButton: {
         color: 'white',
@@ -43,6 +24,24 @@ const useStyles = makeStyles({
     dialogFooter: {
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    fieldName: {
+        fontWeight: 'bold'
+    },
+    rowDiv: {
+        display: 'flex',
+        margin: '1vh 0'
+    },
+    placeTypeSelect: {
+        margin: '0 2vmin',
+        width: '9vw'
+    },
+    toggle: {
+        marginLeft: '1vw'
     }
 });
 

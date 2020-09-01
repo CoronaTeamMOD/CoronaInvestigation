@@ -34,12 +34,6 @@ const useStyles = makeStyles({
         flexWrap: 'wrap',
         whiteSpace: 'pre',
     },
-    exitInvestigationButton: {
-        color: 'white',
-        borderRadius: '10vw',
-        height: '4vh',
-        width: '10vw',
-    }, 
     managementControllers: {
         display: 'flex',
         flexDirection: 'column',

@@ -8,11 +8,6 @@ const useStyles = makeStyles({
         margin: '1vh 0',
         padding: '1vh 1vw'
     },
-    exitInvestigationButton: {
-        color: 'white',
-        borderRadius: '10vw',
-        height: '4vh',
-    }, 
 });
 
 export default useStyles;

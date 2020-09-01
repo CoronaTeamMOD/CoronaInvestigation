@@ -37,7 +37,7 @@ describe('investigationForm tests', () => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
             customClass: {
-                title: 'makeStyles-swalTitle-5'
+                title: 'makeStyles-swalTitle-4'
             }
         };
 
@@ -45,7 +45,7 @@ describe('investigationForm tests', () => {
             icon: 'success',
             title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
             customClass: {
-                title: 'makeStyles-swalTitle-5'
+                title: 'makeStyles-swalTitle-4'
             },
             timer: 1750,
             showConfirmButton: false

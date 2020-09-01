@@ -1,6 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Card, Typography, Button } from '@material-ui/core';
+import { Card, Typography } from '@material-ui/core';
+
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './InteractionsTabStyles';
 import useInteractionsTab from './useInteractionsTab';
@@ -9,7 +11,12 @@ import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigatio
 
 const InteractionsTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const { getDatesToInvestigate } = useInteractionsTab();
+    const [newInteractionEventId, setNewInteractionEventId] = React.useState<number>();
+
+    const { getDatesToInvestigate, createNewInteractionEvent, cancleNewInteractionEvent, confirmNewInteractionEvent } = 
+        useInteractionsTab({
+            setNewInteractionEventId
+        });
 
     return (
         <StartInvestigationDateVariablesConsumer>
@@ -21,16 +28,19 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                         .map(date => 
                             <Card key={date.getTime()} className={classes.investigatedDateCard}>
                                 <Typography variant='body1'>{format(date, 'dd/MM/yyyy')}</Typography>
-                                <Button variant='contained' 
-                                color='primary'
-                                className={classes.exitInvestigationButton}
-                                onClick={() => {}}>
+                                <PrimaryButton onClick={() => createNewInteractionEvent(date)}>
                                     צור מקום/מגע
-                                </Button>
+                                </PrimaryButton>
                             </Card>
                             )
                     }
-                    <NewInteractionEventDialog isOpen={true}/>
+                    {
+                        newInteractionEventId && <NewInteractionEventDialog 
+                            isOpen={newInteractionEventId !== undefined} 
+                            onCancle={cancleNewInteractionEvent}
+                            onCreateEvent={confirmNewInteractionEvent}
+                            eventId={newInteractionEventId}/>
+                    }
                 </>
             }
         </StartInvestigationDateVariablesConsumer>
