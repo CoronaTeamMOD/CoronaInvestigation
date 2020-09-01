@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import bodyParser from 'body-parser';
 import MOHApi from './MOHAPI/mainRoute';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
 import postgraphileServices from './DBService/postgraphile';
@@ -14,8 +15,9 @@ app.use(
     })
 );
 
+app.use(bodyParser.json());
 app.use('/mohApi', MOHApi);
-app.use('/clientToDBApi', ClientToDBApi)
+app.use('/clientToDBApi', ClientToDBApi);
 
 postgraphileServices.forEach(postgraphileService => {
     app.use(postgraphileService);
