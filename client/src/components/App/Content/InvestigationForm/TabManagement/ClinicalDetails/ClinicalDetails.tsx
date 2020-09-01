@@ -5,6 +5,7 @@ import { Check } from 'models/Check';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -13,7 +14,7 @@ import { StartInvestigationDateVariablesConsumer } from '../../StartInvestiation
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
-    const symptomList: Check[] = [
+    const symptomsList: Check[] = [
         {
             id: 0,
             name: 'first',
@@ -44,22 +45,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const backgroundIllnessesList: Check[] = [
         {
             id: 0,
-            name: 'first',
+            name: 'one',
             isChecked: false
         },
         {
             id: 1,
-            name: 'second',
+            name: 'two',
             isChecked: false
         },
         {
             id: 2,
-            name: 'third',
+            name: 'three',
             isChecked: false
         },
         {
             id: 3,
-            name: 'fourth',
+            name: 'four',
             isChecked: false
         },
         {
@@ -73,11 +74,21 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundIllnesses, setHasBackgroundIllnesses] = React.useState<boolean>(false);
-    const [symptoms, setSymptoms] = React.useState<Check[]>(symptomList);
+    const [hasTroubleIsolating, setHasTroubleIsolating] = React.useState<boolean>(false);
+    const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
+    const [symptoms, setSymptoms] = React.useState<Check[]>(symptomsList);
     const [backgroundIllnesses, setBackgroundIllnesses] = React.useState<Check[]>(backgroundIllnessesList);
-    const [eventStartTime, setEventStartTime] = React.useState<string>('');
+    const [isolationStartDate, setIsolationStartDate] = React.useState<string>('');
+    const [isolationEndDate, setIsolationEndDate] = React.useState<string>('');
+    const [symptomsStartDate, setSymptomsStartDate] = React.useState<string>('');
+    const [hospitalStartDate, setHospitalStartDate] = React.useState<string>('');
+    const [hospitalEndDate, setHospitalEndDate] = React.useState<string>('');
+    const [troubleIsolatingReason, setTroubleIsolatingReason] = React.useState<string>('');
 
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle } = useClinicalDetails({ setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses });
+    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, hasTroubleIsolatingToggle, wasHospitalizedToggle } = useClinicalDetails(
+        {
+            setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses, setHasTroubleIsolating, setWasHospitalized
+        });
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -115,19 +126,43 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={new Date()}
-                                    defaultValue=''
+                                    value={isolationStartDate}
                                     text={'מתאריך'}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setIsolationStartDate(event.target.value)}
                                 />
                                 <DatePick
                                     datePickerType='date'
-                                    value={new Date()}
-                                    defaultValue=''
+                                    value={isolationEndDate}
                                     text={'עד'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventStartTime(event.target.value)}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setIsolationEndDate(event.target.value)}
                                 />
                             </div>
                         </Collapse>
+                    </Grid>
+                    <br />
+                    <br />
+                    {/* האם בעייתי לקיים בידוד */}
+                    <Grid item xs={2}>
+                        <Typography>
+                            <b>
+                                האם בעייתי לקיים בידוד:
+                            </b>
+                        </Typography>
+                    </Grid>
+                        <Toggle
+                            value={hasTroubleIsolating}
+                            onChange={hasTroubleIsolatingToggle}
+                        />
+                        <Collapse in={hasTroubleIsolating}>
+                            <CircleTextField
+                                value={troubleIsolatingReason}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setTroubleIsolatingReason(event.target.value)}
+                                size='small'
+                                style={{height: '1vh', marginBottom: '3vh', marginRight: '1vw'}}
+                                placeholder='הכנס סיבה:'
+                            />
+                        </Collapse>
+                    <Grid item xs={12}>
                     </Grid>
                     <br />
                     <br />
@@ -152,10 +187,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={new Date()}
-                                    defaultValue=''
+                                    value={symptomsStartDate}
                                     text={'תאריך התחלת סימפטומים'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventStartTime(event.target.value)}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSymptomsStartDate(event.target.value)}
                                 />
                                 <CustomCheckbox
                                     checkboxElements={[{value: isUnkonwnDateChecked, text: 'תאריך התחלת סימפטומים לא ידוע', onChange: () => (handleUnkonwnDateCheck())}]}
@@ -167,6 +201,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     symptoms.map((symptom: Check) => (
                                         <Grid item xs={6}>
                                             <CustomCheckbox
+                                            key={symptom.id}
                                                 checkboxElements={[{
                                                     key: symptom.id,
                                                     value: symptom.isChecked,
@@ -186,7 +221,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Grid item xs={2}>
                         <Typography>
                             <b>
-                            האם יש לך מחלות רקע:
+                                האם יש לך מחלות רקע:
                             </b>
                         </Typography>
                     </Grid>
@@ -200,7 +235,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Grid>
                     <Grid item xs={10}>
                         <Collapse in={hasBackgroundIllnesses}>
-                            <Typography>סימפטומים:</Typography>
                             <Grid container className={classes.smallGrid}>
                                 {
                                     backgroundIllnesses.map((backgroundIllness: Check) => (
@@ -217,6 +251,42 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     ))
                                 }
                             </Grid>
+                        </Collapse>
+                    </Grid>
+                    <br/>
+                    <br/>
+                    {/* האם אושפז */}
+                    <Grid item xs={2}>
+                        <Typography>
+                            <b>
+                                האם אושפז:
+                            </b>
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Toggle
+                            value={wasHospitalized}
+                            onChange={wasHospitalizedToggle}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Collapse in={wasHospitalized}>
+                            <div className={classes.dates}>
+                                <DatePick
+                                    datePickerType='date'
+                                    value={hospitalStartDate}
+                                    text={'מתאריך'}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHospitalStartDate(event.target.value)}
+                                />
+                                <DatePick
+                                    datePickerType='date'
+                                    value={hospitalEndDate}
+                                    text={'עד'}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHospitalEndDate(event.target.value)}
+                                />
+                            </div>
                         </Collapse>
                     </Grid>
                 </Grid>

@@ -8,7 +8,7 @@ import CircleTextField from 'commons/CircleTextField/CircleTextField';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const { text, datePickerType, defaultValue, ...rest } = props;
+    const { text, datePickerType, ...rest } = props;
 
     return (
         <div className={classes.dateField}>
@@ -22,7 +22,6 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
                     id={datePickerType}
                     type={datePickerType}
                     className={classes.textField}
-                    defaultValue={defaultValue}
                     size='small'
                     {...rest}
                 />
@@ -36,5 +35,4 @@ export default DatePick;
 interface Props extends StandardTextFieldProps {
     text?: string;
     datePickerType: 'date' | 'time';
-    defaultValue: string;
 };
