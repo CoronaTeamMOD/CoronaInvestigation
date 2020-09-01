@@ -15,6 +15,7 @@ variables:
   rgName: 'spectrumFactory'
   imageName: 'coronaiDocker'
   webAppName: 'coronai'
+  MOHarcName: 'IDFDocker'
 
 stages:
 - stage:
@@ -62,9 +63,9 @@ stages:
       inputs:
         command: buildAndPush
         dockerfile: '**/server/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: 'azureContainerRegistry'
-        containerRegistry: 'azureContainerRegistry'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: 'MOHContainerRegistry'
+        containerRegistry: 'MOHContainerRegistry'
         tags: |
           server
 
