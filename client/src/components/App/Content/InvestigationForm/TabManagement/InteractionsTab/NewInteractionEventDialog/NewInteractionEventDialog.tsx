@@ -2,10 +2,12 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, Select, MenuItem } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import InteractionEventVariables from 'models/InteractionEventVariables';
 
 import useStyles from './NewInteractionEventDialogStyles';
+
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 export interface Props {
@@ -31,7 +33,9 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     
     const { isOpen, eventId, onCancle, onCreateEvent } = props;
 
-    const classes = useStyles({});
+    const classes = useStyles();
+    const formClasses = useFormStyles();
+
     const [canCreateEvent, setCanCreateEvent] = React.useState<boolean>(false);
     const [placeType, setPlaceType] = React.useState<string>(selectData[0]);
     const [eventStartTime, setEventStartTime] = React.useState<string>();
@@ -48,10 +52,10 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 {newConactEventTitle}
             </DialogTitle>
             <DialogContent>
-                <Grid className={classes.form} container justify='flex-start'>
-                    <div className={classes.rowDiv}>
+                <Grid className={formClasses.form} container justify='flex-start'>
+                    <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={classes.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName}>
                                 סוג אתר:
                             </Typography>
                         </Grid>
@@ -69,9 +73,9 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             </Select>
                         </Grid>
                     </div>
-                    <div className={classes.rowDiv}>
+                    <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={classes.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName}>
                                 משעה:
                             </Typography>
                         </Grid>
@@ -83,9 +87,9 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             />
                         </Grid>
                     </div>
-                    <div className={classes.rowDiv}>
+                    <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={classes.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName}>
                                 עד שעה:
                             </Typography>
                         </Grid>
@@ -96,9 +100,9 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEventEndTime(event.target.value)}/>
                         </Grid>
                     </div>
-                    <div className={classes.rowDiv}>
+                    <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={classes.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName}>
                                 האם מותר להחצנה?
                             </Typography>
                         </Grid>

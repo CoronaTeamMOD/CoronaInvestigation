@@ -25,17 +25,6 @@ const useStyles = makeStyles({
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
     },
-    form: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    fieldName: {
-        fontWeight: 'bold'
-    },
-    rowDiv: {
-        display: 'flex',
-        margin: '1vh 0'
-    },
     placeTypeSelect: {
         margin: '0 2vmin',
         width: '9vw'
