@@ -1,30 +1,40 @@
 import React from 'react';
-import { FormControlLabel, Checkbox } from '@material-ui/core';
+import { FormControlLabel, Checkbox, CheckboxProps } from '@material-ui/core';
 
 const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { isChecked, handleCheck, text } = props;
+    const { checkboxElements, checkboxesClassWrapper } = props;
 
     return (
-        <FormControlLabel
-            control={
-                <Checkbox
-                    checked={isChecked}
-                    onChange={() => handleCheck()}
-                    size='small'
-                    name='checked'
-                    color='primary'
-                />
+        <div className={checkboxesClassWrapper}>
+            {
+                checkboxElements.map(checkbox => {
+                    const { text, ...rest } = checkbox;
+                    return <FormControlLabel
+                        key={text}
+                        control={
+                            <Checkbox
+                                size='small'
+                                name='checked'
+                                color='primary'
+                                {...rest}
+                            />
+                        }
+                        label={text}
+                    />
+                })
             }
-            label={text}
-        />
+        </div>
     );
 };
 
 export default CustomCheckbox;
 
-interface Props {
-    isChecked: boolean;
-    handleCheck: () => void;
+interface CheckboxElement extends CheckboxProps {
     text: string;
+};
+
+interface Props {
+    checkboxElements: CheckboxElement[];
+    checkboxesClassWrapper?: string;
 };

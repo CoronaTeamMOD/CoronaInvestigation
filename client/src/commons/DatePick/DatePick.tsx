@@ -1,28 +1,30 @@
 import React from 'react';
 
-import { Typography, TextField } from '@material-ui/core';
+import { Typography, StandardTextFieldProps  } from '@material-ui/core';
 
 import { useStyles } from './DatePickStyles';
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const { text } = props;
+    const { text, datePickerType, defaultValue, ...rest } = props;
 
     return (
         <div className={classes.dateField}>
-            <Typography>
-                <b>{text + ':'}</b>
-            </Typography>
+            {
+                text && <Typography>
+                    <b>{text + ':'}</b>
+                </Typography>
+            }
             <div className={classes.dateText}>
-                <TextField
-                    id='date'
-                    type='date'
+                <CircleTextField
+                    id={datePickerType}
+                    type={datePickerType}
                     className={classes.textField}
-                    defaultValue='2017-05-24'
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
+                    defaultValue={defaultValue}
+                    size='small'
+                    {...rest}
                 />
             </div>
         </div>
@@ -31,6 +33,8 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default DatePick;
 
-interface Props {
-    text: string;
+interface Props extends StandardTextFieldProps {
+    text?: string;
+    datePickerType: 'date' | 'time';
+    defaultValue: string;
 };

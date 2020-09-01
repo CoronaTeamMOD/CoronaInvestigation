@@ -65,9 +65,7 @@ const InvestigatedPersonInfo = () => {
                         צא מחקירה
                     </Button>
                     <CustomCheckbox
-                        isChecked={isChecked}
-                        handleCheck={() => handleCheck()}
-                        text={'אין מענה במספר זה'}
+                        checkboxElements={[{value: isChecked, text: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
                     />
                 </div>
             </div>
