@@ -15,7 +15,8 @@ const useStyles = makeStyles({
     },
     containerGrid: {
         padding: '2vh 3vw',
-        maxWidth: '120vw'
+        maxWidth: '120vw',
+        maxHeight: '9vh'
     },
     selectReason: {
         width: '10vw',

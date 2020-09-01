@@ -11,7 +11,8 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 import useStyles from './PersonalInfoTabStyles';
 
-import CircleTextField from '../../../../../../commons/CircleTextField/CircleTextField'
+import Toggle from '../../../../../../commons/Toggle/Toggle';
+import CircleTextField from '../../../../../../commons/CircleTextField/CircleTextField';
 
 const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     const classes = useStyles({});
@@ -28,6 +29,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     ]
   
     return (
+        <>
         <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
             <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                 <Typography className={classes.fontSize15}>
@@ -70,6 +72,26 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                 <CircleTextField id="standard-required" placeholder="כתוב סיבה..." size='small' className={classes.writeReason}/>
             </Grid>
         </Grid>
+
+        <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+            <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
+                <Typography className={classes.fontSize15}>
+                    <b>
+                        מין:
+                    </b>
+                </Typography>
+            </Grid>
+            <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
+                <Toggle 
+                    toggleValue={false}
+                    toggleChangeFunc={function f(event: any, value: boolean) {
+
+                    }}
+                    firstOption={"זכר"}
+                    secondOption={"נקבה"} />
+            </Grid>
+        </Grid>
+        </>
     )
 };
 

@@ -9,7 +9,7 @@ const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
     const { id, placeholder, size, select, className } = props;
 
     return (
-        <TextField select={select} id={id} placeholder={placeholder} variant='outlined' size={size} InputProps={{className: classes.borderRadius}} className={className}/>
+        <TextField select={select} id={id} placeholder={placeholder} variant='outlined' size={size} InputProps={{className: classes.borderRadius, classes: {input: classes.resize}}} className={className}/>
     );
 };
 

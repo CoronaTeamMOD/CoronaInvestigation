@@ -4,4 +4,7 @@ export const useStyles = makeStyles({
     borderRadius: {
         borderRadius: '25px'
     },
+    resize: {
+        fontSize: 14
+    }
 });
