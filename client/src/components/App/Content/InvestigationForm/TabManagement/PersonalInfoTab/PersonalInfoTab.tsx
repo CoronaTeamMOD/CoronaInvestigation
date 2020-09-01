@@ -14,6 +14,7 @@ import useStyles from './PersonalInfoTabStyles';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 
 const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     const classes = useStyles({});
@@ -204,12 +205,10 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                 </Typography>
             </Grid>
             <Grid item xs={1}>
-                <CircleTextField 
-                    select
-                    className={classes.inSuranceSelect}
-                    id="insurance" 
-                    size='small'
-                    label='ביטוח'
+                <CircleSelect
+                    native
+                    value={"Ten"}
+                    options={['1', '2', '3']}
                 />
             </Grid>
         </Grid>

@@ -1,7 +1,7 @@
-import { makeStyles } from '@material-ui/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Repeat } from '@material-ui/icons';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     tabInitialPadding: {
         paddingTop: '2vh'
     },
@@ -43,9 +43,6 @@ const useStyles = makeStyles({
     writeReason: {
         width: '18vw'
     },
-    borderRadius: {
-        borderRadius: '25px'
-    },
     personalId: {
         width: '8vw',
         marginLeft: '0.5vw'
@@ -63,6 +60,6 @@ const useStyles = makeStyles({
         left: 'unset',
         fontSize: 13
     }
-});
+}));
 
 export default useStyles;
