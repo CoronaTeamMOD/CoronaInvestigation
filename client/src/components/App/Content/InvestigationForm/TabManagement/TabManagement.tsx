@@ -5,6 +5,7 @@ import { Tab as TabObj } from 'models/Tab';
 
 import useStyles from './TabManagementStyles';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
+import ExposuresAndFlights from "./ExposuresAndFlights/ExposuresAndFlights";
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -25,7 +26,7 @@ export const tabs: TabObj[] = [
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
-        displayComponent: <></>,
+        displayComponent: <ExposuresAndFlights/>,
     },
     {
         id: 3,

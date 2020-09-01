@@ -17,11 +17,11 @@ app.use(
 
 app.use(bodyParser.json());
 app.use('/mohApi', MOHApi);
-app.use('/clientToDBApi', ClientToDBApi);
-
-postgraphileServices.forEach(postgraphileService => {
-    app.use(postgraphileService);
-});
+// app.use('/clientToDBApi', ClientToDBApi);
+//
+// postgraphileServices.forEach(postgraphileService => {
+//     app.use(postgraphileService);
+// });
 
 app.listen(process.env.PORT, () => {
     console.log(`Server started at port ${process.env.PORT}`);

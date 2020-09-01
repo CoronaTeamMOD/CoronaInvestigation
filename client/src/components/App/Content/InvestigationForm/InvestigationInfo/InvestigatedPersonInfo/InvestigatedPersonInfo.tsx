@@ -44,6 +44,10 @@ const InvestigatedPersonInfo = () => {
                         {name}, {investigationId}
                     </Typography>
                 </div>
+                <PrimaryButton
+                    onClick={confirmExitUnfinishedInvestigation}>
+                    צא מחקירה
+                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
@@ -61,10 +65,6 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <PrimaryButton
-                        onClick={confirmExitUnfinishedInvestigation}>
-                        צא מחקירה
-                    </PrimaryButton>
                     <FormControlLabel
                         control={
                             <Checkbox
