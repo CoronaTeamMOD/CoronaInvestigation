@@ -2,10 +2,13 @@ import { testHooksFunction } from 'TestHooks';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import useInteractionsTab from './useInteractionsTab';
-import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface } from './useInteractionsTabInterfaces';
+import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
+        useInteractionsTabInput as  useInteactionsTabsInputInterface} from './useInteractionsTabInterfaces';
 import { intialStartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
+
+let useInteractionsTabInput: useInteactionsTabsInputInterface = { setNewInteractionEventId: () => {}};
 
 describe('useInteractionsTab tests', () => {
     afterEach(() => jest.resetAllMocks());
@@ -13,7 +16,7 @@ describe('useInteractionsTab tests', () => {
     describe('getDatesToInvestigate tests:', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                useInteractionsTabOutcome = useInteractionsTab();
+                useInteractionsTabOutcome = useInteractionsTab(useInteractionsTabInput);
             });
         })
 
