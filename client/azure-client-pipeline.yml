@@ -29,7 +29,8 @@ stages:
     displayName: testingCondition
     steps:
     - script: |
-      echo hi
+        echo hi
+      displayName: 'echo hi'
 
   - job:
     displayName: TestsAndBuildJob
