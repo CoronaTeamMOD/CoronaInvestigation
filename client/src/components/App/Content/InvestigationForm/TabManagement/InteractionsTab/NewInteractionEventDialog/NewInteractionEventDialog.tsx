@@ -56,14 +56,16 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const [canAddContact, setCanAddContact] = useState<boolean>(false);
     const [allContacts, setAllContacts] = useState<Contact[]>([{...defaultContact}]);
 
+    const spliceAndUpdateTheContacts = (updatedContact: Contact, indexToUpdate: number) => {
+        const updatedContacts = [...allContacts];
+        updatedContacts.splice(indexToUpdate, 1, updatedContact);
+        setAllContacts(updatedContacts);
+    }
+
     const handleNameChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
-        console.log(allContacts);
         const currContactIndex = allContacts.findIndex((contact: Contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
         currentEditedContact.name = event.target.value as string;
-        const updatedContacts = allContacts.splice(currContactIndex, 1, currentEditedContact);
-        console.log(updatedContacts);
-        setAllContacts(updatedContacts);
-        console.log(allContacts);
+        spliceAndUpdateTheContacts(currentEditedContact, currContactIndex);
         if(currentEditedContact.phoneNumber !== '' && currentEditedContact.name !== '') {
             setCanAddContact(true);
         }
@@ -72,7 +74,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const handlePhoneChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
         const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
         currentEditedContact.phoneNumber = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+        spliceAndUpdateTheContacts(currentEditedContact, currContactIndex);
         if(currentEditedContact.phoneNumber !== '' && currentEditedContact.name !== '') {
             setCanAddContact(true);
         }
@@ -81,26 +83,23 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const handleIDChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
         const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
         currentEditedContact.id = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+        spliceAndUpdateTheContacts(currentEditedContact, currContactIndex);
     }
 
     const handleMoreDetailsChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
         const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
         currentEditedContact.moreDetails = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+        spliceAndUpdateTheContacts(currentEditedContact, currContactIndex);
     }
 
     const handleQuarantineToggleChange = (quarantineCondition: boolean, currentEditedContact: Contact) => {
         const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
         currentEditedContact.needsToBeQuarantined = quarantineCondition;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+        spliceAndUpdateTheContacts(currentEditedContact, currContactIndex);
     }
 
     const handleContactAdd = () => {
-        // console.log(defaultContact);
-        // console.log(allContacts);
         const updatedContacts = [...allContacts, {...defaultContact}];
-        // console.log(updatedContacts);
         setAllContacts(updatedContacts);
         setCanAddContact(false);
     }

@@ -4,8 +4,8 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     dialogPaper: {
-        width: '69vw',
-        height: '80vh',
+        width: '74vw',
+        height: '88vh',
     },
     dialogTitleWrapper: {
         backgroundColor: theme.palette.primary.dark,
@@ -27,7 +27,8 @@ const useStyles = makeStyles({
     },
     form: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        maxWidth: '100%',
     },
     allDialogContent: {
       overflow: 'hidden',
@@ -52,7 +53,7 @@ const useStyles = makeStyles({
     },
     newContactFieldsContainer: {
         overflowY: 'auto',
-        height: '30vh',
+        height: '37vh',
         paddingRight: '0.5vw'
     },
     singleNewContactForm: {
