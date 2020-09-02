@@ -4,8 +4,8 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     dialogPaper: {
-        width: '50vw',
-        height: '70vh',
+        width: '69vw',
+        height: '80vh',
     },
     dialogTitleWrapper: {
         backgroundColor: theme.palette.primary.dark,
@@ -17,7 +17,7 @@ const useStyles = makeStyles({
         borderRadius: '10vw',
         height: '4vh',
     },
-    cancleButton: {
+    cancelButton: {
         borderRadius: '10vw',
         height: '4vh',
     },
@@ -25,12 +25,48 @@ const useStyles = makeStyles({
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
     },
+    form: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    fieldName: {
+        fontWeight: 'bold'
+    },
+    rowDiv: {
+        display: 'flex',
+        margin: '1vh 0'
+    },
     placeTypeSelect: {
         margin: '0 2vmin',
         width: '9vw'
     },
     toggle: {
         marginLeft: '1vw'
+    },
+    formDivider: {
+        marginTop: '2vh',
+        marginBottom: '1vh',
+    },
+    newContactFieldsContainer: {
+        overflowY: 'auto',
+        height: '30vh',
+        paddingRight: '0.5vw'
+    },
+    singleNewContactForm: {
+        marginBottom: '2vh',
+    },
+    addContactFields: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '1vh',
+        alignItems: 'center',
+    },
+    newContactField: {
+        width: '15vw',
+        marginRight: '2vw',
+    },
+    moreContactDetails: {
+        width: '40vw',
     }
 });
 

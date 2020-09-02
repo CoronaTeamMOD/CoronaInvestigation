@@ -5,12 +5,6 @@ const useStyles = makeStyles({
         padding: '0.7vw',
         borderRadius: 0
     },
-    headerTopPart:{
-        display: 'flex',
-        justifyContent: 'space-between',
-        paddingLeft: '3vh',
-        flip:false,
-    },
     investigationHeaderInfo: {
         display: 'flex',
         alignItems: 'center',
@@ -22,7 +16,10 @@ const useStyles = makeStyles({
     },
     informationBar: {
         display: 'flex',
+        flexWrap: 'wrap',
+        whiteSpace: 'pre',
         alignItems: 'center',
+        paddingTop: '1vh',
         justifyContent: 'space-between'
     },
     divider: {
@@ -31,8 +28,6 @@ const useStyles = makeStyles({
     },
     additionalInfo: {
         display: 'flex',
-        flexWrap: 'wrap',
-        whiteSpace: 'pre',
     },
     managementControllers: {
         display: 'flex',
@@ -43,6 +38,9 @@ const useStyles = makeStyles({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    checkbox: {
+        marginTop: '0.25vh',
+    }
 });
 
 export default useStyles;

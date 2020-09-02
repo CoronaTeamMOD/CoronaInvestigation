@@ -37,7 +37,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                     {
                         newInteractionEventId && <NewInteractionEventDialog 
                             isOpen={newInteractionEventId !== undefined} 
-                            onCancle={cancleNewInteractionEvent}
+                            onCancel={cancleNewInteractionEvent}
                             onCreateEvent={confirmNewInteractionEvent}
                             eventId={newInteractionEventId}/>
                     }
