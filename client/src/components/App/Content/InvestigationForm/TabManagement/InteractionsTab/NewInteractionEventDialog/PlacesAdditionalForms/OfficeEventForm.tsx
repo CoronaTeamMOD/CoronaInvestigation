@@ -17,7 +17,7 @@ const OfficeEventForm : React.FC = () : JSX.Element => {
 
     const onFloorChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         (ctxt.setLocationAddress && ctxt.locationAddress) &&
-            ctxt.setLocationAddress({...ctxt.locationAddress, floor: +event.target.value});
+            ctxt.setLocationAddress({...ctxt.locationAddress, floor: event.target.value});
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         ctxt.setLocationName && ctxt.setLocationName(event.target.value);

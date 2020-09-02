@@ -6,7 +6,7 @@ import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import Address, { initAddress } from 'models/InteractionEventPlacesVariables/Address';
+import Address, { initAddress } from 'models/Address';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import OfficeEventForm from './PlacesAdditionalForms/OfficeEventForm';
@@ -89,8 +89,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const [buisnessContactNumber, setBuisnessContactNumber] = React.useState<string>();
     const [hospitalDepartment, setHospitalDepartment] = React.useState<string>();
     
-    //const [transportationType, setTransportationType] = React.useState<string>(transportation[0]);
-
     React.useEffect(() => {
         setCanCreateEvent(startTime !== undefined && endTime !== undefined);
     }, [startTime, endTime]);
@@ -100,9 +98,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
             startTime,
             endTime,
             externalizationApproval,
-            // privateHouseVariables,
-            // officeVariables,
-            // schoolVariables,
             investigationId,
             locationName,
             locationAddress,
@@ -149,9 +144,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
             startTime,
             endTime,
             externalizationApproval,
-            // privateHouseVariables,
-            // officeVariables,
-            // schoolVariables,
             investigationId,
             locationName,
             locationAddress,
@@ -204,9 +196,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         startTime,
         endTime,
         externalizationApproval,
-        // privateHouseVariables,
-        // officeVariables,
-        // schoolVariables,
         investigationId,
         locationName,
         locationAddress,

@@ -2,18 +2,18 @@ export interface Address {
     city: string;
     neighborhood: string;
     street: string;
-    houseNumber: number;
+    houseNumber: string;
     entrance: string;
-    floor: number;
+    floor: string;
 }
 
 export const initAddress : Address = {
     city: '',
     neighborhood: '',
     street: '',
-    houseNumber: -1,
+    houseNumber: '',
     entrance: '',
-    floor: -1
+    floor: ''
 }
 
 export default Address;

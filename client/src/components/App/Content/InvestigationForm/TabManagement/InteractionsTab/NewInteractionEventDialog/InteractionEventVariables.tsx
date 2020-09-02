@@ -1,14 +1,12 @@
 import { createContext } from 'react';
-import Address, { initAddress } from 'models/InteractionEventPlacesVariables/Address';
+
+import Address, { initAddress } from 'models/Address';
 
 export interface InteractionEventVariables {
-    locationType: string;
-    startTime: string | undefined;
-    endTime: string | undefined;
+    locationType?: string;
+    startTime?: string;
+    endTime?: string;
     externalizationApproval: boolean;
-    // privateHouseVariables: AddressVariables;
-    // officeVariables: AddressVariables;
-    // schoolVariables: SchoolVariables;
     investigationId?: number;
     locationName?: string;
     locationAddress?: Address;
@@ -27,31 +25,28 @@ export interface InteractionEventVariables {
     buisnessContactName?: string;
     buisnessContactNumber?: string;
     hospitalDepartment?: string;
-    setLocationType?: React.Dispatch<React.SetStateAction<string>> | undefined;
-    setStartTime?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setEndTime?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setExternalizationApproval?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
-    // setPrivateHouseVariables: React.Dispatch<React.SetStateAction<AddressVariables>> | undefined;
-    // setOfficeVariables: React.Dispatch<React.SetStateAction<AddressVariables>> | undefined;
-    // setSchoolVariables: React.Dispatch<React.SetStateAction<SchoolVariables>> | undefined;
-    setInvestigationId?: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
-    setLocationName?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setLocationAddress?: React.Dispatch<React.SetStateAction<Address>> | undefined;
-    setTrainLine?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBusLine?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBusCompany?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setAirline?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setFlightNumber?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setGrade?: React.Dispatch<React.SetStateAction<string | undefined >> | undefined;
-    setBoardingStation?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBoardingCountry?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBoardingCity?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setEndStation?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setEndCountry?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setEndCity?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBuisnessContactName?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setBuisnessContactNumber?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
-    setHospitalDepartment?: React.Dispatch<React.SetStateAction<string | undefined>> | undefined;
+    setLocationType?: React.Dispatch<React.SetStateAction<string>>;
+    setStartTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setEndTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setExternalizationApproval?: React.Dispatch<React.SetStateAction<boolean>>;
+    setInvestigationId?: React.Dispatch<React.SetStateAction<number | undefined>>;
+    setLocationName?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setLocationAddress?: React.Dispatch<React.SetStateAction<Address>>;
+    setTrainLine?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBusLine?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBusCompany?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setAirline?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setFlightNumber?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setGrade?: React.Dispatch<React.SetStateAction<string | undefined >>;
+    setBoardingStation?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBoardingCountry?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBoardingCity?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setEndStation?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setEndCountry?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setEndCity?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBuisnessContactName?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setBuisnessContactNumber?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setHospitalDepartment?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const intialInteractionEventVariables: InteractionEventVariables = {

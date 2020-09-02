@@ -31,7 +31,7 @@ const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
     const onFloorChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         (ctxt.setLocationAddress && ctxt.locationAddress) &&
-            ctxt.setLocationAddress({...ctxt.locationAddress, floor: +event.target.value});
+            ctxt.setLocationAddress({...ctxt.locationAddress, floor: event.target.value});
 
     return (
         <InteractionEventVariablesConsumer>
