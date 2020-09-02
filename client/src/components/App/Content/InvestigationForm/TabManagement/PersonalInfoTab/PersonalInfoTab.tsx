@@ -4,14 +4,15 @@ import Select from '@material-ui/core/Select';
 import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import { Typography, RadioGroup, Radio } from '@material-ui/core';
+import { Typography, RadioGroup, Radio, ThemeProvider } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 
+import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
-import relevantOccupations from 'models/enums/relevantOccupations'
+import RelevantOccupations from 'models/enums/RelevantOccupations'
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import useStyles from './PersonalInfoTabStyles';
@@ -230,8 +231,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
             <Grid item xs={1}>
                 <CircleSelect
                     native
-                    value={""}
-                    placeholder={'שלום'}
+                    value={0}
                     options={['1', '2', '3']}
                     className={classes.selectWidth}
                 />
@@ -268,11 +268,11 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                     <RadioGroup aria-label="gender" name="gender1" >
                         <FormLabel component="legend" className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
                         { 
-                            Object.values(relevantOccupations).map((occupation) => {
+                            Object.values(RelevantOccupations).map((occupation) => {
                                 return <FormControlLabel 
                                             value={occupation} 
-                                            control={<Radio />} 
-                                            label={<span style={{ fontSize: '13px' }}>{occupation}</span>} 
+                                            control={<Radio color='primary'/>} 
+                                            label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
                                         />
                             })
                         }   

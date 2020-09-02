@@ -15,7 +15,9 @@ const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
                 className={classNames.join(' ')}
                 classes={{ root: classes.unsetSelectColor }}
             >
-                <option key={-1} value={''} disabled>{placeholder}</option>
+                {
+                    placeholder && <option key={-1} value={''} disabled>{placeholder}</option> 
+                }
                 {
                     options.map((option, index) => {
                         return <option key={index} value={index}>{option}</option>
