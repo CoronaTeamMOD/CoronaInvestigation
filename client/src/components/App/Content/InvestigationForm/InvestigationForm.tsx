@@ -17,7 +17,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
-    const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>();
+    const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const {
         currentTab,
         setCurrentTab,

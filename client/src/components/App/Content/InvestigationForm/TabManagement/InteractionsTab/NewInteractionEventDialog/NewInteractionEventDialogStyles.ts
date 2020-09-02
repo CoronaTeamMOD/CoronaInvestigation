@@ -29,6 +29,9 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column'
     },
+    allDialogContent: {
+      overflow: 'hidden',
+    },
     fieldName: {
         fontWeight: 'bold'
     },

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { AddCircle as AddCircleIcon} from '@material-ui/icons';
 import { Dialog, DialogTitle, DialogContent, DialogActions,
     Button, Grid, Typography, Select, MenuItem, Divider, IconButton } from '@material-ui/core';
 
@@ -32,6 +32,7 @@ const defaultContact: Contact = {
     name: '',
     phoneNumber: '',
     id: '',
+    needsToBeQuarantined: false,
     moreDetails: '',
 };
 
@@ -52,30 +53,60 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const [eventStartTime, setEventStartTime] = useState<string>();
     const [eventEndTime, setEventEndTime] = useState<string>();
     const [canBeExported, setCanBeExported] = useState<boolean>(false);
-    const [needsToBeQuarantined, setNeedsToBeQuarantined] = useState<boolean>(false);
     const [canAddContact, setCanAddContact] = useState<boolean>(false);
-    const [allContacts, setAllContacts] = useState<Contact[]>([defaultContact]);
+    const [allContacts, setAllContacts] = useState<Contact[]>([{...defaultContact}]);
 
-    const handleNameChange = (event: React.ChangeEvent<{ value: unknown }>, currContact: Contact, currContactIndex: number) => {
-        currContact.name = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currContact));
+    const handleNameChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
+        console.log(allContacts);
+        const currContactIndex = allContacts.findIndex((contact: Contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
+        currentEditedContact.name = event.target.value as string;
+        const updatedContacts = allContacts.splice(currContactIndex, 1, currentEditedContact);
+        console.log(updatedContacts);
+        setAllContacts(updatedContacts);
+        console.log(allContacts);
+        if(currentEditedContact.phoneNumber !== '' && currentEditedContact.name !== '') {
+            setCanAddContact(true);
+        }
     }
 
-    const handlePhoneChange = (event: React.ChangeEvent<{ value: unknown }>, currContact: Contact, currContactIndex: number) => {
-        currContact.phoneNumber = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currContact));
+    const handlePhoneChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
+        const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
+        currentEditedContact.phoneNumber = event.target.value as string;
+        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+        if(currentEditedContact.phoneNumber !== '' && currentEditedContact.name !== '') {
+            setCanAddContact(true);
+        }
     }
 
-    const handleIDChange = (event: React.ChangeEvent<{ value: unknown }>, currContact: Contact, currContactIndex: number) => {
-        currContact.id = event.target.value as string;
-        setAllContacts(allContacts.splice(currContactIndex, 1, currContact));
+    const handleIDChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
+        const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
+        currentEditedContact.id = event.target.value as string;
+        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+    }
+
+    const handleMoreDetailsChange = (event: React.ChangeEvent<{ value: unknown }>, currentEditedContact: Contact) => {
+        const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
+        currentEditedContact.moreDetails = event.target.value as string;
+        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
+    }
+
+    const handleQuarantineToggleChange = (quarantineCondition: boolean, currentEditedContact: Contact) => {
+        const currContactIndex = allContacts.findIndex((contact) => contact.phoneNumber === currentEditedContact.phoneNumber);
+        currentEditedContact.needsToBeQuarantined = quarantineCondition;
+        setAllContacts(allContacts.splice(currContactIndex, 1, currentEditedContact));
     }
 
     const handleContactAdd = () => {
-        setAllContacts([...allContacts, defaultContact]);
+        // console.log(defaultContact);
+        // console.log(allContacts);
+        const updatedContacts = [...allContacts, {...defaultContact}];
+        // console.log(updatedContacts);
+        setAllContacts(updatedContacts);
+        setCanAddContact(false);
     }
 
-    const getContactForm = (singleContactInfo: Contact, contactIndex: number) => {
+    const getContactForm = (singleContactInfo: Contact) => {
+        // console.log(singleContactInfo);
         return (
             <div className={classes.singleNewContactForm}>
                 <div className={classes.addContactFields}>
@@ -84,8 +115,8 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                      className={classes.newContactField}
                                      value={singleContactInfo.name}
                                      placeholder={contactedPersonName}
-                                     onChange={(e) => {
-                                         handleNameChange(e, singleContactInfo, contactIndex)
+                                     onChange={(event) => {
+                                         handleNameChange(event, singleContactInfo)
                                      }}
                     />
                     <Typography variant={'caption'} className={classes.fieldName}>{contactedPersonPhone + ': '}</Typography>
@@ -93,7 +124,9 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                      className={classes.newContactField}
                                      value={singleContactInfo.phoneNumber}
                                      placeholder={contactedPersonPhone}
-                                     onChange={(e) => {handlePhoneChange(e, singleContactInfo, contactIndex)}}
+                                     onChange={(event) => {
+                                         handlePhoneChange(event, singleContactInfo)
+                                     }}
                                      required={false}
                     />
                     <Typography variant={'caption'} className={classes.fieldName}>{contactedPersonID + ': '}</Typography>
@@ -101,17 +134,27 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                       className={classes.newContactField}
                                       value={singleContactInfo.id}
                                       placeholder={contactedPersonID}
-                                      onChange={(e) => {handleIDChange(e, singleContactInfo, contactIndex)}}
+                                      onChange={(event) => {
+                                          handleIDChange(event, singleContactInfo)
+                                      }}
                     />
                     <Typography variant='caption' className={classes.fieldName}>
                         צריך בידוד?
                     </Typography>
                     <Toggle
                         className={classes.toggle}
-                        value={needsToBeQuarantined}
-                        onChange={(event, val) => setNeedsToBeQuarantined(val)}/>
+                        value={singleContactInfo.needsToBeQuarantined}
+                        onChange={(event, val) => () => {
+                            handleQuarantineToggleChange(val ,singleContactInfo)
+                        }}
+                    />
                 </div>
-                <CircleTextField className={classes.moreContactDetails} value={singleContactInfo.moreDetails} placeholder={'פירוט נוסף על אופי המגע'} onChange={() => {}}/>
+                <CircleTextField className={classes.moreContactDetails}
+                                 value={singleContactInfo.moreDetails}
+                                 placeholder={'פירוט נוסף על אופי המגע'}
+                                 onChange={(event) => {
+                                     handleMoreDetailsChange(event, singleContactInfo)
+                                 }}/>
             </div>
         );
     }
@@ -125,7 +168,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
-            <DialogContent>
+            <DialogContent className={classes.allDialogContent}>
                 <Grid className={classes.form} container justify='flex-start'>
                     <div className={classes.rowDiv}>
                         <Grid item xs={3}>
@@ -192,11 +235,11 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 <Grid container className={classes.form} xs={2}>
                     <div className={classes.newContactFieldsContainer}>
                         {
-                            allContacts.map((contact: Contact, index : number) => { return getContactForm(contact, index) })
+                            allContacts.map((contact: Contact) => { return getContactForm(contact) })
                         }
                         <Grid item direction={'row'}>
-                            <IconButton onClick={handleContactAdd} disabled={canAddContact}>
-                                <AddCircleIcon color={'primary'}/>
+                            <IconButton onClick={handleContactAdd} disabled={!canAddContact}>
+                                <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
                             </IconButton>
                             <Typography variant={'caption'} className={classes.fieldName}>{addContactButton}</Typography>
                         </Grid>
