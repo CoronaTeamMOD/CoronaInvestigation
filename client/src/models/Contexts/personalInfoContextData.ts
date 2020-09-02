@@ -17,7 +17,7 @@ export interface personalInfoContextData {
     fatherName: string,
     insuranceCompany: string,
     HMO: string,
-    adress: Address;
+    address: Address;
     relevantOccupation: RelevantOccupations;
     institutionName: string;
 }

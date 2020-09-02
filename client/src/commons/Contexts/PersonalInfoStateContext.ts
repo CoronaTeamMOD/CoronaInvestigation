@@ -19,7 +19,7 @@ const initialPersonalInfoContext: personalInfoContextData = {
     fatherName: '',
     insuranceCompany: '',
     HMO: '',
-    adress: {
+    address: {
         city: '',
         neighborhood: '',
         street: '',
@@ -57,6 +57,6 @@ interface EmptyContext {
     institutionName: undefined;
 } 
 
-export const personalInfoContext = createContext<personalInfoContextData | EmptyContext>(initialPersonalInfoContext);
+export const personalInfoContext = createContext<personalInfoContextData>(initialPersonalInfoContext);
 export const PersonalInfoContextConsumer = personalInfoContext.Consumer;
-export const personalInfoContextProvider = personalInfoContext.Provider;
+export const PersonalInfoContextProvider = personalInfoContext.Provider;
