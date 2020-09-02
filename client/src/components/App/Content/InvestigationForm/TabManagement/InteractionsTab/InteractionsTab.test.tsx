@@ -2,13 +2,10 @@ import { testHooksFunction } from 'TestHooks';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import useInteractionsTab from './useInteractionsTab';
-import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
-        useInteractionsTabInput as  useInteactionsTabsInputInterface} from './useInteractionsTabInterfaces';
+import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface} from './InteractionsTabInterfaces';
 import { intialStartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
-
-let useInteractionsTabInput: useInteactionsTabsInputInterface = { setNewInteractionEventId: () => {}};
 
 describe('useInteractionsTab tests', () => {
     afterEach(() => jest.resetAllMocks());
@@ -16,14 +13,14 @@ describe('useInteractionsTab tests', () => {
     describe('getDatesToInvestigate tests:', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                useInteractionsTabOutcome = useInteractionsTab(useInteractionsTabInput);
+                useInteractionsTabOutcome = useInteractionsTab();
             });
         })
 
         describe('symptomatic investigated person tests:', () => {
             const initialSymptomaticInvestigationDateVariables = {...intialStartInvestigationDateVariables, hasSymptoms: true}
             
-            it('get dates when only symptoms start date available', async () => {
+            it('get dates when symptoms start date is available', async () => {
                 const endInvestigationDate = new Date();
                 const symptomsStartDate: Date = subDays(endInvestigationDate, 2);
                 const startInvestigationDateVariables = {
@@ -34,31 +31,7 @@ describe('useInteractionsTab tests', () => {
                 expect(recievedDates).toEqual(eachDayOfInterval({start: subDays(symptomsStartDate, 4), end: endInvestigationDate}));
             })
 
-            it('get dates when both symptoms start and exposure date are available', async () => {
-                const endInvestigationDate = new Date();
-                const symptomsStartDate: Date = subDays(endInvestigationDate, 2);
-                const exposureDate = subDays(endInvestigationDate, 5);
-                const startInvestigationDateVariables = {
-                    ...initialSymptomaticInvestigationDateVariables, symptomsStartDate, 
-                    exposureDate, endInvestigationDate
-                }
-                const recievedDates = useInteractionsTabOutcome.getDatesToInvestigate(startInvestigationDateVariables);
-                
-                expect(recievedDates).toEqual(eachDayOfInterval({start: subDays(symptomsStartDate, 4), end: endInvestigationDate}));
-            });
-
-            it('get dates when only exposure date available', async () => {
-                const endInvestigationDate = new Date();
-                const exposureDate = subDays(endInvestigationDate, 5);
-                const startInvestigationDateVariables = {
-                    ...initialSymptomaticInvestigationDateVariables, endInvestigationDate, exposureDate
-                }
-                const recievedDates = useInteractionsTabOutcome.getDatesToInvestigate(startInvestigationDateVariables);
-                
-                expect(recievedDates).toEqual(eachDayOfInterval({start: subDays(endInvestigationDate, 10), end: endInvestigationDate}));
-            });
-
-            it('get dates when both symptoms start and exposure date are not available', async () => {
+            it('get dates when symptoms start is not available', async () => {
                 const endInvestigationDate = new Date();
                 const startInvestigationDateVariables = {
                     ...initialSymptomaticInvestigationDateVariables, endInvestigationDate
@@ -72,18 +45,7 @@ describe('useInteractionsTab tests', () => {
         describe('unsymptomatic investigated person tests:', () => {
             const initialUnsymptomaticInvestigationDateVariables = {...intialStartInvestigationDateVariables, hasSymptoms: false}
 
-            it('get dates when exposure date available', async () => {
-                const endInvestigationDate = new Date();
-                const exposureDate = subDays(endInvestigationDate, 5);
-                const startInvestigationDateVariables = {
-                    ...initialUnsymptomaticInvestigationDateVariables, endInvestigationDate, exposureDate
-                }
-                const recievedDates = useInteractionsTabOutcome.getDatesToInvestigate(startInvestigationDateVariables);
-                
-                expect(recievedDates).toEqual(eachDayOfInterval({start: exposureDate, end: endInvestigationDate}));
-            });
-
-            it('get dates when both symptoms start and exposure date are not available', async () => {
+            it('get dates when the investigated person is usymptomatic', async () => {
                 const endInvestigationDate = new Date();
                 const startInvestigationDateVariables = {
                     ...initialUnsymptomaticInvestigationDateVariables, endInvestigationDate

@@ -11,12 +11,12 @@ import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigatio
 
 const InteractionsTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const [newInteractionEventId, setNewInteractionEventId] = React.useState<number>();
+    const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
 
-    const { getDatesToInvestigate, createNewInteractionEvent, cancleNewInteractionEvent, confirmNewInteractionEvent } = 
-        useInteractionsTab({
-            setNewInteractionEventId
-        });
+    const { getDatesToInvestigate } = useInteractionsTab();
+
+    const onDateClick = (date: Date) => setNewInteractionEventDate(date);
+    const onDialogClose = () => setNewInteractionEventDate(undefined);
 
     return (
         <StartInvestigationDateVariablesConsumer>
@@ -25,21 +25,19 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                 <> 
                     {
                         getDatesToInvestigate(ctxt)
-                        .map(date => 
+                        .map((date: Date) => 
                             <Card key={date.getTime()} className={classes.investigatedDateCard}>
                                 <Typography variant='body1'>{format(date, 'dd/MM/yyyy')}</Typography>
-                                <PrimaryButton onClick={() => createNewInteractionEvent(date)}>
+                                <PrimaryButton onClick={() => onDateClick(date)}>
                                     צור מקום/מגע
                                 </PrimaryButton>
                             </Card>
                             )
                     }
                     {
-                        newInteractionEventId && <NewInteractionEventDialog 
-                            isOpen={newInteractionEventId !== undefined} 
-                            onCancle={cancleNewInteractionEvent}
-                            onCreateEvent={confirmNewInteractionEvent}
-                            eventId={newInteractionEventId}/>
+                        newInteractionEventDate && <NewInteractionEventDialog 
+                            isOpen={newInteractionEventDate !== undefined} 
+                            closeDialog={onDialogClose}/>
                     }
                 </>
             }

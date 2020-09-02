@@ -16,12 +16,11 @@ import DefaultPlaceEventForm from './PlacesAdditionalForms/DefaultPlaceEventForm
 import PrivateHouseEventForm from './PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm from './PlacesAdditionalForms/TransportationEventForm/TransportationEventForm';
 import { InteractionEventVariables, InteractionEventVariablesProvider } from './InteractionEventVariables';
+import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 
 export interface Props {
     isOpen: boolean,
-    eventId: number,
-    onCancle: (eventId: number) => void;
-    onCreateEvent: (interactionEventVariables: InteractionEventVariables) => void;
+    closeDialog: () => void
 }
 
 const otherLocationTypes = [
@@ -59,11 +58,12 @@ const newConactEventTitle = 'יצירת מקום/מגע חדש'
 
 const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
     
-    const { isOpen, eventId, onCancle, onCreateEvent } = props;
+    const { isOpen, closeDialog } = props;
 
     const classes = useStyles();
     const formClasses = useFormStyles();
 
+    const { createNewInteractionEvent } = useNewInteractionEventDialog({closeDialog});
     const [canCreateEvent, setCanCreateEvent] = React.useState<boolean>(false);
 
     const [locationType, setLocationType] = React.useState<string>(locationTypes[0]);
@@ -187,11 +187,11 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         ]
     )
 
-    const onPlaceTypeChange = (event: React.ChangeEvent<any>) => setLocationType(event.target.value);
-    const onEventStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setStartTime(event.target.value);
-    const onEventEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEndTime(event.target.value);
-    const onCanBeExportedChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => setExternalizationApproval(val);
-    const onConfirm = () => onCreateEvent({
+    const onLocationTypeChange = (event: React.ChangeEvent<any>) => setLocationType(event.target.value);
+    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setStartTime(event.target.value);
+    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEndTime(event.target.value);
+    const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => setExternalizationApproval(val);
+    const onConfirm = () => createNewInteractionEvent({
         locationType,
         startTime,
         endTime,
@@ -218,17 +218,17 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
+            <DialogTitle className={classes.dialogTitleWrapper}>
+                {newConactEventTitle}
+            </DialogTitle>
             <InteractionEventVariablesProvider value={interactionEventVariables}>
-                <DialogTitle className={classes.dialogTitleWrapper}>
-                    {newConactEventTitle}
-                </DialogTitle>
                 <DialogContent>
                     <Grid className={formClasses.form} container justify='flex-start'>
                         <div className={formClasses.formRow}>
                             <FormInput fieldName='סוג אתר'>
                                 <Select
                                     value={locationType}
-                                    onChange={onPlaceTypeChange}
+                                    onChange={onLocationTypeChange}
                                     className={classes.formSelect}
                                 >
                                 {
@@ -262,13 +262,13 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <DatePick 
                                     type='time'
                                     value={startTime || defaultTime}
-                                    onChange={onEventStartTimeChange}/>
+                                    onChange={onStartTimeChange}/>
                             </FormInput>
                             <FormInput fieldName='עד שעה'>
                                 <DatePick 
                                     type='time'
                                     value={endTime || defaultTime}
-                                    onChange={onEventEndTimeChange}/>
+                                    onChange={onEndTimeChange}/>
                             </FormInput>
                         </div>
                         <div className={formClasses.formRow}>
@@ -276,25 +276,25 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <Toggle 
                                     className={classes.toggle}
                                     value={externalizationApproval} 
-                                    onChange={onCanBeExportedChange}/>
+                                    onChange={onExternalizationApprovalChange}/>
                                 </FormInput>
                         </div>
                     </Grid>
                 </DialogContent>
-                <DialogActions className={classes.dialogFooter}>
-                    <Button 
-                        onClick={() => onCancle(eventId)} 
-                        color='default' 
-                        className={classes.cancleButton}>
-                        בטל
-                    </Button>
-                    <PrimaryButton 
-                        disabled={!canCreateEvent}
-                        onClick={onConfirm}>
-                        צור מקום/מגע
-                    </PrimaryButton>
-                </DialogActions>
             </InteractionEventVariablesProvider>
+            <DialogActions className={classes.dialogFooter}>
+                <Button 
+                    onClick={() => closeDialog()} 
+                    color='default' 
+                    className={classes.cancleButton}>
+                    בטל
+                </Button>
+                <PrimaryButton 
+                    disabled={!canCreateEvent}
+                    onClick={onConfirm}>
+                    צור מקום/מגע
+                </PrimaryButton>
+            </DialogActions>
         </Dialog>
     );
 };

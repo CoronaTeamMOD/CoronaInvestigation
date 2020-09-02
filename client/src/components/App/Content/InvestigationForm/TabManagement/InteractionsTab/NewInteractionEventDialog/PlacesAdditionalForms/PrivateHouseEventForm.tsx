@@ -9,6 +9,10 @@ import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import useStyles from '../NewInteractionEventDialogStyles';
 import { InteractionEventVariablesConsumer, InteractionEventVariables } from '../InteractionEventVariables';
 
+export interface Props {
+    setCanCreateEvent: React.Dispatch<React.SetStateAction<boolean>>
+}
+
 const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
     const classes = useStyles();
