@@ -18,11 +18,19 @@ variables:
   MOHarcName: 'IDFDocker'
   AzureContainerRegistry: 'AzureContainerRegistry'
   MOHContainerRegistry: 'MOHContainerRegistry'
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 stages:
 - stage:
   displayName: TestsAndBuildStage
   jobs:
+  - job:
+    condition: eq(variables.isMain,true)
+    displayName: testingCondition
+    steps:
+    - script: |
+      echo hi
+
   - job:
     displayName: TestsAndBuildJob
     steps:
@@ -71,9 +79,9 @@ stages:
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
-        repository: '$(MOHarcName)'
-        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
-        containerRegistry: '$(MOHContainerRegistry)'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client
 
