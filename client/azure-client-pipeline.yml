@@ -16,6 +16,8 @@ variables:
   imageName: 'coronaiDocker'
   webAppName: 'coronai'
   MOHarcName: 'IDFDocker'
+  AzureContainerRegistry: 'AzureContainerRegistry'
+  MOHContainerRegistry: 'MOHContainerRegistry'
 
 stages:
 - stage:
@@ -69,9 +71,9 @@ stages:
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
-        repository: '$(MOHarcName)'
-        azureSubscriptionEndpoint: 'MOHContainerRegistry'
-        containerRegistry: 'MOHContainerRegistry'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client
 
