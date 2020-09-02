@@ -1,8 +1,8 @@
 import React from 'react';
 import { ToggleButtonGroup, ToggleButton, ToggleButtonGroupProps } from '@material-ui/lab';
 
-import { useStyles } from './ToggleStyles';
 import theme from 'styles/theme';
+import { useStyles } from './ToggleStyles';
 
 const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
