@@ -1,7 +1,6 @@
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
-import InteractionEventVariables from 'models/InteractionEventVariables';
-
+import { InteractionEventVariables } from './NewInteractionEventDialog/InteractionEventVariables';
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
@@ -34,6 +33,7 @@ const useInteractionsTab = (input: useInteractionsTabInput) :  useInteractionsTa
     }
 
     const confirmNewInteractionEvent = (interactionEventVariables: InteractionEventVariables) : void => {
+        console.log(interactionEventVariables);
         setNewInteractionEventId(undefined);
         // TODO: insert the event from db
     }

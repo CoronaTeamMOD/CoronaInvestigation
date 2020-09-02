@@ -1,5 +1,4 @@
-import InteractionEventVariables from 'models/InteractionEventVariables';
-
+import { InteractionEventVariables } from './NewInteractionEventDialog/InteractionEventVariables';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 export interface useInteractionsTabInput {
