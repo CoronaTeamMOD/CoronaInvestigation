@@ -119,7 +119,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <Select
                                 value={placeType}
                                 onChange={onPlaceTypeChange}
-                                className={classes.placeTypeSelect}
+                                className={classes.formSelect}
                             >
                             {
                                 selectData.map((placeName: string) => (
@@ -186,7 +186,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <Select
                                     value={transportationType}
                                     onChange={onTransportationTypeChange}
-                                    className={classes.placeTypeSelect}
+                                    className={classes.formSelect}
                                 >
                                 {
                                     transportation.map((transpotOption: string) => (
@@ -374,7 +374,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                     <Select
                                         value={schoolType}
                                         onChange={onSchoolTypeChange}
-                                        className={classes.placeTypeSelect}
+                                        className={classes.formSelect}
                                     >
                                     {
                                         school.map((schoolType: string) => (
@@ -432,7 +432,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                     <Select
                                         value={hospital}
                                         onChange={onHospotalChange}
-                                        className={classes.placeTypeSelect}
+                                        className={classes.formSelect}
                                     >
                                     {
                                         hospitals.map((hospitalName: string) => (
@@ -482,7 +482,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <Select
                                     value={otherInstitution}
                                     onChange={onOtherInstitutionsChange}
-                                    className={classes.placeTypeSelect}
+                                    className={classes.formSelect}
                                 >
                                 {
                                     otherInstitutions.map((institutionType: string) => (

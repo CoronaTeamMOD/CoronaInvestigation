@@ -4,7 +4,6 @@ export const useStyles = makeStyles({
     dateField: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
     },
     dateText: {
         paddingRight: '1vw',

@@ -25,8 +25,7 @@ const useStyles = makeStyles({
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
     },
-    placeTypeSelect: {
-        margin: '0 2vmin',
+    formSelect: {
         width: '9vw'
     },
     toggle: {
