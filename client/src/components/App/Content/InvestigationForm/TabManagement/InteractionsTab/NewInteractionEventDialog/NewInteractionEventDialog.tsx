@@ -108,8 +108,8 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         return (
             <div className={classes.singleNewContactForm}>
                 <div className={classes.addContactFields}>
-                    <Typography variant={'caption'} className={classes.fieldName}>{contactedPersonName + ': '}</Typography>
-                    <CircleTextField id={'contactedPersonName'}
+                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonName + ': '}</Typography>
+                    <CircleTextField id='contactedPersonName'
                                      className={classes.newContactField}
                                      value={singleContactInfo.name}
                                      placeholder={contactedPersonName}
@@ -117,8 +117,8 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                          handleNameChange(event, singleContactInfo)
                                      }}
                     />
-                    <Typography variant={'caption'} className={classes.fieldName}>{contactedPersonPhone + ': '}</Typography>
-                    <CircleTextField id={'contactedPersonPhone'}
+                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonPhone + ': '}</Typography>
+                    <CircleTextField id='contactedPersonPhone'
                                      className={classes.newContactField}
                                      value={singleContactInfo.phoneNumber}
                                      placeholder={contactedPersonPhone}
@@ -127,8 +127,8 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                      }}
                                      required={false}
                     />
-                    <Typography variant={'caption'} className={classes.fieldName}>{contactedPersonID + ': '}</Typography>
-                    <CircleTextField  id={'contactedPersonID'}
+                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonID + ': '}</Typography>
+                    <CircleTextField  id='contactedPersonID'
                                       className={classes.newContactField}
                                       value={singleContactInfo.id}
                                       placeholder={contactedPersonID}
@@ -142,6 +142,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     <Toggle
                         className={classes.toggle}
                         value={singleContactInfo.needsToBeQuarantined}
+                        id='needsToBeQuarantinedToggle'
                         onChange={(event, val) => () => {
                             handleQuarantineToggleChange(val ,singleContactInfo)
                         }}
@@ -150,6 +151,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 <CircleTextField className={classes.moreContactDetails}
                                  value={singleContactInfo.moreDetails}
                                  placeholder={'פירוט נוסף על אופי המגע'}
+                                 id='moreInfo'
                                  onChange={(event) => {
                                      handleMoreDetailsChange(event, singleContactInfo)
                                  }}/>
@@ -239,7 +241,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <IconButton onClick={handleContactAdd} disabled={!canAddContact}>
                                 <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
                             </IconButton>
-                            <Typography variant={'caption'} className={classes.fieldName}>{addContactButton}</Typography>
+                            <Typography variant='caption' className={classes.fieldName}>{addContactButton}</Typography>
                         </Grid>
                     </div>
                 </Grid>
@@ -253,6 +255,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 </Button>
                 <PrimaryButton 
                     disabled={!canCreateEvent}
+                    id='createContact'
                     onClick={() => onCreateEvent({canBeExported, eventEndTime, eventStartTime, placeType})}>
                     צור מקום/מגע
                 </PrimaryButton>
