@@ -14,7 +14,7 @@ const initialPersonalInfoContext: personalInfoContextData = {
     gender: Gender.MALE,
     identificationType: identificationType.ID,
     identificationNumber: '',
-    age: -1,
+    age: '',
     motherName: '',
     fatherName: '',
     insuranceCompany: '',
@@ -31,7 +31,32 @@ const initialPersonalInfoContext: personalInfoContextData = {
     institutionName: ''
 } 
 
-export const personalInfoContext = createContext<personalInfoContextData>(initialPersonalInfoContext);
+interface EmptyContext {
+    phoneNumber: undefined;
+    isInvestigatedPersonsNumber: undefined;
+    selectReasonNumberIsNotRelated: undefined;
+    writeReasonNumberIsNotRelated: undefined;
+    additionalPhoneNumber: undefined;
+    gender: undefined;
+    identificationType: undefined;
+    identificationNumber: undefined;
+    age: undefined;
+    motherName: undefined;
+    fatherName: undefined;
+    insuranceCompany: undefined;
+    HMO: undefined;
+    adress: {
+        city: undefined;
+        neighborhood: undefined;
+        street: undefined;
+        houseNumber: undefined;
+        entrance: undefined;
+        floor: undefined;
+    };
+    relevantOccupation: undefined;
+    institutionName: undefined;
+} 
 
-export const personalInfoContextConsumer = personalInfoContext.Consumer;
+export const personalInfoContext = createContext<personalInfoContextData | EmptyContext>(initialPersonalInfoContext);
+export const PersonalInfoContextConsumer = personalInfoContext.Consumer;
 export const personalInfoContextProvider = personalInfoContext.Provider;

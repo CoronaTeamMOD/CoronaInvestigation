@@ -12,7 +12,7 @@ export interface personalInfoContextData {
     gender: Gender;
     identificationType: identificationType
     identificationNumber: string,
-    age: number,
+    age: string,
     motherName: string,
     fatherName: string,
     insuranceCompany: string,
