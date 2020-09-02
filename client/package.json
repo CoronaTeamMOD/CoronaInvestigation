@@ -47,7 +47,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "deploy": "serve -s client -l 8080"
     },
     "eslintConfig": {
         "extends": "react-app"
