@@ -25,23 +25,15 @@ const useStyles = makeStyles({
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
     },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
+    spacedOutForm: {
         maxWidth: '100%',
         paddingTop: '3vh',
     },
     allDialogContent: {
       overflow: 'hidden',
     },
-    fieldName: {
-        fontWeight: 'bold',
-        marginRight: '0.5vw',
+    fieldNameNoWrap: {
         whiteSpace: 'nowrap',
-    },
-    rowDiv: {
-        display: 'flex',
-        margin: '1vh 0'
     },
     placeTypeSelect: {
         margin: '0 2vmin',

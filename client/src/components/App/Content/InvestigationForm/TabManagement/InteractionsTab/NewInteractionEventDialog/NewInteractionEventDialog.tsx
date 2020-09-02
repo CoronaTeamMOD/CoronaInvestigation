@@ -108,7 +108,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         return (
             <div className={classes.singleNewContactForm}>
                 <div className={classes.addContactFields}>
-                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonName + ': '}</Typography>
+                    <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonName + ': '}</Typography>
                     <CircleTextField id='contactedPersonName'
                                      className={classes.newContactField}
                                      value={singleContactInfo.name}
@@ -117,7 +117,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                          handleNameChange(event, singleContactInfo)
                                      }}
                     />
-                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonPhone + ': '}</Typography>
+                    <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonPhone + ': '}</Typography>
                     <CircleTextField id='contactedPersonPhone'
                                      className={classes.newContactField}
                                      value={singleContactInfo.phoneNumber}
@@ -127,7 +127,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                      }}
                                      required={false}
                     />
-                    <Typography variant='caption' className={classes.fieldName}>{contactedPersonID + ': '}</Typography>
+                    <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonID + ': '}</Typography>
                     <CircleTextField  id='contactedPersonID'
                                       className={classes.newContactField}
                                       value={singleContactInfo.id}
@@ -136,7 +136,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                           handleIDChange(event, singleContactInfo)
                                       }}
                     />
-                    <Typography variant='caption' className={classes.fieldName}>
+                    <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
                         צריך בידוד?
                     </Typography>
                     <Toggle
@@ -169,10 +169,10 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 {newContactEventTitle}
             </DialogTitle>
             <DialogContent className={classes.allDialogContent}>
-                <Grid className={classes.form} container justify='flex-start'>
-                    <div className={classes.rowDiv}>
+                <Grid className={formClasses.form + ' ' + classes.spacedOutForm} container justify='flex-start'>
+                    <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={classes.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
                                 סוג אתר:
                             </Typography>
                         </Grid>
@@ -192,7 +192,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     </div>
                     <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={formClasses.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
                                 משעה:
                             </Typography>
                         </Grid>
@@ -206,7 +206,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     </div>
                     <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={formClasses.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
                                 עד שעה:
                             </Typography>
                         </Grid>
@@ -219,7 +219,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     </div>
                     <div className={formClasses.rowDiv}>
                         <Grid item xs={3}>
-                            <Typography variant='caption' className={formClasses.fieldName}>
+                            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
                                 האם מותר להחצנה?
                             </Typography>
                         </Grid>
@@ -232,7 +232,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     </div>
                 </Grid>
                 <Divider light={true}/>
-                <Grid container className={classes.form} xs={2}>
+                <Grid container className={formClasses.form + ' ' + classes.spacedOutForm} xs={2}>
                     <div className={classes.newContactFieldsContainer}>
                         {
                             allContacts.map((contact: Contact) => { return getContactForm(contact) })
@@ -241,7 +241,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                             <IconButton onClick={handleContactAdd} disabled={!canAddContact}>
                                 <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
                             </IconButton>
-                            <Typography variant='caption' className={classes.fieldName}>{addContactButton}</Typography>
+                            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{addContactButton}</Typography>
                         </Grid>
                     </div>
                 </Grid>
