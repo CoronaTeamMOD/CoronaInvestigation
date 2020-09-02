@@ -18,7 +18,7 @@ variables:
   MOHarcName: 'IDFDocker'
   AzureContainerRegistry: 'AzureContainerRegistry'
   MOHContainerRegistry: 'MOHContainerRegistry'
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/shiranTestingCi')]
 
 stages:
 - stage:
