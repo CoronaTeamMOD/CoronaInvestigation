@@ -303,11 +303,11 @@ const useFlightsInvestigation = ({selectedCountry, selectedCity, airportPrefix, 
 
 
     React.useEffect(() => {
-        handleFetchCities();
+        handleFetchCities().catch(e => {});
     }, [selectedCountry, cityPrefix]);
 
     React.useEffect(() => {
-        handleFetchAirports();
+        handleFetchAirports().catch(e => {});
     }, [selectedCity, airportPrefix]);
 
     const getAirports = () =>

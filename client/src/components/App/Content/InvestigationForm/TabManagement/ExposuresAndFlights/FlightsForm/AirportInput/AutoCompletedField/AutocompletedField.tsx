@@ -9,28 +9,29 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
     const {value, options, onChange, onInputChange, label, constOptions = false} = props;
     const formClasses = useFormStyles();
     const classes = useStyles();
-    const noOptionsMessage =  'וודאו כי הקלדתם שם תקין';
+    const noOptionsMessage = 'וודאו כי הקלדתם שם תקין';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
         <TextField {...params}
+                   inputProps={{style: {padding: 0}, ...params.inputProps}}
                    InputLabelProps={{classes: {root: formClasses.roundedTextLabel}}}
                    InputProps={{
-                       classes:{ root: formClasses.roundedTextField },
+                       classes: {root: formClasses.roundedTextField},
                        ...params.InputProps
                    }}
-                   label={label} variant="outlined" fullWidth />;
+                   label={label} variant="outlined" fullWidth/>;
 
-    const filterOptions = (x:any) => x;
+    const filterOptions = (x: any) => x;
 
     const staticOptionConfig = {
         autoComplete: true,
         filterSelectedOptions: true,
         includeInputInList: true,
-        clearOnBlur:false,
+        clearOnBlur: false,
         filterOptions
     };
 
-    const config =(!constOptions) ? {...staticOptionConfig} : {};
+    const config = (!constOptions) ? {...staticOptionConfig} : {};
 
     return (
         <Autocomplete

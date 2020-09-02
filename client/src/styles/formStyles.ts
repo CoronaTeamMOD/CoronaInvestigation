@@ -4,7 +4,7 @@ const useStyles = makeStyles({
     form: {
         display: 'flex',
         flexDirection: 'column',
-        paddingRight: '7vh',
+        paddingRight: '35vh',
         flip: false,
     },
     fieldName: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         maxHeight: '5vh',
     },
     roundedTextLabel: {
-        lineHeight: 0
+        lineHeight: 0,
     }
 });
 

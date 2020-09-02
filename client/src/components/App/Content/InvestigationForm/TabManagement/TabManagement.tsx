@@ -58,7 +58,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     return (
         <Card className={classes.card}>
-            <Paper>
                 <Tabs
                     value={currentTab.id}
                     indicatorColor='primary'
@@ -71,12 +70,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         })
                     }
                 </Tabs>
-            </Paper>
             {
                 tabs.map((tab) => (
-                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
+                    <div key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
-                    </Paper>
+                    </div>
                 ))
             }
         </Card>
