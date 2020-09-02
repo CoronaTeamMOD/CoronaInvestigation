@@ -29,12 +29,15 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         maxWidth: '100%',
+        paddingTop: '3vh',
     },
     allDialogContent: {
       overflow: 'hidden',
     },
     fieldName: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginRight: '0.5vw',
+        whiteSpace: 'nowrap',
     },
     rowDiv: {
         display: 'flex',
@@ -46,10 +49,6 @@ const useStyles = makeStyles({
     },
     toggle: {
         marginLeft: '1vw'
-    },
-    formDivider: {
-        marginTop: '2vh',
-        marginBottom: '1vh',
     },
     newContactFieldsContainer: {
         overflowY: 'auto',

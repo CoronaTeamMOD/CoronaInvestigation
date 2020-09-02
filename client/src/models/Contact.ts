@@ -4,6 +4,6 @@ interface Contact {
     id: string,
     needsToBeQuarantined: boolean,
     moreDetails: string,
-};
+}
 
 export default Contact;

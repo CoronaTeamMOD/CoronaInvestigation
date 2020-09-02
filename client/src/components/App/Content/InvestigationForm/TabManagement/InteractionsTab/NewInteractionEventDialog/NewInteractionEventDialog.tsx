@@ -105,7 +105,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     }
 
     const getContactForm = (singleContactInfo: Contact) => {
-        // console.log(singleContactInfo);
         return (
             <div className={classes.singleNewContactForm}>
                 <div className={classes.addContactFields}>
@@ -230,7 +229,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                         </Grid>
                     </div>
                 </Grid>
-                <Divider light={true} className={classes.formDivider}/>
+                <Divider light={true}/>
                 <Grid container className={classes.form} xs={2}>
                     <div className={classes.newContactFieldsContainer}>
                         {
