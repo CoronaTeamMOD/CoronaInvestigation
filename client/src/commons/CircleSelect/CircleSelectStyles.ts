@@ -4,8 +4,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     selectBorder: {
         borderRadius: '25px',
         height: '35px',
-        width: '7vw',
-        fontSize: '13px'
+        fontSize: '15px'
     },
     unsetSelectColor: {
         backgroundColor: 'unset !important'

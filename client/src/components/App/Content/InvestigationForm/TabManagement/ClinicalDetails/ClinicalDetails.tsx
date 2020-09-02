@@ -89,6 +89,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [hospitalEndDate, setHospitalEndDate] = React.useState<string>('');
     const [troubleIsolatingReason, setTroubleIsolatingReason] = React.useState<string>('');
     const [hospital, setHospital] = React.useState<string>(hospitals[0]);
+    const [otherSymptom, setOtherSymptom] = React.useState<string>('');
+    const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
+    const [currentIsolationAddress, setCurrentIsolationAddress] = React.useState<string>('');
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, hasTroubleIsolatingToggle, wasHospitalizedToggle } = useClinicalDetails(
         {
@@ -154,6 +157,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         size='small'
                         placeholder='כתובת'
                         className={classes.textField}
+                        value={currentIsolationAddress}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentIsolationAddress(event.target.value)}
                     />
                     <Grid item xs={12}>
                     </Grid>
@@ -205,8 +210,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={symptomsStartDate}
+                                    value={!isUnkonwnDateChecked ? symptomsStartDate : 'DD/MM/YYYY'}
                                     text={'תאריך התחלת סימפטומים'}
+                                    disabled={isUnkonwnDateChecked}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSymptomsStartDate(event.target.value)}
                                 />
                                 <CustomCheckbox
@@ -230,6 +236,13 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                         </Grid>
                                     ))
                                 }
+                                <CircleTextField
+                                    size='small'
+                                    className={classes.otherTextField}
+                                    placeholder='הזן סימפטום...'
+                                    value={otherSymptom}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => setOtherSymptom(event.target.value as string)}
+                                />
                             </Grid>
                         </Collapse>
                     </Grid>
@@ -265,9 +278,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                     onChange: () => (handleChecklistCheck(backgroundIllness.id, backgroundIllnesses))
                                                 }]}
                                             />
+                                            
                                         </Grid>
                                     ))
                                 }
+                                <CircleTextField
+                                    size='small'
+                                    className={classes.otherTextField}
+                                    placeholder='הזן מחלת רקע...'
+                                    value={otherBackgroundIllness}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => setOtherBackgroundIllness(event.target.value as string)}
+                                />
                             </Grid>
                         </Collapse>
                     </Grid>

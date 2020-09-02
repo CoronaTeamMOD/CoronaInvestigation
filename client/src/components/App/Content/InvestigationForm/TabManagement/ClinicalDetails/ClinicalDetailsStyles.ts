@@ -17,8 +17,10 @@ export const useStyles = makeStyles({
         flexDirection: 'row',
     },
     textField: {
-        height: '1vh',
-        marginBottom: '32px',
         marginLeft: '1vw',
+    },
+    otherTextField: {
+        width: '18vw',
+        marginLeft: '-15vw',
     }
 });

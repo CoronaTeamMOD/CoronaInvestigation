@@ -8,7 +8,7 @@ const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
     const {options, ...rest} = props;
 
     return (
-        <FormControl variant="outlined" className={classes.formControl}>
+        <FormControl variant='outlined' className={classes.formControl}>
             <Select
                 native
                 {...rest}
