@@ -8,6 +8,8 @@ trigger:
     include:
     - 'server/'
 
+pr: none
+
 variables:
   arcName: 'coronai'
   imageName: 'coronaiDocker'
