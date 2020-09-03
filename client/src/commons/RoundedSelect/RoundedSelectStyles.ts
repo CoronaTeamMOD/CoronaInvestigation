@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles({
-    borderRadius: {
+    selectInput: {
         borderRadius: 25,
         maxHeight: '4vh',
         margin: '0 2%',
