@@ -72,20 +72,20 @@ stages:
         tags: |
           client-test
 
-    - job:
-      displayName: buildAndPush master branch client docker
-      condition: eq(variables.isMaster,true)
-      steps:
-      - task: Docker@2
-        displayName: Build and push client image to container registry
-        inputs:
-          command: buildAndPush
-          dockerfile: '**/client/Dockerfile'
-          repository: '$(arcName)'
-          azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-          containerRegistry: '$(AzureContainerRegistry)'
-          tags: |
-            client-master
+  - job:
+    displayName: buildAndPush master branch client docker
+    condition: eq(variables.isMaster,true)
+    steps:
+    - task: Docker@2
+      displayName: Build and push client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-master
 
     - script: >
         npx -p semantic-release
