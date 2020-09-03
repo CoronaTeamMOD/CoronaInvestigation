@@ -2,12 +2,12 @@ import React from 'react';
 
 import Gender from 'models/enums/Gender';
 import IdentificationType from 'models/enums/IdentificationTypes';
-import RelevantOccupations from '../../../../models/enums/RelevantOccupations';
+import RelevantOccupations from 'models/enums/RelevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
-import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
+import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useStyles from './InvestigationFormStyles';
