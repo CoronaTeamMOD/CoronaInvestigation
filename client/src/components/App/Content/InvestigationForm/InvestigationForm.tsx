@@ -36,12 +36,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         HMO: '',
         address: {
             city: '',
-            neighbourhood: '',
+            neighborhood: '',
             street: '',
-            houseNumber: -1,
+            houseNumber: '',
             entrance: '',
-            floor: -1,
-            apartment: -1
+            floor: '',
+            apartment: ''
         },
         relevantOccupation: RelevantOccupations.MOH_Worker,
         institutionName: ''

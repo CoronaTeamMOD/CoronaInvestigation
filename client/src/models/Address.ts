@@ -1,9 +1,9 @@
 export interface Address {
     city: string;
-    neighbourhood: string;
+    neighborhood: string;
     street: string;
-    houseNumber: number;
+    houseNumber: string;
     entrance: string;
-    floor: number;
-    apartment: number;
+    floor: string;
+    apartment: string;
 }

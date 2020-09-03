@@ -1,12 +1,22 @@
+  
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     form: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     fieldName: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginRight: '1vw'
+    },
+    formRow: {
+        display: 'flex',
+        margin: '1vh 0',
+    },
+    formField: {
+        display: 'flex',
+        alignItems: 'center'
     },
     rowDiv: {
         display: 'flex',
