@@ -28,7 +28,7 @@ stages:
         echo hi
       displayName: 'echo hi'
 
-  - job:
+  - job: TestsAndBuildJob
     displayName: TestsAndBuildJob
     steps:
     - task: NodeTool@0
