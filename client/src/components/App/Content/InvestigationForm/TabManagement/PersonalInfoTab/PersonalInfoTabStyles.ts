@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     institutionName: {
         width: '10vw'
+    },
+    relevantOccupationSelect: {
+        marginBottom: '3vh'
     }
 }));
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import FormLabel from '@material-ui/core/FormLabel';
-import { Typography, RadioGroup, Radio, ThemeProvider } from '@material-ui/core';
+import { Typography, RadioGroup, Radio, ThemeProvider, Collapse } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 
@@ -57,38 +57,40 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                     })}]}
                                 />
                             </Grid>
-                            <Grid item xs={2}>
-                                <FormControlLabel 
-                                    className={classes.unsetFormControlMargin}
-                                    control={
-                                        <div className={classes.personalId}>
-                                            <CircleSelect
-                                                native
-                                                value={""}
-                                                placeholder={'שלום'}
-                                                options={['1', '2', '3']}
-                                                className={classes.selectWidth}
+                            {
+                                    <Collapse 
+                                        in={!ctxt.personalInfoData.isInvestigatedPersonsNumber}>
+                                        <div className={classes.PersonalInfoFieldContainer}>
+                                            <FormControlLabel 
+                                                className={classes.unsetFormControlMargin}
+                                                control={
+                                                    <div className={classes.personalId}>
+                                                        <CircleSelect
+                                                            native
+                                                            value={ctxt.personalInfoData.selectReasonNumberIsNotRelated}
+                                                            options={['אין טלפון', 'קטין', 'אחר...']}
+                                                            className={classes.selectWidth}
+                                                            onChange={(event) => {
+                                                                handleChangeField(ctxt, PersonalInfoDataContextFields.SELECT_REASON_NUMBER_IS_NOT_RELATED, event.target.value);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                }
+                                                label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>סיבה:</span>}
+                                                labelPlacement='start'
+                                            />
+                                            <CircleTextField 
+                                                id="standard-required" 
+                                                placeholder="כתוב סיבה..." 
+                                                size='small' 
+                                                className={classes.writeReason}
                                                 onChange={(event) => {
-                                                    handleChangeField(ctxt, PersonalInfoDataContextFields.SELECT_REASON_NUMBER_IS_NOT_RELATED, event.target.value);
+                                                    handleChangeField(ctxt, PersonalInfoDataContextFields.WRITE_REASON_WHY_NUMBER_IS_NOT_RELATED, event.target.value);
                                                 }}
                                             />
                                         </div>
-                                    }
-                                    label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>סיבה:</span>}
-                                    labelPlacement='start'
-                                />
-                            </Grid>
-                            <Grid item xs={4} className={classes.PersonalInfoFieldContainer}>
-                                <CircleTextField 
-                                    id="standard-required" 
-                                    placeholder="כתוב סיבה..." 
-                                    size='small' 
-                                    className={classes.writeReason}
-                                    onChange={(event) => {
-                                        handleChangeField(ctxt, PersonalInfoDataContextFields.WRITE_REASON_WHY_NUMBER_IS_NOT_RELATED, event.target.value);
-                                    }}
-                                />
-                            </Grid>
+                                    </Collapse> 
+                            }
                         </Grid>
 
                         <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
@@ -145,9 +147,16 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                                 <Toggle 
-                                    value={false}
+                                    value={ctxt.personalInfoData.identificationType === IdentificationTypes.PASSPORT}
                                     firstOption={'ת.ז'}
-                                    secondOption={'דרכון'} />
+                                    secondOption={'דרכון'} 
+                                    onChange={(event) => {
+                                        handleChangeField(
+                                            ctxt, 
+                                            PersonalInfoDataContextFields.IDENTIFICATION_TYPE, 
+                                            ctxt.personalInfoData.identificationType === IdentificationTypes.ID ? IdentificationTypes.PASSPORT :
+                                                IdentificationTypes.ID);
+                                    }}/>
                             </Grid>
                             <Grid item xs={3}>
                                 <FormControlLabel
@@ -156,6 +165,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                         id="personalId" 
                                         className={classes.personalId}
                                         size='small'
+                                        onChange={(event) => {
+                                            handleChangeField(ctxt, PersonalInfoDataContextFields.IDENTIFICATION_NUMBER, event.target.value);
+                                        }}
                                     />}
                                     label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>מספר תעודה מזהה:</span>}
                                     labelPlacement='start'
@@ -201,6 +213,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                         className={classes.personalId}
                                         size='small'
                                         placeholder='שם:'
+                                        onChange={(event) => {
+                                            handleChangeField(ctxt, PersonalInfoDataContextFields.MOTHER_NAME, event.target.value);
+                                        }}
                                     />}
                                     label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>שם האם:</span>}
                                     labelPlacement='start'
@@ -214,6 +229,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                         className={classes.personalId}
                                         size='small'
                                         placeholder='שם:'
+                                        onChange={(event) => {
+                                            handleChangeField(ctxt, PersonalInfoDataContextFields.FATHER_NAME, event.target.value);
+                                        }}
                                     />}
                                     label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>שם האב:</span>}
                                     labelPlacement='start'
@@ -232,9 +250,12 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             <Grid item xs={1}>
                                 <CircleSelect
                                     native
-                                    value={"Ten"}
-                                    options={['1', '2', '3']}
+                                    value={ctxt.personalInfoData.insuranceCompany}
+                                    options={['הראל', 'כלל', 'הפניקס']}
                                     className={classes.selectWidth}
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -250,9 +271,12 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             <Grid item xs={1}>
                                 <CircleSelect
                                     native
-                                    value={0}
-                                    options={['1', '2', '3']}
+                                    value={ctxt.personalInfoData.HMO}
+                                    options={['אחר', 'כללית', 'מכבי']}
                                     className={classes.selectWidth}
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.HMO, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -270,6 +294,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                     id="adress" 
                                     placeholder="מחכה לסנדי:" 
                                     size='small'
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.ADDRESS, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -284,13 +311,17 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={2}>
                                 <FormControl component="fieldset">
-                                    <RadioGroup aria-label="gender" name="gender1" >
+                                    <RadioGroup aria-label="gender" name="gender1" className={classes.relevantOccupationSelect}>
                                         <FormLabel component="legend" className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
                                         { 
                                             Object.values(RelevantOccupations).map((occupation) => {
                                                 return <FormControlLabel 
                                                             value={occupation} 
-                                                            control={<Radio color='primary'/>} 
+                                                            control={<Radio 
+                                                                        color='primary'
+                                                                        onChange={(event) => {
+                                                                            handleChangeField(ctxt, PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
+                                                                        }}/>} 
                                                             label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
                                                         />
                                             })
@@ -301,10 +332,13 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             <Grid item xs={3}>
                                 <CircleSelect
                                     native
-                                    value={""}
+                                    value={ctxt.personalInfoData.institutionName}
                                     placeholder={'הזן שם מוסד'}
-                                    options={['1', '2', '3']}
+                                    options={['צה"ל', 'מוסד', 'אחר']}
                                     className={classes.institutionName}
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
