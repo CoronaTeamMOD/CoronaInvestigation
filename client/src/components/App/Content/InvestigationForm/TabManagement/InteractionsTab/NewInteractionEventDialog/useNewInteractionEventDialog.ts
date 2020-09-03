@@ -6,7 +6,7 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
     const { closeDialog } = input;
 
     const createNewInteractionEvent = (interactionEventVariables: InteractionEventVariables) : void => {
-        console.log(interactionEventVariables);
+        // TODO: send the interactionEventVariables to db here
         closeDialog();
     }
 

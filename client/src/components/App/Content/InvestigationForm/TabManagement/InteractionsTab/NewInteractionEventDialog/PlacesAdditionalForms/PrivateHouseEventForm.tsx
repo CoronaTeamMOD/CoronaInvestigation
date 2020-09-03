@@ -9,10 +9,6 @@ import AddressForm from 'commons/AddressForm/AddressForm';
 import useStyles from '../NewInteractionEventDialogStyles';
 import { InteractionEventVariablesConsumer, InteractionEventVariables } from '../InteractionEventVariables';
 
-interface Props {
-    setCanCreateEvent: React.Dispatch<React.SetStateAction<boolean>>
-}
-
 const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
     const classes = useStyles();
