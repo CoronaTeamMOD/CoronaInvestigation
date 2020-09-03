@@ -45,6 +45,7 @@ stages:
   - job:
     displayName: buildAndPush dev branch client docker
     condition: eq(variables.isDev,true)
+    steps:
     - task: Docker@2
       displayName: Build and push client image to container registry
       inputs:
@@ -59,6 +60,7 @@ stages:
   - job:
     displayName: buildAndPush test branch client docker
     condition: eq(variables.isTest,true)
+    steps:
     - task: Docker@2
       displayName: Build and push client image to container registry
       inputs:
@@ -73,6 +75,7 @@ stages:
     - job:
       displayName: buildAndPush master branch client docker
       condition: eq(variables.isMaster,true)
+      steps:
       - task: Docker@2
         displayName: Build and push client image to container registry
         inputs:
