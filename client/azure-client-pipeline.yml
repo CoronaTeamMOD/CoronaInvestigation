@@ -43,6 +43,7 @@ stages:
       displayName: 'npm build client'
   
   - job:
+    dependsOn: [TestsAndBuildJob]
     displayName: buildAndPush dev branch client docker
     condition: eq(variables.isDev,true)
     steps:
@@ -58,6 +59,7 @@ stages:
           client-dev
 
   - job:
+    dependsOn: [TestsAndBuildJob]
     displayName: buildAndPush test branch client docker
     condition: eq(variables.isTest,true)
     steps:
@@ -73,6 +75,7 @@ stages:
           client-test
 
   - job:
+    dependsOn: [TestsAndBuildJob]
     displayName: buildAndPush master branch client docker
     condition: eq(variables.isMaster,true)
     steps:
