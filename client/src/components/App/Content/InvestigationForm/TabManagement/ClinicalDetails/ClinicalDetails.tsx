@@ -64,9 +64,6 @@ const backgroundIllnessesList: Check[] = [
 
 const hospitals: string[] = ['שיבא', 'איכילוב', 'אסף הרופא'];
 
-let selectedSymptoms: string[] = [];
-let selectedBackgroundIllnesses: string[] = [];
-
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
@@ -77,6 +74,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
+    const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
+    const [selectedBackgroundIllnesses, setSelectedBackgroundIllnesses] = React.useState<string[]>([]);
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, wasHospitalizedToggle } = useClinicalDetails(
         {
             setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses, setWasHospitalized
@@ -90,20 +89,24 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
-    const handleSymptomCheck = (symptom: Check) => {
+    const handleSymptomCheck = (symptom: Check, context: ClinicalDetailsDataAndSet) => {
         if (selectedSymptoms.find(checkedName => checkedName === symptom.name)) {
-            selectedSymptoms = selectedSymptoms.filter((checkedSymptom) => checkedSymptom !== symptom.name);
+            setSelectedSymptoms(selectedSymptoms.filter((checkedSymptom) => checkedSymptom !== symptom.name));
         } else {
             selectedSymptoms.push(symptom.name);
         };
+
+        updateClinicalDetails(context as ClinicalDetailsDataAndSet, ClinicalDetailsFields.SYMPTOMS, selectedSymptoms)
     };
 
-    const handleBackgroundIllnessCheck = (backgroundIllness: Check) => {
+    const handleBackgroundIllnessCheck = (backgroundIllness: Check, context: ClinicalDetailsDataAndSet) => {
         if (selectedBackgroundIllnesses.find(checkedName => checkedName === backgroundIllness.name)) {
-            selectedBackgroundIllnesses = selectedBackgroundIllnesses.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness.name);
+            setSelectedBackgroundIllnesses(selectedBackgroundIllnesses.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness.name));
         } else {
             selectedBackgroundIllnesses.push(backgroundIllness.name);
         };
+
+        updateClinicalDetails(context as ClinicalDetailsDataAndSet, ClinicalDetailsFields.BACKGROUND_ILLNESSES, selectedBackgroundIllnesses)
     };
 
     return (
@@ -207,7 +210,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={(!isUnkonwnDateChecked && ctxt.clinicalDetailsData?.symptomsStartDate !== null) ? format(ctxt.clinicalDetailsData?.symptomsStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
+                                    value={!isUnkonwnDateChecked ? format(ctxt.clinicalDetailsData?.symptomsStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                     text={'תאריך התחלת סימפטומים'}
                                     disabled={isUnkonwnDateChecked}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -231,8 +234,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                     value: symptomsList.find((chosenSymptom) => chosenSymptom.name === symptom.name),
                                                     text: symptom.name,
                                                     onChange: () => {
-                                                        handleSymptomCheck(symptom)
-                                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.SYMPTOMS, selectedSymptoms)
+                                                        handleSymptomCheck(symptom, ctxt as ClinicalDetailsDataAndSet)
                                                     }
                                                 }]}
                                             />
@@ -278,8 +280,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                     value: backgroundIllnessesList.find((chosenBackgroundIllness) => chosenBackgroundIllness.name === backgroundIllness.name),
                                                     text: backgroundIllness.name,
                                                     onChange: () => {
-                                                        handleBackgroundIllnessCheck(backgroundIllness)
-                                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.BACKGROUND_ILLNESSES, selectedBackgroundIllnesses)
+                                                        handleBackgroundIllnessCheck(backgroundIllness, ctxt as ClinicalDetailsDataAndSet)
                                                     }
                                                     
                                                 }]}
