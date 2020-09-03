@@ -5,4 +5,4 @@ export interface useInvestigationFormOutcome {
     setCurrentTab: (nextTabObj: Tab) => void;
     confirmFinishInvestigation: () => void;
     handleInvestigationFinish: () => void;
-}
+};
