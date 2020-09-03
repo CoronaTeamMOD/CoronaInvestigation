@@ -19,7 +19,7 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
   isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
-  REACT_APP_dbApi: '$(dbApi)'
+  REACT_APP_DB_API: '$(DB_API)'
 
 stages:
 - stage:
