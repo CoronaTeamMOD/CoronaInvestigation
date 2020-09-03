@@ -1,4 +1,5 @@
 import React from 'react';
+import { parse, format, set } from 'date-fns';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Collapse } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -26,8 +27,8 @@ const schoolLocationType : string = 'בית ספר';
 const hospitalLocationType : string = 'בית חולים';
 
 export interface Props {
-    isOpen: boolean,
-    closeDialog: () => void
+    closeDialog: () => void,
+    eventDate?: Date
 }
 
 const otherLocationTypes = [
@@ -65,7 +66,7 @@ const newConactEventTitle = 'יצירת מקום/מגע חדש'
 
 const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
     
-    const { isOpen, closeDialog } = props;
+    const { eventDate, closeDialog } = props;
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -74,8 +75,8 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const [canCreateEvent, setCanCreateEvent] = React.useState<boolean>(false);
 
     const [locationType, setLocationType] = React.useState<string>('0');
-    const [startTime, setStartTime] = React.useState<string>();
-    const [endTime, setEndTime] = React.useState<string>();
+    const [startTime, setStartTime] = React.useState<Date>();
+    const [endTime, setEndTime] = React.useState<Date>();
     const [externalizationApproval, setExternalizationApproval] = React.useState<boolean>(false);
     const [investigationId, setInvestigationId] = React.useState<number>();
     const [locationName, setLocationName] = React.useState<string>();
@@ -220,14 +221,17 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) =>
         setLocationType(event.target.value as string);
-
-    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setStartTime(event.target.value);
-    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEndTime(event.target.value);
+    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setStartTime(parse(event.target.value, 'hh:mm', new Date()));
+    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEndTime(parse(event.target.value, 'hh:mm', new Date()));
     const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => setExternalizationApproval(val);
+    const buildDateToSaveToDB = (date: Date | undefined) => {
+        if (!eventDate || !date) return new Date();
+        return set(eventDate, { hours: startTime?.getHours(), minutes: startTime?.getMinutes()});
+    }
     const onConfirm = () => createNewInteractionEvent({
         locationType: locationTypes[+locationType],
-        startTime,
-        endTime,
+        startTime: buildDateToSaveToDB(startTime),
+        endTime: buildDateToSaveToDB(endTime),
         externalizationApproval,
         investigationId,
         locationName,
@@ -250,7 +254,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     })
 
     return (
-        <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
+        <Dialog classes={{paper: classes.dialogPaper}} open={eventDate !== undefined} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newConactEventTitle}
             </DialogTitle>
@@ -290,7 +294,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <FormInput fieldName='משעה'>
                                     <DatePick 
                                         type='time'
-                                        value={startTime || defaultTime}
+                                        value={startTime ? format(startTime, 'hh:mm') : defaultTime}
                                         onChange={onStartTimeChange}/>
                                 </FormInput>
                             </Grid>
@@ -298,7 +302,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <FormInput fieldName='עד שעה'>
                                     <DatePick 
                                         type='time'
-                                        value={endTime || defaultTime}
+                                        value={endTime ? format(endTime, 'hh:mm') : defaultTime}
                                         onChange={onEndTimeChange}/>
                                 </FormInput>
                             </Grid>

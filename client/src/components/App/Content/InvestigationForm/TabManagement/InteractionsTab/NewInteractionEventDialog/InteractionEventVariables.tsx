@@ -4,8 +4,8 @@ import Address, { initAddress } from 'models/Address';
 
 export interface InteractionEventVariables {
     locationType?: string;
-    startTime?: string;
-    endTime?: string;
+    startTime?: Date;
+    endTime?: Date;
     externalizationApproval: boolean;
     investigationId?: number;
     locationName?: string;
@@ -26,8 +26,8 @@ export interface InteractionEventVariables {
     buisnessContactNumber?: string;
     hospitalDepartment?: string;
     setLocationType?: React.Dispatch<React.SetStateAction<string>>;
-    setStartTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
-    setEndTime?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setStartTime?: React.Dispatch<React.SetStateAction<Date | undefined>>;
+    setEndTime?: React.Dispatch<React.SetStateAction<Date | undefined>>;
     setExternalizationApproval?: React.Dispatch<React.SetStateAction<boolean>>;
     setInvestigationId?: React.Dispatch<React.SetStateAction<number | undefined>>;
     setLocationName?: React.Dispatch<React.SetStateAction<string | undefined>>;

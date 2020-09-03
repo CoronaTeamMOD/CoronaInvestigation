@@ -36,7 +36,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                     }
                     {
                         newInteractionEventDate && <NewInteractionEventDialog 
-                            isOpen={newInteractionEventDate !== undefined} 
+                            eventDate={newInteractionEventDate} 
                             closeDialog={onDialogClose}/>
                     }
                 </>
