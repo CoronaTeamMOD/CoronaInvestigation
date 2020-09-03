@@ -40,6 +40,7 @@ stages:
 
     - task: Docker@2
       condition: eq(variables.isShiran,true)
+      continueOnError: 'false'
       displayName: Build and push shiran client image to container registry
       inputs:
         command: buildAndPush
@@ -49,15 +50,11 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-shiran
-  
-  - job: buildDevClientDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush dev branch client docker
-    continueOnError: 'false'
-    condition: eq(variables.isDev,true)
-    steps:
+
     - task: Docker@2
-      displayName: Build and push client image to container registry
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push Dev client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -66,15 +63,11 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-dev
-
-  - job: buildTestClientDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush test branch client docker
-    continueOnError: 'false'
-    condition: eq(variables.isTest,true)
-    steps:
+          
     - task: Docker@2
-      displayName: Build and push client image to container registry
+      condition: eq(variables.isTest,true)
+      continueOnError: 'false'
+      displayName: Build and push test client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -84,14 +77,10 @@ stages:
         tags: |
           client-test
 
-  - job: buildMasterClientDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush master branch client docker
-    continueOnError: 'false'
-    condition: eq(variables.isMaster,true)
-    steps:
     - task: Docker@2
-      displayName: Build and push client image to container registry
+      condition: eq(variables.isMaster,true)
+      continueOnError: 'false'
+      displayName: Build and push master client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -101,27 +90,16 @@ stages:
         tags: |
           client-master
 
-  - job: buildShiranClientDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush shiran branch client docker
-    continueOnError: 'false'
-    condition: eq(variables.isShiran,true)
-    steps:
-    - task: Docker@2
-      displayName: Build and push client image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          client-shiran
-
   - job: 
-    dependsOn: [buildDevClientDocker, buildTestClientDocker, buildMasterClientDocker, buildShiranClientDocker]
+    dependsOn: [BuildJob]
     displayName: SemanticRelease
     steps:  
+    - task: NodeTool@0
+      displayName: install NodeJs
+      inputs:
+        versionSpec: '10.18'
+      displayName: 'Install Node.js'
+
     - script: >
         npx -p semantic-release
         -p @semantic-release/git

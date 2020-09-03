@@ -30,15 +30,11 @@ stages:
       inputs:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
-  
-  - job: buildDevServerDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush dev branch server docker
-    continueOnError: 'false'
-    condition: eq(variables.isDev,true)
-    steps:
+
     - task: Docker@2
-      displayName: Build and push server image to container registry
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push dev server image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/server/Dockerfile'
@@ -48,14 +44,10 @@ stages:
         tags: |
           server-dev
 
-  - job: buildTestServerDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush test branch server docker
-    continueOnError: 'false'
-    condition: eq(variables.isTest,true)
-    steps:
     - task: Docker@2
-      displayName: Build and push server image to container registry
+      condition: eq(variables.isTest,true)
+      continueOnError: 'false'
+      displayName: Build and push test server image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/server/Dockerfile'
@@ -65,14 +57,10 @@ stages:
         tags: |
           server-test
 
-  - job: buildMasterServerDocker
-    dependsOn: BuildJob
-    displayName: buildAndPush master branch server docker
-    continueOnError: 'false'
-    condition: eq(variables.isMaster,true)
-    steps:  
     - task: Docker@2
-      displayName: Build and push server image to container registry
+      condition: eq(variables.isMaster,true)
+      continueOnError: 'false'
+      displayName: Build and push master server image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/server/Dockerfile'
@@ -83,9 +71,15 @@ stages:
           server-master
   
   - job: 
-    dependsOn: [buildDevServerDocker, buildMasterServerDocker, buildTestServerDocker]
+    dependsOn: [BuildJob]
     displayName: SemanticRelease
     steps:
+    - task: NodeTool@0
+      displayName: install NodeJs
+      inputs:
+        versionSpec: '10.18'
+      displayName: 'Install Node.js'
+      
     - script: >
         npx -p semantic-release
         -p @semantic-release/git
