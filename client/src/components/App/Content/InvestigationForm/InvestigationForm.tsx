@@ -5,7 +5,6 @@ import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
-import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement, {tabs} from './TabManagement/TabManagement';
