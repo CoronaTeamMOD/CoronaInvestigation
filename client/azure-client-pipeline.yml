@@ -98,7 +98,6 @@ stages:
       displayName: install NodeJs
       inputs:
         versionSpec: '10.18'
-      displayName: 'Install Node.js for release'
 
     - script: >
         npx -p semantic-release
