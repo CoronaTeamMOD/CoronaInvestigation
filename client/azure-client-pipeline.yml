@@ -39,19 +39,6 @@ stages:
       displayName: 'npm build client'
 
     - task: Docker@2
-      condition: eq(variables.isShiran,true)
-      continueOnError: 'false'
-      displayName: Build and push shiran client image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          client-shiran
-
-    - task: Docker@2
       condition: eq(variables.isDev,true)
       continueOnError: 'false'
       displayName: Build and push Dev client image to container registry
