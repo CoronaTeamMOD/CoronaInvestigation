@@ -20,16 +20,8 @@ stages:
 - stage:
   displayName: TestsAndBuildStage
   jobs:
-  - job:
-    condition: eq(variables.isMaster,true)
-    displayName: testingCondition
-    steps:
-    - script: |
-        echo hi
-      displayName: 'echo hi'
-
-  - job: TestsAndBuildJob
-    displayName: TestsAndBuildJob
+  - job: BuildJob
+    displayName: BuildJob
     steps:
     - task: NodeTool@0
       inputs:
@@ -43,7 +35,7 @@ stages:
       displayName: 'npm build client'
   
   - job:
-    dependsOn: TestsAndBuildJob
+    dependsOn: BuildJob
     displayName: buildAndPush dev branch client docker
     condition: eq(variables.isDev,true)
     steps:
@@ -59,7 +51,7 @@ stages:
           client-dev
 
   - job:
-    dependsOn: TestsAndBuildJob
+    dependsOn: BuildJob
     displayName: buildAndPush test branch client docker
     condition: eq(variables.isTest,true)
     steps:
@@ -75,7 +67,7 @@ stages:
           client-test
 
   - job:
-    dependsOn: TestsAndBuildJob
+    dependsOn: BuildJob
     displayName: buildAndPush master branch client docker
     condition: eq(variables.isMaster,true)
     steps:
@@ -84,9 +76,9 @@ stages:
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           client-master
 

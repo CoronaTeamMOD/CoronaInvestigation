@@ -7,59 +7,31 @@ trigger:
     - 'server/'
 
 variables:
-  azureSC: 'coronai'
-  buildConfiguration: 'Release'
-  location: 'North Europe'
-  acrHostName: 'coronai.azurecr.io'
   arcName: 'coronai'
-  rgName: 'spectrumFactory'
   imageName: 'coronaiDocker'
-  webAppName: 'coronai'
   MOHarcName: 'IDFDocker'
   AzureContainerRegistry: 'AzureContainerRegistry'
   MOHContainerRegistry: 'MOHContainerRegistry'
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/Master')]
+  isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/Test')]
+  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/Dev')]
 
 stages:
 - stage:
   displayName: TestsAndBuildStage
   jobs:
-  - job:
-    displayName: TestsAndBuildJob
+  - job: BuildJob
+    displayName: BuildJob
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
-
-    # - script: >
-    #     npx -p semantic-release
-    #     -p @semantic-release/git
-    #     -p semantic-release-ado
-    #     semantic-release
-    #   env: { GH_TOKEN: $(GitHubToken) }
-    #   displayName: 'Semantic release'
-
-    # - script: echo $(GH_TOKEN)
-    #   displayName: 'Show next version'
-
-    # - task: Docker@1
-    #   displayName: Build an image to container registry
-    #   inputs:
-    #     repository: '$(arcName)'
-    #     azureSubscriptionEndpoint: 'AzureSC'
-    #     azureContainerRegistry: '$(acrHostName)'
-    #     imageName: '$(imageName):(Build.BuildId)'
-    #     useDefaultContext: false
-    #     buildContext: '$(System.DefaultWorkingDirectory)'
-
-    # - task: Docker@1
-    #   displayName: push an image to container registry
-    #   inputs:
-    #     command: 'Push an image'
-    #     azureSubscriptionEndpoint: 'AzureSC'
-    #     azureContainerRegistry: '$(acrHostName)'
-    #     imageName: '$(imageName):(Build.BuildId)'/
-
+  
+  - job:
+    dependsOn: BuildJob
+    displayName: buildAndPush dev branch server docker  
+    condition: eq(variables.isDev,true)  
     - task: Docker@2
       displayName: Build and push server image to container registry
       inputs:
@@ -69,24 +41,48 @@ stages:
         azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
-          server
+          server-dev
 
-    - task: CopyFiles@2
+  - job:
+    dependsOn: BuildJob
+    displayName: buildAndPush test branch server docker  
+    condition: eq(variables.isTest,true)  
+    - task: Docker@2
+      displayName: Build and push server image to container registry
       inputs:
-        SourceFolder: 'client/'
-        Contents: 'build/**' # Pull the build directory (React)
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        command: buildAndPush
+        dockerfile: '**/server/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          server-test
 
-    - task: CopyFiles@2
+  - job:
+    dependsOn: BuildJob
+    displayName: buildAndPush master branch server docker  
+    condition: eq(variables.isMaster,true)  
+    - task: Docker@2
+      displayName: Build and push server image to container registry
       inputs:
-        Contents: 'server/**' # Pull the server directory
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
-        
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-        ArtifactName: 'bundle'
-        displayName: 'Publish artifacts: drop'
+        command: buildAndPush
+        dockerfile: '**/server/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          server-master
+
+    - script: >
+        npx -p semantic-release
+        -p @semantic-release/git
+        -p semantic-release-ado
+        semantic-release
+      env: { GH_TOKEN: $(GitHubToken) }
+      displayName: 'Semantic release'
+
+    - script: echo $(GH_TOKEN)
+      displayName: 'Show next version'
 
 # - stage: 
 #   displayName: 'Deployment'
