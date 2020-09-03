@@ -28,10 +28,11 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
   
-  - job:
+  - job: buildDevServerDocker
     dependsOn: BuildJob
     displayName: buildAndPush dev branch server docker  
-    condition: eq(variables.isDev,true)  
+    condition: eq(variables.isDev,true)
+    steps:
     - task: Docker@2
       displayName: Build and push server image to container registry
       inputs:
@@ -43,10 +44,11 @@ stages:
         tags: |
           server-dev
 
-  - job:
+  - job: buildTestServerDocker
     dependsOn: BuildJob
     displayName: buildAndPush test branch server docker  
-    condition: eq(variables.isTest,true)  
+    condition: eq(variables.isTest,true)
+    steps:
     - task: Docker@2
       displayName: Build and push server image to container registry
       inputs:
@@ -58,10 +60,11 @@ stages:
         tags: |
           server-test
 
-  - job:
+  - job: buildMasterServerDocker
     dependsOn: BuildJob
     displayName: buildAndPush master branch server docker  
-    condition: eq(variables.isMaster,true)  
+    condition: eq(variables.isMaster,true)
+    steps:  
     - task: Docker@2
       displayName: Build and push server image to container registry
       inputs:
@@ -72,7 +75,11 @@ stages:
         containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           server-master
-
+  
+  - job: 
+    dependsOn: [buildDevServerDocker, buildMasterServerDocker, buildTestServerDocker]
+    displayName: SemanticRelease
+    steps:
     - script: >
         npx -p semantic-release
         -p @semantic-release/git
