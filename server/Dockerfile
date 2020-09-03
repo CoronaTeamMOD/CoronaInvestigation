@@ -4,14 +4,10 @@ FROM node:current-slim
 # Set the working directory.
 WORKDIR /usr/src/app
 
-# Copy the file from your host to your current location.
-COPY package.json .
-
 RUN mkdir server
 
 COPY * ./server/
 
-RUN ls
 # Run the command inside your image filesystem.
 RUN npm install
 

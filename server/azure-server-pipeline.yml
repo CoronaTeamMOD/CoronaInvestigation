@@ -1,10 +1,9 @@
 trigger: 
   branches:
     include:
-    - shiranTestingCi
-    - Dev
-    - Test
-    - Master
+    - dev
+    - test
+    - master
   paths:
     include:
     - 'server/'
@@ -15,9 +14,9 @@ variables:
   MOHarcName: 'IDFDocker'
   AzureContainerRegistry: 'AzureContainerRegistry'
   MOHContainerRegistry: 'MOHContainerRegistry'
-  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/Master')]
-  isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/Test')]
-  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/Dev')]
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
+  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
 
 stages:
 - stage:
