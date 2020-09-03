@@ -1,6 +1,6 @@
 enum IdentificationTypes {
-    PASSPORT = 'דרכון',
-    ID = 'ת.ז'
+    PASSPORT = 'דרכון זר',
+    ID = 'תעודת זהות'
 }
 
 export default IdentificationTypes;

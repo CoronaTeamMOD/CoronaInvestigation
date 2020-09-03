@@ -5,7 +5,7 @@ import identificationType from 'models/enums/IdentificationTypes';
 import RelevantOccupations from 'models/enums/RelevantOccupations';
 import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 
-const initialPersonalInfoContext: personalInfoContextData = {
+const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
     isInvestigatedPersonsNumber: true,
     selectReasonNumberIsNotRelated: '',
@@ -31,32 +31,21 @@ const initialPersonalInfoContext: personalInfoContextData = {
     institutionName: ''
 } 
 
-interface EmptyContext {
-    phoneNumber: undefined;
-    isInvestigatedPersonsNumber: undefined;
-    selectReasonNumberIsNotRelated: undefined;
-    writeReasonNumberIsNotRelated: undefined;
-    additionalPhoneNumber: undefined;
-    gender: undefined;
-    identificationType: undefined;
-    identificationNumber: undefined;
-    age: undefined;
-    motherName: undefined;
-    fatherName: undefined;
-    insuranceCompany: undefined;
-    HMO: undefined;
-    adress: {
-        city: undefined;
-        neighborhood: undefined;
-        street: undefined;
-        houseNumber: undefined;
-        entrance: undefined;
-        floor: undefined;
-    };
-    relevantOccupation: undefined;
-    institutionName: undefined;
-} 
+const initialPersonalInfoContext: PersonalInfoDataAndSet = {
+    personalInfoData: initialPersonalInfo,
+    setPersonalInfoData: () => {}
+};
 
-export const personalInfoContext = createContext<personalInfoContextData>(initialPersonalInfoContext);
+interface EmptyContext {
+    clinicalDetailsData: undefined,
+    setClinicalDetailsData: () => {}
+}
+
+export interface PersonalInfoDataAndSet {
+    personalInfoData: personalInfoContextData,
+    setPersonalInfoData: React.Dispatch<React.SetStateAction<personalInfoContextData>>
+}
+
+export const personalInfoContext = createContext<PersonalInfoDataAndSet>(initialPersonalInfoContext);
 export const PersonalInfoContextConsumer = personalInfoContext.Consumer;
 export const PersonalInfoContextProvider = personalInfoContext.Provider;

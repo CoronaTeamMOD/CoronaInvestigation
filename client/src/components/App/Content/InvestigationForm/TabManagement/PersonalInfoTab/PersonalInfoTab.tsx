@@ -11,14 +11,20 @@ import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 import RelevantOccupations from 'models/enums/RelevantOccupations'
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import { PersonalInfoContextConsumer, personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import { PersonalInfoContextConsumer, personalInfoContext, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
 
 
 import useStyles from './PersonalInfoTabStyles';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 
 const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
     const classes = useStyles({});
+
+    const handleChangeField = (context: PersonalInfoDataAndSet ,fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
+        context.setPersonalInfoData({...context.personalInfoData, [fieldName]: fieldValue})
+    }
   
     return (
         <PersonalInfoContextConsumer>
@@ -38,11 +44,17 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                     id="phone" 
                                     placeholder="טלפון:" 
                                     size='small'
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={2}>
                                 <CustomCheckbox
-                                    checkboxElements={[{text: <span style={{ fontSize: '15px'}}>מספר הטלפון לא שייך לנבדק</span>}]}
+                                    checkboxElements={[{text: <span style={{ fontSize: '15px'}}>מספר הטלפון לא שייך לנבדק</span>,
+                                    onChange:(event =>{
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.IS_INVESTIGATED_PERSON_NUMBER, !ctxt.personalInfoData.isInvestigatedPersonsNumber);
+                                    })}]}
                                 />
                             </Grid>
                             <Grid item xs={2}>
@@ -56,6 +68,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                                 placeholder={'שלום'}
                                                 options={['1', '2', '3']}
                                                 className={classes.selectWidth}
+                                                onChange={(event) => {
+                                                    handleChangeField(ctxt, PersonalInfoDataContextFields.SELECT_REASON_NUMBER_IS_NOT_RELATED, event.target.value);
+                                                }}
                                             />
                                         </div>
                                     }
@@ -69,6 +84,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                     placeholder="כתוב סיבה..." 
                                     size='small' 
                                     className={classes.writeReason}
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.WRITE_REASON_WHY_NUMBER_IS_NOT_RELATED, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -86,6 +104,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                     id="phone2" 
                                     placeholder="טלפון:" 
                                     size='small'
+                                    onChange={(event) => {
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -100,12 +121,17 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                                 <Toggle 
-                                    toggleValue={false}
-                                    toggleChangeFunc={function f(event: any, value: boolean) {
-
-                                    }}
+                                    value={ctxt.personalInfoData.gender === Gender.FEMALE}
                                     firstOption={"זכר"}
-                                    secondOption={"נקבה"} />
+                                    secondOption={"נקבה"}
+                                    onChange={(event) => {
+                                                    handleChangeField(
+                                                        ctxt, 
+                                                        PersonalInfoDataContextFields.GENDER, 
+                                                        ctxt.personalInfoData.gender === Gender.MALE ? Gender.FEMALE :
+                                                            Gender.MALE);
+                                                }}
+                                />
                             </Grid>
                         </Grid>
 
@@ -119,10 +145,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                                 <Toggle 
-                                    toggleValue={false}
-                                    toggleChangeFunc={function f(event: any, value: boolean) {
-
-                                    }}
+                                    value={false}
                                     firstOption={'ת.ז'}
                                     secondOption={'דרכון'} />
                             </Grid>
@@ -152,12 +175,11 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                 <CircleTextField 
                                     id="age" 
                                     placeholder="גיל:" 
-                                    value={age}
+                                    value={ctxt.personalInfoData.age}
                                     size='small'
                                     className={classes.ageText}
                                     onChange={(event) => {
-                                        setAge(event.target.value);
-                                        ctxt.age = event.target.value;
+                                        handleChangeField(ctxt, PersonalInfoDataContextFields.AGE, event.target.value);
                                     }}
                                 />
                             </Grid>

@@ -5,7 +5,7 @@ import Gender from 'models/enums/Gender';
 import IdentificationType from 'models/enums/IdentificationTypes';
 import RelevantOccupations from 'models/enums/RelevantOccupations';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
-import { PersonalInfoContextProvider } from 'commons/Contexts/PersonalInfoStateContext';
+import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
 
 import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
@@ -19,7 +19,7 @@ export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const [personalInfoState, setPersonalInfoState] = React.useState<personalInfoContextData>({
+    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',
         isInvestigatedPersonsNumber: true,
         selectReasonNumberIsNotRelated: '',
@@ -45,11 +45,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         institutionName: ''
     });
 
-    const personalInfoValue: personalInfoContextData = React.useMemo(
+    const personalInfoValue: PersonalInfoDataAndSet = React.useMemo(
         () => ({
-            ...personalInfoState
+            personalInfoData,
+            setPersonalInfoData
         }),
-        [personalInfoState]
+        [personalInfoData, setPersonalInfoData]
     );
 
     const {
@@ -71,6 +72,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         <Button className={classes.finishInvestigationButton} onClick={() => {
                             currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
                                 setCurrentTab(tabs[currentTab.id + 1])
+                            
+                            console.log(personalInfoData);
                         }}>
                             {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                         </Button>
