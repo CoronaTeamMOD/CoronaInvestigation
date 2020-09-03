@@ -2,7 +2,7 @@ import React from 'react';
 
 import Gender from 'models/enums/Gender';
 import IdentificationType from 'models/enums/IdentificationTypes';
-import RelevantOccupations from 'models/enums/RelevantOccupations';
+import RelevantOccupations from '../../../../models/enums/RelevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
