@@ -11,6 +11,9 @@ export const useStyles = makeStyles({
         paddingBottom: '1.5vh'
     },
     textField: {
-        width: '9.5vw',
+        width: '12vw',
+    },
+    text: {
+        marginTop: '0.5vh',
     },
 });

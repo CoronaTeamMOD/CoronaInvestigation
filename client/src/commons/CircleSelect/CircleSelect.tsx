@@ -1,35 +1,34 @@
 import React from 'react';
-import { Select, SelectProps, FormControl } from '@material-ui/core';
+import {Select, SelectProps, MenuItem} from '@material-ui/core';
 
 import useStyles from './CircleSelectStyles'
 
-const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
+const CircleSelect = (props: Props): JSX.Element => {
     const classes = useStyles({});
-    const {options, placeholder, className, ...rest} = props;
-    const classNames = [className, classes.selectBorder];
+    const {options, isNameUnique = true, idKey, valueKey, ...rest} = props;
 
+    const optionComponent = (value: any, name?: string)  => <MenuItem key={value} value={value}>{name || value}</MenuItem>
+    const mapComponentFunction = (selectItem: any) => {
+        return isNameUnique ? optionComponent(selectItem) : optionComponent(selectItem[props.valueKey as string], selectItem[props.idKey as string])
+    }
     return (
-        <FormControl variant="outlined" className={classes.formControl}>
-            <Select
+            <Select variant='outlined'
                 {...rest}
-                className={classNames.join(' ')}
+                className={classes.selectBorder}
                 classes={{ root: classes.unsetSelectColor }}
             >
                 {
-                    placeholder && <option key={-1} value={''} disabled>{placeholder}</option> 
-                }
-                {
-                    options.map((option, index) => {
-                        return <option key={index} value={option}>{option}</option>
-                    })
+                    options.map(mapComponentFunction)
                 }
             </Select>
-        </FormControl>
-    );  
+    );
 };
 
 export default CircleSelect;
 
 interface Props extends SelectProps {
-    options: string[]
+    options: string[];
+    isNameUnique?: boolean;
+    idKey?: string;
+    valueKey?: string;
 };

@@ -5,6 +5,7 @@ import { Tab as TabObj } from 'models/Tab';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
+import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 
 export const defaultTab: TabObj = {
@@ -20,7 +21,7 @@ export const tabs: TabObj[] = [
         id: 1,
         name: 'בידוד ופרטים קליניים',
         isDisabled: false,
-        displayComponent: <></>,
+        displayComponent: <ClinicalDetails />
     },
     {
         id: 2,
@@ -74,7 +75,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             </Paper>
             {
                 tabs.map((tab) => (
-                    <Paper key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
+                    <Paper key={tab.id} className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
                     </Paper>
                 ))

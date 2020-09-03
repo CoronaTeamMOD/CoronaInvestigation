@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Typography, TextField, StandardTextFieldProps  } from '@material-ui/core';
+import { Typography, StandardTextFieldProps  } from '@material-ui/core';
 
 import { useStyles } from './DatePickStyles';
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
@@ -12,18 +13,16 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <div className={classes.dateField}>
             {
-                text && <Typography>
+                text && <Typography className={classes.text}>
                     <b>{text + ':'}</b>
                 </Typography>
             }
             <div className={classes.dateText}>
-                <TextField
+                <CircleTextField
                     id={datePickerType}
                     type={datePickerType}
                     className={classes.textField}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
+                    size='small'
                     {...rest}
                 />
             </div>
