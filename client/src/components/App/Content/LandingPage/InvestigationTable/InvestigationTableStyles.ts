@@ -11,6 +11,14 @@ const useStyles = makeStyles({
     tableContainer : {
         width: '70vw',
         height: '75vh',
+    },
+    welcomeMessage: {
+        fontSize: '4vh',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    errorAlertTitle: {
+        fontFamily: 'Assistant'
     }
 });
 
