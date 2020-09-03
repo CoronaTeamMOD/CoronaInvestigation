@@ -2,14 +2,14 @@ interface ClinicalDetailsData {
     isolationStartDate: Date;
     isolationEndDate: Date;
     isolationAddress: string;
-    hasTroubleIsolating: boolean;
-    troubleIsolatingReason: string;
-    symptomsStartDate: Date;
+    isIsolationProblem: boolean;
+    isIsolationProblemMoreInfo: string;
+    symptomsStartDate: Date | null;
     symptoms: string[];
     backgroundIllnesses: string[];
     hospital: string;
-    hospitalStartDate: Date;
-    hospitalEndDate: Date;
+    hospitalizationStartDate: Date;
+    hospitalizationEndDate: Date;
 };
 
 export default ClinicalDetailsData;

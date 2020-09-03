@@ -16,14 +16,14 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: new Date(),
     isolationEndDate: new Date(),
     isolationAddress: '',
-    hasTroubleIsolating: false,
-    troubleIsolatingReason: '',
+    isIsolationProblem: false,
+    isIsolationProblemMoreInfo: '',
     symptomsStartDate: new Date(),
     symptoms: [''],
     backgroundIllnesses: [''],
     hospital: '',
-    hospitalStartDate: new Date(),
-    hospitalEndDate: new Date(),
+    hospitalizationStartDate: new Date(),
+    hospitalizationEndDate: new Date(),
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {

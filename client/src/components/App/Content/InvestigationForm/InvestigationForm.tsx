@@ -58,7 +58,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <Button variant='contained' className={classes.finishInvestigationButton} onClick={() => {
                                 currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
                                     setCurrentTab(tabs[currentTab.id + 1])
-                                    //console.log(clinicalDetailsVariables.clinicalDetailsData)
                             }}>
                                 {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                             </Button>
