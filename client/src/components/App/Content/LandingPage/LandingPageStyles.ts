@@ -6,11 +6,6 @@ const useStyles = makeStyles({
     content: {
         height: '84vh',
         backgroundColor: primaryBackgroundColor,
-    },
-    welcomeMessage: {
-        fontSize: '4vh',
-        display: 'flex',
-        justifyContent: 'center'
     }
 });
 

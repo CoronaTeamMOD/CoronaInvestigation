@@ -3,7 +3,7 @@ import * as Actions from './userActionTypes';
 
 
 const initialState: User = {
-    id: 'XXXX',
+    id: 4,
     name: 'XXXXXX'
 }
 
