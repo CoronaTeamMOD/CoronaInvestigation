@@ -14,6 +14,6 @@ export const useStyles = makeStyles({
         width: '12vw',
     },
     text: {
-        marginTop: '2.3%',
+        marginTop: '0.5vh',
     },
 });

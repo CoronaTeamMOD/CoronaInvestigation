@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontSize: '15px'
     },
     unsetSelectColor: {
-        backgroundColor: 'unset !important'
+        backgroundColor: 'unset !important',
     },
     formControl: {
         margin: theme.spacing(1),

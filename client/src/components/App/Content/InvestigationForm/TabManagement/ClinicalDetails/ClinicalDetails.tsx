@@ -76,10 +76,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundIllnesses, setSelectedBackgroundIllnesses] = React.useState<string[]>([]);
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, wasHospitalizedToggle } = useClinicalDetails(
-        {
-            setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses, setWasHospitalized
-        });
+    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, wasHospitalizedToggle } = useClinicalDetails({
+        setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses, setWasHospitalized
+    });
+
+    const context = React.useContext(clinicalDetailsDataContext);
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -108,8 +109,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
         updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_ILLNESSES, selectedBackgroundIllnesses)
     };
-
-    const context = React.useContext(clinicalDetailsDataContext);
 
     return (
         <div>
