@@ -30,7 +30,8 @@ stages:
   
   - job: buildDevServerDocker
     dependsOn: BuildJob
-    displayName: buildAndPush dev branch server docker  
+    displayName: buildAndPush dev branch server docker
+    continueOnError: 'false'
     condition: eq(variables.isDev,true)
     steps:
     - task: Docker@2
@@ -46,7 +47,8 @@ stages:
 
   - job: buildTestServerDocker
     dependsOn: BuildJob
-    displayName: buildAndPush test branch server docker  
+    displayName: buildAndPush test branch server docker
+    continueOnError: 'false'
     condition: eq(variables.isTest,true)
     steps:
     - task: Docker@2
@@ -62,7 +64,8 @@ stages:
 
   - job: buildMasterServerDocker
     dependsOn: BuildJob
-    displayName: buildAndPush master branch server docker  
+    displayName: buildAndPush master branch server docker
+    continueOnError: 'false'
     condition: eq(variables.isMaster,true)
     steps:  
     - task: Docker@2

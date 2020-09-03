@@ -37,6 +37,7 @@ stages:
   - job: buildDevClientDocker
     dependsOn: BuildJob
     displayName: buildAndPush dev branch client docker
+    continueOnError: 'false'
     condition: eq(variables.isDev,true)
     steps:
     - task: Docker@2
@@ -53,6 +54,7 @@ stages:
   - job: buildTestClientDocker
     dependsOn: BuildJob
     displayName: buildAndPush test branch client docker
+    continueOnError: 'false'
     condition: eq(variables.isTest,true)
     steps:
     - task: Docker@2
@@ -69,6 +71,7 @@ stages:
   - job: buildMasterClientDocker
     dependsOn: BuildJob
     displayName: buildAndPush master branch client docker
+    continueOnError: 'false'
     condition: eq(variables.isMaster,true)
     steps:
     - task: Docker@2
