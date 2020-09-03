@@ -6,4 +6,8 @@ personalDetailsRoute.get('/', (request: Request, response: Response) => {
     response.send('Hello from Personal Details route');
 })
 
+personalDetailsRoute.post('/savePersonalDetails', (request: Request, response: Response) => {
+    response.send('Hello from Personal Details route');
+})
+
 export default personalDetailsRoute;
