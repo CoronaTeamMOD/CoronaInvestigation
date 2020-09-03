@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 
-import useInvestigationForm from './useInvestigationForm';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+
 import useStyles from './InvestigationFormStyles';
+import useInvestigationForm from './useInvestigationForm';
 import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider, StartInvestigationDateVariables } from './StartInvestigationDateVariables/StartInvestigationDateVariables';
@@ -16,7 +17,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
-    const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>();
+    const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const {
         currentTab,
         setCurrentTab,
@@ -47,16 +48,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         setCurrentTab={setCurrentTab}
                     />
                     <div className={classes.buttonSection}>
-                        <Button 
-                            variant='contained' 
-                            color='primary' 
-                            className={classes.finishInvestigationButton} 
-                                onClick={() => {
+                        <PrimaryButton  
+                            onClick={() => {
                                 currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
                                     setCurrentTab(tabs[currentTab.id + 1])
                             }}>
                                 {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                        </Button>
+                        </PrimaryButton>
                     </div>
                 </div>
             </StartInvestigationDateVariablesProvider>

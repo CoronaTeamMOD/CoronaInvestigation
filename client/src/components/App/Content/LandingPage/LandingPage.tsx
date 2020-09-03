@@ -3,7 +3,6 @@ import {useSelector} from 'react-redux';
 import { Typography } from '@material-ui/core';
 
 import User from 'models/User';
-import theme  from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './LandingPageStyles';
