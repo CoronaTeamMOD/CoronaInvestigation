@@ -8,7 +8,6 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
     const createNewInteractionEvent = (interactionEventVariables: InteractionEventVariables) : void => {
         console.log(interactionEventVariables);
         closeDialog();
-        // TODO: insert the event from db
     }
 
     return {        

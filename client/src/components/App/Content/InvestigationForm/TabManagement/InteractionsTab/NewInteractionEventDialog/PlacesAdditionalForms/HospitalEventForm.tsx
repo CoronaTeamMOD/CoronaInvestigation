@@ -1,14 +1,15 @@
 import React from 'react';
-import { Grid, Select, MenuItem } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import useStyles from '../NewInteractionEventDialogStyles';
 import { InteractionEventVariablesConsumer, InteractionEventVariables } from '../InteractionEventVariables';
 
-const hospitals = [
+export const hospitals = [
     'איכילוב',
     'תל השומר',
     'הדסה'
@@ -19,16 +20,12 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
     const classes = useStyles();
     const formClasses = useFormStyles();
 
-    const onNameChange = (event: React.ChangeEvent<any>, ctxt: InteractionEventVariables) => 
-        ctxt.setLocationName && ctxt.setLocationName(event.target.value);
+    const onNameChange = (event: React.ChangeEvent<{ value: unknown }>, ctxt: InteractionEventVariables) => 
+        ctxt.setLocationName && ctxt.setLocationName(event.target.value as string);
 
     const onHospitalDepartmentChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         ctxt.setHospitalDepartment && ctxt.setHospitalDepartment(event.target.value);
 
-    const onAddressChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
-        (ctxt.setLocationAddress && ctxt.locationAddress) &&
-            ctxt.setLocationAddress({...ctxt.locationAddress, city: event.target.value});
-    
     const onContactNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         ctxt.setBuisnessContactName && ctxt.setBuisnessContactName(event.target.value);
 
@@ -43,16 +40,11 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                     <div className={formClasses.formRow}>
                         <Grid item xs={5}>
                             <FormInput fieldName='שם בית חולים'>
-                                <Select
-                                    value={ctxt.locationName}
+                                <CircleSelect
+                                    value={ctxt.locationName || ''}
                                     onChange={event => onNameChange(event, ctxt)}
-                                    className={classes.formSelect}>
-                                {
-                                    hospitals.map((hospitalName: string) => (
-                                        <MenuItem key={hospitalName} value={hospitalName}>{hospitalName}</MenuItem>
-                                    ))
-                                }
-                                </Select>
+                                    className={classes.formSelect}
+                                    options={hospitals}/>
                             </FormInput>
                         </Grid>
                         <Grid item xs={3}>
@@ -60,15 +52,6 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                                 <CircleTextField 
                                     value={ctxt.hospitalDepartment} 
                                     onChange={(event) => onHospitalDepartmentChange(event, ctxt)}/>
-                            </FormInput>
-                        </Grid>
-                    </div>
-                    <div className={formClasses.formRow}>
-                        <Grid item xs={5}>
-                            <FormInput fieldName='כתובת'>
-                                <CircleTextField 
-                                    value={ctxt.locationAddress?.city} 
-                                    onChange={event => onAddressChange(event, ctxt)}/>
                             </FormInput>
                         </Grid>
                     </div>

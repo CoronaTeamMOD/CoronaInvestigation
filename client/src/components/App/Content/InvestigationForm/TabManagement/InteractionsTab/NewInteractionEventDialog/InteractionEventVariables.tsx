@@ -37,7 +37,7 @@ export interface InteractionEventVariables {
     setBusCompany?: React.Dispatch<React.SetStateAction<string | undefined>>;
     setAirline?: React.Dispatch<React.SetStateAction<string | undefined>>;
     setFlightNumber?: React.Dispatch<React.SetStateAction<string | undefined>>;
-    setGrade?: React.Dispatch<React.SetStateAction<string | undefined >>;
+    setGrade?: React.Dispatch<React.SetStateAction<string | undefined>>;
     setBoardingStation?: React.Dispatch<React.SetStateAction<string | undefined>>;
     setBoardingCountry?: React.Dispatch<React.SetStateAction<string | undefined>>;
     setBoardingCity?: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -55,6 +55,7 @@ export const intialInteractionEventVariables: InteractionEventVariables = {
     startTime: undefined,
     endTime: undefined,
     externalizationApproval: false,
+    grade: ''
 };
 
 const interactionEventVariables = createContext<InteractionEventVariables>(intialInteractionEventVariables)

@@ -1,14 +1,17 @@
 import React from 'react';
-import { Grid, Select, MenuItem } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
+import Address from 'models/Address';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
+import AddressForm from 'commons/AddressForm/AddressForm';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import useStyles from '../NewInteractionEventDialogStyles';
 import { InteractionEventVariablesConsumer, InteractionEventVariables } from '../InteractionEventVariables';
 
-const grades = [
+export const grades = [
     'א',
     'ב',
     'ג',
@@ -35,10 +38,9 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
         ctxt.setGrade &&
             ctxt.setGrade(event.target.value);
 
-    const onAddressChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
-        (ctxt.setLocationAddress && ctxt.locationAddress) &&
-            ctxt.setLocationAddress({...ctxt.locationAddress, city: event.target.value});
-    
+    const onAddressChange = (ctxt: InteractionEventVariables, address: Address) => 
+        ctxt.setLocationAddress && ctxt.setLocationAddress(address); 
+
     const onContactNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, ctxt: InteractionEventVariables) => 
         ctxt.setBuisnessContactName && ctxt.setBuisnessContactName(event.target.value);
 
@@ -53,36 +55,23 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                     <div className={formClasses.formRow}>
                         <Grid item xs={3}>
                             <FormInput fieldName='כיתה'>
-                                <Select
+                                <CircleSelect
                                     value={ctxt.grade}
                                     onChange={(event: React.ChangeEvent<any>) => onGradeChange(event, ctxt)}
                                     className={classes.formSelect}
-                                >
-                                {
-                                    grades.map((grade: string) => (
-                                        <MenuItem key={grade} value={grade}>{grade}</MenuItem>
-                                    ))
-                                }
-                                </Select>
+                                    options={grades}
+                                />
                             </FormInput>
                         </Grid>
                     </div>
                     <div className={formClasses.formRow}>
-                        <Grid item xs={5}>
-                            <FormInput fieldName='שם המוסד'>
-                                <CircleTextField 
-                                    value={ctxt.locationName} 
-                                    onChange={event => onNameChange(event, ctxt)}/>
-                            </FormInput>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <FormInput fieldName='כתובת המוסד'>
-                                <CircleTextField 
-                                    value={ctxt.locationAddress?.city} 
-                                    onChange={event => onAddressChange(event, ctxt)}/>
-                            </FormInput>
-                        </Grid>
+                        <FormInput fieldName='שם המוסד'>
+                            <CircleTextField 
+                                value={ctxt.locationName || ''} 
+                                onChange={event => onNameChange(event, ctxt)}/>
+                        </FormInput>
                     </div>
+                    <AddressForm removeFloor updateAddress={(address: Address) => onAddressChange(ctxt, address)} />
                     <div className={formClasses.formRow}>
                         <Grid item xs={5}>
                             <FormInput fieldName='שם איש קשר'>

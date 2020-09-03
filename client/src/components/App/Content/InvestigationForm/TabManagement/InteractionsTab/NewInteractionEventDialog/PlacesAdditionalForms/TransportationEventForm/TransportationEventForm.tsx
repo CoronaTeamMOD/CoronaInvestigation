@@ -1,8 +1,9 @@
 import React from 'react';
-import { Select, MenuItem, Collapse } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 
 import useStyles from '../../NewInteractionEventDialogStyles';
 import BusEventForm from './TransportationAdditionalForms/BusEventForm';
@@ -10,7 +11,7 @@ import TrainEventForm from './TransportationAdditionalForms/TrainEventForm';
 import FlightEventForm from './TransportationAdditionalForms/FlightEventForm';
 import OrganizedTransportationEventForm from './TransportationAdditionalForms/OrganizedTransportationEventForm';
 
-const transportation = [
+const transportationTypes = [
     'אוטובוס',
     'רכבת',
     'מונית',
@@ -19,41 +20,45 @@ const transportation = [
     'רכב פרטי'
 ]
 
-const TransportationEventForm : React.FC = () : JSX.Element => {
+interface Props {
+    onSubTypeChange: () => void;
+}
+
+const TransportationEventForm : React.FC<Props> = (props: Props) : JSX.Element => {
+    const { onSubTypeChange } = props;
 
     const classes = useStyles();
     const formClasses = useFormStyles();
 
-    const [transportationType, setTransportationType] = React.useState<string>(transportation[0]);
+    const [transportationType, setTransportationType] = React.useState<string>('0');
 
-    const onTransportationTypeChange = (event: React.ChangeEvent<any>) => setTransportationType(event.target.value);
+    React.useEffect(() => {
+        onSubTypeChange();
+    }, [transportationType]);
+
+    const onTransportationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => setTransportationType(event.target.value as string);
     return (
         <>
             <div className={formClasses.formRow}>
                 <FormInput fieldName='סוג תחבורה'>
-                    <Select
+                    <CircleSelect
                         value={transportationType}
                         onChange={onTransportationTypeChange}
                         className={classes.formSelect}
-                    >
-                    {
-                        transportation.map((transpotOption: string) => (
-                            <MenuItem key={transpotOption} value={transpotOption}>{transpotOption}</MenuItem>
-                        ))
-                    }
-                    </Select>
+                        options={transportationTypes}
+                    />
                 </FormInput>
             </div>
-            <Collapse in={transportationType === 'אוטובוס'}>
+            <Collapse in={transportationTypes[+transportationType] === 'אוטובוס'}>
                 <BusEventForm/>
             </Collapse>
-            <Collapse in={transportationType === 'רכבת'}>
+            <Collapse in={transportationTypes[+transportationType] === 'רכבת'}>
                 <TrainEventForm/>                        
             </Collapse>
-            <Collapse in={transportationType === 'טיסה'}>
+            <Collapse in={transportationTypes[+transportationType] === 'טיסה'}>
                 <FlightEventForm/>                    
             </Collapse>
-            <Collapse in={transportationType === 'הסעות'}>
+            <Collapse in={transportationTypes[+transportationType] === 'הסעות'}>
                 <OrganizedTransportationEventForm/>
             </Collapse>
         </>

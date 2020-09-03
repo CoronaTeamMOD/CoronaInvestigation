@@ -38,14 +38,14 @@ const BusEventForm : React.FC = () : JSX.Element => {
                         <Grid item xs={5}>
                             <FormInput fieldName='קו'>
                                 <CircleTextField 
-                                    value={ctxt.busLine} 
+                                    value={ctxt.busLine || ''} 
                                     onChange={event => onBusLineChange(event, ctxt)}/>
                             </FormInput>
                         </Grid>
                         <Grid item xs={5}>
                             <FormInput fieldName='חברה'>
                                 <CircleTextField 
-                                    value={ctxt.busCompany} 
+                                    value={ctxt.busCompany || ''} 
                                     onChange={event => onBusCompanyChange(event, ctxt)}/>
                             </FormInput>
                         </Grid>
