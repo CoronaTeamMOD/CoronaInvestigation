@@ -2,6 +2,9 @@ trigger:
   branches:
     include:
     - shiranTestingCi
+    - Dev
+    - Test
+    - Master
   paths:
     include:
     - 'client/'
@@ -15,6 +18,7 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/Master')]
   isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/Test')]
   isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/Dev')]
+  isShiran: $[eq(variables['Build.SourceBranch'], 'refs/heads/shiranTestingCi')]
 
 stages:
 - stage:
@@ -85,8 +89,25 @@ stages:
         tags: |
           client-master
 
+  - job: buildShiranClientDocker
+    dependsOn: BuildJob
+    displayName: buildAndPush shiran branch client docker
+    continueOnError: 'false'
+    condition: eq(variables.isShiran,true)
+    steps:
+    - task: Docker@2
+      displayName: Build and push client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-shiran
+
   - job: 
-    dependsOn: [buildDevClientDocker, buildTestClientDocker, buildMasterClientDocker]
+    dependsOn: [buildDevClientDocker, buildTestClientDocker, buildMasterClientDocker, buildShiranClientDocker]
     displayName: SemanticRelease
     steps:  
     - script: >
