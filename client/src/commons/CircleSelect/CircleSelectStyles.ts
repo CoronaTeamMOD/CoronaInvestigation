@@ -4,14 +4,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     selectBorder: {
         borderRadius: '25px',
         height: '35px',
-        fontSize: '15px'
+        fontSize: '15px',
+        margin: theme.spacing(1),
+        minWidth: '12vw',
     },
     unsetSelectColor: {
-        backgroundColor: 'unset !important',
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
+        backgroundColor: 'unset !important'
     },
 }));
 

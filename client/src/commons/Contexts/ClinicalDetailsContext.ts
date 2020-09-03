@@ -33,5 +33,4 @@ const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {
 
 
 export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet | EmptyContext>(initialClinicalDetailsContext);
-export const ClinicalDetailsDataContextConsumer = clinicalDetailsDataContext.Consumer;
-export const ClinicalDetailsDataContextProvider = clinicalDetailsDataContext.Provider; 
+export const ClinicalDetailsDataContextProvider = clinicalDetailsDataContext.Provider;
