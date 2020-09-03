@@ -5,5 +5,5 @@ export const useStyles = makeStyles({
         borderRadius: '2.5vh',
         height: '4vh',
         width: '3vw',
-    }
+    },
 });
