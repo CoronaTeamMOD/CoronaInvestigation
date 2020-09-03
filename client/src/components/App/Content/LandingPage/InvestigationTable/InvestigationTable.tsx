@@ -1,12 +1,6 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import Typography from '@material-ui/core/Typography';
-import TableHead from '@material-ui/core/TableHead';
-import TableContainer from '@material-ui/core/TableContainer';
+import { Paper, Table, TableRow, TableBody, 
+         TableCell, Typography, TableHead, TableContainer } from '@material-ui/core';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable from './useInvestigationTable';
