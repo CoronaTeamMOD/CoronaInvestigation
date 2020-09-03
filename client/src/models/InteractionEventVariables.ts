@@ -1,4 +1,4 @@
-export interface InteractionEventVariables {
+interface InteractionEventVariables {
     placeType: string;
     eventStartTime?: string;
     eventEndTime?: string;

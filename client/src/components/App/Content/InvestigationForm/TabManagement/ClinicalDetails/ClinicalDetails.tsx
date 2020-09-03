@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
-import { Check } from 'models/Check';
+import Check from 'models/Check';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
