@@ -7,25 +7,21 @@ trigger:
     - 'client/'
 
 variables:
-  azureSC: 'coronai'
-  buildConfiguration: 'Release'
-  location: 'North Europe'
-  acrHostName: 'coronai.azurecr.io'
   arcName: 'coronai'
-  rgName: 'spectrumFactory'
   imageName: 'coronaiDocker'
-  webAppName: 'coronai'
   MOHarcName: 'IDFDocker'
   AzureContainerRegistry: 'AzureContainerRegistry'
   MOHContainerRegistry: 'MOHContainerRegistry'
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/shiranTestingCi')]
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/Master')]
+  isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/Test')]
+  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/Dev')]
 
 stages:
 - stage:
   displayName: TestsAndBuildStage
   jobs:
   - job:
-    condition: eq(variables.isMain,true)
+    condition: eq(variables.isMaster,true)
     displayName: testingCondition
     steps:
     - script: |
@@ -40,41 +36,15 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
 
-    # - script: >
-    #     npx -p semantic-release
-    #     -p @semantic-release/git
-    #     -p semantic-release-ado
-    #     semantic-release
-    #   env: { GH_TOKEN: $(GitHubToken) }
-    #   displayName: 'Semantic release'
-
-    # - script: echo $(GH_TOKEN)
-    #   displayName: 'Show next version'
-
     - script: |
         cd client
         npm install
         npm run build
       displayName: 'npm build client'
-
-    # - task: Docker@1
-    #   displayName: Build an image to container registry
-    #   inputs:
-    #     repository: '$(arcName)'
-    #     azureSubscriptionEndpoint: 'AzureSC'
-    #     azureContainerRegistry: '$(acrHostName)'
-    #     imageName: '$(imageName):(Build.BuildId)'
-    #     useDefaultContext: false
-    #     buildContext: '$(System.DefaultWorkingDirectory)'
-
-    # - task: Docker@1
-    #   displayName: push an image to container registry
-    #   inputs:
-    #     command: 'Push an image'
-    #     azureSubscriptionEndpoint: 'AzureSC'
-    #     azureContainerRegistry: '$(acrHostName)'
-    #     imageName: '$(imageName):(Build.BuildId)'
-
+  
+  - job:
+    displayName: buildAndPush dev branch client docker
+    condition: eq(variables.isDev,true)
     - task: Docker@2
       displayName: Build and push client image to container registry
       inputs:
@@ -84,7 +54,46 @@ stages:
         azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
-          client
+          client-dev
+
+  - job:
+    displayName: buildAndPush test branch client docker
+    condition: eq(variables.isTest,true)
+    - task: Docker@2
+      displayName: Build and push client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-test
+
+    - job:
+      displayName: buildAndPush master branch client docker
+      condition: eq(variables.isMaster,true)
+      - task: Docker@2
+        displayName: Build and push client image to container registry
+        inputs:
+          command: buildAndPush
+          dockerfile: '**/client/Dockerfile'
+          repository: '$(arcName)'
+          azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+          containerRegistry: '$(AzureContainerRegistry)'
+          tags: |
+            client-master
+
+    - script: >
+        npx -p semantic-release
+        -p @semantic-release/git
+        -p semantic-release-ado
+        semantic-release
+      env: { GH_TOKEN: $(GitHubToken) }
+      displayName: 'Semantic release'
+  
+    - script: echo $(GH_TOKEN)
+      displayName: 'Show next version'
 
 # - stage: 
 #   displayName: 'Deployment'
