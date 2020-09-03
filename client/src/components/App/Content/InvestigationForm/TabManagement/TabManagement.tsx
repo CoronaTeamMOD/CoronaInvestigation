@@ -1,17 +1,16 @@
 import React from 'react';
-import rtl from 'jss-rtl';
-import { create } from 'jss';
-import { jssPreset } from '@material-ui/styles';
-import {Paper, Tabs, Tab, Card, StylesProvider, createStyles, withStyles} from '@material-ui/core';
+import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
+
 import useStyles from './TabManagementStyles';
-import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab'
+import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 
 export const defaultTab: TabObj = {
     id: 0,
     name: 'פרטים אישיים',
     isDisabled: false,
+    displayComponent: <PersonalInfoTab />
 };
 
 export const tabs: TabObj[] = [
@@ -20,20 +19,21 @@ export const tabs: TabObj[] = [
         id: 1,
         name: 'בידוד ופרטים קליניים',
         isDisabled: false,
+        displayComponent: <></>
     },
     {
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
+        displayComponent: <></>,
     },
     {
         id: 3,
-        name: 'מקומות ומגעים',
+        name: 'מקומות ומגעים', 
         isDisabled: false,
+        displayComponent: <></>,
     },
 ];
-
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
     const { currentTab, setCurrentTab } = tabManagementProps;
@@ -46,10 +46,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }),
     )(Tab);
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-      // TODO: isDisabled needs to be changed to false when all the mandatory fields are filled
-        setCurrentTab(tabs[selectedTab]);
-    };
+  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
+    setCurrentTab({
+        id: selectedTab,
+        name: tabs[selectedTab].name, 
+        displayComponent: tabs[selectedTab].displayComponent,
+        isDisabled: false,
+    });
+  };
 
     return (
         <Card className={classes.card}>
@@ -67,8 +71,13 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     }
                 </Tabs>
             </Paper>
-
-            <PersonalInfoTab />
+            {
+                tabs.map((tab) => (
+                    <Paper key={tab.id} hidden={tab.id !== currentTab.id}>
+                        {tab.displayComponent}
+                    </Paper>
+                ))
+            }
         </Card>
     )
 };
@@ -78,4 +87,4 @@ export default TabManagement;
 interface Props {
     currentTab: TabObj;
     setCurrentTab: (currentTab: TabObj) => void;
-}
+};

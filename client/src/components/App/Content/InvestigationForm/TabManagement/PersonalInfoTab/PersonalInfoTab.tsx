@@ -19,7 +19,7 @@ import useStyles from './PersonalInfoTabStyles';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 
-const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
+const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const handleChangeField = (context: PersonalInfoDataAndSet ,fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
@@ -41,8 +41,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1}>
                                 <CircleTextField 
-                                    id="phone" 
-                                    placeholder="טלפון:" 
+                                    id='phone'
+                                    placeholder='טלפון:' 
                                     size='small'
                                     onChange={(event) => {
                                         handleChangeField(ctxt, PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
@@ -80,8 +80,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                                 labelPlacement='start'
                                             />
                                             <CircleTextField 
-                                                id="standard-required" 
-                                                placeholder="כתוב סיבה..." 
+                                                id='reasonNumberIsNotRelated'
+                                                placeholder='כתוב סיבה...'
                                                 size='small' 
                                                 className={classes.writeReason}
                                                 onChange={(event) => {
@@ -103,8 +103,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1}>
                                 <CircleTextField 
-                                    id="phone2" 
-                                    placeholder="טלפון:" 
+                                    id='phone2' 
+                                    placeholder='טלפון:'
                                     size='small'
                                     onChange={(event) => {
                                         handleChangeField(ctxt, PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
@@ -124,8 +124,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                                 <Toggle 
                                     value={ctxt.personalInfoData.gender === Gender.FEMALE}
-                                    firstOption={"זכר"}
-                                    secondOption={"נקבה"}
+                                    firstOption={'זכר'}
+                                    secondOption={'נקבה'}
                                     onChange={(event) => {
                                                     handleChangeField(
                                                         ctxt, 
@@ -162,7 +162,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                 <FormControlLabel
                                     className={classes.unsetFormControlMargin}
                                     control={<CircleTextField
-                                        id="personalId" 
+                                        id='personalId'
                                         className={classes.personalId}
                                         size='small'
                                         onChange={(event) => {
@@ -185,8 +185,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={1}>
                                 <CircleTextField 
-                                    id="age" 
-                                    placeholder="גיל:" 
+                                    id='age'
+                                    placeholder='גיל:' 
                                     value={ctxt.personalInfoData.age}
                                     size='small'
                                     className={classes.ageText}
@@ -209,7 +209,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                 <FormControlLabel
                                     className={classes.unsetFormControlMargin}
                                     control={<CircleTextField
-                                        id="motherName" 
+                                        id='motherName'
                                         className={classes.personalId}
                                         size='small'
                                         placeholder='שם:'
@@ -225,7 +225,7 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                 <FormControlLabel
                                     className={classes.unsetFormControlMargin}
                                     control={<CircleTextField
-                                        id="fatherName" 
+                                        id='fatherName'
                                         className={classes.personalId}
                                         size='small'
                                         placeholder='שם:'
@@ -291,8 +291,8 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                             </Grid>
                             <Grid item xs={3}>
                                 <CircleTextField 
-                                    id="adress" 
-                                    placeholder="מחכה לסנדי:" 
+                                    id='adress'
+                                    placeholder='הכנס כתובת:'
                                     size='small'
                                     onChange={(event) => {
                                         handleChangeField(ctxt, PersonalInfoDataContextFields.ADDRESS, event.target.value);
@@ -310,9 +310,9 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
-                                <FormControl component="fieldset">
-                                    <RadioGroup aria-label="gender" name="gender1" className={classes.relevantOccupationSelect}>
-                                        <FormLabel component="legend" className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
+                                <FormControl component='fieldset'>
+                                    <RadioGroup aria-label='gender' name='gender1' className={classes.relevantOccupationSelect}>
+                                        <FormLabel component='legend' className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
                                         { 
                                             Object.values(RelevantOccupations).map((occupation) => {
                                                 return <FormControlLabel 
@@ -348,9 +348,5 @@ const PersonalInfoTab: React.FC<Props> = (): JSX.Element => {
         </PersonalInfoContextConsumer>
     );
 };
-
-interface Props {
-
-}
 
 export default PersonalInfoTab;
