@@ -1,4 +1,4 @@
-import {createContext, useContext} from 'react';
+import {createContext} from 'react';
 
 import Gender from 'models/enums/Gender';
 import identificationType from 'models/enums/IdentificationTypes';
@@ -37,16 +37,10 @@ const initialPersonalInfoContext: PersonalInfoDataAndSet = {
     setPersonalInfoData: () => {}
 };
 
-interface EmptyContext {
-    clinicalDetailsData: undefined,
-    setClinicalDetailsData: () => {}
-}
-
 export interface PersonalInfoDataAndSet {
     personalInfoData: personalInfoContextData,
     setPersonalInfoData: React.Dispatch<React.SetStateAction<personalInfoContextData>>
 }
 
 export const personalInfoContext = createContext<PersonalInfoDataAndSet>(initialPersonalInfoContext);
-export const PersonalInfoContextConsumer = personalInfoContext.Consumer;
 export const PersonalInfoContextProvider = personalInfoContext.Provider;

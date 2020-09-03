@@ -1,5 +1,4 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Repeat } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     tabInitialContainer: {

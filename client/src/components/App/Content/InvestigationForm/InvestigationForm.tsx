@@ -3,11 +3,9 @@ import React from 'react';
 import Gender from 'models/enums/Gender';
 import IdentificationType from 'models/enums/IdentificationTypes';
 import RelevantOccupations from 'models/enums/RelevantOccupations';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
-
-import useContent from './useInvestigationForm';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
