@@ -19,27 +19,22 @@ const symptomsList: Check[] = [
     {
         id: 0,
         name: 'first',
-        isChecked: false
     },
     {
         id: 1,
         name: 'second',
-        isChecked: false
     },
     {
         id: 2,
         name: 'third',
-        isChecked: false
     },
     {
         id: 3,
         name: 'fourth',
-        isChecked: false
     },
     {
         id: 4,
         name: 'אחר',
-        isChecked: false
     },
 ];
 
@@ -47,27 +42,22 @@ const backgroundIllnessesList: Check[] = [
     {
         id: 0,
         name: 'one',
-        isChecked: false
     },
     {
         id: 1,
         name: 'two',
-        isChecked: false
     },
     {
         id: 2,
         name: 'three',
-        isChecked: false
     },
     {
         id: 3,
         name: 'four',
-        isChecked: false
     },
     {
         id: 4,
         name: 'אחר',
-        isChecked: false
     },
 
 ];
