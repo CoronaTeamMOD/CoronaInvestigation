@@ -2,14 +2,16 @@ import React from 'react';
 import {Typography, Paper, Button} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
-import InfoItemWithIcon from './InfoItemWithIcon';
-import useContent from './useInvestigatedPersonInfo';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+
 import useStyles from './InvestigatedPersonInfoStyles';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
+import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
     const classes = useStyles();
-    const { confirmExitUnfinishedInvestigation } = useContent();
+    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const name = 'לוי כהן';
@@ -36,11 +38,13 @@ const InvestigatedPersonInfo = () => {
 
     return (
         <Paper className={classes.paper}>
-            <div className={classes.investigationHeaderInfo}>
-                <CheckCircleOutline color='primary'/>
-                <Typography variant='h6' className={classes.investigationTitle}>
-                    {name}, {investigationId}
-                </Typography>
+            <div className={classes.headerTopPart}>
+                <div className={classes.investigationHeaderInfo}>
+                    <CheckCircleOutline color='primary'/>
+                    <Typography variant='h6' className={classes.investigationTitle}>
+                        {name}, {investigationId}
+                    </Typography>
+                </div>
             </div>
 
             <div className={classes.informationBar}>
@@ -58,12 +62,10 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <Button variant='contained'
-                        color='primary'
-                        className={classes.exitInvestigationButton}
+                    <PrimaryButton
                         onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה
-                    </Button>
+                    </PrimaryButton>
                     <CustomCheckbox
                         checkboxElements={[{value: isChecked, text: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
                     />

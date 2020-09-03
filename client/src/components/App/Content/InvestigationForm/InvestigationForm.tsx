@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
+import useInvestigationForm from './useInvestigationForm';
 import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
@@ -17,24 +18,29 @@ export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
+    const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
+    const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-
     const {
         currentTab,
         setCurrentTab,
         confirmFinishInvestigation
-    } = useContent();
+    } = useInvestigationForm();
 
-    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
+    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
             exposureDate, 
             symptomsStartDate, 
+            hasSymptoms,
+            endInvestigationDate,
             setExposureDate,
-            setSymptomsStartDate
+            setSymptomsStartDate,
+            setHasSymptoms,
+            setEndInvestigationDate,
         }),
-        [exposureDate, symptomsStartDate, setSymptomsStartDate, setExposureDate]
+        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
+        setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
@@ -42,8 +48,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setClinicalDetailsData
     }),
     [clinicalDetailsData, setClinicalDetailsData]
-);
-
+    );
+    
     return (
         <div className={classes.content}>
             <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
@@ -55,12 +61,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             setCurrentTab={setCurrentTab}
                         />
                         <div className={classes.buttonSection}>
-                            <Button variant='contained' className={classes.finishInvestigationButton} onClick={() => {
-                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
-                                    setCurrentTab(tabs[currentTab.id + 1])
-                            }}>
+                            <PrimaryButton
+                                onClick={() => {
+                                    currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
+                                        setCurrentTab(tabs[currentTab.id + 1])
+                                }}>
                                 {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                            </Button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </StartInvestigationDateVariablesProvider>

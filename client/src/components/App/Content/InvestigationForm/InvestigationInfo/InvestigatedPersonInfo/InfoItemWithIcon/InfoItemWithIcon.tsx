@@ -1,7 +1,8 @@
 import React from 'react';
 import {SvgIconComponent} from '@material-ui/icons';
-import InfoItem, {InfoItemProps} from '../InfoItem';
+
 import useStyles from './InfoItemWithIconStyles';
+import InfoItem, {InfoItemProps} from '../../InfoItem';
 
 interface Props extends InfoItemProps {
     icon: SvgIconComponent;

@@ -2,8 +2,10 @@ import React from 'react';
 import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
+
 import useStyles from './TabManagementStyles';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
+import InteractionsTab from './InteractionsTab/InteractionsTab';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -24,13 +26,13 @@ export const tabs: TabObj[] = [
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <></>,
     },
     {
         id: 3,
-        name: 'מקומות ומגעים',
+        name: 'מקומות ומגעים', 
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <InteractionsTab/>,
     },
 ];
 
@@ -44,11 +46,15 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             },
         }),
     )(Tab);
-  
-    const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-      // TODO: isDisabled needs to be changed to false when all the mandatory fields are filled
-        setCurrentTab(tabs[selectedTab]);
-    };
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
+    setCurrentTab({
+        id: selectedTab,
+        name: tabs[selectedTab].name, 
+        displayComponent: tabs[selectedTab].displayComponent,
+        isDisabled: false,
+    });
+  };
 
     return (
         <Card className={classes.card}>

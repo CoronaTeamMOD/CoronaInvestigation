@@ -5,7 +5,7 @@ const useStyles = makeStyles({
         height: '67vh',
     },
     displyedTab: {
-        height: '63vh',
+        height: '61vh',
         overflow: 'scroll'
     }
 });
