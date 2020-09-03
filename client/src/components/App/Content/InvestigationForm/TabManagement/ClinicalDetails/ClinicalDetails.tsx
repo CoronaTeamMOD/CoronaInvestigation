@@ -110,7 +110,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         <ClinicalDetailsDataContextConsumer>
             {ctxt => (
                 <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
-                    {/* האם שהית בבידוד */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>
@@ -148,7 +147,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </div>
                         </Collapse>
                     </Grid>
-                    {/* כתובת לבידוד נוכחי */}
                     <Typography>
                         <b>
                             כתובת לבידוד נוכחי:
@@ -165,7 +163,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     />
                     <Grid item xs={12}>
                     </Grid>
-                    {/* האם בעייתי לקיים בידוד */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>
@@ -190,7 +187,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </Collapse>
                     <Grid item xs={12}>
                     </Grid>
-                    {/* האם יש סימפטומים */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>
@@ -255,7 +251,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </Grid>
                         </Collapse>
                     </Grid>
-                    {/* האם יש לך מחלות רקע */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>
@@ -303,7 +298,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </Grid>
                         </Collapse>
                     </Grid>
-                    {/* האם אושפז */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>

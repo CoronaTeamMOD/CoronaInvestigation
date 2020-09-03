@@ -10,7 +10,7 @@ interface EmptyContext {
 export interface ClinicalDetailsDataAndSet {
     clinicalDetailsData: ClinicalDetailsData,
     setClinicalDetailsData: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>
-}
+};
 
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: new Date(),
