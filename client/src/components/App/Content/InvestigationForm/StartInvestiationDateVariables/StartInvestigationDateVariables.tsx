@@ -7,7 +7,7 @@ interface EmptyStartInvestigationDateVariables {
     exposureDate: undefined;
     setSymptomsStartDate: undefined;
     setExposureDate: undefined;
-}
+};
 
 const intialStartInvestigationDateVariables: EmptyStartInvestigationDateVariables = {
     symptomsStartDate: undefined,
@@ -16,6 +16,6 @@ const intialStartInvestigationDateVariables: EmptyStartInvestigationDateVariable
     setExposureDate: undefined
 };
 
-const startInvestigationDateVariables = createContext<StartInvestiationDateVariables | EmptyStartInvestigationDateVariables>(intialStartInvestigationDateVariables)
+export const startInvestigationDateVariables = createContext<StartInvestiationDateVariables | EmptyStartInvestigationDateVariables>(intialStartInvestigationDateVariables)
 export const StartInvestigationDateVariablesProvider = startInvestigationDateVariables.Provider;
 export const StartInvestigationDateVariablesConsumer = startInvestigationDateVariables.Consumer;

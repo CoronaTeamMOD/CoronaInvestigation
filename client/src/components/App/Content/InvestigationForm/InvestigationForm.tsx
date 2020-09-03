@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
+import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useContent from './useInvestigationForm';
 import useStyles from './InvestigationFormStyles';
@@ -18,6 +20,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
+    const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
+
     const {
         currentTab,
         setCurrentTab,
@@ -31,27 +35,37 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate
         }),
         [exposureDate, symptomsStartDate, setSymptomsStartDate, setExposureDate]
-    )
+    );
+
+    const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
+        clinicalDetailsData,
+        setClinicalDetailsData
+    }),
+    [clinicalDetailsData, setClinicalDetailsData]
+);
 
     return (
         <div className={classes.content}>
-            <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                <InvestigationInfoBar />
-                <div className={classes.interactiveForm}>
-                    <TabManagement
-                        currentTab={currentTab}
-                        setCurrentTab={setCurrentTab}
-                    />
-                    <div className={classes.buttonSection}>
-                        <Button variant='contained' className={classes.finishInvestigationButton} onClick={() => {
-                            currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
-                                setCurrentTab(tabs[currentTab.id + 1])
-                        }}>
-                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                        </Button>
+            <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
+                <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
+                    <InvestigationInfoBar />
+                    <div className={classes.interactiveForm}>
+                        <TabManagement
+                            currentTab={currentTab}
+                            setCurrentTab={setCurrentTab}
+                        />
+                        <div className={classes.buttonSection}>
+                            <Button variant='contained' className={classes.finishInvestigationButton} onClick={() => {
+                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
+                                    setCurrentTab(tabs[currentTab.id + 1])
+                                    //console.log(clinicalDetailsVariables.clinicalDetailsData)
+                            }}>
+                                {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </StartInvestigationDateVariablesProvider>
+                </StartInvestigationDateVariablesProvider>
+            </ClinicalDetailsDataContextProvider>
         </div>
     )
 }

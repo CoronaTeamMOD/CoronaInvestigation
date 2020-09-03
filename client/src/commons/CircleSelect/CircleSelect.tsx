@@ -17,7 +17,7 @@ const CircleSelect: React.FC<Props> = (props: Props): JSX.Element => {
             >
                 {
                     options.map((option, index) => {
-                        return <option key={index} value={index}>{option}</option>
+                        return <option key={index} value={option}>{option}</option>
                     })
                 }
             </Select>

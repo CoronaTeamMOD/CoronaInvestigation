@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
 import { Check } from 'models/Check';
@@ -7,10 +8,12 @@ import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { ClinicalDetailsDataContextConsumer, ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
-import { StartInvestigationDateVariablesConsumer } from '../../StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 const symptomsList: Check[] = [
     {
@@ -80,19 +83,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [hasBackgroundIllnesses, setHasBackgroundIllnesses] = React.useState<boolean>(false);
     const [hasTroubleIsolating, setHasTroubleIsolating] = React.useState<boolean>(false);
     const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
-    const [symptoms, setSymptoms] = React.useState<Check[]>(symptomsList);
-    const [backgroundIllnesses, setBackgroundIllnesses] = React.useState<Check[]>(backgroundIllnessesList);
-    const [isolationStartDate, setIsolationStartDate] = React.useState<string>('');
-    const [isolationEndDate, setIsolationEndDate] = React.useState<string>('');
-    const [symptomsStartDate, setSymptomsStartDate] = React.useState<string>('');
-    const [hospitalStartDate, setHospitalStartDate] = React.useState<string>('');
-    const [hospitalEndDate, setHospitalEndDate] = React.useState<string>('');
-    const [troubleIsolatingReason, setTroubleIsolatingReason] = React.useState<string>('');
-    const [hospital, setHospital] = React.useState<string>(hospitals[0]);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
-    const [currentIsolationAddress, setCurrentIsolationAddress] = React.useState<string>('');
-
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, hasTroubleIsolatingToggle, wasHospitalizedToggle } = useClinicalDetails(
         {
             setIsInIsolation, setHasSymptoms, setHasBackgroundIllnesses, setHasTroubleIsolating, setWasHospitalized
@@ -102,13 +94,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
     };
 
+    const updateClinicalDetails = (context: ClinicalDetailsDataAndSet, fieldToUpdate: any, updatedValue: any) => {
+        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
+    };
+
     const handleChecklistCheck = (checkId: number, checkList: Check[]) => {
         let updatedSymptoms = [...checkList];
         updatedSymptoms[checkId].isChecked = !updatedSymptoms[checkId].isChecked;
     };
 
     return (
-        <StartInvestigationDateVariablesConsumer>
+        <ClinicalDetailsDataContextConsumer>
             {ctxt => (
                 <Grid className={classes.form} container justify='flex-start' alignItems='center'>
                     {/* האם שהית בבידוד */}
@@ -132,15 +128,19 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={isolationStartDate}
                                     text={'מתאריך'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setIsolationStartDate(event.target.value)}
+                                    value={format(ctxt.clinicalDetailsData?.isolationStartDate as Date, 'yyyy-MM-dd')}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.ISOLATION_START_DATE, new Date(event.target.value))
+                                    )}
                                 />
                                 <DatePick
                                     datePickerType='date'
-                                    value={isolationEndDate}
                                     text={'עד'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setIsolationEndDate(event.target.value)}
+                                    value={format(ctxt.clinicalDetailsData?.isolationEndDate as Date, 'yyyy-MM-dd')}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.ISOLATION_END_DATE, new Date(event.target.value))
+                                    )}
                                 />
                             </div>
                         </Collapse>
@@ -157,8 +157,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         size='small'
                         placeholder='כתובת'
                         className={classes.textField}
-                        value={currentIsolationAddress}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentIsolationAddress(event.target.value)}
+                        value={ctxt.clinicalDetailsData?.isolationAddress}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                            updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.ISOLATION_ADDRESS, event.target.value)
+                        )}
                     />
                     <Grid item xs={12}>
                     </Grid>
@@ -178,8 +180,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                         <Collapse in={hasTroubleIsolating}>
                             <CircleTextField
-                                value={troubleIsolatingReason}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setTroubleIsolatingReason(event.target.value)}
+                                value={ctxt.clinicalDetailsData?.troubleIsolatingReason}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                    updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.TROUBLE_ISOLATING_REASON, event.target.value)
+                                )}
                                 size='small'
                                 className={classes.textField}
                                 placeholder='הכנס סיבה:'
@@ -210,19 +214,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={!isUnkonwnDateChecked ? symptomsStartDate : 'DD/MM/YYYY'}
+                                    value={!isUnkonwnDateChecked ? format(ctxt.clinicalDetailsData?.symptomsStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                     text={'תאריך התחלת סימפטומים'}
                                     disabled={isUnkonwnDateChecked}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSymptomsStartDate(event.target.value)}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.SYMPTOMS_START_DATE, new Date(event.target.value))
+                                    )}
                                 />
                                 <CustomCheckbox
-                                    checkboxElements={[{value: isUnkonwnDateChecked, text: 'תאריך התחלת סימפטומים לא ידוע', onChange: () => (handleUnkonwnDateCheck())}]}
+                                    checkboxElements={[{value: isUnkonwnDateChecked, text: 'תאריך התחלת סימפטומים לא ידוע',
+                                    onChange: () => (handleUnkonwnDateCheck())}]}
                                 />
                             </div>
                             <Typography>סימפטומים:</Typography>
                             <Grid container className={classes.smallGrid}>
                                 {
-                                    symptoms.map((symptom: Check) => (
+                                    symptomsList.map((symptom: Check) => (
                                         <Grid item xs={6}>
                                             <CustomCheckbox
                                             key={symptom.id}
@@ -230,7 +237,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                     key: symptom.id,
                                                     value: symptom.isChecked,
                                                     text: symptom.name,
-                                                    onChange: () => (handleChecklistCheck(symptom.id, symptoms))
+                                                    onChange: () => (handleChecklistCheck(symptom.id, symptomsList))
                                                 }]}
                                             />
                                         </Grid>
@@ -241,7 +248,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
                                     value={otherSymptom}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => setOtherSymptom(event.target.value as string)}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        setOtherSymptom(event.target.value as string)
+                                    )}
                                 />
                             </Grid>
                         </Collapse>
@@ -268,14 +277,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <Collapse in={hasBackgroundIllnesses}>
                             <Grid container className={classes.smallGrid}>
                                 {
-                                    backgroundIllnesses.map((backgroundIllness: Check) => (
+                                    backgroundIllnessesList.map((backgroundIllness: Check) => (
                                         <Grid item xs={6}>
                                             <CustomCheckbox
                                                 checkboxElements={[{
                                                     key: backgroundIllness.id,
                                                     value: backgroundIllness.isChecked,
                                                     text: backgroundIllness.name,
-                                                    onChange: () => (handleChecklistCheck(backgroundIllness.id, backgroundIllnesses))
+                                                    onChange: () => (handleChecklistCheck(backgroundIllness.id, backgroundIllnessesList))
                                                 }]}
                                             />
                                             
@@ -320,29 +329,35 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </Typography>
                                 <CircleSelect
                                     options={hospitals}
-                                    value={hospital}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => setHospital(event.target.value as string)}
+                                    value={ctxt.clinicalDetailsData?.hospital}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.HOSPITAL, event.target.value)
+                                    )}
                                 />
                             </div>
                             <div className={classes.dates}>
                                 <DatePick
                                     datePickerType='date'
-                                    value={hospitalStartDate}
                                     text={'מתאריך'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHospitalStartDate(event.target.value)}
+                                    value={format(ctxt.clinicalDetailsData?.hospitalStartDate as Date, 'yyyy-MM-dd')}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.HOSPITAL_START_DATE, new Date(event.target.value))
+                                    )}
                                 />
                                 <DatePick
                                     datePickerType='date'
-                                    value={hospitalEndDate}
                                     text={'עד'}
-                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHospitalEndDate(event.target.value)}
+                                    value={format(ctxt.clinicalDetailsData?.hospitalEndDate as Date, 'yyyy-MM-dd')}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                                        updateClinicalDetails(ctxt as ClinicalDetailsDataAndSet, ClinicalDetailsFields.HOSPITAL_END_DATE, new Date(event.target.value))
+                                    )}
                                 />
                             </div>
                         </Collapse>
                     </Grid>
                 </Grid>
             )}
-        </StartInvestigationDateVariablesConsumer>
+        </ClinicalDetailsDataContextConsumer>
     );
 };
 
