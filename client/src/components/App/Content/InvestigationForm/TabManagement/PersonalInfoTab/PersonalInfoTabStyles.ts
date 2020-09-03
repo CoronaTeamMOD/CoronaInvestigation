@@ -3,7 +3,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme: Theme) => createStyles({
     tabInitialContainer: {
         paddingTop: '2vh',
-        overflowY: 'scroll',
         height: '64vh'
     },
     PersonalInfoFieldContainer: {
@@ -47,7 +46,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         left: 'unset'
     },
     writeReason: {
-        width: '18vw'
+        width: '22vw',
+        marginLeft: '1vw'        
     },
     personalId: {
         width: '8vw',

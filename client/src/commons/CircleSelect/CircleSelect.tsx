@@ -11,6 +11,7 @@ const CircleSelect = (props: Props): JSX.Element => {
     const mapComponentFunction = (selectItem: any) => {
         return isNameUnique ? optionComponent(selectItem) : optionComponent(selectItem[props.valueKey as string], selectItem[props.idKey as string])
     }
+
     return (
             <Select variant='outlined'
                 {...rest}

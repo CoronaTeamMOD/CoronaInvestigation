@@ -40,7 +40,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id='phone'
-                        placeholder='טלפון:' 
+                        label='טלפון:' 
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
@@ -56,15 +56,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 {
+                    <Grid item xs={4}>
                         <Collapse 
                             in={!personalInfoStateContext.personalInfoData.isInvestigatedPersonsNumber}>
                             <div className={classes.PersonalInfoFieldContainer}>
                                 <FormControlLabel 
                                     className={classes.unsetFormControlMargin}
                                     control={
-                                        <div className={classes.personalId}>
+                                        <div>
                                             <CircleSelect
-                                                native
                                                 value={personalInfoStateContext.personalInfoData.selectReasonNumberIsNotRelated}
                                                 options={['אין טלפון', 'קטין', 'אחר...']}
                                                 className={classes.selectWidth}
@@ -79,7 +79,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 />
                                 <CircleTextField 
                                     id='reasonNumberIsNotRelated'
-                                    placeholder='כתוב סיבה...'
+                                    label='כתוב סיבה...'
                                     size='small' 
                                     className={classes.writeReason}
                                     onChange={(event) => {
@@ -88,6 +88,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 />
                             </div>
                         </Collapse> 
+                    </Grid>
                 }
             </Grid>
 
@@ -102,7 +103,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id='phone2' 
-                        placeholder='טלפון:'
+                        label='טלפון:'
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
@@ -182,7 +183,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id='age'
-                        placeholder='גיל:' 
+                        label='גיל:' 
                         value={personalInfoStateContext.personalInfoData.age}
                         size='small'
                         className={classes.ageText}
@@ -208,7 +209,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             id='motherName'
                             className={classes.personalId}
                             size='small'
-                            placeholder='שם:'
+                            label='שם:'
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.MOTHER_NAME, event.target.value);
                             }}
@@ -224,7 +225,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             id='fatherName'
                             className={classes.personalId}
                             size='small'
-                            placeholder='שם:'
+                            label='שם:'
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.FATHER_NAME, event.target.value);
                             }}
@@ -245,7 +246,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
-                        native
                         value={personalInfoStateContext.personalInfoData.insuranceCompany}
                         options={['הראל', 'כלל', 'הפניקס']}
                         className={classes.selectWidth}
@@ -266,7 +266,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
-                        native
                         value={personalInfoStateContext.personalInfoData.HMO}
                         options={['אחר', 'כללית', 'מכבי']}
                         className={classes.selectWidth}
@@ -288,7 +287,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <CircleTextField 
                         id='adress'
-                        placeholder='הכנס כתובת:'
+                        label='הכנס כתובת:'
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDRESS, event.target.value);
@@ -327,9 +326,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={3}>
                     <CircleSelect
-                        native
                         value={personalInfoStateContext.personalInfoData.institutionName}
-                        placeholder={'הזן שם מוסד'}
+                        label={'הזן שם מוסד'}
                         options={['צה"ל', 'מוסד', 'אחר']}
                         className={classes.institutionName}
                         onChange={(event) => {
