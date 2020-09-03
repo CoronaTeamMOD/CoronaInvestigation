@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/msal-node": "^1.0.0-alpha.5",
     "@graphile/operation-hooks": "^1.0.0",
     "@graphile/pg-pubsub": "^4.8.0",
     "@graphile/pro": "^0.10.0",
@@ -17,8 +18,8 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "postgraphile": "^4.8.0",
     "pg": "^8.3.3",
+    "postgraphile": "^4.8.0",
     "postgraphile-plugin-connection-filter": "^2.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
