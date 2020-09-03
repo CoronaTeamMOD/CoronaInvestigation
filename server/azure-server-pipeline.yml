@@ -70,26 +70,6 @@ stages:
         containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           server-master
-  
-  - job: 
-    dependsOn: [BuildJob]
-    displayName: SemanticRelease
-    steps:
-    - task: NodeTool@0
-      displayName: install NodeJs
-      inputs:
-        versionSpec: '10.18'
-      
-    - script: >
-        npx -p semantic-release
-        -p @semantic-release/git
-        -p semantic-release-ado
-        semantic-release
-      env: { GH_TOKEN: $(GitHubToken) }
-      displayName: 'Semantic release'
-
-    - script: echo $(GH_TOKEN)
-      displayName: 'Show next version'
 
 # - stage: 
 #   displayName: 'Deployment'
