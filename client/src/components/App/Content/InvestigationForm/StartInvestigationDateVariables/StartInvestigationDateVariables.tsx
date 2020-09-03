@@ -4,18 +4,18 @@ export interface StartInvestigationDateVariables {
     symptomsStartDate: Date | undefined;
     exposureDate: Date | undefined;
     hasSymptoms: boolean;
-    endInvestigationDate: Date | undefined;
+    endInvestigationDate: Date;
     setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | undefined>> | undefined;
     setExposureDate: React.Dispatch<React.SetStateAction<Date | undefined>> | undefined;
     setHasSymptoms: React.Dispatch<React.SetStateAction<boolean>> | undefined;
-    setEndInvestigationDate: React.Dispatch<React.SetStateAction<Date | undefined>> | undefined;
+    setEndInvestigationDate: React.Dispatch<React.SetStateAction<Date>> | undefined;
 }
 
 export const intialStartInvestigationDateVariables: StartInvestigationDateVariables = {
     symptomsStartDate: undefined,
     exposureDate: undefined,
     hasSymptoms: false,
-    endInvestigationDate: undefined,
+    endInvestigationDate: new Date(),
     setSymptomsStartDate: undefined,
     setExposureDate: undefined,
     setHasSymptoms: undefined,
