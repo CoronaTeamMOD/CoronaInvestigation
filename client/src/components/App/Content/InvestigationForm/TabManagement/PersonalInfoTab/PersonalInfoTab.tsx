@@ -8,7 +8,7 @@ import { FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import RelevantOccupations from 'models/enums/RelevantOccupations'
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
