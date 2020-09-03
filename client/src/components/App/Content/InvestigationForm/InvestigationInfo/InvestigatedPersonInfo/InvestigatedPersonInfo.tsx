@@ -1,14 +1,16 @@
 import React from 'react';
-import {Typography, Paper, Button} from '@material-ui/core';
+import {Typography, Paper, FormControlLabel, Checkbox} from '@material-ui/core';
 import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
-import InfoItemWithIcon from './InfoItemWithIcon';
-import useContent from './useInvestigatedPersonInfo';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+
 import useStyles from './InvestigatedPersonInfoStyles';
+import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
+import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
     const classes = useStyles();
-    const { confirmExitUnfinishedInvestigation } = useContent();
+    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const name = 'לוי כהן';
@@ -21,13 +23,27 @@ const InvestigatedPersonInfo = () => {
     const idNumber = '123456789';
     const isDeceased = 'לא';
 
+    const [isChecked, setIsChecked] = React.useState<boolean>(false);
+    
+    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (isChecked) {
+            // TODO: שינוי סטטוס החקירה ללא ניתן ליצור קשר
+        } else {
+            // TODO: שינוי סטטוס החקירה לטיפול
+        }
+        
+        setIsChecked(!isChecked);
+    };
+
     return (
         <Paper className={classes.paper}>
-            <div className={classes.investigationHeaderInfo}>
-                <CheckCircleOutline color='primary'/>
-                <Typography variant='h6' className={classes.investigationTitle}>
-                    {name}, {investigationId}
-                </Typography>
+            <div className={classes.headerTopPart}>
+                <div className={classes.investigationHeaderInfo}>
+                    <CheckCircleOutline color='primary'/>
+                    <Typography variant='h6' className={classes.investigationTitle}>
+                        {name}, {investigationId}
+                    </Typography>
+                </div>
             </div>
 
             <div className={classes.informationBar}>
@@ -45,12 +61,21 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <Button variant='contained'
-                            color='primary'
-                            className={classes.exitInvestigationButton}
-                            onClick={confirmExitUnfinishedInvestigation}>
+                    <PrimaryButton
+                        onClick={confirmExitUnfinishedInvestigation}>
                         צא מחקירה
-                    </Button>
+                    </PrimaryButton>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isChecked}
+                                onChange={handleCheck}
+                                size='small'
+                                name='checked'
+                                color='primary'
+                            />
+                        }
+                        label='אין מענה במספר זה'/>
                 </div>
             </div>
         </Paper>

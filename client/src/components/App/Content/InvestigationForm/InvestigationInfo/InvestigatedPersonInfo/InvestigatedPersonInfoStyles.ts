@@ -1,9 +1,15 @@
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     paper: {
         padding: '0.7vw',
         borderRadius: 0
+    },
+    headerTopPart:{
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingLeft: '3vh',
+        flip:false,
     },
     investigationHeaderInfo: {
         display: 'flex',
@@ -16,10 +22,7 @@ const useStyles = makeStyles({
     },
     informationBar: {
         display: 'flex',
-        flexWrap: 'wrap',
-        whiteSpace: 'pre',
         alignItems: 'center',
-        paddingTop: '1vh',
         justifyContent: 'space-between'
     },
     divider: {
@@ -28,21 +31,18 @@ const useStyles = makeStyles({
     },
     additionalInfo: {
         display: 'flex',
-    },
-    exitInvestigationButton: {
-        marginTop: '1vh',
-        color: 'white',
-        borderRadius: '10vw',
-        height: '4vh',
+        flexWrap: 'wrap',
+        whiteSpace: 'pre',
     },
     managementControllers: {
         display: 'flex',
-        flexDirection: 'column-reverse'
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
-    }
+    },
 });
 
 export default useStyles;
