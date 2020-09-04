@@ -9,13 +9,15 @@ import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import RelevantOccupations from 'models/enums/RelevantOccupations'
+import relevantOccupations from 'models/enums/relevantOccupations'
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 
 import useStyles from './PersonalInfoTabStyles';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
+
+const PHONE_STRING = 'PHONE_STRING'
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -32,14 +34,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            טלפון:
+                            {PHONE_STRING}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
                         id='phone'
-                        label='טלפון:' 
+                        label={PHONE_STRING}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
@@ -102,7 +104,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id='phone2' 
-                        label='טלפון:'
+                        label={PHONE_STRING}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
@@ -305,10 +307,10 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <FormControl component='fieldset'>
-                        <RadioGroup aria-label='gender' name='gender1' className={classes.relevantOccupationSelect}>
+                        <RadioGroup aria-label='gender' name='gender1' className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
                             { 
-                                Object.values(RelevantOccupations).map((occupation) => {
+                                Object.values(relevantOccupations).map((occupation) => {
                                     return <FormControlLabel 
                                                 value={occupation} 
                                                 control={<Radio 
