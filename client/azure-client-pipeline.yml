@@ -24,6 +24,15 @@ stages:
 - stage:
   displayName: TestsAndBuildStage
   jobs:
+
+  - job: defineVars
+    displayName: defineEnvVars
+    condition: eq(variables.isDev, false)
+    variables:
+    - name: (REACT_APP_DB_API)
+      value: $(DB_API_DEV)
+
+
   - job: InstallNPMJob
     displayName: InstallNPMJob
     steps:
@@ -32,60 +41,6 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
       
-  - job: BuildClientOrelTest
-    displayName: BuildClientOrelTest
-    condition: eq(variables.isDev, false)
-    variables:
-    - name: REACT_APP_DB_API
-      value: $(DB_API_DEV)
-
-    steps:
-    - script: |
-        cd client
-        npm install
-        npm run build
-      displayName: 'npm build client'
-
-  - job: BuildClientDev
-    displayName: BuildClientDev
-    condition: eq(variables.isDev, true)
-    variables:
-    - name: REACT_APP_DB_API
-      value: $(DB_API_DEV)
-
-    steps:
-    - script: |
-        cd client
-        npm install
-        npm run build
-      displayName: 'npm build client'
-      
-  - job: BuildClientTest
-    displayName: BuildClientTest
-    condition: eq(variables.isTest, true)
-    variables:
-    - name: REACT_APP_DB_API
-      value: $(DB_API_TEST)
-    - name: isTest
-      value: $(isTest)
-
-    steps:
-    - script: |
-        cd client
-        npm install
-        npm run build
-      displayName: 'npm build client'
-      
-  - job: BuildClientProd
-    displayName: BuildClientProd
-    condition: eq(variables.isMaster, true)
-    variables:
-    - name: REACT_APP_DB_API
-      value: $(DB_API_PROD)
-    - name: isMaster
-      value: $(isMaster)
-
-    steps:
     - script: |
         cd client
         npm install
