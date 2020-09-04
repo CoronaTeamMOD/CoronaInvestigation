@@ -4,7 +4,6 @@ trigger:
     - dev
     - test
     - master
-    - addingNewPipelineVar
   paths:
     include:
     - 'client/'
@@ -20,7 +19,6 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
   isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
-  isShiran: $[eq(variables['Build.SourceBranch'], 'refs/heads/addingNewPipelineVar')]
 
 stages:
 - stage:
@@ -48,15 +46,6 @@ stages:
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
       condition: eq(variables.isMaster,true)
       displayName: 'setting .env db route to prod route'
-
-    - script: |
-        echo "##vso[task.setvariable variable=SHIRAN_IS_THE_BEST]$(DB_API_DEV)"
-      condition: eq(variables.isShiran,true)
-      displayName: 'setting .env db route to dev route'
-
-    - script: |
-        echo $(SHIRAN_IS_THE_BEST)
-      displayName: 'testing if changed'
 
     - script: |
         cd client
