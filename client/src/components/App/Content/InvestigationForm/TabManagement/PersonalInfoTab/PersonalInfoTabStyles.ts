@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         width: '22vw',
         marginLeft: '1vw'        
     },
-    personalId: {
+    textFieldWithLabel: {
         width: '8vw',
         marginLeft: '0.5vw'
     },
