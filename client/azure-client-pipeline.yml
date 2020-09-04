@@ -50,7 +50,7 @@ stages:
       displayName: 'setting .env db route to prod route'
 
     - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
       condition: eq(variables.isShiran,true)
       displayName: 'setting .env db route to dev route'
 
