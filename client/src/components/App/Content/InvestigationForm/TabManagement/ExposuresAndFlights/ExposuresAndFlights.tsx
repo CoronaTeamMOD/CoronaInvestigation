@@ -6,11 +6,49 @@ import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
+import {ExposureDetails, ExposuresContextProvider} from "Contexts/ExposuresAndFlights";
+import PlaceType from "models/PlaceType";
 
 
 const ExposuresAndFlights = () => {
     const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(true);
     const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(true);
+
+    const [exposingPersonName, setExposingPersonName] = React.useState<string>();
+    const [exposureLocation, setExposureLocation] = React.useState<string>();
+    const [placeType, setPlaceType] = React.useState<PlaceType>();
+
+    const [fromAirport, setFromAirport] = React.useState<string>();
+    const [toAirport, setToAirport] = React.useState<string>();
+    const [airline, setAirline] = React.useState<string>();
+    const [flightNumber, setFlightNumber] = React.useState<string>();
+    const [departureDate, setDepartureDate] = React.useState<Date>();
+    const [arrivalDate, setArrivalDate] = React.useState<Date>();
+
+    const contextInitialData: ExposureDetails = {
+        exposureData: {
+            exposingPersonName,
+            exposureLocation,
+            placeType,
+            fromAirport,
+            toAirport,
+            airline,
+            flightNumber,
+            departureDate,
+            arrivalDate,
+        },
+        setExposureData: {
+            exposingPersonName: setExposingPersonName,
+            exposureLocation: setExposureLocation,
+            placeType: setPlaceType,
+            fromAirport: setFromAirport,
+            toAirport: setToAirport,
+            airline: setAirline,
+            flightNumber: setFlightNumber,
+            departureDate: setDepartureDate,
+            arrivalDate: setArrivalDate,
+        }
+    };
 
     const {fieldName} = useFormStyles();
     const classes = useStyles();
@@ -18,7 +56,7 @@ const ExposuresAndFlights = () => {
     const handleVerifiedExposureToggle = (event: React.MouseEvent<HTMLElement>, value: any) => setHadVerifiedExposure(value);
     const handleHasBeenAbroad = (event: React.MouseEvent<HTMLElement>, value: any) => setHasBeenAbroad(value);
     return (
-        <>
+        <ExposuresContextProvider value={contextInitialData}>
             <div className={classes.subForm}>
                 <Typography variant='caption' className={fieldName}>
                     חשיפה אפשרית
@@ -48,7 +86,7 @@ const ExposuresAndFlights = () => {
                     <FlightsForm/>
                 </Collapse>
             </div>
-        </>
+        </ExposuresContextProvider>
     );
 };
 

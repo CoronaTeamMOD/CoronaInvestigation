@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {TextField} from '@material-ui/core';
-import {Airport, City, Country} from '../FlightsForm';
+import {Airport, City, Country} from '../FlightFormTypes';
 import AutocompletedField from './AutoCompletedField/AutocompletedField';
 import useFlightsInvestigation from '../../useFlightsInvestigation';
 import useFormStyle from 'styles/formStyles';
@@ -8,13 +8,13 @@ import {AutocompletedFieldProps} from './AutoCompletedField/AutoCompletedFieldTy
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 interface AirportInputProps {
-    airport: Airport | null;
-    setAirport: Dispatch<SetStateAction<Airport | null>>;
+    airport: Airport | undefined;
+    setAirport: Dispatch<SetStateAction<Airport | undefined>>;
 };
 
 const AirportInput = ({airport, setAirport}: AirportInputProps) => {
-    const [selectedCountry, setSelectedCountry] = React.useState<Country | null>(null);
-    const [selectedCity, setSelectedCity] = React.useState<City | null>(null);
+    const [selectedCountry, setSelectedCountry] = React.useState<Country | undefined>();
+    const [selectedCity, setSelectedCity] = React.useState<City | undefined>();
 
     // search states
     const [cityPrefix, setCityPrefix] = React.useState<string>('');
@@ -29,18 +29,18 @@ const AirportInput = ({airport, setAirport}: AirportInputProps) => {
 
     const classes = useFormStyle();
 
-    const onCountrySelect = (event: React.ChangeEvent<{}>, newValue: Country | null) => {
+    const onCountrySelect = (event: React.ChangeEvent<{}>, newValue: Country | undefined) => {
         setSelectedCountry(newValue);
     };
 
-    const onCitySelect = (event: React.ChangeEvent<{}>, newValue: City | null) => {
+    const onCitySelect = (event: React.ChangeEvent<{}>, newValue: City | undefined) => {
         setSelectedCity(newValue);
         newValue && onCountrySelect(event, newValue.country);
     };
 
-    const onAirportSelect = (event: React.ChangeEvent<{}>, newValue: Airport | null) => {
+    const onAirportSelect = (event: React.ChangeEvent<{}>, newValue: Airport | undefined) => {
         setAirport(newValue);
-        newValue && onCitySelect(event, newValue.city);
+        // newValue && onCitySelect(event, newValue.city);
     };
 
     const onCityInput = (event: React.ChangeEvent<{}>,
@@ -80,22 +80,18 @@ const AirportInput = ({airport, setAirport}: AirportInputProps) => {
     // Fields are temporarily text inputs only
     // Autocomplete fields will be added when api is ready
     const AutocomplteFields = () =>
-        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>)
-    ;
+        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>);
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <CircleTextField label='מדינה'
-                       InputLabelProps={{classes: {root: classes.roundedTextLabel}}}
-                       />
+                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
 
             <CircleTextField label='עיר'
-                       InputLabelProps={{classes: {root: classes.roundedTextLabel}}}
-                       />
+                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
 
             <CircleTextField label='שדה תעופה'
-                       InputLabelProps={{classes: {root: classes.roundedTextLabel}}}
-                       />
+                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
         </div>
     );
 };

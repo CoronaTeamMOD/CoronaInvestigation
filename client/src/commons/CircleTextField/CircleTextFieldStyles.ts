@@ -7,7 +7,9 @@ export const useStyles = makeStyles({
         margin: '0 2%',
         minWidth: '12vw',
     },
-    resize: {
-        fontSize: 13
-    }
+    label: {
+        fontSize: 13,
+        lineHeight: 0,
+
+    },
 });

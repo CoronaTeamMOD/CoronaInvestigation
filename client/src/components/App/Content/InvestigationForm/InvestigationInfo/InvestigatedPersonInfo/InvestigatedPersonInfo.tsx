@@ -10,6 +10,8 @@ import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
+    const leaveInvestigationMessage = 'צא מחקירה';
+
     const classes = useStyles();
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -47,7 +49,7 @@ const InvestigatedPersonInfo = () => {
                 </div>
                 <PrimaryButton
                     onClick={confirmExitUnfinishedInvestigation}>
-                    צא מחקירה
+                    {leaveInvestigationMessage}
                 </PrimaryButton>
             </div>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import server from 'Utils/axios'
-import {Country} from './FlightsForm/FlightsForm';
+import {Country} from './FlightsForm/FlightFormTypes';
 
 interface FlightsInvestigationProps {
     selectedCity: Country | null;
