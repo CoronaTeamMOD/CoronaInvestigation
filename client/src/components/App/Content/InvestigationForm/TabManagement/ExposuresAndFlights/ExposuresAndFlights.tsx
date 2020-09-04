@@ -11,8 +11,8 @@ import PlaceType from "models/PlaceType";
 
 
 const ExposuresAndFlights = () => {
-    const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(true);
-    const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(true);
+    const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(false);
+    const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
 
     const [exposingPersonName, setExposingPersonName] = React.useState<string>();
     const [exposureLocation, setExposureLocation] = React.useState<string>();

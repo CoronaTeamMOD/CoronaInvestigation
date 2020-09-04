@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
-import {Grid, MenuItem} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import RoundedSelect from 'commons/RoundedSelect/RoundedSelect';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import useFormStyles from 'styles/formStyles';
 import {exposuresContext} from "Contexts/ExposuresAndFlights";
 
@@ -37,13 +37,8 @@ const ExposureForm = () => {
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='סוג מקום החשיפה:'>
-                <RoundedSelect value={placeType} onChange={selectPlaceType}>
-                    {
-                        placeTypeOptions.map(placeName =>
-                            <MenuItem key={placeName.id} value={placeName.name}>{placeName.name}</MenuItem>
-                        )
-                    }
-                </RoundedSelect>
+                <CircleSelect isNameUnique={false}
+                              value={placeType} onChange={selectPlaceType} options={placeTypeOptions}/>
             </FormRowWithInput>
         </Grid>
     );

@@ -9,7 +9,5 @@ export const useStyles = makeStyles({
     },
     label: {
         fontSize: 13,
-        lineHeight: 0,
-
     },
 });
