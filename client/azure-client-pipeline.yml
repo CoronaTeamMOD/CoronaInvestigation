@@ -24,6 +24,7 @@ variables:
 stages:
 - stage:
   displayName: TestsAndBuildStage
+  jobs:
   - job: BuildJob
     displayName: BuildJob
     steps:
