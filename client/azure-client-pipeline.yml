@@ -38,12 +38,12 @@ stages:
       condition: eq(variables.isDev,true)
       displayName: 'setting .env db route to dev route'
 
-      - script: |
+    - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
       condition: eq(variables.isTest,true)
       displayName: 'setting .env db route to dev route'
 
-      - script: |
+    - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(PROD)"
       condition: eq(variables.isMaster,true)
       displayName: 'setting .env db route to dev route'
