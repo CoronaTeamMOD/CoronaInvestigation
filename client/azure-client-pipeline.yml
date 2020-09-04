@@ -4,6 +4,7 @@ trigger:
     - dev
     - test
     - master
+    - addingNewPipelineVar
   paths:
     include:
     - 'client/'
@@ -23,24 +24,29 @@ variables:
 stages:
 - stage:
   displayName: TestsAndBuildStage
-  jobs:
-
-  - job: defineVars
-    displayName: defineEnvVars
-    condition: eq(variables.isDev, false)
-    variables:
-    - name: (REACT_APP_DB_API)
-      value: $(DB_API_DEV)
-
-
-  - job: InstallNPMJob
-    displayName: InstallNPMJob
+  - job: BuildJob
+    displayName: BuildJob
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
-      
+
+    - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+      condition: eq(variables.isDev,true)
+      displayName: 'setting .env db route to dev route'
+
+      - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
+      condition: eq(variables.isTest,true)
+      displayName: 'setting .env db route to dev route'
+
+      - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(PROD)"
+      condition: eq(variables.isMaster,true)
+      displayName: 'setting .env db route to dev route'
+
     - script: |
         cd client
         npm install
