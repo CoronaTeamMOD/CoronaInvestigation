@@ -20,6 +20,7 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
   isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
+  isShiran: $[eq(variables['Build.SourceBranch'], 'refs/heads/addingNewPipelineVar')]
 
 stages:
 - stage:
@@ -44,8 +45,13 @@ stages:
       displayName: 'setting .env db route to dev route'
 
     - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(PROD)"
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
       condition: eq(variables.isMaster,true)
+      displayName: 'setting .env db route to dev route'
+
+    - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+      condition: eq(variables.isShiran,true)
       displayName: 'setting .env db route to dev route'
 
     - script: |
