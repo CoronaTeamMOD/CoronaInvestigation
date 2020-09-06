@@ -10,6 +10,8 @@ import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
+    const leaveInvestigationMessage = 'צא מחקירה';
+
     const classes = useStyles();
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -45,6 +47,10 @@ const InvestigatedPersonInfo = () => {
                         {name}, {investigationId}
                     </Typography>
                 </div>
+                <PrimaryButton
+                    onClick={confirmExitUnfinishedInvestigation}>
+                    {leaveInvestigationMessage}
+                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
@@ -62,10 +68,6 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
-                    <PrimaryButton
-                        onClick={confirmExitUnfinishedInvestigation}>
-                        צא מחקירה
-                    </PrimaryButton>
                     <CustomCheckbox
                         checkboxElements={[{value: isChecked, text: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
                     />

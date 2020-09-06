@@ -7,6 +7,7 @@ import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
+import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -27,7 +28,7 @@ export const tabs: TabObj[] = [
         id: 2,
         name: 'חשיפה אפשרית וחו"ל',
         isDisabled: false,
-        displayComponent: <></>,
+        displayComponent: <ExposuresAndFlights/>,
     },
     {
         id: 3,
@@ -59,7 +60,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     return (
         <Card className={classes.card}>
-            <Paper>
                 <Tabs
                     value={currentTab.id}
                     indicatorColor='primary'
@@ -72,12 +72,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         })
                     }
                 </Tabs>
-            </Paper>
             {
                 tabs.map((tab) => (
-                    <Paper key={tab.id} className={classes.displyedTab} hidden={tab.id !== currentTab.id}>
+                    <div key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
                         {tab.displayComponent}
-                    </Paper>
+                    </div>
                 ))
             }
         </Card>
