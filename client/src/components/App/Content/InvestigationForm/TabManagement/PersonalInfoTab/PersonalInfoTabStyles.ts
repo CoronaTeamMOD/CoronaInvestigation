@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     relevantOccupationselect: {
         marginBottom: '3vh'
+    },
+    address: {
+        width: '13vw',
     }
 }));
 

@@ -313,7 +313,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <CircleTextField 
                         id={ADDRESS_LABEL}
                         label={ADDRESS_LABEL}
-                        size='small'
+                        className={classes.address}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDRESS, event.target.value);
                         }}
