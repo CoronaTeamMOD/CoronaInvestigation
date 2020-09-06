@@ -4,7 +4,7 @@ const useStyles = makeStyles({
     card: {
         height: '67vh',
     },
-    displyedTab: {
+    displayedTab: {
         height: '61vh',
         overflow: 'auto'
     }

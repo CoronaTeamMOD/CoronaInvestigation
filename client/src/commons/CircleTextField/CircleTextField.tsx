@@ -11,8 +11,8 @@ const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
             {...props}
             variant='outlined'
             size='small'
-            InputProps={{className: classes.borderRadius}}
-            InputLabelProps={{className: classes.resize}}
+            InputProps={{className: classes.borderRadius, classes: {input: classes.label}}}
+            InputLabelProps={{className: classes.label}}
         />
     );
 };
