@@ -16,10 +16,11 @@ import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-export const LAST_TAB_ID = 3;
-export const END_INVESTIGATION = 'סיים חקירה';
-export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+const LAST_TAB_ID = 3;
+const END_INVESTIGATION = 'סיים חקירה';
+const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
+// TODO: remove after redux is connected
 const epedemioligyNumber = 111;
 
 const InvestigationForm: React.FC = (): JSX.Element => {
@@ -98,6 +99,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
+                            // TODO: connect to redux epedemioligyNumber
                             epedemioligyNumber={111} 
                         />
                         <div className={classes.interactiveForm}>

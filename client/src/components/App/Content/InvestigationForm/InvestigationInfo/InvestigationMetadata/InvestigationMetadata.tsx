@@ -1,6 +1,6 @@
 import React from 'react';
-import {Paper} from '@material-ui/core';
 import { format } from 'date-fns';
+import {Paper} from '@material-ui/core';
 
 import { getPersonFullName } from 'Utils/displayUtils';
 import { InvestigationMetaData } from 'models/InvestigationInfo';
