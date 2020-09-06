@@ -117,7 +117,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Typography>
                         <b>
                             האם שהית בבידוד:
-                            </b>
+                        </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={10}>
@@ -142,7 +142,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 datePickerType='date'
                                 text={'עד'}
-                                value={format(context.clinicalDetailsData?.isolationEndDate as Date, 'yyyy-MM-dd')}
+                                value={context.clinicalDetailsData?.isolationEndDate !== null ? format(context.clinicalDetailsData?.isolationEndDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, new Date(event.target.value))
                                 )}
@@ -153,7 +153,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Typography>
                     <b>
                         כתובת לבידוד נוכחי:
-                        </b>
+                    </b>
                 </Typography>
                 <CircleTextField
                     size='small'
@@ -170,7 +170,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Typography>
                         <b>
                             האם בעייתי לקיים בידוד:
-                            </b>
+                        </b>
                     </Typography>
                 </Grid>
                 <Toggle
@@ -194,7 +194,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Typography>
                         <b>
                             האם יש סימפטומים:
-                            </b>
+                        </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={10}>
@@ -210,7 +210,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 datePickerType='date'
-                                value={!isUnkonwnDateChecked ? format(context.clinicalDetailsData?.symptomsStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
+                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData?.symptomsStartDate !== null) ? format(context.clinicalDetailsData?.symptomsStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                 text={'תאריך התחלת סימפטומים'}
                                 disabled={isUnkonwnDateChecked}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -259,7 +259,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Typography>
                         <b>
                             האם יש לך מחלות רקע:
-                            </b>
+                        </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={10}>
@@ -305,7 +305,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Typography>
                         <b>
                             האם אושפז:
-                            </b>
+                        </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={10}>
@@ -319,10 +319,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Collapse in={wasHospitalized}>
                         <div className={classes.dates}>
-                            <Typography style={{ marginTop: '0.7%' }}>
+                            <Typography>
                                 <b>
                                     בית חולים:
-                                    </b>
+                                </b>
                             </Typography>
                             <CircleSelect
                                 options={hospitals}
@@ -336,7 +336,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 datePickerType='date'
                                 text={'מתאריך'}
-                                value={format(context.clinicalDetailsData?.hospitalizationStartDate as Date, 'yyyy-MM-dd')}
+                                value={context.clinicalDetailsData?.hospitalizationStartDate !== null ? format(context.clinicalDetailsData?.hospitalizationStartDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, new Date(event.target.value))
                                 )}
@@ -344,7 +344,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 datePickerType='date'
                                 text={'עד'}
-                                value={format(context.clinicalDetailsData?.hospitalizationEndDate as Date, 'yyyy-MM-dd')}
+                                value={context.clinicalDetailsData?.hospitalizationEndDate !== null ? format(context.clinicalDetailsData?.hospitalizationEndDate as Date, 'yyyy-MM-dd') : 'yyyy-MM-dd'}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, new Date(event.target.value))
                                 )}
