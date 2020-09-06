@@ -3,8 +3,8 @@ import axios from 'axios';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const instance = axios.create({
-    // TODO: add env variables
-    baseURL: 'http://localhost:8080/clientToDBApi'
+    
+    baseURL: process.env.REACT_APP_DB_API
 });
 
 instance.interceptors.request.use(
