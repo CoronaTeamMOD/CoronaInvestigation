@@ -192,7 +192,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonID + ': '}</Typography>
                 <CircleTextField  id='contactedPersonID'
                                   className={classes.newContactField}
-                                  value={singleContactInfo.id}
                                   placeholder={contactedPersonID}
                                   onBlur={(event) => {
                                       handleIDChange(event, singleContactInfo)
@@ -205,17 +204,16 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     className={classes.toggle}
                     value={singleContactInfo.needsToBeQuarantined}
                     id='needsToBeQuarantinedToggle'
-                    onChange={(event, val) => () => {
+                    onChange={(event, val) => {
                         handleQuarantineToggleChange(val ,singleContactInfo)
                     }}
                 />
                 <CircleTextField className={classes.moreContactDetails}
-                                 value={singleContactInfo.moreDetails}
-                                 placeholder={'פירוט נוסף על אופי המגע'}
-                                 id='moreInfo'
-                                 onBlur={(event) => {
-                                     handleMoreDetailsChange(event, singleContactInfo)
-                                 }}
+                    placeholder={'פירוט נוסף על אופי המגע'}
+                    id='moreInfo'
+                    onBlur={(event) => {
+                        handleMoreDetailsChange(event, singleContactInfo)
+                    }}
                 />
             </div>
         );
