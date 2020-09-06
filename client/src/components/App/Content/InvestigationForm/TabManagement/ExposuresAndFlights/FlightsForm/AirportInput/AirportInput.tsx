@@ -1,8 +1,6 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {TextField} from '@material-ui/core';
 import {Airport, City, Country} from '../FlightFormTypes';
 import AutocompletedField from './AutoCompletedField/AutocompletedField';
-import useFlightsInvestigation from '../../useFlightsInvestigation';
 import useFormStyle from 'styles/formStyles';
 import {AutocompletedFieldProps} from './AutoCompletedField/AutoCompletedFieldTypes';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';

@@ -70,7 +70,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     } = useInvestigationForm();
 
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
-            exposureDate, 
+            exposureDate,
             symptomsStartDate, 
             hasSymptoms,
             endInvestigationDate,

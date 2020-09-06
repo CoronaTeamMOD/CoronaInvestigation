@@ -1,5 +1,5 @@
 import React from 'react';
-import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/core';
+import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 
