@@ -92,7 +92,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const handleSymptomCheck = (symptom: Check) => {
-        if (selectedSymptoms.find(checkedName => checkedName === symptom.name)) {
+        if (selectedSymptoms.find(checkedSymptom => checkedSymptom === symptom.name)) {
             setSelectedSymptoms(selectedSymptoms.filter((checkedSymptom) => checkedSymptom !== symptom.name));
         } else {
             selectedSymptoms.push(symptom.name);
@@ -102,7 +102,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: Check) => {
-        if (selectedBackgroundIllnesses.find(checkedName => checkedName === backgroundIllness.name)) {
+        if (selectedBackgroundIllnesses.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness.name)) {
             setSelectedBackgroundIllnesses(selectedBackgroundIllnesses.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness.name));
         } else {
             selectedBackgroundIllnesses.push(backgroundIllness.name);
