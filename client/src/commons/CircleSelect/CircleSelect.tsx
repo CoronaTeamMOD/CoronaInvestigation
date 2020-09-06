@@ -5,12 +5,14 @@ import useStyles from './CircleSelectStyles'
 
 const CircleSelect = (props: Props): JSX.Element => {
     const classes = useStyles({});
-    const {options, isNameUnique = true, idKey, valueKey, ...rest} = props;
-
-    const optionComponent = (value: any, name?: string)  => <MenuItem key={value} value={value}>{name || value}</MenuItem>
+    const {options, isNameUnique = true, idKey = 'id', nameKey = 'name', ...rest} = props;
+    const optionComponent = (id: any, name?: string)  => <MenuItem key={id} value={id}>{name || id}</MenuItem>
     const mapComponentFunction = (selectItem: any) => {
-        return isNameUnique ? optionComponent(selectItem) : optionComponent(selectItem[props.valueKey as string], selectItem[props.idKey as string])
+        return (isNameUnique)
+            ? optionComponent(selectItem)
+            : optionComponent(selectItem[idKey],selectItem[nameKey] )
     }
+
     return (
             <Select variant='outlined'
                 {...rest}
@@ -27,8 +29,8 @@ const CircleSelect = (props: Props): JSX.Element => {
 export default CircleSelect;
 
 interface Props extends SelectProps {
-    options: string[];
+    options: any[];
     isNameUnique?: boolean;
     idKey?: string;
-    valueKey?: string;
+    nameKey?: string;
 };

@@ -28,7 +28,7 @@ SET default_tablespace = '';
 CREATE TABLE public.address (
     id integer NOT NULL,
     city character varying,
-    neighbourhood character varying,
+    neighborhood character varying,
     street character varying,
     entrance character varying,
     house_num integer,
@@ -653,7 +653,7 @@ ALTER TABLE ONLY public.address
 --
 
 ALTER TABLE ONLY public.address
-    ADD CONSTRAINT address_uk UNIQUE (city, neighbourhood, street, entrance, house_num, floor, apartment);
+    ADD CONSTRAINT address_uk UNIQUE (city, neighborhood, street, entrance, house_num, floor, apartment);
 
 
 --

@@ -5,11 +5,13 @@ import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-u
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const InvestigatedPersonInfo = () => {
+    const leaveInvestigationMessage = 'צא מחקירה';
+
     const classes = useStyles();
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -64,10 +66,10 @@ const InvestigatedPersonInfo = () => {
                 <div className={classes.managementControllers}>
                     <PrimaryButton
                         onClick={confirmExitUnfinishedInvestigation}>
-                        צא מחקירה
+                        {leaveInvestigationMessage}
                     </PrimaryButton>
                     <CustomCheckbox
-                        checkboxElements={[{value: isChecked, text: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
+                        checkboxElements={[{value: isChecked, labelText: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
                     />
                 </div>
             </div>

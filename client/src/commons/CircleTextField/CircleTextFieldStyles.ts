@@ -2,9 +2,11 @@ import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles({
     borderRadius: {
-        borderRadius: '25px'
+        borderRadius: 25,
+        maxHeight: '4vh',
+        margin: '0 2%',
     },
-    resize: {
-        fontSize: 13
-    }
+    label: {
+        fontSize: 13,
+    },
 });

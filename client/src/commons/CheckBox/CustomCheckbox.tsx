@@ -8,10 +8,10 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <div className={checkboxesClassWrapper}>
             {
-                checkboxElements.map(checkbox => {
-                    const { text, ...rest } = checkbox;
+                checkboxElements.map((checkbox, index) => {
+                    const { labelText, ...rest } = checkbox;
                     return <FormControlLabel
-                        key={text}
+                        key={index}
                         control={
                             <Checkbox
                                 size='small'
@@ -20,7 +20,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
                                 {...rest}
                             />
                         }
-                        label={text}
+                        label={labelText}
                     />
                 })
             }
@@ -31,7 +31,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
 export default CustomCheckbox;
 
 interface CheckboxElement extends CheckboxProps {
-    text: string;
+    labelText: string | JSX.Element;
 };
 
 interface Props {
