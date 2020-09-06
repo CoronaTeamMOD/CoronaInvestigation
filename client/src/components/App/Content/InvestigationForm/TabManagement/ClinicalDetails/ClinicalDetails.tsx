@@ -5,7 +5,7 @@ import { Grid, Typography, Collapse } from '@material-ui/core';
 import Check from 'models/Check';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
+import CustomCheckbox from 'commons/Checkbox/CustomCheckBox';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
