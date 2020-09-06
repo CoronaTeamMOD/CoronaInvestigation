@@ -7,7 +7,8 @@ import Interaction from 'models/Interaction';
 import { testHooksFunction } from 'TestHooks';
 
 import useInteractionsTab from './useInteractionsTab';
-import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface} from './InteractionsTabInterfaces';
+import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
+        useInteractionsTabInput as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
 import { intialStartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 let interactionsForTests = new Map<number, Interaction[]>();
@@ -30,7 +31,7 @@ describe('useInteractionsTab tests', () => {
     describe('getDatesToInvestigate tests:', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                useInteractionsTabOutcome = useInteractionsTab();
+                useInteractionsTabOutcome = useInteractionsTab(useInteractionsTabInput);
             });
         })
 
