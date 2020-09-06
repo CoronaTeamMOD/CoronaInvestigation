@@ -334,6 +334,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             { 
                                 Object.values(relevantOccupations).map((occupation) => {
                                     return <FormControlLabel 
+                                                key={occupation}
                                                 value={occupation} 
                                                 control={<Radio 
                                                             color='primary'
