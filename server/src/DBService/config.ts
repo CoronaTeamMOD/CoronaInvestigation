@@ -16,7 +16,7 @@ const genericOptions = {
     retryOnInitFail: true,
     bodySizeLimit: '5MB',
     ignoreRBAC: false,
-    disableQueryLog: process.env.ENVIRONMENT !== 'prod',
+    disableQueryLog: process.env.ENVIRONMENT === 'prod',
     pgSettings: {
         statement_timeout: '6000'
     }

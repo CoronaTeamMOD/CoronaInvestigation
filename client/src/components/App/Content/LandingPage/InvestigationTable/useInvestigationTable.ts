@@ -70,7 +70,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
                              investigation.investigationStatusByInvestigationStatus.displayName,
                              patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
                              patient.personByPersonId.phoneNumber,
-                             Math.floor(differenceInYears(new Date(), patient.personByPersonId.birthDate)),
+                             Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
                              patient.addressByAddress.city)
       });
       setRows(investigationRows)
