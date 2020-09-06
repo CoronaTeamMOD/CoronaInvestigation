@@ -4,6 +4,7 @@ import {Paper, Tabs, Tab, Card, createStyles, withStyles} from '@material-ui/cor
 import { Tab as TabObj } from 'models/Tab';
 
 import useStyles from './TabManagementStyles';
+import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
@@ -12,7 +13,7 @@ export const defaultTab: TabObj = {
     id: 0,
     name: 'פרטים אישיים',
     isDisabled: false,
-    displayComponent: <></>
+    displayComponent: <PersonalInfoTab />
 };
 
 export const tabs: TabObj[] = [
