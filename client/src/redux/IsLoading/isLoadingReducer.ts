@@ -3,7 +3,7 @@ import * as Actions from './isLoadingActionTypes';
 
 const initialState: boolean = false
 
-const userReducer = (state = initialState, action: Actions.IsLoadingAction) : boolean => {
+const isLoadingReducer = (state = initialState, action: Actions.IsLoadingAction) : boolean => {
     switch (action.type) {
         case Actions.SET_IS_LOADING : return action.payload.isLoading
 
@@ -11,4 +11,4 @@ const userReducer = (state = initialState, action: Actions.IsLoadingAction) : bo
     }
 }
 
-export default userReducer;
+export default isLoadingReducer;

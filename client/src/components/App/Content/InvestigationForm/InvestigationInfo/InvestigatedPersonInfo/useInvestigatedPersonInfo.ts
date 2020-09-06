@@ -1,18 +1,26 @@
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 
+import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
+import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
+
     let history = useHistory();
     const classes = useStyles({});
 
-    const confirmExitUnfinishedInvestigation = () => {
+    const getInvestigationStatus = (cantReachInvestigated: boolean) => {
+        if (cantReachInvestigated) return 'לא ניתן ליצור קשר';
+        return 'טופלה';
+    }
+
+    const confirmExitUnfinishedInvestigation = ((epidemiologyNumber: string, cantReachInvestigated: boolean) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
@@ -26,10 +34,17 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             }
         }).then((result) => {
             if (result.value) {
-                handleInvestigationFinish();
+                axios.post('/investigationInfo/updateInvestigationStatus', {
+                    investigationStatus: getInvestigationStatus(cantReachInvestigated),
+                    epidemiologyNumber
+                }).then(() => {
+                    handleInvestigationFinish();
+                }).catch(() => {
+                    handleUnfinishedInvestigationFailed();
+                })
             };
         });
-    };
+    });
 
     const handleInvestigationFinish = () => {
         Swal.fire({
@@ -58,8 +73,20 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         return String(personAge);
     }
 
+    const handleUnfinishedInvestigationFailed = () => {
+        Swal.fire({
+            title: 'לא ניתן היה לסיים את החקירה',
+            icon: 'error',
+        })
+    };
+
+    const handleCantReachInvestigatedCheck = (cantReachInvestigated: boolean) => {       
+        setCantReachInvestigated(cantReachInvestigated);
+    };
+
     return {
         confirmExitUnfinishedInvestigation,
+        handleCantReachInvestigatedCheck,
         getPersonAge
     }
 };

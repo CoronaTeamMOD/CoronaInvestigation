@@ -12,14 +12,14 @@ import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from "./InvestigationTableInterfaces";
 
 export const createRowData = (
-  epidemiologyNum: string,
+  epidemiologyNumber: string,
   status: string,
   fullName: string,
   phoneNumber: string,
   age: number,
   city: string
 ): InvestigationTableRow => ({
-  epidemiologyNum,
+  epidemiologyNumber,
   status,
   fullName,
   phoneNumber,
@@ -61,7 +61,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const classes = useStyle();
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', {id : user.id})
+    axios.post<InvestigationsReturnType>('/landingPage/investigations', {id : 15})
     .then(response => {
       const { data } = response;
       const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {

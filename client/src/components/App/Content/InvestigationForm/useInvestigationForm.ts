@@ -2,6 +2,7 @@ import Swal from 'sweetalert2';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
@@ -17,7 +18,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const classes = useStyles({});
 
-    const confirmFinishInvestigation = () => {
+    const confirmFinishInvestigation = (epidemiologyNumber: string) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -31,7 +32,14 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             }
         }).then((result) => {
             if (result.value) {
-                handleInvestigationFinish();
+                axios.post('/investigationInfo/updateInvestigationStatus', {
+                    investigationStatus: 'טופלה',
+                    epidemiologyNumber
+                }).then(() => {
+                    handleInvestigationFinish();
+                }).catch(() => {
+                    handleInvestigationFinishFailed();
+                })
             };
         });
     };
@@ -48,6 +56,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
         timeout(1900).then(() => history.push(landingPageRoute));
+    };
+
+    const handleInvestigationFinishFailed = () => {
+        Swal.fire({
+            title: 'לא ניתן היה לסיים את החקירה',
+            icon: 'error',
+        })
     };
 
     return {
