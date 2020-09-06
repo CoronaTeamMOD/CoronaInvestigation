@@ -10,15 +10,17 @@ const useStyles = makeStyles({
         fontWeight: 'bold',
         marginRight: '1vw'
     },
-    formRow: {
-        display: 'flex',
-        margin: '1vh 0',
-    },
     formField: {
         display: 'flex',
         alignItems: 'center'
     },
     rowDiv: {
+        display: 'flex',
+        margin: '1vh 0',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+    },
+    formRow: {
         display: 'flex',
         margin: '1vh 0',
         flexWrap: 'wrap',
@@ -32,7 +34,7 @@ const useStyles = makeStyles({
     },
     roundedTextLabel: {
         lineHeight: 0,
-    }
+    },
 });
 
 export default useStyles;

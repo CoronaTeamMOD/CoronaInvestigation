@@ -36,9 +36,9 @@ const FlightsForm = () => {
             <FormRowWithInput fieldName='תאריך טיסה:'>
                 <div className={classes.rowDiv}>
                     <Typography variant='caption'>מתאריך</Typography>
-                    <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} datePickerType='date'/>
+                    <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} type='date'/>
                     <Typography variant='caption'>עד תאריך</Typography>
-                    <DatePick value={formattedDate(arrivalDate)} onChange={handleEndDateInput} datePickerType='date'/>
+                    <DatePick value={formattedDate(arrivalDate)} onChange={handleEndDateInput} type='date'/>
                 </div>
             </FormRowWithInput>
 

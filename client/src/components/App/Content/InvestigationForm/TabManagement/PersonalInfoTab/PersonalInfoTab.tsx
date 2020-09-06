@@ -74,7 +74,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <CustomCheckbox
-                        checkboxElements={[{text: <span style={{ fontSize: '15px'}}>{NUMBER_NOT_RELATED}</span>,
+                        checkboxElements={[{labelText: <span style={{ fontSize: '15px'}}>{NUMBER_NOT_RELATED}</span>,
                         onChange:(() =>{
                             handleChangeField(PersonalInfoDataContextFields.IS_INVESTIGATED_PERSON_NUMBER, !personalInfoStateContext.personalInfoData.isInvestigatedPersonsNumber);
                         })}]}

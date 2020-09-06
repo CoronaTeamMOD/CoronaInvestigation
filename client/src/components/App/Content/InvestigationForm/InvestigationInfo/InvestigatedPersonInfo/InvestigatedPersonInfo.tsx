@@ -47,10 +47,6 @@ const InvestigatedPersonInfo = () => {
                         {name}, {investigationId}
                     </Typography>
                 </div>
-                <PrimaryButton
-                    onClick={confirmExitUnfinishedInvestigation}>
-                    {leaveInvestigationMessage}
-                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
@@ -68,8 +64,12 @@ const InvestigatedPersonInfo = () => {
                     <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
                 </div>
                 <div className={classes.managementControllers}>
+                    <PrimaryButton
+                        onClick={confirmExitUnfinishedInvestigation}>
+                        {leaveInvestigationMessage}
+                    </PrimaryButton>
                     <CustomCheckbox
-                        checkboxElements={[{value: isChecked, text: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
+                        checkboxElements={[{value: isChecked, labelText: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
                     />
                 </div>
             </div>

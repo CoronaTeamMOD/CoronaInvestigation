@@ -2,6 +2,7 @@ import React from 'react';
 import { ToggleButtonGroup, ToggleButton, ToggleButtonGroupProps } from '@material-ui/lab';
 
 import theme from 'styles/theme';
+
 import { useStyles } from './ToggleStyles';
 
 const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
