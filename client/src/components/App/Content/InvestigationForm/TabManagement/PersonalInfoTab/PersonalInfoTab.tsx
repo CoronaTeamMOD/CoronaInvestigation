@@ -9,13 +9,39 @@ import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import RelevantOccupations from 'models/enums/RelevantOccupations'
+import IdentificationTypes from 'models/enums/IdentificationTypes';
+import relevantOccupations from 'models/enums/relevantOccupations';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 
 import useStyles from './PersonalInfoTabStyles';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
+
+const PHONE_LABEL = 'טלפון:';
+const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
+const GENDER_LABEL = 'מין:';
+const IDENTIFICATION_LABEL = 'סוג תעודה מזהה:';
+const AGE_LABEL = 'גיל:';
+const PARENT_NAMES_LABEL = 'שמות הורי הקטין:';
+const INSURANCE_LABEL = 'גורם מבטח:';
+const HMO_LABEL = 'קופת חולים:';
+const ADDRESS_LABEL = 'כתובת:';
+const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
+const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
+const INSTITUTION_OPTIONS = ['צה"ל', 'מוסד', 'אחר'];
+const HMO_OPTIONS = ['אחר', 'כללית', 'מכבי'];
+const PHONE_SELECT_REASON_OPTIONS = ['אין טלפון', 'קטין', 'אחר...'];
+const INSURANCE_OPTIONS = ['הראל', 'כלל', 'הפניקס'];
+const WRITE_REASON_LABEL = 'כתוב סיבה...';
+const REASON_LABEL = 'סיבה:';
+const NAME_LABEL = 'שם:';
+const FATHER_LABEL = 'שם האב:';
+const MOTHER_LABEL = 'שם האם:';
+const IDENTIFICATION_NUMBER_LABEL = 'מספר תעודה מזהה';
+const OCCUPATION_LABEL = 'תעסוקה:';
+const NUMBER_NOT_RELATED = 'מספר הטלפון לא שייך לנבדק';
+
+
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -32,14 +58,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            טלפון:
+                            {PHONE_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
-                        id='phone'
-                        label='טלפון:' 
+                        id={PHONE_LABEL}
+                        label={PHONE_LABEL}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
@@ -48,7 +74,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <CustomCheckbox
-                        checkboxElements={[{text: <span style={{ fontSize: '15px'}}>מספר הטלפון לא שייך לנבדק</span>,
+                        checkboxElements={[{text: <span style={{ fontSize: '15px'}}>{NUMBER_NOT_RELATED}</span>,
                         onChange:(() =>{
                             handleChangeField(PersonalInfoDataContextFields.IS_INVESTIGATED_PERSON_NUMBER, !personalInfoStateContext.personalInfoData.isInvestigatedPersonsNumber);
                         })}]}
@@ -65,7 +91,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                         <div>
                                             <CircleSelect
                                                 value={personalInfoStateContext.personalInfoData.selectReasonNumberIsNotRelated}
-                                                options={['אין טלפון', 'קטין', 'אחר...']}
+                                                options={PHONE_SELECT_REASON_OPTIONS}
                                                 className={classes.selectWidth}
                                                 onChange={(event) => {
                                                     handleChangeField(PersonalInfoDataContextFields.SELECT_REASON_NUMBER_IS_NOT_RELATED, event.target.value);
@@ -73,12 +99,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                             />
                                         </div>
                                     }
-                                    label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>סיבה:</span>}
+                                label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{REASON_LABEL}</span>}
                                     labelPlacement='start'
                                 />
                                 <CircleTextField 
-                                    id='reasonNumberIsNotRelated'
-                                    label='כתוב סיבה...'
+                                    id={REASON_LABEL}
+                                    label={WRITE_REASON_LABEL}
                                     size='small' 
                                     className={classes.writeReason}
                                     onChange={(event) => {
@@ -95,14 +121,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            טלפון נוסף:
+                            {ADDITIONAL_PHONE_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
-                        id='phone2' 
-                        label='טלפון:'
+                        id={ADDITIONAL_PHONE_LABEL}
+                        label={PHONE_LABEL}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
@@ -115,15 +141,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            מין:
+                            {GENDER_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                     <Toggle 
                         value={personalInfoStateContext.personalInfoData.gender === Gender.FEMALE}
-                        firstOption={'זכר'}
-                        secondOption={'נקבה'}
+                        firstOption={Gender.MALE}
+                        secondOption={Gender.FEMALE}
                         onChange={(event) => {
                                         handleChangeField(
                                             PersonalInfoDataContextFields.GENDER, 
@@ -138,15 +164,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            סוג תעודה מזהה:
+                            {IDENTIFICATION_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1} className={classes.PersonalInfoFieldContainer}>
                     <Toggle 
                         value={personalInfoStateContext.personalInfoData.identificationType === IdentificationTypes.PASSPORT}
-                        firstOption={'ת.ז'}
-                        secondOption={'דרכון'} 
+                        firstOption={IdentificationTypes.ID}
+                        secondOption={IdentificationTypes.PASSPORT} 
                         onChange={(event) => {
                             handleChangeField(
                                 PersonalInfoDataContextFields.IDENTIFICATION_TYPE, 
@@ -158,14 +184,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <FormControlLabel
                         className={classes.unsetFormControlMargin}
                         control={<CircleTextField
-                            id='personalId'
-                            className={classes.personalId}
+                            id={IDENTIFICATION_NUMBER_LABEL}
+                            className={classes.textFieldWithLabel}
                             size='small'
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.IDENTIFICATION_NUMBER, event.target.value);
                             }}
                         />}
-                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>מספר תעודה מזהה:</span>}
+                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{IDENTIFICATION_NUMBER_LABEL}</span>}
                         labelPlacement='start'
                     />
                 </Grid>
@@ -175,14 +201,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            גיל:
+                            {AGE_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
-                        id='age'
-                        label='גיל:' 
+                        id={AGE_LABEL}
+                        label={AGE_LABEL} 
                         value={personalInfoStateContext.personalInfoData.age}
                         size='small'
                         className={classes.ageText}
@@ -197,7 +223,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                        שמות הורי הקטין:
+                            {PARENT_NAMES_LABEL}
                         </b>
                     </Typography>
                 </Grid>
@@ -205,15 +231,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <FormControlLabel
                         className={classes.unsetFormControlMargin}
                         control={<CircleTextField
-                            id='motherName'
-                            className={classes.personalId}
+                            id={MOTHER_LABEL}
+                            className={classes.textFieldWithLabel}
                             size='small'
-                            label='שם:'
+                            label={NAME_LABEL}
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.MOTHER_NAME, event.target.value);
                             }}
                         />}
-                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>שם האם:</span>}
+                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{MOTHER_LABEL}</span>}
                         labelPlacement='start'
                     />
                 </Grid>
@@ -221,15 +247,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <FormControlLabel
                         className={classes.unsetFormControlMargin}
                         control={<CircleTextField
-                            id='fatherName'
-                            className={classes.personalId}
+                            id={FATHER_LABEL}
+                            className={classes.textFieldWithLabel}
                             size='small'
-                            label='שם:'
+                            label={NAME_LABEL}
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.FATHER_NAME, event.target.value);
                             }}
                         />}
-                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>שם האב:</span>}
+                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{FATHER_LABEL}</span>}
                         labelPlacement='start'
                     />
                 </Grid>
@@ -239,14 +265,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            גורם מבטח:
+                            {INSURANCE_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
                         value={personalInfoStateContext.personalInfoData.insuranceCompany}
-                        options={['הראל', 'כלל', 'הפניקס']}
+                        options={INSURANCE_OPTIONS}
                         className={classes.selectWidth}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
@@ -259,14 +285,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            קופת חולים:
+                            {HMO_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
                         value={personalInfoStateContext.personalInfoData.HMO}
-                        options={['אחר', 'כללית', 'מכבי']}
+                        options={HMO_OPTIONS}
                         className={classes.selectWidth}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.HMO, event.target.value);
@@ -279,14 +305,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            כתובת:
+                            {ADDRESS_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={3}>
                     <CircleTextField 
-                        id='adress'
-                        label='הכנס כתובת:'
+                        id={ADDRESS_LABEL}
+                        label={ADDRESS_LABEL}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDRESS, event.target.value);
@@ -299,16 +325,16 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.personalInfoLastFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            האם עובד באחד מהבאים:
+                            {RELEVANT_OCCUPATION_LABEL}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
                     <FormControl component='fieldset'>
-                        <RadioGroup aria-label='gender' name='gender1' className={classes.relevantOccupationSelect}>
-                            <FormLabel component='legend' className={classes.fontSize15}><b>תעסוקה</b></FormLabel>
+                        <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} className={classes.relevantOccupationselect}>
+                            <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             { 
-                                Object.values(RelevantOccupations).map((occupation) => {
+                                Object.values(relevantOccupations).map((occupation) => {
                                     return <FormControlLabel 
                                                 value={occupation} 
                                                 control={<Radio 
@@ -326,8 +352,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <CircleSelect
                         value={personalInfoStateContext.personalInfoData.institutionName}
-                        label={'הזן שם מוסד'}
-                        options={['צה"ל', 'מוסד', 'אחר']}
+                        label={INSERT_INSTITUTION_NAME}
+                        options={INSTITUTION_OPTIONS}
                         className={classes.institutionName}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);

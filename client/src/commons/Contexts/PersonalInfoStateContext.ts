@@ -2,7 +2,7 @@ import {createContext} from 'react';
 
 import Gender from 'models/enums/Gender';
 import identificationType from 'models/enums/IdentificationTypes';
-import RelevantOccupations from 'models/enums/RelevantOccupations';
+import relevantOccupations from 'models/enums/relevantOccupations';
 import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 
 const initialPersonalInfo: personalInfoContextData = {
@@ -28,7 +28,7 @@ const initialPersonalInfo: personalInfoContextData = {
         floor: '',
         apartment: ''
     },
-    relevantOccupation: RelevantOccupations.MOH_Worker,
+    relevantOccupation: relevantOccupations.MOH_Worker,
     institutionName: ''
 } 
 

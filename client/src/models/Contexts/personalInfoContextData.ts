@@ -1,7 +1,7 @@
 import {Address} from '../Address';
 import Gender from '../enums/Gender';
 import identificationType from '../enums/IdentificationTypes';
-import RelevantOccupations from '../enums/RelevantOccupations';
+import relevantOccupations from '../enums/relevantOccupations';
 
 export interface personalInfoContextData {
     phoneNumber: string;
@@ -18,6 +18,6 @@ export interface personalInfoContextData {
     insuranceCompany: string,
     HMO: string,
     address: Address;
-    relevantOccupation: RelevantOccupations;
+    relevantOccupation: relevantOccupations;
     institutionName: string;
 }

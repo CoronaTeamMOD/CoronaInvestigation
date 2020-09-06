@@ -2,7 +2,7 @@ import React from 'react';
 
 import Gender from 'models/enums/Gender';
 import IdentificationType from 'models/enums/IdentificationTypes';
-import RelevantOccupations from 'models/enums/RelevantOccupations';
+import relevantOccupations from 'models/enums/relevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
@@ -46,7 +46,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             floor: '',
             apartment: ''
         },
-        relevantOccupation: RelevantOccupations.MOH_Worker,
+        relevantOccupation: relevantOccupations.MOH_Worker,
         institutionName: ''
     });
 
