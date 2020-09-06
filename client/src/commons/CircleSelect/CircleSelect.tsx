@@ -12,6 +12,7 @@ const CircleSelect = (props: Props): JSX.Element => {
             ? optionComponent(selectItem)
             : optionComponent(selectItem[idKey],selectItem[nameKey] )
     }
+
     return (
             <Select variant='outlined'
                 {...rest}
