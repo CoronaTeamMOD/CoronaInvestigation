@@ -11,6 +11,7 @@ export interface InvestigationInfo {
         personByPersonId: Person
     }
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId
+    coronaTestDate: Date
 }
 
 export interface InvestigatedPatientByInvestigatedPatientId {

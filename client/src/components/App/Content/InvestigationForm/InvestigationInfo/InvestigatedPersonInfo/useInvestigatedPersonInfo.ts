@@ -48,9 +48,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const getPersonAge = (birthDate: Date) => {
 
-        var currentDate = new Date();
-        var personAge = currentDate.getFullYear() - birthDate.getFullYear();
-        var monthDelta = currentDate.getMonth() - birthDate.getMonth();
+        const currentDate = new Date();
+        let personAge = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDelta = currentDate.getMonth() - birthDate.getMonth();
         if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) 
         {
             personAge--;

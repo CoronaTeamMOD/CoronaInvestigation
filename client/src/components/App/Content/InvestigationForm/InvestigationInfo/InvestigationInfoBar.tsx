@@ -15,26 +15,40 @@ const defaultInvestigationStaticInfo = {
         personByPersonId: {
             firstName: '',
             lastName: '',
-            phoneNumber: ''
+            phoneNumber: '',
+            identificationType: '',
+            identificationNumber: '',
+            additionalPhoneNumber: '',
+            gender: '',
+            birthDate: new Date(),
         }
     },
     userByLastUpdator: {
         personByPersonId: {
             firstName: '',
             lastName: '',
+            phoneNumber: '',
+            identificationType: '',
+            identificationNumber: '',
+            additionalPhoneNumber: '',
+            gender: '',
+            birthDate: new Date(),
         }
     },
     investigatedPatientByInvestigatedPatientId: {
         personByPersonId: {
-            identificationType: '',
-            identificationNumber: '',
-            gender: '',
             firstName: '',
             lastName: '',
+            phoneNumber: '',
+            identificationType: '',
+            identificationNumber: '',
+            additionalPhoneNumber: '',
+            gender: '',
             birthDate: new Date(),
         },
         isDeceased: false
-    }
+    },
+    coronaTestDate: new Date()
 }
 
 const InvestigationInfoBar = (props: Props) => {
@@ -58,6 +72,7 @@ const InvestigationInfoBar = (props: Props) => {
                     investigationStaticInfo.investigatedPatientByInvestigatedPatientId
                 }
                 epedemioligyNumber={epedemioligyNumber}
+                coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
             <InvestigationMetadata
                 investigationMetaData={
