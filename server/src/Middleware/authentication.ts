@@ -17,10 +17,11 @@ const authMiddleware = (request:Request, response:Response, next: NextFunction) 
     if(!reqAuthHeader)
         return response.status(401).json({error: 'unauthorized'});
 
-    const a = {
-        // redirectUri: '',
-        scopes: ['']
-    };
+    // const a = {
+    //     // redirectUri: '',
+    //     scopes: ['']
+    // };
+    // pca.getAuthCodeUrl(a);
 
     const b = {
         code: reqAuthHeader, //  from client
@@ -29,11 +30,16 @@ const authMiddleware = (request:Request, response:Response, next: NextFunction) 
         redirectUri: ''
     };
 
-    // pca.getAuthCodeUrl(a);
     return pca.acquireTokenByCode(b)
         .then(authResponse => {
+            console.log(authResponse.idTokenClaims);
+
+            if(authResponse.expiresOn > new Date()) {
+                throw Error();
+            }
             // @ts-ignore
             response.user = authResponse.user;
+
             next();
         })
         .catch(() => response.status(403).json({error:'forbidden'}));
