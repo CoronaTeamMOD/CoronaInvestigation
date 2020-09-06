@@ -41,8 +41,6 @@ const IDENTIFICATION_NUMBER_LABEL = 'מספר תעודה מזהה';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const NUMBER_NOT_RELATED = 'מספר הטלפון לא שייך לנבדק';
 
-
-
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
