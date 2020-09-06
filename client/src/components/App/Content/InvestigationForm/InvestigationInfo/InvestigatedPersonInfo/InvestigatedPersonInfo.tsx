@@ -5,7 +5,7 @@ import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-u
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 

@@ -8,7 +8,7 @@ import { Typography, RadioGroup, Radio, Collapse } from '@material-ui/core';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import CustomCheckbox from 'commons/Checkbox/CustomCheckbox';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import relevantOccupations from 'models/enums/relevantOccupations';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
