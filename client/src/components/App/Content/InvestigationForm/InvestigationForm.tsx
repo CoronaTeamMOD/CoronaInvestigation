@@ -20,6 +20,8 @@ export const LAST_TAB_ID = 3;
 export const END_INVESTIGATION = 'סיים חקירה';
 export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
+const epedemioligyNumber = 111;
+
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
@@ -95,7 +97,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                        <InvestigationInfoBar />
+                        <InvestigationInfoBar
+                            epedemioligyNumber={111} 
+                        />
                         <div className={classes.interactiveForm}>
                             <TabManagement
                                 currentTab={currentTab}

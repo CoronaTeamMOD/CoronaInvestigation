@@ -1,19 +1,36 @@
 import { gql } from "postgraphile";
 
 export const GET_INVESTIGATION_INFO = gql`
-query InvestigationInfo($id: Int!) {
-    investigatedPatientById(id: $id) {
-        personByPersonInfo {
-            firstName
-            lastName
-            idNumber
-            identificationType
+query InvestigationStaticDetails ($investigationId: Int!) {
+    investigationByEpidemioligyNumber(epidemioligyNumber: $investigationId) {
+      startTime
+      lastUpdateTime
+      investigatingUnit
+      userByCreator {
+        personByPersonId {
+          firstName
+          lastName
+          phoneNumber
         }
-        birthdate
-        gender
-        startDatetime
-        updateDatetime
-        investigatingUnit
-    }   
-}
+      }
+      userByLastUpdator {
+        personByPersonId {
+          firstName
+          lastName
+        }
+      }
+      investigatedPatientByInvestigatedPatientId {
+        personByPersonId {
+          identificationType
+          identificationNumber
+          gender
+          firstName
+          lastName
+          birthDate
+        }
+        isDeceased
+      }
+    }
+  }
+  
 `;
