@@ -4,8 +4,8 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     dialogPaper: {
-        width: '74vw',
-        height: '88vh',
+        width: '77vw',
+        height: '92vh',
     },
     dialogTitleWrapper: {
         backgroundColor: theme.palette.primary.dark,
@@ -37,6 +37,8 @@ const useStyles = makeStyles({
     },
     placeTypeSelect: {
         margin: '0 2vmin',
+    },
+    formSelect: {
         width: '9vw'
     },
     toggle: {
@@ -53,6 +55,9 @@ const useStyles = makeStyles({
     addContactFields: {
         display: 'flex',
         flexDirection: 'row',
+        height: '25vh',
+        paddingRight: '0.5vw',
+        flexWrap: 'wrap',
         marginBottom: '1vh',
         alignItems: 'center',
     },
@@ -62,6 +67,7 @@ const useStyles = makeStyles({
     },
     moreContactDetails: {
         width: '40vw',
+        margin: '1vh',
     }
 });
 

@@ -11,37 +11,35 @@ import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigatio
 
 const InteractionsTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const [newInteractionEventId, setNewInteractionEventId] = React.useState<number>();
+    const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
 
-    const { getDatesToInvestigate, createNewInteractionEvent, cancleNewInteractionEvent, confirmNewInteractionEvent } = 
-        useInteractionsTab({
-            setNewInteractionEventId
-        });
+    const { getDatesToInvestigate } = useInteractionsTab();
+
+    const onDateClick = (date: Date) => setNewInteractionEventDate(date);
+    const onDialogClose = () => setNewInteractionEventDate(undefined);
 
     return (
         <StartInvestigationDateVariablesConsumer>
             {
                 ctxt =>
-                <> 
-                    {
-                        getDatesToInvestigate(ctxt)
-                        .map(date => 
-                            <Card key={date.getTime()} className={classes.investigatedDateCard}>
-                                <Typography variant='body1'>{format(date, 'dd/MM/yyyy')}</Typography>
-                                <PrimaryButton onClick={() => createNewInteractionEvent(date)}>
-                                    צור מקום/מגע
-                                </PrimaryButton>
-                            </Card>
-                            )
-                    }
-                    {
-                        newInteractionEventId && <NewInteractionEventDialog 
-                            isOpen={newInteractionEventId !== undefined} 
-                            onCancel={cancleNewInteractionEvent}
-                            onCreateEvent={confirmNewInteractionEvent}
-                            eventId={newInteractionEventId}/>
-                    }
-                </>
+                    <>
+                        {
+                            getDatesToInvestigate(ctxt)
+                                .map((date: Date) =>
+                                    <Card key={date.getTime()} className={classes.investigatedDateCard}>
+                                        <Typography variant='body1'>{format(date, 'dd/MM/yyyy')}</Typography>
+                                        <PrimaryButton onClick={() => onDateClick(date)}>
+                                            צור מקום/מגע
+                                        </PrimaryButton>
+                                    </Card>
+                                )
+                        }
+                        {
+                            newInteractionEventDate && <NewInteractionEventDialog
+                                eventDate={newInteractionEventDate}
+                                closeDialog={onDialogClose}/>
+                        }
+                    </>
             }
         </StartInvestigationDateVariablesConsumer>
     )
