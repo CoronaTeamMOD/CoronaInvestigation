@@ -1,5 +1,0 @@
-client:
-  - 'client/**/*'
-
-server:
-  - 'server/**/*'
