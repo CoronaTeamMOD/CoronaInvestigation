@@ -44,11 +44,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
-    const handleSymptomCheck = (symptom: string) => {
-        if (selectedSymptoms.includes(symptom)) {
-            setSelectedSymptoms(selectedSymptoms.filter((checkedSymptom) => checkedSymptom !== symptom));
+    const handleSymptomCheck = (checkedSymptom: string) => {
+        if (selectedSymptoms.includes(checkedSymptom)) {
+            setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
         } else {
-            selectedSymptoms.push(symptom);
+            selectedSymptoms.push(checkedSymptom);
         };
 
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
