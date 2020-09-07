@@ -16,7 +16,7 @@ export const useStyles = makeStyles({
         marginLeft: '1vw',
     },
     otherTextField: {
-        width: '18vw',
+        marginTop: '1vh',
         marginLeft: '-15vw',
     }
 });
