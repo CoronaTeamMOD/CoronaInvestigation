@@ -6,7 +6,7 @@ import { GET_INVESTIGATION_INFO } from '../../DBService/InvestigationInfo/Query'
 const investigationInfo = Router();
 
 investigationInfo.post('/staticInfo', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATION_INFO, { id: request.body.id })
+    graphqlRequest(GET_INVESTIGATION_INFO, request.body)
     .then((result: any) => response.send(result));
 })
 

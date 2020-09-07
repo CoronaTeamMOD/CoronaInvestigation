@@ -46,8 +46,21 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         timeout(1900).then(()=> history.push(landingPageRoute));
     };
 
+    const getPersonAge = (birthDate: Date) => {
+
+        const currentDate = new Date();
+        let personAge = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDelta = currentDate.getMonth() - birthDate.getMonth();
+        if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) 
+        {
+            personAge--;
+        }
+        return String(personAge);
+    }
+
     return {
-        confirmExitUnfinishedInvestigation
+        confirmExitUnfinishedInvestigation,
+        getPersonAge
     }
 };
 

@@ -1,40 +1,39 @@
 import React from 'react';
-import {Typography, Paper} from '@material-ui/core';
-import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
+import { format } from 'date-fns';
+import { Typography, Paper } from '@material-ui/core';
+import { CheckCircleOutline, CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
+import { getPersonFullName } from 'Utils/displayUtils';
+import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigationInfo';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
-const InvestigatedPersonInfo = () => {
-    const leaveInvestigationMessage = 'צא מחקירה';
+const leaveInvestigationMessage = 'צא מחקירה';
+
+const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
+    const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
+
+    const { confirmExitUnfinishedInvestigation, getPersonAge } = useInvestigatedPersonInfo();
+
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    const name = 'לוי כהן';
-    const investigationId = '2345642132';
-
-    const age = '20';
-    const dateOfTest = '30/01/2020';
-    const gender = 'נקבה';
-    const idType = 'תעודת זהות';
-    const idNumber = '123456789';
-    const isDeceased = 'לא';
+    //const dateOfTest = '34/01/2020';
 
     const [isChecked, setIsChecked] = React.useState<boolean>(false);
-    
+
     const handleCheck = () => {
         if (isChecked) {
             // TODO: שינוי סטטוס החקירה ללא ניתן ליצור קשר
         } else {
             // TODO: שינוי סטטוס החקירה לטיפול
         }
-        
+
         setIsChecked(!isChecked);
     };
 
@@ -42,26 +41,57 @@ const InvestigatedPersonInfo = () => {
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                    <CheckCircleOutline color='primary'/>
+                    <CheckCircleOutline color='primary' />
                     <Typography variant='h6' className={classes.investigationTitle}>
-                        {name}, {investigationId}
+                        {
+                            getPersonFullName(investigatedPatientByInvestigatedPatientId.personByPersonId)
+                        },
+                        {
+                            epedemioligyNumber
+                        }
                     </Typography>
                 </div>
             </div>
 
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
-                    <InfoItemWithIcon name='גיל' value={age} icon={CakeOutlined}/>
-                    <Divider/>
-                    <InfoItemWithIcon name='תאריך הבדיקה' value={dateOfTest} icon={EventOutlined}/>
-                    <Divider/>
-                    <InfoItemWithIcon name='מין' value={gender} icon={Help}/>
-                    <Divider/>
-                    <InfoItemWithIcon name='סוג תעודה מזהה' value={idType} icon={Help}/>
-                    <Divider/>
-                    <InfoItemWithIcon name='מספר תעודה מזהה' value={idNumber} icon={Help}/>
-                    <Divider/>
-                    <InfoItemWithIcon name='האם נפטר' value={isDeceased} icon={Help}/>
+                    <InfoItemWithIcon name='גיל' value={
+                        getPersonAge(new Date(investigatedPatientByInvestigatedPatientId.personByPersonId.birthDate))
+                    }
+                        icon={CakeOutlined}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon name='תאריך הבדיקה' value={
+                            format(new Date(props.coronaTestDate), 'dd/MM/yyyy')
+                        }
+                        icon={EventOutlined}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon name='מין' value={
+                        investigatedPatientByInvestigatedPatientId.personByPersonId.gender
+                    }
+                        icon={Help}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon name='סוג תעודה מזהה' value={
+                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationType
+                    }
+                        icon={Help}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon name='מספר תעודה מזהה' value={
+                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationNumber
+                    }
+                        icon={Help}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon name='האם נפטר' value={
+                        investigatedPatientByInvestigatedPatientId.isDeceased ?
+                            'כן' :
+                            'לא'
+                    }
+                        icon={Help}
+                    />
                 </div>
                 <div className={classes.managementControllers}>
                     <PrimaryButton
@@ -69,7 +99,7 @@ const InvestigatedPersonInfo = () => {
                         {leaveInvestigationMessage}
                     </PrimaryButton>
                     <CustomCheckbox
-                        checkboxElements={[{value: isChecked, labelText: 'אין מענה במספר זה', onChange: () => (handleCheck())}]}
+                        checkboxElements={[{ value: isChecked, labelText: 'אין מענה במספר זה', onChange: () => (handleCheck()) }]}
                     />
                 </div>
             </div>
@@ -77,4 +107,10 @@ const InvestigatedPersonInfo = () => {
     );
 };
 
-export default InvestigatedPersonInfo;
+interface Props {
+    investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
+    epedemioligyNumber: number;
+    coronaTestDate: Date
+}
+
+export default InvestigatedPersonInfo
