@@ -7,18 +7,8 @@ import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 
 const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
-    isInvestigatedPersonsNumber: true,
-    selectReasonNumberIsNotRelated: '',
-    writeReasonNumberIsNotRelated: '',
     additionalPhoneNumber: '',
-    gender: Gender.MALE,
-    identificationType: identificationType.ID,
-    identificationNumber: '',
-    age: '',
-    motherName: '',
-    fatherName: '',
     insuranceCompany: '',
-    HMO: '',
     address: {
         city: '',
         neighborhood: '',

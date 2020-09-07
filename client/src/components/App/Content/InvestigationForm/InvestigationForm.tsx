@@ -25,18 +25,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',
-        isInvestigatedPersonsNumber: true,
-        selectReasonNumberIsNotRelated: '',
-        writeReasonNumberIsNotRelated: '',
         additionalPhoneNumber: '',
-        gender: Gender.MALE,
-        identificationType: IdentificationType.ID,
-        identificationNumber: '',
-        age: '',
-        motherName: '',
-        fatherName: '',
         insuranceCompany: '',
-        HMO: '',
         address: {
             city: '',
             neighborhood: '',
@@ -66,8 +56,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const {
         currentTab,
         setCurrentTab,
-        confirmFinishInvestigation
-    } = useInvestigationForm();
+        confirmFinishInvestigation,
+        handleSwitchTab,
+    } = useInvestigationForm({personalInfoData, setPersonalInfoData});
 
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
             exposureDate,
@@ -105,7 +96,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 <PrimaryButton
                                     onClick={() => {
                                         currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
-                                            setCurrentTab(tabs[currentTab.id + 1])
+                                            handleSwitchTab();
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>
