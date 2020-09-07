@@ -1,7 +1,6 @@
 import User from 'models/User';
 import * as Actions from './userActionTypes';
 
-
 const initialState: User = {
     id: 7,
     name: 'XXXXXX'

@@ -1,16 +1,24 @@
 import Swal from 'sweetalert2';
-import theme from 'styles/theme';
 import { act } from 'react-dom/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { testHooksFunction } from 'TestHooks';
+
+import axios from 'Utils/axios';
+import theme from 'styles/theme';
 
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
+const mockAdapter = new MockAdapter(axios);
+
 let investigationFormOutcome: useInvestigationFormOutcome;
 
 describe('investigationForm tests', () => {
-    afterEach(() => jest.resetAllMocks());
+    afterEach(() => {
+        jest.resetAllMocks();
+        mockAdapter.reset();
+    });
 
     describe('tabs tests', () => {
         it('isLastTab should be false when hook is initialized', async () => {
@@ -27,6 +35,8 @@ describe('investigationForm tests', () => {
                 investigationFormOutcome = useInvestigationForm();
             });
         })
+
+        const epidemiologyNumber = '111';
 
         const expectedFirstSwal = {
             icon: 'warning',
@@ -61,30 +71,14 @@ describe('investigationForm tests', () => {
             const myspy = jest.spyOn(Swal, 'fire');
 
             await act(async () => {
-                await investigationFormOutcome.confirmFinishInvestigation();
+                await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
+                mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
             });
 
             expect(myspy).toHaveBeenCalled();
             expect(myspy).toHaveBeenCalledWith(expectedFirstSwal);
         });
-
-        it('Check that second swal was opened on acception', async () => {
-            jest.spyOn(Swal, 'fire').mockResolvedValue({
-                isConfirmed: true,
-                isDismissed: false,
-                value: true
-            });
-
-            const myspy = jest.spyOn(Swal, 'fire');
-
-            await act(async () => {
-                await investigationFormOutcome.confirmFinishInvestigation();
-            });
-
-            expect(myspy).toHaveBeenCalled();
-            expect(myspy).toHaveBeenCalledWith(expectedSecondSwal);
-        });
-
+        
         it('Check that second swal was not opened on cancelation', async () => {
             jest.spyOn(Swal, 'fire').mockResolvedValue({
                 isConfirmed: false,
@@ -101,7 +95,7 @@ describe('investigationForm tests', () => {
             });
 
             await act(async () => {
-                await investigationFormOutcome.confirmFinishInvestigation();
+                await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
             });
 
             expect(myspy).toHaveBeenCalled();

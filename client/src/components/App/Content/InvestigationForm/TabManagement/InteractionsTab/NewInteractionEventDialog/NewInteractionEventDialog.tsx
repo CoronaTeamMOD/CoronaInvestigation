@@ -3,8 +3,6 @@ import { parse, format, set } from 'date-fns';
 import { AddCircle as AddCircleIcon} from '@material-ui/icons';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Collapse,
     Button, Grid, Typography, Divider, IconButton } from '@material-ui/core';
-
-
     
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -18,6 +16,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import OfficeEventForm from './PlacesAdditionalForms/OfficeEventForm';
+import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import SchoolEventForm, { grades } from './PlacesAdditionalForms/SchoolEventForm';
 import DefaultPlaceEventForm from './PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from './PlacesAdditionalForms/PrivateHouseEventForm';
@@ -28,8 +27,6 @@ import {
     InteractionEventDialogProvider,
     InteractionsEventDialogDataAndSet, initialDialogData
 } from './InteractionsEventDialogContext/InteractionsEventDialogContext';
-
-import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 
 const privateHouseLocationType : string = 'בית פרטי';
 const officeLocationType : string = 'משרד';
