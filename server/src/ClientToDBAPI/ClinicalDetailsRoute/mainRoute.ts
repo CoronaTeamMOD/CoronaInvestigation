@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import { CreateAddressResposne } from '../../Models/ClinicalDetails/CreateAddress';
 import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
-import { CreateAddressRespone } from '../..//Models/ClinicalDetails/CreateAddress';
 import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DESEASES, ADD_SYMPTOMS } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
@@ -27,7 +27,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     
     graphqlRequest(CREATE_ADDRESS, { input: {
         ...requestAddress
-    }}).then((result: CreateAddressRespone) => {
+    }}).then((result: CreateAddressResposne) => {
         graphqlRequest(CREATE_INVESTIGATION, { investigation: {
             ...requestInvestigation,
             isolationAddress: result.data.insertAndGetAddressId.integer,

@@ -1,4 +1,4 @@
-export interface CreateAddressRespone {
+export interface CreateAddressResposne {
     data: {
         insertAndGetAddressId: {
             integer: number
