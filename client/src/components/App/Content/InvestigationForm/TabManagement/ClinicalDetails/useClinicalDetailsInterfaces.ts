@@ -3,8 +3,10 @@ import React from 'react';
 export interface useClinicalDetailsIncome {
     setIsInIsolation: React.Dispatch<React.SetStateAction<boolean>>;
     setHasSymptoms: React.Dispatch<React.SetStateAction<boolean>>;
-    setHasBackgroundIllnesses: React.Dispatch<React.SetStateAction<boolean>>;
+    setHasBackgroundDiseases: React.Dispatch<React.SetStateAction<boolean>>;
     setWasHospitalized: React.Dispatch<React.SetStateAction<boolean>>;
+    setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
+    setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export interface useClinicalDetailsOutcome {
