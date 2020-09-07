@@ -11,11 +11,7 @@ import useStyles from '../NewInteractionEventDialogStyles';
 import {InteractionEventDialogContext} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-export const hospitals = [
-    'איכילוב',
-    'תל השומר',
-    'הדסה'
-]
+export const hospitals: string[] = ['איכילוב', 'תל השומר', 'הדסה'];
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
     const classes = useStyles();
