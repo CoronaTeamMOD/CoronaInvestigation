@@ -100,7 +100,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
                             // TODO: connect to redux epedemioligyNumber
-                            epedemioligyNumber={111} 
+                            epedemioligyNumber={epedemioligyNumber} 
                         />
                         <div className={classes.interactiveForm}>
                             <TabManagement
