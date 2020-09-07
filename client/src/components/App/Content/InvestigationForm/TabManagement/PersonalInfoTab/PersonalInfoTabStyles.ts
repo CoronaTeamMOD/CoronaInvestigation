@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontSize: 13
     },
     institutionName: {
-        width: '10vw'
+        width: '15vw'
     },
     relevantOccupationselect: {
         marginBottom: '3vh'

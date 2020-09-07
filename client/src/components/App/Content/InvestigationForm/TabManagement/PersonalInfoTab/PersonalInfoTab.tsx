@@ -16,30 +16,20 @@ import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 
 import useStyles from './PersonalInfoTabStyles';
+import axios from 'Utils/axios';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
 const GENDER_LABEL = 'מין:';
 const IDENTIFICATION_LABEL = 'סוג תעודה מזהה:';
-const AGE_LABEL = 'גיל:';
-const PARENT_NAMES_LABEL = 'שמות הורי הקטין:';
 const INSURANCE_LABEL = 'גורם מבטח:';
-const HMO_LABEL = 'קופת חולים:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
 const INSTITUTION_OPTIONS = ['צה"ל', 'מוסד', 'אחר'];
-const HMO_OPTIONS = ['אחר', 'כללית', 'מכבי'];
-const PHONE_SELECT_REASON_OPTIONS = ['אין טלפון', 'קטין', 'אחר...'];
 const INSURANCE_OPTIONS = ['הראל', 'כלל', 'הפניקס'];
-const WRITE_REASON_LABEL = 'כתוב סיבה...';
-const REASON_LABEL = 'סיבה:';
-const NAME_LABEL = 'שם:';
-const FATHER_LABEL = 'שם האב:';
-const MOTHER_LABEL = 'שם האם:';
 const IDENTIFICATION_NUMBER_LABEL = 'מספר תעודה מזהה';
 const OCCUPATION_LABEL = 'תעסוקה:';
-const NUMBER_NOT_RELATED = 'מספר הטלפון לא שייך לנבדק';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -49,6 +39,10 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
         personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData, [fieldName]: fieldValue})
     }
+
+    React.useEffect(() => {
+        axios.get('/personalDetails').then((result) => console.log(result.data))
+    }, [])
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -64,55 +58,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <CircleTextField 
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
+                        value={123}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
                         }}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <CustomCheckbox
-                        checkboxElements={[{labelText: <span style={{ fontSize: '15px'}}>{NUMBER_NOT_RELATED}</span>,
-                        onChange:(() =>{
-                            handleChangeField(PersonalInfoDataContextFields.IS_INVESTIGATED_PERSON_NUMBER, !personalInfoStateContext.personalInfoData.isInvestigatedPersonsNumber);
-                        })}]}
-                    />
-                </Grid>
-                {
-                    <Grid item xs={4}>
-                        <Collapse 
-                            in={!personalInfoStateContext.personalInfoData.isInvestigatedPersonsNumber}>
-                            <div className={classes.PersonalInfoFieldContainer}>
-                                <FormControlLabel 
-                                    className={classes.unsetFormControlMargin}
-                                    control={
-                                        <div>
-                                            <CircleSelect
-                                                value={personalInfoStateContext.personalInfoData.selectReasonNumberIsNotRelated}
-                                                options={PHONE_SELECT_REASON_OPTIONS}
-                                                className={classes.selectWidth}
-                                                onChange={(event) => {
-                                                    handleChangeField(PersonalInfoDataContextFields.SELECT_REASON_NUMBER_IS_NOT_RELATED, event.target.value);
-                                                }}
-                                            />
-                                        </div>
-                                    }
-                                label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{REASON_LABEL}</span>}
-                                    labelPlacement='start'
-                                />
-                                <CircleTextField 
-                                    id={REASON_LABEL}
-                                    placeholder={WRITE_REASON_LABEL}
-                                    size='small' 
-                                    className={classes.writeReason}
-                                    onChange={(event) => {
-                                        handleChangeField(PersonalInfoDataContextFields.WRITE_REASON_WHY_NUMBER_IS_NOT_RELATED, event.target.value);
-                                    }}
-                                />
-                            </div>
-                        </Collapse> 
-                    </Grid>
-                }
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
@@ -194,70 +146,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-            
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
-                    <Typography className={classes.fontSize15}>
-                        <b>
-                            {AGE_LABEL}
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                    <CircleTextField 
-                        id={AGE_LABEL}
-                        placeholder={AGE_LABEL} 
-                        value={personalInfoStateContext.personalInfoData.age}
-                        size='small'
-                        className={classes.ageText}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.AGE, event.target.value);
-                        }}
-                    />
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
-                    <Typography className={classes.fontSize15}>
-                        <b>
-                            {PARENT_NAMES_LABEL}
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
-                    <FormControlLabel
-                        className={classes.unsetFormControlMargin}
-                        control={<CircleTextField
-                            id={MOTHER_LABEL}
-                            className={classes.textFieldWithLabel}
-                            size='small'
-                            placeholder={NAME_LABEL}
-                            onChange={(event) => {
-                                handleChangeField(PersonalInfoDataContextFields.MOTHER_NAME, event.target.value);
-                            }}
-                        />}
-                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{MOTHER_LABEL}</span>}
-                        labelPlacement='start'
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <FormControlLabel
-                        className={classes.unsetFormControlMargin}
-                        control={<CircleTextField
-                            id={FATHER_LABEL}
-                            className={classes.textFieldWithLabel}
-                            size='small'
-                            placeholder={NAME_LABEL}
-                            onChange={(event) => {
-                                handleChangeField(PersonalInfoDataContextFields.FATHER_NAME, event.target.value);
-                            }}
-                        />}
-                        label={<span style={{ fontSize: '15px', fontWeight: 'bold' }}>{FATHER_LABEL}</span>}
-                        labelPlacement='start'
-                    />
-                </Grid>
-            </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
@@ -274,26 +162,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         className={classes.selectWidth}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
-                        }}
-                    />
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
-                    <Typography className={classes.fontSize15}>
-                        <b>
-                            {HMO_LABEL}
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                    <CircleSelect
-                        value={personalInfoStateContext.personalInfoData.HMO}
-                        options={HMO_OPTIONS}
-                        className={classes.selectWidth}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.HMO, event.target.value);
                         }}
                     />
                 </Grid>
@@ -349,10 +217,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
                 <Grid item xs={3}>
-                    <CircleSelect
+                    <CircleTextField
                         value={personalInfoStateContext.personalInfoData.institutionName}
-                        label={INSERT_INSTITUTION_NAME}
-                        options={INSTITUTION_OPTIONS}
+                        placeholder={INSERT_INSTITUTION_NAME}
                         className={classes.institutionName}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
