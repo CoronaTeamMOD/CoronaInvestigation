@@ -24,6 +24,7 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     hospital: '',
     hospitalizationStartDate: null,
     hospitalizationEndDate: null,
+    isPregnant: false
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {

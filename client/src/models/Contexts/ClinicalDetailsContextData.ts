@@ -10,6 +10,7 @@ interface ClinicalDetailsData {
     hospital: string;
     hospitalizationStartDate: Date | null;
     hospitalizationEndDate: Date | null;
+    isPregnant: boolean;
 };
 
 export default ClinicalDetailsData;
