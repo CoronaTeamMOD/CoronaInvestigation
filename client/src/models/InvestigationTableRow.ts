@@ -1,5 +1,5 @@
 export default interface InvestigationTableRow {
-    epidemiologyNum: string,
+    epidemiologyNumber: string,
     status: string,
     fullName: string,
     phoneNumber: string,

@@ -12,14 +12,14 @@ import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from "./InvestigationTableInterfaces";
 
 export const createRowData = (
-  epidemiologyNum: string,
+  epidemiologyNumber: string,
   status: string,
   fullName: string,
   phoneNumber: string,
   age: number,
   city: string
 ): InvestigationTableRow => ({
-  epidemiologyNum,
+  epidemiologyNumber,
   status,
   fullName,
   phoneNumber,

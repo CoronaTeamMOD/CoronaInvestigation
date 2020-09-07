@@ -6,7 +6,7 @@ describe("investigationTable tests", () => {
 
   beforeAll(() => {
     newRowData = {
-      epidemiologyNum: "111",
+      epidemiologyNumber: "111",
       status: "חדש",
       fullName: "אמילי",
       phoneNumber: "053-3486954",
@@ -17,7 +17,7 @@ describe("investigationTable tests", () => {
 
   it("shuld create correctly tableRow Object", async () => {
     const newRow = createRowData(
-      newRowData.epidemiologyNum,
+      newRowData.epidemiologyNumber,
       newRowData.status,
       newRowData.fullName,
       newRowData.phoneNumber,
@@ -30,7 +30,7 @@ describe("investigationTable tests", () => {
 
   it("shuld not create correctly tableRow Object", async () => {
     const newRow = createRowData(
-      newRowData.epidemiologyNum,
+      newRowData.epidemiologyNumber,
       newRowData.fullName,
       newRowData.status,
       newRowData.phoneNumber,
