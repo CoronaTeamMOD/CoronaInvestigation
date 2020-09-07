@@ -26,7 +26,7 @@ const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
 const INSTITUTION_OPTIONS = ['צה"ל', 'מוסד', 'אחר'];
-const INSURANCE_OPTIONS = ['הראל', 'כלל', 'הפניקס'];
+const INSURANCE_OPTIONS = ['הראל', 'כלל', 'מכבי'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {

@@ -1,3 +1,4 @@
+
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
@@ -10,25 +11,39 @@ personalDetailsRoute.get('/', (request: Request, response: Response) => {
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
-    console.log(request);
-
-    graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
-        {
-            id: request.body.id, 
-            hmo: request.body.insuranceCompany,
-            workPlace: request.body.institutionName,
-            occupation: request.body.relevantOccupation,
-        }
-    );
+    console.log(request.body);
 
     // graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
     //     {
     //         id: request.body.id, 
-    //         hmo: request.body.insuranceCompany,
-    //         workPlace: request.body.institutionName,
-    //         occupation: request.body.relevantOccupation,
+    //         hmo: request.body.personalInfoData.insuranceCompany,
+    //         workPlace: request.body.personalInfoData.institutionName,
+    //         occupation: request.body.personalInfoData.relevantOccupation,
     //     }
-    // ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO).then(() => graphqlRequest(UPDATE_ADRESS)));
+    // );
+
+    graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
+        {
+            id: request.body.id, 
+            hmo: request.body.personalInfoData.insuranceCompany,
+            workPlace: request.body.personalInfoData.institutionName,
+            occupation: request.body.personalInfoData.relevantOccupation,
+        }
+    ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
+            {
+                id: 96,
+                phoneNumber: request.body.personalInfoData.phoneNumber,
+                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
+            }).then(() => {
+                console.log(request.body.address);
+                graphqlRequest(UPDATE_ADRESS,
+                {
+                    id: 88,
+                    city: request.body.personalInfoData.address.city,
+                    street: request.body.personalInfoData.address.street,
+                    floor: request.body.personalInfoData.address.floor,
+                    houseNum: request.body.personalInfoData.address.houseNum
+            })}));
 });
 
 export default personalDetailsRoute;
