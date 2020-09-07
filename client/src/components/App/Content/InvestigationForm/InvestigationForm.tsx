@@ -28,7 +28,6 @@ const epedemioligyNumber = 111;
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
     const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
-    const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',

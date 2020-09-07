@@ -10,17 +10,20 @@ import { setCantReachInvestigated } from 'redux/Investigation/investigationActio
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
+const cantReachInvestigatedStatus = 'לא ניתן ליצור קשר';
+const unfinishedInvestigationStatus = 'בטיפול';
+
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     let history = useHistory();
     const classes = useStyles({});
 
     const getInvestigationStatus = (cantReachInvestigated: boolean) => {
-        if (cantReachInvestigated) return 'לא ניתן ליצור קשר';
-        return 'טופלה';
+        if (cantReachInvestigated) return cantReachInvestigatedStatus;
+        return unfinishedInvestigationStatus;
     }
 
-    const confirmExitUnfinishedInvestigation = ((epidemiologyNumber: string, cantReachInvestigated: boolean) => {
+    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: string, cantReachInvestigated: boolean) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
@@ -44,7 +47,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 })
             };
         });
-    });
+    };
 
     const handleInvestigationFinish = () => {
         Swal.fire({

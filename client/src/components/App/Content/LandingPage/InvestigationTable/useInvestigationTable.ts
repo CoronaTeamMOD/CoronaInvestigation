@@ -61,7 +61,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const classes = useStyle();
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', {id : 15})
+    axios.post<InvestigationsReturnType>('/landingPage/investigations', {id : user.id})
     .then(response => {
       const { data } = response;
       const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {

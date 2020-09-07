@@ -12,6 +12,8 @@ import useStyles from './InvestigationFormStyles';
 import { defaultTab } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
+const finishInvestigationStatus = 'טופלה';
+
 const useInvestigationForm = (): useInvestigationFormOutcome => {
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
@@ -33,7 +35,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }).then((result) => {
             if (result.value) {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationStatus: 'טופלה',
+                    investigationStatus: finishInvestigationStatus,
                     epidemiologyNumber
                 }).then(() => {
                     handleInvestigationFinish();

@@ -1,9 +1,6 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-
-dotenv.config();
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_DB_API
