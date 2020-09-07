@@ -5,16 +5,20 @@ import { useHistory } from 'react-router-dom';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
+import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 
 import useStyles from './InvestigationFormStyles';
-import { defaultTab } from './TabManagement/TabManagement';
-import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { defaultTab, tabs } from './TabManagement/TabManagement';
+import { useInvestigationFormOutcome, useInvestigationFormIncome } from './InvestigationFormInterfaces';
 
 const finishInvestigationStatus = 'טופלה';
 
-const useInvestigationForm = (): useInvestigationFormOutcome => {
+const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvestigationFormOutcome => {
+
+    const { clinicalDetailsVariables } = parameters;
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
@@ -67,11 +71,26 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         })
     };
 
+    const saveClinicalDetails = () => {
+        console.log(clinicalDetailsVariables.clinicalDetailsData);
+    }
+
+    const handleSwitchTab = () => {
+        switch(currentTab.name) {
+            case(TabNames.CLINICAL_DETAILS): {
+                saveClinicalDetails();
+            };
+        };
+
+        setCurrentTab(tabs[currentTab.id + 1]);
+    };
+
     return {
         currentTab,
         setCurrentTab,
         confirmFinishInvestigation,
-        handleInvestigationFinish
+        handleInvestigationFinish,
+        handleSwitchTab,
     }
 };
 

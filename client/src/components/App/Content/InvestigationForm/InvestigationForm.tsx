@@ -69,33 +69,31 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const {
-        currentTab,
-        setCurrentTab,
-        confirmFinishInvestigation
-    } = useInvestigationForm();
-
-    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
-            exposureDate,
-            symptomsStartDate, 
-            hasSymptoms,
-            endInvestigationDate,
-            setExposureDate,
-            setSymptomsStartDate,
-            setHasSymptoms,
-            setEndInvestigationDate,
-        }),
-        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
-        setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
-    );
 
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
         clinicalDetailsData,
         setClinicalDetailsData
     }),
-    [clinicalDetailsData, setClinicalDetailsData]
+        [clinicalDetailsData, setClinicalDetailsData]
     );
-    
+
+
+    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
+        exposureDate,
+        symptomsStartDate,
+        hasSymptoms,
+        endInvestigationDate,
+        setExposureDate,
+        setSymptomsStartDate,
+        setHasSymptoms,
+        setEndInvestigationDate,
+    }),
+        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
+            setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
+    );
+
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables });
+        
     return (
         <div className={classes.content}>
             <PersonalInfoContextProvider value={personalInfoValue}>
@@ -113,8 +111,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) :
-                                            setCurrentTab(tabs[currentTab.id + 1])
+                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>
