@@ -30,6 +30,7 @@ const ExposureForm = () => {
     const handlePersonFirstNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonFirstName(event.target.value);
     const handlePersonLastNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonLastName(event.target.value);
     const handlePlaceNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureLocation(event.target.value);
+    const handleExposureDateInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureDate(new Date(event.target.value));
 
     return (
         <Grid className={classes.form} container justify='flex-start'>
@@ -45,9 +46,7 @@ const ExposureForm = () => {
             <FormRowWithInput fieldName='תאריך החשיפה:'>
                 <DatePick type='date' 
                           value={exposureDate !== undefined ? format(exposureDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                              setExposureDate(new Date(event.target.value))
-                          )} />
+                          onChange={handleExposureDateInput} />
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='שם מקום החשיפה:'>
