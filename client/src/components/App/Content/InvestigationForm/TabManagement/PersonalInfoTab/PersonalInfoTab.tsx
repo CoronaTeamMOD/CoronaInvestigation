@@ -3,12 +3,12 @@ import Grid from '@material-ui/core/Grid';
 import { FormControl } from '@material-ui/core';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Typography, RadioGroup, Radio, Collapse } from '@material-ui/core';
+import { Typography, RadioGroup, Radio } from '@material-ui/core';
 
+import axios from 'Utils/axios';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import relevantOccupations from 'models/enums/relevantOccupations';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
@@ -16,7 +16,8 @@ import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 
 import useStyles from './PersonalInfoTabStyles';
-import axios from 'Utils/axios';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -34,6 +35,8 @@ const OCCUPATION_LABEL = 'תעסוקה:';
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
+    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
+
     const personalInfoStateContext = React.useContext(personalInfoContext);
 
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
@@ -41,7 +44,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }
 
     React.useEffect(() => {
-        axios.get('/personalDetails').then((result) => console.log(result.data))
+        axios.get(`/personalDetails/allDetails?epidemioligyNumber=${epidemiologyNumber}`)
+        .then((result) => console.log("HI: " , result.data))
     }, [])
 
     return (
