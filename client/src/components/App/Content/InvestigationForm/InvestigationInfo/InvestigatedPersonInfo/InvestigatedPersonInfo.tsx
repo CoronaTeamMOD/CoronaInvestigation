@@ -1,8 +1,10 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
 import { Typography, Paper } from '@material-ui/core';
-import { CheckCircleOutline, CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
+import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
 
+import StoreStateType from 'redux/storeStateType';
 import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -19,24 +21,13 @@ const InvestigatedPersonInfo = (props: Props) => {
     const classes = useStyles();
     const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
 
-    const { confirmExitUnfinishedInvestigation, getPersonAge } = useInvestigatedPersonInfo();
-
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    //const dateOfTest = '34/01/2020';
-
-    const [isChecked, setIsChecked] = React.useState<boolean>(false);
-
-    const handleCheck = () => {
-        if (isChecked) {
-            // TODO: שינוי סטטוס החקירה ללא ניתן ליצור קשר
-        } else {
-            // TODO: שינוי סטטוס החקירה לטיפול
-        }
-
-        setIsChecked(!isChecked);
-    };
-
+    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
+    const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
+    
+    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
+    
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
@@ -95,11 +86,17 @@ const InvestigatedPersonInfo = (props: Props) => {
                 </div>
                 <div className={classes.managementControllers}>
                     <PrimaryButton
-                        onClick={confirmExitUnfinishedInvestigation}>
+                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
                         {leaveInvestigationMessage}
                     </PrimaryButton>
                     <CustomCheckbox
-                        checkboxElements={[{ value: isChecked, labelText: 'אין מענה במספר זה', onChange: () => (handleCheck()) }]}
+                        checkboxElements={[
+                            {
+                                value: cantReachInvestigated, 
+                                labelText: 'אין מענה במספר זה', 
+                                onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCantReachInvestigatedCheck(checked))
+                            }
+                        ]}
                     />
                 </div>
             </div>

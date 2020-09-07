@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import { InvestigationInfo } from 'models/InvestigationInfo';
