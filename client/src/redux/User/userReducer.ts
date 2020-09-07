@@ -2,8 +2,9 @@ import User from 'models/User';
 import * as Actions from './userActionTypes';
 
 const initialState: User = {
-    id: 7,
-    name: 'XXXXXX'
+    id: '1',
+    name: 'XXXXXX',
+    token: 'demo token'
 }
 
 const userReducer = (state = initialState, action: Actions.UserAction) : User => {
