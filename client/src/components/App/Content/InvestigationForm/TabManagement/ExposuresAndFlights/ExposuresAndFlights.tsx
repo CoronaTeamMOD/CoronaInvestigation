@@ -1,13 +1,15 @@
 import React from 'react';
 import {Collapse, Divider, Typography} from '@material-ui/core';
+
+import PlaceType from "models/PlaceType";
 import Toggle from 'commons/Toggle/Toggle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import FlightsForm from './FlightsForm/FlightsForm';
-import ExposureForm from './ExposureForm/ExposureForm';
-import useFormStyles from 'styles/formStyles';
-import useStyles from './ExposuresAndFlightsStyles';
 import {ExposureDetails, ExposuresContextProvider} from "Contexts/ExposuresAndFlights";
-import PlaceType from "models/PlaceType";
+
+import useFormStyles from 'styles/formStyles';
+import FlightsForm from './FlightsForm/FlightsForm';
+import useStyles from './ExposuresAndFlightsStyles';
+import ExposureForm from './ExposureForm/ExposureForm';
 
 
 const ExposuresAndFlights = () => {
@@ -17,6 +19,7 @@ const ExposuresAndFlights = () => {
     const [exposingPersonFirstName, setExposingPersonFirstName] = React.useState<string>();
     const [exposingPersonLastName, setExposingPersonLastName] = React.useState<string>();
     const [exposureLocation, setExposureLocation] = React.useState<string>();
+    const [exposureDate, setExposureDate] = React.useState<Date>();
     const [placeType, setPlaceType] = React.useState<PlaceType>();
 
     const [fromAirport, setFromAirport] = React.useState<string>();
@@ -31,6 +34,7 @@ const ExposuresAndFlights = () => {
             exposingPersonFirstName,
             exposingPersonLastName,
             exposureLocation,
+            exposureDate,
             placeType,
             fromAirport,
             toAirport,
@@ -43,6 +47,7 @@ const ExposuresAndFlights = () => {
             exposingPersonFirstName: setExposingPersonFirstName,
             exposingPersonLastName: setExposingPersonLastName,
             exposureLocation: setExposureLocation,
+            exposureDate: setExposureDate,
             placeType: setPlaceType,
             fromAirport: setFromAirport,
             toAirport: setToAirport,

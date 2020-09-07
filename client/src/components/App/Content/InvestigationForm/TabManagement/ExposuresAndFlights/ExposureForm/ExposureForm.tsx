@@ -1,10 +1,14 @@
-import React, {useContext} from 'react';
+import { format } from 'date-fns';
 import {Grid} from '@material-ui/core';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
+import React, {useContext} from 'react';
+
 import useFormStyles from 'styles/formStyles';
+import DatePick from 'commons/DatePick/DatePick';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
+import { dateFormatForDatePicker } from 'Utils/displayUtils';
 import {exposuresContext} from "Contexts/ExposuresAndFlights";
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 const ExposureForm = () => {
     const insertNamePlaceHolder = 'הכנס שם...';
@@ -13,8 +17,8 @@ const ExposureForm = () => {
     const classes = useFormStyles();
 
     const {exposureData, setExposureData} = useContext(exposuresContext);
-    const {exposingPersonFirstName, exposingPersonLastName, placeType, exposureLocation} = exposureData;
-    const {exposingPersonFirstName: setExposingPersonFirstName, exposingPersonLastName: setExposingPersonLastName, placeType: setPlaceType, exposureLocation: setExposureLocation} = setExposureData;
+    const {exposingPersonFirstName, exposingPersonLastName, placeType, exposureLocation, exposureDate} = exposureData;
+    const {exposingPersonFirstName: setExposingPersonFirstName, exposingPersonLastName: setExposingPersonLastName, placeType: setPlaceType, exposureLocation: setExposureLocation, exposureDate: setExposureDate} = setExposureData;
 
     const placeTypeOptions = [
         {id: 1, name: 'מקום ציבורי'},
@@ -36,6 +40,14 @@ const ExposureForm = () => {
                     <CircleTextField value={exposingPersonLastName} onChange={handlePersonLastNameInput}
                                     placeholder={lastNamePlaceHolder}/>
                 </>
+            </FormRowWithInput>
+
+            <FormRowWithInput fieldName='תאריך החשיפה:'>
+                <DatePick type='date' 
+                          value={exposureDate !== undefined ? format(exposureDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                              setExposureDate(new Date(event.target.value))
+                          )} />
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='שם מקום החשיפה:'>

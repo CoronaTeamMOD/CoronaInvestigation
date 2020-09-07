@@ -5,6 +5,7 @@ interface ExposureData {
     exposureLocation: string; // To be changed once google api is integrated
     exposingPersonFirstName: string;
     exposingPersonLastName: string;
+    exposureDate: Date;
 }
 
 export default ExposureData;

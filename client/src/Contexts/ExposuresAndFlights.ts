@@ -16,6 +16,7 @@ export const initialClinicalDetails: FormData = {
     exposureLocation: '',
     exposingPersonFirstName: '',
     exposingPersonLastName: '',
+    exposureDate: new Date(),
     toAirport: '',
     fromAirport: '',
     airline: '',
