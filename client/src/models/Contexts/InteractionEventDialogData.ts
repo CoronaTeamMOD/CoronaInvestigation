@@ -1,13 +1,13 @@
 import Address from "../Address";
 
 export default interface InteractionEventDialogData {
-    locationType?: string;
-    startTime?: Date;
-    endTime?: Date;
+    locationType: string;
+    startTime: Date;
+    endTime: Date;
     externalizationApproval: boolean;
     investigationId?: number;
     locationName?: string;
-    locationAddress?: Address;
+    locationAddress: Address;
     trainLine?: string,
     busLine?: string,
     airline?: string;

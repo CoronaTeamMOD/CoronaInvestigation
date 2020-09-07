@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import { parse, format, set } from 'date-fns';
+import { parse, format, set, startOfDay } from 'date-fns';
+import { parseFromTimeZone } from 'date-fns-timezone';
 import { AddCircle as AddCircleIcon} from '@material-ui/icons';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Collapse,
     Button, Grid, Typography, Divider, IconButton } from '@material-ui/core';
@@ -16,7 +17,6 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
-import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import SchoolEventForm, { grades } from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
@@ -27,6 +27,9 @@ import {
     InteractionEventDialogProvider,
     InteractionsEventDialogDataAndSet, initialDialogData
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import Interaction from 'models/Interaction';
+
+import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 
 const privateHouseLocationType : string = 'בית פרטי';
 const officeLocationType : string = 'משרד';
@@ -36,7 +39,9 @@ const hospitalLocationType : string = 'בית חולים';
 
 export interface Props {
     closeDialog: () => void,
-    eventDate?: Date
+    isOpen: boolean,
+    eventDate: Date,
+    interactionToEdit?: Interaction
 }
 
 const otherLocationTypes = [
@@ -77,6 +82,7 @@ const defaultContact: Contact = {
 };
 
 const defaultTime : string = '00:00';
+const timeFormat : string = 'hh:mm';
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 const contactedPersonPhone: string = 'מספר טלפון';
@@ -85,18 +91,19 @@ const contactedPersonID: string = 'ת.ז';
 const addContactButton: string = 'הוסף מגע';
 
 const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { eventDate, closeDialog } = props;
+    const { eventDate, closeDialog, interactionToEdit, isOpen } = props;
     const { createNewInteractionEvent } = useNewInteractionEventDialog({closeDialog});
+
+    const defaultDate = new Date(startOfDay(eventDate).toUTCString());
 
     const classes = useStyles();
     const formClasses = useFormStyles();
-    const [canCreateEvent, setCanCreateEvent] = useState<boolean>(false);
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(initialDialogData);
     const [canAddContact, setCanAddContact] = useState<boolean>(false);
     const [allContacts, setAllContacts] = useState<Contact[]>([{...defaultContact}]);
     const [locationType, setLocationType] = useState<string>(privateHouseLocationType);
-    const [startTime, setStartTime] = useState<Date>();
-    const [endTime, setEndTime] = useState<Date>();
+    const [startTime, setStartTime] = useState<Date>(defaultDate);
+    const [endTime, setEndTime] = useState<Date>(defaultDate);
     const [externalizationApproval, setExternalizationApproval] = useState<boolean>(false);
     const [investigationId, setInvestigationId] = useState<number>();
     const [locationName, setLocationName] = useState<string>();
@@ -215,9 +222,17 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
             </div>
         );
     }
+
     React.useEffect(() => {
-        setCanCreateEvent(startTime !== undefined && endTime !== undefined);
-    }, [startTime, endTime]);
+        if (interactionToEdit) {
+            setStartTime(interactionToEdit.startTime);
+            setEndTime(interactionToEdit.endTime);
+            setLocationName(interactionToEdit.locationName);
+            setLocationType(interactionToEdit.locationType);
+            setLocationAddress(interactionToEdit.locationAddress);
+            setExternalizationApproval(interactionToEdit.externalizationApproval);
+        }
+    }, []);
 
     React.useEffect(() => {
         resetLocationForm()
@@ -249,21 +264,26 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         setHospitalDepartment(undefined);
     }
 
-    const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setLocationType(event.target.value as string);
-    }
+    const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => setLocationType(event.target.value as string)
     
-    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setStartTime(parse(event.target.value, 'hh:mm', new Date()));
-    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => setEndTime(parse(event.target.value, 'hh:mm', new Date()));
+    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const timeSplit = event.target.value.split(':');
+        const newStartTime = set(startTime, { hours: +timeSplit[0], minutes: +timeSplit[1]});
+        setStartTime(newStartTime);
+    };
+
+    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const timeSplit = event.target.value.split(':');
+        const newEndTime = set(endTime, { hours: +timeSplit[0], minutes: +timeSplit[1]});
+        setEndTime(newEndTime);
+    };
+
     const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => setExternalizationApproval(val);
-    const buildDateToSaveToDB = (date: Date | undefined) => {
-        if (!eventDate || !date) return new Date();
-        return set(eventDate, { hours: startTime?.getHours(), minutes: startTime?.getMinutes()});
-    }
+
     const onConfirm = () => createNewInteractionEvent({
-        locationType: locationTypes[+locationType],
-        startTime: buildDateToSaveToDB(startTime),
-        endTime: buildDateToSaveToDB(endTime),
+        locationType,
+        startTime,
+        endTime,
         externalizationApproval,
         investigationId,
         locationName,
@@ -273,7 +293,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         airline,
         flightNumber,
         busCompany,
-        grade: locationTypes[+locationType] === schoolLocationType ? grade : undefined,
+        grade: locationType === schoolLocationType ? grade : undefined,
         boardingStation,
         boardingCountry,
         boardingCity,
@@ -285,8 +305,16 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
         hospitalDepartment
     })
 
+    const getDisplayTime = (date: Date) => {
+        if (date.getHours() === 0) {
+            if (date.getMinutes() === 0) return defaultTime;
+            return defaultTime.replace(':00', `:${date.getMinutes()}`);
+        } 
+        return format(date, timeFormat);
+    }
+
     return (
-        <Dialog classes={{paper: classes.dialogPaper}} open={eventDate !== undefined} maxWidth={false}>
+        <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
@@ -326,7 +354,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <FormInput fieldName='משעה'>
                                     <DatePick
                                         type='time'
-                                        value={startTime ? format(startTime, 'hh:mm') : defaultTime}
+                                        value={getDisplayTime(startTime)}
                                         onChange={onStartTimeChange}/>
                                 </FormInput>
                             </Grid>
@@ -334,7 +362,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                                 <FormInput fieldName='עד שעה'>
                                     <DatePick
                                         type='time'
-                                        value={endTime ? format(endTime, 'hh:mm') : defaultTime}
+                                        value={getDisplayTime(endTime)}
                                         onChange={onEndTimeChange}
                                     />
                                 </FormInput>
@@ -350,12 +378,12 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                         </div>
                     </Grid>
                     <Divider light={true}/>
-                    <Grid container className={formClasses.form + ' ' + classes.spacedOutForm} xs={2}>
+                    <Grid container className={formClasses.form + ' ' + classes.spacedOutForm}>
                         <div className={classes.newContactFieldsContainer}>
                             {
                                 allContacts.map((contact: Contact) => { return getContactForm(contact) })
                             }
-                            <Grid item direction={'row'}>
+                            <Grid item>
                                 <IconButton onClick={handleContactAdd} disabled={!canAddContact}>
                                     <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
                                 </IconButton>
@@ -373,7 +401,6 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                     בטל
                 </Button>
                 <PrimaryButton 
-                    disabled={!canCreateEvent}
                     id='createContact'
                     onClick={() => onConfirm()}>
                     צור מקום/מגע

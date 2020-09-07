@@ -11,7 +11,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
 
-    const { interaction } = props;
+    const { interaction, onEditClick } = props;
 
     const classes = useStyle();
 
@@ -24,12 +24,12 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                     <Typography>
                         <b>
-                            {interaction.placeName}
+                            {interaction.locationName}
                         </b>
                     </Typography>
                 </div>
                 <div>
-                    <IconButton>
+                    <IconButton onClick={onEditClick}>
                         <Edit />
                     </IconButton>
                     <IconButton>
@@ -39,7 +39,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
             </div>
             <Collapse in={areDetailsOpen}>
                 <Grid container className={classes.gridContainer}>
-                    {/* place name row */}
+                    {/* location name row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>שם המקום: </b>
@@ -47,10 +47,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeName}
+                            {interaction.locationName}
                         </Typography>
                     </Grid>
-                    {/* place address row */}
+                    {/* location address row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b> כתובת: </b>
@@ -58,10 +58,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeAddress}
+                            {interaction.locationAddress}
                         </Typography>
                     </Grid>
-                    {/* place number row */}
+                    {/* location number row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>טלפון המקום: </b>
@@ -69,7 +69,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeNumber}
+                            {interaction.buisnessContactNumber}
                         </Typography>
                     </Grid>
                     {/* time row */}
@@ -80,7 +80,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {format(interaction.interactionEndTime, 'HH:mm')} - {format(interaction.interactionStartTime, 'HH:mm')}
+                            {format(interaction.endTime, 'HH:mm')} - {format(interaction.startTime, 'HH:mm')}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -122,7 +122,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 }
 
 interface Props {
-    interaction: Interaction
+    interaction: Interaction,
+    onEditClick: () => void
 }
 
 export default InteractionCard;

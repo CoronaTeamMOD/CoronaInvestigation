@@ -15,8 +15,8 @@ export interface InteractionsEventDialogDataAndSet {
 export const initialDialogData: InteractionEventDialogData = {
     locationType: '',
     locationAddress: initAddress,
-    startTime: undefined,
-    endTime: undefined,
+    startTime: new Date(),
+    endTime: new Date(),
     externalizationApproval: false,
     grade: '',
 }

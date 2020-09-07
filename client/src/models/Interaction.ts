@@ -1,16 +1,13 @@
+import InteractionEventDialogData from "./Contexts/InteractionEventDialogData";
+
 interface InteractionPerson {
     name: string;
     id: string;
     phoneNumber: string;
 }
 
-interface Interaction {
-    placeType: string;
-    placeName: string;
-    placeAddress: string;
-    placeNumber: string;
-    interactionStartTime: Date;
-    interactionEndTime: Date;
+interface Interaction extends InteractionEventDialogData {
+    id: number;
     interactionPersons: InteractionPerson[];
 }
 
