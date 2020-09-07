@@ -15,13 +15,13 @@ import './styles/fonts.css';
 import theme from './styles/theme';
 import {store} from './redux/store';
 import App from './components/App/App';
-
+import axios from 'Utils/axios';
 const client = new ApolloClient({
     uri: '/graphql'
 });
 
 const jss = create({plugins: [...jssPreset().plugins, rtl()]});
-
+axios.get('/').then(res=>console.log(res)).catch((res=>console.log(res)))
 ReactDOM.render(
     <Provider store={store}>  
         <MuiThemeProvider theme={theme}>
