@@ -10,6 +10,7 @@ enum ClinicalDetailsFields {
     HOSPITAL = 'hospital',
     HOSPITALIZATION_START_DATE = 'hospitalizationStartDate',
     HOSPITALIZATION_END_DATE = 'hospitalizationEndDate',
+    IS_PREGNANT = 'isPregnant'
 }
 
 export default ClinicalDetailsFields;
