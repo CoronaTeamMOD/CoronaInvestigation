@@ -31,18 +31,11 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',
-        isInvestigatedPersonsNumber: true,
-        selectReasonNumberIsNotRelated: '',
-        writeReasonNumberIsNotRelated: '',
         additionalPhoneNumber: '',
         gender: Gender.MALE,
         identificationType: IdentificationType.ID,
         identificationNumber: '',
-        age: '',
-        motherName: '',
-        fatherName: '',
         insuranceCompany: '',
-        HMO: '',
         address: {
             city: '',
             neighborhood: '',
