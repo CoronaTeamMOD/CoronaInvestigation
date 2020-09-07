@@ -14,7 +14,8 @@ const ExposuresAndFlights = () => {
     const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(false);
     const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
 
-    const [exposingPersonName, setExposingPersonName] = React.useState<string>();
+    const [exposingPersonFirstName, setExposingPersonFirstName] = React.useState<string>();
+    const [exposingPersonLastName, setExposingPersonLastName] = React.useState<string>();
     const [exposureLocation, setExposureLocation] = React.useState<string>();
     const [placeType, setPlaceType] = React.useState<PlaceType>();
 
@@ -27,7 +28,8 @@ const ExposuresAndFlights = () => {
 
     const contextInitialData: ExposureDetails = {
         exposureData: {
-            exposingPersonName,
+            exposingPersonFirstName,
+            exposingPersonLastName,
             exposureLocation,
             placeType,
             fromAirport,
@@ -38,7 +40,8 @@ const ExposuresAndFlights = () => {
             arrivalDate,
         },
         setExposureData: {
-            exposingPersonName: setExposingPersonName,
+            exposingPersonFirstName: setExposingPersonFirstName,
+            exposingPersonLastName: setExposingPersonLastName,
             exposureLocation: setExposureLocation,
             placeType: setPlaceType,
             fromAirport: setFromAirport,

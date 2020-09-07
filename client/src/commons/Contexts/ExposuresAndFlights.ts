@@ -14,7 +14,8 @@ export interface ExposureDetails {
 export const initialClinicalDetails: FormData = {
     placeType: {id:0,name:''},
     exposureLocation: '',
-    exposingPersonName: '',
+    exposingPersonFirstName: '',
+    exposingPersonLastName: '',
     toAirport: '',
     fromAirport: '',
     airline: '',

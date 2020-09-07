@@ -7,12 +7,14 @@ import useFormStyles from 'styles/formStyles';
 import {exposuresContext} from "Contexts/ExposuresAndFlights";
 
 const ExposureForm = () => {
-    const placeholderText = 'הכנס שם...';
+    const insertNamePlaceHolder = 'הכנס שם...';
+    const firstNamePlaceHolder = 'שם פרטי...';
+    const lastNamePlaceHolder = 'שם משפחה...';
     const classes = useFormStyles();
 
     const {exposureData, setExposureData} = useContext(exposuresContext);
-    const {exposingPersonName, placeType, exposureLocation} = exposureData;
-    const {exposingPersonName: setExposingPersonName, placeType: setPlaceType, exposureLocation: setExposureLocation} = setExposureData;
+    const {exposingPersonFirstName, exposingPersonLastName, placeType, exposureLocation} = exposureData;
+    const {exposingPersonFirstName: setExposingPersonFirstName, exposingPersonLastName: setExposingPersonLastName, placeType: setPlaceType, exposureLocation: setExposureLocation} = setExposureData;
 
     const placeTypeOptions = [
         {id: 1, name: 'מקום ציבורי'},
@@ -21,19 +23,24 @@ const ExposureForm = () => {
     ];
 
     const selectPlaceType = (event: React.ChangeEvent<any>) => setPlaceType(event.target.value);
-    const handlePersonNameInput = (event: React.ChangeEvent<HTMLInputElement>) =>setExposingPersonName(event.target.value);
+    const handlePersonFirstNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonFirstName(event.target.value);
+    const handlePersonLastNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonLastName(event.target.value);
     const handlePlaceNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureLocation(event.target.value);
 
     return (
         <Grid className={classes.form} container justify='flex-start'>
             <FormRowWithInput fieldName='שם החולה:'>
-                <CircleTextField value={exposingPersonName} onChange={handlePersonNameInput}
-                                 placeholder={placeholderText}/>
+                <>
+                    <CircleTextField value={exposingPersonFirstName} onChange={handlePersonFirstNameInput}
+                                    placeholder={firstNamePlaceHolder}/>
+                    <CircleTextField value={exposingPersonLastName} onChange={handlePersonLastNameInput}
+                                    placeholder={lastNamePlaceHolder}/>
+                </>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='שם מקום החשיפה:'>
                 <CircleTextField value={exposureLocation} onChange={handlePlaceNameInput}
-                                 placeholder={placeholderText}/>
+                                 placeholder={insertNamePlaceHolder}/>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='סוג מקום החשיפה:'>
