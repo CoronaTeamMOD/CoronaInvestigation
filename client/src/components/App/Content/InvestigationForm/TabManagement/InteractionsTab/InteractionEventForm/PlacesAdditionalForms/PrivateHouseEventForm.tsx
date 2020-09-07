@@ -7,9 +7,9 @@ import FormInput from 'commons/FormInput/FormInput';
 import AddressForm from 'commons/AddressForm/AddressForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-import useStyles from '../NewInteractionEventDialogStyles';
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../InteractionsEventDialogContext/InteractionsEventDialogContext'
+import useStyles from '../../NewInteractionEventDialog/NewInteractionEventDialogStyles';
+import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const PrivateHouseEventForm : React.FC = () : JSX.Element => {
     const classes = useStyles();

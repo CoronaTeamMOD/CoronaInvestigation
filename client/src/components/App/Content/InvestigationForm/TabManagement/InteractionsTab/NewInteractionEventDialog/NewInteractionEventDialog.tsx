@@ -15,18 +15,18 @@ import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './NewInteractionEventDialogStyles';
-import OfficeEventForm from './PlacesAdditionalForms/OfficeEventForm';
+import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
 import useNewInteractionEventDialog from './useNewInteractionEventDialog';
-import SchoolEventForm, { grades } from './PlacesAdditionalForms/SchoolEventForm';
-import DefaultPlaceEventForm from './PlacesAdditionalForms/DefaultPlaceEventForm';
-import PrivateHouseEventForm from './PlacesAdditionalForms/PrivateHouseEventForm';
+import SchoolEventForm, { grades } from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
+import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import HospitalEventForm, { hospitals } from './PlacesAdditionalForms/HospitalEventForm';
-import TransportationEventForm from './PlacesAdditionalForms/TransportationEventForm/TransportationEventForm';
+import HospitalEventForm, { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import {
     InteractionEventDialogProvider,
     InteractionsEventDialogDataAndSet, initialDialogData
-} from './InteractionsEventDialogContext/InteractionsEventDialogContext';
+} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const privateHouseLocationType : string = 'בית פרטי';
 const officeLocationType : string = 'משרד';

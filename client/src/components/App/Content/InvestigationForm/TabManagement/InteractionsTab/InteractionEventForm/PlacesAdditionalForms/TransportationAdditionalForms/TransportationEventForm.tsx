@@ -5,11 +5,11 @@ import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 
-import useStyles from '../../NewInteractionEventDialogStyles';
-import BusEventForm from './TransportationAdditionalForms/BusEventForm';
-import TrainEventForm from './TransportationAdditionalForms/TrainEventForm';
-import FlightEventForm from './TransportationAdditionalForms/FlightEventForm';
-import OrganizedTransportEventForm from './TransportationAdditionalForms/OrganizedTransportEventForm';
+import useStyles from '../../../NewInteractionEventDialog/NewInteractionEventDialogStyles';
+import BusEventForm from './BusEventForm';
+import TrainEventForm from './TrainEventForm';
+import FlightEventForm from './FlightEventForm';
+import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 
 const transportationTypes = [
     'אוטובוס',
