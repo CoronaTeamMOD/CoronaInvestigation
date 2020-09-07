@@ -300,6 +300,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                     </Collapse>
                 </Grid>
+                <Grid item xs={2}>
+                    <Typography>
+                        <b>
+                            האם בהריון:
+                        </b>
+                    </Typography>
+                </Grid>
+                <Toggle
+                    value={context.clinicalDetailsData?.isPregnant}
+                    onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
+                />
             </Grid>
         </div>
     );
