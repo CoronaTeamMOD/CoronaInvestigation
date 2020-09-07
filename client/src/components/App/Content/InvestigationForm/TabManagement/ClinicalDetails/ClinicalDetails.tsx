@@ -45,7 +45,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const handleSymptomCheck = (symptom: string) => {
-        if (selectedSymptoms.find(checkedSymptom => checkedSymptom === symptom)) {
+        if (selectedSymptoms.includes(symptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((checkedSymptom) => checkedSymptom !== symptom));
         } else {
             selectedSymptoms.push(symptom);
