@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 
+import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useStyle from './InteractionCardStyles';
@@ -80,7 +81,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {format(interaction.endTime, 'HH:mm')} - {format(interaction.startTime, 'HH:mm')}
+                            {format(interaction.endTime, timeFormat)} - {format(interaction.startTime, timeFormat)}
                         </Typography>
                     </Grid>
                 </Grid>

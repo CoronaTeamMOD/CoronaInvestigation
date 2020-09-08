@@ -5,7 +5,9 @@ import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/co
     
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
+import { initAddress } from 'models/Address';
 import useFormStyles from 'styles/formStyles';
+import { timeFormat } from 'Utils/displayUtils';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
@@ -20,7 +22,6 @@ import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm, { resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import { InteractionEventDialogContext } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import { initAddress } from 'models/Address';
 
 const privateHouseLocationType : string = 'בית פרטי';
 const officeLocationType : string = 'משרד';
@@ -64,8 +65,6 @@ export const defaultContact: Contact = {
     needsToBeQuarantined: false,
     moreDetails: '',
 };
-
-const timeFormat : string = 'HH:mm';
 
 const addContactButton: string = 'הוסף מגע';
 
