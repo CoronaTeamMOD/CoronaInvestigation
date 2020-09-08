@@ -21,16 +21,15 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
     
-    const requestAddress = request.body.input;
+    console.log(request.body);
 
-    const requestInvestigation = request.body.investigation;
+    const requestAddress = request.body;
+
+    const requestInvestigation = request.body;
     
-    graphqlRequest(CREATE_ADDRESS, { input: {
-        ...requestAddress
-    }}).then((result: CreateAddressResposne) => {
-        graphqlRequest(CREATE_INVESTIGATION, { investigation: {
+    graphqlRequest(CREATE_INVESTIGATION, { investigation: {
             ...requestInvestigation,
-            isolationAddress: result.data.insertAndGetAddressId.integer,
+            isolationAddress: 87,
         }}).then(() => {
             graphqlRequest(ADD_BACKGROUND_DESEASES, {
                 backgroundDeseases: requestInvestigation.backgroundIllnesses,
@@ -45,6 +44,5 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             });
         });
     });
-});
 
 export default clinicalDetailsRoute;

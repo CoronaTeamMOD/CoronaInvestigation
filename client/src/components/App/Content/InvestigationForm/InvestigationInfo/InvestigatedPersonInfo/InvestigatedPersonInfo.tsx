@@ -107,7 +107,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 interface Props {
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
     epedemioligyNumber: number;
-    coronaTestDate: Date
+    coronaTestDate: Date;
 }
 
 export default InvestigatedPersonInfo

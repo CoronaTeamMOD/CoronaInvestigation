@@ -44,9 +44,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
         isDeceased
       }
       coronaTestDate
+      investigatedPatientId
     }
   }
-  
-  
-  
 `;

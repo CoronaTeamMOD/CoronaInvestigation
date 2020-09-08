@@ -72,8 +72,8 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
     };
 
     const saveClinicalDetails = () => {
-        console.log(clinicalDetailsVariables.clinicalDetailsData);
-    }
+        axios.post('/clinicalDetails/saveClinicalDetails', ({...clinicalDetailsVariables.clinicalDetailsData}));
+    };
 
     const handleSwitchTab = () => {
         switch(currentTab.name) {
@@ -91,7 +91,7 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
         confirmFinishInvestigation,
         handleInvestigationFinish,
         handleSwitchTab,
-    }
+    };
 };
 
 export default useInvestigationForm;

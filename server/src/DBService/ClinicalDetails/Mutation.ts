@@ -20,7 +20,7 @@ mutation createInvestigation ($investigation: InvestigationInput!) {
 export const ADD_BACKGROUND_DESEASES = gql`
 mutation addBackgroundDeseases ($backgroundDeseases: [String!], $investigatedPatientId: Int!) {
     insertBackgroundDeseases(input: {backgroundDeseases: $backgroundDeseases, investigatedPatientId: $investigatedPatientId}) {
-      integer
+        clientMutationId
     }
   }
 `;
@@ -28,7 +28,7 @@ mutation addBackgroundDeseases ($backgroundDeseases: [String!], $investigatedPat
 export const ADD_SYMPTOMS = gql`
 mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
     insertSymptoms(input: {investigationIdValue: $investigationIdValue, symptomNames: $symptomNames}) {
-      integer
+        clientMutationId
     }
   }  
 `;
