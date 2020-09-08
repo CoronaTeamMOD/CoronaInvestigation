@@ -2,7 +2,7 @@ interface Contact {
     name: string;
     phoneNumber: string;
     id: string;
-    needsToBeQuarantined?: boolean;
+    needsToBeQuarantined: boolean;
     moreDetails?: string;
 }
 

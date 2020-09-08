@@ -8,6 +8,9 @@ import { InteractionEventDialogContext } from 'components/App/Content/Investigat
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
 
+const businessContactNameField = 'שם איש קשר';
+const businessContactNumField = 'טלפון איש קשר';
+ 
 const BusinessContactForm : React.FC = () : JSX.Element => {
         
     const formClasses = useFormStyles();
@@ -20,7 +23,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
     return (
         <Grid container className={formClasses.formRow}>
             <Grid item xs={6}>
-                <FormInput fieldName='שם איש קשר'>
+                <FormInput fieldName={businessContactNameField}>
                     <CircleTextField
                         value={buisnessContactName}
                         onChange={event => onChange(event, InteractionEventDialogFields.BUSINESS_CONTACT_NAME)}/>
@@ -29,7 +32,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
             <Grid item xs={6}>
                 <FormInput fieldName='טלפון איש קשר'>
                     <CircleTextField
-                        value={buisnessContactNumber}
+                        value={businessContactNumField}
                         onChange={event => onChange(event, InteractionEventDialogFields.BUSINESS_CONTACT_NUMBER)}/>
                 </FormInput>
             </Grid>
