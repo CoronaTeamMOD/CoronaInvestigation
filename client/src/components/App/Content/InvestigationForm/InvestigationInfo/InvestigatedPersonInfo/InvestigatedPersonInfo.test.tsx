@@ -1,22 +1,33 @@
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 import { act } from 'react-dom/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import { testHooksFunction } from 'TestHooks';
 
+import axios from 'Utils/axios';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
+
+const mockAdapter = new MockAdapter(axios);
 
 let investigatedPersonInfoOutcome: InvestigatedPersonInfoOutcome;
 
 describe('investigatedPersonInfo tests', () => {
-    afterEach(() => jest.resetAllMocks());
+    afterEach(() => {
+    jest.resetAllMocks();
+    mockAdapter.reset();
+});
 
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
                 investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
             });
         })
+
+        const epidemiologyNumber = '111';
+        const cantReachInvestigated = false;
 
         const expectedFirstSwal = {
             icon: 'warning',
@@ -49,7 +60,8 @@ describe('investigatedPersonInfo tests', () => {
                 await testHooksFunction(() => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
-                investigatedPersonInfoOutcome.confirmExitUnfinishedInvestigation();
+                investigatedPersonInfoOutcome
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
             });
 
             expect(myspy).toHaveBeenCalled();
@@ -69,7 +81,8 @@ describe('investigatedPersonInfo tests', () => {
                 await testHooksFunction(() => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
-                await investigatedPersonInfoOutcome.confirmExitUnfinishedInvestigation();
+                await investigatedPersonInfoOutcome
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
             });
 
             expect(myspy).toHaveBeenCalled();
@@ -89,7 +102,8 @@ describe('investigatedPersonInfo tests', () => {
                 await testHooksFunction(() => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
-                await investigatedPersonInfoOutcome.confirmExitUnfinishedInvestigation();
+                await investigatedPersonInfoOutcome
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
             });
 
             expect(myspy).toHaveBeenCalled();

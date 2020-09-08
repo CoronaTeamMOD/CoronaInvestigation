@@ -14,6 +14,8 @@ import { defaultTab } from './TabManagement/TabManagement';
 import {tabs} from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
 
+const finishInvestigationStatus = 'טופלה';
+
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
@@ -22,7 +24,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     const classes = useStyles({});
 
-    const confirmFinishInvestigation = () => {
+    const confirmFinishInvestigation = (epidemiologyNumber: string) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -36,7 +38,14 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             }
         }).then((result) => {
             if (result.value) {
-                handleInvestigationFinish();
+                axios.post('/investigationInfo/updateInvestigationStatus', {
+                    investigationStatus: finishInvestigationStatus,
+                    epidemiologyNumber
+                }).then(() => {
+                    handleInvestigationFinish();
+                }).catch(() => {
+                    handleInvestigationFinishFailed();
+                })
             };
         });
     };
@@ -73,6 +82,12 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             setCurrentTab(tabs[currentTab.id + 1]);
         });
     }
+    const handleInvestigationFinishFailed = () => {
+        Swal.fire({
+            title: 'לא ניתן היה לסיים את החקירה',
+            icon: 'error',
+        })
+    };
 
     return {
         currentTab,

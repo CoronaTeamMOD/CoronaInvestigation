@@ -4,7 +4,7 @@ import { personalInfoContextData } from 'models/Contexts/personalInfoContextData
 export interface useInvestigationFormOutcome {
     currentTab: Tab;
     setCurrentTab: (nextTabObj: Tab) => void;
-    confirmFinishInvestigation: () => void;
+    confirmFinishInvestigation: (epidemiologyNumber: string) => void;
     handleInvestigationFinish: () => void;
     handleSwitchTab: () => void;
 };

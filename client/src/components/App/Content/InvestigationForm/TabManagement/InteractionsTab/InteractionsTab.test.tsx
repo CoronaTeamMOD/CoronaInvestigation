@@ -1,4 +1,3 @@
-import { act } from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { subDays, eachDayOfInterval } from 'date-fns';
 

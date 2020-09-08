@@ -7,6 +7,6 @@ export const useStyles = makeStyles({
         margin: '0 2%',
     },
     label: {
-        fontSize: 13,
+        fontSize: 17,
     },
 });

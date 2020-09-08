@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 
-import Interaction from 'models/Interaction';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyle from './ContactDateCardStyles'
@@ -11,7 +11,7 @@ import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
-    const { contactDate, interactions, createNewInteractionEvent } = props;
+    const { contactDate, interactions, createNewInteractionEvent, onEditClick } = props;
     
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -30,7 +30,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     interactions !== undefined &&
                         <div className={classes.infoSection}>
                             <Typography>
-                                סה"כ מקומות: {interactions?.length} | סה"כ אנשים: {interactions?.map(interaction => interaction.interactionPersons.length).reduce((sum, currentElement) => sum += currentElement)}
+                                סה"כ מקומות: {interactions?.length} | סה"כ אנשים: {interactions?.map(interaction => interaction.contacts.length).reduce((sum, currentElement) => sum += currentElement)}
                             </Typography>
                         </div>
                 }
@@ -39,7 +39,11 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 </PrimaryButton>
             </div>
             <Collapse in={areInteractionsOpen}>
-                {interactions?.map(interaction => <InteractionCard key={interaction.interactionStartTime.getTime()} interaction={interaction} />)}
+                {interactions?.map(interaction => 
+                    <InteractionCard 
+                    onEditClick={() => onEditClick(interaction)}
+                    key={interaction.startTime.getTime()} interaction={interaction} />
+                )}
             </Collapse>
         </Card>
     )
@@ -49,6 +53,7 @@ interface Props {
     contactDate: Date;
     interactions: Interaction[] | undefined;
     createNewInteractionEvent: () => void;
+    onEditClick: (interaction: Interaction) => void
 }
 
 export default ContactDateCard;

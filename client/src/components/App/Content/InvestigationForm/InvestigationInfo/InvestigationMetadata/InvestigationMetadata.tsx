@@ -1,27 +1,44 @@
 import React from 'react';
+import { format } from 'date-fns';
 import {Paper} from '@material-ui/core';
+
+import { getPersonFullName } from 'Utils/displayUtils';
+import { InvestigationMetaData } from 'models/InvestigationInfo';
+
 import InfoItem from '../InfoItem';
 import useStyles from './InvestigationMetadataStyles';
 
-const InvestigationMetadata = () => {
+const InvestigationMetadata = (props: Props) => {
+
     const classes = useStyles();
-    const investigationStartDate = '26/08/2020';
-    const lastUpdateTime = '26/08/2020';
-    const district = 'דרום';
-    const investigator = 'אברהם כהן';
-    const updatingInvestigator = 'פלוני זהבי';
-    const investigatorPhoneNumber = '054-1234567';
+    const { investigationMetaData } = props;
 
     return (
         <Paper className={classes.metadata}>
-            <InfoItem name='תאריך תחילת החקירה' value={investigationStartDate} />
-            <InfoItem name='תאריך עדכון אחרון' value={lastUpdateTime} />
-            <InfoItem name='נפח/מחוז' value={district} />
-            <InfoItem name='מבצע החקירה' value={investigator} />
-            <InfoItem name='משתמש מעדכן' value={updatingInvestigator} />
-            <InfoItem name='טלפון המבצע' value={investigatorPhoneNumber} />
+            <InfoItem name='תאריך תחילת החקירה' value={
+                    format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy')
+                }
+            />
+            <InfoItem name='תאריך עדכון אחרון' value={
+                    format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
+                }
+            />
+            <InfoItem name='נפח/מחוז' value={investigationMetaData.investigatingUnit} />
+            <InfoItem name='מבצע החקירה' value={
+                    getPersonFullName(investigationMetaData.userByCreator.personByPersonId)
+                }
+            />
+            <InfoItem name='משתמש מעדכן' value={
+                    getPersonFullName(investigationMetaData.userByLastUpdator.personByPersonId)
+                }
+            />
+            <InfoItem name='טלפון המבצע' value={investigationMetaData.userByCreator.personByPersonId.phoneNumber} />
         </Paper>
     );
 };
+
+interface Props {
+    investigationMetaData: InvestigationMetaData
+}
 
 export default InvestigationMetadata;
