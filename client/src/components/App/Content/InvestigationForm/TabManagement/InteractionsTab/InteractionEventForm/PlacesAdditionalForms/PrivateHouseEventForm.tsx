@@ -3,7 +3,7 @@ import React, {useContext} from 'react';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'commons/AddressForm/AddressForm';
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
