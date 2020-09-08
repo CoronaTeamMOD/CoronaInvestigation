@@ -28,6 +28,7 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
     
     React.useEffect(() => {
+        console.log(process.env.REACT_APP_ENVIRONMENT);
         if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV) {
             axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
             .then((response) => {
