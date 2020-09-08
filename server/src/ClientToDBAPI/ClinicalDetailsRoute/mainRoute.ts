@@ -5,7 +5,7 @@ import Investigation from '../../Models/ClinicalDetails/Investigation';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import { CreateAddressResponse } from '../../Models/ClinicalDetails/CreateAddress';
 import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
-import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DESEASES, ADD_SYMPTOMS } from '../../DBService/ClinicalDetails/Mutation';
+import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DESEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
 
@@ -27,26 +27,25 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
-        epidemioligyNumber: clinicalDetails.epidemioligyNumber,
-        creator: 15,
-        lastUpdator: 15,
+        epidemiologyNumber: clinicalDetails.epidemioligyNumber,
+        creator: clinicalDetails.creator,
+        lastUpdator: clinicalDetails.lastUpdator,
         hospital: clinicalDetails.hospital,
-        hospitalizationEndDate: clinicalDetails.hospitalizationEndDate,
-        hospitalizationStartDate: clinicalDetails.hospitalizationStartDate,
+        hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
+        hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
         investigatedPatientId: clinicalDetails.investigatedPatientId,
         isIsolationProblem: clinicalDetails.isIsolationProblem,
         isIsolationProblemMoreInfo: clinicalDetails.isIsolationProblemMoreInfo,
-        isolationAddress: clinicalDetails.isolationAddress,
-        isolationEndDate: clinicalDetails.isolationEndDate,
-        isolationStartDate: clinicalDetails.isolationStartDate,
-        symptomsStartDate: clinicalDetails.symptomsStartDate,
+        isolationAddress: +clinicalDetails.isolationAddress,
+        isolationEndTime: clinicalDetails.isolationEndDate,
+        isolationStartTime: clinicalDetails.isolationStartDate,
+        symptomsStartTime: clinicalDetails.symptomsStartDate,
     }
 
     console.log(requestInvestigation)
     
     graphqlRequest(CREATE_INVESTIGATION, { investigation: {
-            ...requestInvestigation,
-            isolationAddress: 87,
+            ...requestInvestigation
         }}).then(() => {
             graphqlRequest(ADD_BACKGROUND_DESEASES, {
                 backgroundDeseases: clinicalDetails.backgroundDeseases,
@@ -55,6 +54,11 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
                 graphqlRequest(ADD_SYMPTOMS, {
                     investigationIdValue: clinicalDetails.epidemioligyNumber,
                     symptomNames: clinicalDetails.symptoms
+                }).then(() => {
+                    graphqlRequest(UPDATE_IS_PREGNANT, {
+                        isPregnant: clinicalDetails.isPregnant,
+                        id: clinicalDetails.investigatedPatientId
+                    })
                 }).then(() => {
                     response.send('Added clinical details');
                 });

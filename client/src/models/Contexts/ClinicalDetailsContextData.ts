@@ -13,6 +13,8 @@ interface ClinicalDetailsData {
     isPregnant: boolean;
     investigatedPatientId: number;
     epidemioligyNumber: number;
+    creator: string,
+    lastUpdator: string,
 };
 
 export default ClinicalDetailsData;

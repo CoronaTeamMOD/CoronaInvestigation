@@ -71,16 +71,22 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
         })
     };
 
-    const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number) => {
+    const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
         console.log(clinicalDetailsVariables.clinicalDetailsData)
-        const clinicalDetails = ({ ...clinicalDetailsVariables.clinicalDetailsData, 'investigatedPatientId': investigatedPatientId, 'epidemioligyNumber' : epidemioligyNumber });
+        const clinicalDetails = ({
+            ...clinicalDetailsVariables.clinicalDetailsData,
+            'investigatedPatientId': investigatedPatientId,
+            'epidemioligyNumber' : epidemioligyNumber,
+            'creator' : creator,
+            'lastUpdator' : lastUpdator,
+        });
         axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
 
-    const handleSwitchTab = (investigatedPatientId: number, epidemioligyNumber: number) => {
+    const handleSwitchTab = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
         switch(currentTab.name) {
             case(TabNames.CLINICAL_DETAILS): {
-                saveClinicalDetails(investigatedPatientId, epidemioligyNumber);
+                saveClinicalDetails(investigatedPatientId, epidemioligyNumber, creator, lastUpdator);
             }
         };
 
