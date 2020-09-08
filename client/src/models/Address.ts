@@ -1,7 +1,7 @@
 import {GoogleApiPlace} from "../commons/LocationInputField/LocationInput";
 
 export interface Address {
-    address: GoogleApiPlace | string | null;
+    address: GoogleApiPlace | null;
     entrance?: string;
     floor?: string;
     apartment?: string;

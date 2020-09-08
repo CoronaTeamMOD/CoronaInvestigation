@@ -5,7 +5,7 @@ import identificationType from 'models/enums/IdentificationTypes';
 import relevantOccupations from 'models/enums/relevantOccupations';
 import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 
-const initialPersonalInfo: personalInfoContextData = {
+export const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
     isInvestigatedPersonsNumber: true,
     selectReasonNumberIsNotRelated: '',
@@ -20,7 +20,7 @@ const initialPersonalInfo: personalInfoContextData = {
     insuranceCompany: '',
     HMO: '',
     address: {
-        address: '',
+        address: null,
         entrance: '',
         floor: '',
         apartment: ''
