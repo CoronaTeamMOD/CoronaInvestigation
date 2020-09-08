@@ -1,42 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid } from '@material-ui/core';
 
-import Address from 'models/Address';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import InteractionEventAddressFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventAddressFields';
 
 const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
 
-    const { updateAddress, removeFloor } = props;
-
+    const { removeFloor } = props;
+        
     const formClasses = useFormStyles();
+    const ctxt = useContext(InteractionEventDialogContext);
+    const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
+    const { city, houseNumber, street, entrance, floor, neighborhood } = interactionEventDialogData.locationAddress;
 
-    const [city, setCity] = React.useState<string>('');
-    const [neighborhood, setNeighborhood] = React.useState<string>();
-    const [street, setStreet] = React.useState<string>();
-    const [houseNumber, setHouseNumber] = React.useState<string>();
-    const [entrance, setEntrance] = React.useState<string>();
-    const [floor, setFloor] = React.useState<string>();
-
-    React.useEffect(() => {
-        updateAddress({
-            city, neighborhood, street, houseNumber, entrance, floor
-        });
-    }, [city, neighborhood, street, houseNumber, entrance, floor]);
-
-    const onCityChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setCity(event.target.value);
-    const onNeighborhoodChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setNeighborhood(event.target.value);
-    const onStreetChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setStreet(event.target.value);    
-    const onHouseNumberChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setHouseNumber(event.target.value);    
-    const onEntranceChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setEntrance(event.target.value);
-    const onFloorChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => 
-        setFloor(event.target.value);
+    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventAddressFields) =>
+        setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, 
+            locationAddress: {...interactionEventDialogData.locationAddress, [updatedField]: event.target.value}});
 
     return (
         <>
@@ -45,13 +28,14 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
                     <FormInput fieldName='עיר'>
                         <CircleTextField 
                             value={city}
-                            onChange={onCityChange}/>
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.CITY)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='שכונה'>
                         <CircleTextField
-                            onBlur={onNeighborhoodChange}/>
+                            value={neighborhood}
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.NEIGHBORHOOD)}/>
                     </FormInput>
                 </Grid>
             </Grid>
@@ -59,13 +43,15 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='רחוב'>
                         <CircleTextField
-                            onBlur={onStreetChange}/>
+                            value={street}
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.STREET)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='מספר בית'>
                         <CircleTextField
-                            onBlur={onHouseNumberChange}/>
+                            value={houseNumber}
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.HOUSE_NUMBER)}/>
                     </FormInput>
                 </Grid>
             </Grid>
@@ -73,13 +59,15 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='כניסה'>
                         <CircleTextField
-                            onBlur={onEntranceChange}/>
+                            value={entrance}
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.ENTRANCE)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     { !removeFloor && <FormInput fieldName='קומה'>
                         <CircleTextField
-                            onBlur={onFloorChange}/>
+                            value={floor}
+                            onChange={(event) => onChange(event, InteractionEventAddressFields.FLOOR)}/>
                     </FormInput> }
                 </Grid>
             </Grid>
@@ -90,6 +78,5 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
 export default AddressForm;
 
 interface Props {
-    updateAddress: (updatedAddress: Address) => void;
     removeFloor?: boolean
 }
