@@ -13,7 +13,7 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
-import { hospitals } from '../InteractionsTab/NewInteractionEventDialog/PlacesAdditionalForms/HospitalEventForm';
+import { hospitals } from '../InteractionsTab/InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
 
 const dateFormat = 'yyyy-MM-dd';
 

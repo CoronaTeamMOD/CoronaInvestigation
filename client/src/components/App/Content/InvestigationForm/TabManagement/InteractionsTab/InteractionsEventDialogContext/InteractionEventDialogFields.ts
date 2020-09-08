@@ -1,5 +1,6 @@
 enum InteractionEventDialogFields {
     LOCATION_TYPE = 'locationType',
+    LOCATION_SUB_TYPE = 'locationSubType',
     START_TIME = 'startTime',
     END_TIME = 'endTime',
     EXTERNALIZATION_APPROVAL = 'externalizationApproval',
@@ -21,6 +22,7 @@ enum InteractionEventDialogFields {
     BUSINESS_CONTACT_NAME = 'businessContactName',
     BUSINESS_CONTACT_NUMBER = 'businessContactNumber',
     HOSPITAL_DEPARTMENT = 'hospitalDepartment',
+    CONTACTS = 'contacts'
 }
 
 export default InteractionEventDialogFields;

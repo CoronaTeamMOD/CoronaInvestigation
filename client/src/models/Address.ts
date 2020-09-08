@@ -10,6 +10,12 @@ export interface Address {
 
 export const initAddress : Address = {
     city: '',
+    neighborhood: '',
+    street: '',
+    houseNumber: '',
+    entrance: '',
+    floor: '',
+    apartment: ''
 }
 
 export default Address;
