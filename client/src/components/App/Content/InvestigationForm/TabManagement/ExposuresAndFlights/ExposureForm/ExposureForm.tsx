@@ -49,7 +49,7 @@ const ExposureForm = () => {
                           onChange={handleExposureDateInput} />
             </FormRowWithInput>
 
-            <FormRowWithInput fieldName='שם מקום החשיפה:'>
+            <FormRowWithInput fieldName='כתובת החשיפה:'>
                 <CircleTextField value={exposureLocation} onChange={handlePlaceNameInput}
                                  placeholder={insertNamePlaceHolder}/>
             </FormRowWithInput>
