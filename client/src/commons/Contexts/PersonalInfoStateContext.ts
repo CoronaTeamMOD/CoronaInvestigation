@@ -20,10 +20,7 @@ const initialPersonalInfo: personalInfoContextData = {
     insuranceCompany: '',
     HMO: '',
     address: {
-        city: '',
-        neighborhood: '',
-        street: '',
-        houseNumber: '',
+        address: '',
         entrance: '',
         floor: '',
         apartment: ''

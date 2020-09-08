@@ -44,10 +44,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         insuranceCompany: '',
         HMO: '',
         address: {
-            city: '',
-            neighborhood: '',
-            street: '',
-            houseNumber: '',
+            address: '',
             entrance: '',
             floor: '',
             apartment: ''

@@ -1,7 +1,7 @@
 import React from 'react';
-import { TextField, StandardTextFieldProps } from '@material-ui/core';
+import {TextField, StandardTextFieldProps} from '@material-ui/core';
 
-import { useStyles } from './CircleTextFieldStyles';
+import {useStyles} from './CircleTextFieldStyles';
 
 const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
@@ -11,7 +11,9 @@ const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
             {...props}
             variant='outlined'
             size='small'
-            InputProps={{className: classes.borderRadius, classes: {input: classes.label}}}
+            InputProps={{
+                ...props.InputProps,  className: classes.borderRadius, classes: {input: classes.label},
+            }}
             InputLabelProps={{className: classes.label}}
         />
     );
