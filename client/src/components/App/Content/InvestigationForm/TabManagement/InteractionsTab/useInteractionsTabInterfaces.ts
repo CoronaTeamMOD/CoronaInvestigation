@@ -1,4 +1,4 @@
-import Interaction from 'models/Interaction';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 

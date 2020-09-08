@@ -3,7 +3,7 @@ interface Contact {
     phoneNumber: string;
     id: string;
     needsToBeQuarantined: boolean;
-    moreDetails: string;
+    moreDetails?: string;
 }
 
 export default Contact;
