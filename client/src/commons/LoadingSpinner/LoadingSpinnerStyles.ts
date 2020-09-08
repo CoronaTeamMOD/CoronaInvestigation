@@ -7,13 +7,11 @@ const useStyle = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '84vh',
-        width: '100vw',
         zIndex: 9999,
         position: 'absolute',
-        top: '9vh',
+        top: '8.5vh',
         backgroundColor: primaryBackgroundColor,
-        opacity: 0.8
+        opacity: '0.8 !important'
     }
 });
 
