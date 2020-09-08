@@ -64,7 +64,11 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     }
 
     const savePersonalInfoData = () => {
-        axios.post('/personalDetails/updatePersonalDetails', {id : 36, personalInfoData: personalInfoData})
+        axios.post('/personalDetails/updatePersonalDetails', 
+        {
+            id : 36, 
+            personalInfoData: personalInfoData, 
+        })
         .then(() => {
             setCurrentTab(tabs[currentTab.id + 1]);
         });

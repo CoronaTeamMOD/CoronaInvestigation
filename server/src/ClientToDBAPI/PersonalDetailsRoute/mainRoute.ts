@@ -11,17 +11,6 @@ personalDetailsRoute.get('/', (request: Request, response: Response) => {
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
-    console.log(request.body);
-
-    // graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
-    //     {
-    //         id: request.body.id, 
-    //         hmo: request.body.personalInfoData.insuranceCompany,
-    //         workPlace: request.body.personalInfoData.institutionName,
-    //         occupation: request.body.personalInfoData.relevantOccupation,
-    //     }
-    // );
-
     graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
         {
             id: request.body.id, 
@@ -35,15 +24,15 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                 phoneNumber: request.body.personalInfoData.phoneNumber,
                 additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
             }).then(() => {
-                console.log(request.body.address);
                 graphqlRequest(UPDATE_ADRESS,
                 {
                     id: 88,
                     city: request.body.personalInfoData.address.city,
                     street: request.body.personalInfoData.address.street,
-                    floor: request.body.personalInfoData.address.floor,
-                    houseNum: request.body.personalInfoData.address.houseNum
-            })}));
+                    floor: Number(request.body.personalInfoData.address.floor),
+                    houseNum: Number(request.body.personalInfoData.address.houseNumber)
+                }).then((result: any) => response.send(result));
+        }));
 });
 
 export default personalDetailsRoute;
