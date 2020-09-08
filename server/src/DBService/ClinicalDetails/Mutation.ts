@@ -16,7 +16,7 @@ mutation createInvestigation ($investigation: InvestigationInput!) {
 }
 `;
 
-export const ADD_BACKGROUND_DESEASES = gql`
+export const ADD_BACKGROUND_DISEASES = gql`
 mutation addBackgroundDeseases ($backgroundDeseases: [String!], $investigatedPatientId: Int!) {
     insertBackgroundDeseases(input: {backgroundDeseases: $backgroundDeseases, investigatedPatientId: $investigatedPatientId}) {
         clientMutationId

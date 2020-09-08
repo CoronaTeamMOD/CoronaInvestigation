@@ -5,7 +5,7 @@ import Investigation from '../../Models/ClinicalDetails/Investigation';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import { CreateAddressResponse } from '../../Models/ClinicalDetails/CreateAddress';
 import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
-import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DESEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT } from '../../DBService/ClinicalDetails/Mutation';
+import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
 
@@ -41,13 +41,11 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         isolationStartTime: clinicalDetails.isolationStartDate,
         symptomsStartTime: clinicalDetails.symptomsStartDate,
     }
-
-    console.log(requestInvestigation)
     
     graphqlRequest(CREATE_INVESTIGATION, { investigation: {
             ...requestInvestigation
         }}).then(() => {
-            graphqlRequest(ADD_BACKGROUND_DESEASES, {
+            graphqlRequest(ADD_BACKGROUND_DISEASES, {
                 backgroundDeseases: clinicalDetails.backgroundDeseases,
                 investigatedPatientId: clinicalDetails.investigatedPatientId
             }).then(() => {

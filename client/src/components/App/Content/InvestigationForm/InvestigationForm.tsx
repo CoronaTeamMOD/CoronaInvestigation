@@ -80,7 +80,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         [clinicalDetailsData, setClinicalDetailsData]
     );
 
-
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
         exposureDate,
         symptomsStartDate,
