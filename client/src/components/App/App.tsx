@@ -28,8 +28,8 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
     
     React.useEffect(() => {
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD) {
-            axios.get<AuthenticationReturn>(`${process.env.REACT_APP_CLIENT_URL}/.auth/me`)
+        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV) {
+            axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
             .then((response) => {
                 const { data } = response;
                 setUser({
