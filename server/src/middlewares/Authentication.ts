@@ -11,7 +11,7 @@ const authMiddleware = (request:Request, response:Response, next: NextFunction) 
         switch (token) {
             case 'fake token!':
                 response.locals.user = {id: '7', name: 'חוקר פיקטיבי'};
-                next();
+                return next();
                 break;
             default:
                 return response.status(403).json({error: 'forrbidden'});
