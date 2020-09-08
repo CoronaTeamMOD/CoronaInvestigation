@@ -6,14 +6,15 @@ import investigationInfo from './InvestigationInfo/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
+import authMiddleware from '../middlewares/Authentication';
 
 const clientToDBRouter = Router();
 
-clientToDBRouter.use('/exposure', exposureRoute);
-clientToDBRouter.use('/landingPage', landingPageRoute);
-clientToDBRouter.use('/intersections', intersectionsRoute);
-clientToDBRouter.use('/investigationInfo', investigationInfo);
-clientToDBRouter.use('/personalDetails', personalDetailsRoute);
-clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
+clientToDBRouter.use('/exposure',authMiddleware, exposureRoute);
+clientToDBRouter.use('/landingPage',authMiddleware, landingPageRoute);
+clientToDBRouter.use('/intersections',authMiddleware, intersectionsRoute);
+clientToDBRouter.use('/investigationInfo',authMiddleware, investigationInfo);
+clientToDBRouter.use('/personalDetails',authMiddleware, personalDetailsRoute);
+clientToDBRouter.use('/clinicalDetails',authMiddleware, clinicalDetailsRoute);
 
 export default clientToDBRouter;
