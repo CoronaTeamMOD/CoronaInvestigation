@@ -1,8 +1,9 @@
-import PlaceType from "./PlaceType";
+import PlaceType from './PlaceType';
+import {GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
 
 interface ExposureData {
     placeType: PlaceType;
-    exposureLocation: string; // To be changed once google api is integrated
+    exposureLocation: GoogleApiPlace | null;
     exposingPersonName: string;
 }
 
