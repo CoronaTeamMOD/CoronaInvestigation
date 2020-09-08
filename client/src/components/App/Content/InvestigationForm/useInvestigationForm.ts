@@ -75,7 +75,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const savePersonalInfoData = () => {
         axios.post('/personalDetails/updatePersonalDetails', 
         {
-            id : 36, 
+            id : 10, 
             personalInfoData: personalInfoData, 
         })
         .then(() => {

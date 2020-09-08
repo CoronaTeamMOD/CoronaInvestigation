@@ -6,6 +6,7 @@ import relevantOccupations from '../enums/relevantOccupations';
 export interface personalInfoContextData {
     phoneNumber: string;
     additionalPhoneNumber: string;
+    contactPhoneNumber: string;
     insuranceCompany: string,
     address: Address;
     relevantOccupation: relevantOccupations;

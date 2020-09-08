@@ -18,9 +18,11 @@ import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 
 import useStyles from './PersonalInfoTabStyles';
+import usePersonalInfoTab from './usePersonalInfoTab';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
+const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -32,6 +34,9 @@ const OCCUPATION_LABEL = 'תעסוקה:';
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
+    const [occupations, setOccupations] = React.useState<string[]>(['']);
+    const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
+
     const personalInfoStateContext = React.useContext(personalInfoContext);
 
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
@@ -39,8 +44,20 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }
 
     const handleChangeAddress = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
-        personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData, address: {...personalInfoStateContext.personalInfoData.address, [fieldName]: fieldValue}});
+        personalInfoStateContext.setPersonalInfoData({
+            ...personalInfoStateContext.personalInfoData, 
+            address: {
+                ...personalInfoStateContext.personalInfoData.address, 
+                [fieldName]: fieldValue
+            }
+        });
     }
+
+    const { fetchPersonalInfo } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies});
+    
+    React.useEffect(()=> {
+        fetchPersonalInfo();
+    }, [])
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -88,6 +105,26 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
+                            {CONTACT_PHONE_LABEL}
+                        </b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                    <CircleTextField 
+                        id={CONTACT_PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
+                        size='small'
+                        onChange={(event) => {
+                            handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value);
+                        }}
+                    />
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                    <Typography className={classes.fontSize15}>
+                        <b>
                             {INSURANCE_LABEL}
                         </b>
                     </Typography>
@@ -95,7 +132,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleSelect
                         value={personalInfoStateContext.personalInfoData.insuranceCompany}
-                        options={INSURANCE_OPTIONS}
+                        options={insuranceCompanies}
                         className={classes.selectWidth}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
@@ -163,7 +200,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             { 
-                                Object.values(relevantOccupations).map((occupation) => {
+                                occupations.map((occupation) => {
                                     return <FormControlLabel 
                                                 value={occupation} 
                                                 control={<Radio 

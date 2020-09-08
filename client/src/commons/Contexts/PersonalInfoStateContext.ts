@@ -8,6 +8,7 @@ import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
     additionalPhoneNumber: '',
+    contactPhoneNumber: '',
     insuranceCompany: '',
     address: {
         city: '',

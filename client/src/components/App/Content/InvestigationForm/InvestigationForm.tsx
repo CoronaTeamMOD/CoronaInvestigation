@@ -32,6 +32,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',
         additionalPhoneNumber: '',
+        contactPhoneNumber: '',
         insuranceCompany: '',
         address: {
             city: '',

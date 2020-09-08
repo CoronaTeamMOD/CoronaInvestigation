@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, UPDATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
+import { GET_OCCUPATIONS, GET_HMOS } from '../../DBService/PersonalDetails/Query';
 
 const personalDetailsRoute = Router();
 
@@ -10,17 +11,26 @@ personalDetailsRoute.get('/', (request: Request, response: Response) => {
     response.send('Hello from Personal Details route');
 });
 
+personalDetailsRoute.get('/getAllOccupations', (request: Request, response: Response) => {
+    graphqlRequest(GET_OCCUPATIONS).then((result: any) => response.send(result));
+});
+
+personalDetailsRoute.get('/getAllHmos', (request: Request, response: Response) => {
+    graphqlRequest(GET_HMOS).then((result: any) => response.send(result));
+});
+
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
     graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
         {
             id: request.body.id, 
             hmo: request.body.personalInfoData.insuranceCompany,
-            workPlace: request.body.personalInfoData.institutionName,
+            otherOccupationExtraInfo: request.body.personalInfoData.institutionName,
             occupation: request.body.personalInfoData.relevantOccupation,
+            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber
         }
     ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
             {
-                id: 96,
+                id: 10,
                 phoneNumber: request.body.personalInfoData.phoneNumber,
                 additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
             }).then(() => {

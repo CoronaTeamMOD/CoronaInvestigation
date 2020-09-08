@@ -1,8 +1,8 @@
 import { gql } from "postgraphile";
 
 export const UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO = gql`
-mutation updateInvestigatedPersonPersonalInfo($id: Int!, $hmo: String!, $workPlace: String!, $occupation: String!) {
-    updateInvestigatedPatientById(input: {investigatedPatientPatch: {hmo: $hmo, workPlace: $workPlace, occupation: $occupation}, id: $id}) {
+mutation updateInvestigatedPersonPersonalInfo($id: Int!, $hmo: String!, $otherOccupationExtraInfo: String!, $occupation: String!, $patientContactPhoneNumber: String!) {
+    updateInvestigatedPatientById(input: {investigatedPatientPatch: {hmo: $hmo, otherOccupationExtraInfo: $otherOccupationExtraInfo, occupation: $occupation, patientContactPhoneNumber: $patientContactPhoneNumber}, id: $id}) {
         clientMutationId
     }
 }
