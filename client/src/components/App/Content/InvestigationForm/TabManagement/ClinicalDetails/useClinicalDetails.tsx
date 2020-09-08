@@ -14,13 +14,15 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
-            result => setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
+            result => result && result.data && result.data.data && result.data.data.allSymptoms && result.data.data.allSymptoms.nodes ?
+                setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse())) : ''
         );
     };
 
     const getBackgroundDiseases = () => {
         axios.post('/clinicalDetails/backgroundDiseases').then(
-            result => setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName))
+            result => result && result.data && result.data.data && result.data.data.allSymptoms && result.data.data.allBackgroundDeseases.nodes ?
+                setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName)) : ''
         );
     };
 
