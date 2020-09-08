@@ -26,7 +26,7 @@ describe('investigatedPersonInfo tests', () => {
             });
         })
 
-        const epidemiologyNumber = '111';
+        const epidemiologyNumber = 111;
         const cantReachInvestigated = false;
 
         const expectedFirstSwal = {

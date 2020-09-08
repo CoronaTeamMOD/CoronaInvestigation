@@ -4,7 +4,7 @@ export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
-    payload: {epidemiologyNumber: string}
+    payload: {epidemiologyNumber: number}
 }
 
 interface SetCantReachInvestigated {

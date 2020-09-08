@@ -60,7 +60,9 @@ const InvestigationInfoBar = (props: Props) => {
         axios.post('/investigationInfo/staticInfo', {
             investigationId: 111
         }).then((result: any) => {
-            setInvestigationStaticInfo(result.data.data.investigationByEpidemioligyNumber);
+            if (result) {
+                setInvestigationStaticInfo(result.data.data.investigationByEpidemioligyNumber);
+            }
         })
     }, []);
 

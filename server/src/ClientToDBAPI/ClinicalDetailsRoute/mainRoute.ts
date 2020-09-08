@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { CreateAddressResposne } from '../../Models/ClinicalDetails/CreateAddress';
+import { CreateAddressResponse } from '../../Models/ClinicalDetails/CreateAddress';
 import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
 import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DESEASES, ADD_SYMPTOMS } from '../../DBService/ClinicalDetails/Mutation';
 
@@ -20,19 +20,18 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
 });
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
-    
-    console.log(request.body);
 
     const requestAddress = request.body;
+    const requestInvestigation = request.body.clinicalDetails;
 
-    const requestInvestigation = request.body;
+    console.log(requestInvestigation)
     
     graphqlRequest(CREATE_INVESTIGATION, { investigation: {
             ...requestInvestigation,
             isolationAddress: 87,
         }}).then(() => {
             graphqlRequest(ADD_BACKGROUND_DESEASES, {
-                backgroundDeseases: requestInvestigation.backgroundIllnesses,
+                backgroundDeseases: requestInvestigation.backgroundDeseases,
                 investigatedPatientId: requestInvestigation.investigatedPatientId
             }).then(() => {
                 graphqlRequest(ADD_SYMPTOMS, {

@@ -5,8 +5,7 @@ mutation createAddress ($input: InsertAndGetAddressIdInput!) {
     insertAndGetAddressId(input: $input) {
       integer
     }
-  }
-   
+  }   
 `;
 
 export const CREATE_INVESTIGATION = gql`
@@ -32,4 +31,3 @@ mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
     }
   }  
 `;
-

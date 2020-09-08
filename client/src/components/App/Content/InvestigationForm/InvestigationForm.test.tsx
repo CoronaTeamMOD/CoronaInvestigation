@@ -36,7 +36,7 @@ describe('investigationForm tests', () => {
             });
         })
 
-        const epidemiologyNumber = '111';
+        const epidemiologyNumber = 111;
 
         const expectedFirstSwal = {
             icon: 'warning',

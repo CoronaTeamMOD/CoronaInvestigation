@@ -9,7 +9,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
     const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
-    const hasBackgroundIllnessesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
+    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
     const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
 
     const getSymptoms = () => {
@@ -32,7 +32,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     return { 
         isInIsolationToggle,
         hasSymptomsToggle,
-        hasBackgroundIllnessesToggle,
+        hasBackgroundDeseasesToggle,
         wasHospitalizedToggle,
     };
 };

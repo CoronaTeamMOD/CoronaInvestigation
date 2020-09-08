@@ -30,7 +30,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, wasHospitalizedToggle } = useClinicalDetails({
+    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
         setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
     });
 
@@ -61,7 +61,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
             selectedBackgroundDiseases.push(backgroundIllness);
         };
 
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_ILLNESSES, selectedBackgroundDiseases)
+        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases)
     };
 
     return (
@@ -219,7 +219,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Toggle
                         value={hasBackgroundDiseases}
-                        onChange={hasBackgroundIllnessesToggle}
+                        onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>

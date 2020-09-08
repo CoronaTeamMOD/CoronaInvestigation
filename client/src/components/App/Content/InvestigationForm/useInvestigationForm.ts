@@ -24,7 +24,7 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
 
     const classes = useStyles({});
 
-    const confirmFinishInvestigation = (epidemiologyNumber: string) => {
+    const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -71,15 +71,17 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
         })
     };
 
-    const saveClinicalDetails = () => {
-        axios.post('/clinicalDetails/saveClinicalDetails', ({...clinicalDetailsVariables.clinicalDetailsData}));
+    const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number) => {
+        console.log(clinicalDetailsVariables.clinicalDetailsData)
+        const clinicalDetails = ({ ...clinicalDetailsVariables.clinicalDetailsData, 'investigatedPatientId': investigatedPatientId, 'epidemioligyNumber' : epidemioligyNumber });
+        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
 
-    const handleSwitchTab = () => {
+    const handleSwitchTab = (investigatedPatientId: number, epidemioligyNumber: number) => {
         switch(currentTab.name) {
             case(TabNames.CLINICAL_DETAILS): {
-                saveClinicalDetails();
-            };
+                saveClinicalDetails(investigatedPatientId, epidemioligyNumber);
+            }
         };
 
         setCurrentTab(tabs[currentTab.id + 1]);

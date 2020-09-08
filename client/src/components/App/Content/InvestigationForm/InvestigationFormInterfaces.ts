@@ -8,7 +8,7 @@ export interface useInvestigationFormIncome {
 export interface useInvestigationFormOutcome {
     currentTab: Tab;
     setCurrentTab: (nextTabObj: Tab) => void;
-    confirmFinishInvestigation: (epidemiologyNumber: string) => void;
+    confirmFinishInvestigation: (epidemiologyNumber: number) => void;
     handleInvestigationFinish: () => void;
-    handleSwitchTab: () => void;
+    handleSwitchTab: (investigatedPatientId: number, epidemioligyNumber: number) => void;
 };

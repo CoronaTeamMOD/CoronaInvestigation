@@ -12,6 +12,6 @@ export interface useClinicalDetailsIncome {
 export interface useClinicalDetailsOutcome {
     isInIsolationToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
     hasSymptomsToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
-    hasBackgroundIllnessesToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
+    hasBackgroundDeseasesToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
     wasHospitalizedToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
 };

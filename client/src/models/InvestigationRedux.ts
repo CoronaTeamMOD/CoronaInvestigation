@@ -1,5 +1,5 @@
 interface InvestigationRedux {
-    epidemiologyNumber: string;
+    epidemiologyNumber: number;
     cantReachInvestigated: boolean;
     investigatedPatientId: number;
 }
