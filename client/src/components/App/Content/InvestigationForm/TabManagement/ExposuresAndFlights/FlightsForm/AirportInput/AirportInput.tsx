@@ -82,15 +82,15 @@ const AirportInput = ({airport, setAirport}: AirportInputProps) => {
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <CircleTextField label='מדינה' InputProps={{classes: {input: classes.roundedTextLabel}}}
+            <CircleTextField placeholder='מדינה' InputProps={{classes: {input: classes.roundedTextLabel}}}
 
                              InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
 
-            <CircleTextField label='עיר' InputProps={{classes: {input: classes.roundedTextLabel}}}
+            <CircleTextField placeholder='עיר' InputProps={{classes: {input: classes.roundedTextLabel}}}
 
                              InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
 
-            <CircleTextField label='שדה תעופה' InputProps={{classes: {input: classes.roundedTextLabel}}}
+            <CircleTextField placeholder='שדה תעופה' InputProps={{classes: {input: classes.roundedTextLabel}}}
                              InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
         </div>
     );
