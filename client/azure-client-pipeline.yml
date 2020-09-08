@@ -65,6 +65,19 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-dev
+
+    - task: Docker@2
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push Dev client image to MOH container
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          client-dev
           
     - task: Docker@2
       condition: eq(variables.isTest,true)
