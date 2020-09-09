@@ -25,12 +25,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
     const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
-    const [otherSymptom, setOtherSymptom] = React.useState<string>('');
+    const [isOtherSymptom, setOtherSymptom] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
-    const [otherSymptomChecked, setOtherSymptomChecked] = React.useState<boolean>(false);
-    const [otherBackgoundIllnessChecked, setOtherBackgoundIllnessChecked] = React.useState<boolean>(false);
-    const [otherBackgoundIllness, setOtherBackgoundIllness] = React.useState<string>('');
+    const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
+    const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
+    const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
         setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
@@ -63,12 +63,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
             if (checkIfOtherField(checkedSymptom)) {
-                setOtherSymptomChecked(false);
+                setIsOtherSymptomChecked(false);
             }
         } else {
             selectedSymptoms.push(checkedSymptom);
             if (checkIfOtherField(checkedSymptom)) {
-                setOtherSymptomChecked(true);
+                setIsOtherSymptomChecked(true);
             }
         }
     };
@@ -77,11 +77,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
             setSelectedBackgroundDiseases(selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
             if (checkIfOtherField(backgroundIllness))
-                setOtherBackgoundIllnessChecked(false);
+                setIsOtherBackgroundIllnessChecked(false);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
             if (checkIfOtherField(backgroundIllness))
-                setOtherBackgoundIllnessChecked(true);
+                setIsOtherBackgroundIllnessChecked(true);
         };
     };
 
@@ -221,7 +221,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     </Grid>
                                 ))
                             }
-                            <Collapse in={otherSymptomChecked}>
+                            <Collapse in={isOtherSymptomChecked}>
                                 <CircleTextField
                                     size='small'
                                     className={classes.otherTextField}
@@ -271,13 +271,13 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     </Grid>
                                 ))
                             }
-                            <Collapse in={otherBackgoundIllnessChecked}>
+                            <Collapse in={isOtherBackgroundIllnessChecked}>
                                 <CircleTextField
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                        setOtherBackgoundIllness(event.target.value as string)
+                                        setOtherBackgroundIllness(event.target.value as string)
                                     )}
                                 />
                             </Collapse>
