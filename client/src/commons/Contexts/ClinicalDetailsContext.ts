@@ -25,10 +25,6 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     hospitalizationStartDate: null,
     hospitalizationEndDate: null,
     isPregnant: false,
-    investigatedPatientId: -1,
-    epidemioligyNumber: -1,
-    creator: '',
-    lastUpdator: '',
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {
