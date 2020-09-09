@@ -2,8 +2,10 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
+import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
@@ -29,6 +31,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
     const [otherSymptomChecked, setOtherSymptomChecked] = React.useState<boolean>(false);
+
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
         setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
@@ -319,17 +323,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                     </Collapse>
                 </Grid>
-                <Grid item xs={2}>
-                    <Typography>
-                        <b>
-                            האם בהריון:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Toggle
-                    value={context.clinicalDetailsData?.isPregnant}
-                    onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
-                />
+                {patientGender === 'female' ?
+                    <>
+                        <Grid item xs={2}>
+                            <Typography>
+                                <b>
+                                    האם בהריון:
+                                </b>
+                            </Typography>
+                        </Grid>
+                        <Toggle
+                            value={context.clinicalDetailsData?.isPregnant}
+                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
+                        />
+                    </>
+                    : <></>
+                }
             </Grid>
         </div>
     );
