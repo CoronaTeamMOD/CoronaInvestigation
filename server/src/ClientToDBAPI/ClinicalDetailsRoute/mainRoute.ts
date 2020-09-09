@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
-import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
+import ClinicalDetailsRequest from '../../Models/ClinicalDetails/ClinicalDetails';
 import { CreateAddressResponse } from '../../Models/ClinicalDetails/CreateAddress';
 import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
 import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT } from '../../DBService/ClinicalDetails/Mutation';
@@ -24,7 +24,7 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
     const requestAddress = request.body;
-    const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
+    const clinicalDetails: ClinicalDetailsRequest = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
         epidemiologyNumber: clinicalDetails.epidemioligyNumber,
