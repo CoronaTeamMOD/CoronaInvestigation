@@ -55,23 +55,19 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
-    const checkIfOtherSymptom = (checkedSymptom: string) => (
-        checkedSymptom === 'אחר'
+    const checkIfOtherField = (checkedField: string) => (
+        checkedField === 'אחר'
     );
-
-    const checkIfOtherBackgroundIllness = (checkedBackgroundIllness: string) => (
-        checkedBackgroundIllness === 'אחר'
-    )
 
     const handleSymptomCheck = (checkedSymptom: string) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
-            if (checkIfOtherSymptom(checkedSymptom)) {
+            if (checkIfOtherField(checkedSymptom)) {
                 setOtherSymptomChecked(false);
             }
         } else {
             selectedSymptoms.push(checkedSymptom);
-            if (checkIfOtherSymptom(checkedSymptom)) {
+            if (checkIfOtherField(checkedSymptom)) {
                 setOtherSymptomChecked(true);
             }
         }
@@ -80,11 +76,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
         if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
             setSelectedBackgroundDiseases(selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
-            if (checkIfOtherBackgroundIllness(backgroundIllness))
+            if (checkIfOtherField(backgroundIllness))
                 setOtherBackgoundIllnessChecked(false);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
-            if (checkIfOtherBackgroundIllness(backgroundIllness))
+            if (checkIfOtherField(backgroundIllness))
                 setOtherBackgoundIllnessChecked(true);
         };
     };
