@@ -36,6 +36,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
     const context = React.useContext(clinicalDetailsDataContext);
 
+    React.useEffect(() => {
+        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
+    }, [selectedSymptoms]);
+
+    React.useEffect(() => {
+        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
+    }, [selectedBackgroundDiseases]);
+
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
@@ -61,8 +69,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 setOtherSymptomChecked(true);
             }
         }
-
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
@@ -71,8 +77,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
         };
-
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
     return (
@@ -189,7 +193,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 }]}
                             />
                         </div>
-                        <Typography>סימפטומים:</Typography>
+                        {
+                            symptoms.length > 0 ?
+                                <Typography>סימפטומים:</Typography> : ''
+                        }
                         <Grid container className={classes.smallGrid}>
                             {
                                 symptoms.map((symptom: string) => (
