@@ -2,9 +2,9 @@ import React from 'react';
 
 import axios from 'Utils/axios';
 
-import { useLocationsTypesAndSubTypesIncome, useLocationsTypesAndSubTypesOutcome } from './useLocationsTypesAndSubTypesInterfaces';
+import { useLocationsTypesAndSubTypesIncome } from './useLocationsTypesAndSubTypesInterfaces';
 
-const useLocationsTypesAndSubTypes = (parameters: useLocationsTypesAndSubTypesIncome) : useLocationsTypesAndSubTypesOutcome => {
+const useLocationsTypesAndSubTypes = (parameters: useLocationsTypesAndSubTypesIncome) => {
 
     const { setLocationsSubTypesByTypes } = parameters;
 
@@ -17,10 +17,6 @@ const useLocationsTypesAndSubTypes = (parameters: useLocationsTypesAndSubTypesIn
     React.useEffect(() => {
         getLocationsSubTypesByTypes();
     }, []);
-
-    return {
-
-    }
 };
 
 export default useLocationsTypesAndSubTypes;

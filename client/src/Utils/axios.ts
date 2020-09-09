@@ -4,7 +4,7 @@ import { store } from 'redux/store';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/clientToDBAPI'
+    baseURL: process.env.REACT_APP_DB_API
 });
 
 instance.interceptors.request.use(

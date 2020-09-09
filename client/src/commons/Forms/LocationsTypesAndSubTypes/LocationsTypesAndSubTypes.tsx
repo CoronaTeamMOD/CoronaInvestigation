@@ -23,7 +23,6 @@ const LocationsTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element
     }, [locationsSubTypesByTypes]);
 
     React.useEffect(()=> {
-        console.log(locationType);
         const defaultLocationType = locationsSubTypesByTypes[locationType] ? locationsSubTypesByTypes[locationType][0] : locationSubType;
         onLocationSubTypeChange(defaultLocationType);
     }, [locationType]);

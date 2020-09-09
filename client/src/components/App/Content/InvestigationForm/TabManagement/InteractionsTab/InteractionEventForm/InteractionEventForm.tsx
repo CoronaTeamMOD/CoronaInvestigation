@@ -11,6 +11,7 @@ import { timeFormat } from 'Utils/displayUtils';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import LocationsTypesAndSubTypes from 'commons/Forms/LocationsTypesAndSubTypes/LocationsTypesAndSubTypes';
 
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
@@ -21,7 +22,6 @@ import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm, { resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import { InteractionEventDialogContext } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import LocationsTypesAndSubTypes from 'commons/Forms/LocationsTypesAndSubTypes/LocationsTypesAndSubTypes';
 
 const privateHouseLocationType : string = 'בית פרטי';
 const officeLocationType : string = 'משרד';
