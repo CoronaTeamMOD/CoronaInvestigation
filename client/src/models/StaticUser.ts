@@ -1,5 +1,5 @@
 export interface StaticUser {
-    id: number,
+    id: string,
     userName: string,
     phoneNumber: string,
     serialNumber: string,

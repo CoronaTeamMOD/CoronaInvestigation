@@ -26,18 +26,18 @@ const defaultInvestigationStaticInfo = {
     coronaTestDate: new Date(),
     investigatedPatientId: 0,
     userByCreator: {
-        id: 1,
+        id: '',
         userName: '',
         phoneNumber: '',
         serialNumber: '',
-        investigationGroup: 1
+        investigationGroup: -1
     },
     userByLastUpdator: {
-        id: 1,
+        id: '',
         userName: '',
         phoneNumber: '',
         serialNumber: '',
-        investigationGroup: 1
+        investigationGroup: -1
     },
 }
 

@@ -22,7 +22,7 @@ const InvestigationMetadata = (props: Props) => {
                     format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
                 }
             />
-            <InfoItem name='נפח/מחוז' value={investigationMetaData.investigatingUnit} />
+            <InfoItem name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
             <InfoItem name='מבצע החקירה' value={
                     investigationMetaData.userByCreator.userName
                 }
