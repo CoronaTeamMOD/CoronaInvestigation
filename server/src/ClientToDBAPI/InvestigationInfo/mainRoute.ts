@@ -7,6 +7,7 @@ import { UPDATE_INVESTIGATION_STATUS } from '../../DBService/InvestigationInfo/M
 const investigationInfo = Router();
 
 investigationInfo.post('/staticInfo', (request: Request, response: Response) => {
+    console.log(request.headers.epidemiologynumber)
     graphqlRequest(GET_INVESTIGATION_INFO, request.body)
     .then((result: any) => response.send(result));
 })
