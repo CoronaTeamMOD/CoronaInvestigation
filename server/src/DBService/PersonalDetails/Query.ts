@@ -19,3 +19,17 @@ query MyQuery {
     }
 }  
 `;
+
+export const GET_INVESTIGATED_PATIENT_ID_CITY_STREET_BY_EPIDEMIOLOGY_NUMBER = gql`
+query MyQuery($id: Int!) {
+    investigationByEpidemiologyNumber(epidemiologyNumber: $id) {
+      investigatedPatientByInvestigatedPatientId {
+        id
+        addressByAddress {
+          city
+          street
+        }
+      }
+    }
+  }
+`;

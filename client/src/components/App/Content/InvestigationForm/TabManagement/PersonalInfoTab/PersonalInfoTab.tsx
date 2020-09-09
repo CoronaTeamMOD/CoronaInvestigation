@@ -53,7 +53,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         });
     }
 
-    const { fetchPersonalInfo } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies});
+    const { fetchPersonalInfo } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext});
     
     React.useEffect(()=> {
         fetchPersonalInfo();
