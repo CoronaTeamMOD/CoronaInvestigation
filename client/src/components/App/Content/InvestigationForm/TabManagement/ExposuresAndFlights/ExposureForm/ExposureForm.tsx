@@ -4,7 +4,8 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import useFormStyles from 'styles/formStyles';
-import {exposuresContext} from "Contexts/ExposuresAndFlights";
+import {exposuresContext} from "commons/Contexts/ExposuresAndFlights";
+import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
 
 const ExposureForm = () => {
     const placeholderText = 'הכנס שם...';
@@ -22,7 +23,7 @@ const ExposureForm = () => {
 
     const selectPlaceType = (event: React.ChangeEvent<any>) => setPlaceType(event.target.value);
     const handlePersonNameInput = (event: React.ChangeEvent<HTMLInputElement>) =>setExposingPersonName(event.target.value);
-    const handlePlaceNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureLocation(event.target.value);
+    const onLocationChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => setExposureLocation(newValue);
 
     return (
         <Grid className={classes.form} container justify='flex-start'>
@@ -32,8 +33,7 @@ const ExposureForm = () => {
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='שם מקום החשיפה:'>
-                <CircleTextField value={exposureLocation} onChange={handlePlaceNameInput}
-                                 placeholder={placeholderText}/>
+                <LocationInput selectedAddress={exposureLocation as (GoogleApiPlace | null)} setSelectedAddress={onLocationChange}/>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='סוג מקום החשיפה:'>

@@ -9,7 +9,11 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
+import {
+    initialPersonalInfo,
+    PersonalInfoContextProvider,
+    PersonalInfoDataAndSet
+} from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useStyles from './InvestigationFormStyles';
@@ -27,25 +31,10 @@ const epedemioligyNumber = 111;
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
 
-    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
-        phoneNumber: '',
-        additionalPhoneNumber: '',
-        contactPhoneNumber: '',
-        insuranceCompany: '',
-        address: {
-            city: '',
-            neighborhood: '',
-            street: '',
-            houseNumber: '',
-            entrance: '',
-            floor: '',
-            apartment: ''
-        },
-        relevantOccupation: relevantOccupations.MOH_Worker,
-        institutionName: ''
-    });
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
     const personalInfoValue: PersonalInfoDataAndSet = React.useMemo(
         () => ({
@@ -60,34 +49,30 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const {
-        currentTab,
-        setCurrentTab,
-        confirmFinishInvestigation,
-        handleSwitchTab,
-    } = useInvestigationForm({personalInfoData, setPersonalInfoData});
-
-    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
-            exposureDate,
-            symptomsStartDate, 
-            hasSymptoms,
-            endInvestigationDate,
-            setExposureDate,
-            setSymptomsStartDate,
-            setHasSymptoms,
-            setEndInvestigationDate,
-        }),
-        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
-        setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
-    );
 
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
         clinicalDetailsData,
         setClinicalDetailsData
     }),
-    [clinicalDetailsData, setClinicalDetailsData]
+        [clinicalDetailsData, setClinicalDetailsData]
     );
-    
+
+    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
+        exposureDate,
+        symptomsStartDate,
+        hasSymptoms,
+        endInvestigationDate,
+        setExposureDate,
+        setSymptomsStartDate,
+        setHasSymptoms,
+        setEndInvestigationDate,
+    }),
+        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
+            setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
+    );
+
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, setPersonalInfoData });
+        
     return (
         <div className={classes.content}>
             <PersonalInfoContextProvider value={personalInfoValue}>
@@ -95,7 +80,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
                             // TODO: connect to redux epedemioligyNumber
-                            epedemioligyNumber={epedemioligyNumber} 
+                            epedemioligyNumber={epedemioligyNumber}
                         />
                         <div className={classes.interactiveForm}>
                             <TabManagement
@@ -105,8 +90,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation('1111') :
-                                            handleSwitchTab();
+                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>

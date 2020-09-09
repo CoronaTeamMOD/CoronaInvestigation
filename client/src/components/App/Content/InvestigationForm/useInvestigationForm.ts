@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
@@ -10,21 +11,27 @@ import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 
 import useStyles from './InvestigationFormStyles';
-import { defaultTab } from './TabManagement/TabManagement';
-import {tabs} from './TabManagement/TabManagement';
+import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
+import { useSelector } from 'react-redux';
 
 const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
+
+    const { clinicalDetailsVariables, personalInfoData, setPersonalInfoData } = parameters;
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
+    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
-    const {personalInfoData, setPersonalInfoData} = parameters;
-
     const classes = useStyles({});
 
-    const confirmFinishInvestigation = (epidemiologyNumber: string) => {
+    const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -69,7 +76,12 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             case(TabNames.PERSONAL_INFO): {
                 savePersonalInfoData()
             }
+            case(TabNames.CLINICAL_DETAILS): {
+                saveClinicalDetails();
+            }
         }
+
+        setCurrentTab(tabs[currentTab.id + 1]);
     }
 
     const savePersonalInfoData = () => {
@@ -89,13 +101,24 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
     };
 
+    const saveClinicalDetails = () => {
+        const clinicalDetails = ({
+            ...clinicalDetailsVariables.clinicalDetailsData,
+            'investigatedPatientId': investigatedPatientId,
+            'epidemioligyNumber' : epidemiologyNumber,
+            'creator' : creator,
+            'lastUpdator' : lastUpdator,
+        });
+        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
+    };
+
     return {
         currentTab,
         setCurrentTab,
         confirmFinishInvestigation,
         handleInvestigationFinish,
-        handleSwitchTab
-    }
+        handleSwitchTab,
+    };
 };
 
 export default useInvestigationForm;

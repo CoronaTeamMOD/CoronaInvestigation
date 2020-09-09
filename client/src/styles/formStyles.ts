@@ -14,23 +14,11 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center'
     },
-    rowDiv: {
-        display: 'flex',
-        margin: '1vh 0',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-    },
     formRow: {
         display: 'flex',
         margin: '1vh 0',
         flexWrap: 'wrap',
         alignItems: 'center',
-    },
-    roundedTextField: {
-        borderRadius: 25,
-        maxHeight: '5vh',
-        margin: '0 2%',
-        width: '12vw',
     },
     roundedTextLabel: {
         lineHeight: 0,

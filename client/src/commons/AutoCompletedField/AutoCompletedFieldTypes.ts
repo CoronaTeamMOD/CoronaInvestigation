@@ -1,9 +1,10 @@
 import React from 'react';
-import {AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteInputChangeReason} from '@material-ui/lab';
-
-interface NamedObject {
-    name:string
-}
+import {
+    AutocompleteChangeDetails,
+    AutocompleteChangeReason,
+    AutocompleteInputChangeReason,
+    AutocompleteRenderOptionState
+} from '@material-ui/lab';
 
 export interface AutocompletedFieldProps<T> {
     value: T | null;
@@ -15,9 +16,10 @@ export interface AutocompletedFieldProps<T> {
     onInputChange?:  (event: React.ChangeEvent<{}>,
                       value: string,
                       reason: AutocompleteInputChangeReason) => void;
-    label: string;
     constOptions?: boolean;
+    getOptionLabel?: (option: T) => string;
+    renderOption?: (option: T, state: AutocompleteRenderOptionState) => React.ReactNode;
 }
 
-type AutocompletedFieldType = <T extends NamedObject>(props: AutocompletedFieldProps<T>) => JSX.Element;
+type AutocompletedFieldType = <T>(props: AutocompletedFieldProps<T>) => JSX.Element;
 export default AutocompletedFieldType;
