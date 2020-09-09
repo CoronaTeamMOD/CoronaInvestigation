@@ -5,10 +5,12 @@ import { testHooksFunction } from 'TestHooks';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -20,10 +22,30 @@ describe('investigationForm tests', () => {
         mockAdapter.reset();
     });
 
+    const initialClinicalDetails: ClinicalDetailsData = {
+        isolationStartDate: null,
+        isolationEndDate: null,
+        isolationAddress: '',
+        isIsolationProblem: false,
+        isIsolationProblemMoreInfo: '',
+        symptomsStartDate: null,
+        symptoms: [''],
+        backgroundDeseases: [''],
+        hospital: '',
+        hospitalizationStartDate: null,
+        hospitalizationEndDate: null,
+        isPregnant: false,
+    };
+    
+    const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {
+        clinicalDetailsData: initialClinicalDetails,
+        setClinicalDetailsData: () => {}
+    };
+
     describe('tabs tests', () => {
         it('isLastTab should be false when hook is initialized', async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm();
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables });
             });
             expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
         });
@@ -32,11 +54,11 @@ describe('investigationForm tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm();
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables });
             });
         })
 
-        const epidemiologyNumber = '111';
+        const epidemiologyNumber = 111;
 
         const expectedFirstSwal = {
             icon: 'warning',

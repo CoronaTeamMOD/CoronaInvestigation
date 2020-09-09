@@ -12,7 +12,7 @@ import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from "./InvestigationTableInterfaces";
 
 export const createRowData = (
-  epidemiologyNumber: string,
+  epidemiologyNumber: number,
   status: string,
   fullName: string,
   phoneNumber: string,
@@ -66,7 +66,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       const { data } = response;
       const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {
         const patient = investigation.investigatedPatientByInvestigatedPatientId;
-        return createRowData(investigation.epidemioligyNumber.toString(), 
+        return createRowData(investigation.epidemioligyNumber,
                              investigation.investigationStatusByInvestigationStatus.displayName,
                              patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
                              patient.personByPersonId.phoneNumber,

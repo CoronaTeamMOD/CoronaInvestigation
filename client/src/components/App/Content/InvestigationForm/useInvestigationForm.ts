@@ -5,22 +5,26 @@ import { useHistory } from 'react-router-dom';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
+import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 
 import useStyles from './InvestigationFormStyles';
-import { defaultTab } from './TabManagement/TabManagement';
-import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { defaultTab, tabs } from './TabManagement/TabManagement';
+import { useInvestigationFormOutcome, useInvestigationFormIncome } from './InvestigationFormInterfaces';
 
 const finishInvestigationStatus = 'טופלה';
 
-const useInvestigationForm = (): useInvestigationFormOutcome => {
+const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvestigationFormOutcome => {
+
+    const { clinicalDetailsVariables } = parameters;
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
 
-    const confirmFinishInvestigation = (epidemiologyNumber: string) => {
+    const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -67,12 +71,34 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         })
     };
 
+    const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
+        const clinicalDetails = ({
+            ...clinicalDetailsVariables.clinicalDetailsData,
+            'investigatedPatientId': investigatedPatientId,
+            'epidemioligyNumber' : epidemioligyNumber,
+            'creator' : creator,
+            'lastUpdator' : lastUpdator,
+        });
+        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
+    };
+
+    const handleSwitchTab = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
+        switch(currentTab.name) {
+            case(TabNames.CLINICAL_DETAILS): {
+                saveClinicalDetails(investigatedPatientId, epidemioligyNumber, creator, lastUpdator);
+            }
+        };
+
+        setCurrentTab(tabs[currentTab.id + 1]);
+    };
+
     return {
         currentTab,
         setCurrentTab,
         confirmFinishInvestigation,
-        handleInvestigationFinish
-    }
+        handleInvestigationFinish,
+        handleSwitchTab,
+    };
 };
 
 export default useInvestigationForm;

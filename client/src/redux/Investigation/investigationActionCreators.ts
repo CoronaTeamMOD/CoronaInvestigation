@@ -1,7 +1,7 @@
 import {store} from '../store';
 import * as actionTypes from './investigationActionTypes';
 
-export const setEpidemiologyNum = (epidemiologyNumber : string): void => {
+export const setEpidemiologyNum = (epidemiologyNumber : number): void => {
     store.dispatch({
         type: actionTypes.SET_EPIDEMIOLOGY_NUM,
         payload: {epidemiologyNumber}

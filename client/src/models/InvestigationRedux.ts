@@ -1,6 +1,9 @@
 interface InvestigationRedux {
-    epidemiologyNumber: string,
-    cantReachInvestigated: boolean
+    epidemiologyNumber: number;
+    cantReachInvestigated: boolean;
+    investigatedPatientId: number;
+    creator: string,
+    lastUpdator: string,
 }
 
 export default InvestigationRedux;

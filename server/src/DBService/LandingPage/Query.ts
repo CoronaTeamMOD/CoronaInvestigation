@@ -5,7 +5,7 @@ query InvestigationsInfoByUser($id: Int!) {
   userById(id: $id) {
     investigationsByCreator {
       nodes {
-        epidemioligyNumber
+        epidemiologyNumber
         investigatedPatientByInvestigatedPatientId {
           addressByAddress {
             city

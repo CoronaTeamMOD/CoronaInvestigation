@@ -84,7 +84,7 @@ const InvestigationInfoBar = (props: Props) => {
 };
 
 interface Props {
-    epedemioligyNumber: number
+    epedemioligyNumber: number;
 }
 
 export default InvestigationInfoBar;

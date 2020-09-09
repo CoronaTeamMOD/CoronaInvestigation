@@ -20,18 +20,17 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,
     symptoms: [''],
-    backgroundIllnesses: [''],
+    backgroundDeseases: [''],
     hospital: '',
     hospitalizationStartDate: null,
     hospitalizationEndDate: null,
-    isPregnant: false
+    isPregnant: false,
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {
     clinicalDetailsData: initialClinicalDetails,
     setClinicalDetailsData: () => {}
 };
-
 
 export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet | EmptyContext>(initialClinicalDetailsContext);
 export const ClinicalDetailsDataContextProvider = clinicalDetailsDataContext.Provider;

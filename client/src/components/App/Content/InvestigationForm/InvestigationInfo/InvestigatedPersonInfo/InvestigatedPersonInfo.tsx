@@ -23,7 +23,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
     
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
@@ -107,7 +107,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 interface Props {
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
     epedemioligyNumber: number;
-    coronaTestDate: Date
+    coronaTestDate: Date;
 }
 
 export default InvestigatedPersonInfo
