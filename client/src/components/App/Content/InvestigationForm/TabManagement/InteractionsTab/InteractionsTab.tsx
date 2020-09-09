@@ -22,7 +22,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const [interactions, setInteractions] = React.useState<Interaction[]>([
         {
             id: 1,
-            investigationId: '',
+            investigationId: -1,
             startTime: new Date(2020, 8, 5, 17, 50),
             endTime: new Date(2020, 8, 5, 19, 50),
             locationAddress: {
@@ -56,7 +56,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         }, 
         {
             id: 2,
-            investigationId: '',
+            investigationId: -1,
             startTime: new Date(2020, 7, 30, 13, 50),
             endTime: new Date(2020, 7, 30, 15, 50),
             locationAddress: {
@@ -82,7 +82,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         }, 
         {
             id: 3,
-            investigationId: '',
+            investigationId: -1,
             locationSubType: '',
             startTime: new Date(2020, 7, 30, 13, 50),
             endTime: new Date(2020, 7, 30, 15, 50),
