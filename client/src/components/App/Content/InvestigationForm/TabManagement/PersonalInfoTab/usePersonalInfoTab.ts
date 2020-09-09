@@ -2,11 +2,7 @@ import axios from 'Utils/axios';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
-import { PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-
 import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
-import PersonalInfoTab from './PersonalInfoTab';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
@@ -15,9 +11,24 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
     const {occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext} = parameters;
 
     const fetchPersonalInfo = () => {
-        axios.get('/personalDetails/getAllOccupations').then((res: any) => setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
-        axios.get('/personalDetails/getAllHmos').then((res: any) => setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
-        axios.get('/personalDetails/getInvestigatedPatientFieldsIds?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {})
+        axios.get('/personalDetails/getAllOccupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
+        axios.get('/personalDetails/getAllHmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
+        axios.get('/personalDetails/getInvestigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
+            console.log(res);
+            let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+            personalInfoStateContext.setPersonalInfoData({
+                phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                additionalPhoneNumber: investigatedPatient.personByPersonId.additionalPhoneNumber,
+                contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
+                insuranceCompany: investigatedPatient.hmo,
+                address: {...investigatedPatient.addressByAddress},
+                relevantOccupation: investigatedPatient.occupation,
+                institutionName: investigatedPatient.subOccupation
+            });
+            // personalInfoStateContext.setPersonalInfoData({
+            //     ...personalInfoStateContext.personalInfoData, phoneNumber: '3'
+            // })
+        })
     }
 
     return {

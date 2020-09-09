@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, UPDATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
-import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_ID_CITY_STREET_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/PersonalDetails/Query';
+import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/PersonalDetails/Query';
 
 const personalDetailsRoute = Router();
 
@@ -19,8 +19,8 @@ personalDetailsRoute.get('/getAllHmos', (request: Request, response: Response) =
     graphqlRequest(GET_HMOS).then((result: any) => response.send(result));
 });
 
-personalDetailsRoute.get('/getInvestigatedPatientFieldsIds', (request: Request, response: Response) => {
-    graphqlRequest(GET_HMOS).then((result: any) => response.send(result));
+personalDetailsRoute.get('/getInvestigatedPatientPersonalInfoFields', (request: Request, response: Response) => {
+    graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, {id: +request.query.epidemioligyNumber}).then((result: any) => response.send(result));
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {

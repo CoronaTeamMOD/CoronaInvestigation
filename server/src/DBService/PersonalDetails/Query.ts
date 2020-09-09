@@ -20,7 +20,7 @@ query MyQuery {
 }  
 `;
 
-export const GET_INVESTIGATED_PATIENT_ID_CITY_STREET_BY_EPIDEMIOLOGY_NUMBER = gql`
+export const GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER = gql`
 query MyQuery($id: Int!) {
     investigationByEpidemiologyNumber(epidemiologyNumber: $id) {
       investigatedPatientByInvestigatedPatientId {
@@ -28,6 +28,17 @@ query MyQuery($id: Int!) {
         addressByAddress {
           city
           street
+          floor
+          houseNum
+        }
+        personId
+        patientContactPhoneNumber
+        subOccupation
+        occupation
+        hmo
+        personByPersonId {
+          additionalPhoneNumber
+          phoneNumber
         }
       }
     }

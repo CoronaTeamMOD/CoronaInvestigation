@@ -19,6 +19,7 @@ export interface AutocompletedFieldProps<T> {
     constOptions?: boolean;
     getOptionLabel?: (option: T) => string;
     renderOption?: (option: T, state: AutocompleteRenderOptionState) => React.ReactNode;
+    className?: string;
 }
 
 type AutocompletedFieldType = <T>(props: AutocompletedFieldProps<T>) => JSX.Element;

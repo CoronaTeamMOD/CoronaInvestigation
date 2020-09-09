@@ -1,4 +1,4 @@
-import {Address} from '../Address';
+import {DBAddress} from '../Address';
 import Gender from '../enums/Gender';
 import identificationType from '../enums/IdentificationTypes';
 import relevantOccupations from '../enums/relevantOccupations';
@@ -8,7 +8,7 @@ export interface personalInfoContextData {
     additionalPhoneNumber: string;
     contactPhoneNumber: string;
     insuranceCompany: string,
-    address: Address;
-    relevantOccupation: relevantOccupations;
+    address: DBAddress;
+    relevantOccupation: string;
     institutionName: string;
 }

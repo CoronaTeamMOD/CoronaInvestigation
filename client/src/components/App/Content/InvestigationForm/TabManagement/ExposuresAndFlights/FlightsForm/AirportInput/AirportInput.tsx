@@ -1,9 +1,12 @@
 import React, {Dispatch, SetStateAction} from 'react';
-import {Airport, City, Country} from '../FlightFormTypes';
-import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
+
 import useFormStyle from 'styles/formStyles';
-import {AutocompletedFieldProps} from 'commons/AutoCompletedField/AutoCompletedFieldTypes';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
+import {AutocompletedFieldProps} from 'commons/AutoCompletedField/AutoCompletedFieldTypes';
+
+import useStyles from './AirportInputStyles';
+import {Airport, City, Country} from '../FlightFormTypes';
 
 interface AirportInputProps {
     airport: Airport | undefined;
@@ -11,6 +14,8 @@ interface AirportInputProps {
 };
 
 const AirportInput = ({airport, setAirport}: AirportInputProps) => {
+    const airportInputClasses = useStyles({});
+
     const [selectedCountry, setSelectedCountry] = React.useState<Country | undefined>();
     const [selectedCity, setSelectedCity] = React.useState<City | undefined>();
 
@@ -78,7 +83,7 @@ const AirportInput = ({airport, setAirport}: AirportInputProps) => {
     // Fields are temporarily text inputs only
     // Autocomplete fields will be added when api is ready
     const AutocomplteFields = () =>
-        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>);
+        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props} className={airportInputClasses.width300}/>);
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>

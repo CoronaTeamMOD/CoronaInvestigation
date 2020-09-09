@@ -11,12 +11,12 @@ export const initialPersonalInfo: personalInfoContextData = {
     contactPhoneNumber: '',
     insuranceCompany: '',
     address: {
-        address: null,
-        entrance: '',
+        city: '',
+        street: '',
         floor: '',
-        apartment: ''
+        houseNumber: ''
     },
-    relevantOccupation: relevantOccupations.MOH_Worker,
+    relevantOccupation: '',
     institutionName: ''
 } 
 

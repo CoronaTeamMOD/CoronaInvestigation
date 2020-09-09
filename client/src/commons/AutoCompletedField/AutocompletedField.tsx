@@ -7,7 +7,7 @@ import useFormStyles from 'styles/formStyles';
 import CircleTextField from "../CircleTextField/CircleTextField";
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const {value, options, onChange, onInputChange, constOptions = false} = props;
+    const {value, options, onChange, onInputChange, constOptions = false, className} = props;
     const classes = useStyles();
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
@@ -29,7 +29,7 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
     const genericLabel = (option:any) => (option.name);
     return (
         <Autocomplete
-            className={classes.autcompleteField}
+            className={classes.autcompleteField + className}
             {...config}
             {...(props.renderOption) ? {renderOption: props.renderOption} : {}}
             value={value}

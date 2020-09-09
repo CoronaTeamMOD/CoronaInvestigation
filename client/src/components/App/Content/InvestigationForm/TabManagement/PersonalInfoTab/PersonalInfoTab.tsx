@@ -5,20 +5,19 @@ import FormLabel from '@material-ui/core/FormLabel';
 import { RadioGroup, Radio } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import Gender from 'models/enums/Gender';
-import Toggle from 'commons/Toggle/Toggle';
+import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
-import relevantOccupations from 'models/enums/relevantOccupations';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import LocationInput, { GoogleApiPlace } from 'commons/LocationInputField/LocationInput';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
+import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -28,7 +27,6 @@ const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
 const INSTITUTION_OPTIONS = ['צה"ל', 'מוסד', 'אחר'];
-const INSURANCE_OPTIONS = ['הראל', 'כלל', 'מכבי'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
@@ -53,6 +51,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         });
     }
 
+    
+    // const onLocationChange = (event: React.ChangeEvent<{}>, newValue: any) => {
+    //     personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData,
+    //         address: {...personalInfoStateContext.personalInfoData.address, [PersonalInfoDataContextFields.ADDRESS]:newValue}});
+    // };
+
     const { fetchPersonalInfo } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext});
     
     React.useEffect(()=> {
@@ -62,7 +66,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     return (
         <div className={classes.tabInitialContainer}>
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {PHONE_LABEL}
@@ -74,6 +78,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
+                        value={personalInfoStateContext.personalInfoData.phoneNumber}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
                         }}
@@ -82,7 +87,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {ADDITIONAL_PHONE_LABEL}
@@ -94,6 +99,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
+                        value={personalInfoStateContext.personalInfoData.additionalPhoneNumber}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
                         }}
@@ -102,7 +108,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {CONTACT_PHONE_LABEL}
@@ -114,6 +120,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
+                        value={personalInfoStateContext.personalInfoData.contactPhoneNumber}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value);
                         }}
@@ -122,7 +129,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {INSURANCE_LABEL}
@@ -131,9 +138,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
-                        value={personalInfoStateContext.personalInfoData.insuranceCompany}
                         options={insuranceCompanies}
                         className={classes.selectWidth}
+                        value={personalInfoStateContext.personalInfoData.insuranceCompany}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
                         }}
@@ -142,21 +149,27 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
-                <Grid item xs={2} className={classes.PersonalInfoFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {ADDRESS_LABEL}
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={1}>
-                    <CircleTextField 
+                <Grid item xs={2}>
+                <Autocomplete
+                    options={INSTITUTION_OPTIONS}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) =>                     
+                    <CircleTextField
+                        {...params}
                         id={ADDRESS_LABEL}
                         placeholder={'עיר'}
                         onChange={(event) => {
                             handleChangeAddress(PersonalInfoDataContextFields.CITY, event.target.value);
                         }}
-                    />
+                    />}
+                />
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
@@ -188,7 +201,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>          
-                <Grid item xs={2} className={classes.personalInfoLastFieldContainer}>
+                <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
                             {RELEVANT_OCCUPATION_LABEL}
@@ -197,13 +210,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <FormControl component='fieldset'>
-                        <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} className={classes.relevantOccupationselect}>
+                        <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             { 
                                 occupations.map((occupation) => {
                                     return <FormControlLabel 
                                                 value={occupation} 
+                                                key={occupation}
                                                 control={<Radio 
+                                                            
                                                             color='primary'
                                                             onChange={(event) => {
                                                                 handleChangeField(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
@@ -216,15 +231,28 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
                 <Grid item xs={3}>
-                    <CircleSelect
-                        value={personalInfoStateContext.personalInfoData.institutionName}
-                        label={INSERT_INSTITUTION_NAME}
-                        options={INSTITUTION_OPTIONS}
-                        className={classes.institutionName}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
-                        }}
-                    />
+                    <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'אחר'}>
+                    {
+                        (personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' ||
+                        personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות' ||
+                        personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך') ?
+                            <CircleSelect
+                                value={personalInfoStateContext.personalInfoData.institutionName}
+                                options={INSTITUTION_OPTIONS}
+                                className={classes.institutionName + ' ' + classes.circleSelect}
+                                onChange={(event) => {
+                                    handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
+                                }}
+                            /> :
+                            <CircleTextField
+                                value={personalInfoStateContext.personalInfoData.institutionName}
+                                placeholder={INSERT_INSTITUTION_NAME}
+                                onChange={(event) => {
+                                    handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
+                                }}
+                            />
+                    }
+                    </Collapse>
                 </Grid>
             </Grid>
         </div>
