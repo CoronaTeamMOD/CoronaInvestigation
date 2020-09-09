@@ -16,7 +16,8 @@ export const initialDialogData = (locationType: string, startTime: Date, endTime
     endTime,
     externalizationApproval: false,
     contacts,
-    locationSubType: ''
+    locationSubType: '',
+    contactedNumber: contacts.length,
 })
 
 const initialInteractionEventDialogDataContext: InteractionsEventDialogDataAndSet = {

@@ -1,10 +1,8 @@
-import { Person } from './Person';
+import { Person } from '../Person/Person';
 
-interface Contact {
+export interface ContactedPerson {
     personalInfo: Person,
     needsToBeQuarantined: boolean;
     contactEvent: number;
     extraInfo?: string;
 }
-
-export default Contact;

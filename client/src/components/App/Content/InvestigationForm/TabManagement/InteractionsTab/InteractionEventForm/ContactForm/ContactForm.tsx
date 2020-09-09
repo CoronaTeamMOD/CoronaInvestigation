@@ -8,6 +8,7 @@ import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import useStyles from './ContactFormStyles';
 import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import {Person} from "../../../../../../../../models/Person";
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonName: string = 'שם';
@@ -22,7 +23,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
     const { contacts } = interactionEventDialogData;
     const { updatedContactIndex } = props;
-    const { name, moreDetails, needsToBeQuarantined, phoneNumber, id } = contacts[updatedContactIndex];
+    const { personalInfo, extraInfo, needsToBeQuarantined } = contacts[updatedContactIndex];
     
     const updateContacts = (updatedContact: Contact) => {
         const updatedContacts = [...contacts];
@@ -31,15 +32,18 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     }
 
     const onNameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], name: event.target.value as string});
+        const updatedContactedPersonalInfo: Person = {...personalInfo, firstName: event.target.value as string}
+        updateContacts({...contacts[updatedContactIndex], personalInfo: updatedContactedPersonalInfo});
     }
 
     const onIDChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], id: event.target.value as string});
+        const updatedContactedPersonalInfo: Person = {...personalInfo, identificationNumber: event.target.value as string}
+        updateContacts({...contacts[updatedContactIndex], personalInfo: updatedContactedPersonalInfo});
     }
 
     const onPhoneNumberChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], phoneNumber: event.target.value as string});
+        const updatedContactedPersonalInfo: Person = {...personalInfo, phoneNumber: event.target.value as string}
+        updateContacts({...contacts[updatedContactIndex], personalInfo: updatedContactedPersonalInfo});
     }
 
     const onNeedsToBeQuarantinedChange = (quarantineCondition: boolean) => {
@@ -47,7 +51,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     }
 
     const onMoreDetailsChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], moreDetails: event.target.value as string});
+        updateContacts({...contacts[updatedContactIndex], extraInfo: event.target.value as string});
     }
 
     return (
@@ -55,14 +59,14 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonName + ': '}</Typography>
             <CircleTextField id='contactedPersonName' key='contactedPersonName'
                                 className={classes.newContactField}
-                                value={name}
+                                value={personalInfo.firstName}
                                 placeholder={contactedPersonName}
                                 onChange={onNameChange}
             />
             <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonPhone + ': '}</Typography>
             <CircleTextField id='contactedPersonPhone' key='contactedPersonPhone'
                                 className={classes.newContactField}
-                                value={phoneNumber}
+                                value={personalInfo.identificationNumber}
                                 placeholder={contactedPersonPhone}
                                 onChange={onPhoneNumberChange}
                                 required={false}
@@ -70,7 +74,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonID + ': '}</Typography>
             <CircleTextField  id='contactedPersonID'
                                 className={classes.newContactField}
-                                value={id}
+                                value={personalInfo.phoneNumber}
                                 placeholder={contactedPersonID}
                                 onChange={onIDChange}
             />
@@ -88,7 +92,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <CircleTextField className={classes.moreContactDetails}
                 placeholder={'פירוט נוסף על אופי המגע'}
                 id='moreDetails'
-                value={moreDetails}
+                value={extraInfo}
                 onChange={onMoreDetailsChange}
             />
         </div>

@@ -30,11 +30,19 @@ export const schoolLocationType : string = 'בית ספר';
 export const hospitalLocationType : string = 'בית חולים';
 
 export const defaultContact: Contact = {
-    name: '',
-    phoneNumber: '',
-    id: '',
+    personalInfo: {
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        identificationType: '',
+        identificationNumber: '',
+        additionalPhoneNumber: '',
+        gender: '',
+        birthDate: new Date(),
+    },
     needsToBeQuarantined: false,
-    moreDetails: '',
+    contactEvent: 0,
+    extraInfo: '',
 };
 
 const addContactButton: string = 'הוסף מגע';
@@ -50,8 +58,10 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
 
     React.useEffect(() => {
         const hasInvalidContact : boolean = contacts
-            .some(contact => (!contact.id || !contact.name || !contact.phoneNumber));
+            .some(contact => (!contact.personalInfo.identificationNumber || !contact.personalInfo.firstName ||
+                !contact.personalInfo.phoneNumber));
         setCanAddContact(!hasInvalidContact);
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, contactedNumber: contacts.length})
     }, [contacts])
     
     const onContactAdd = () => {

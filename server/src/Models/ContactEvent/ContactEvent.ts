@@ -1,5 +1,4 @@
-import Address from '../Address';
-import Contact from 'models/Contact';
+import {LocationAddress} from '../LocationAddress/LocationAddress';
 
 export default interface InteractionEventDialogData {
     id?: number;
@@ -7,9 +6,9 @@ export default interface InteractionEventDialogData {
     startTime: Date;
     endTime: Date;
     externalizationApproval: boolean;
-    investigationId: number;
+    investigationId: string;
     locationName?: string;
-    locationAddress: Address;
+    locationAddress: LocationAddress;
     locationSubType: number;
     trainLine?: string,
     busLine?: string,
@@ -26,6 +25,5 @@ export default interface InteractionEventDialogData {
     buisnessContactName?: string;
     buisnessContactNumber?: string;
     hospitalDepartment?: string;
-    contacts: Contact[];
-    contactedNumber?: number;
+    numberOfContacted: number;
 }

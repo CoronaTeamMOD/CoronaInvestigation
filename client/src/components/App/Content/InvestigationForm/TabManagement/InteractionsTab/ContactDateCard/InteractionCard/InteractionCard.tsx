@@ -93,24 +93,24 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
                     </Grid>
-                    {interaction.contacts.map(person => (
+                    {interaction.contacts.map(contactedPerson => (
                         <>
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>שם: </b>
-                                    {person.name}
+                                    {contactedPerson.personalInfo.firstName}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>ת.ז: </b>
-                                    {person.id}
+                                    {contactedPerson.personalInfo.identificationNumber}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>טלפון: </b>
-                                    {person.phoneNumber}
+                                    {contactedPerson.personalInfo.phoneNumber}
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} />
