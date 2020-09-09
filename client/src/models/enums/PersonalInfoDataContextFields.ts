@@ -7,7 +7,7 @@ enum PersonalInfoDataContextFields {
     CITY = 'city',
     STREET = 'street',
     FLOOR = 'floor',
-    HOUSE_NUMBER = 'houseNumber',
+    HOUSE_NUMBER = 'houseNum',
     RELEVANT_OCCUPATION = 'relevantOccupation',
     INSTITUTION_NAME = 'institutionName'
 }

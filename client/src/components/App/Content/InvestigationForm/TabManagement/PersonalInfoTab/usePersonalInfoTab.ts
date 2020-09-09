@@ -13,7 +13,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
     const fetchPersonalInfo = () => {
         axios.get('/personalDetails/getAllOccupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/getAllHmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
-        axios.get('/personalDetails/getInvestigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
+        axios.get('/personalDetails/getInvestigatedPatientPersonalInfoFields?epidemioligyNumber=' + 122).then((res: any) => {
             console.log(res);
             let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
             personalInfoStateContext.setPersonalInfoData({

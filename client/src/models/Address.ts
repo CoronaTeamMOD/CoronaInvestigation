@@ -11,7 +11,7 @@ export interface DBAddress {
     city: string;
     street: string;
     floor: string;
-    houseNumber: string;
+    houseNum: string;
 }
 
 export const initAddress : Address = {

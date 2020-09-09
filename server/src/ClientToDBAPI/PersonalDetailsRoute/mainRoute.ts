@@ -2,7 +2,7 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, UPDATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
+import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, UPDATE_ADRESS, CREATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
 import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/PersonalDetails/Query';
 
 const personalDetailsRoute = Router();
@@ -24,29 +24,51 @@ personalDetailsRoute.get('/getInvestigatedPatientPersonalInfoFields', (request: 
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
-    graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
-        {
-            id: request.body.id, 
-            hmo: request.body.personalInfoData.insuranceCompany,
-            otherOccupationExtraInfo: request.body.personalInfoData.institutionName,
-            occupation: request.body.personalInfoData.relevantOccupation,
-            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber
-        }
-    ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
+    graphqlRequest(CREATE_ADRESS, {
+        city: request.body.personalInfoData.address.city,
+        street: request.body.personalInfoData.address.street,
+        floor: +request.body.personalInfoData.address.floor,
+        houseNum: +request.body.personalInfoData.address.houseNumber
+    }).then((result: any) => {
+        graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
             {
-                id: 10,
-                phoneNumber: request.body.personalInfoData.phoneNumber,
-                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
-            }).then(() => {
-                graphqlRequest(UPDATE_ADRESS,
+                id: request.body.id, 
+                hmo: request.body.personalInfoData.insuranceCompany,
+                otherOccupationExtraInfo: request.body.personalInfoData.institutionName? request.body.personalInfoData.institutionName : '',
+                occupation: request.body.personalInfoData.relevantOccupation,
+                patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
+                address: result.data.createAddress.address.id
+            }
+        ).then((result: any) => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
                 {
-                    id: 88,
-                    city: request.body.personalInfoData.address.city,
-                    street: request.body.personalInfoData.address.street,
-                    floor: Number(request.body.personalInfoData.address.floor),
-                    houseNum: Number(request.body.personalInfoData.address.houseNumber)
-                }).then((result: any) => response.send(result));
-        }));
+                    id: result.data.updateInvestigatedPatientById.personByPersonId.id,
+                    phoneNumber: request.body.personalInfoData.phoneNumber,
+                    additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
+                }).then((result: any) => response.send(result)));
+    });
+    // graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
+    //     {
+    //         id: request.body.id, 
+    //         hmo: request.body.personalInfoData.insuranceCompany,
+    //         otherOccupationExtraInfo: request.body.personalInfoData.institutionName,
+    //         occupation: request.body.personalInfoData.relevantOccupation,
+    //         patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber
+    //     }
+    // ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
+    //         {
+    //             id: 10,
+    //             phoneNumber: request.body.personalInfoData.phoneNumber,
+    //             additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
+    //         }).then(() => {
+    //             graphqlRequest(UPDATE_ADRESS,
+    //             {
+    //                 id: 88,
+    //                 city: request.body.personalInfoData.address.city,
+    //                 street: request.body.personalInfoData.address.street,
+    //                 floor: Number(request.body.personalInfoData.address.floor),
+    //                 houseNum: Number(request.body.personalInfoData.address.houseNumber)
+    //             }).then((result: any) => response.send(result));
+    //     }));
 });
 
 export default personalDetailsRoute;

@@ -26,7 +26,7 @@ const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
-const INSTITUTION_OPTIONS = ['צה"ל', 'מוסד', 'אחר'];
+const INSTITUTION_OPTIONS = ['אודם','168','צה"ל', 'מוסד', 'אחר','8600'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
@@ -73,7 +73,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <CircleTextField 
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
@@ -94,7 +94,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <CircleTextField 
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
@@ -115,7 +115,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <CircleTextField 
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
@@ -157,33 +157,44 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                <Autocomplete
-                    options={INSTITUTION_OPTIONS}
-                    getOptionLabel={(option) => option}
-                    renderInput={(params) =>                     
-                    <CircleTextField
-                        {...params}
-                        id={ADDRESS_LABEL}
-                        placeholder={'עיר'}
-                        onChange={(event) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.CITY, event.target.value);
-                        }}
-                    />}
-                />
+                    <Autocomplete
+                        options={INSTITUTION_OPTIONS}
+                        getOptionLabel={(option) => option}
+                        inputValue={personalInfoStateContext.personalInfoData.address.city}
+                        renderInput={(params) =>                     
+                        <CircleTextField
+                            {...params}
+                            id={ADDRESS_LABEL}
+                            placeholder={'עיר'}
+                            value={personalInfoStateContext.personalInfoData.address.city}
+                            onChange={(event) => {
+                                handleChangeAddress(PersonalInfoDataContextFields.CITY, event.target.value);
+                            }}
+                        />}
+                    />
                 </Grid>
-                <Grid item xs={1}>
-                    <CircleTextField 
-                        id={ADDRESS_LABEL}
-                        placeholder={'רחוב'}
-                        onChange={(event) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.STREET, event.target.value);
-                        }}
+                <Grid item xs={2}>
+                    <Autocomplete
+                        options={INSTITUTION_OPTIONS}
+                        getOptionLabel={(option) => option}
+                        inputValue={personalInfoStateContext.personalInfoData.address.street}
+                        renderInput={(params) =>                     
+                        <CircleTextField
+                            {...params}
+                            id={ADDRESS_LABEL}
+                            placeholder={'רחוב'}
+                            value={personalInfoStateContext.personalInfoData.address.street}
+                            onChange={(event) => {
+                                handleChangeAddress(PersonalInfoDataContextFields.STREET, event.target.value);
+                            }}
+                        />}
                     />
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
                         id={ADDRESS_LABEL}
                         placeholder={'קומה'}
+                        value={personalInfoStateContext.personalInfoData.address.floor}
                         onChange={(event) => {
                             handleChangeAddress(PersonalInfoDataContextFields.FLOOR, event.target.value);
                         }}
@@ -193,6 +204,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <CircleTextField 
                         id={ADDRESS_LABEL}
                         placeholder={'מספר בית'}
+                        value={personalInfoStateContext.personalInfoData.address.houseNum}
                         onChange={(event) => {
                             handleChangeAddress(PersonalInfoDataContextFields.HOUSE_NUMBER, event.target.value);
                         }}
@@ -231,7 +243,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
                 <Grid item xs={3}>
-                    <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'אחר'}>
+                    <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
                     {
                         (personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' ||
                         personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות' ||
