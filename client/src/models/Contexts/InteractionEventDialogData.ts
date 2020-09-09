@@ -10,7 +10,7 @@ export default interface InteractionEventDialogData {
     investigationId: string;
     locationName?: string;
     locationAddress: Address;
-    locationSubType: string;
+    locationSubType?: string;
     trainLine?: string,
     busLine?: string,
     airline?: string;

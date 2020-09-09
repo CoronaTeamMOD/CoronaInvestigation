@@ -3,12 +3,11 @@ import React, {useContext} from 'react';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import AddressForm from 'commons/AddressForm/AddressForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
-import { initAddress } from 'models/Address';
 
 const investigatedHouseLocationName : string = 'בית המתוחקר';
 const notInvestigatedHouseLocationName : string = 'בית פרטי אחר';
@@ -17,7 +16,7 @@ const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
     const formClasses = useFormStyles();
     const ctxt = useContext(InteractionEventDialogContext);
-    const { locationName } = ctxt.interactionEventDialogData;
+    const { locationName } = ctxt.interactionEventDialogData
 
     const [isTheInvestigatedHouse, setIsTheInvestigatedHouse] = React.useState<boolean>(false);
 

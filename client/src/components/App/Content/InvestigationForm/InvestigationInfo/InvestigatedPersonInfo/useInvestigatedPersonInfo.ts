@@ -40,7 +40,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationStatus: getInvestigationStatus(cantReachInvestigated),
                     epidemiologyNumber
-                }).then(() => {
+                }).then((result) => {
                     handleInvestigationFinish();
                 }).catch(() => {
                     handleUnfinishedInvestigationFailed();

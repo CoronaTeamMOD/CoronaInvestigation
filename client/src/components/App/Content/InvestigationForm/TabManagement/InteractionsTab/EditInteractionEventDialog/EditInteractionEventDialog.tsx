@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
     
+import { initAddress } from 'models/Address';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
@@ -9,7 +10,10 @@ import useEditInteractionEventDialog from './useEditInteractionEventDialog';
 import {
     InteractionEventDialogProvider, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
+import { grades } from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+import { transportationTypes } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
+import InteractionEventForm, { schoolLocationType, hospitalLocationType, transportationLocationType } from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 
@@ -20,21 +24,49 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     const classes = useStyles();
     
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-    const { locationType, locationSubType } = interactionEventDialogData;
+    const { locationType, startTime, endTime, externalizationApproval, contacts, locationSubType } = interactionEventDialogData;
     
     React.useEffect(() => {
-        if (locationType === eventToEdit.locationType && locationSubType === eventToEdit.locationSubType) {
-            setInteractionEventDialogData(eventToEdit)
-        } 
-    }, [locationType, locationSubType])
+        resetLocationForm(locationType === eventToEdit.locationType);
+    }, [locationType])
 
+    React.useEffect(() => {
+        resetLocationForm(locationSubType === eventToEdit.locationSubType);
+    }, [locationSubType])
+
+    const resetLocationForm = (isOriginalLocationType: boolean) => {
+
+        if (isOriginalLocationType) setInteractionEventDialogData(eventToEdit)
+        else setInteractionEventDialogData({
+            investigationId: eventToEdit.investigationId,
+            locationSubType: defaultSubType(),
+            startTime,
+            endTime,
+            locationName: locationType === hospitalLocationType ? hospitals[0] : undefined,
+            grade: grades[0],
+            locationType,
+            externalizationApproval,
+            locationAddress: initAddress,
+            contacts
+        })
+    }
+
+    const defaultSubType = () => {
+        if (locationSubType && locationType === eventToEdit.locationType) return locationSubType;
+        if (locationType === transportationLocationType) return transportationTypes[0];
+    }
+    
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,
         setInteractionEventDialogData,
     }),
         [interactionEventDialogData, setInteractionEventDialogData]);
 
-    const onConfirm = () => editInteractionEvent(interactionEventDialogData)
+    /// TODO: can  fix grade?
+    const onConfirm = () => editInteractionEvent({
+        ...interactionEventDialogData,
+        grade: interactionEventDialogData.locationType === schoolLocationType ? interactionEventDialogData.grade : undefined,
+    })
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>

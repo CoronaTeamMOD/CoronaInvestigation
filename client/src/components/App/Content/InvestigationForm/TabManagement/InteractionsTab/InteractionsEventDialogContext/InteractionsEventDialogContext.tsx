@@ -15,6 +15,7 @@ export const initialDialogData = (locationType: string, startTime: Date, endTime
     startTime,
     endTime,
     externalizationApproval: false,
+    grade: '',
     contacts,
     locationSubType: ''
 })

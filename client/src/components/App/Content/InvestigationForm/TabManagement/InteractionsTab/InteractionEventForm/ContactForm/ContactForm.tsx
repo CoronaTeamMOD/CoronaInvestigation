@@ -22,7 +22,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
     const { contacts } = interactionEventDialogData;
     const { updatedContactIndex } = props;
-    const { name, moreDetails, needsToBeQuarantined, phoneNumber, id } = contacts[updatedContactIndex];
+    const { personalInfo, moreDetails, needsToBeQuarantined, id } = contacts[updatedContactIndex];
     
     const updateContacts = (updatedContact: Contact) => {
         const updatedContacts = [...contacts];
@@ -31,7 +31,9 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     }
 
     const onNameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], name: event.target.value as string});
+        personalInfo.firstName = event.target.value as string;
+        const updatedPersonalInfo = {...personalInfo, firstName: event.target.value as string};
+        updateContacts({...contacts[updatedContactIndex], personalInfo: updatedPersonalInfo});
     }
 
     const onIDChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -39,7 +41,9 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     }
 
     const onPhoneNumberChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], phoneNumber: event.target.value as string});
+        personalInfo.firstName = event.target.value as string;
+        const updatedPersonalInfo = {...personalInfo, phoneNumber: event.target.value as string};
+        updateContacts({...contacts[updatedContactIndex], personalInfo: updatedPersonalInfo});
     }
 
     const onNeedsToBeQuarantinedChange = (quarantineCondition: boolean) => {
@@ -55,14 +59,14 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonName + ': '}</Typography>
             <CircleTextField id='contactedPersonName' key='contactedPersonName'
                                 className={classes.newContactField}
-                                value={name}
+                                value={personalInfo.firstName}
                                 placeholder={contactedPersonName}
                                 onChange={onNameChange}
             />
             <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonPhone + ': '}</Typography>
             <CircleTextField id='contactedPersonPhone' key='contactedPersonPhone'
                                 className={classes.newContactField}
-                                value={phoneNumber}
+                                value={personalInfo.phoneNumber}
                                 placeholder={contactedPersonPhone}
                                 onChange={onPhoneNumberChange}
                                 required={false}

@@ -1,13 +1,11 @@
-import { format, parse } from 'date-fns';
+import { format, set } from 'date-fns';
 import React, {useState, useContext} from 'react';
 import { AddCircle as AddCircleIcon} from '@material-ui/icons';
 import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/core';
     
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
-import { initAddress } from 'models/Address';
 import useFormStyles from 'styles/formStyles';
-import { timeFormat } from 'Utils/displayUtils';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
@@ -16,11 +14,11 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
-import SchoolEventForm, { grades } from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import HospitalEventForm, { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import HospitalEventForm from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
-import TransportationEventForm, { resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
+import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import { InteractionEventDialogContext } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const privateHouseLocationType : string = 'בית פרטי';
@@ -59,12 +57,23 @@ export const locationTypes = [
 ].concat(otherLocationTypes);
 
 export const defaultContact: Contact = {
-    name: '',
-    phoneNumber: '',
     id: '',
     needsToBeQuarantined: false,
     moreDetails: '',
+    personalInfo: {
+        phoneNumber: '',
+        firstName: '',
+        lastName: '',
+        additionalPhoneNumber: '',
+        birthDate: new Date(),
+        gender: '',
+        identificationNumber: '',
+        identificationType: '',
+    }
 };
+
+const defaultTime : string = '00:00';
+const timeFormat : string = 'hh:mm';
 
 const addContactButton: string = 'הוסף מגע';
 
@@ -78,8 +87,9 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     const [canAddContact, setCanAddContact] = useState<boolean>(false);
 
     React.useEffect(() => {
-        const hasInvalidContact : boolean = contacts
-            .some(contact => (!contact.id || !contact.name || !contact.phoneNumber));
+        const hasInvalidContact : boolean = contacts.some(contact => {
+            return (!contact.id || !contact.personalInfo.firstName || !contact.personalInfo.phoneNumber)
+        })
         setCanAddContact(!hasInvalidContact);
     }, [contacts])
     
@@ -88,29 +98,32 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
         setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
     }
 
-    const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const newLocationType = event.target.value as string;
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
-            locationType: newLocationType,
-            locationSubType: '',
-            locationName: newLocationType === hospitalLocationType ? hospitals[0] : undefined,
-            grade: (newLocationType === schoolLocationType) ? grades[0] : undefined,
-            locationAddress: initAddress,
-            hospitalDepartment: undefined,
-            ...resetTransportationFormFields
-        });
-    }
+    const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) =>
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, locationType: event.target.value as string});
     
     const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, startTime)});
+        const timeSplit = event.target.value.split(':');
+        const newStartTime = set(startTime, { hours: +timeSplit[0], minutes: +timeSplit[1]});
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: newStartTime});
     };
 
     const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, endTime)});
+        const timeSplit = event.target.value.split(':');
+        const newEndTime = set(endTime, { hours: +timeSplit[0], minutes: +timeSplit[1]});
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, endTime: newEndTime});
     };
 
     const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => 
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, externalizationApproval: val});
+
+    // TODO: FIX THE WAY IT WORKS
+    const getDisplayTime = (date: Date) => {
+        if (date.getHours() === 0) {
+            if (date.getMinutes() === 0) return defaultTime;
+            return defaultTime.replace(':00', `:${date.getMinutes()}`);
+        }
+        return format(date, timeFormat);
+    }
 
     return (
         <>
@@ -166,7 +179,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                         <FormInput fieldName='משעה'>
                             <DatePick
                                 type='time'
-                                value={format(startTime, timeFormat)}
+                                value={getDisplayTime(startTime)}
                                 onChange={onStartTimeChange}/>
                         </FormInput>
                     </Grid>
@@ -174,7 +187,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                         <FormInput fieldName='עד שעה'>
                             <DatePick
                                 type='time'
-                                value={format(endTime, timeFormat)}
+                                value={getDisplayTime(endTime)}
                                 onChange={onEndTimeChange}
                             />
                         </FormInput>

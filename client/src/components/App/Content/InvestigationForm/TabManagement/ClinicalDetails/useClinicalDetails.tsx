@@ -31,7 +31,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         getBackgroundDiseases();
     }, []);
 
-    return { 
+    return {
         isInIsolationToggle,
         hasSymptomsToggle,
         hasBackgroundIllnessesToggle,

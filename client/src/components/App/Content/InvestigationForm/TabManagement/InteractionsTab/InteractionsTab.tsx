@@ -40,15 +40,31 @@ const InteractionsTab: React.FC = (): JSX.Element => {
             contacts: [
                 {
                     id: '123456789',
-                    name: 'עומר שמיר', 
-                    phoneNumber: '058-5161606',
+                    personalInfo: {
+                        firstName: 'עומר',
+                        lastName: 'שמיר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
                     needsToBeQuarantined: false,
                     moreDetails: ''
                 },
                 {
                     id: '987654321',
-                    name: 'עידו פינסקר', 
-                    phoneNumber: '050-5737028',
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
                     needsToBeQuarantined: false,
                     moreDetails: ''
                 }
@@ -65,7 +81,6 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                 houseNumber: '1',
                 floor: '2'
             },
-            locationSubType: '',
             locationName: 'בית פרטי אחר',
             locationType: 'בית פרטי', 
             buisnessContactNumber: '054-9444188',
@@ -73,17 +88,24 @@ const InteractionsTab: React.FC = (): JSX.Element => {
             contacts: [
                 {
                     id: '987654321',
-                    name: 'עידו פינסקר', 
-                    phoneNumber: '050-5737028',
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
                     needsToBeQuarantined: false,
                     moreDetails: ''
                 }
             ]
-        }, 
+        },
         {
             id: 3,
             investigationId: '',
-            locationSubType: '',
             startTime: new Date(2020, 7, 30, 13, 50),
             endTime: new Date(2020, 7, 30, 15, 50),
             locationAddress: {
@@ -99,8 +121,16 @@ const InteractionsTab: React.FC = (): JSX.Element => {
             contacts: [
                 {
                     id: '987654321',
-                    name: 'עידו פינסקר', 
-                    phoneNumber: '050-5737028',
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
                     needsToBeQuarantined: false,
                     moreDetails: ''
                 }

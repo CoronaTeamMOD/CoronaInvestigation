@@ -4,13 +4,13 @@ import { Collapse } from '@material-ui/core';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import BusEventForm from './BusEventForm';
 import TrainEventForm from './TrainEventForm';
 import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 const busLocationType = 'אוטובוס';
 const trainLocationType = 'רכבת';
@@ -28,22 +28,6 @@ export const transportationTypes = [
     privateCarLocationType
 ]
 
-export const resetTransportationFormFields = {
-    boardingCity: undefined,
-    boardingCountry: undefined,
-    boardingStation: undefined,
-    endCity: undefined,
-    endCountry: undefined,
-    endStation: undefined,
-    airline: undefined,
-    trainLine: undefined,
-    buisnessContactName: undefined,
-    buisnessContactNumber: undefined,
-    busCompany: undefined,
-    busLine: undefined,
-    flightNumber: undefined
-}
-
 const TransportationEventForm : React.FC = () : JSX.Element => {
 
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
@@ -51,30 +35,8 @@ const TransportationEventForm : React.FC = () : JSX.Element => {
 
     const formClasses = useFormStyles();
 
-    React.useEffect(()=> {
-        if (!locationSubType || !transportationTypes.includes(locationSubType))
-            setInteractionEventDialogData(
-                {...interactionEventDialogData as InteractionEventDialogData, locationSubType: transportationTypes[0]});
-    }, [])
-
     const onTransportationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) =>
-        setInteractionEventDialogData(
-            {...interactionEventDialogData as InteractionEventDialogData, 
-                locationSubType: event.target.value as string,
-                boardingCity: undefined,
-                boardingCountry: undefined,
-                boardingStation: undefined,
-                endCity: undefined,
-                endCountry: undefined,
-                endStation: undefined,
-                airline: undefined,
-                trainLine: undefined,
-                buisnessContactName: undefined,
-                buisnessContactNumber: undefined,
-                busCompany: undefined,
-                busLine: undefined,
-                flightNumber: undefined
-            });
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, locationSubType: event.target.value as string});
 
     return (
         <>

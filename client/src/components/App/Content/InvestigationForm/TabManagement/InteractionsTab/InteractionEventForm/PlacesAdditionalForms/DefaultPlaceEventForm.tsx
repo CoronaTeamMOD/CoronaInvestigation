@@ -2,9 +2,9 @@ import React, {useContext} from 'react';
 import {Grid} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import AddressForm from 'commons/AddressForm/AddressForm';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
+import BusinessContactForm from 'commons/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
@@ -21,8 +21,7 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
             <Grid item xs={6}>
                 <FormInput fieldName='שם המוסד'>
                     <CircleTextField
-                        value={ctxt.interactionEventDialogData.locationName}
-                        onChange={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}/>
+                        onBlur={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}/>
                 </FormInput>
             </Grid>
             <AddressForm/>
