@@ -30,9 +30,9 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 </FormInput>
             </Grid>
             <Grid item xs={6}>
-                <FormInput fieldName='טלפון איש קשר'>
+                <FormInput fieldName={businessContactNumField}>
                     <CircleTextField
-                        value={businessContactNumField}
+                        value={buisnessContactNumber}
                         onChange={event => onChange(event, InteractionEventDialogFields.BUSINESS_CONTACT_NUMBER)}/>
                 </FormInput>
             </Grid>

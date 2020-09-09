@@ -10,8 +10,8 @@ import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import LocationsTypesAndSubTypes from 'commons/Forms/LocationsTypesAndSubTypes/LocationsTypesAndSubTypes';
 
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
@@ -29,35 +29,6 @@ export const transportationLocationType : string = 'תחבורה';
 export const schoolLocationType : string = 'בית ספר';
 export const hospitalLocationType : string = 'בית חולים';
 
-const otherLocationTypes = [
-    'טרם',
-    'מד"א',
-    'כנסייה',
-    'בית כנסת',
-    'מסגד',
-    'מקווה',
-    'בית עלמין',
-    'אולם אירועים',
-    'גן אירועים',
-    'בית מלון',
-    'מגרש ספורט',
-    'אולם ספורט',
-    'חדר כושר',
-    'מוזיאון/גלריה',
-    'גן ילדים',
-    'מוסד אקדמאי',
-    'מוסד רפואי',
-    'מוסד גריאטרי'
-]
-
-export const locationTypes = [
-    privateHouseLocationType,
-    officeLocationType,
-    transportationLocationType,
-    schoolLocationType,
-    hospitalLocationType,
-].concat(otherLocationTypes);
-
 export const defaultContact: Contact = {
     name: '',
     phoneNumber: '',
@@ -71,7 +42,7 @@ const addContactButton: string = 'הוסף מגע';
 const InteractionEventForm : React.FC = () : JSX.Element => {
     
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
-    const { locationType, startTime, endTime, externalizationApproval, contacts } = interactionEventDialogData;
+    const { locationType, startTime, endTime, externalizationApproval, contacts, locationSubType } = interactionEventDialogData;
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -88,8 +59,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
         setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
     }
 
-    const onLocationTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const newLocationType = event.target.value as string;
+    const onLocationTypeChange = (newLocationType: string) => {
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
             locationType: newLocationType,
             locationSubType: '',
@@ -97,6 +67,16 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
             grade: (newLocationType === schoolLocationType) ? grades[0] : undefined,
             locationAddress: initAddress,
             hospitalDepartment: undefined,
+            ...resetTransportationFormFields
+        });
+    }
+
+    const onLocationSubTypeChange = (newLocationSubType: string) => {
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
+            locationSubType: newLocationSubType,
+            locationName: undefined,
+            grade: undefined,
+            locationAddress: initAddress,
             ...resetTransportationFormFields
         });
     }
@@ -115,16 +95,11 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <Grid className={formClasses.form} container justify='flex-start'>
-                <Grid className={formClasses.formRow} container justify='flex-start'>
-                    <FormInput fieldName='סוג אתר'>
-                        <CircleSelect
-                            value={locationType}
-                            onChange={onLocationTypeChange}
-                            className={formClasses.formSelect}
-                            options={locationTypes}
-                        />
-                    </FormInput>
-                </Grid>
+                <LocationsTypesAndSubTypes 
+                locationType={locationType}
+                locationSubType={locationSubType}
+                onLocationTypeChange={onLocationTypeChange}
+                onLocationSubTypeChange={onLocationSubTypeChange}/>
                 {
                     locationType === privateHouseLocationType && 
                     <Collapse in={locationType === privateHouseLocationType}>
@@ -155,12 +130,12 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                         <HospitalEventForm/>
                     </Collapse>
                 }
-                {
+                {/* {
                     otherLocationTypes.includes(locationType) &&
                     <Collapse in={otherLocationTypes.includes(locationType)}>
                         <DefaultPlaceEventForm />
                     </Collapse>
-                }
+                } */}
                 <Grid className={formClasses.formRow} container justify='flex-start'>
                     <Grid item xs={6}>
                         <FormInput fieldName='משעה'>

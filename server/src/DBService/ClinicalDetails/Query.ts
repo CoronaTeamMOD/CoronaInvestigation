@@ -1,7 +1,7 @@
 import { gql } from 'postgraphile';
 
 export const GET_BACKGROUND_DISEASES = gql`
-query MyQuery {
+query getAllBackgroundDeseases {
     allBackgroundDeseases {
       nodes {
         displayName
@@ -11,7 +11,7 @@ query MyQuery {
 `;
 
 export const GET_SYMPTOMS = gql`
-query MyQuery {
+query getAllSymptoms {
     allSymptoms {
       nodes {
         displayName
