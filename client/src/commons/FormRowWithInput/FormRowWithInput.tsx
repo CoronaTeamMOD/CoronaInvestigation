@@ -11,7 +11,7 @@ const FormRowWithInput = ({fieldName, children}: FormRowWithInputProps) => {
     const classes = useFormStyles();
 
     return (
-        <div className={classes.rowDiv}>
+        <div className={classes.formRow}>
             <Grid item xs={12} sm={6} md={6} lg={3} xl={3}>
                 <Typography variant='caption' className={classes.fieldName}>
                     {fieldName}
