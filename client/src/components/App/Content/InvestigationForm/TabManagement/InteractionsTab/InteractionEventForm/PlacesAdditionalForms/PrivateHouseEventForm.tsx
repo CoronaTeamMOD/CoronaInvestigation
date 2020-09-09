@@ -7,8 +7,7 @@ import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
-import { initAddress } from 'models/Address';
+import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const investigatedHouseLocationName : string = 'בית המתוחקר';
 const notInvestigatedHouseLocationName : string = 'בית פרטי אחר';

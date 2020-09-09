@@ -9,7 +9,7 @@ const investigationDaysBeforeSymptoms: number = 4;
 const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
-const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
+const useInteractionsTab = (props: useInteractionsTabInput):  useInteractionsTabOutcome => {
     
     const { interactions, setInteractions } = props;
     

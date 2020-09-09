@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Gender from 'models/enums/Gender';
 import StoreStateType from 'redux/storeStateType';
-import IdentificationType from 'models/enums/IdentificationTypes';
-import relevantOccupations from 'models/enums/relevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
@@ -18,7 +15,7 @@ import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialC
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import TabManagement, {tabs} from './TabManagement/TabManagement';
+import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 

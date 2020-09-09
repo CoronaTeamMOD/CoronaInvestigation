@@ -16,7 +16,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();
     const ctxt = useContext(InteractionEventDialogContext);
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
-    const { buisnessContactName, buisnessContactNumber } = interactionEventDialogData;
+    const { buisnessContactName } = interactionEventDialogData;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value as string});
