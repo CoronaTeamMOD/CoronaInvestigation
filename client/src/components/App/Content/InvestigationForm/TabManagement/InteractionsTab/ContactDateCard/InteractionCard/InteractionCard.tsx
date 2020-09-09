@@ -3,7 +3,8 @@ import { format } from 'date-fns';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 
-import Interaction from 'models/Interaction';
+import { timeFormat } from 'Utils/displayUtils';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useStyle from './InteractionCardStyles';
 
@@ -11,7 +12,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
 
-    const { interaction } = props;
+    const { interaction, onEditClick } = props;
 
     const classes = useStyle();
 
@@ -24,12 +25,12 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                     <Typography>
                         <b>
-                            {interaction.placeName}
+                            {interaction.locationName}
                         </b>
                     </Typography>
                 </div>
                 <div>
-                    <IconButton>
+                    <IconButton onClick={onEditClick}>
                         <Edit />
                     </IconButton>
                     <IconButton>
@@ -39,7 +40,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
             </div>
             <Collapse in={areDetailsOpen}>
                 <Grid container className={classes.gridContainer}>
-                    {/* place name row */}
+                    {/* location name row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>שם המקום: </b>
@@ -47,10 +48,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeName}
+                            {interaction.locationName}
                         </Typography>
                     </Grid>
-                    {/* place address row */}
+                    {/* location address row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b> כתובת: </b>
@@ -58,10 +59,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeAddress}
+                            {interaction.locationAddress.city}
                         </Typography>
                     </Grid>
-                    {/* place number row */}
+                    {/* location number row */}
                     <Grid item xs={2}>
                         <Typography>
                             <b>טלפון המקום: </b>
@@ -69,7 +70,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.placeNumber}
+                            {interaction.buisnessContactNumber}
                         </Typography>
                     </Grid>
                     {/* time row */}
@@ -80,7 +81,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {format(interaction.interactionEndTime, 'HH:mm')} - {format(interaction.interactionStartTime, 'HH:mm')}
+                            {format(interaction.endTime, timeFormat)} - {format(interaction.startTime, timeFormat)}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -89,10 +90,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                 <Grid container className={classes.gridContainer}>
                     <Grid item xs={12}>
                         <Typography>
-                            <b>אנשים שהיו באירוע: ({interaction.interactionPersons.length})</b>
+                            <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
                     </Grid>
-                    {interaction.interactionPersons.map(person => (
+                    {interaction.contacts.map(person => (
                         <>
                             <Grid item xs={2}>
                                 <Typography>
@@ -122,7 +123,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 }
 
 interface Props {
-    interaction: Interaction
+    interaction: Interaction,
+    onEditClick: () => void
 }
 
 export default InteractionCard;

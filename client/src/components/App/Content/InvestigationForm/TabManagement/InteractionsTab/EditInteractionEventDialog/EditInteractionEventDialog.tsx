@@ -1,42 +1,40 @@
 import React, {useState} from 'react';
-import { startOfDay } from 'date-fns';
-import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
-
-import StoreStateType from 'redux/storeStateType';
+    
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-import useStyles from './NewInteractionEventDialogStyles';
-import useNewInteractionEventDialog from './useNewInteractionEventDialog';
+import useStyles from './EditInteractionEventDialogStyles';
+import useEditInteractionEventDialog from './useEditInteractionEventDialog';
 import {
-    InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet
+    InteractionEventDialogProvider, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import InteractionEventForm, { locationTypes, defaultContact } from '../InteractionEventForm/InteractionEventForm';
+import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 
-const newContactEventTitle = 'יצירת מקום/מגע חדש';
+const newContactEventTitle = 'עריכת מקום/מגע';
 
-const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { eventDate, closeDialog, isOpen } = props;
-    const { createNewInteractionEvent } = useNewInteractionEventDialog({closeDialog});
-
-    const defaultDate = new Date(startOfDay(eventDate).toUTCString());
-
+const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
+    const { closeDialog, eventToEdit, isOpen } = props;
+    const { editInteractionEvent } = useEditInteractionEventDialog({closeDialog});
+    
     const classes = useStyles();
+    
+    const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
+    const { locationType, locationSubType } = interactionEventDialogData;
+    
+    React.useEffect(() => {
+        if (locationType === eventToEdit.locationType && locationSubType === eventToEdit.locationSubType) {
+            setInteractionEventDialogData(eventToEdit)
+        } 
+    }, [locationType, locationSubType])
 
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
-
-    const [interactionEventDialogData, setInteractionEventDialogData] = 
-        useState<InteractionEventDialogData>(
-            initialDialogData(locationTypes[0], defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
-        
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,
         setInteractionEventDialogData,
     }),
         [interactionEventDialogData, setInteractionEventDialogData]);
 
-    const onConfirm = () => createNewInteractionEvent(interactionEventDialogData);
+    const onConfirm = () => editInteractionEvent(interactionEventDialogData)
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
@@ -58,17 +56,17 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 <PrimaryButton 
                     id='createContact'
                     onClick={() => onConfirm()}>
-                    צור מקום/מגע
+                    שמור שינויים
                 </PrimaryButton>
             </DialogActions>
         </Dialog>
     );
 };
 
-export default NewInteractionEventDialog;
+export default EditInteractionEventDialog;
 
 export interface Props {
     closeDialog: () => void,
     isOpen: boolean,
-    eventDate: Date,
+    eventToEdit: InteractionEventDialogData
 }
