@@ -23,7 +23,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         return unfinishedInvestigationStatus;
     }
 
-    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: string, cantReachInvestigated: boolean) => {
+    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number, cantReachInvestigated: boolean) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',

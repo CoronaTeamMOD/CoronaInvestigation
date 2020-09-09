@@ -24,7 +24,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const classes = useStyles();
 
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const [interactionEventDialogData, setInteractionEventDialogData] = 
         useState<InteractionEventDialogData>(

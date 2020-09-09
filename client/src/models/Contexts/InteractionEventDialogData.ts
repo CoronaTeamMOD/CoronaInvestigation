@@ -7,7 +7,7 @@ export default interface InteractionEventDialogData {
     startTime: Date;
     endTime: Date;
     externalizationApproval: boolean;
-    investigationId: string;
+    investigationId: number;
     locationName?: string;
     locationAddress: Address;
     locationSubType: string;

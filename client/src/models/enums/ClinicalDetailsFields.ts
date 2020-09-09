@@ -6,11 +6,12 @@ enum ClinicalDetailsFields {
     IS_ISOLATION_PROBLEM_MORE_INFO = 'isIsolationProblemMoreInfo',
     SYMPTOMS_START_DATE = 'symptomsStartDate',
     SYMPTOMS = 'symptoms',
-    BACKGROUND_ILLNESSES = 'backgroundIllnesses',
+    BACKGROUND_DESEASSES = 'backgroundDeseases',
     HOSPITAL = 'hospital',
     HOSPITALIZATION_START_DATE = 'hospitalizationStartDate',
     HOSPITALIZATION_END_DATE = 'hospitalizationEndDate',
-    IS_PREGNANT = 'isPregnant'
+    IS_PREGNANT = 'isPregnant',
+    INVESTIGATED_PATIENT_ID = 'investigatedPatientId',
 }
 
 export default ClinicalDetailsFields;

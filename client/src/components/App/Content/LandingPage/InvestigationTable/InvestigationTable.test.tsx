@@ -6,7 +6,7 @@ describe("investigationTable tests", () => {
 
   beforeAll(() => {
     newRowData = {
-      epidemiologyNumber: "111",
+      epidemiologyNumber: 111,
       status: "חדש",
       fullName: "אמילי",
       phoneNumber: "053-3486954",

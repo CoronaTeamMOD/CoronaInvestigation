@@ -1,4 +1,4 @@
-interface ClinicalDetailsData {
+interface ClinicalDetails {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationAddress: string;
@@ -11,6 +11,10 @@ interface ClinicalDetailsData {
     hospitalizationStartDate: Date | null;
     hospitalizationEndDate: Date | null;
     isPregnant: boolean;
+    investigatedPatientId: number;
+    epidemioligyNumber: number;
+    creator: string;
+    lastUpdator: string;
 };
 
-export default ClinicalDetailsData;
+export default ClinicalDetails;
