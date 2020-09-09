@@ -35,10 +35,6 @@ describe('investigationForm tests', () => {
         hospitalizationStartDate: null,
         hospitalizationEndDate: null,
         isPregnant: false,
-        investigatedPatientId: -1,
-        epidemioligyNumber: -1,
-        creator: '',
-        lastUpdator: '',
     };
     
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {
