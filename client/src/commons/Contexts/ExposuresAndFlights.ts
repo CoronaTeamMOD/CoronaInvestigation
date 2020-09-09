@@ -11,9 +11,9 @@ export interface ExposureDetails {
     setExposureData: {[A in keyof FormData] : React.Dispatch<React.SetStateAction<(FormData[A]| undefined)>>}
 };
 
-export const initialClinicalDetails: FormData = {
+export const initialDetails: FormData = {
     placeType: {id:0,name:''},
-    exposureLocation: '',
+    exposureLocation: null,
     exposingPersonName: '',
     toAirport: '',
     fromAirport: '',
@@ -24,7 +24,7 @@ export const initialClinicalDetails: FormData = {
 };
 
 const initialContextValues: ExposureDetails = {
-    exposureData: initialClinicalDetails,
+    exposureData: initialDetails,
     // @ts-ignore
     setExposureData: () => {}
 };

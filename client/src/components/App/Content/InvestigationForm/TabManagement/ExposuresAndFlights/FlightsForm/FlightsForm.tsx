@@ -5,7 +5,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import AirportInput from './AirportInput/AirportInput';
 import useFormStyles from 'styles/formStyles';
-import {exposuresContext} from "Contexts/ExposuresAndFlights";
+import {exposuresContext} from "commons/Contexts/ExposuresAndFlights";
 import {format} from "date-fns";
 
 const FlightsForm = () => {
@@ -34,7 +34,7 @@ const FlightsForm = () => {
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='תאריך טיסה:'>
-                <div className={classes.rowDiv}>
+                <div className={classes.formRow}>
                     <Typography variant='caption'>מתאריך</Typography>
                     <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} type='date'/>
                     <Typography variant='caption'>עד תאריך</Typography>

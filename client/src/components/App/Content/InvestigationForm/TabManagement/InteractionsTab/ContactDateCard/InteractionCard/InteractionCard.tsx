@@ -59,7 +59,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.locationAddress.city}
+                            {interaction.locationAddress.address?.description}
                         </Typography>
                     </Grid>
                     {/* location number row */}
