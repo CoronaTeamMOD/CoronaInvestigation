@@ -21,7 +21,7 @@ export const tabs: TabObj[] = [
     defaultTab,
     {
         id: 1,
-        name: TabNames.CLINICAL_DETAINS,
+        name: TabNames.CLINICAL_DETAILS,
         isDisabled: false,
         displayComponent: <ClinicalDetails />
     },

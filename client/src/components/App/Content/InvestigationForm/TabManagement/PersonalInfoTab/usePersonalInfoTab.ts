@@ -10,7 +10,7 @@ import PersonalInfoTab from './PersonalInfoTab';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const {occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext} = parameters;
 
