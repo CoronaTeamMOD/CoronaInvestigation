@@ -10,31 +10,8 @@ const defaultInvestigationStaticInfo = {
     startTime: new Date(),
     lastUpdateTime: new Date(),
     investigatingUnit: '',
-    userByCreator: {
-        personByPersonId: {
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            identificationType: '',
-            identificationNumber: '',
-            additionalPhoneNumber: '',
-            gender: '',
-            birthDate: new Date(),
-        }
-    },
-    userByLastUpdator: {
-        personByPersonId: {
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            identificationType: '',
-            identificationNumber: '',
-            additionalPhoneNumber: '',
-            gender: '',
-            birthDate: new Date(),
-        }
-    },
     investigatedPatientByInvestigatedPatientId: {
+        isDeceased: false,
         personByPersonId: {
             firstName: '',
             lastName: '',
@@ -45,9 +22,23 @@ const defaultInvestigationStaticInfo = {
             gender: '',
             birthDate: new Date(),
         },
-        isDeceased: false
     },
-    coronaTestDate: new Date()
+    coronaTestDate: new Date(),
+    investigatedPatientId: 0,
+    userByCreator: {
+        id: 1,
+        userName: '',
+        phoneNumber: '',
+        serialNumber: '',
+        investigationGroup: 1
+    },
+    userByLastUpdator: {
+        id: 1,
+        userName: '',
+        phoneNumber: '',
+        serialNumber: '',
+        investigationGroup: 1
+    },
 }
 
 const InvestigationInfoBar = (props: Props) => {
@@ -60,8 +51,9 @@ const InvestigationInfoBar = (props: Props) => {
         axios.post('/investigationInfo/staticInfo', {
             investigationId: 111
         }).then((result: any) => {
-            if (result && result.data && result.data.data)
-                setInvestigationStaticInfo(result.data.data.investigationByEpidemioligyNumber);
+            if(result && result.data && result.data.data)
+            setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
+            console.log(result)
         })
     }, []);
 
