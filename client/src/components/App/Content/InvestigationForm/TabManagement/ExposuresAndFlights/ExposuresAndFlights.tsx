@@ -6,7 +6,8 @@ import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
-import {ExposureDetails, ExposuresContextProvider} from "Contexts/ExposuresAndFlights";
+import {ExposureDetails, ExposuresContextProvider} from "commons/Contexts/ExposuresAndFlights";
+import {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
 import PlaceType from "models/PlaceType";
 
 
@@ -15,7 +16,7 @@ const ExposuresAndFlights = () => {
     const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
 
     const [exposingPersonName, setExposingPersonName] = React.useState<string>();
-    const [exposureLocation, setExposureLocation] = React.useState<string>();
+    const [exposureLocation, setExposureLocation] = React.useState<GoogleApiPlace | null | undefined>(null);
     const [placeType, setPlaceType] = React.useState<PlaceType>();
 
     const [fromAirport, setFromAirport] = React.useState<string>();

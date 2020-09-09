@@ -9,7 +9,11 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
+import {
+    initialPersonalInfo,
+    PersonalInfoContextProvider,
+    PersonalInfoDataAndSet
+} from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useStyles from './InvestigationFormStyles';
@@ -29,32 +33,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
     const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
 
-    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
-        phoneNumber: '',
-        isInvestigatedPersonsNumber: true,
-        selectReasonNumberIsNotRelated: '',
-        writeReasonNumberIsNotRelated: '',
-        additionalPhoneNumber: '',
-        gender: Gender.MALE,
-        identificationType: IdentificationType.ID,
-        identificationNumber: '',
-        age: '',
-        motherName: '',
-        fatherName: '',
-        insuranceCompany: '',
-        HMO: '',
-        address: {
-            city: '',
-            neighborhood: '',
-            street: '',
-            houseNumber: '',
-            entrance: '',
-            floor: '',
-            apartment: ''
-        },
-        relevantOccupation: relevantOccupations.MOH_Worker,
-        institutionName: ''
-    });
+    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
     const personalInfoValue: PersonalInfoDataAndSet = React.useMemo(
         () => ({

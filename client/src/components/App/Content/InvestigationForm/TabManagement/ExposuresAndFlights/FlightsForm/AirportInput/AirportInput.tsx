@@ -1,8 +1,8 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import {Airport, City, Country} from '../FlightFormTypes';
-import AutocompletedField from './AutoCompletedField/AutocompletedField';
+import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 import useFormStyle from 'styles/formStyles';
-import {AutocompletedFieldProps} from './AutoCompletedField/AutoCompletedFieldTypes';
+import {AutocompletedFieldProps} from 'commons/AutoCompletedField/AutoCompletedFieldTypes';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 interface AirportInputProps {

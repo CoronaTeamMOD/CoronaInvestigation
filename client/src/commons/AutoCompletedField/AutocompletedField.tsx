@@ -4,22 +4,15 @@ import {Autocomplete, AutocompleteRenderInputParams} from '@material-ui/lab';
 import AutocompletedFieldType from './AutoCompletedFieldTypes';
 import useStyles from './AutoCompletedFieldStyles';
 import useFormStyles from 'styles/formStyles';
+import CircleTextField from "../CircleTextField/CircleTextField";
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const {value, options, onChange, onInputChange, label, constOptions = false} = props;
-    const formClasses = useFormStyles();
+    const {value, options, onChange, onInputChange, constOptions = false} = props;
     const classes = useStyles();
-    const noOptionsMessage = 'וודאו כי הקלדתם שם תקין';
+    const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <TextField {...params}
-                   inputProps={{style: {padding: 0}, ...params.inputProps}}
-                   InputLabelProps={{classes: {root: formClasses.roundedTextLabel}}}
-                   InputProps={{
-                       classes: {root: formClasses.roundedTextField},
-                       ...params.InputProps
-                   }}
-                   label={label} variant='outlined' fullWidth />;
+        <CircleTextField {...params} fullWidth />;
 
     const filterOptions = (x: any) => x;
 
@@ -33,13 +26,15 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
 
     const config = (!constOptions) ? {...staticOptionConfig} : {};
 
+    const genericLabel = (option:any) => (option.name);
     return (
         <Autocomplete
             className={classes.autcompleteField}
             {...config}
+            {...(props.renderOption) ? {renderOption: props.renderOption} : {}}
             value={value}
             options={options} noOptionsText={noOptionsMessage}
-            getOptionLabel={(option) => (option.name)}
+            getOptionLabel={props.getOptionLabel || genericLabel}
             onChange={onChange}
             renderInput={inputElement}
             onInputChange={onInputChange}

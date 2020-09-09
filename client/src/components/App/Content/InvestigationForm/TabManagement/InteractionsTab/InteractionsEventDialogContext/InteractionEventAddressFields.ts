@@ -1,8 +1,5 @@
 enum InteractionEventAddressFields {
-    CITY = 'city',
-    NEIGHBORHOOD = 'neighborhood',
-    STREET = 'street',
-    HOUSE_NUMBER = 'houseNumber',
+    ADDRESS = 'address',
     ENTRANCE = 'entrance',
     FLOOR = 'floor',
 }
