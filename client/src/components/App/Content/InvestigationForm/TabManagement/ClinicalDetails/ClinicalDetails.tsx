@@ -226,8 +226,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
-                                    value={otherSymptom}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                    onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherSymptom(event.target.value as string)
                                     )}
                                 />
@@ -277,7 +276,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
-                                    // value={otherBackgoundIllness}
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherBackgoundIllness(event.target.value as string)
                                     )}
