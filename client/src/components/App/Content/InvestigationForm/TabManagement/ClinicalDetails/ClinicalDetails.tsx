@@ -29,6 +29,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
     const [otherSymptomChecked, setOtherSymptomChecked] = React.useState<boolean>(false);
+    const [otherBackgoundIllnessChecked, setOtherBackgoundIllnessChecked] = React.useState<boolean>(false);
+    const [otherBackgoundIllness, setOtherBackgoundIllness] = React.useState<string>('');
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
         setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
@@ -57,6 +59,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         checkedSymptom === 'אחר'
     );
 
+    const checkIfOtherBackgroundIllness = (checkedBackgroundIllness: string) => (
+        checkedBackgroundIllness === 'אחר'
+    )
+
     const handleSymptomCheck = (checkedSymptom: string) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
@@ -74,8 +80,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
         if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
             setSelectedBackgroundDiseases(selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
+            if (checkIfOtherBackgroundIllness(backgroundIllness))
+                setOtherBackgoundIllnessChecked(false);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
+            if (checkIfOtherBackgroundIllness(backgroundIllness))
+                setOtherBackgoundIllnessChecked(true);
         };
     };
 
@@ -266,6 +276,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     </Grid>
                                 ))
                             }
+                            <Collapse in={otherBackgoundIllnessChecked}>
+                                <CircleTextField
+                                    size='small'
+                                    className={classes.otherTextField}
+                                    placeholder='הזן מחלת רקע...'
+                                    value={otherBackgoundIllness}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        setOtherBackgoundIllness(event.target.value as string)
+                                    )}
+                                />
+                            </Collapse>
                         </Grid>
                     </Collapse>
                 </Grid>
