@@ -15,7 +15,12 @@ export interface ClinicalDetailsDataAndSet {
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
     isolationEndDate: null,
-    isolationAddress: '',
+    isolationAddress: {
+        city: '',
+        street: '',
+        floor: -1,
+        houseNumber: -1
+    },
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,

@@ -25,7 +25,12 @@ describe('investigationForm tests', () => {
     const initialClinicalDetails: ClinicalDetailsData = {
         isolationStartDate: null,
         isolationEndDate: null,
-        isolationAddress: '',
+        isolationAddress: {
+            city: -1,
+            floor: -1,
+            houseNumber: -1,
+            street: -1
+        },
         isIsolationProblem: false,
         isIsolationProblemMoreInfo: '',
         symptomsStartDate: null,

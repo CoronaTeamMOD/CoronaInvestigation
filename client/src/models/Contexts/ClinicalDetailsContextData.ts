@@ -1,7 +1,9 @@
+import DBAddress from "models/enums/DBAddress";
+
 interface ClinicalDetailsData {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
-    isolationAddress: string;
+    isolationAddress: DBAddress;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;

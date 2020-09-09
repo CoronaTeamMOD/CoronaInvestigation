@@ -56,6 +56,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        console.log(context.clinicalDetailsData)
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
@@ -136,11 +137,38 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Typography>
                 <CircleTextField
                     size='small'
-                    placeholder='כתובת'
+                    placeholder='עיר'
                     className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress}
+                    value={context.clinicalDetailsData?.isolationAddress.city}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_ADDRESS, event.target.value)
+                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_CITY, event.target.value)
+                    )}
+                />
+                <CircleTextField
+                    size='small'
+                    placeholder='רחוב'
+                    className={classes.textField}
+                    value={context.clinicalDetailsData?.isolationAddress.street}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_STREET, event.target.value)
+                    )}
+                />
+                <CircleTextField
+                    size='small'
+                    placeholder='קומה'
+                    className={classes.textField}
+                    value={context.clinicalDetailsData?.isolationAddress.floor}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
+                    )}
+                />
+                <CircleTextField
+                    size='small'
+                    placeholder='מספר הבית'
+                    className={classes.textField}
+                    value={context.clinicalDetailsData?.isolationAddress.houseNumber}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
                     )}
                 />
                 <Grid item xs={12}>
