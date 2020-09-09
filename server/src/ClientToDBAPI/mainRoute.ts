@@ -3,7 +3,7 @@ import { Router } from 'express';
 import exposureRoute from './ExposureRoute/mainRoute';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
-import intersectionsRoute from './IntersectionsRoute/mainRoute';
+import intersectionsRoute from './ContactEventRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 

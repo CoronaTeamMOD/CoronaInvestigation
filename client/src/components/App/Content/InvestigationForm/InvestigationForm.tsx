@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Gender from 'models/enums/Gender';
+import StoreStateType from 'redux/storeStateType';
 import IdentificationType from 'models/enums/IdentificationTypes';
 import relevantOccupations from 'models/enums/relevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -16,12 +18,16 @@ import TabManagement, {tabs} from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-export const LAST_TAB_ID = 3;
-export const END_INVESTIGATION = 'סיים חקירה';
-export const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+const LAST_TAB_ID = 3;
+const END_INVESTIGATION = 'סיים חקירה';
+const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
+
+// TODO: remove after redux is connected
+const epedemioligyNumber = 111;
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
+    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
         phoneNumber: '',
@@ -95,7 +101,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                        <InvestigationInfoBar />
+                        <InvestigationInfoBar
+                            // TODO: connect to redux epedemioligyNumber
+                            epedemioligyNumber={epedemioligyNumber} 
+                        />
                         <div className={classes.interactiveForm}>
                             <TabManagement
                                 currentTab={currentTab}
@@ -104,7 +113,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation() :
+                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) :
                                             setCurrentTab(tabs[currentTab.id + 1])
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}

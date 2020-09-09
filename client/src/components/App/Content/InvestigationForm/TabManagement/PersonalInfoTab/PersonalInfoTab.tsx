@@ -41,8 +41,6 @@ const IDENTIFICATION_NUMBER_LABEL = 'מספר תעודה מזהה';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const NUMBER_NOT_RELATED = 'מספר הטלפון לא שייך לנבדק';
 
-
-
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
@@ -65,7 +63,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id={PHONE_LABEL}
-                        label={PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
@@ -104,7 +102,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 />
                                 <CircleTextField 
                                     id={REASON_LABEL}
-                                    label={WRITE_REASON_LABEL}
+                                    placeholder={WRITE_REASON_LABEL}
                                     size='small' 
                                     className={classes.writeReason}
                                     onChange={(event) => {
@@ -128,7 +126,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id={ADDITIONAL_PHONE_LABEL}
-                        label={PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
                         size='small'
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
@@ -208,7 +206,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={1}>
                     <CircleTextField 
                         id={AGE_LABEL}
-                        label={AGE_LABEL} 
+                        placeholder={AGE_LABEL} 
                         value={personalInfoStateContext.personalInfoData.age}
                         size='small'
                         className={classes.ageText}
@@ -234,7 +232,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             id={MOTHER_LABEL}
                             className={classes.textFieldWithLabel}
                             size='small'
-                            label={NAME_LABEL}
+                            placeholder={NAME_LABEL}
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.MOTHER_NAME, event.target.value);
                             }}
@@ -250,7 +248,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             id={FATHER_LABEL}
                             className={classes.textFieldWithLabel}
                             size='small'
-                            label={NAME_LABEL}
+                            placeholder={NAME_LABEL}
                             onChange={(event) => {
                                 handleChangeField(PersonalInfoDataContextFields.FATHER_NAME, event.target.value);
                             }}
@@ -312,7 +310,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <CircleTextField 
                         id={ADDRESS_LABEL}
-                        label={ADDRESS_LABEL}
+                        placeholder={ADDRESS_LABEL}
                         className={classes.address}
                         onChange={(event) => {
                             handleChangeField(PersonalInfoDataContextFields.ADDRESS, event.target.value);
@@ -336,6 +334,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             { 
                                 Object.values(relevantOccupations).map((occupation) => {
                                     return <FormControlLabel 
+                                                key={occupation}
                                                 value={occupation} 
                                                 control={<Radio 
                                                             color='primary'

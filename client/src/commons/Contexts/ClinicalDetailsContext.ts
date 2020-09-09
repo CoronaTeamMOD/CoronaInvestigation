@@ -13,17 +13,18 @@ export interface ClinicalDetailsDataAndSet {
 };
 
 export const initialClinicalDetails: ClinicalDetailsData = {
-    isolationStartDate: new Date(),
-    isolationEndDate: new Date(),
+    isolationStartDate: null,
+    isolationEndDate: null,
     isolationAddress: '',
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',
-    symptomsStartDate: new Date(),
+    symptomsStartDate: null,
     symptoms: [''],
     backgroundIllnesses: [''],
     hospital: '',
-    hospitalizationStartDate: new Date(),
-    hospitalizationEndDate: new Date(),
+    hospitalizationStartDate: null,
+    hospitalizationEndDate: null,
+    isPregnant: false
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {

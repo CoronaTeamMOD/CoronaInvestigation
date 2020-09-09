@@ -1,83 +1,154 @@
 import React from 'react';
+import { startOfDay } from 'date-fns';
 
-import Interaction from 'models/Interaction';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
+import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 
 const InteractionsTab: React.FC = (): JSX.Element => {
 
-    const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
-
     const onDateClick = (date: Date) => setNewInteractionEventDate(date);
-    const onDialogClose = () => setNewInteractionEventDate(undefined);
-
+    const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
+    const onEditEventDialogClose = () => setInteractionToEdit(undefined);
+    const startEditInteraction = (interaction: Interaction) => setInteractionToEdit(interaction);
+    
+    const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
+    const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
     const [interactions, setInteractions] = React.useState<Interaction[]>([
         {
-            interactionStartTime: new Date(2020, 7, 30, 17, 50),
-            interactionEndTime: new Date(2020, 7, 30, 19, 50),
-            placeAddress: 'החורש 1, יהוד מונוסון',
-            placeName: 'בית משפחת רום',
-            placeType: 'בית', 
-            placeNumber: '054-9444188',
-            interactionPersons: [
+            id: 1,
+            investigationId: '',
+            startTime: new Date(2020, 8, 5, 17, 50),
+            endTime: new Date(2020, 8, 5, 19, 50),
+            locationAddress: {
+                city: 'יהוד מונסון',
+                street: 'החורש',
+                houseNumber: '1',
+                floor: '2'
+            },
+            locationName: 'בית המתוחקר',
+            locationType: 'תחבורה',
+            locationSubType: 'אוטובוס',
+            boardingCity: 'אילת',
+            buisnessContactNumber: '054-9444188',
+            externalizationApproval: false,
+            contacts: [
                 {
                     id: '123456789',
-                    name: 'עומר שמיר', 
-                    phoneNumber: '058-5161606'
+                    personalInfo: {
+                        firstName: 'עומר',
+                        lastName: 'שמיר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
+                    needsToBeQuarantined: false,
+                    moreDetails: ''
                 },
                 {
                     id: '987654321',
-                    name: 'עידו פינסקר', 
-                    phoneNumber: '050-5737028'
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
+                    needsToBeQuarantined: false,
+                    moreDetails: ''
                 }
             ]
         }, 
         {
-            interactionStartTime: new Date(2020, 7, 30, 13, 50),
-            interactionEndTime: new Date(2020, 7, 30, 15, 50),
-            placeAddress: 'החורש 1, יהוד מונוסון',
-            placeName: 'בית משפחת רום',
-            placeType: 'בית', 
-            placeNumber: '054-9444188',
-            interactionPersons: [
+            id: 2,
+            investigationId: '',
+            startTime: new Date(2020, 7, 30, 13, 50),
+            endTime: new Date(2020, 7, 30, 15, 50),
+            locationAddress: {
+                city: 'יהוד מונסון',
+                street: 'החורש',
+                houseNumber: '1',
+                floor: '2'
+            },
+            locationName: 'בית פרטי אחר',
+            locationType: 'בית פרטי', 
+            buisnessContactNumber: '054-9444188',
+            externalizationApproval: true,
+            contacts: [
                 {
                     id: '987654321',
-                    name: 'עידו פינסקר', 
-                    phoneNumber: '050-5737028'
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
+                    needsToBeQuarantined: false,
+                    moreDetails: ''
+                }
+            ]
+        },
+        {
+            id: 3,
+            investigationId: '',
+            startTime: new Date(2020, 7, 30, 13, 50),
+            endTime: new Date(2020, 7, 30, 15, 50),
+            locationAddress: {
+                city: 'יהוד מונסון',
+                street: 'החורש',
+                houseNumber: '1',
+                floor: '2'
+            },
+            locationName: 'בית פרטי אחר',
+            locationType: 'בית פרטי', 
+            buisnessContactNumber: '054-9444188',
+            externalizationApproval: true,
+            contacts: [
+                {
+                    id: '987654321',
+                    personalInfo: {
+                        firstName: 'עידו',
+                        lastName: 'פינסקר',
+                        phoneNumber: '050-5737028',
+                        identificationType: '',
+                        gender: '',
+                        identificationNumber: '',
+                        birthDate: new Date(),
+                        additionalPhoneNumber: '',
+                    },
+                    needsToBeQuarantined: false,
+                    moreDetails: ''
                 }
             ]
         }, 
-        {
-            interactionStartTime: new Date(2020, 8, 1, 17, 50),
-            interactionEndTime: new Date(2020, 8, 1, 19, 50),
-            placeAddress: 'החורש 1, יהוד מונוסון',
-            placeName: 'בית משפחת רום',
-            placeType: 'בית', 
-            placeNumber: '054-9444188',
-            interactionPersons: [
-                {
-                    id: '123456789',
-                    name: 'עומר שמיר', 
-                    phoneNumber: '058-5161606'
-                }
-            ]
-        }
     ]);
 
     const interactionsPerDate = React.useMemo<Map<number, Interaction[]>>(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
         interactions.forEach(interaction => {
-            const interactionDate = new Date(interaction.interactionStartTime.getFullYear(), 
-                                     interaction.interactionStartTime.getMonth(), 
-                                     interaction.interactionStartTime.getDate()).getTime();
-            if (mappedInteractionsArray.get(interactionDate) === undefined) {
-                mappedInteractionsArray.set(interactionDate, [interaction]);
-            } else {
-                (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
+            const interactionStartTime : Date | undefined = interaction.startTime;
+            if (interactionStartTime) {
+                const interactionDate = startOfDay(interactionStartTime).getTime();
+                if (mappedInteractionsArray.get(interactionDate) === undefined) {
+                    mappedInteractionsArray.set(interactionDate, [interaction]);
+                } else {
+                    (mappedInteractionsArray.get(interactionDate) as Interaction[]).push(interaction);
+                }
             }
         })
         return mappedInteractionsArray;
@@ -101,17 +172,25 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                         {
                             getDatesToInvestigate(ctxt)
                             .map(date => 
-                                <ContactDateCard contactDate={date} 
-                                                createNewInteractionEvent={() => onDateClick(date)} 
-                                                interactions={interactionsPerDate.get(date.getTime())}
-                                                key={date.getTime()}
+                                <ContactDateCard contactDate={date}
+                                    onEditClick={startEditInteraction}
+                                    createNewInteractionEvent={() => onDateClick(date)} 
+                                    interactions={interactionsPerDate.get(date.getTime())}
+                                    key={date.getTime()}
                                 />
                                 )
                         }
                         {
                             newInteractionEventDate && <NewInteractionEventDialog
+                                isOpen={newInteractionEventDate !== undefined}
                                 eventDate={newInteractionEventDate}
-                                closeDialog={onDialogClose}/>
+                                closeDialog={onNewEventDialogClose}/>
+                        }
+                                                {
+                            interactionToEdit && <EditInteractionEventDialog
+                                isOpen={interactionToEdit !== undefined}
+                                eventToEdit={interactionToEdit}
+                                closeDialog={onEditEventDialogClose}/>
                         }
                     </>
             }

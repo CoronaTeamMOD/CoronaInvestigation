@@ -10,7 +10,7 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
   const classes = useStyles();
-  const tableRows = useInvestigationTable().tableRows;
+  const { tableRows } = useInvestigationTable();
 
   return (
     <>
@@ -32,9 +32,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </TableHead>
                 <TableBody>
                 {tableRows.map((row) => (
-                    <TableRow key={row.epidemiologyNum}>
+                    <TableRow key={row.epidemiologyNumber}>
                         <TableCell component="th" scope="row">
-                            {row.epidemiologyNum}
+                            {row.epidemiologyNumber}
                         </TableCell>
                         <TableCell align="left">{row.status}</TableCell>
                         <TableCell align="left">{row.fullName}</TableCell>
