@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "start": "nodemon --exec ts-node src/server.ts"
+    "start": "nodemon --exec ts-node src/server.ts",
+    "deploy": "ts-node server.ts"
   },
   "keywords": [],
   "author": "",
