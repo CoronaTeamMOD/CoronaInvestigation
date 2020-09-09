@@ -12,7 +12,7 @@ import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import {
     InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import InteractionEventForm, { defaultContact } from '../InteractionEventForm/InteractionEventForm';
+import { InteractionEventForm, defaultContact } from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 

@@ -48,7 +48,7 @@ const LocationsTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element
                     <FormInput fieldName='תת סוג'>
                         <CircleSelect
                             value={locationSubType}
-                            onChange={(event) => onLocationSubTypeChange(event.target.value as string)}
+                            onChange={(event) => onLocationSubTypeChange(event.target.value as number)}
                             className={formClasses.formSelect}
                             options={locationsSubTypesByTypes[locationType] || []}
                         />
@@ -63,7 +63,7 @@ export default LocationsTypesAndSubTypes;
 
 interface Props {
     locationType: string;
-    locationSubType: string;
+    locationSubType: number;
     onLocationTypeChange: (newLocationType: string) => void;
-    onLocationSubTypeChange: (newLocationSubType: string) => void;
+    onLocationSubTypeChange: (newLocationSubType: number) => void;
 }

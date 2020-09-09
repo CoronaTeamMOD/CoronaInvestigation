@@ -1,5 +1,5 @@
 interface LocationsSubTypesByTypes {
-    [type: string]: string[]
+    [type: string]: number[]
 }
 
 export default LocationsSubTypesByTypes;

@@ -7,10 +7,10 @@ import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
-const busLocationType = 'אוטובוס';
-const trainLocationType = 'רכבת';
-const flightLocationType = 'טיסה';
-const organizedTransportLocationType = 'הסעות';
+const busLocationType = 1;
+const trainLocationType = 85;
+const flightLocationType = 38;
+const organizedTransportLocationType = 31;
 
 export const resetTransportationFormFields = {
     boardingCity: undefined,
@@ -28,7 +28,7 @@ export const resetTransportationFormFields = {
     flightNumber: undefined
 }
 
-const TransportationEventForm : React.FC = () : JSX.Element => {
+export const TransportationEventForm : React.FC = () : JSX.Element => {
 
     const { locationSubType } = useContext(InteractionEventDialogContext).interactionEventDialogData;
 
@@ -61,5 +61,3 @@ const TransportationEventForm : React.FC = () : JSX.Element => {
         </>
     );
 };
-
-export default TransportationEventForm;

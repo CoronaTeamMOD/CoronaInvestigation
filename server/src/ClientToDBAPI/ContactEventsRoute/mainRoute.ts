@@ -1,14 +1,30 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest'
-import { CreateEventResponse } from '../../Models/ContactEvent/CreateEvent';
-import { CREATE_CONTACT_EVENT_AND_GET_ID } from '../../DBService/ContactEvent/Mutation';
 import ContactEvent from '../../Models/ContactEvent/ContactEvent'
+import { CreateEventResponse } from '../../Models/ContactEvent/CreateEvent';
+import { GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Query';
+import { CREATE_CONTACT_EVENT_AND_GET_ID } from '../../DBService/ContactEvent/Mutation';
+import {
+    GetLocationSubTypesByTypesResposne,
+    LocationsSubTypesByTypes
+} from '../../Models/ContactEvent/GetLocationSubTypesByTypes';
 
 const contactEventRoute = Router();
 
 contactEventRoute.get('/', (request: Request, response: Response) => {
     response.send('Got request to contact event route');
+});
+
+contactEventRoute.get('/getLocationsSubTypesByTypes', (request: Request, response: Response) => {
+    graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES)
+        .then((result: GetLocationSubTypesByTypesResposne) => {
+            const locationsSubTypesByTypes : LocationsSubTypesByTypes = {};
+            result.data.allPlaceTypes.nodes.map(type =>
+                locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes.map(subType => subType.displayName)
+            )
+            response.send(locationsSubTypesByTypes);
+        });
 });
 
 contactEventRoute.post('/createContactEvent', (request: Request, response: Response) => {
@@ -50,5 +66,6 @@ contactEventRoute.post('/createContactEvent', (request: Request, response: Respo
             // response.send(eventCreationResponse.data.createEvent.integer);
     });
 });
+
 
 export default contactEventRoute;

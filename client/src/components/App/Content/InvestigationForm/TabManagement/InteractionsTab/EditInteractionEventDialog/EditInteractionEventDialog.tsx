@@ -9,7 +9,7 @@ import useEditInteractionEventDialog from './useEditInteractionEventDialog';
 import {
     InteractionEventDialogProvider, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
+import { InteractionEventForm } from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 

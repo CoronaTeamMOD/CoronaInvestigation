@@ -20,7 +20,7 @@ import SchoolEventForm, { grades } from '../InteractionEventForm/PlacesAdditiona
 import HospitalEventForm, { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
-import TransportationEventForm, { resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
+import { TransportationEventForm, resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import { InteractionEventDialogContext } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const privateHouseLocationType : string = 'בית פרטי';
@@ -47,7 +47,7 @@ export const defaultContact: Contact = {
 
 const addContactButton: string = 'הוסף מגע';
 
-const InteractionEventForm : React.FC = () : JSX.Element => {
+export const InteractionEventForm : React.FC = () : JSX.Element => {
     
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
     const { locationType, startTime, endTime, externalizationApproval, contacts, locationSubType } = interactionEventDialogData;
@@ -72,7 +72,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     const onLocationTypeChange = (newLocationType: string) => {
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
             locationType: newLocationType,
-            locationSubType: '',
+            locationSubType: 0,
             locationName: newLocationType === hospitalLocationType ? hospitals[0] : undefined,
             grade: (newLocationType === schoolLocationType) ? grades[0] : undefined,
             locationAddress: initAddress,
@@ -81,7 +81,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
         });
     }
 
-    const onLocationSubTypeChange = (newLocationSubType: string) => {
+    const onLocationSubTypeChange = (newLocationSubType: number) => {
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
             locationSubType: newLocationSubType,
             locationName: undefined,
@@ -192,5 +192,3 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
         </>
     );
 };
-
-export default InteractionEventForm;
