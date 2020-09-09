@@ -72,7 +72,6 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
     };
 
     const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
-        console.log(clinicalDetailsVariables.clinicalDetailsData)
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
             'investigatedPatientId': investigatedPatientId,

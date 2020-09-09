@@ -45,15 +45,19 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
+    const checkIfOtherSymptom = (checkedSymptom: string) => (
+        checkedSymptom === 'אחר'
+    );
+
     const handleSymptomCheck = (checkedSymptom: string) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
-            if (checkedSymptom === 'אחר') {
+            if (checkIfOtherSymptom(checkedSymptom)) {
                 setOtherSymptomChecked(false);
             }
         } else {
             selectedSymptoms.push(checkedSymptom);
-            if (checkedSymptom === 'אחר') {
+            if (checkIfOtherSymptom(checkedSymptom)) {
                 setOtherSymptomChecked(true);
             }
         }
