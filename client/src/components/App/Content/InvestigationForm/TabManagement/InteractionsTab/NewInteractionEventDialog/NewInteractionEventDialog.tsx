@@ -12,7 +12,7 @@ import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import {
     InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
-import InteractionEventForm, { locationTypes, defaultContact } from '../InteractionEventForm/InteractionEventForm';
+import InteractionEventForm, { defaultContact } from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
@@ -28,7 +28,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const [interactionEventDialogData, setInteractionEventDialogData] = 
         useState<InteractionEventDialogData>(
-            initialDialogData(locationTypes[0], defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
+            initialDialogData('', defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
         
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,

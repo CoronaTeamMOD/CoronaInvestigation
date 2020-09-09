@@ -14,12 +14,12 @@ interface SetCantReachInvestigated {
     payload: {cantReachInvestigated: boolean}
 }
 
-interface SetCreator {
+interface SetInvestigatedPatientId {
     type: typeof SET_INVESTIGATED_PATIENT_ID,
     payload: {investigatedPatientId: number}
 }
 
-interface SetInvestigatedPatientId {
+interface SetCreator {
     type: typeof SET_CREATOR,
     payload: {creator: string}
 }
