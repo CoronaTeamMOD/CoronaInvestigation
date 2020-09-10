@@ -1,7 +1,7 @@
 import { gql } from "postgraphile";
 
 export const GET_EXPOSURE_INFO = gql`
-query MyQuery ($investigationId: Int!){
+query ExposureByInvestigationId ($investigationId: Int!){
     allExposures(condition: {investigationId: $investigationId}) {
         nodes {
             exposureFirstName
