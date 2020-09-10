@@ -8,7 +8,7 @@ import StoreStateType from 'redux/storeStateType';
 import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigationInfo';
+import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigatedPatientByInvestigatedPatientId';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
