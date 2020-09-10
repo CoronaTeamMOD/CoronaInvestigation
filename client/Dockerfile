@@ -4,17 +4,16 @@ FROM node:current-slim
 # Set the working directory.
 WORKDIR /usr/src/app
 
-# Copy the file from your host to your current location.
-COPY package.json .
+# Copy the files from your host to the container.
+COPY build /usr/src/app/build
+COPY server /usr/src/app/server
 
-RUN mkdir client && npm install -g serve
-
-COPY build ./client
+RUN cd ./server && npm install
 
 # Add metadata to the image to describe which port the container is listening on at runtime.
 EXPOSE 8080
 
 # Run the specified command within the container.
-CMD [ "npm", "run", "deploy" ]
+CMD [ "node", "server/server.js" ]
 
 ##
