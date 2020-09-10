@@ -22,6 +22,10 @@ describe('investigationForm tests', () => {
         mockAdapter.reset();
     });
 
+    beforeEach(() => {
+      mockAdapter.onGet("/addressDetails/cities").reply(200);
+    });
+
     const initialClinicalDetails: ClinicalDetailsData = {
         isolationStartDate: null,
         isolationEndDate: null,

@@ -1,13 +1,15 @@
 import Swal from 'sweetalert2';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import City from 'models/City';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
+import {setCities} from 'redux/City/cityActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -23,6 +25,18 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
+
+    useEffect(()=> {
+        axios.get('/addressDetails/cities')
+        .then((result: any) => {
+            const cities: Map<string, City> = new Map();
+            result && result.data && result.data.forEach((city: City) => {
+                cities.set(city.id, city)
+            });
+            setCities(cities);
+        })
+        .catch(err=> console.log(err));
+    }, []);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
