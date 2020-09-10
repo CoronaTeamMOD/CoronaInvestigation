@@ -8,9 +8,9 @@ mutation createAddress ($address: AddressInput!) {
 }
 `;
 
-export const CREATE_INVESTIGATION = gql`
-mutation createInvestigation ($investigation: InvestigationInput!) {
-    createInvestigation(input: {investigation: $investigation}) {
+export const UPDATE_INVESTIGATION = gql`
+mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String!, $hospitalizationEndTime: Datetime!, $hospitalizationStartTime: Datetime!, $investigatedPatientId: Int!, $isIsolationProblem: Boolean!, $isIsolationProblemMoreInfo: String!, $isolationEndTime: Datetime!, $isolationStartTime: Datetime!, $symptomsStartTime: Datetime!) {
+        updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {epidemiologyNumber: $epidemiologyNumber, hospital: $hospital, hospitalizationEndTime: $hospitalizationEndTime, hospitalizationStartTime: $hospitalizationStartTime, investigatedPatientId: $investigatedPatientId, isIsolationProblem: $isIsolationProblem, isIsolationProblemMoreInfo: $isIsolationProblemMoreInfo, isolationEndTime: $isolationEndTime, isolationStartTime: $isolationStartTime, symptomsStartTime: $symptomsStartTime}, epidemiologyNumber: $epidemiologyNumber}) {
       clientMutationId
     }
 }
