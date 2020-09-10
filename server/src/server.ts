@@ -9,11 +9,13 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(
-    cors({
-        origin: JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`)
-    })
-);
+// app.use(
+//     cors({
+//         origin: JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`)
+//     })
+// );
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use('/mohApi', MOHApi);
