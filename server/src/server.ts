@@ -15,7 +15,7 @@ app.use(
     })
 );
 
-app.use(cors());
+console.log(JSON.parse(`${process.env.CORS_ALLOWED_ORIGINS}`));
 
 app.use(bodyParser.json());
 app.use('/mohApi', MOHApi);
