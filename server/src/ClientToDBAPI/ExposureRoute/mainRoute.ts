@@ -6,17 +6,17 @@ import { UPDATE_EXPOSURE, CREATE_EXPOSURE } from '../../DBService/Exposure/Mutat
 const exposureRoute = Router();
 
 exposureRoute.get('/:investigationId', (request: Request, response: Response) => {
-    graphqlRequest(GET_EXPOSURE_INFO, {investigationId : parseInt(request.params.investigationId)})
+    graphqlRequest(GET_EXPOSURE_INFO, request.headers, {investigationId : parseInt(request.params.investigationId)})
     .then((result: any) => response.send(result));
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
     if(typeof (request.body.exposureId) === "number"){
-        graphqlRequest(UPDATE_EXPOSURE, {exposureId : parseInt(request.body.exposureId), data: request.body.data})
+        graphqlRequest(UPDATE_EXPOSURE, request.headers, {exposureId : parseInt(request.body.exposureId), data: request.body.data})
         .then((result: any) => response.send(result));
     }
     else {
-        graphqlRequest(CREATE_EXPOSURE, { data: request.body.data })
+        graphqlRequest(CREATE_EXPOSURE, request.headers, { data: request.body.data })
         .then((result: any) => response.send(result));
     }
 })
