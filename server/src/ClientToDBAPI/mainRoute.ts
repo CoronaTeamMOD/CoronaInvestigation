@@ -17,6 +17,6 @@ clientToDBRouter.use('/intersections',authMiddleware, intersectionsRoute);
 clientToDBRouter.use('/investigationInfo',authMiddleware, investigationInfo);
 clientToDBRouter.use('/personalDetails',authMiddleware, personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails',authMiddleware, clinicalDetailsRoute);
-clientToDBRouter.use('/addressDetails', addressRoute);
+clientToDBRouter.use('/addressDetails',authMiddleware, addressRoute);
 
 export default clientToDBRouter;
