@@ -12,7 +12,7 @@ import InteractionEventDialogFields from '../../../InteractionsEventDialogContex
 const TrainEventForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
-    const { trainLine, boardingCity, boardingStation, endCity, endStation } = interactionEventDialogData;
+    const { cityOrigin, boardingStation, cityDestination, endStation } = interactionEventDialogData;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value});
@@ -20,18 +20,11 @@ const TrainEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <FormInput fieldName='קו'>
-                    <CircleTextField
-                        value={trainLine}
-                        onChange={event => onChange(event, InteractionEventDialogFields.TRAIN_LINE)}/>
-                </FormInput>
-            </div>
-            <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר מוצא'>
                         <CircleTextField
-                            value={boardingCity}
-                            onChange={event => onChange(event, InteractionEventDialogFields.BOARDING_CITY)}/>
+                            value={cityOrigin}
+                            onChange={event => onChange(event, InteractionEventDialogFields.CITY_ORIGIN)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
@@ -46,8 +39,8 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר יעד'>
                         <CircleTextField
-                            value={endCity}
-                            onChange={event => onChange(event, InteractionEventDialogFields.END_CITY)}/>
+                            value={cityDestination}
+                            onChange={event => onChange(event, InteractionEventDialogFields.CITY_DESTINATION)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>

@@ -13,7 +13,15 @@ import {InteractionEventDialogContext} from '../../../InteractionsEventDialogCon
 const FlightEventForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
-    const { flightNumber, airline, boardingCity, boardingCountry, endCity, endCountry } = interactionEventDialogData;
+    const { airline, 
+        flightDestinationAirport,
+        flightDestinationCity,
+        flightDestinationCountry,
+        flightNum,
+        flightOriginAirport,
+        flightOriginCity,
+        flightOriginCountry
+    } = interactionEventDialogData;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value});
@@ -24,8 +32,8 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='מספר טיסה'>
                         <CircleTextField
-                            value={flightNumber}
-                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_NUMBER)}/>
+                            value={flightNum}
+                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_NUM)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
@@ -40,15 +48,15 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='ארץ מוצא'>
                         <CircleTextField
-                            value={boardingCountry}
-                            onChange={event => onChange(event, InteractionEventDialogFields.BOARDING_COUNTRY)}/>
+                            value={flightOriginCountry}
+                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר מוצא'>
                         <CircleTextField
-                            value={boardingCity}
-                            onChange={event => onChange(event, InteractionEventDialogFields.BOARDING_CITY)}/>
+                            value={flightOriginCity}
+                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_ORIGIN_CITY)}/>
                     </FormInput>
                 </Grid>
             </div>
@@ -56,15 +64,15 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='ארץ יעד'>
                         <CircleTextField
-                            value={endCountry}
-                            onChange={event => onChange(event, InteractionEventDialogFields.END_COUNTRY)}/>
+                            value={flightDestinationCountry}
+                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר יעד'>
                         <CircleTextField
-                            value={endCity}
-                            onChange={event => onChange(event, InteractionEventDialogFields.END_CITY)}/>
+                            value={flightDestinationCity}
+                            onChange={event => onChange(event, InteractionEventDialogFields.FLIGHT_DESTINATION_CITY)}/>
                     </FormInput>
                 </Grid>
             </div>

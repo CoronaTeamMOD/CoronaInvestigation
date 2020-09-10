@@ -15,7 +15,7 @@ import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialC
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import TabManagement, {tabs} from './TabManagement/TabManagement';
+import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 

@@ -3,28 +3,32 @@ import Contact from 'models/Contact';
 
 export default interface InteractionEventDialogData {
     id?: number;
-    locationType: string;
+    placeType: string;
     startTime: Date;
     endTime: Date;
     externalizationApproval: boolean;
     investigationId: number;
-    locationName?: string;
+    placeName?: string;
     locationAddress: Address;
-    locationSubType: string;
-    trainLine?: string,
+    placeSubType: string;
     busLine?: string,
     airline?: string;
-    flightNumber?: string;
+    flightNum?: string;
     busCompany?: string;
     grade?: string;
     boardingStation?: string;
-    boardingCountry?: string;
-    boardingCity?: string;
+    cityOrigin?: string;
     endStation?: string;
-    endCountry?: string;
-    endCity?: string;
-    buisnessContactName?: string;
-    buisnessContactNumber?: string;
+    cityDestination?: string;
+    contactPersonFirstName?: string;
+    contactPersonLastName?: string;
+    contactPersonPhoneNumber?: string;
     hospitalDepartment?: string;
     contacts: Contact[];
+    flightDestinationAirport?: string;
+    flightDestinationCity?: string;
+    flightDestinationCountry?: string;
+    flightOriginAirport?: string;
+    flightOriginCity?: string;
+    flightOriginCountry?: string;
 }

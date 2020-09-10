@@ -31,8 +31,8 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='שם בית חולים'>
                         <CircleSelect
-                            value={ctxt.interactionEventDialogData.locationName || ''}
-                            onChange={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}
+                            value={ctxt.interactionEventDialogData.placeName || ''}
+                            onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}
                             className={formClasses.formSelect}
                             options={hospitals}/>
                     </FormInput>

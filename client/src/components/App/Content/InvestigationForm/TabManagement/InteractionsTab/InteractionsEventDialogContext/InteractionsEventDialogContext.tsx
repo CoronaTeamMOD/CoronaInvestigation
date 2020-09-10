@@ -8,19 +8,19 @@ export interface InteractionsEventDialogDataAndSet {
     interactionEventDialogData: InteractionEventDialogData,
     setInteractionEventDialogData: React.Dispatch<React.SetStateAction<InteractionEventDialogData>>
 }
-export const initialDialogData = (locationType: string, startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
-    locationType,
+export const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
+    placeType: '',
+    placeSubType: '',
     investigationId,
     locationAddress: initAddress,
     startTime,
     endTime,
     externalizationApproval: false,
     contacts,
-    locationSubType: ''
 })
 
 const initialInteractionEventDialogDataContext: InteractionsEventDialogDataAndSet = {
-    interactionEventDialogData: initialDialogData('', new Date(), new Date(), [], -1),
+    interactionEventDialogData: initialDialogData( new Date(), new Date(), [], -1),
     setInteractionEventDialogData: () => {},
 }
 

@@ -1,4 +1,4 @@
-export interface GetLocationSubTypesByTypesResposne {
+export interface GetPlaceSubTypesByTypesResposne {
     data: {
         allPlaceTypes: {
             nodes: PlaceType[]
@@ -6,7 +6,7 @@ export interface GetLocationSubTypesByTypesResposne {
     }
 }
 
-export interface LocationsSubTypesByTypes {
+export interface PlacesSubTypesByTypes {
     [type: string]: string[]
 }
 
