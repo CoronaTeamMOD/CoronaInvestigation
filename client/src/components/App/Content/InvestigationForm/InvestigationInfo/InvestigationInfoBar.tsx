@@ -55,10 +55,8 @@ const InvestigationInfoBar = (props: Props) => {
         }).then((result: any) => {
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
                 setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
-                setIsLoading(false);
             }
             else {
-                setIsLoading(false);
                 Swal.fire({
                     icon: 'warning',
                     title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
