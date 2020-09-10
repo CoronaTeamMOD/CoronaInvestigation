@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 
+import Address from '../../Models/Address';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
-import { CreateAddressResponse } from '../../Models/ClinicalDetails/CreateAddress';
-import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES } from '../../DBService/ClinicalDetails/Query';
+import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/ClinicalDetails/Query';
 import { CREATE_ADDRESS, CREATE_INVESTIGATION, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
@@ -21,9 +21,15 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
     graphqlRequest(GET_BACKGROUND_DISEASES).then((result: any) => response.send(result));
 });
 
+clinicalDetailsRoute.post('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
+        (result: any) => response.send(result)
+    );
+});
+
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
-    const requestAddress = request.body;
+    const isolationAddress = request.body.clinicalDetails.isolationAddress;
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
@@ -36,15 +42,24 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         investigatedPatientId: clinicalDetails.investigatedPatientId,
         isIsolationProblem: clinicalDetails.isIsolationProblem,
         isIsolationProblemMoreInfo: clinicalDetails.isIsolationProblemMoreInfo,
-        isolationAddress: +clinicalDetails.isolationAddress,
         isolationEndTime: clinicalDetails.isolationEndDate,
         isolationStartTime: clinicalDetails.isolationStartDate,
         symptomsStartTime: clinicalDetails.symptomsStartDate,
     }
+
+    const requestAddress: Address = {
+        city: isolationAddress.city,
+        street: isolationAddress.street,
+        floor: +isolationAddress.floor,
+        houseNum: +isolationAddress.houseNum,
+    }
     
-    graphqlRequest(CREATE_INVESTIGATION, { investigation: {
-            ...requestInvestigation
-        }}).then(() => {
+    graphqlRequest(CREATE_ADDRESS, {
+        address: { ...requestAddress }
+    }).then(() => {
+        graphqlRequest(CREATE_INVESTIGATION, {
+            investigation: { ...requestInvestigation }
+        }).then(() => {
             graphqlRequest(ADD_BACKGROUND_DISEASES, {
                 backgroundDeseases: clinicalDetails.backgroundDeseases,
                 investigatedPatientId: clinicalDetails.investigatedPatientId
@@ -63,5 +78,6 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             });
         });
     });
+});
 
 export default clinicalDetailsRoute;

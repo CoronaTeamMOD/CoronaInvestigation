@@ -1,11 +1,11 @@
 import { gql } from "postgraphile";
 
 export const CREATE_ADDRESS = gql`
-mutation createAddress ($input: InsertAndGetAddressIdInput!) {
-    insertAndGetAddressId(input: $input) {
-      integer
+mutation createAddress ($address: AddressInput!) {
+    createAddress(input: {address: $address}) {
+        clientMutationId
     }
-}   
+}
 `;
 
 export const CREATE_INVESTIGATION = gql`
@@ -29,7 +29,7 @@ mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
     insertSymptoms(input: {investigationIdValue: $investigationIdValue, symptomNames: $symptomNames}) {
         clientMutationId
     }
-}  
+}
 `;
 
 export const UPDATE_IS_PREGNANT = gql`

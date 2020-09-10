@@ -1,8 +1,8 @@
 interface DBAddress {
     city: string;
     street: string;
-    floor: number;
-    houseNumber: number;
+    floor: string;
+    houseNum: string;
 }
 
 export default DBAddress;

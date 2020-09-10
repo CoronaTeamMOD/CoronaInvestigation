@@ -1,7 +1,6 @@
 interface Investigation {
     isolationStartTime: Date | null;
     isolationEndTime: Date | null;
-    isolationAddress: number;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartTime: Date | null;

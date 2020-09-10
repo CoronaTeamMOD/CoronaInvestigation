@@ -26,10 +26,10 @@ describe('investigationForm tests', () => {
         isolationStartDate: null,
         isolationEndDate: null,
         isolationAddress: {
-            city: -1,
-            floor: -1,
-            houseNumber: -1,
-            street: -1
+            city: '',
+            floor: '',
+            houseNum: '',
+            street: ''
         },
         isIsolationProblem: false,
         isIsolationProblemMoreInfo: '',

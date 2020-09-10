@@ -18,8 +18,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isolationAddress: {
         city: '',
         street: '',
-        floor: -1,
-        houseNumber: -1
+        floor: '',
+        houseNum: ''
     },
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',

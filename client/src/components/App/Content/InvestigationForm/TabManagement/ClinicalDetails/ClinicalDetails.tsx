@@ -1,9 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
 import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
+import DBAddress from 'models/enums/DBAddress';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
@@ -27,7 +29,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
     const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
-    const [isOtherSymptom, setOtherSymptom] = React.useState<string>('');
+    const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
@@ -56,8 +58,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        console.log(context.clinicalDetailsData)
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
+    };
+
+    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        context.setClinicalDetailsData({
+            ...context.clinicalDetailsData as ClinicalDetailsData,
+            isolationAddress: {
+                ...context.clinicalDetailsData?.isolationAddress as DBAddress,
+                [fieldToUpdate]: updatedValue
+            }
+        })
     };
 
     const checkIfOtherField = (checkedField: string) => (
@@ -135,23 +146,35 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         כתובת לאשפוז ביתי:
                     </b>
                 </Typography>
-                <CircleTextField
-                    size='small'
-                    placeholder='עיר'
-                    className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress.city}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_CITY, event.target.value)
-                    )}
+                <Autocomplete
+                    options={['first', 'second', 'third']}
+                    getOptionLabel={(option) => option}
+                    inputValue={context.clinicalDetailsData?.isolationAddress.city}
+                    onInputChange={(event, newInputValue) => {
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, newInputValue)
+                    }}
+                    renderInput={(params) =>
+                        <CircleTextField
+                            {...params}
+                            placeholder='עיר'
+                            className={classes.textField}
+                        />
+                    }
                 />
-                <CircleTextField
-                    size='small'
-                    placeholder='רחוב'
-                    className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress.street}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_STREET, event.target.value)
-                    )}
+                <Autocomplete
+                    options={['אחר', 'שתיים', 'שלוש']}
+                    getOptionLabel={(option) => option}
+                    inputValue={context.clinicalDetailsData?.isolationAddress.street}
+                    onInputChange={(event, newInputValue) => {
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, newInputValue)
+                    }}
+                    renderInput={(params) =>
+                        <CircleTextField
+                            {...params}
+                            placeholder='רחוב'
+                            className={classes.textField}
+                        />
+                    }
                 />
                 <CircleTextField
                     size='small'
@@ -159,16 +182,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     className={classes.textField}
                     value={context.clinicalDetailsData?.isolationAddress.floor}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
                     )}
                 />
                 <CircleTextField
                     size='small'
                     placeholder='מספר הבית'
                     className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress.houseNumber}
+                    value={context.clinicalDetailsData?.isolationAddress.houseNum}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateClinicalDetails(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
                     )}
                 />
                 <Grid item xs={12}>
@@ -233,7 +256,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                         {
                             symptoms.length > 0 ?
-                                <Typography>סימפטומים:</Typography> : ''
+                                <Typography>סימפטומים:</Typography> : <></>
                         }
                         <Grid container className={classes.smallGrid}>
                             {
@@ -258,6 +281,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
+                                    value={otherSymptom}
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherSymptom(event.target.value as string)
                                     )}
@@ -308,6 +332,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
+                                    value={otherBackgroundIllness}
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherBackgroundIllness(event.target.value as string)
                                     )}

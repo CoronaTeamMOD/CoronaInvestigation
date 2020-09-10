@@ -19,3 +19,40 @@ query getAllSymptoms {
     }
   }  
 `;
+
+export const GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER  = gql`
+query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
+    investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
+      investigatedPatientByInvestigatedPatientId {
+        isPregnant
+        investigationsByInvestigatedPatientId {
+          nodes {
+            addressByIsolationAddress {
+              city
+              floor
+              houseNum
+            }
+            isolationStartTime
+            isolationEndTime
+            isIsolationProblem
+            isIsolationProblemMoreInfo
+            symptomsStartTime
+            hospital
+            hospitalizationStartTime
+            hospitalizationEndTime
+            investigatedPatientSymptomsByInvestigationId {
+              nodes {
+                symptomName
+              }
+            }
+          }
+        }
+        investigatedPatientBackgroundDiseasesByInvestigatedPatientId {
+          nodes {
+            backgroundDeseasName
+          }
+        }
+      }
+    }
+  }
+`;
