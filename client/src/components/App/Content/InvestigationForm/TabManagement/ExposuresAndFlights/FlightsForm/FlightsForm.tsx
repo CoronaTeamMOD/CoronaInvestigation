@@ -1,58 +1,81 @@
-import React, {useContext} from 'react';
-import {Grid, Typography} from '@material-ui/core';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import DatePick from 'commons/DatePick/DatePick';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import AirportInput from './AirportInput/AirportInput';
-import useFormStyles from 'styles/formStyles';
-import {exposuresContext} from "Contexts/ExposuresAndFlights";
-import {format} from "date-fns";
+import React from "react";
+import { Grid, Typography } from "@material-ui/core";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import DatePick from "commons/DatePick/DatePick";
+import CircleTextField from "commons/CircleTextField/CircleTextField";
+import useFormStyles from "styles/formStyles";
+import { dateFormatForDatePicker } from "Utils/displayUtils";
+import { format } from "date-fns";
+import AirportInput from "./AirportInput/AirportInput";
 
-const FlightsForm = () => {
-    const classes = useFormStyles();
-    const {exposureData, setExposureData} = useContext(exposuresContext);
-    const {fromAirport, toAirport, departureDate, arrivalDate, airline,flightNumber} = exposureData;
-    const {fromAirport: setFromAirport, toAirport: setToAirport, departureDate: setDepartureDate,
-        arrivalDate: setArrivalDate, airline: setAirline, flightNumber:setFlightNumber} = setExposureData;
+const FlightsForm = (props: any) => {
+  const {
+    exposureAndFlightsData,
+    fieldsNames,
+    handleChangeExposureDataAndFlightsField,
+  } = props;
 
-    const handleFlightNumberInput = (event: React.ChangeEvent<HTMLInputElement>) => setFlightNumber(event.target.value);
-    const handleAirlineInput = (event: React.ChangeEvent<HTMLInputElement>) => setAirline(event.target.value);
-    const handleStartDateInput = (event: React.ChangeEvent<HTMLInputElement>) => setDepartureDate(new Date(event.target.value));
-    const handleEndDateInput = (event: React.ChangeEvent<HTMLInputElement>) => setArrivalDate(new Date(event.target.value));
+  const classes = useFormStyles();
 
-    const dateFormat = 'yyyy-MM-dd';
-    const formattedDate = (date: Date | undefined) => date ? format(date, dateFormat) : dateFormat;
+  const formattedDate = (date: Date | undefined) =>
+    date ? format(date, dateFormatForDatePicker) : dateFormatForDatePicker;
 
-    return (
-        <Grid className={classes.form} container justify='flex-start'>
-            <FormRowWithInput fieldName='טיסה הלוך:'>
-                <AirportInput airport={fromAirport} setAirport={setFromAirport}/>
-            </FormRowWithInput>
+  return (
+    <Grid className={classes.form} container justify="flex-start">
+      <FormRowWithInput fieldName="יעד:">
+        <AirportInput airport={fromAirport} setAirport={setFromAirport} />
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='טיסה חזור:'>
-                <AirportInput airport={toAirport} setAirport={setToAirport}/>
-            </FormRowWithInput>
+      <FormRowWithInput fieldName="מוצא:">
+        <AirportInput airport={toAirport} setAirport={setToAirport} />
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='תאריך טיסה:'>
-                <div className={classes.rowDiv}>
-                    <Typography variant='caption'>מתאריך</Typography>
-                    <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} type='date'/>
-                    <Typography variant='caption'>עד תאריך</Typography>
-                    <DatePick value={formattedDate(arrivalDate)} onChange={handleEndDateInput} type='date'/>
-                </div>
-            </FormRowWithInput>
+      <FormRowWithInput fieldName="תאריך טיסה:">
+        <div className={classes.rowDiv}>
+          <Typography variant="caption">מתאריך</Typography>
+          <DatePick
+            type="date"
+            name={fieldsNames.flightStartDate}
+            value={exposureAndFlightsData[fieldsNames.flightStartDate]}
+            onChange={e =>
+              handleChangeExposureDataAndFlightsField(e, e.target.value)
+            }
+          />
+          <Typography variant="caption">עד תאריך</Typography>
+          <DatePick
+            type="date"
+            name={fieldsNames.flightEndDate}
+            value={exposureAndFlightsData[fieldsNames.flightEndDate]}
+            onChange={e =>
+                handleChangeExposureDataAndFlightsField(e, e.target.value)
+            }
+          />
+        </div>
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='חברת תעופה:'>
-                <CircleTextField value={airline} onChange={handleAirlineInput}
-                                 placeholder='הזן חברת תעופה'/>
-            </FormRowWithInput>
+      <FormRowWithInput fieldName="חברת תעופה:">
+        <CircleTextField
+          name={fieldsNames.airline}
+          value={exposureAndFlightsData[fieldsNames.airline]}
+          onChange={e =>
+            handleChangeExposureDataAndFlightsField(e, e.target.value)
+          }
+          placeholder="הזן חברת תעופה"
+        />
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='מספר טיסה:'>
-                <CircleTextField value={flightNumber} onChange={handleFlightNumberInput}
-                                 placeholder='הזן מספר טיסה'/>
-            </FormRowWithInput>
-        </Grid>
-    );
+      <FormRowWithInput fieldName="מספר טיסה:">
+        <CircleTextField
+          name={fieldsNames.flightNumber}
+          value={exposureAndFlightsData[fieldsNames.flightNumber]}
+          onChange={e =>
+            handleChangeExposureDataAndFlightsField(e, e.target.value)
+          }          
+          placeholder="הזן מספר טיסה"
+        />
+      </FormRowWithInput>
+    </Grid>
+  );
 };
 
 export default FlightsForm;

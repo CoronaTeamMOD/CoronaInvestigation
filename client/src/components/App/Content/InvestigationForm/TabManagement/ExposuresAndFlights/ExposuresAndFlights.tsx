@@ -1,101 +1,120 @@
-import React from 'react';
-import {Collapse, Divider, Typography} from '@material-ui/core';
+import React from "react";
+import { Collapse, Divider, Typography } from "@material-ui/core";
 
-import PlaceType from "models/PlaceType";
-import Toggle from 'commons/Toggle/Toggle';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import {ExposureDetails, ExposuresContextProvider} from "Contexts/ExposuresAndFlights";
+import Toggle from "commons/Toggle/Toggle";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+// import {ExposuresContextProvider, exposuresContext} from "Contexts/ExposuresAndFlights";
 
-import useFormStyles from 'styles/formStyles';
-import FlightsForm from './FlightsForm/FlightsForm';
-import useStyles from './ExposuresAndFlightsStyles';
-import ExposureForm from './ExposureForm/ExposureForm';
+import useFormStyles from "styles/formStyles";
+import FlightsForm from "./FlightsForm/FlightsForm";
+import useStyles from "./ExposuresAndFlightsStyles";
+import ExposureForm from "./ExposureForm/ExposureForm";
+import ExposureData from "models/ExposureData";
+import FlightData from "models/FlightData";
 
+const fieldsNames = {
+  firstName: "firstName",
+  lastName: "lastName",
+  date: "date",
+  address: "address",
+  placeType: "placeType",
+  destinationCountry: "destinationCountry",
+  destinationCity: "destinationCity",
+  destinationAirport: "destinationAirport",
+  originCountry: "originCountry",
+  originCity: "originCity",
+  originAirport: "originAirport",
+  flightStartDate: "flightStartDate",
+  flightEndDate: "flightEndDate",
+  airline: "airline",
+  flightNumber: "flightNum",
+};
+
+const defaultExposureAndFlightsData: any = {
+  [fieldsNames.firstName]: '',
+  [fieldsNames.lastName]: '',
+  [fieldsNames.date]: undefined,
+  [fieldsNames.address]: '', // To be changed once google api is integrated
+  [fieldsNames.placeType]: { id: 0, name: '' },
+  [fieldsNames.destinationCountry]: '',
+  [fieldsNames.destinationCity]: '',
+  [fieldsNames.destinationAirport]: '',
+  [fieldsNames.originCountry]: '',
+  [fieldsNames.originCity]: '',
+  [fieldsNames.originAirport]: '',
+  [fieldsNames.flightStartDate]: undefined,
+  [fieldsNames.flightEndDate]: undefined,
+  [fieldsNames.airline]: '',
+  [fieldsNames.flightNumber]: '',
+};
 
 const ExposuresAndFlights = () => {
-    const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(false);
-    const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
+  const [exposureAndFlightsData, setExposureAndFlightsData] = React.useState<ExposureData & FlightData>
+                                                              (defaultExposureAndFlightsData);
+  const [isVerifiedExposure, setIsVerifiedExposure] = React.useState<boolean>(false);
+  const [wasAbroad, setWasAbroad] = React.useState<boolean>(false);
 
-    const [exposingPersonFirstName, setExposingPersonFirstName] = React.useState<string>();
-    const [exposingPersonLastName, setExposingPersonLastName] = React.useState<string>();
-    const [exposureLocation, setExposureLocation] = React.useState<string>();
-    const [exposureDate, setExposureDate] = React.useState<Date>();
-    const [placeType, setPlaceType] = React.useState<PlaceType>();
+  const { fieldName } = useFormStyles();
+  const classes = useStyles();
 
-    const [fromAirport, setFromAirport] = React.useState<string>();
-    const [toAirport, setToAirport] = React.useState<string>();
-    const [airline, setAirline] = React.useState<string>();
-    const [flightNumber, setFlightNumber] = React.useState<string>();
-    const [departureDate, setDepartureDate] = React.useState<Date>();
-    const [arrivalDate, setArrivalDate] = React.useState<Date>();
+  const handleChangeExposureDataAndFlightsField = (event: any, value: any) => {
+    setExposureAndFlightsData({
+      ...exposureAndFlightsData,
+      [event.target.name]: value,
+    });
+  };
 
-    const contextInitialData: ExposureDetails = {
-        exposureData: {
-            exposingPersonFirstName,
-            exposingPersonLastName,
-            exposureLocation,
-            exposureDate,
-            placeType,
-            fromAirport,
-            toAirport,
-            airline,
-            flightNumber,
-            departureDate,
-            arrivalDate,
-        },
-        setExposureData: {
-            exposingPersonFirstName: setExposingPersonFirstName,
-            exposingPersonLastName: setExposingPersonLastName,
-            exposureLocation: setExposureLocation,
-            exposureDate: setExposureDate,
-            placeType: setPlaceType,
-            fromAirport: setFromAirport,
-            toAirport: setToAirport,
-            airline: setAirline,
-            flightNumber: setFlightNumber,
-            departureDate: setDepartureDate,
-            arrivalDate: setArrivalDate,
-        }
-    };
+  return (
+    <>
+      <div className={classes.subForm}>
+        <Typography variant="caption" className={fieldName}>
+          חשיפה אפשרית
+        </Typography>
 
-    const {fieldName} = useFormStyles();
-    const classes = useStyles();
+        <FormRowWithInput fieldName="האם היה מגע ידוע עם חולה מאומת?">
+          <Toggle
+            value={isVerifiedExposure}
+            onChange={() => setIsVerifiedExposure(!isVerifiedExposure)}
+          />
+        </FormRowWithInput>
 
-    const handleVerifiedExposureToggle = (event: React.MouseEvent<HTMLElement>, value: any) => setHadVerifiedExposure(value);
-    const handleHasBeenAbroad = (event: React.MouseEvent<HTMLElement>, value: any) => setHasBeenAbroad(value);
-    return (
-        <ExposuresContextProvider value={contextInitialData}>
-            <div className={classes.subForm}>
-                <Typography variant='caption' className={fieldName}>
-                    חשיפה אפשרית
-                </Typography>
+        <Collapse
+          in={isVerifiedExposure}
+          className={classes.additionalInformationForm}
+        >
+          <ExposureForm
+            exposureAndFlightsData={exposureAndFlightsData}
+            fieldsNames={fieldsNames}
+            handleChangeExposureDataAndFlightsField={
+              handleChangeExposureDataAndFlightsField
+            }
+          />
+        </Collapse>
+      </div>
 
-                <FormRowWithInput fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                    <Toggle value={verifiedExposure} onChange={handleVerifiedExposureToggle}/>
-                </FormRowWithInput>
+      <Divider />
 
-                <Collapse in={verifiedExposure} className={classes.additionalInformationForm}>
-                    <ExposureForm/>
-                </Collapse>
-            </div>
+      <div className={classes.subForm}>
+        <Typography variant="caption" className={fieldName}>
+          חזרה מחו״ל
+        </Typography>
 
-            <Divider/>
+        <FormRowWithInput fieldName="האם חזר מחו״ל?">
+          <Toggle value={wasAbroad} onChange={() => setWasAbroad(!wasAbroad)} />
+        </FormRowWithInput>
 
-            <div className={classes.subForm}>
-                <Typography variant='caption' className={fieldName}>
-                    חזרה מחו״ל
-                </Typography>
-
-                <FormRowWithInput fieldName='האם חזר מחו״ל?'>
-                    <Toggle value={hasBeenAbroad} onChange={handleHasBeenAbroad}/>
-                </FormRowWithInput>
-
-                <Collapse in={hasBeenAbroad} className={classes.additionalInformationForm}>
-                    <FlightsForm/>
-                </Collapse>
-            </div>
-        </ExposuresContextProvider>
-    );
+        <Collapse in={wasAbroad} className={classes.additionalInformationForm}>
+          <FlightsForm
+            exposureAndFlightsData={exposureAndFlightsData}
+            fieldsNames={fieldsNames}
+            handleChangeExposureDataAndFlightsField={
+              handleChangeExposureDataAndFlightsField
+            }
+          />
+        </Collapse>
+      </div>
+    </>
+  );
 };
 
 export default ExposuresAndFlights;

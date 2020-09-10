@@ -1,65 +1,94 @@
-import { format } from 'date-fns';
-import {Grid} from '@material-ui/core';
-import React, {useContext} from 'react';
+import { format } from "date-fns";
+import { Grid } from "@material-ui/core";
+import React from "react";
 
-import useFormStyles from 'styles/formStyles';
-import DatePick from 'commons/DatePick/DatePick';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
-import {exposuresContext} from "Contexts/ExposuresAndFlights";
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import useFormStyles from "styles/formStyles";
+import DatePick from "commons/DatePick/DatePick";
+import CircleSelect from "commons/CircleSelect/CircleSelect";
+import { dateFormatForDatePicker } from "Utils/displayUtils";
+import CircleTextField from "commons/CircleTextField/CircleTextField";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
 
-const ExposureForm = () => {
-    const insertNamePlaceHolder = 'הכנס שם...';
-    const firstNamePlaceHolder = 'שם פרטי...';
-    const lastNamePlaceHolder = 'שם משפחה...';
-    const classes = useFormStyles();
+const ExposureForm = (props: any) => {
+  const {
+    exposureAndFlightsData,
+    fieldsNames,
+    handleChangeExposureDataAndFlightsField,
+  } = props;
 
-    const {exposureData, setExposureData} = useContext(exposuresContext);
-    const {exposingPersonFirstName, exposingPersonLastName, placeType, exposureLocation, exposureDate} = exposureData;
-    const {exposingPersonFirstName: setExposingPersonFirstName, exposingPersonLastName: setExposingPersonLastName, placeType: setPlaceType, exposureLocation: setExposureLocation, exposureDate: setExposureDate} = setExposureData;
+  const classes = useFormStyles();
 
-    const placeTypeOptions = [
-        {id: 1, name: 'מקום ציבורי'},
-        {id: 2, name: 'מקום דת'},
-        {id: 3, name: 'מקום מקומי'}
-    ];
+  const placeTypeOptions = [
+    { id: 1, name: "מקום ציבורי" },
+    { id: 2, name: "מקום דת" },
+    { id: 3, name: "מקום מקומי" },
+  ];
 
-    const selectPlaceType = (event: React.ChangeEvent<any>) => setPlaceType(event.target.value);
-    const handlePersonFirstNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonFirstName(event.target.value);
-    const handlePersonLastNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonLastName(event.target.value);
-    const handlePlaceNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureLocation(event.target.value);
-    const handleExposureDateInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposureDate(new Date(event.target.value));
+  function formattedDate(date: Date | undefined) {
+    return date ? format(date, "yyyy-MM-dd") : "yyyy-MM-dd";
+  }
 
-    return (
-        <Grid className={classes.form} container justify='flex-start'>
-            <FormRowWithInput fieldName='שם החולה:'>
-                <>
-                    <CircleTextField value={exposingPersonFirstName} onChange={handlePersonFirstNameInput}
-                                    placeholder={firstNamePlaceHolder}/>
-                    <CircleTextField value={exposingPersonLastName} onChange={handlePersonLastNameInput}
-                                    placeholder={lastNamePlaceHolder}/>
-                </>
-            </FormRowWithInput>
+  return (
+    <Grid className={classes.form} container justify="flex-start">
+      <FormRowWithInput fieldName="שם החולה:">
+        <>
+          <CircleTextField
+            name={fieldsNames.firstName}
+            value={exposureAndFlightsData[fieldsNames.firstName]}
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(e, e.target.value)
+            }
+            placeholder="שם פרטי..."
+          />
+          <CircleTextField
+            name={fieldsNames.lastName}
+            value={exposureAndFlightsData[fieldsNames.lastName]}
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(e, e.target.value)
+            }
+            placeholder="שם משפחה..."
+          />
+        </>
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='תאריך החשיפה:'>
-                <DatePick type='date' 
-                          value={exposureDate !== undefined ? format(exposureDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                          onChange={handleExposureDateInput} />
-            </FormRowWithInput>
+      <FormRowWithInput fieldName="תאריך החשיפה:">
+        <DatePick
+          type="date"
+          name={fieldsNames.date}
+          value={exposureAndFlightsData[fieldsNames.date]}
+          onChange={(e) =>
+            handleChangeExposureDataAndFlightsField(e, e.target.value)
+          }
+        />
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='כתובת החשיפה:'>
-                <CircleTextField value={exposureLocation} onChange={handlePlaceNameInput}
-                                 placeholder={insertNamePlaceHolder}/>
-            </FormRowWithInput>
+      <FormRowWithInput fieldName="כתובת החשיפה:">
+        <CircleTextField
+          name={fieldsNames.address}
+          value={exposureAndFlightsData[fieldsNames.address]}
+          onChange={(e) =>
+            handleChangeExposureDataAndFlightsField(e, e.target.value)
+          }
+          placeholder="הכנס שם..."
+        />
+      </FormRowWithInput>
 
-            <FormRowWithInput fieldName='סוג מקום החשיפה:'>
-                <CircleSelect isNameUnique={false}
-                              value={placeType} onChange={selectPlaceType} options={placeTypeOptions}/>
-            </FormRowWithInput>
-        </Grid>
-    );
+      <FormRowWithInput fieldName="סוג מקום החשיפה:">
+        <CircleSelect
+          name={fieldsNames.placeType}
+          value={exposureAndFlightsData[fieldsNames.placeType].id}
+          isNameUnique={false}
+          options={placeTypeOptions}
+          onChange={(e) => {
+            handleChangeExposureDataAndFlightsField(
+              e,
+              placeTypeOptions.find((option) => option.id === e.target.value)
+            );
+          }}
+        />
+      </FormRowWithInput>
+    </Grid>
+  );
 };
 
 export default ExposureForm;
