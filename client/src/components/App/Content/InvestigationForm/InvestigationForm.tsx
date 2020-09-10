@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
+
 
 import Gender from 'models/enums/Gender';
 import StoreStateType from 'redux/storeStateType';
@@ -27,7 +28,8 @@ const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 // TODO: remove after redux is connected
-const epedemioligyNumber = 111;
+//const epedemioligyNumber = 111;
+
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -82,7 +84,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
                             // TODO: connect to redux epedemioligyNumber
-                            epedemioligyNumber={epedemioligyNumber}
+                            epedemioligyNumber={epidemiologyNumber}
                         />
                         <div className={classes.interactiveForm}>
                             <TabManagement
@@ -105,4 +107,16 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     )
 }
 
-export default InvestigationForm;
+interface Props {
+    epedemioligyNumber: number
+}
+
+const mapStateToProps = (store: StoreStateType) => {
+    return {
+        epedemioligyNumber: store.investigation.epidemiologyNumber
+    }
+}
+
+export default connect(
+    mapStateToProps
+ )(InvestigationForm);

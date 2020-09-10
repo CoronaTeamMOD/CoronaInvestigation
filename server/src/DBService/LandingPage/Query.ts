@@ -1,7 +1,7 @@
 import { gql } from "postgraphile";
 
 export const GET_USER_INVESTIGATIONS = gql`
-query InvestigationsInfoByUser($id: Int!) {
+query InvestigationsInfoByUser($id: String!) {
   userById(id: $id) {
     investigationsByCreator {
       nodes {
@@ -24,4 +24,5 @@ query InvestigationsInfoByUser($id: Int!) {
     }
   }
 }
+
 `;

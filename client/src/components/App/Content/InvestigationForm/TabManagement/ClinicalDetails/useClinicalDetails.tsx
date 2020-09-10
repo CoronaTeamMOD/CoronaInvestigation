@@ -22,7 +22,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getBackgroundDiseases = () => {
         axios.post('/clinicalDetails/backgroundDiseases').then(
             result => (result && result.data && result.data.data) &&
-                setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName))
+                setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
         );
     };
 

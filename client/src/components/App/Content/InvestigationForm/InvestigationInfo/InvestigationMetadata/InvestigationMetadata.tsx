@@ -2,7 +2,8 @@ import React from 'react';
 import { format } from 'date-fns';
 import {Paper} from '@material-ui/core';
 
-import { InvestigationMetaData } from 'models/InvestigationMetadata';
+import { getPersonFullName } from 'Utils/displayUtils';
+import { InvestigationMetaData } from 'models/InvestigationInfo';
 
 import InfoItem from '../InfoItem';
 import useStyles from './InvestigationMetadataStyles';
@@ -24,14 +25,14 @@ const InvestigationMetadata = (props: Props) => {
             />
             <InfoItem name='נפח/מחוז' value={investigationMetaData.investigatingUnit} />
             <InfoItem name='מבצע החקירה' value={
-                    investigationMetaData.userByCreator.userName
+                    getPersonFullName(investigationMetaData.userByCreator.personByPersonId)
                 }
             />
             <InfoItem name='משתמש מעדכן' value={
-                    investigationMetaData.userByLastUpdator.userName
+                    getPersonFullName(investigationMetaData.userByLastUpdator.personByPersonId)
                 }
             />
-            <InfoItem name='טלפון המבצע' value={investigationMetaData.userByCreator.phoneNumber} />
+            <InfoItem name='טלפון המבצע' value={investigationMetaData.userByCreator.personByPersonId.phoneNumber} />
         </Paper>
     );
 };

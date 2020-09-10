@@ -4,6 +4,8 @@ import { Paper, Table, TableRow, TableBody,
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable from './useInvestigationTable';
+import { Link } from 'react-router-dom';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
@@ -32,7 +34,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </TableHead>
                 <TableBody>
                 {tableRows.map((row) => (
-                    <TableRow key={row.epidemiologyNumber}>
+                    <TableRow
+                        key={row.epidemiologyNumber}
+                        component={Link}
+                        to='/investigation'
+                        className={classes.investigationRow}
+                        onClick={() => setEpidemiologyNum(row.epidemiologyNumber)}
+                    >
                         <TableCell component="th" scope="row">
                             {row.epidemiologyNumber}
                         </TableCell>
