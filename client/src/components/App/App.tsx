@@ -40,9 +40,10 @@ const App: React.FC = (): JSX.Element => {
                 });
             })
         } else {
+            console.log("YOYOY")
             setUser({
                 id: '7',
-                name: 'חוקר פיקטיבי',
+                name: 'רוני_1',
                 token: 'fake token!'
             });
         }

@@ -1,10 +1,15 @@
 import React from 'react';
+import Swal from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
+import { timeout } from 'Utils/Timeout/Timeout';
+import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
+import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
 const defaultUser = {
     id: '',
@@ -39,16 +44,30 @@ const defaultInvestigationStaticInfo = {
 
 const InvestigationInfoBar = (props: Props) => {
 
-    const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
+    let history = useHistory();
+    const { epidemiologyNumber } = props;
 
-    const { epedemioligyNumber } = props;
+    const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
     React.useEffect(() => {
         axios.post('/investigationInfo/staticInfo', {
-            investigationId: 111
+            investigationId: epidemiologyNumber
         }).then((result: any) => {
-            if(result && result.data && result.data.data)
+            if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
                 setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
+                setIsLoading(false);
+            }
+            else {
+                setIsLoading(false);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנה מועבר לשם',
+                    timer: 1750,
+                    showConfirmButton: false
+                });
+
+                timeout(1900).then(() => history.push(landingPageRoute));
+            }
         })
     }, []);
 
@@ -58,7 +77,7 @@ const InvestigationInfoBar = (props: Props) => {
                 investigatedPatientByInvestigatedPatientId={
                     investigationStaticInfo.investigatedPatientByInvestigatedPatientId
                 }
-                epedemioligyNumber={epedemioligyNumber}
+                epedemioligyNumber={epidemiologyNumber}
                 coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
             <InvestigationMetadata
@@ -71,7 +90,7 @@ const InvestigationInfoBar = (props: Props) => {
 };
 
 interface Props {
-    epedemioligyNumber: number;
+    epidemiologyNumber: number;
 }
 
 export default InvestigationInfoBar;
