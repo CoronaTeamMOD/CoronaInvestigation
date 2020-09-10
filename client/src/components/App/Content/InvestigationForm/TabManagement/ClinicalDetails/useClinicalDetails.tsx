@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import City from 'models/City';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import Street from 'models/enums/Street';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context } = parameters;
+    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, streetsInCity, setStreetsInCity } = parameters;
 
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
     const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
@@ -17,7 +17,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
@@ -33,6 +32,15 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     };
 
+    const getStreetByCity = (cityId: string) => {
+        axios.get('/addressDetails/city/' + cityId + '/streets').then(
+            result => result && result.data && setStreetsInCity(result.data.map((node: Street) => node))
+        )}
+
+    React.useEffect(() => {
+        console.log(streetsInCity)
+    },[streetsInCity])
+
     const getClinicalDetailsByEpidemiologyNumber = () => {
         axios.post('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=' + epidemiologyNumber).then(
             result => {
@@ -42,6 +50,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes;
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     const patientAddress = patientInvestigation.addressByIsolationAddress;
+                    setIsolationCityName(patientAddress.cityByCity.displayName);
+                    setIsolationStreetName(patientAddress.streetByStreet.displayName);
                     
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
@@ -57,8 +67,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes,
                         symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
                         isolationAddress: {
-                            city: patientAddress.cityByCity.displayName,
-                            street: patientAddress.streetByStreet.displayName,
+                            city: patientAddress.cityByCity.id,
+                            street: patientAddress.streetByStreet.id,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
@@ -69,7 +79,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     React.useEffect(() => {
-        console.log(cities.get('5000')?.displayName)
         getSymptoms();
         getBackgroundDiseases();
         getClinicalDetailsByEpidemiologyNumber();
@@ -80,6 +89,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         hasSymptomsToggle,
         hasBackgroundDeseasesToggle,
         wasHospitalizedToggle,
+        getStreetByCity
     };
 };
 

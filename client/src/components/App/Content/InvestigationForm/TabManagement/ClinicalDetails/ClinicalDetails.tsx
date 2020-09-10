@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
+import City from 'models/City';
+import Street from 'models/enums/Street';
 import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
 import DBAddress from 'models/enums/DBAddress';
@@ -35,12 +37,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
     const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
+    const [isolationCityName, setIsolationCityName] = React.useState<string>('');
+    const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
+    const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
 
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const context = React.useContext(clinicalDetailsDataContext);
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
-        setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context
+    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle, getStreetByCity } = useClinicalDetails({
+        setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, streetsInCity, setStreetsInCity
     });
 
 
@@ -100,12 +106,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 setIsOtherBackgroundIllnessChecked(true);
         };
     };
-    
+
     React.useEffect(() => {
         setIsInIsolation(new Date(context.clinicalDetailsData.isolationStartDate as Date) !== null || new Date(context.clinicalDetailsData.isolationEndDate as Date) !== null);
         setHasSymptoms(new Date(context.clinicalDetailsData.symptomsStartDate as Date) !== null);
         setWasHospitalized(new Date(context.clinicalDetailsData.hospitalizationStartDate as Date) !== null || new Date(context.clinicalDetailsData.hospitalizationEndDate as Date) !== null && context.clinicalDetailsData.hospital !== '');
-    }, [])
+    }, []);
 
     return (
         <div>
@@ -153,11 +159,15 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </b>
                 </Typography>
                 <Autocomplete
-                    options={['first', 'second', 'third']}
-                    getOptionLabel={(option) => option}
-                    inputValue={context.clinicalDetailsData.isolationAddress.city}
-                    onInputChange={(event, newInputValue) => {
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, newInputValue)
+                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                    getOptionLabel={(option) => option.value.displayName}
+                    inputValue={isolationCityName}
+                    onChange={(event, selectedCity) => {
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, selectedCity?.id)
+                        selectedCity && getStreetByCity(selectedCity.id)}
+                    }
+                    onInputChange={(event, selectedCityName) => {
+                        setIsolationCityName(selectedCityName);
                     }}
                     renderInput={(params) =>
                         <CircleTextField
@@ -168,11 +178,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     }
                 />
                 <Autocomplete
-                    options={['אחר', 'שתיים', 'שלוש']}
-                    getOptionLabel={(option) => option}
-                    inputValue={context.clinicalDetailsData.isolationAddress.street}
-                    onInputChange={(event, newInputValue) => {
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, newInputValue)
+                    options={streetsInCity}
+                    getOptionLabel={(option) => option.displayName}
+                    inputValue={isolationStreetName}
+                    onChange={(event, selectedStreet) => {
+                        selectedStreet && updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet.id)}
+                    }
+                    onInputChange={(event, selectedStreetName) => {
+                        setIsolationStreetName(selectedStreetName);
                     }}
                     renderInput={(params) =>
                         <CircleTextField
@@ -184,20 +197,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 />
                 <CircleTextField
                     size='small'
-                    placeholder='קומה'
-                    className={classes.textField}
-                    value={context.clinicalDetailsData.isolationAddress.floor}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
-                    )}
-                />
-                <CircleTextField
-                    size='small'
                     placeholder='מספר הבית'
                     className={classes.textField}
                     value={context.clinicalDetailsData.isolationAddress.houseNum}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
+                    )}
+                />
+                <CircleTextField
+                    size='small'
+                    placeholder='קומה'
+                    className={classes.textField}
+                    value={context.clinicalDetailsData.isolationAddress.floor}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
                     )}
                 />
                 <Grid item xs={12}>

@@ -1,6 +1,6 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
-export const CREATE_ADDRESS = gql`
+export const CREATE_ISOLATION_ADDRESS = gql`
 mutation createAddress ($address: AddressInput!) {
     createAddress(input: {address: $address}) {
         clientMutationId
