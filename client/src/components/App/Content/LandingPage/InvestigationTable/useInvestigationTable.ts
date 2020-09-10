@@ -78,7 +78,6 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         });
         setRows(investigationRows)
       }
-      setIsLoading(false)
     })
       .catch(err => {
         swal.fire({
