@@ -35,12 +35,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getStreetByCity = (cityId: string) => {
         axios.get('/addressDetails/city/' + cityId + '/streets').then(
             result => result && result.data && setStreetsInCity(result.data.map((node: Street) => node))
-        )}
-
-    React.useEffect(() => {
-        console.log(streetsInCity)
-    },[streetsInCity])
-
+        )};
+    
     const getClinicalDetailsByEpidemiologyNumber = () => {
         axios.post('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=' + epidemiologyNumber).then(
             result => {
