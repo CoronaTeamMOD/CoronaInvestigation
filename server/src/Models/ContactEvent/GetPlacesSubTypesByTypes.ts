@@ -15,6 +15,6 @@ interface PlaceType {
     placeSubTypesByParentPlaceType: {nodes: PlaceSubType[]}
 }
 
-interface PlaceSubType {
+export interface PlaceSubType {
     displayName: string
 }

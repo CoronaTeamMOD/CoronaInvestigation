@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Query';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
+import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
+import { GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID } from '../../DBService/ContactEvent/Query';
+import {ContactedPerson} from "../../Models/ContactedPerson/ContactedPerson";
 
 const intersectionsRoute = Router();
 
@@ -20,6 +22,42 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
             locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes.map(subType => subType.displayName)
         )
         response.send(locationsSubTypesByTypes);
+    });
+});
+
+intersectionsRoute.post('/getContactEvent', (request: Request, response: Response) => {
+    console.log('investigation id: ' + request.body.investigationId);
+    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, { currInvestigation: request.body.investigationId})
+        .then((result: GetContactEventResponse) => {
+            let allEventOfInvestigation = {};
+            result.data.allContactEvents.nodes.map((event: ContactEvent) => {
+                const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+                const contactedDataToSend = contactedPeopleByContactEvent.nodes;
+                let contacts = {};
+                contactedDataToSend.map((person) => {
+                   const {personByPersonInfo, ...personNoData} = person;
+                   const personToSend = {
+                       ...personNoData,
+                       firstName: personByPersonInfo.firstName,
+                       lastName: personByPersonInfo.lastName,
+                       phoneNumber: personByPersonInfo.phoneNumber,
+                       id: personByPersonInfo.identificationNumber,
+                   };
+                   contacts = {
+                       ...contacts,
+                       ...personToSend
+                   }
+                });
+                const eventToSend = {
+                    ...eventObjectToClient,
+                    contacts: contacts,
+                }
+                allEventOfInvestigation = {
+                    ...allEventOfInvestigation,
+                    eventToSend
+                }
+            });
+            response.send({...allEventOfInvestigation});
     });
 });
 
@@ -46,5 +84,6 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
         response.send(result);
     });
 });
+
 
 export default intersectionsRoute;

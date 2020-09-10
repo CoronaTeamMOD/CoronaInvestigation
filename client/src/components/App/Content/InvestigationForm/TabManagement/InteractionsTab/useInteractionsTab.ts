@@ -1,7 +1,8 @@
+import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
 import axios from 'Utils/axios';
-
+import StoreStateType from 'redux/storeStateType';
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
@@ -12,6 +13,7 @@ const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
     
     const { interactions, setInteractions } = props;
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
     const getDatesToInvestigate = (startInvestigationDateVariables: StartInvestigationDateVariables) : Date[] => {
         const { hasSymptoms, symptomsStartDate, endInvestigationDate } = startInvestigationDateVariables;
@@ -28,7 +30,13 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     const loadInteractions = () => {
-        // TODO: add loading from DB
+        console.log(epidemiologyNumber);
+        axios.post('/intersections/getContactEvent', {
+            investigationId: epidemiologyNumber
+        }).then((result) => {
+            console.log('got result: ');
+            console.log(result);
+        })
     }
 
     return {        

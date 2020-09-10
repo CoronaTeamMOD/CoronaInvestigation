@@ -43,9 +43,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
             interactions: interactionsMap
         });
 
-    React.useEffect(() => {
-        loadInteractions();
-    }, []);
+    React.useEffect(() => loadInteractions());
 
     return (
         <StartInvestigationDateVariablesConsumer>
