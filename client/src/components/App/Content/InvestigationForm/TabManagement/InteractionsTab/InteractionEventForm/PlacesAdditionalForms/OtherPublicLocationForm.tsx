@@ -10,7 +10,21 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
+const publicParkPlaceType = 77;
+const zooPlaceType = 288;
+const stadiumPlaceType = 5;
+const amphitheaterPlaceType = 6;
+const beachPlaceType = 33;
+
+const wideAreaPlaceTypes = [
+    publicParkPlaceType,
+    zooPlaceType,
+    stadiumPlaceType,
+    amphitheaterPlaceType,
+    beachPlaceType
+]
+
+const OtherPublicLocationForm : React.FC = () : JSX.Element => {
     const ctxt = useContext(InteractionEventDialogContext);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
@@ -26,9 +40,12 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
                 </FormInput>
             </Grid>
             <AddressForm/>
-            <BusinessContactForm/>
+            {
+                !wideAreaPlaceTypes.includes(ctxt.interactionEventDialogData.placeSubType) &&
+                <BusinessContactForm/>
+            }
         </>
     );
 };
 
-export default DefaultPlaceEventForm;
+export default OtherPublicLocationForm;

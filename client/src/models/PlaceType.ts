@@ -1,5 +1,6 @@
 interface PlaceType {
-    id: number;
+    id: number | string;
     name: string;
 }
+
 export default PlaceType;

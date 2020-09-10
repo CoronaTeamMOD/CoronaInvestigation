@@ -10,6 +10,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import AddressForm from '../AddressForm/AddressForm';
 
 export const hospitals = [
     'איכילוב',
@@ -31,8 +32,8 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='שם בית חולים'>
                         <CircleSelect
-                            value={ctxt.interactionEventDialogData.locationName || ''}
-                            onChange={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}
+                            value={ctxt.interactionEventDialogData.placeName || ''}
+                            onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}
                             className={formClasses.formSelect}
                             options={hospitals}/>
                     </FormInput>
@@ -45,6 +46,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                     </FormInput>
                 </Grid>
             </div>
+            <AddressForm/>
             <BusinessContactForm/>
         </>
     );

@@ -1,96 +1,113 @@
+import {  Grid } from '@material-ui/core';
 import React, { useContext } from 'react';
-import { Typography } from '@material-ui/core';
     
 import Contact from 'models/Contact';
-import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
+import FormInput from 'commons/FormInput/FormInput';
+import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import useStyles from './ContactFormStyles';
 import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import InteractionEventContactFields from '../../InteractionsEventDialogContext/InteractionEventContactFields';
 
 const contactedPersonPhone: string = 'מספר טלפון';
-const contactedPersonName: string = 'שם';
+const contactedPersonFirstName: string = 'שם פרטי';
+const contactedPersonLastName: string = 'שם משפחה';
 const contactedPersonID: string = 'ת.ז';
+const contactTypeField: string = 'סוג מגע';
+const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
+
+const contactTypes: string[] = [
+    'מגע הדוק',
+    'מגע לא הדוק',
+    'לא ידוע'
+];
 
 const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
 
+    const { updatedContactIndex } = props;
+
     const classes = useStyles();
     const formClasses = useFormStyles();
-
-    const ctxt = useContext(InteractionEventDialogContext);
-    const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
-    const { contacts } = interactionEventDialogData;
-    const { updatedContactIndex } = props;
-    const { name, moreDetails, needsToBeQuarantined, phoneNumber, id } = contacts[updatedContactIndex];
     
+    const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
+    const { contacts } = interactionEventDialogData;
+    const contact = contacts[updatedContactIndex];
+    const { extraInfo, contactType, lastName, firstName, phoneNumber, id } = contact;
+
+    React.useEffect(() => {
+        onChange(contactTypes[0], InteractionEventContactFields.CONTACT_TYPE);
+    }, [])
+
     const updateContacts = (updatedContact: Contact) => {
         const updatedContacts = [...contacts];
         updatedContacts.splice(updatedContactIndex, 1, updatedContact);
         setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
     }
 
-    const onNameChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], name: event.target.value as string});
-    }
-
-    const onIDChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], id: event.target.value as string});
-    }
-
-    const onPhoneNumberChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], phoneNumber: event.target.value as string});
-    }
-
-    const onNeedsToBeQuarantinedChange = (quarantineCondition: boolean) => {
-        updateContacts({...contacts[updatedContactIndex], needsToBeQuarantined: quarantineCondition});
-    }
-
-    const onMoreDetailsChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        updateContacts({...contacts[updatedContactIndex], moreDetails: event.target.value as string});
-    }
+    const onChange = (newValue: string, updatedField: InteractionEventContactFields) =>
+        updateContacts({...contact, [updatedField]: newValue});
 
     return (
         <div className={classes.addContactFields} key='addContactFields'>
-            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonName + ': '}</Typography>
-            <CircleTextField id='contactedPersonName' key='contactedPersonName'
-                                className={classes.newContactField}
-                                value={name}
-                                placeholder={contactedPersonName}
-                                onChange={onNameChange}
-            />
-            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonPhone + ': '}</Typography>
-            <CircleTextField id='contactedPersonPhone' key='contactedPersonPhone'
-                                className={classes.newContactField}
-                                value={phoneNumber}
-                                placeholder={contactedPersonPhone}
-                                onChange={onPhoneNumberChange}
-                                required={false}
-            />
-            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{contactedPersonID + ': '}</Typography>
-            <CircleTextField  id='contactedPersonID'
-                                className={classes.newContactField}
-                                value={id}
-                                placeholder={contactedPersonID}
-                                onChange={onIDChange}
-            />
-            <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>
-                צריך בידוד?
-            </Typography>
-            <Toggle
-                className={formClasses.formToggle}
-                value={needsToBeQuarantined}
-                id='needsToBeQuarantinedToggle'
-                onChange={(event, val) => {
-                    onNeedsToBeQuarantinedChange(val)
-                }}
-            />
-            <CircleTextField className={classes.moreContactDetails}
-                placeholder={'פירוט נוסף על אופי המגע'}
-                id='moreDetails'
-                value={moreDetails}
-                onChange={onMoreDetailsChange}
-            />
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+                <Grid item xs={4}>
+                    <FormInput fieldName={contactedPersonFirstName}>
+                        <CircleTextField id='contactedPersonFirstName' key='contactedPersonFirstName'
+                        className={classes.newContactField}
+                        value={firstName}
+                        onChange={event => onChange(event.target.value, InteractionEventContactFields.FIRST_NAME)}
+                        />
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName={contactedPersonLastName}>
+                        <CircleTextField id='contactedPersonLastName' key='contactedPersonLastName'
+                        className={classes.newContactField}
+                        value={lastName}
+                        onChange={event => onChange(event.target.value, InteractionEventContactFields.LAST_NAME)}
+                        />
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName={contactedPersonPhone}>
+                        <CircleTextField id='contactedPersonPhone' key='contactedPersonPhone'
+                        className={classes.newContactField}
+                        value={phoneNumber}
+                        onChange={event => onChange(event.target.value, InteractionEventContactFields.PHONE_NUMBER)}
+                        />
+                    </FormInput>
+                </Grid>
+            </Grid>
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+                <Grid item xs={4}>
+                    <FormInput fieldName={contactedPersonID}>
+                        <CircleTextField  id='contactedPersonID'
+                        className={classes.newContactField}
+                        value={id}
+                        onChange={event => onChange(event.target.value, InteractionEventContactFields.ID)}
+                        />
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName={contactTypeField}>
+                        <CircleSelect id='contactType'
+                        className={classes.newContactField}
+                        value={contactType}
+                        onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
+                        options={contactTypes}
+                        />
+                    </FormInput>
+                </Grid>
+            </Grid>
+            <FormInput fieldName={contactTypeMoreDetails}>
+                <CircleTextField className={classes.moreContactDetails}
+                        id='extraInfo'
+                        value={extraInfo}
+                        onChange={event => onChange(event.target.value, InteractionEventContactFields.EXTRA_INFO)}
+                />
+            </FormInput>
         </div>
     );
 };

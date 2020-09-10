@@ -7,54 +7,38 @@ import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
-const busLocationType = 'אוטובוס';
-const trainLocationType = 'רכבת';
-const flightLocationType = 'טיסה';
-const organizedTransportLocationType = 'הסעות';
-
-export const resetTransportationFormFields = {
-    boardingCity: undefined,
-    boardingCountry: undefined,
-    boardingStation: undefined,
-    endCity: undefined,
-    endCountry: undefined,
-    endStation: undefined,
-    airline: undefined,
-    trainLine: undefined,
-    buisnessContactName: undefined,
-    buisnessContactNumber: undefined,
-    busCompany: undefined,
-    busLine: undefined,
-    flightNumber: undefined
-}
+const busPlaceType = 1;
+const trainPlaceType = 38;
+const flightPlaceType = 85;
+const organizedTransportPlaceType = 31;
 
 const TransportationEventForm : React.FC = () : JSX.Element => {
 
-    const { locationSubType } = useContext(InteractionEventDialogContext).interactionEventDialogData;
+    const { placeSubType } = useContext(InteractionEventDialogContext).interactionEventDialogData;
 
     return (
         <>
             {
-                locationSubType === busLocationType &&
-                <Collapse in={locationSubType === busLocationType}>
+                placeSubType === busPlaceType &&
+                <Collapse in={placeSubType === busPlaceType}>
                     <BusEventForm/>
                 </Collapse>
             }
             {
-                locationSubType === trainLocationType &&
-                <Collapse in={locationSubType === trainLocationType}>
+                placeSubType === trainPlaceType &&
+                <Collapse in={placeSubType === trainPlaceType}>
                     <TrainEventForm/>                        
                 </Collapse>
             }
             {
-                locationSubType === flightLocationType &&
-                <Collapse in={locationSubType === flightLocationType}>
+                placeSubType === flightPlaceType &&
+                <Collapse in={placeSubType === flightPlaceType}>
                     <FlightEventForm/>                    
                 </Collapse>
             }
             {
-                locationSubType === organizedTransportLocationType &&
-                <Collapse in={locationSubType === organizedTransportLocationType}>
+                placeSubType === organizedTransportPlaceType &&
+                <Collapse in={placeSubType === organizedTransportPlaceType}>
                     <OrganizedTransportEventForm/>
                 </Collapse>
             }

@@ -22,7 +22,7 @@ const ExposuresAndFlights = () => {
     const [fromAirport, setFromAirport] = React.useState<string>();
     const [toAirport, setToAirport] = React.useState<string>();
     const [airline, setAirline] = React.useState<string>();
-    const [flightNumber, setFlightNumber] = React.useState<string>();
+    const [flightNum, setFlightNumber] = React.useState<string>();
     const [departureDate, setDepartureDate] = React.useState<Date>();
     const [arrivalDate, setArrivalDate] = React.useState<Date>();
 
@@ -34,7 +34,7 @@ const ExposuresAndFlights = () => {
             fromAirport,
             toAirport,
             airline,
-            flightNumber,
+            flightNum,
             departureDate,
             arrivalDate,
         },
@@ -45,7 +45,7 @@ const ExposuresAndFlights = () => {
             fromAirport: setFromAirport,
             toAirport: setToAirport,
             airline: setAirline,
-            flightNumber: setFlightNumber,
+            flightNum: setFlightNumber,
             departureDate: setDepartureDate,
             arrivalDate: setArrivalDate,
         }

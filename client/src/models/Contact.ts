@@ -1,9 +1,11 @@
 interface Contact {
-    name: string;
+    serialId?: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
     id: string;
-    needsToBeQuarantined: boolean;
-    moreDetails?: string;
+    contactType: string;
+    extraInfo?: string;
 }
 
 export default Contact;

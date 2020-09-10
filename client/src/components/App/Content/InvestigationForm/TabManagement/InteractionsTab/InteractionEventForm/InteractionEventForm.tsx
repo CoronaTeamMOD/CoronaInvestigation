@@ -5,36 +5,40 @@ import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/co
     
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
-import { initAddress } from 'models/Address';
 import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import LocationsTypesAndSubTypes from 'commons/Forms/LocationsTypesAndSubTypes/LocationsTypesAndSubTypes';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
-import SchoolEventForm, { grades } from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import HospitalEventForm, { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
-import TransportationEventForm, { resetTransportationFormFields } from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
-import { InteractionEventDialogContext } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
+import { InteractionEventDialogContext, initialDialogData } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
+import MedicalLocationForm, { hospitalPlaceType } from './PlacesAdditionalForms/MedicalLocationForm';
 
-const privateHouseLocationType : string = 'בית פרטי';
-const officeLocationType : string = 'משרד';
-export const transportationLocationType : string = 'תחבורה';
-export const schoolLocationType : string = 'בית ספר';
-export const hospitalLocationType : string = 'בית חולים';
+const privateHousePlaceType : string = 'בית פרטי';
+const officePlaceType : string = 'משרד';
+const transportationPlaceType : string = 'תחבורה';
+const schoolPlaceType : string = 'מוסד חינוכי';
+const medicalPlaceType : string = 'מוסד רפואי';
+const religionPlaceType : string = 'אתר דת';
+const geriatricPlaceType : string = 'מוסד גריאטרי';
+const otherPublicPlaceType : string = 'מקומות ציבוריים נוספים';
 
 export const defaultContact: Contact = {
-    name: '',
+    firstName: '',
+    lastName: '',
     phoneNumber: '',
     id: '',
-    needsToBeQuarantined: false,
-    moreDetails: '',
+    contactType: '',
 };
 
 const addContactButton: string = 'הוסף מגע';
@@ -42,7 +46,7 @@ const addContactButton: string = 'הוסף מגע';
 const InteractionEventForm : React.FC = () : JSX.Element => {
     
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
-    const { locationType, startTime, endTime, externalizationApproval, contacts, locationSubType } = interactionEventDialogData;
+    const { placeType, startTime, endTime, externalizationApproval, contacts, placeSubType, id, investigationId } = interactionEventDialogData;
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -50,7 +54,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
 
     React.useEffect(() => {
         const hasInvalidContact : boolean = contacts
-            .some(contact => (!contact.id || !contact.name || !contact.phoneNumber));
+            .some(contact => (!contact.id || !contact.firstName  || !contact.lastName || !contact.phoneNumber));
         setCanAddContact(!hasInvalidContact);
     }, [contacts])
     
@@ -59,25 +63,25 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
         setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
     }
 
-    const onLocationTypeChange = (newLocationType: string) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
-            locationType: newLocationType,
-            locationSubType: '',
-            locationName: newLocationType === hospitalLocationType ? hospitals[0] : undefined,
-            grade: (newLocationType === schoolLocationType) ? grades[0] : undefined,
-            locationAddress: initAddress,
-            hospitalDepartment: undefined,
-            ...resetTransportationFormFields
+    const onPlaceTypeChange = (newPlaceType: string) => {
+        setInteractionEventDialogData(
+        {
+            ...initialDialogData(startTime, endTime, contacts, investigationId),
+            id,
+            placeType: newPlaceType,
+            externalizationApproval
         });
     }
 
-    const onLocationSubTypeChange = (newLocationSubType: string) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, 
-            locationSubType: newLocationSubType,
-            locationName: undefined,
-            grade: undefined,
-            locationAddress: initAddress,
-            ...resetTransportationFormFields
+    const onPlaceSubTypeChange = (newPlaceSubType: number) => {
+        setInteractionEventDialogData(
+        {
+            ...initialDialogData(startTime, endTime, contacts, investigationId),
+                id,
+                placeType,
+                placeSubType: newPlaceSubType,
+                placeName: newPlaceSubType === hospitalPlaceType ? hospitals[0] : undefined,
+                externalizationApproval
         });
     }
     
@@ -86,7 +90,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     };
 
     const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, endTime)});
+        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, endTime: parse(event.target.value, timeFormat, endTime)});
     };
 
     const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => 
@@ -95,47 +99,59 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <Grid className={formClasses.form} container justify='flex-start'>
-                <LocationsTypesAndSubTypes 
-                locationType={locationType}
-                locationSubType={locationSubType}
-                onLocationTypeChange={onLocationTypeChange}
-                onLocationSubTypeChange={onLocationSubTypeChange}/>
+                <PlacesTypesAndSubTypes 
+                placeType={placeType}
+                placeSubType={placeSubType}
+                onPlaceTypeChange={onPlaceTypeChange}
+                onPlaceSubTypeChange={onPlaceSubTypeChange}/>
                 {
-                    locationType === privateHouseLocationType && 
-                    <Collapse in={locationType === privateHouseLocationType}>
+                    placeType === privateHousePlaceType && 
+                    <Collapse in={placeType === privateHousePlaceType}>
                         <PrivateHouseEventForm/>
                     </Collapse>
                 }
                 {
-                    locationType === officeLocationType &&
-                    <Collapse in={locationType === officeLocationType}>
+                    placeType === officePlaceType &&
+                    <Collapse in={placeType === officePlaceType}>
                         <OfficeEventForm/>
                     </Collapse>
                 }
                 {
-                    locationType === transportationLocationType &&
-                    <Collapse in={locationType === transportationLocationType}>
+                    placeType === transportationPlaceType &&
+                    <Collapse in={placeType === transportationPlaceType}>
                         <TransportationEventForm/>
                     </Collapse>
                 }
                 {
-                    locationType === schoolLocationType &&
-                    <Collapse in={locationType === schoolLocationType}>
+                    placeType === schoolPlaceType &&
+                    <Collapse in={placeType === schoolPlaceType}>
                         <SchoolEventForm/>
                     </Collapse>
                 }
                 {
-                    locationType === hospitalLocationType &&
-                    <Collapse in={locationType === hospitalLocationType}>
-                        <HospitalEventForm/>
+                    placeType === medicalPlaceType &&
+                    <Collapse in={placeType === medicalPlaceType}>
+                        <MedicalLocationForm />
                     </Collapse>
                 }
-                {/* {
-                    otherLocationTypes.includes(locationType) &&
-                    <Collapse in={otherLocationTypes.includes(locationType)}>
+                {
+                    placeType === religionPlaceType &&
+                    <Collapse in={placeType === religionPlaceType}>
                         <DefaultPlaceEventForm />
                     </Collapse>
-                } */}
+                }
+                {
+                    placeType === geriatricPlaceType &&
+                    <Collapse in={placeType === geriatricPlaceType}>
+                        <DefaultPlaceEventForm />
+                    </Collapse>
+                }
+                {
+                    placeType === otherPublicPlaceType &&
+                    <Collapse in={placeType === otherPublicPlaceType}>
+                        <OtherPublicLocationForm/>
+                    </Collapse>
+                }
                 <Grid className={formClasses.formRow} container justify='flex-start'>
                     <Grid item xs={6}>
                         <FormInput fieldName='משעה'>

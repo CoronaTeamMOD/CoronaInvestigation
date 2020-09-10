@@ -22,7 +22,7 @@ export const initialPersonalInfo: personalInfoContextData = {
     address: {
         address: null,
         entrance: '',
-        floor: '',
+        floor: '3',
         apartment: ''
     },
     relevantOccupation: relevantOccupations.MOH_Worker,

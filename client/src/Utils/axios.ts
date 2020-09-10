@@ -7,6 +7,8 @@ const instance = axios.create({
     baseURL: process.env.REACT_APP_DB_API
 });
 
+console.log(process.env.REACT_APP_DB_API);
+
 instance.interceptors.request.use(
     (config) => {
         config.headers.Authorization = store.getState().user.token;
