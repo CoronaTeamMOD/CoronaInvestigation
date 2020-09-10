@@ -1,15 +1,16 @@
 import swal from 'sweetalert2';
-import {useSelector} from 'react-redux';
-import { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { differenceInYears } from 'date-fns';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
-import InvestigationTableRow from "models/InvestigationTableRow";
+import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyle from './InvestigationTableStyles';
-import { useInvestigationTableOutcome } from "./InvestigationTableInterfaces";
+import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
 
 export const createRowData = (
   epidemiologyNumber: number,
@@ -32,7 +33,7 @@ type InvestigationsReturnType = {
     userById: {
       investigationsByCreator: {
         nodes: [{
-          epidemioligyNumber: number,
+          epidemiologyNumber: number,
           investigatedPatientByInvestigatedPatientId: {
             addressByAddress: {
               city: string
@@ -61,30 +62,34 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const classes = useStyle();
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', {id : user.id})
+    axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name})
     .then(response => {
+      
       const { data } = response;
-      const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {
-        const patient = investigation.investigatedPatientByInvestigatedPatientId;
-        return createRowData(investigation.epidemioligyNumber,
-                             investigation.investigationStatusByInvestigationStatus.displayName,
-                             patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
-                             patient.personByPersonId.phoneNumber,
-                             Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-                             patient.addressByAddress.city)
-      });
-      setRows(investigationRows)
+      if (data && data.data && data.data.userById) {
+        const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {
+          const patient = investigation.investigatedPatientByInvestigatedPatientId;
+          return createRowData(investigation.epidemiologyNumber,
+            investigation.investigationStatusByInvestigationStatus.displayName,
+            patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
+            patient.personByPersonId.phoneNumber,
+            Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
+            patient.addressByAddress.city)
+        });
+        setRows(investigationRows)
+      }
+      setIsLoading(false)
     })
-    .catch(err => {
-      swal.fire({
-        title: 'אופס... לא הצלחנו לשלוף',
-        icon: 'error',
-        customClass: {
-          title: classes.errorAlertTitle
-        }
-      })
-      console.log(err)
-    });
+      .catch(err => {
+        swal.fire({
+          title: 'אופס... לא הצלחנו לשלוף',
+          icon: 'error',
+          customClass: {
+            title: classes.errorAlertTitle
+          }
+        })
+        console.log(err)
+      });
   }, [user.id, classes.errorAlertTitle]);
 
   return {
