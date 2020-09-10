@@ -63,6 +63,7 @@ query MyQuery($city: String!) {
     allSubOccupations(condition: {parentOccupation: "מערכת החינוך", city: $city}) {
       nodes {
         displayName
+        street
       }
     }
   } 

@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
 import FormLabel from '@material-ui/core/FormLabel';
 import { RadioGroup, Radio } from '@material-ui/core';
@@ -14,6 +15,7 @@ import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
+import { useSelector } from 'react-redux';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -34,11 +36,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
 
+    const cities = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
         personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData, [fieldName]: fieldValue});
     }
 
     const handleChangeAddress = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
+        console.log(cities);
         personalInfoStateContext.setPersonalInfoData({
             ...personalInfoStateContext.personalInfoData, 
             address: {
@@ -60,6 +65,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     React.useEffect(()=> {
         fetchPersonalInfo();
     }, [])
+
+    React.useEffect(() => {
+        if(personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' || personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות') {
+            getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
+        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות החינוך'){
+            setSubOccupations([]);
+        }
+    }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -236,11 +249,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                                             color='primary'
                                                             onChange={(event) => {
                                                                 handleChangeField(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
-                                                                if(event.target.value === 'כוחות הביטחון' || event.target.value === 'מערכת הבריאות') {
-                                                                    getSubOccupations(event.target.value);
-                                                                } else {
-                                                                    setSubOccupations([]);
-                                                                }
                                                             }}/>} 
                                                 label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
                                             />
