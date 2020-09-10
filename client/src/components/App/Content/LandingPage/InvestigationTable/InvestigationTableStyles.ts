@@ -21,7 +21,8 @@ const useStyles = makeStyles({
         fontFamily: 'Assistant'
     },
     investigationRow: {
-        textDecoration: 'none'
+        textDecoration: 'none',
+        cursor: 'pointer'
     }
 });
 
