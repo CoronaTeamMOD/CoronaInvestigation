@@ -6,6 +6,14 @@ import { InvestigationInfo } from 'models/InvestigationInfo';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 
+const defaultUser = {
+    id: '',
+    userName: '',
+    phoneNumber: '',
+    serialNumber: '',
+    investigationGroup: -1
+}
+
 const defaultInvestigationStaticInfo = {
     startTime: new Date(),
     lastUpdateTime: new Date(),
@@ -25,20 +33,8 @@ const defaultInvestigationStaticInfo = {
     },
     coronaTestDate: new Date(),
     investigatedPatientId: 0,
-    userByCreator: {
-        id: '',
-        userName: '',
-        phoneNumber: '',
-        serialNumber: '',
-        investigationGroup: -1
-    },
-    userByLastUpdator: {
-        id: '',
-        userName: '',
-        phoneNumber: '',
-        serialNumber: '',
-        investigationGroup: -1
-    },
+    userByCreator: defaultUser,
+    userByLastUpdator: defaultUser
 }
 
 const InvestigationInfoBar = (props: Props) => {
@@ -52,8 +48,7 @@ const InvestigationInfoBar = (props: Props) => {
             investigationId: 111
         }).then((result: any) => {
             if(result && result.data && result.data.data)
-            setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
-            console.log(result)
+                setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
         })
     }, []);
 
