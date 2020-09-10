@@ -25,6 +25,8 @@ const authMiddleware = (
       .catch((e) => console.error(e));
 
     next();
+  } else {
+    next();
   }
 };
 
