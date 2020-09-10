@@ -61,7 +61,7 @@ const InvestigationInfoBar = (props: Props) => {
                 setIsLoading(false);
                 Swal.fire({
                     icon: 'warning',
-                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנה מועבר לשם',
+                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
                     timer: 1750,
                     showConfirmButton: false
                 });

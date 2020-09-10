@@ -62,7 +62,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const classes = useStyle();
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', { id: user.name})
+    axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name})
     .then(response => {
       
       const { data } = response;
