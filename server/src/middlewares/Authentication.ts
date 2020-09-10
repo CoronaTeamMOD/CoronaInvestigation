@@ -23,11 +23,8 @@ const authMiddleware = (
           console.log(data[0], data[0]?.user_id, data[0]?.user_claims);
       })
       .catch((e) => console.error(e));
-
+    } 
     next();
-  } else {
-    next();
-  }
 };
 
 export default authMiddleware;
