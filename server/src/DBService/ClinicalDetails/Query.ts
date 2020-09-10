@@ -28,10 +28,17 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
         investigationsByInvestigatedPatientId {
           nodes {
             addressByIsolationAddress {
-              city
-              floor
-              houseNum
-            }
+                floor
+                houseNum
+                streetByStreet {
+                  displayName
+                  id
+                }
+                cityByCity {
+                  displayName
+                  id
+                }
+              }
             isolationStartTime
             isolationEndTime
             isIsolationProblem
@@ -40,6 +47,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
             hospital
             hospitalizationStartTime
             hospitalizationEndTime
+            symptomsStartTime
             investigatedPatientSymptomsByInvestigationId {
               nodes {
                 symptomName

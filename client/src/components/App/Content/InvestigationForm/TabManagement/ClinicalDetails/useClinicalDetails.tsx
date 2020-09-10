@@ -36,14 +36,40 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getClinicalDetailsByEpidemiologyNumber = () => {
         axios.post('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=' + epidemiologyNumber).then(
             result => {
-                if (result && result.data && result.data.data) {
-                    let clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
+                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                    const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
+                    const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes;
+                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
+                    const patientAddress = patientInvestigation.addressByIsolationAddress;
+                    
+                    context.setClinicalDetailsData({
+                        ...context.clinicalDetailsData,
+                        isPregnant: patientIsPregnant,
+                        backgroundDeseases: patientBackgroundDiseases,
+                        hospital: patientInvestigation.hospital,
+                        hospitalizationStartDate: new Date(patientInvestigation.hospitalizationStartTime),
+                        hospitalizationEndDate: new Date(patientInvestigation.hospitalizationEndTime),
+                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
+                        isolationStartDate: new Date(patientInvestigation.isolationStartTime),
+                        isolationEndDate: new Date(patientInvestigation.isolationEndTime),
+                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes,
+                        symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
+                        isolationAddress: {
+                            city: patientAddress.cityByCity.displayName,
+                            street: patientAddress.streetByStreet.displayName,
+                            floor: patientAddress.floor,
+                            houseNum: patientAddress.houseNum
+                        }
+                    })
                 }
             }
         );
     };
 
     React.useEffect(() => {
+        console.log(cities.get('5000')?.displayName)
         getSymptoms();
         getBackgroundDiseases();
         getClinicalDetailsByEpidemiologyNumber();

@@ -113,14 +113,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={isInIsolation}
+                        value={(context.clinicalDetailsData.isolationStartDate || context.clinicalDetailsData.isolationEndDate) ? true : isInIsolation}
                         onChange={isInIsolationToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={isInIsolation}>
+                    <Collapse in={(context.clinicalDetailsData.isolationStartDate || context.clinicalDetailsData.isolationEndDate) ? true : isInIsolation}>
                         <div className={classes.dates}>
                             <DatePick
                                 type='date'
@@ -204,10 +204,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Toggle
-                    value={context.clinicalDetailsData.isIsolationProblem}
+                    value={context.clinicalDetailsData.isIsolationProblemMoreInfo ? true : context.clinicalDetailsData.isIsolationProblem}
                     onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
                 />
-                <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
+                <Collapse in={context.clinicalDetailsData.isIsolationProblemMoreInfo ? true : context.clinicalDetailsData.isIsolationProblem}>
                     <CircleTextField
                         value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -229,14 +229,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={hasSymptoms}
+                        value={context.clinicalDetailsData.symptoms.length > 0 ? true : hasSymptoms}
                         onChange={hasSymptomsToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={hasSymptoms}>
+                    <Collapse in={context.clinicalDetailsData.symptoms.length > 0 ? true : hasSymptoms}>
                         <div className={classes.dates}>
                             <DatePick
                                 type='date'
@@ -299,14 +299,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={hasBackgroundDiseases}
+                        value={context.clinicalDetailsData.backgroundDeseases.length > 0 ? true : hasBackgroundDiseases}
                         onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={hasBackgroundDiseases}>
+                    <Collapse in={context.clinicalDetailsData.backgroundDeseases.length > 0 ? true : hasBackgroundDiseases}>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
@@ -350,14 +350,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={wasHospitalized}
+                        value={context.clinicalDetailsData.hospital || context.clinicalDetailsData.hospitalizationStartDate || context.clinicalDetailsData.hospitalizationEndDate ? true : wasHospitalized}
                         onChange={wasHospitalizedToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={wasHospitalized}>
+                    <Collapse in={context.clinicalDetailsData.hospital || context.clinicalDetailsData.hospitalizationStartDate || context.clinicalDetailsData.hospitalizationEndDate ? true : wasHospitalized}>
                         <div className={classes.dates}>
                             <Typography>
                                 <b>
