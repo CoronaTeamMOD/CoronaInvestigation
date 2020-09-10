@@ -36,16 +36,17 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
         city: request.body.personalInfoData.address.city,
         street: request.body.personalInfoData.address.street,
         floor: +request.body.personalInfoData.address.floor,
-        houseNum: +request.body.personalInfoData.address.houseNumber
+        houseNum: +request.body.personalInfoData.address.houseNum
     }).then((result: any) => {
         graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
             {
                 id: request.body.id, 
                 hmo: request.body.personalInfoData.insuranceCompany,
-                otherOccupationExtraInfo: request.body.personalInfoData.institutionName? request.body.personalInfoData.institutionName : '',
+                otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo? request.body.personalInfoData.otherOccupationExtraInfo : '',
                 occupation: request.body.personalInfoData.relevantOccupation,
                 patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
-                address: result.data.createAddress.address.id
+                subOccupation: request.body.personalInfoData.otherOccupationExtraInfo !== '' ? null : request.body.personalInfoData.institutionName,
+                address: result.data.createAddress.address.id,
             }
         ).then((result: any) => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
                 {
@@ -54,29 +55,6 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                     additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
                 }).then((result: any) => response.send(result)));
     });
-    // graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, 
-    //     {
-    //         id: request.body.id, 
-    //         hmo: request.body.personalInfoData.insuranceCompany,
-    //         otherOccupationExtraInfo: request.body.personalInfoData.institutionName,
-    //         occupation: request.body.personalInfoData.relevantOccupation,
-    //         patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber
-    //     }
-    // ).then(() => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,
-    //         {
-    //             id: 10,
-    //             phoneNumber: request.body.personalInfoData.phoneNumber,
-    //             additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
-    //         }).then(() => {
-    //             graphqlRequest(UPDATE_ADRESS,
-    //             {
-    //                 id: 88,
-    //                 city: request.body.personalInfoData.address.city,
-    //                 street: request.body.personalInfoData.address.street,
-    //                 floor: Number(request.body.personalInfoData.address.floor),
-    //                 houseNum: Number(request.body.personalInfoData.address.houseNumber)
-    //             }).then((result: any) => response.send(result));
-    //     }));
 });
 
 export default personalDetailsRoute;

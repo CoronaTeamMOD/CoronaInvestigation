@@ -30,6 +30,12 @@ query MyQuery($id: Int!) {
           street
           floor
           houseNum
+          cityByCity {
+            displayName
+          }
+          streetByStreet {
+            displayName
+          }
         }
         personId
         patientContactPhoneNumber
@@ -41,7 +47,8 @@ query MyQuery($id: Int!) {
           phoneNumber
         }
         subOccupationBySubOccupation {
-            city
+          city
+          displayName
         }
       }
     }

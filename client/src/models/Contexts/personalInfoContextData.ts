@@ -12,4 +12,5 @@ export interface personalInfoContextData {
     relevantOccupation: string;
     educationOccupationCity: string;
     institutionName: string;
+    otherOccupationExtraInfo: string;
 }

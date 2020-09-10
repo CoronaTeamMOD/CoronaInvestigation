@@ -18,7 +18,8 @@ export const initialPersonalInfo: personalInfoContextData = {
     },
     relevantOccupation: '',
     educationOccupationCity: '',
-    institutionName: ''
+    institutionName: '',
+    otherOccupationExtraInfo: ''
 } 
 
 const initialPersonalInfoContext: PersonalInfoDataAndSet = {
