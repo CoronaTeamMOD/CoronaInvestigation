@@ -29,7 +29,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
 
     const loadInteractions = () => {
         // TODO: add loading from DB
-        axios.get('/intersections?epidemioligyNumber=111').then(res => console.log(res));
     }
 
     return {        

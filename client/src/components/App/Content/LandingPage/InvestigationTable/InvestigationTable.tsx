@@ -1,6 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { Paper, Table, TableRow, TableBody, 
-         TableCell, Typography, TableHead, TableContainer } from '@material-ui/core';
+    TableCell, Typography, TableHead, TableContainer } from '@material-ui/core';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable from './useInvestigationTable';
@@ -9,8 +13,11 @@ const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך ה�
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
+
   const classes = useStyles();
   const { tableRows } = useInvestigationTable();
+
+  const user = useSelector<StoreStateType, string>(state => state.user.name);
 
   return (
     <>
@@ -32,7 +39,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </TableHead>
                 <TableBody>
                 {tableRows.map((row) => (
-                    <TableRow key={row.epidemiologyNumber}>
+                    <TableRow 
+                        key={row.epidemiologyNumber}
+                        component={Link}
+                        to='/investigation'
+                        className={classes.investigationRow}
+                        onClick={() => setEpidemiologyNum(row.epidemiologyNumber)}
+                    >
                         <TableCell component="th" scope="row">
                             {row.epidemiologyNumber}
                         </TableCell>

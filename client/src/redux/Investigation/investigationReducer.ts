@@ -2,11 +2,11 @@ import * as Actions from './investigationActionTypes';
 import InvestigationRedux from 'models/InvestigationRedux';
 
 const initialState: InvestigationRedux = {
-    epidemiologyNumber: 122,
+    epidemiologyNumber: -1,
     cantReachInvestigated: false,
-    investigatedPatientId: 106,
-    creator: '33',
-    lastUpdator: '33',
+    investigatedPatientId: -1,
+    creator: '',
+    lastUpdator: '',
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
