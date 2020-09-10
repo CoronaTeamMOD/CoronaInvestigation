@@ -14,9 +14,14 @@ clinicalDetailsRoute.get('/', (request: Request, response: Response) => {
 });
 
 clinicalDetailsRoute.post('/symptoms', async (request: Request, response: Response) => {
-    const result = await graphqlRequest(GET_SYMPTOMS);
+    try{
+        const result = await graphqlRequest(GET_SYMPTOMS);
 
-    response.send(result);
+        response.send(result);
+    }
+    catch (error) {
+        response.status(500).json({error: "Error in get all symptoms query "});
+    }
 });
 
 clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Response) => {
