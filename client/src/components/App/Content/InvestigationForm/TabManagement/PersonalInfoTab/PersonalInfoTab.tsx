@@ -8,16 +8,13 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import LocationInput, { GoogleApiPlace } from 'commons/LocationInputField/LocationInput';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
-import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -25,8 +22,8 @@ const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
-const INSERT_INSTITUTION_NAME = 'הזן שם מוסך:';
-const INSTITUTION_OPTIONS = ['אודם','168','צה"ל', 'מוסד', 'אחר','8600'];
+const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
+const INSTITUTION_OPTIONS = ['אודם','ירושלים','צה"ל', 'מוסד', 'אחר','8600'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
@@ -34,6 +31,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
     const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
+    const [subOccupations, setSubOccupations] = React.useState<string[]>([]);
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
 
@@ -57,7 +55,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     //         address: {...personalInfoStateContext.personalInfoData.address, [PersonalInfoDataContextFields.ADDRESS]:newValue}});
     // };
 
-    const { fetchPersonalInfo } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext});
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
+        personalInfoStateContext, subOccupations, setSubOccupations});
     
     React.useEffect(()=> {
         fetchPersonalInfo();
@@ -161,38 +160,42 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         options={INSTITUTION_OPTIONS}
                         getOptionLabel={(option) => option}
                         inputValue={personalInfoStateContext.personalInfoData.address.city}
+                        onInputChange={(event, newInputValue) => {
+                            handleChangeAddress(PersonalInfoDataContextFields.CITY, newInputValue)}
+                        }
+                        onSelect={(event) => {
+                            (event.nativeEvent.type === 'selectionchange') && console.log('triggered');
+                        }}
                         renderInput={(params) =>                     
                         <CircleTextField
                             {...params}
-                            id={ADDRESS_LABEL}
+                            id={PersonalInfoDataContextFields.CITY}
                             placeholder={'עיר'}
                             value={personalInfoStateContext.personalInfoData.address.city}
-                            onChange={(event) => {
-                                handleChangeAddress(PersonalInfoDataContextFields.CITY, event.target.value);
-                            }}
                         />}
                     />
                 </Grid>
                 <Grid item xs={2}>
                     <Autocomplete
+                        disabled
                         options={INSTITUTION_OPTIONS}
                         getOptionLabel={(option) => option}
                         inputValue={personalInfoStateContext.personalInfoData.address.street}
+                        onInputChange={(event, newInputValue) => {
+                            handleChangeAddress(PersonalInfoDataContextFields.STREET, newInputValue)}
+                        }
                         renderInput={(params) =>                     
                         <CircleTextField
                             {...params}
-                            id={ADDRESS_LABEL}
+                            id={PersonalInfoDataContextFields.STREET}
                             placeholder={'רחוב'}
                             value={personalInfoStateContext.personalInfoData.address.street}
-                            onChange={(event) => {
-                                handleChangeAddress(PersonalInfoDataContextFields.STREET, event.target.value);
-                            }}
                         />}
                     />
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
-                        id={ADDRESS_LABEL}
+                        id={PersonalInfoDataContextFields.FLOOR}
                         placeholder={'קומה'}
                         value={personalInfoStateContext.personalInfoData.address.floor}
                         onChange={(event) => {
@@ -202,7 +205,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField 
-                        id={ADDRESS_LABEL}
+                        id={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         placeholder={'מספר בית'}
                         value={personalInfoStateContext.personalInfoData.address.houseNum}
                         onChange={(event) => {
@@ -234,6 +237,11 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                                             color='primary'
                                                             onChange={(event) => {
                                                                 handleChangeField(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
+                                                                if(event.target.value === 'כוחות הביטחון' || event.target.value === 'מערכת הבריאות') {
+                                                                    getSubOccupations(event.target.value);
+                                                                } else {
+                                                                    setSubOccupations([]);
+                                                                }
                                                             }}/>} 
                                                 label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
                                             />
@@ -242,6 +250,30 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </RadioGroup>
                     </FormControl>
                 </Grid>
+                {
+                    personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך' &&
+                        <Grid item xs={2}>
+                            <Autocomplete
+                                options={INSTITUTION_OPTIONS}
+                                getOptionLabel={(option) => option}
+                                inputValue={personalInfoStateContext.personalInfoData.educationOccupationCity}
+                                onInputChange={(event, newInputValue) => {
+                                    handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)}
+                                }
+                                onSelect={(event) => {
+                                    (event.nativeEvent.type === 'selectionchange') && 
+                                    getEducationSubOccupations(personalInfoStateContext.personalInfoData.educationOccupationCity);
+                                }}
+                                renderInput={(params) =>                     
+                                <CircleTextField
+                                    {...params}
+                                    id={PersonalInfoDataContextFields.CITY}
+                                    placeholder={'עיר המצאות המוסד'}
+                                    value={personalInfoStateContext.personalInfoData.educationOccupationCity}
+                                />}
+                            />
+                        </Grid>
+                }   
                 <Grid item xs={3}>
                     <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
                     {
@@ -249,8 +281,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות' ||
                         personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך') ?
                             <CircleSelect
+                                disabled={subOccupations.length === 0}
                                 value={personalInfoStateContext.personalInfoData.institutionName}
-                                options={INSTITUTION_OPTIONS}
+                                options={subOccupations}
                                 className={classes.institutionName + ' ' + classes.circleSelect}
                                 onChange={(event) => {
                                     handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);

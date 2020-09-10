@@ -17,6 +17,7 @@ export const initialPersonalInfo: personalInfoContextData = {
         houseNum: ''
     },
     relevantOccupation: '',
+    educationOccupationCity: '',
     institutionName: ''
 } 
 

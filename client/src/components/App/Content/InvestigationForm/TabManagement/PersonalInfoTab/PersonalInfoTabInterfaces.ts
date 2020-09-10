@@ -6,9 +6,13 @@ export interface usePersoanlInfoTabParameters {
     insuranceCompanies: string[];
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
     personalInfoStateContext: PersonalInfoDataAndSet;
+    subOccupations: string[];
+    setSubOccupations: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface usePersonalInfoTabOutcome {
     fetchPersonalInfo: () => void;
+    getSubOccupations: (parentOccupation: string) => void;
+    getEducationSubOccupations: (city: string) => void;
 }
 
