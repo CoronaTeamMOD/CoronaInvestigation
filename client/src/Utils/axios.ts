@@ -18,6 +18,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
     (config) => {
+        setIsLoading(false);
         return config;
     }, 
     (error) => {
