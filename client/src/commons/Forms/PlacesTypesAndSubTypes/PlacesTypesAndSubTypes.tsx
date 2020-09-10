@@ -6,7 +6,7 @@ import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 
-import useInteractionEventForm from './usePlacesTypesAndSubTypes';
+import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element => {
     
@@ -26,7 +26,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
         onPlaceSubTypeChange(defaultPlaceType);
     }, [placeType]);
 
-    useInteractionEventForm({setPlacesSubTypesByTypes});
+    usePlacesTypesAndSubTypes({setPlacesSubTypesByTypes});
 
     return (
         <Grid className={formClasses.formRow} container justify='flex-start'>
@@ -41,8 +41,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                 </FormInput>
             </Grid>
             {
-                placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 
-                && 
+                placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 && 
                 <Grid item xs={6}>
                     <FormInput fieldName='תת סוג'>
                         <CircleSelect

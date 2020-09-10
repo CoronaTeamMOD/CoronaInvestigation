@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
     
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
+import ContactType from 'models/enums/ContactType';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
@@ -18,12 +19,6 @@ const contactedPersonID: string = 'ת.ז';
 const contactTypeField: string = 'סוג מגע';
 const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
 
-const contactTypes: string[] = [
-    'מגע הדוק',
-    'מגע לא הדוק',
-    'לא ידוע'
-];
-
 const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
 
     const { updatedContactIndex } = props;
@@ -37,7 +32,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     const { extraInfo, contactType, lastName, firstName, phoneNumber, id } = contact;
 
     React.useEffect(() => {
-        onChange(contactTypes[0], InteractionEventContactFields.CONTACT_TYPE);
+        onChange(ContactType.TIGHT, InteractionEventContactFields.CONTACT_TYPE);
     }, [])
 
     const updateContacts = (updatedContact: Contact) => {
@@ -96,7 +91,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                         className={classes.newContactField}
                         value={contactType}
                         onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
-                        options={contactTypes}
+                        options={Object.values(ContactType)}
                         />
                     </FormInput>
                 </Grid>

@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 
-import {initAddress} from 'models/Address';
 import Contact from 'models/Contact';
+import {initAddress} from 'models/Address';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 export interface InteractionsEventDialogDataAndSet {

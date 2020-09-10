@@ -1,5 +1,5 @@
 interface PlaceType {
-    id: number | string;
+    id: number;
     name: string;
 }
 

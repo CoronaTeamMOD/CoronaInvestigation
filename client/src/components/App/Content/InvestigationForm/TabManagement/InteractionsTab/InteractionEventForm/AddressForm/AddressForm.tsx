@@ -1,17 +1,18 @@
+import { Grid } from '@material-ui/core';
 import React, { useContext } from 'react';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import InteractionEventAddressFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventAddressFields';
 import LocationInput, {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import InteractionEventAddressFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventAddressFields';
+import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
+
 import useStyles from './AddressFormStyles';
-import { Grid } from '@material-ui/core';
 
 const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { removeFloor } = props;
+    const { removeFloor, removeEntrance } = props;
         
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
@@ -42,11 +43,12 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
             </Grid>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={6}>
-                    <FormInput fieldName='כניסה'>
-                        <CircleTextField
-                            value={entrance}
-                            onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.ENTRANCE)}/>
-                    </FormInput>
+                    { !removeEntrance && <FormInput fieldName='כניסה'>
+                            <CircleTextField
+                                value={entrance}
+                                onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.ENTRANCE)}/>
+                        </FormInput>
+                    }
                 </Grid>
                 <Grid item xs={6}>
                     { !removeFloor && <FormInput fieldName='קומה'>
@@ -64,4 +66,5 @@ export default AddressForm;
 
 interface Props {
     removeFloor?: boolean
+    removeEntrance?: boolean
 }
