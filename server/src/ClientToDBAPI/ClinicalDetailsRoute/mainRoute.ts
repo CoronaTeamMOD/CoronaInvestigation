@@ -68,8 +68,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             investigation: { ...requestInvestigation }
         }).then(() => {
             graphqlRequest(ADD_BACKGROUND_DISEASES, {
-                backgroundDeseases: clinicalDetails.backgroundDeseases,
-                investigatedPatientId: clinicalDetails.investigatedPatientId
+                investigatedPatientId: clinicalDetails.investigatedPatientId,
+                backgroundDeseases: clinicalDetails.backgroundDeseases
             }).then(() => {
                 graphqlRequest(ADD_SYMPTOMS, {
                     investigationIdValue: clinicalDetails.epidemioligyNumber,

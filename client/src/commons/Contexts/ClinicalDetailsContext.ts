@@ -2,11 +2,6 @@ import { createContext } from 'react';
 
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-interface EmptyContext {
-    clinicalDetailsData: undefined,
-    setClinicalDetailsData: () => void;
-};
-
 export interface ClinicalDetailsDataAndSet {
     clinicalDetailsData: ClinicalDetailsData,
     setClinicalDetailsData: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>
@@ -37,5 +32,5 @@ const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {
     setClinicalDetailsData: () => {}
 };
 
-export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet | EmptyContext>(initialClinicalDetailsContext);
+export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet>(initialClinicalDetailsContext);
 export const ClinicalDetailsDataContextProvider = clinicalDetailsDataContext.Provider;

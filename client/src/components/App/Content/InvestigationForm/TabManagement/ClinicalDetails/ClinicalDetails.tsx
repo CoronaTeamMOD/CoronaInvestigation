@@ -37,12 +37,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+    const context = React.useContext(clinicalDetailsDataContext);
 
     const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
-        setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
+        setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context
     });
 
-    const context = React.useContext(clinicalDetailsDataContext);
 
     React.useEffect(() => {
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
@@ -65,7 +65,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         context.setClinicalDetailsData({
             ...context.clinicalDetailsData as ClinicalDetailsData,
             isolationAddress: {
-                ...context.clinicalDetailsData?.isolationAddress as DBAddress,
+                ...context.clinicalDetailsData.isolationAddress as DBAddress,
                 [fieldToUpdate]: updatedValue
             }
         })
@@ -125,7 +125,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData?.isolationStartDate !== null ? format(context.clinicalDetailsData?.isolationStartDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE, new Date(event.target.value))
                                 )}
@@ -133,7 +133,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData?.isolationEndDate !== null ? format(context.clinicalDetailsData?.isolationEndDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, new Date(event.target.value))
                                 )}
@@ -149,7 +149,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Autocomplete
                     options={['first', 'second', 'third']}
                     getOptionLabel={(option) => option}
-                    inputValue={context.clinicalDetailsData?.isolationAddress.city}
+                    inputValue={context.clinicalDetailsData.isolationAddress.city}
                     onInputChange={(event, newInputValue) => {
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, newInputValue)
                     }}
@@ -164,7 +164,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Autocomplete
                     options={['אחר', 'שתיים', 'שלוש']}
                     getOptionLabel={(option) => option}
-                    inputValue={context.clinicalDetailsData?.isolationAddress.street}
+                    inputValue={context.clinicalDetailsData.isolationAddress.street}
                     onInputChange={(event, newInputValue) => {
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, newInputValue)
                     }}
@@ -180,7 +180,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     size='small'
                     placeholder='קומה'
                     className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress.floor}
+                    value={context.clinicalDetailsData.isolationAddress.floor}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
                     )}
@@ -189,7 +189,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     size='small'
                     placeholder='מספר הבית'
                     className={classes.textField}
-                    value={context.clinicalDetailsData?.isolationAddress.houseNum}
+                    value={context.clinicalDetailsData.isolationAddress.houseNum}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
                     )}
@@ -204,12 +204,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Toggle
-                    value={context.clinicalDetailsData?.isIsolationProblem}
-                    onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData?.isIsolationProblem)}
+                    value={context.clinicalDetailsData.isIsolationProblem}
+                    onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
                 />
-                <Collapse in={context.clinicalDetailsData?.isIsolationProblem}>
+                <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
                     <CircleTextField
-                        value={context.clinicalDetailsData?.isIsolationProblemMoreInfo}
+                        value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                             updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, event.target.value)
                         )}
@@ -240,7 +240,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 type='date'
-                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData?.symptomsStartDate !== null) ? format(context.clinicalDetailsData?.symptomsStartDate as Date, dateFormat) : dateFormat}
+                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormat) : dateFormat}
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -365,7 +365,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </b>
                             </Typography>
                             <CircleTextField
-                                value={context.clinicalDetailsData?.hospital}
+                                value={context.clinicalDetailsData.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
                                 )}
@@ -375,7 +375,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData?.hospitalizationStartDate !== null ? format(context.clinicalDetailsData?.hospitalizationStartDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, new Date(event.target.value))
                                 )}
@@ -383,7 +383,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData?.hospitalizationEndDate !== null ? format(context.clinicalDetailsData?.hospitalizationEndDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, new Date(event.target.value))
                                 )}
@@ -401,8 +401,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </Typography>
                         </Grid>
                         <Toggle
-                            value={context.clinicalDetailsData?.isPregnant}
-                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
+                            value={context.clinicalDetailsData.isPregnant}
+                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData.isPregnant)}
                         />
                     </>
                     : <></>

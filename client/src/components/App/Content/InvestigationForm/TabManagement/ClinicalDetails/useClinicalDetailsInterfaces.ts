@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 
 export interface useClinicalDetailsIncome {
     setIsInIsolation: React.Dispatch<React.SetStateAction<boolean>>;
@@ -7,6 +8,7 @@ export interface useClinicalDetailsIncome {
     setWasHospitalized: React.Dispatch<React.SetStateAction<boolean>>;
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
+    context: ClinicalDetailsDataAndSet;
 };
 
 export interface useClinicalDetailsOutcome {

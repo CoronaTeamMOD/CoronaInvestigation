@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import City from 'models/City';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 
@@ -8,7 +9,7 @@ import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinic
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases } = parameters;
+    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context } = parameters;
 
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
     const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
@@ -16,6 +17,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
@@ -33,7 +35,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const getClinicalDetailsByEpidemiologyNumber = () => {
         axios.post('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=' + epidemiologyNumber).then(
-            result => console.log(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId)
+            result => {
+                if (result && result.data && result.data.data) {
+                    let clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                }
+            }
         );
     };
 

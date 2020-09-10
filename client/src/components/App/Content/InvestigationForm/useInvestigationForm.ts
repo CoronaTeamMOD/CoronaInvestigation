@@ -26,16 +26,16 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
 
     const classes = useStyles({});
 
-    useEffect(()=> {
+    useEffect(() => {
         axios.get('/addressDetails/cities')
-        .then((result: any) => {
-            const cities: Map<string, City> = new Map();
-            result && result.data && result.data.forEach((city: City) => {
-                cities.set(city.id, city)
-            });
-            setCities(cities);
-        })
-        .catch(err=> console.log(err));
+            .then((result: any) => {
+                const cities: Map<string, City> = new Map();
+                result && result.data && result.data.forEach((city: City) => {
+                    cities.set(city.id, city)
+                });
+                setCities(cities);
+            })
+            .catch(err => console.log(err));
     }, []);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
