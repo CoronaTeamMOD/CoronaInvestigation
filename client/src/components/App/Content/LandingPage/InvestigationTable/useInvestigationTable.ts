@@ -59,7 +59,7 @@ const handlingInvestigationStatus = 'בטיפול';
 
 const useInvestigationTable = (): useInvestigationTableOutcome => {
 
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyle();
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
