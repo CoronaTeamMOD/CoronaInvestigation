@@ -1,5 +1,5 @@
-import axios from "axios";
-import { NextFunction, Request, Response } from "express";
+import axios from 'axios';
+import { NextFunction, Request, Response } from 'express';
 
 const authMiddleware = (
   request: Request,
