@@ -43,7 +43,7 @@ const App: React.FC = (): JSX.Element => {
             console.log("YOYOY")
             setUser({
                 id: '7',
-                name: 'רוני_1',
+                name: 'חוקר פיקטיבי',
                 token: 'fake token!'
             });
         }
