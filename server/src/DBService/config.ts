@@ -18,7 +18,7 @@ const genericOptions = {
     ignoreRBAC: false,
     disableQueryLog: process.env.ENVIRONMENT === 'prod',
     pgSettings: {
-        statement_timeout: '6000'
+        statement_timeout: '30000'
     }
 };
 

@@ -1,3 +1,4 @@
+import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import { PersonalInfoDataAndSet } from "commons/Contexts/PersonalInfoStateContext";
 
 export interface usePersoanlInfoTabParameters {
@@ -6,8 +7,8 @@ export interface usePersoanlInfoTabParameters {
     insuranceCompanies: string[];
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
     personalInfoStateContext: PersonalInfoDataAndSet;
-    subOccupations: string[];
-    setSubOccupations: React.Dispatch<React.SetStateAction<string[]>>;
+    subOccupations: SubOccupationAndStreet[];
+    setSubOccupations: React.Dispatch<React.SetStateAction<SubOccupationAndStreet[]>>;
 }
 
 export interface usePersonalInfoTabOutcome {

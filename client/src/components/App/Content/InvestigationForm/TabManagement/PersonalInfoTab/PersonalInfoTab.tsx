@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
@@ -9,13 +10,15 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import City from 'models/City';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
+import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
-import { useSelector } from 'react-redux';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -31,19 +34,19 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
+    const [subOccupationName, setSubOccupationName] = React.useState<string>('');
     const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
-    const [subOccupations, setSubOccupations] = React.useState<string[]>([]);
+    const [subOccupations, setSubOccupations] = React.useState<SubOccupationAndStreet[]>([]);
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
 
-    const cities = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
         personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData, [fieldName]: fieldValue});
     }
 
     const handleChangeAddress = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
-        console.log(cities);
         personalInfoStateContext.setPersonalInfoData({
             ...personalInfoStateContext.personalInfoData, 
             address: {
@@ -52,12 +55,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             }
         });
     }
-
-    
-    // const onLocationChange = (event: React.ChangeEvent<{}>, newValue: any) => {
-    //     personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData,
-    //         address: {...personalInfoStateContext.personalInfoData.address, [PersonalInfoDataContextFields.ADDRESS]:newValue}});
-    // };
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
         personalInfoStateContext, subOccupations, setSubOccupations});
@@ -69,7 +66,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     React.useEffect(() => {
         if(personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' || personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות') {
             getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
-        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות החינוך'){
+        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך'){
             setSubOccupations([]);
         }
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
@@ -169,8 +166,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <Autocomplete
-                        options={INSTITUTION_OPTIONS}
-                        getOptionLabel={(option) => option}
+                        options={Array.from(cities, ([name, value]) => ({ name, value }))}
+                        getOptionLabel={(option) => option.value.displayName}
                         inputValue={personalInfoStateContext.personalInfoData.address.city}
                         onInputChange={(event, newInputValue) => {
                             handleChangeAddress(PersonalInfoDataContextFields.CITY, newInputValue)}
@@ -244,8 +241,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     return <FormControlLabel 
                                                 value={occupation} 
                                                 key={occupation}
-                                                control={<Radio 
-                                                            
+                                                control={<Radio                                                           
                                                             color='primary'
                                                             onChange={(event) => {
                                                                 handleChangeField(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
@@ -287,14 +283,23 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         (personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' ||
                         personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות' ||
                         personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך') ?
-                            <CircleSelect
-                                disabled={subOccupations.length === 0}
-                                value={personalInfoStateContext.personalInfoData.institutionName}
+                            <Autocomplete
                                 options={subOccupations}
-                                className={classes.institutionName + ' ' + classes.circleSelect}
-                                onChange={(event) => {
-                                    handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
-                                }}
+                                getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
+                                inputValue={subOccupationName}
+                                onChange={(event, newValue) => {
+                                    newValue && handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, newValue.id)}
+                                }
+                                onInputChange={(event, newInputValue) => {
+                                    setSubOccupationName(newInputValue)}
+                                }
+                                renderInput={(params) =>                     
+                                <CircleTextField
+                                    {...params}
+                                    disabled={subOccupations.length === 0}
+                                    id={PersonalInfoDataContextFields.CITY}
+                                    placeholder={INSERT_INSTITUTION_NAME}
+                                />}
                             /> :
                             <CircleTextField
                                 value={personalInfoStateContext.personalInfoData.institutionName}
@@ -312,3 +317,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 };
 
 export default PersonalInfoTab;
+
+// <CircleSelect
+// disabled={subOccupations.length === 0}
+// value={personalInfoStateContext.personalInfoData.institutionName}
+// options={subOccupations.map((subOccupation) => subOccupation.subOccupation + (subOccupation.street ? ('/' + subOccupation.street) : ''))}
+// className={classes.institutionName + ' ' + classes.circleSelect}
+// onChange={(event) => {
+//     handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
+// }}
+// />

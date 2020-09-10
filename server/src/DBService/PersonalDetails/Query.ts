@@ -53,6 +53,7 @@ query MyQuery($parentOccupation: String!) {
     allSubOccupations(condition: {parentOccupation: $parentOccupation}) {
       nodes {
         displayName
+        id
       }
     }
   } 
@@ -64,6 +65,7 @@ query MyQuery($city: String!) {
       nodes {
         displayName
         street
+        id
       }
     }
   } 
