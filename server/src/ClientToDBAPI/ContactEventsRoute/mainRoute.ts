@@ -9,6 +9,7 @@ import {
     GetLocationSubTypesByTypesResposne,
     LocationsSubTypesByTypes
 } from '../../Models/ContactEvent/GetLocationSubTypesByTypes';
+import {ContactedPerson} from "../../Models/ContactedPerson/ContactedPerson";
 
 const contactEventRoute = Router();
 
@@ -28,8 +29,10 @@ contactEventRoute.get('/getLocationsSubTypesByTypes', (request: Request, respons
 });
 
 contactEventRoute.post('/createContactEvent', (request: Request, response: Response) => {
+    console.log(request.body);
+    console.log(JSON.parse(request.body.event));
     const eventData: ContactEvent = request.body.event;
-    console.log('got event');
+    // const contactedPeople: ContactedPerson[] = {}
     graphqlRequest(CREATE_CONTACT_EVENT_AND_GET_ID, {
         eventInput: {
             currInvestigation: eventData.investigationId,
@@ -61,7 +64,7 @@ contactEventRoute.post('/createContactEvent', (request: Request, response: Respo
             eventFlightDestinationAirport: eventData.endCity,
             eventPlaceSubType: eventData.locationSubType
         }})
-        .then((res: any) => {
+        .then((res: CreateEventResponse) => {
             console.log(res);
             // response.send(eventCreationResponse.data.createEvent.integer);
     });

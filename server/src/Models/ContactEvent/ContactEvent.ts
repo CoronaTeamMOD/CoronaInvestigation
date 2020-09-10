@@ -1,4 +1,5 @@
 import {LocationAddress} from '../LocationAddress/LocationAddress';
+import {ContactedPerson} from "../ContactedPerson/ContactedPerson";
 
 export default interface InteractionEventDialogData {
     id?: number;
@@ -26,4 +27,5 @@ export default interface InteractionEventDialogData {
     buisnessContactNumber?: string;
     hospitalDepartment?: string;
     numberOfContacted: number;
+    contactedPeople: ContactedPerson[]
 }

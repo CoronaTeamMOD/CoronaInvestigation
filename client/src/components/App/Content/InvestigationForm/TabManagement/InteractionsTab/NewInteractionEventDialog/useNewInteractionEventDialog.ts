@@ -7,13 +7,13 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
     const { closeDialog } = input;
 
     const createNewInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
-        // console.log(interactionEventVariables);
+        console.log({...interactionEventVariables});
         const {contacts, ...interactionEventToSend} = interactionEventVariables;
         console.log('sending new event to server: ');
         console.log({...interactionEventToSend});
-        // console.log(contacts);
         axios.post('/contactEvents/createContactEvent', {
-            event: {...interactionEventToSend}
+            event: {...interactionEventVariables},
+            // contacts: {...contacts}
         }).then(res => {
             contacts.forEach((contactedPerson) => {
                 contactedPerson.contactEvent = res.data;

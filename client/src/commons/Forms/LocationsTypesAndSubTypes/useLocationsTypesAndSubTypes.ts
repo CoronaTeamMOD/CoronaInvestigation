@@ -9,7 +9,7 @@ const useLocationsTypesAndSubTypes = (parameters: useLocationsTypesAndSubTypesIn
     const { setLocationsSubTypesByTypes } = parameters;
 
     const getLocationsSubTypesByTypes = () => {
-        axios.get('/intersections/getLocationsSubTypesByTypes').then(
+        axios.get('/contactEvents/getLocationsSubTypesByTypes').then(
             result => (result && result.data) && setLocationsSubTypesByTypes(result.data)
         );
     };
