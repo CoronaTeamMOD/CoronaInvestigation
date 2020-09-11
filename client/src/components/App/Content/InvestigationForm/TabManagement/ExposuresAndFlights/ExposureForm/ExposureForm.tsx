@@ -15,7 +15,6 @@ const ExposureForm = (props: any) => {
     exposureAndFlightsData,
     fieldsNames,
     handleChangeExposureDataAndFlightsField,
-    handleLocationChange
   } = props;
 
   const classes = useFormStyles();
@@ -35,18 +34,16 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="שם החולה:">
         <>
           <CircleTextField
-            name={fieldsNames.firstName}
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(e, e.target.value)
+              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
             }
             placeholder="שם פרטי..."
           />
           <CircleTextField
-            name={fieldsNames.lastName}
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(e, e.target.value)
+              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
             }
             placeholder="שם משפחה..."
           />
@@ -56,10 +53,9 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="תאריך החשיפה:">
         <DatePick
           type="date"
-          name={fieldsNames.date}
           value={exposureAndFlightsData[fieldsNames.date]}
           onChange={(e) =>
-            handleChangeExposureDataAndFlightsField(e, e.target.value)
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, e.target.value)
           }
         />
       </FormRowWithInput>
@@ -68,18 +64,17 @@ const ExposureForm = (props: any) => {
       <LocationInput 
           selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)} 
           setSelectedAddress={(e, newValue) =>
-            handleLocationChange(newValue)}/>
+            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue)}/>
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="סוג מקום החשיפה:">
         <CircleSelect
-          name={fieldsNames.placeType}
-          value={exposureAndFlightsData[fieldsNames.placeType].id}
+          value={exposureAndFlightsData[fieldsNames.placeType] ? exposureAndFlightsData[fieldsNames.placeType].id : 0 }
           isNameUnique={false}
           options={placeTypeOptions}
           onChange={(e) => {
             handleChangeExposureDataAndFlightsField(
-              e,
+              fieldsNames.placeType,
               placeTypeOptions.find((option) => option.id === e.target.value)
             );
           }}
