@@ -66,6 +66,13 @@ const ExposuresAndFlights = () => {
     });
   };
 
+  const handleLocationChange = (value: any) => {
+    setExposureAndFlightsData({
+      ...exposureAndFlightsData,
+      [fieldsNames.address]: value,
+    });
+  }
+
   return (
     <>
       <div className={classes.subForm}>
@@ -89,6 +96,9 @@ const ExposuresAndFlights = () => {
             fieldsNames={fieldsNames}
             handleChangeExposureDataAndFlightsField={
               handleChangeExposureDataAndFlightsField
+            }
+            handleLocationChange={
+              handleLocationChange
             }
           />
         </Collapse>

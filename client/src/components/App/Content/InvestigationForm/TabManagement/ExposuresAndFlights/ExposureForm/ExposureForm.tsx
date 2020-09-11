@@ -8,12 +8,14 @@ import CircleSelect from "commons/CircleSelect/CircleSelect";
 import { dateFormatForDatePicker } from "Utils/displayUtils";
 import CircleTextField from "commons/CircleTextField/CircleTextField";
 import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
 
 const ExposureForm = (props: any) => {
   const {
     exposureAndFlightsData,
     fieldsNames,
     handleChangeExposureDataAndFlightsField,
+    handleLocationChange
   } = props;
 
   const classes = useFormStyles();
@@ -63,14 +65,10 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="כתובת החשיפה:">
-        <CircleTextField
-          name={fieldsNames.address}
-          value={exposureAndFlightsData[fieldsNames.address]}
-          onChange={(e) =>
-            handleChangeExposureDataAndFlightsField(e, e.target.value)
-          }
-          placeholder="הכנס שם..."
-        />
+      <LocationInput 
+          selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)} 
+          setSelectedAddress={(e, newValue) =>
+            handleLocationChange(newValue)}/>
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="סוג מקום החשיפה:">
