@@ -39,7 +39,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getClinicalDetailsByEpidemiologyNumber = () => {
         axios.post('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=' + epidemiologyNumber).then(
             result => {
-                if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
+                if (result?.data?.data?.investigationByEpidemiologyNumber) {
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                     const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes;
