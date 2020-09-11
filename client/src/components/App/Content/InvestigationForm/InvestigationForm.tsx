@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Gender from 'models/enums/Gender';
 import StoreStateType from 'redux/storeStateType';
-import IdentificationType from 'models/enums/IdentificationTypes';
-import relevantOccupations from 'models/enums/relevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
@@ -26,13 +23,13 @@ const LAST_TAB_ID = 3;
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
-// TODO: remove after redux is connected
-const epedemioligyNumber = 111;
-
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
+    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
+    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
@@ -79,8 +76,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
-                            // TODO: connect to redux epedemioligyNumber
-                            epedemioligyNumber={epedemioligyNumber}
+                            epidemiologyNumber={epidemiologyNumber}
                         />
                         <div className={classes.interactiveForm}>
                             <TabManagement
