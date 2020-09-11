@@ -26,10 +26,7 @@ const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
-    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
@@ -86,7 +83,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab(investigatedPatientId, epidemiologyNumber, creator, lastUpdator);
+                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>
