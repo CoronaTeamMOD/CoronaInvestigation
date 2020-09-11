@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -9,6 +10,7 @@ import theme from 'styles/theme';
 import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
+import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
@@ -23,21 +25,24 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
 
     const { clinicalDetailsVariables } = parameters;
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
 
-    useEffect(()=> {
+    useEffect(() => {
         axios.get('/addressDetails/cities')
-        .then((result: any) => {
-            const cities: Map<string, City> = new Map();
-            result && result.data && result.data.forEach((city: City) => {
-                cities.set(city.id, city)
-            });
-            setCities(cities);
-        })
-        .catch(err=> console.log(err));
+            .then((result: any) => {
+                const cities: Map<string, City> = new Map();
+                result && result.data && result.data.forEach((city: City) => {
+                    cities.set(city.id, city)
+                });
+                setCities(cities);
+            })
+            .catch(err => console.log(err));
     }, []);
 
     useEffect(()=> {
@@ -99,21 +104,19 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
         })
     };
 
-    const saveClinicalDetails = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
+    const saveClinicalDetails = () => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
             'investigatedPatientId': investigatedPatientId,
-            'epidemioligyNumber' : epidemioligyNumber,
-            'creator' : creator,
-            'lastUpdator' : lastUpdator,
+            'epidemioligyNumber' : epidemiologyNumber,
         });
         axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
 
-    const handleSwitchTab = (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => {
+    const handleSwitchTab = () => {
         switch(currentTab.name) {
             case(TabNames.CLINICAL_DETAILS): {
-                saveClinicalDetails(investigatedPatientId, epidemioligyNumber, creator, lastUpdator);
+                saveClinicalDetails();
             }
         };
 
