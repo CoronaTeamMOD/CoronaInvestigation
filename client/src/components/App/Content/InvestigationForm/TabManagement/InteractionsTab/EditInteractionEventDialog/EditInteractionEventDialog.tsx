@@ -20,13 +20,13 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     const classes = useStyles();
     
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-    const { locationType, locationSubType } = interactionEventDialogData;
+    const { placeType, placeSubType } = interactionEventDialogData;
     
     React.useEffect(() => {
-        if (locationType === eventToEdit.locationType && locationSubType === eventToEdit.locationSubType) {
+        if (placeType === eventToEdit.placeType && placeSubType === eventToEdit.placeSubType) {
             setInteractionEventDialogData(eventToEdit)
         } 
-    }, [locationType, locationSubType])
+    }, [placeType, placeSubType])
 
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,

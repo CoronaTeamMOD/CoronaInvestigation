@@ -1,10 +1,9 @@
 import React from 'react';
-import {TextField} from '@material-ui/core';
 import {Autocomplete, AutocompleteRenderInputParams} from '@material-ui/lab';
-import AutocompletedFieldType from './AutoCompletedFieldTypes';
+
 import useStyles from './AutoCompletedFieldStyles';
-import useFormStyles from 'styles/formStyles';
-import CircleTextField from "../CircleTextField/CircleTextField";
+import AutocompletedFieldType from './AutoCompletedFieldTypes';
+import CircleTextField from '../CircleTextField/CircleTextField';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
     const {value, options, onChange, onInputChange, constOptions = false} = props;
