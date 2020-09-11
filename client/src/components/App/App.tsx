@@ -16,7 +16,7 @@ type AuthenticationReturn = [{
     id_token: string;
     provider_name: string;
     refresh_token: string;
-    user_clamis: [{
+    user_claims: [{
         typ: string;
         val: string;
     }];
@@ -34,7 +34,7 @@ const App: React.FC = (): JSX.Element => {
                 const { data } = response;
                 setUser({
                     id: data[0].user_id,
-                    name: data[0].user_clamis.find(claim => claim.typ === userNameClaimType)?.val as string,
+                    name: data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string,
                     token: data[0].id_token
                 });
             })
