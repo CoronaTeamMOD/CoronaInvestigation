@@ -7,11 +7,13 @@ import City from 'models/City';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
+import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
+import { setCountries } from 'redux/Country/countryActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -41,6 +43,18 @@ const useInvestigationForm = (parameters: useInvestigationFormIncome): useInvest
                 setCities(cities);
             })
             .catch(err => console.log(err));
+    }, []);
+
+    useEffect(()=> {
+        axios.get('/addressDetails/countries')
+        .then((result: any) => {
+            const countries: Map<string, Country> = new Map();
+            result && result.data && result.data.forEach((country: Country) => {
+                countries.set(country.id, country)
+            });
+            setCountries(countries);
+        })
+        .catch(err=> console.log(err));
     }, []);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {

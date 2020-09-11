@@ -24,6 +24,7 @@ describe('investigationForm tests', () => {
 
     beforeEach(() => {
       mockAdapter.onGet("/addressDetails/cities").reply(200);
+      mockAdapter.onGet("/addressDetails/countries").reply(200);
     });
 
     const initialClinicalDetails: ClinicalDetailsData = {

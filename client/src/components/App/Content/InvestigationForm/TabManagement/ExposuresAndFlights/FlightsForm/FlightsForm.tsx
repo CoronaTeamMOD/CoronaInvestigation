@@ -11,9 +11,9 @@ import {format} from "date-fns";
 const FlightsForm = () => {
     const classes = useFormStyles();
     const {exposureData, setExposureData} = useContext(exposuresContext);
-    const {fromAirport, toAirport, departureDate, arrivalDate, airline,flightNumber} = exposureData;
+    const {fromAirport, toAirport, departureDate, arrivalDate, airline,flightNum} = exposureData;
     const {fromAirport: setFromAirport, toAirport: setToAirport, departureDate: setDepartureDate,
-        arrivalDate: setArrivalDate, airline: setAirline, flightNumber:setFlightNumber} = setExposureData;
+        arrivalDate: setArrivalDate, airline: setAirline, flightNum:setFlightNumber} = setExposureData;
 
     const handleFlightNumberInput = (event: React.ChangeEvent<HTMLInputElement>) => setFlightNumber(event.target.value);
     const handleAirlineInput = (event: React.ChangeEvent<HTMLInputElement>) => setAirline(event.target.value);
@@ -48,7 +48,7 @@ const FlightsForm = () => {
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='מספר טיסה:'>
-                <CircleTextField value={flightNumber} onChange={handleFlightNumberInput}
+                <CircleTextField value={flightNum} onChange={handleFlightNumberInput}
                                  placeholder='הזן מספר טיסה'/>
             </FormRowWithInput>
         </Grid>
