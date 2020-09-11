@@ -3,19 +3,13 @@ import {Grid} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
+import AddressForm from '../AddressForm/AddressForm';
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-
-export const hospitals = [
-    'איכילוב',
-    'תל השומר',
-    'הדסה'
-]
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
 
@@ -30,11 +24,9 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
             <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='שם בית חולים'>
-                        <CircleSelect
-                            value={ctxt.interactionEventDialogData.locationName || ''}
-                            onChange={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}
-                            className={formClasses.formSelect}
-                            options={hospitals}/>
+                        <CircleTextField
+                            value={ctxt.interactionEventDialogData.placeName}
+                            onChange={(event) => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={3}>
@@ -45,6 +37,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                     </FormInput>
                 </Grid>
             </div>
+            <AddressForm/>
             <BusinessContactForm/>
         </>
     );

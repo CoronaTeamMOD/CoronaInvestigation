@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
-import Interaction from 'models/Interaction';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { testHooksFunction } from 'TestHooks';
 
 import useInteractionsTab from './useInteractionsTab';

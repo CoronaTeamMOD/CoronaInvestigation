@@ -28,7 +28,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const [interactionEventDialogData, setInteractionEventDialogData] = 
         useState<InteractionEventDialogData>(
-            initialDialogData('', defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
+            initialDialogData(defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
         
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,
