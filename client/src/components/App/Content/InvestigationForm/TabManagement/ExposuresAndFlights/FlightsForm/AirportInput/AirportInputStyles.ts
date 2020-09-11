@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
-    width300: {
+    longAutoComplete: {
         width: 300
     }
 });

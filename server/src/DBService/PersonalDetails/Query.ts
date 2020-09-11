@@ -41,6 +41,7 @@ query MyQuery($id: Int!) {
         patientContactPhoneNumber
         subOccupation
         occupation
+        otherOccupationExtraInfo
         hmo
         personByPersonId {
           additionalPhoneNumber

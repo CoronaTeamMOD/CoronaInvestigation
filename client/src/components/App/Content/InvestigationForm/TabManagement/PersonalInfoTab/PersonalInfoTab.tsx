@@ -12,6 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
 import { Street } from 'models/Street';
+import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
@@ -68,14 +69,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }, [])
 
     React.useEffect(() => {
-        if(personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' || personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות') {
+        if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES || 
+            personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) {
             getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
-        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך'){
+        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM){
             setSubOccupations([]);
         }
-        setSubOccupationName('');
-        handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
-        handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
 
     return (
@@ -192,27 +191,29 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         />}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        options={streets}
-                        getOptionLabel={(option) => option.displayName}
-                        inputValue={streetName}
-                        onInputChange={(event, newInputValue) => {
-                            setStreetName(newInputValue);
-                        }}
-                        onChange={(event, newValue) => {
-                           handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
-                        }}
-            //               
-                        renderInput={(params) =>                     
-                        <CircleTextField
-                            {...params}
-                            id={PersonalInfoDataContextFields.STREET}
-                            placeholder={'רחוב'}
-                            value={personalInfoStateContext.personalInfoData.address.street}
-                        />}
-                    />
-                </Grid>
+                {
+                    cityName &&
+                        <Grid item xs={2}>
+                            <Autocomplete
+                                options={streets}
+                                getOptionLabel={(option) => option.displayName}
+                                inputValue={streetName}
+                                onInputChange={(event, newInputValue) => {
+                                    setStreetName(newInputValue);
+                                }}
+                                onChange={(event, newValue) => {
+                                    handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
+                                }}
+                                renderInput={(params) =>                     
+                                <CircleTextField
+                                    {...params}
+                                    id={PersonalInfoDataContextFields.STREET}
+                                    placeholder={'רחוב'}
+                                    value={personalInfoStateContext.personalInfoData.address.street}
+                                />}
+                            />
+                        </Grid>
+                    }
                 <Grid item xs={1}>
                     <CircleTextField 
                         id={PersonalInfoDataContextFields.FLOOR}
@@ -255,7 +256,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                                 control={<Radio                                                           
                                                             color='primary'
                                                             onChange={(event) => {
-                                                                handleChangeField(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, event.target.value);
+                                                                setSubOccupationName('');
+                                                                personalInfoStateContext.setPersonalInfoData(
+                                                                    {
+                                                                        ...personalInfoStateContext.personalInfoData, 
+                                                                        [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
+                                                                        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
+                                                                        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
+                                                                    });
                                                             }}/>} 
                                                 label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
                                             />
@@ -265,7 +273,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
                 {
-                    personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך' &&
+                    personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM &&
                         <Grid item xs={2}>
                             <Autocomplete
                                 options={Array.from(cities, ([name, value]) => ({ name, value }))}
@@ -290,9 +298,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
                     {
-                        (personalInfoStateContext.personalInfoData.relevantOccupation === 'כוחות הביטחון' ||
-                        personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת הבריאות' ||
-                        personalInfoStateContext.personalInfoData.relevantOccupation === 'מערכת החינוך') ?
+                        (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
+                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ||
+                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) ?
                             <Autocomplete
                                 options={subOccupations}
                                 getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}

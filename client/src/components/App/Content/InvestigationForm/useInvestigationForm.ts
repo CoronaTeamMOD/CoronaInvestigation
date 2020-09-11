@@ -88,14 +88,14 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const handleSwitchTab = () => {
         switch(currentTab.name) {
             case(TabNames.PERSONAL_INFO): {
-                savePersonalInfoData()
+                savePersonalInfoData();
+                break;
             }
             case(TabNames.CLINICAL_DETAILS): {
                 saveClinicalDetails();
+                break;
             }
         }
-
-        setCurrentTab(tabs[currentTab.id + 1]);
     }
 
     const savePersonalInfoData = () => {

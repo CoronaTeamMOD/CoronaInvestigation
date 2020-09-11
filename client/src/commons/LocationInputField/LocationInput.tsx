@@ -69,7 +69,7 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
             onInputChange={onInputChange}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
             renderOption={LocationOptionItem}
-            className={classes.width300}
+            className={classes.longAutoComplete}
         />
     );
 };

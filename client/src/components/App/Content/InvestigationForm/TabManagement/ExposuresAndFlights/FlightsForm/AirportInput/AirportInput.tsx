@@ -83,7 +83,7 @@ const AirportInput = ({airport, setAirport}: AirportInputProps) => {
     // Fields are temporarily text inputs only
     // Autocomplete fields will be added when api is ready
     const AutocomplteFields = () =>
-        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props} className={airportInputClasses.width300}/>);
+        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props} className={airportInputClasses.longAutoComplete}/>);
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>

@@ -14,8 +14,6 @@ import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
-
-
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
 
