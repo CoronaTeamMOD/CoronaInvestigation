@@ -35,6 +35,7 @@ describe('investigationForm tests', () => {
             houseNum: '',
             street: ''
         },
+        isInIsolation: false,
         isIsolationProblem: false,
         isIsolationProblemMoreInfo: '',
         symptomsStartDate: null,

@@ -6,6 +6,7 @@ enum ClinicalDetailsFields {
     ISOLATION_STREET = 'street',
     ISOLATION_FLOOR = 'floor',
     ISOLATION_HOUSE_NUMBER = 'houseNum',
+    IS_IN_ISOLATION = 'isInIsolation',
     IS_ISOLATION_PROBLEM = 'isIsolationProblem',
     IS_ISOLATION_PROBLEM_MORE_INFO = 'isIsolationProblemMoreInfo',
     SYMPTOMS_START_DATE = 'symptomsStartDate',

@@ -42,6 +42,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
             isolationStartTime
             isolationEndTime
             isIsolationProblem
+            isInIsolation
             isIsolationProblemMoreInfo
             symptomsStartTime
             hospital
@@ -53,6 +54,8 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
                 symptomName
               }
             }
+            doesHaveSymptoms
+            wasHospitalized
           }
         }
         investigatedPatientBackgroundDiseasesByInvestigatedPatientId {

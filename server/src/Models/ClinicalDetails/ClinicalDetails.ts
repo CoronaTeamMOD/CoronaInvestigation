@@ -2,6 +2,7 @@ interface ClinicalDetails {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationAddress: string;
+    isInIsolation: boolean;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;

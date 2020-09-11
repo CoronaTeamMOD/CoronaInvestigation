@@ -2,16 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
+import Street from 'models/enums/Street';
 import StoreStateType from 'redux/storeStateType';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
-import Street from 'models/enums/Street';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, streetsInCity, setStreetsInCity } = parameters;
+    const {
+        setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms,
+        setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+    } = parameters;
 
-    const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
     const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
     const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
     const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
@@ -56,6 +58,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: new Date(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: new Date(patientInvestigation.hospitalizationEndTime),
+                        isInIsolation: patientInvestigation.isInIsolation,
                         isIsolationProblem: patientInvestigation.isIsolationProblem,
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: new Date(patientInvestigation.isolationStartTime),
@@ -81,7 +84,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }, []);
 
     return { 
-        isInIsolationToggle,
         hasSymptomsToggle,
         hasBackgroundDeseasesToggle,
         wasHospitalizedToggle,

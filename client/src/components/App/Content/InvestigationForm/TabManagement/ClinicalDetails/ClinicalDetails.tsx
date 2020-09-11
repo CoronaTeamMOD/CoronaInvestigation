@@ -26,7 +26,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
-    const [isInIsolation, setIsInIsolation] = React.useState<boolean>(false);
+    //const [isInIsolation, setIsInIsolation] = React.useState<boolean>(false);
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
@@ -45,8 +45,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle, getStreetByCity } = useClinicalDetails({
-        setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, streetsInCity, setStreetsInCity
+    const { hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle, getStreetByCity } = useClinicalDetails({
+        setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
 
@@ -108,7 +108,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     React.useEffect(() => {
-        setIsInIsolation(new Date(context.clinicalDetailsData.isolationStartDate as Date) !== null || new Date(context.clinicalDetailsData.isolationEndDate as Date) !== null);
         setHasSymptoms(new Date(context.clinicalDetailsData.symptomsStartDate as Date) !== null);
         setWasHospitalized(new Date(context.clinicalDetailsData.hospitalizationStartDate as Date) !== null || new Date(context.clinicalDetailsData.hospitalizationEndDate as Date) !== null && context.clinicalDetailsData.hospital !== '');
     }, []);
@@ -125,14 +124,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={isInIsolation}
-                        onChange={isInIsolationToggle}
+                        value={context.clinicalDetailsData.isInIsolation}
+                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION, !context.clinicalDetailsData.isInIsolation)}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={isInIsolation}>
+                    <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
                             <DatePick
                                 type='date'

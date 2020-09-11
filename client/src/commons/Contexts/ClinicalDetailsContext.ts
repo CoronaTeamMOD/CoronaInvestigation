@@ -16,6 +16,7 @@ export const initialClinicalDetails: ClinicalDetailsData = {
         floor: '',
         houseNum: ''
     },
+    isInIsolation: false,
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,

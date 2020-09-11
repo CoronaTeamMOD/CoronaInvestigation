@@ -3,9 +3,14 @@ import { Router, Request, Response } from 'express';
 import Address from '../../Models/Address';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
+import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
-import { GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER } from '../../DBService/ClinicalDetails/Query';
-import { CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT, UPDATE_INVESTIGATION } from '../../DBService/ClinicalDetails/Mutation';
+import {
+    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER
+} from '../../DBService/ClinicalDetails/Query';
+import {
+    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT, UPDATE_INVESTIGATION
+} from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
 
@@ -40,6 +45,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
         hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
         investigatedPatientId: clinicalDetails.investigatedPatientId,
+        isInIsolation: clinicalDetails.isInIsolation,
         isIsolationProblem: clinicalDetails.isIsolationProblem,
         isIsolationProblemMoreInfo: clinicalDetails.isIsolationProblemMoreInfo,
         isolationEndTime: clinicalDetails.isolationEndDate,
@@ -55,18 +61,20 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
     
     graphqlRequest(CREATE_ISOLATION_ADDRESS, {
-        address: { ...requestAddress }
-    }).then(() => {
+        input: { ...requestAddress }
+    }).then((result: CreateAddressResponse) => {
         graphqlRequest(UPDATE_INVESTIGATION, {
             epidemiologyNumber: requestInvestigation.epidemiologyNumber,
             hospital: requestInvestigation.hospital,
             hospitalizationEndTime: requestInvestigation.hospitalizationEndTime,
             hospitalizationStartTime: requestInvestigation.hospitalizationStartTime,
+            isInIsolation: requestInvestigation.isInIsolation,
             isIsolationProblem: requestInvestigation.isIsolationProblem,
             isIsolationProblemMoreInfo: requestInvestigation.isIsolationProblemMoreInfo,
             isolationEndTime: requestInvestigation.isolationEndTime,
             isolationStartTime: requestInvestigation.isolationStartTime,
             symptomsStartTime: requestInvestigation.symptomsStartTime,
+            isolationAddress: result.data.insertAndGetAddressId.integer
         }).then(() => {
             graphqlRequest(ADD_BACKGROUND_DISEASES, {
                 investigatedPatientId: clinicalDetails.investigatedPatientId,
