@@ -9,14 +9,8 @@ query ExposureByInvestigationId ($investigationId: Int!){
             exposureLastName
             exposureDate
             exposureAddress
-            placeTypeByExposurePlaceType {
-            displayName
-            nodeId
-            }
-            placeSubTypeByExposurePlaceSubType {
-                id
-                displayName
-            }
+            exposurePlaceSubType
+            exposurePlaceType
             flightDestinationCity
             flightDestinationAirport
             flightOriginCity
@@ -25,14 +19,8 @@ query ExposureByInvestigationId ($investigationId: Int!){
             flightEndDate
             airline
             flightNum
-            countryByFlightDestinationCountry {
-            displayName
-            id
-            }
-            countryByFlightOriginCountry {
-            displayName
-            id
-            }
+            flightOriginCountry
+            flightDestinationCountry
             wasAbroad
             wasConfirmedExposure
         }
