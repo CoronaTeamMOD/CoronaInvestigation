@@ -2,25 +2,29 @@ import React, {useContext} from 'react';
 import {Grid} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import { publicParkPlaceType, zooPlaceType, stadiumPlaceType, amphitheaterPlaceType, beachPlaceType } from 'Utils/placeSubTypesCodes';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const wideAreaPlaceTypes = [
-    publicParkPlaceType,
-    zooPlaceType,
-    stadiumPlaceType,
-    amphitheaterPlaceType,
-    beachPlaceType
+const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
+
+const wideAreas = [
+    publicPark,
+    zoo,
+    stadium,
+    amphitheater,
+    beach
 ]
 
 const OtherPublicLocationForm : React.FC = () : JSX.Element => {
     const ctxt = useContext(InteractionEventDialogContext);
+
+    const isWideArea : boolean = wideAreas.includes(ctxt.interactionEventDialogData.placeSubType);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
         ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value});
@@ -34,10 +38,9 @@ const OtherPublicLocationForm : React.FC = () : JSX.Element => {
                         onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>
             </Grid>
-            <AddressForm/>
+            <AddressForm removeEntrance={isWideArea} removeFloor={isWideArea} />
             {
-                !wideAreaPlaceTypes.includes(ctxt.interactionEventDialogData.placeSubType) &&
-                <BusinessContactForm/>
+                !isWideArea && <BusinessContactForm/>
             }
         </>
     );

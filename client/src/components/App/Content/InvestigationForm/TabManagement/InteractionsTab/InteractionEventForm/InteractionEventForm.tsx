@@ -7,17 +7,9 @@ import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
-import {privateHousePlaceType,
-officePlaceType,
-transportationPlaceType,
-schoolPlaceType,
-medicalPlaceType,
-religionPlaceType,
-geriatricPlaceType,
-otherPublicPlaceType,} from 'Utils/placeTypesCodes';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
-import { hospitalPlaceType } from 'Utils/placeSubTypesCodes';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
@@ -52,6 +44,8 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();
     const [canAddContact, setCanAddContact] = useState<boolean>(false);
 
+    const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
+
     React.useEffect(() => {
         const hasInvalidContact : boolean = contacts
             .some(contact => (!contact.id || !contact.firstName  || !contact.lastName || !contact.phoneNumber));
@@ -80,7 +74,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 id,
                 placeType,
                 placeSubType: newPlaceSubType,
-                placeName: newPlaceSubType === hospitalPlaceType ? hospitals[0] : undefined,
+                placeName: newPlaceSubType === medical.subTypesCodes.hospital ? hospitals[0] : undefined,
                 externalizationApproval
         });
     }
@@ -105,50 +99,50 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 onPlaceTypeChange={onPlaceTypeChange}
                 onPlaceSubTypeChange={onPlaceSubTypeChange}/>
                 {
-                    placeType === privateHousePlaceType && 
-                    <Collapse in={placeType === privateHousePlaceType}>
+                    placeType === privateHouse.code && 
+                    <Collapse in={placeType === privateHouse.code}>
                         <PrivateHouseEventForm/>
                     </Collapse>
                 }
                 {
-                    placeType === officePlaceType &&
-                    <Collapse in={placeType === officePlaceType}>
+                    placeType === office.code &&
+                    <Collapse in={placeType === office.code}>
                         <OfficeEventForm/>
                     </Collapse>
                 }
                 {
-                    placeType === transportationPlaceType &&
-                    <Collapse in={placeType === transportationPlaceType}>
+                    placeType === transportation.code &&
+                    <Collapse in={placeType === transportation.code}>
                         <TransportationEventForm/>
                     </Collapse>
                 }
                 {
-                    placeType === schoolPlaceType &&
-                    <Collapse in={placeType === schoolPlaceType}>
+                    placeType === school.code &&
+                    <Collapse in={placeType === school.code}>
                         <SchoolEventForm/>
                     </Collapse>
                 }
                 {
-                    placeType === medicalPlaceType &&
-                    <Collapse in={placeType === medicalPlaceType}>
+                    placeType === medical.code &&
+                    <Collapse in={placeType === medical.code}>
                         <MedicalLocationForm />
                     </Collapse>
                 }
                 {
-                    placeType === religionPlaceType &&
-                    <Collapse in={placeType === religionPlaceType}>
+                    placeType === religion.code &&
+                    <Collapse in={placeType === religion.code}>
                         <DefaultPlaceEventForm />
                     </Collapse>
                 }
                 {
-                    placeType === geriatricPlaceType &&
-                    <Collapse in={placeType === geriatricPlaceType}>
+                    placeType === geriatric.code &&
+                    <Collapse in={placeType === geriatric.code}>
                         <DefaultPlaceEventForm />
                     </Collapse>
                 }
                 {
-                    placeType === otherPublicPlaceType &&
-                    <Collapse in={placeType === otherPublicPlaceType}>
+                    placeType === otherPublicPlaces.code &&
+                    <Collapse in={placeType === otherPublicPlaces.code}>
                         <OtherPublicLocationForm/>
                     </Collapse>
                 }

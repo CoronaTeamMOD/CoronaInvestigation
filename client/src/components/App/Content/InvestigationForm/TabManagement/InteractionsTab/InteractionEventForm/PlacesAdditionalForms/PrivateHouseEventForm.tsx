@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
-import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 
-const investigatedPersonHouseType = 9;
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
@@ -14,7 +14,7 @@ const PrivateHouseEventForm : React.FC = () : JSX.Element => {
     const { placeSubType } = interactionEventDialogData;
 
     React.useEffect(() => {
-        if (placeSubType === investigatedPersonHouseType) {
+        if (placeSubType === placeTypesCodesHierarchy.privateHouse.subTypesCodes.investigatedPersonHouse) {
             setInteractionEventDialogData({...interactionEventDialogData, locationAddress: investigatedPersonAddress});
         }
     }, [placeSubType])

@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import { Collapse } from '@material-ui/core';
 
-import { busPlaceType, trainPlaceType, flightPlaceType, organizedTransportPlaceType } from 'Utils/placeSubTypesCodes';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import BusEventForm from './BusEventForm';
 import TrainEventForm from './TrainEventForm';
 import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+
+const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
 
 const TransportationEventForm : React.FC = () : JSX.Element => {
 
@@ -16,26 +18,26 @@ const TransportationEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             {
-                placeSubType === busPlaceType &&
-                <Collapse in={placeSubType === busPlaceType}>
+                placeSubType === bus &&
+                <Collapse in={placeSubType === bus}>
                     <BusEventForm/>
                 </Collapse>
             }
             {
-                placeSubType === trainPlaceType &&
-                <Collapse in={placeSubType === trainPlaceType}>
+                placeSubType === train &&
+                <Collapse in={placeSubType === train}>
                     <TrainEventForm/>                        
                 </Collapse>
             }
             {
-                placeSubType === flightPlaceType &&
-                <Collapse in={placeSubType === flightPlaceType}>
+                placeSubType === flight &&
+                <Collapse in={placeSubType === flight}>
                     <FlightEventForm/>                    
                 </Collapse>
             }
             {
-                placeSubType === organizedTransportPlaceType &&
-                <Collapse in={placeSubType === organizedTransportPlaceType}>
+                placeSubType === organizedTransport &&
+                <Collapse in={placeSubType === organizedTransport}>
                     <OrganizedTransportEventForm/>
                 </Collapse>
             }
