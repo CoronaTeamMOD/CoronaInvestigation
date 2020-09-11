@@ -7,8 +7,6 @@ interface ExposureData {
     date: Date | undefined;
     address: GoogleApiPlace | null; // To be changed once google api is integrated
     placeType: PlaceType;
-    // exposureLocation: GoogleApiPlace | null;
-    // exposingPersonName: string;
 }
 
 export default ExposureData;
