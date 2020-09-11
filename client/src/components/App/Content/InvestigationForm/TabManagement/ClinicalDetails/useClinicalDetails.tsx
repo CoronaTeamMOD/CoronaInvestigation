@@ -1,16 +1,38 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 import axios from 'Utils/axios';
+import Street from 'models/enums/Street';
+import DBAddress from 'models/enums/DBAddress';
+import StoreStateType from 'redux/storeStateType';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases } = parameters;
+    const {
+        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+    } = parameters;
 
-    const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
-    const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
     const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
-    const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
+    };
+
+    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        context.setClinicalDetailsData({
+            ...context.clinicalDetailsData as ClinicalDetailsData,
+            isolationAddress: {
+                ...context.clinicalDetailsData.isolationAddress as DBAddress,
+                [fieldToUpdate]: updatedValue
+            }
+        })
+    };
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
@@ -21,21 +43,67 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const getBackgroundDiseases = () => {
         axios.post('/clinicalDetails/backgroundDiseases').then(
-            result => (result && result.data && result.data.data) &&
+            result => (result?.data && result.data.data) &&
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
+        );
+    };
+
+    const getStreetByCity = (cityId: string) => {
+        axios.get('/addressDetails/city/' + cityId + '/streets').then(
+            result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
+        )};
+    
+    const getClinicalDetailsByEpidemiologyNumber = () => {
+        axios.get('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields/' + epidemiologyNumber).then(
+            result => {
+                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                    const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
+                    const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes;
+                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
+                    const patientAddress = patientInvestigation.addressByIsolationAddress;
+                    setIsolationCityName(patientAddress.cityByCity.displayName);
+                    setIsolationStreetName(patientAddress.streetByStreet.displayName);
+                    
+                    context.setClinicalDetailsData({
+                        ...context.clinicalDetailsData,
+                        isPregnant: patientIsPregnant,
+                        backgroundDeseases: patientBackgroundDiseases,
+                        hospital: patientInvestigation.hospital,
+                        hospitalizationStartDate: new Date(patientInvestigation.hospitalizationStartTime),
+                        hospitalizationEndDate: new Date(patientInvestigation.hospitalizationEndTime),
+                        isInIsolation: patientInvestigation.isInIsolation,
+                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
+                        isolationStartDate: new Date(patientInvestigation.isolationStartTime),
+                        isolationEndDate: new Date(patientInvestigation.isolationEndTime),
+                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes,
+                        symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
+                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
+                        wasHospitalized: patientInvestigation.wasHospitalized,
+                        isolationAddress: {
+                            city: patientAddress.cityByCity.id,
+                            street: patientAddress.streetByStreet.id,
+                            floor: patientAddress.floor,
+                            houseNum: patientAddress.houseNum
+                        }
+                    })
+                }
+            }
         );
     };
 
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
+        getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
-    return { 
-        isInIsolationToggle,
-        hasSymptomsToggle,
+    return {
         hasBackgroundDeseasesToggle,
-        wasHospitalizedToggle,
+        getStreetByCity,
+        updateClinicalDetails,
+        updateIsolationAddress
     };
 };
 

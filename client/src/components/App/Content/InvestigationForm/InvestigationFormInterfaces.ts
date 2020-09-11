@@ -10,5 +10,5 @@ export interface useInvestigationFormOutcome {
     setCurrentTab: (nextTabObj: Tab) => void;
     confirmFinishInvestigation: (epidemiologyNumber: number) => void;
     handleInvestigationFinish: () => void;
-    handleSwitchTab: (investigatedPatientId: number, epidemioligyNumber: number, creator: string, lastUpdator: string) => void;
+    handleSwitchTab: () => void;
 };
