@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import * as redux from 'react-redux'
 import { act } from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { testHooksFunction } from 'TestHooks';
@@ -6,11 +7,17 @@ import { testHooksFunction } from 'TestHooks';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
+
+
+
+const spy = jest.spyOn(redux, 'useSelector');
+spy.mockReturnValue({});
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -24,6 +31,7 @@ describe('investigationForm tests', () => {
 
     beforeEach(() => {
       mockAdapter.onGet("/addressDetails/cities").reply(200);
+      mockAdapter.onGet("/personalDetails/updatePersonalDetails").reply(200);
     });
 
     const initialClinicalDetails: ClinicalDetailsData = {
@@ -46,10 +54,49 @@ describe('investigationForm tests', () => {
         setClinicalDetailsData: () => {}
     };
 
+    const initialPersonalInfo: personalInfoContextData = {
+        phoneNumber: '',
+        additionalPhoneNumber: '',
+        contactPhoneNumber: '',
+        insuranceCompany: '',
+        address: {
+            city: '',
+            street: '',
+            floor: '',
+            houseNum: ''
+        },
+        relevantOccupation: '',
+        educationOccupationCity: '',
+        institutionName: '',
+        otherOccupationExtraInfo: ''
+    };
+
+    const initialSetPersonalInfoData : React.Dispatch<React.SetStateAction<personalInfoContextData>> = () => {};
+
     describe('tabs tests', () => {
+
+        beforeEach(() => {
+            jest.mock('react-redux', () => {
+                const ActualReactRedux = require.requireActual('react-redux');
+                return {
+                    ...ActualReactRedux,
+                    useSelector: jest.fn().mockImplementation(() => {
+                        return { 
+                            epidemiologyNumber: -1,
+                            cantReachInvestigated: false,
+                            investigatedPatientId: -1,
+                            creator: '',
+                            lastUpdator: '',
+                        };
+                    }),
+                };
+            });
+        });
+
+
         it('isLastTab should be false when hook is initialized', async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables });
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
             });
             expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
         });
@@ -58,7 +105,7 @@ describe('investigationForm tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables });
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
             });
         })
 

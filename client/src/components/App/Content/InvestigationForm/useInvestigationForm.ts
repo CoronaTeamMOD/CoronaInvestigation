@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
@@ -15,7 +16,6 @@ import {setCities} from 'redux/City/cityActionCreators';
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
-import { useSelector } from 'react-redux';
 
 const finishInvestigationStatus = 'טופלה';
 
