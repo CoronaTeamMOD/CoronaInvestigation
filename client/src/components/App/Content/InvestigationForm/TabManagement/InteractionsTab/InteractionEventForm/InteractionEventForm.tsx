@@ -17,7 +17,6 @@ import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
 import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import { hospitals } from '../InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
@@ -74,7 +73,6 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 id,
                 placeType,
                 placeSubType: newPlaceSubType,
-                placeName: newPlaceSubType === medical.subTypesCodes.hospital ? hospitals[0] : undefined,
                 externalizationApproval
         });
     }
