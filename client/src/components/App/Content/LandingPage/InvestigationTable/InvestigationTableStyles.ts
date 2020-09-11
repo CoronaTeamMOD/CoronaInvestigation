@@ -19,6 +19,10 @@ const useStyles = makeStyles({
     },
     errorAlertTitle: {
         fontFamily: 'Assistant'
+    },
+    investigationRow: {
+        textDecoration: 'none',
+        cursor: 'pointer'
     }
 });
 

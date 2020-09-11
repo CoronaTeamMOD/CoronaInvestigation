@@ -1,15 +1,17 @@
+import {GoogleApiPlace} from "../commons/LocationInputField/LocationInput";
+
 export interface Address {
-    city: string;
-    neighborhood?: string;
-    street?: string;
-    houseNumber?: string;
+    address: GoogleApiPlace | null;
     entrance?: string;
     floor?: string;
     apartment?: string;
 }
 
 export const initAddress : Address = {
-    city: '',
+    address:null,
+    entrance: '',
+    floor: '',
+    apartment: ''
 }
 
 export default Address;

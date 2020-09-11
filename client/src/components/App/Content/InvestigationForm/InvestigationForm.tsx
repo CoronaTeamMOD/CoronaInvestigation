@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Gender from 'models/enums/Gender';
 import StoreStateType from 'redux/storeStateType';
-import IdentificationType from 'models/enums/IdentificationTypes';
-import relevantOccupations from 'models/enums/relevantOccupations';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-import { PersonalInfoContextProvider, PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
+import {
+    initialPersonalInfo,
+    PersonalInfoContextProvider,
+    PersonalInfoDataAndSet
+} from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useStyles from './InvestigationFormStyles';
@@ -22,39 +23,15 @@ const LAST_TAB_ID = 3;
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
-// TODO: remove after redux is connected
-const epedemioligyNumber = 111;
-
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-    const epidemiologyNumber = useSelector<StoreStateType, string>(state => state.investigation.epidemiologyNumber);
 
-    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>({
-        phoneNumber: '',
-        isInvestigatedPersonsNumber: true,
-        selectReasonNumberIsNotRelated: '',
-        writeReasonNumberIsNotRelated: '',
-        additionalPhoneNumber: '',
-        gender: Gender.MALE,
-        identificationType: IdentificationType.ID,
-        identificationNumber: '',
-        age: '',
-        motherName: '',
-        fatherName: '',
-        insuranceCompany: '',
-        HMO: '',
-        address: {
-            city: '',
-            neighborhood: '',
-            street: '',
-            houseNumber: '',
-            entrance: '',
-            floor: '',
-            apartment: ''
-        },
-        relevantOccupation: relevantOccupations.MOH_Worker,
-        institutionName: ''
-    });
+    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
+    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+
+    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
     const personalInfoValue: PersonalInfoDataAndSet = React.useMemo(
         () => ({
@@ -69,41 +46,37 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const {
-        currentTab,
-        setCurrentTab,
-        confirmFinishInvestigation
-    } = useInvestigationForm();
-
-    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({ 
-            exposureDate,
-            symptomsStartDate, 
-            hasSymptoms,
-            endInvestigationDate,
-            setExposureDate,
-            setSymptomsStartDate,
-            setHasSymptoms,
-            setEndInvestigationDate,
-        }),
-        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
-        setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
-    );
 
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
         clinicalDetailsData,
         setClinicalDetailsData
     }),
-    [clinicalDetailsData, setClinicalDetailsData]
+        [clinicalDetailsData, setClinicalDetailsData]
     );
-    
+
+    const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
+        exposureDate,
+        symptomsStartDate,
+        hasSymptoms,
+        endInvestigationDate,
+        setExposureDate,
+        setSymptomsStartDate,
+        setHasSymptoms,
+        setEndInvestigationDate,
+    }),
+        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
+            setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
+    );
+
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables });
+        
     return (
         <div className={classes.content}>
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                         <InvestigationInfoBar
-                            // TODO: connect to redux epedemioligyNumber
-                            epedemioligyNumber={epedemioligyNumber} 
+                            epidemiologyNumber={epidemiologyNumber}
                         />
                         <div className={classes.interactiveForm}>
                             <TabManagement
@@ -113,8 +86,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) :
-                                            setCurrentTab(tabs[currentTab.id + 1])
+                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab(investigatedPatientId, epidemiologyNumber, creator, lastUpdator);
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>

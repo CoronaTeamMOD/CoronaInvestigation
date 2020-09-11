@@ -5,8 +5,7 @@ mutation createAddress ($input: InsertAndGetAddressIdInput!) {
     insertAndGetAddressId(input: $input) {
       integer
     }
-  }
-   
+}   
 `;
 
 export const CREATE_INVESTIGATION = gql`
@@ -14,22 +13,29 @@ mutation createInvestigation ($investigation: InvestigationInput!) {
     createInvestigation(input: {investigation: $investigation}) {
       clientMutationId
     }
-  }
+}
 `;
 
-export const ADD_BACKGROUND_DESEASES = gql`
+export const ADD_BACKGROUND_DISEASES = gql`
 mutation addBackgroundDeseases ($backgroundDeseases: [String!], $investigatedPatientId: Int!) {
     insertBackgroundDeseases(input: {backgroundDeseases: $backgroundDeseases, investigatedPatientId: $investigatedPatientId}) {
-      integer
+        clientMutationId
     }
-  }
+}
 `;
 
 export const ADD_SYMPTOMS = gql`
 mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
     insertSymptoms(input: {investigationIdValue: $investigationIdValue, symptomNames: $symptomNames}) {
-      integer
+        clientMutationId
     }
-  }  
+}  
 `;
 
+export const UPDATE_IS_PREGNANT = gql`
+mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!) {
+    updateInvestigatedPatientById(input: {investigatedPatientPatch: {isPregnant: $isPregnant}, id: $id}) {
+      clientMutationId
+    }
+}
+`;

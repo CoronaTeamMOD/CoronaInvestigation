@@ -4,8 +4,8 @@ import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
 import DatePick from "commons/DatePick/DatePick";
 import CircleTextField from "commons/CircleTextField/CircleTextField";
 import useFormStyles from "styles/formStyles";
-import { dateFormatForDatePicker } from "Utils/displayUtils";
-import { format } from "date-fns";
+// import { dateFormatForDatePicker } from "Utils/displayUtils";
+// import { format } from "date-fns";
 import AirportInput from "./AirportInput/AirportInput";
 
 const FlightsForm = (props: any) => {
@@ -17,21 +17,23 @@ const FlightsForm = (props: any) => {
 
   const classes = useFormStyles();
 
-  const formattedDate = (date: Date | undefined) =>
-    date ? format(date, dateFormatForDatePicker) : dateFormatForDatePicker;
+  // const formattedDate = (date: Date | undefined) =>
+  //   date ? format(date, dateFormatForDatePicker) : dateFormatForDatePicker;
 
   return (
     <Grid className={classes.form} container justify="flex-start">
-      <FormRowWithInput fieldName="יעד:">
+      {/* <FormRowWithInput fieldName="יעד:">
         <AirportInput airport={fromAirport} setAirport={setFromAirport} />
-      </FormRowWithInput>
+      </FormRowWithInput> */}
 
-      <FormRowWithInput fieldName="מוצא:">
+      {/* <FormRowWithInput fieldName="מוצא:">
         <AirportInput airport={toAirport} setAirport={setToAirport} />
-      </FormRowWithInput>
+      </FormRowWithInput> */}
 
       <FormRowWithInput fieldName="תאריך טיסה:">
-        <div className={classes.rowDiv}>
+        <div
+         className={classes.formRow}
+         >
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             type="date"

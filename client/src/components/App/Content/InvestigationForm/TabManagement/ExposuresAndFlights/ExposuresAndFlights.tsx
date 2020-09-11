@@ -1,14 +1,16 @@
-import React from "react";
-import { Collapse, Divider, Typography } from "@material-ui/core";
-
-import Toggle from "commons/Toggle/Toggle";
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import React from 'react';
+import {Collapse, Divider, Typography} from '@material-ui/core';
+import Toggle from 'commons/Toggle/Toggle';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import FlightsForm from './FlightsForm/FlightsForm';
+import ExposureForm from './ExposureForm/ExposureForm';
+import useFormStyles from 'styles/formStyles';
+import useStyles from './ExposuresAndFlightsStyles';
+// import {ExposureDetails, ExposuresContextProvider} from "commons/Contexts/ExposuresAndFlights";
+import {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import PlaceType from "models/PlaceType";
 // import {ExposuresContextProvider, exposuresContext} from "Contexts/ExposuresAndFlights";
 
-import useFormStyles from "styles/formStyles";
-import FlightsForm from "./FlightsForm/FlightsForm";
-import useStyles from "./ExposuresAndFlightsStyles";
-import ExposureForm from "./ExposureForm/ExposureForm";
 import ExposureData from "models/ExposureData";
 import FlightData from "models/FlightData";
 

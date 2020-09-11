@@ -9,18 +9,20 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const isInIsolationToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setIsInIsolation(value));
     const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
-    const hasBackgroundIllnessesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
+    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
     const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
-            result => setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
+            result => (result && result.data && result.data.data) &&
+                setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
         );
     };
 
     const getBackgroundDiseases = () => {
         axios.post('/clinicalDetails/backgroundDiseases').then(
-            result => setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName))
+            result => (result && result.data && result.data.data) &&
+                setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
         );
     };
 
@@ -32,7 +34,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     return { 
         isInIsolationToggle,
         hasSymptomsToggle,
-        hasBackgroundIllnessesToggle,
+        hasBackgroundDeseasesToggle,
         wasHospitalizedToggle,
     };
 };

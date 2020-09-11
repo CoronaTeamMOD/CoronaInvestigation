@@ -2,11 +2,9 @@
 FROM node:current-slim
 
 # Set the working directory.
-WORKDIR /usr/src/app
+WORKDIR /usr/src/server
 
-RUN mkdir server
-
-COPY * ./server/
+COPY * ./
 
 # Run the command inside your image filesystem.
 RUN npm install
@@ -15,6 +13,6 @@ RUN npm install
 EXPOSE 8080
 
 # Run the specified command within the container.
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "deploy" ]
 
 ##

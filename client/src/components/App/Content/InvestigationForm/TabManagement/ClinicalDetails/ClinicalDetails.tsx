@@ -2,11 +2,12 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
+import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import { dateFormatForDatePicker } from 'Utils/displayUtils';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -14,7 +15,6 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
-import { hospitals } from '../InteractionsTab/NewInteractionEventDialog/PlacesAdditionalForms/HospitalEventForm';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -26,41 +26,66 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
     const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
-    const [otherSymptom, setOtherSymptom] = React.useState<string>('');
+    const [isOtherSymptom, setOtherSymptom] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
-    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundIllnessesToggle, wasHospitalizedToggle } = useClinicalDetails({
+    const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
+    const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
+    const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
+
+    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
+
+    const { isInIsolationToggle, hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle } = useClinicalDetails({
         setIsInIsolation, setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases
     });
 
     const context = React.useContext(clinicalDetailsDataContext);
 
+    React.useEffect(() => {
+        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
+    }, [selectedSymptoms]);
+
+    React.useEffect(() => {
+        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
+    }, [selectedBackgroundDiseases]);
+
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
+        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
     };
 
     const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
+    const checkIfOtherField = (checkedField: string) => (
+        checkedField === 'אחר'
+    );
+
     const handleSymptomCheck = (checkedSymptom: string) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
             setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
+            if (checkIfOtherField(checkedSymptom)) {
+                setIsOtherSymptomChecked(false);
+            }
         } else {
             selectedSymptoms.push(checkedSymptom);
-        };
-
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
+            if (checkIfOtherField(checkedSymptom)) {
+                setIsOtherSymptomChecked(true);
+            }
+        }
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
         if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
             setSelectedBackgroundDiseases(selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
+            if (checkIfOtherField(backgroundIllness))
+                setIsOtherBackgroundIllnessChecked(false);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
+            if (checkIfOtherField(backgroundIllness))
+                setIsOtherBackgroundIllnessChecked(true);
         };
-
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_ILLNESSES, selectedBackgroundDiseases)
     };
 
     return (
@@ -105,7 +130,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Typography>
                     <b>
-                        כתובת לבידוד נוכחי:
+                        כתובת לאשפוז ביתי:
                     </b>
                 </Typography>
                 <CircleTextField
@@ -167,7 +192,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, isUnkonwnDateChecked ? null : new Date(event.target.value))
+                                    updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, new Date(event.target.value))
                                 )}
                             />
                             <CustomCheckbox
@@ -177,7 +202,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 }]}
                             />
                         </div>
-                        <Typography>סימפטומים:</Typography>
+                        {
+                            symptoms.length > 0 ?
+                                <Typography>סימפטומים:</Typography> : ''
+                        }
                         <Grid container className={classes.smallGrid}>
                             {
                                 symptoms.map((symptom: string) => (
@@ -196,15 +224,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     </Grid>
                                 ))
                             }
-                            <CircleTextField
-                                size='small'
-                                className={classes.otherTextField}
-                                placeholder='הזן סימפטום...'
-                                value={otherSymptom}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                    setOtherSymptom(event.target.value as string)
-                                )}
-                            />
+                            <Collapse in={isOtherSymptomChecked}>
+                                <CircleTextField
+                                    size='small'
+                                    className={classes.otherTextField}
+                                    placeholder='הזן סימפטום...'
+                                    onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        setOtherSymptom(event.target.value as string)
+                                    )}
+                                />
+                            </Collapse>
                         </Grid>
                     </Collapse>
                 </Grid>
@@ -218,7 +247,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Toggle
                         value={hasBackgroundDiseases}
-                        onChange={hasBackgroundIllnessesToggle}
+                        onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
@@ -245,6 +274,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     </Grid>
                                 ))
                             }
+                            <Collapse in={isOtherBackgroundIllnessChecked}>
+                                <CircleTextField
+                                    size='small'
+                                    className={classes.otherTextField}
+                                    placeholder='הזן מחלת רקע...'
+                                    onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        setOtherBackgroundIllness(event.target.value as string)
+                                    )}
+                                />
+                            </Collapse>
                         </Grid>
                     </Collapse>
                 </Grid>
@@ -271,8 +310,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     בית חולים:
                                 </b>
                             </Typography>
-                            <CircleSelect
-                                options={hospitals}
+                            <CircleTextField
                                 value={context.clinicalDetailsData?.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
@@ -299,17 +337,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                     </Collapse>
                 </Grid>
-                <Grid item xs={2}>
-                    <Typography>
-                        <b>
-                            האם בהריון:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Toggle
-                    value={context.clinicalDetailsData?.isPregnant}
-                    onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
-                />
+                {patientGender === 'female' ?
+                    <>
+                        <Grid item xs={2}>
+                            <Typography>
+                                <b>
+                                    האם בהריון:
+                                </b>
+                            </Typography>
+                        </Grid>
+                        <Toggle
+                            value={context.clinicalDetailsData?.isPregnant}
+                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData?.isPregnant)}
+                        />
+                    </>
+                    : <></>
+                }
             </Grid>
         </div>
     );

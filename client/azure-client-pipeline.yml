@@ -34,16 +34,20 @@ stages:
 
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isDev,true)
-      displayName: 'setting .env db route to dev route'
+      displayName: 'setting .env for dev environment'
 
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isTest,true)
       displayName: 'setting .env db route to test route'
 
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isMaster,true)
       displayName: 'setting .env db route to prod route'
 
@@ -63,6 +67,19 @@ stages:
         repository: '$(arcName)'
         azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
         containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-dev
+
+    - task: Docker@2
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push Dev client image to MOH container
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           client-dev
           
