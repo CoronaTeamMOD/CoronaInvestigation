@@ -9,6 +9,7 @@ import { dateFormatForDatePicker } from "Utils/displayUtils";
 import CircleTextField from "commons/CircleTextField/CircleTextField";
 import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
 import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
+import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
 
 const ExposureForm = (props: any) => {
   const {
@@ -18,16 +19,6 @@ const ExposureForm = (props: any) => {
   } = props;
 
   const classes = useFormStyles();
-
-  const placeTypeOptions = [
-    { id: 1, name: "מקום ציבורי" },
-    { id: 2, name: "מקום דת" },
-    { id: 3, name: "מקום מקומי" },
-  ];
-
-  function formattedDate(date: Date | undefined) {
-    return date ? format(date, "yyyy-MM-dd") : "yyyy-MM-dd";
-  }
 
   return (
     <Grid className={classes.form} container justify="flex-start">
@@ -66,20 +57,13 @@ const ExposureForm = (props: any) => {
           setSelectedAddress={(e, newValue) =>
             handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue)}/>
       </FormRowWithInput>
-
-      <FormRowWithInput fieldName="סוג מקום החשיפה:">
-        <CircleSelect
-          value={exposureAndFlightsData[fieldsNames.placeType] ? exposureAndFlightsData[fieldsNames.placeType].id : 0 }
-          isNameUnique={false}
-          options={placeTypeOptions}
-          onChange={(e) => {
-            handleChangeExposureDataAndFlightsField(
-              fieldsNames.placeType,
-              placeTypeOptions.find((option) => option.id === e.target.value)
-            );
-          }}
-        />
-      </FormRowWithInput>
+      
+      <PlacesTypesAndSubTypes
+        placeType={exposureAndFlightsData[fieldsNames.placeType]}
+        placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
+        onPlaceTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)}
+        onPlaceSubTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)}
+      />
     </Grid>
   );
 };

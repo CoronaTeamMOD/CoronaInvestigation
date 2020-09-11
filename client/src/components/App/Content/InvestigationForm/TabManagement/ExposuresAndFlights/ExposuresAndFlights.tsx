@@ -24,6 +24,7 @@ const fieldsNames = {
   date: "exposureDate",
   address: "exposureAddress",
   placeType: "placeTypeByExposurePlaceType",
+  placeSubType: "placeSubTypeByExposurePlaceSubType",
   wasAbroad: "wasAbroad",
   destinationCountry: "countryByFlightDestinationCountry",
   destinationCity: "flightDestinationCity",
@@ -43,7 +44,8 @@ const defaultExposureAndFlightsData: any = {
   [fieldsNames.lastName]: "",
   [fieldsNames.date]: undefined,
   [fieldsNames.address]: "", // To be changed once google api is integrated
-  [fieldsNames.placeType]: { id: 0, name: "" },
+  [fieldsNames.placeType]: "",
+  [fieldsNames.placeSubType] : "",
   [fieldsNames.wasAbroad]: false,
   [fieldsNames.destinationCountry]: "",
   [fieldsNames.destinationCity]: "",
