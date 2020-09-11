@@ -33,4 +33,5 @@ query ExposureByInvestigationId ($investigationId: Int!){
             wasConfirmedExposure
         }
     }
-}`;
+}
+`;
