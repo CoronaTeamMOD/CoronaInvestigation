@@ -26,14 +26,13 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
 });
 
 intersectionsRoute.post('/getContactEvent', (request: Request, response: Response) => {
-    console.log('investigation id: ' + request.body.investigationId);
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, { currInvestigation: request.body.investigationId})
         .then((result: GetContactEventResponse) => {
-            let allEventOfInvestigation = {};
+            let allContactEvents: any = [];
             result.data.allContactEvents.nodes.map((event: ContactEvent) => {
                 const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
                 const contactedDataToSend = contactedPeopleByContactEvent.nodes;
-                let contacts = {};
+                let contacts: any = [];
                 contactedDataToSend.map((person) => {
                    const {personByPersonInfo, ...personNoData} = person;
                    const personToSend = {
@@ -43,21 +42,15 @@ intersectionsRoute.post('/getContactEvent', (request: Request, response: Respons
                        phoneNumber: personByPersonInfo.phoneNumber,
                        id: personByPersonInfo.identificationNumber,
                    };
-                   contacts = {
-                       ...contacts,
-                       ...personToSend
-                   }
+                   contacts.push(personToSend);
                 });
                 const eventToSend = {
                     ...eventObjectToClient,
                     contacts: contacts,
-                }
-                allEventOfInvestigation = {
-                    ...allEventOfInvestigation,
-                    eventToSend
-                }
+                };
+                allContactEvents.push(eventToSend);
             });
-            response.send({...allEventOfInvestigation});
+            response.send(allContactEvents);
     });
 });
 
