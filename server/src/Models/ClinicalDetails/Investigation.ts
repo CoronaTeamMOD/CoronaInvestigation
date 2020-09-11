@@ -8,6 +8,8 @@ interface Investigation {
     hospital: string;
     hospitalizationStartTime: Date | null;
     hospitalizationEndTime: Date | null;
+    wasHospitalized: boolean;
+    doesHaveSymptoms: boolean;
     investigatedPatientId: number;
     epidemiologyNumber: number;
     creator: string;

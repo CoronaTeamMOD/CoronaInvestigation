@@ -1,4 +1,4 @@
-import DBAddress from "models/enums/DBAddress";
+import DBAddress from 'models/enums/DBAddress';
 
 interface ClinicalDetailsData {
     isolationStartDate: Date | null;
@@ -13,6 +13,8 @@ interface ClinicalDetailsData {
     hospital: string;
     hospitalizationStartDate: Date | null;
     hospitalizationEndDate: Date | null;
+    doesHaveSymptoms: boolean;
+    wasHospitalized: boolean;
     isPregnant: boolean;
 };
 

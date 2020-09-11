@@ -44,6 +44,8 @@ describe('investigationForm tests', () => {
         hospital: '',
         hospitalizationStartDate: null,
         hospitalizationEndDate: null,
+        doesHaveSymptoms: false,
+        wasHospitalized: false,
         isPregnant: false,
     };
     

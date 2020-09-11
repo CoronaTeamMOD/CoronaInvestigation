@@ -25,6 +25,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     hospital: '',
     hospitalizationStartDate: null,
     hospitalizationEndDate: null,
+    doesHaveSymptoms: false,
+    wasHospitalized: false,
     isPregnant: false,
 };
 

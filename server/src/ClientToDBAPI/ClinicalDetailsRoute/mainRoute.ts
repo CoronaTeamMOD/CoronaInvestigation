@@ -51,6 +51,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         isolationEndTime: clinicalDetails.isolationEndDate,
         isolationStartTime: clinicalDetails.isolationStartDate,
         symptomsStartTime: clinicalDetails.symptomsStartDate,
+        doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
+        wasHospitalized: clinicalDetails.wasHospitalized
     }
 
     const requestAddress: Address = {
@@ -74,6 +76,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             isolationEndTime: requestInvestigation.isolationEndTime,
             isolationStartTime: requestInvestigation.isolationStartTime,
             symptomsStartTime: requestInvestigation.symptomsStartTime,
+            wasHospitalized: requestInvestigation.wasHospitalized,
+            doesHaveSymptoms: requestInvestigation.doesHaveSymptoms,
             isolationAddress: result.data.insertAndGetAddressId.integer
         }).then(() => {
             graphqlRequest(ADD_BACKGROUND_DISEASES, {

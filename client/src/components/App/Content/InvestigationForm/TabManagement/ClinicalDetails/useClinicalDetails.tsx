@@ -10,13 +10,10 @@ import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinic
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms,
-        setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     } = parameters;
 
-    const hasSymptomsToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasSymptoms(value));
     const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
-    const wasHospitalizedToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setWasHospitalized(value));
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -29,14 +26,14 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const getBackgroundDiseases = () => {
         axios.post('/clinicalDetails/backgroundDiseases').then(
-            result => (result && result.data && result.data.data) &&
+            result => (result?.data && result.data.data) &&
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
         );
     };
 
     const getStreetByCity = (cityId: string) => {
         axios.get('/addressDetails/city/' + cityId + '/streets').then(
-            result => result && result.data && setStreetsInCity(result.data.map((node: Street) => node))
+            result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
     const getClinicalDetailsByEpidemiologyNumber = () => {
@@ -65,6 +62,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isolationEndDate: new Date(patientInvestigation.isolationEndTime),
                         symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes,
                         symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
+                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
+                        wasHospitalized: patientInvestigation.wasHospitalized,
                         isolationAddress: {
                             city: patientAddress.cityByCity.id,
                             street: patientAddress.streetByStreet.id,
@@ -83,10 +82,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
-    return { 
-        hasSymptomsToggle,
+    return {
         hasBackgroundDeseasesToggle,
-        wasHospitalizedToggle,
         getStreetByCity
     };
 };

@@ -26,11 +26,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
-    //const [isInIsolation, setIsInIsolation] = React.useState<boolean>(false);
-    const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
-    const [wasHospitalized, setWasHospitalized] = React.useState<boolean>(false);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
     const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
@@ -45,8 +42,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { hasSymptomsToggle, hasBackgroundDeseasesToggle, wasHospitalizedToggle, getStreetByCity } = useClinicalDetails({
-        setHasSymptoms, setHasBackgroundDiseases, setWasHospitalized, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+    const { hasBackgroundDeseasesToggle, getStreetByCity } = useClinicalDetails({
+        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
 
@@ -106,11 +103,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 setIsOtherBackgroundIllnessChecked(true);
         };
     };
-
-    React.useEffect(() => {
-        setHasSymptoms(new Date(context.clinicalDetailsData.symptomsStartDate as Date) !== null);
-        setWasHospitalized(new Date(context.clinicalDetailsData.hospitalizationStartDate as Date) !== null || new Date(context.clinicalDetailsData.hospitalizationEndDate as Date) !== null && context.clinicalDetailsData.hospital !== '');
-    }, []);
 
     return (
         <div>
@@ -247,14 +239,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={hasSymptoms}
-                        onChange={hasSymptomsToggle}
+                        value={context.clinicalDetailsData.doesHaveSymptoms}
+                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, !context.clinicalDetailsData.doesHaveSymptoms)}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={hasSymptoms}>
+                    <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
                             <DatePick
                                 type='date'
@@ -273,8 +265,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             />
                         </div>
                         {
-                            symptoms.length > 0 ?
-                                <Typography>סימפטומים:</Typography> : <></>
+                            context.clinicalDetailsData.doesHaveSymptoms &&
+                            <Typography>סימפטומים:</Typography>
                         }
                         <Grid container className={classes.smallGrid}>
                             {
@@ -299,7 +291,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
-                                    value={otherSymptom}
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherSymptom(event.target.value as string)
                                     )}
@@ -350,7 +341,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
-                                    value={otherBackgroundIllness}
                                     onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
                                         setOtherBackgroundIllness(event.target.value as string)
                                     )}
@@ -368,14 +358,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Toggle
-                        value={wasHospitalized}
-                        onChange={wasHospitalizedToggle}
+                        value={context.clinicalDetailsData.wasHospitalized}
+                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={wasHospitalized}>
+                    <Collapse in={context.clinicalDetailsData.wasHospitalized}>
                         <div className={classes.dates}>
                             <Typography>
                                 <b>
