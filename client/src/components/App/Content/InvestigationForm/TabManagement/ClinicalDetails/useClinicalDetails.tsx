@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
+import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
@@ -16,6 +19,20 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
+    };
+
+    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
+        context.setClinicalDetailsData({
+            ...context.clinicalDetailsData as ClinicalDetailsData,
+            isolationAddress: {
+                ...context.clinicalDetailsData.isolationAddress as DBAddress,
+                [fieldToUpdate]: updatedValue
+            }
+        })
+    };
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms').then(
@@ -84,7 +101,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     return {
         hasBackgroundDeseasesToggle,
-        getStreetByCity
+        getStreetByCity,
+        updateClinicalDetails,
+        updateIsolationAddress
     };
 };
 

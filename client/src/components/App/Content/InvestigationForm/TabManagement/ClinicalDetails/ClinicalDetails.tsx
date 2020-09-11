@@ -7,13 +7,11 @@ import City from 'models/City';
 import Street from 'models/enums/Street';
 import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
-import DBAddress from 'models/enums/DBAddress';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 
 import { useStyles } from './ClinicalDetailsStyles';
@@ -42,7 +40,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { hasBackgroundDeseasesToggle, getStreetByCity } = useClinicalDetails({
+    const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
         setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
@@ -58,20 +56,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
-    };
-
-    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
-    };
-
-    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData as ClinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress as DBAddress,
-                [fieldToUpdate]: updatedValue
-            }
-        })
     };
 
     const checkIfOtherField = (checkedField: string) => (
