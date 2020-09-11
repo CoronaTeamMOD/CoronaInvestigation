@@ -1,7 +1,5 @@
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
-import axios from 'Utils/axios';
-
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 

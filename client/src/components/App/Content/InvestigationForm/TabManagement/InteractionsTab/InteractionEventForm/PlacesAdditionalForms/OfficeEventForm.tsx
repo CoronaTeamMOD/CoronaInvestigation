@@ -21,8 +21,8 @@ const OfficeEventForm : React.FC = () : JSX.Element => {
             <div className={formClasses.formRow}>
                 <FormInput fieldName='שם המשרד'>
                     <CircleTextField
-                        value={ctxt.interactionEventDialogData.locationName}
-                        onChange={(event) => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}/>
+                        value={ctxt.interactionEventDialogData.placeName}
+                        onChange={(event) => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>
             </div>
             <AddressForm/>

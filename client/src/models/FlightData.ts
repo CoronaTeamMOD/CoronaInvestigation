@@ -4,7 +4,7 @@ interface FlightData {
    airline:string;
    departureDate: Date;
    arrivalDate: Date;
-   flightNumber: string;
+   flightNum: string;
 }
 
 export default FlightData;

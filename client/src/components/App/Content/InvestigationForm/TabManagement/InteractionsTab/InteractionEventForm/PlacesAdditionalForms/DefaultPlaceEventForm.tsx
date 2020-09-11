@@ -21,8 +21,8 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
             <Grid item xs={6}>
                 <FormInput fieldName='שם המוסד'>
                     <CircleTextField
-                        value={ctxt.interactionEventDialogData.locationName}
-                        onChange={event => onChange(event, InteractionEventDialogFields.LOCATION_NAME)}/>
+                        value={ctxt.interactionEventDialogData.placeName}
+                        onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>
             </Grid>
             <AddressForm/>
