@@ -26,8 +26,8 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
     graphqlRequest(GET_BACKGROUND_DISEASES).then((result: any) => response.send(result));
 });
 
-clinicalDetailsRoute.post('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
+clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields/:epidemiologyNumber', (request: Request, response: Response) => {
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, { epidemiologyNumber: +request.params.epidemiologyNumber }).then(
         (result: any) => response.send(result)
     );
 });
@@ -56,10 +56,10 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 
     const requestAddress: Address = {
-        city: isolationAddress.city,
-        street: isolationAddress.street,
-        floor: +isolationAddress.floor,
-        houseNum: +isolationAddress.houseNum,
+        city: isolationAddress?.city,
+        street: isolationAddress?.street,
+        floor: +isolationAddress?.floor,
+        houseNum: +isolationAddress?.houseNum,
     }
     
     graphqlRequest(CREATE_ISOLATION_ADDRESS, {

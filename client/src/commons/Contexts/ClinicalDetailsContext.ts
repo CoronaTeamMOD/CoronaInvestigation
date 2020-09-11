@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 
+import DBAddress from 'models/enums/DBAddress';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export interface ClinicalDetailsDataAndSet {
@@ -7,15 +8,17 @@ export interface ClinicalDetailsDataAndSet {
     setClinicalDetailsData: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>
 };
 
+export const initialAddress: DBAddress = {
+    city: '',
+    street: '',
+    floor: '',
+    houseNum: ''
+}
+
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
     isolationEndDate: null,
-    isolationAddress: {
-        city: '',
-        street: '',
-        floor: '',
-        houseNum: ''
-    },
+    isolationAddress: initialAddress,
     isInIsolation: false,
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',

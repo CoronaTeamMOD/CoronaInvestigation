@@ -10,7 +10,7 @@ import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
+import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -29,12 +29,7 @@ describe('investigationForm tests', () => {
     const initialClinicalDetails: ClinicalDetailsData = {
         isolationStartDate: null,
         isolationEndDate: null,
-        isolationAddress: {
-            city: '',
-            floor: '',
-            houseNum: '',
-            street: ''
-        },
+        isolationAddress: initialAddress,
         isInIsolation: false,
         isIsolationProblem: false,
         isIsolationProblemMoreInfo: '',
