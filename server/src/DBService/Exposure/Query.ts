@@ -13,6 +13,10 @@ query ExposureByInvestigationId ($investigationId: Int!){
             displayName
             nodeId
             }
+            placeSubTypeByExposurePlaceSubType {
+                id
+                displayName
+            }
             flightDestinationCity
             flightDestinationAirport
             flightOriginCity
