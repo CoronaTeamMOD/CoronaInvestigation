@@ -2,19 +2,14 @@ import React, {useContext} from 'react';
 import {Grid} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import { publicParkPlaceType, zooPlaceType, stadiumPlaceType, amphitheaterPlaceType, beachPlaceType } from 'Utils/placeSubTypesCodes';
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-
-const publicParkPlaceType = 77;
-const zooPlaceType = 288;
-const stadiumPlaceType = 5;
-const amphitheaterPlaceType = 6;
-const beachPlaceType = 33;
 
 const wideAreaPlaceTypes = [
     publicParkPlaceType,

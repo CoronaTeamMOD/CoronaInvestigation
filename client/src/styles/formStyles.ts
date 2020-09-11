@@ -29,6 +29,9 @@ const useStyles = makeStyles({
     formToggle: {
         marginLeft: '1vw'
     },
+    autocomplete: {
+        width: '20vw'
+    }
 });
 
 export default useStyles;

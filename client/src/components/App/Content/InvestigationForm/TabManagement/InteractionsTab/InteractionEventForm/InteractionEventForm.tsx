@@ -7,8 +7,17 @@ import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
+import {privateHousePlaceType,
+officePlaceType,
+transportationPlaceType,
+schoolPlaceType,
+medicalPlaceType,
+religionPlaceType,
+geriatricPlaceType,
+otherPublicPlaceType,} from 'Utils/placeTypesCodes';
 import DatePick from 'commons/DatePick/DatePick';
 import FormInput from 'commons/FormInput/FormInput';
+import { hospitalPlaceType } from 'Utils/placeSubTypesCodes';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
@@ -22,16 +31,7 @@ import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import { InteractionEventDialogContext, initialDialogData } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
-import MedicalLocationForm, { hospitalPlaceType } from './PlacesAdditionalForms/MedicalLocationForm';
-
-const privateHousePlaceType : string = 'בית פרטי';
-const officePlaceType : string = 'משרד';
-const transportationPlaceType : string = 'תחבורה';
-const schoolPlaceType : string = 'מוסד חינוכי';
-const medicalPlaceType : string = 'מוסד רפואי';
-const religionPlaceType : string = 'אתר דת';
-const geriatricPlaceType : string = 'מוסד גריאטרי';
-const otherPublicPlaceType : string = 'מקומות ציבוריים נוספים';
+import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 
 export const defaultContact: Contact = {
     firstName: '',

@@ -1,16 +1,13 @@
 import React, { useContext } from 'react';
 import { Collapse } from '@material-ui/core';
 
+import { busPlaceType, trainPlaceType, flightPlaceType, organizedTransportPlaceType } from 'Utils/placeSubTypesCodes';
+
 import BusEventForm from './BusEventForm';
 import TrainEventForm from './TrainEventForm';
 import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
-
-const busPlaceType = 1;
-const trainPlaceType = 38;
-const flightPlaceType = 85;
-const organizedTransportPlaceType = 31;
 
 const TransportationEventForm : React.FC = () : JSX.Element => {
 

@@ -3,17 +3,15 @@ import {Grid} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import { elementarySchoolPlaceType, highSchoolPlaceType } from 'Utils/placeSubTypesCodes';
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-
-const elementarySchoolPlaceType = 15;
-const highSchoolPlaceType = 127;
 
 export const elementarySchoolGrades = [
     'א',

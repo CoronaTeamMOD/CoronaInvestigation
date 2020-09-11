@@ -1,10 +1,10 @@
 import React, {useContext} from 'react';
 
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
+import { hospitalPlaceType } from 'Utils/placeSubTypesCodes';
+
 import HospitalEventForm from './HospitalEventForm';
 import DefaultPlaceEventForm from './DefaultPlaceEventForm';
-
-export const hospitalPlaceType = 122;
+import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const MedicalLocationForm : React.FC = () : JSX.Element => {
 

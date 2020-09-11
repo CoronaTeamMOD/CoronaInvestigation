@@ -6,7 +6,6 @@ import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
