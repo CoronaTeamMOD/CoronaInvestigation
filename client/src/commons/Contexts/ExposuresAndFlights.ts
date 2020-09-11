@@ -20,7 +20,7 @@ export const initialDetails: FormData = {
     airline: '',
     departureDate: new Date(),
     arrivalDate: new Date(),
-    flightNumber: '',
+    flightNum: '',
 };
 
 const initialContextValues: ExposureDetails = {

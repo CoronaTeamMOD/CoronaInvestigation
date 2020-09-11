@@ -1,6 +1,8 @@
+import Gender from 'models/enums/Gender';
+
 import * as Actions from './GenderActionTypes';
 
-const initialState: string = 'female';
+const initialState: string = Gender.FEMALE;
 
 const genderReducer = (state = initialState, action: Actions.GenderAction) : string => {
     switch (action.type) {

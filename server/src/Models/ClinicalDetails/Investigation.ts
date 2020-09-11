@@ -1,17 +1,16 @@
 interface Investigation {
     isolationStartTime: Date | null;
     isolationEndTime: Date | null;
-    isolationAddress: number;
+    isInIsolation: boolean;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
     symptomsStartTime: Date | null;
     hospital: string;
     hospitalizationStartTime: Date | null;
     hospitalizationEndTime: Date | null;
-    investigatedPatientId: number;
+    wasHospitalized: boolean;
+    doesHaveSymptoms: boolean;
     epidemiologyNumber: number;
-    creator: string;
-    lastUpdator: string;
 };
 
 export default Investigation;

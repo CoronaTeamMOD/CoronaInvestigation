@@ -6,7 +6,8 @@ import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setGender } from 'redux/Gender/GenderActionCreators';
+import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -54,6 +55,8 @@ const InvestigationInfoBar = (props: Props) => {
             investigationId: epidemiologyNumber
         }).then((result: any) => {
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
+                setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
+                setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
                 setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
             }
             else {

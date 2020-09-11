@@ -16,7 +16,7 @@ type AuthenticationReturn = [{
     id_token: string;
     provider_name: string;
     refresh_token: string;
-    user_clamis: [{
+    user_claims: [{
         typ: string;
         val: string;
     }];
@@ -28,14 +28,13 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
     
     React.useEffect(() => {
-        console.log(process.env.REACT_APP_GOOGLE_API_KEY);
         if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV) {
             axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
             .then((response) => {
                 const { data } = response;
                 setUser({
                     id: data[0].user_id,
-                    name: data[0].user_clamis.find(claim => claim.typ === userNameClaimType)?.val as string,
+                    name: data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string,
                     token: data[0].id_token
                 });
             })

@@ -1,21 +1,25 @@
 import { createContext } from 'react';
 
+import DBAddress from 'models/enums/DBAddress';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-
-interface EmptyContext {
-    clinicalDetailsData: undefined,
-    setClinicalDetailsData: () => void;
-};
 
 export interface ClinicalDetailsDataAndSet {
     clinicalDetailsData: ClinicalDetailsData,
     setClinicalDetailsData: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>
 };
 
+export const initialAddress: DBAddress = {
+    city: '',
+    street: '',
+    floor: '',
+    houseNum: ''
+}
+
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
     isolationEndDate: null,
-    isolationAddress: '',
+    isolationAddress: initialAddress,
+    isInIsolation: false,
     isIsolationProblem: false,
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,
@@ -24,6 +28,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     hospital: '',
     hospitalizationStartDate: null,
     hospitalizationEndDate: null,
+    doesHaveSymptoms: false,
+    wasHospitalized: false,
     isPregnant: false,
 };
 
@@ -32,5 +38,5 @@ const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {
     setClinicalDetailsData: () => {}
 };
 
-export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet | EmptyContext>(initialClinicalDetailsContext);
+export const clinicalDetailsDataContext = createContext<ClinicalDetailsDataAndSet>(initialClinicalDetailsContext);
 export const ClinicalDetailsDataContextProvider = clinicalDetailsDataContext.Provider;

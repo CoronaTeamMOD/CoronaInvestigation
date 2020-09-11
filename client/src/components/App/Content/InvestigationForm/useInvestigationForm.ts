@@ -8,10 +8,12 @@ import City from 'models/City';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
+import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
+import { setCountries } from 'redux/Country/countryActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -33,14 +35,26 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     const classes = useStyles({});
 
-    useEffect(()=> {
+    useEffect(() => {
         axios.get('/addressDetails/cities')
+            .then((result: any) => {
+                const cities: Map<string, City> = new Map();
+                result && result.data && result.data.forEach((city: City) => {
+                    cities.set(city.id, city)
+                });
+                setCities(cities);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    useEffect(()=> {
+        axios.get('/addressDetails/countries')
         .then((result: any) => {
-            const cities: Map<string, City> = new Map();
-            result && result.data && result.data.forEach((city: City) => {
-                cities.set(city.id, city)
+            const countries: Map<string, Country> = new Map();
+            result && result.data && result.data.forEach((country: Country) => {
+                countries.set(country.id, country)
             });
-            setCities(cities);
+            setCountries(countries);
         })
         .catch(err=> console.log(err));
     }, []);

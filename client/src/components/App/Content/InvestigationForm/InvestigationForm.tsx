@@ -15,7 +15,7 @@ import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialC
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import TabManagement, {tabs} from './TabManagement/TabManagement';
+import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
@@ -26,10 +26,7 @@ const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
-    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 

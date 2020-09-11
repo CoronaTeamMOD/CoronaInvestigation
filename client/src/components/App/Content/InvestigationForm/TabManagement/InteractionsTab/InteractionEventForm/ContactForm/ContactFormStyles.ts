@@ -1,9 +1,6 @@
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
-    fieldNameNoWrap: {
-        whiteSpace: 'nowrap',
-    },
     addContactFields: {
         display: 'flex',
         flexDirection: 'row',

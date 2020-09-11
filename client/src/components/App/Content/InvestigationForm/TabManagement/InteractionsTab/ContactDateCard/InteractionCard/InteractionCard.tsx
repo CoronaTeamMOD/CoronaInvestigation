@@ -25,7 +25,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                     <Typography>
                         <b>
-                            {interaction.locationName}
+                            {interaction.placeName}
                         </b>
                     </Typography>
                 </div>
@@ -48,7 +48,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.locationName}
+                            {interaction.placeName}
                         </Typography>
                     </Grid>
                     {/* location address row */}
@@ -70,7 +70,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.buisnessContactNumber}
+                            {interaction.contactPersonPhoneNumber}
                         </Typography>
                     </Grid>
                     {/* time row */}
@@ -98,7 +98,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>שם: </b>
-                                    {person.name}
+                                    {`${person.firstName} ${person.lastName}`}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>

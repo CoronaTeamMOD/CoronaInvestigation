@@ -8,7 +8,7 @@ import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
-import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
+import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
@@ -30,12 +30,14 @@ describe('investigationForm tests', () => {
     beforeEach(() => {
       mockAdapter.onGet("/addressDetails/cities").reply(200);
       mockAdapter.onGet("/personalDetails/updatePersonalDetails").reply(200);
+      mockAdapter.onGet("/addressDetails/countries").reply(200);
     });
 
     const initialClinicalDetails: ClinicalDetailsData = {
         isolationStartDate: null,
         isolationEndDate: null,
-        isolationAddress: '',
+        isolationAddress: initialAddress,
+        isInIsolation: false,
         isIsolationProblem: false,
         isIsolationProblemMoreInfo: '',
         symptomsStartDate: null,
@@ -44,6 +46,8 @@ describe('investigationForm tests', () => {
         hospital: '',
         hospitalizationStartDate: null,
         hospitalizationEndDate: null,
+        doesHaveSymptoms: false,
+        wasHospitalized: false,
         isPregnant: false,
     };
     

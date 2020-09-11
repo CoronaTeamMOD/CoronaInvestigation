@@ -7,6 +7,7 @@ query getLocationsSubTypesByTypes {
         displayName
         placeSubTypesByParentPlaceType {
           nodes {
+            id
             displayName
           }
         }

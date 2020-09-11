@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
@@ -8,35 +8,46 @@ import { InteractionEventDialogContext } from 'components/App/Content/Investigat
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const businessContactNameField = 'שם איש קשר';
-const businessContactNumField = 'טלפון איש קשר';
+const businessContactFirstNameField = 'שם פרטי';
+const businessContactLastNameField = 'שם משפחה';
+const businessContactNumField = 'טלפון';
  
 const BusinessContactForm : React.FC = () : JSX.Element => {
         
     const formClasses = useFormStyles();
     const ctxt = useContext(InteractionEventDialogContext);
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
-    const { buisnessContactName, buisnessContactNumber } = interactionEventDialogData;
+    const { contactPersonFirstName, contactPersonLastName, contactPersonPhoneNumber } = interactionEventDialogData;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value as string});
     return (
-        <Grid container className={formClasses.formRow}>
-            <Grid item xs={6}>
-                <FormInput fieldName={businessContactNameField}>
-                    <CircleTextField
-                        value={buisnessContactName}
-                        onChange={event => onChange(event, InteractionEventDialogFields.BUSINESS_CONTACT_NAME)}/>
-                </FormInput>
+        <div>
+            <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
+            <Grid container className={formClasses.formRow}>
+                <Grid item xs={4}>
+                    <FormInput fieldName={businessContactFirstNameField}>
+                        <CircleTextField
+                            value={contactPersonFirstName}
+                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName={businessContactLastNameField}>
+                        <CircleTextField
+                            value={contactPersonLastName}
+                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName={businessContactNumField}>
+                        <CircleTextField
+                            value={contactPersonPhoneNumber}
+                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER)}/>
+                    </FormInput>
+                </Grid>
             </Grid>
-            <Grid item xs={6}>
-                <FormInput fieldName={businessContactNumField}>
-                    <CircleTextField
-                        value={buisnessContactNumber}
-                        onChange={event => onChange(event, InteractionEventDialogFields.BUSINESS_CONTACT_NUMBER)}/>
-                </FormInput>
-            </Grid>
-        </Grid>
+        </div>
     );
 };
 

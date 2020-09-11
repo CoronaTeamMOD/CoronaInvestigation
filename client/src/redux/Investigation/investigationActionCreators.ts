@@ -21,17 +21,3 @@ export const setInvestigatedPatientId = (investigatedPatientId: number) => {
         payload: {investigatedPatientId}
     })
 };
-
-export const setCreator = (creator: string) => {
-    store.dispatch({
-        type: actionTypes.SET_CREATOR,
-        payload: {creator}
-    })
-};
-
-export const SetLastUpdator = (lastUpdator: string) => {
-    store.dispatch({
-        type: actionTypes.SET_LAST_UPDATOR,
-        payload: {lastUpdator}
-    })
-};

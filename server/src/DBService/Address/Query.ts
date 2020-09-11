@@ -23,3 +23,14 @@ query getCityStreets($id: String!) {
   }
 }
 `;
+
+export const GET_ALL_COUNTRIES = gql`
+  query getAllCountries {
+    allCountries {
+      nodes {
+        id
+        displayName
+      }
+    }
+  }
+`;
