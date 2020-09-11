@@ -9,7 +9,9 @@ enum PersonalInfoDataContextFields {
     FLOOR = 'floor',
     HOUSE_NUMBER = 'houseNum',
     RELEVANT_OCCUPATION = 'relevantOccupation',
-    INSTITUTION_NAME = 'institutionName'
+    EDUCATION_OCCUPATION_CITY = 'educationOccupationCity',
+    INSTITUTION_NAME = 'institutionName',
+    OTHER_OCCUPATION_EXTRA_INFO = 'otherOccupationExtraInfo'
 }
 
 export default PersonalInfoDataContextFields;

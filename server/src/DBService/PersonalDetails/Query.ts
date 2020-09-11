@@ -30,6 +30,12 @@ query MyQuery($id: Int!) {
           street
           floor
           houseNum
+          cityByCity {
+            displayName
+          }
+          streetByStreet {
+            displayName
+          }
         }
         personId
         patientContactPhoneNumber
@@ -40,7 +46,35 @@ query MyQuery($id: Int!) {
           additionalPhoneNumber
           phoneNumber
         }
+        subOccupationBySubOccupation {
+          city
+          displayName
+        }
       }
     }
   }
 `;
+
+export const GET_SUB_OCCUPATIONS_BY_OCCUPATION = gql`
+query MyQuery($parentOccupation: String!) {
+    allSubOccupations(condition: {parentOccupation: $parentOccupation}) {
+      nodes {
+        displayName
+        id
+      }
+    }
+  } 
+`;
+
+export const GET_EDUCATION_SUB_OCCUPATION_BY_CITY = gql`
+query MyQuery($city: String!) {
+    allSubOccupations(condition: {parentOccupation: "מערכת החינוך", city: $city}) {
+      nodes {
+        displayName
+        street
+        id
+      }
+    }
+  } 
+`;
+

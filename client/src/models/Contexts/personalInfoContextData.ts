@@ -10,5 +10,7 @@ export interface personalInfoContextData {
     insuranceCompany: string,
     address: DBAddress;
     relevantOccupation: string;
+    educationOccupationCity: string;
     institutionName: string;
+    otherOccupationExtraInfo: string;
 }
