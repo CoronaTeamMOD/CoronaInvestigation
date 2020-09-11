@@ -183,7 +183,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId)
                             newValue && getStreetsByCity(newValue.cityId);
                         }}
-            //                newValue && getStreetsByCity(newValue.value.displayName);}
                         renderInput={(params) =>                     
                         <CircleTextField
                             {...params}
@@ -328,13 +327,3 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 };
 
 export default PersonalInfoTab;
-
-// <CircleSelect
-// disabled={subOccupations.length === 0}
-// value={personalInfoStateContext.personalInfoData.institutionName}
-// options={subOccupations.map((subOccupation) => subOccupation.subOccupation + (subOccupation.street ? ('/' + subOccupation.street) : ''))}
-// className={classes.institutionName + ' ' + classes.circleSelect}
-// onChange={(event) => {
-//     handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, event.target.value);
-// }}
-// />
