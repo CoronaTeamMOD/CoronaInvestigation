@@ -4,6 +4,7 @@ export const GET_EXPOSURE_INFO = gql`
 query ExposureByInvestigationId ($investigationId: Int!){
     allExposures(condition: {investigationId: $investigationId}) {
         nodes {
+            id
             exposureFirstName
             exposureLastName
             exposureDate
