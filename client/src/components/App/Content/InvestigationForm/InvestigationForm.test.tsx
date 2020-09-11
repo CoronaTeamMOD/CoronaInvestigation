@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import * as redux from 'react-redux'
 import { act } from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { testHooksFunction } from 'TestHooks';
@@ -11,6 +12,9 @@ import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
+
+const spy = jest.spyOn(redux, 'useSelector');
+spy.mockReturnValue({});
 
 const mockAdapter = new MockAdapter(axios);
 
