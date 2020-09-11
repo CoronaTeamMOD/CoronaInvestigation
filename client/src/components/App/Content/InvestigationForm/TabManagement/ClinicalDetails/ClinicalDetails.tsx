@@ -4,6 +4,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
+import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
 import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
@@ -43,7 +44,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
         setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
-
 
     React.useEffect(() => {
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
@@ -383,7 +383,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                     </Collapse>
                 </Grid>
-                {patientGender === 'female' ?
+                {patientGender === Gender.FEMALE ?
                     <>
                         <Grid item xs={2}>
                             <Typography>
