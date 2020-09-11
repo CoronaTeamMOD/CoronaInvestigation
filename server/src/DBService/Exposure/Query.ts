@@ -4,6 +4,7 @@ export const GET_EXPOSURE_INFO = gql`
 query ExposureByInvestigationId ($investigationId: Int!){
     allExposures(condition: {investigationId: $investigationId}) {
         nodes {
+            id
             exposureFirstName
             exposureLastName
             exposureDate
@@ -11,6 +12,10 @@ query ExposureByInvestigationId ($investigationId: Int!){
             placeTypeByExposurePlaceType {
             displayName
             nodeId
+            }
+            placeSubTypeByExposurePlaceSubType {
+                id
+                displayName
             }
             flightDestinationCity
             flightDestinationAirport
@@ -32,4 +37,5 @@ query ExposureByInvestigationId ($investigationId: Int!){
             wasConfirmedExposure
         }
     }
-}`;
+}
+`;
