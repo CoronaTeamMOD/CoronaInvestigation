@@ -35,17 +35,19 @@ const convertEventToDBType = (event: any) => {
 }
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
-    graphqlRequest(CREATE_CONTACT_EVENT, convertEventToDBType(request.body))
-    .then((result: any) => {
-        response.send(result);
-    });
+    // graphqlRequest(CREATE_CONTACT_EVENT, convertEventToDBType(request.body))
+    // .then((result: any) => {
+    //     response.send(result);
+    // });
+    response.send('done');
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
-    graphqlRequest(EDIT_CONTACT_EVENT, convertEventToDBType(request.body))
-    .then((result: any) => {
-        response.send(result);
-    });
+    // graphqlRequest(EDIT_CONTACT_EVENT, convertEventToDBType(request.body))
+    // .then((result: any) => {
+    //     response.send(result);
+    // });
+    response.send('done');
 });
 
 export default intersectionsRoute;
