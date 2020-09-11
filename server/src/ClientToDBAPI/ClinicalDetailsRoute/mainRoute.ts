@@ -39,12 +39,9 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
 
     const requestInvestigation: Investigation = {
         epidemiologyNumber: clinicalDetails.epidemioligyNumber,
-        creator: clinicalDetails.creator,
-        lastUpdator: clinicalDetails.lastUpdator,
         hospital: clinicalDetails.hospital,
         hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
         hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
-        investigatedPatientId: clinicalDetails.investigatedPatientId,
         isInIsolation: clinicalDetails.isInIsolation,
         isIsolationProblem: clinicalDetails.isIsolationProblem,
         isIsolationProblemMoreInfo: clinicalDetails.isIsolationProblemMoreInfo,
@@ -56,10 +53,10 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 
     const requestAddress: Address = {
-        city: isolationAddress?.city,
-        street: isolationAddress?.street,
-        floor: +isolationAddress?.floor,
-        houseNum: +isolationAddress?.houseNum,
+        cityValue: isolationAddress?.city,
+        streetValue: isolationAddress?.street,
+        floorValue: +isolationAddress?.floor,
+        houseNumValue: +isolationAddress?.houseNum,
     }
     
     graphqlRequest(CREATE_ISOLATION_ADDRESS, {

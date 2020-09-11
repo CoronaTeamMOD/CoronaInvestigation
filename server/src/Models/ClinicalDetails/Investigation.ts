@@ -10,10 +10,7 @@ interface Investigation {
     hospitalizationEndTime: Date | null;
     wasHospitalized: boolean;
     doesHaveSymptoms: boolean;
-    investigatedPatientId: number;
     epidemiologyNumber: number;
-    creator: string;
-    lastUpdator: string;
 };
 
 export default Investigation;
