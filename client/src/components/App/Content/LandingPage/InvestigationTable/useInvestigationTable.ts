@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { differenceInYears } from 'date-fns';
 import { useHistory } from 'react-router-dom';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -11,7 +13,6 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 export const createRowData = (
   epidemiologyNumber: number,
@@ -94,13 +95,22 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       });
   }, [user.id, classes.errorAlertTitle]);
 
-
-  const onInvestigationRowClick = (epidemiologyNumber: number) => {
+  const onInvestigationRowClick = (epidemiologyNumberVal: number) => {
+    axios.interceptors.request.use(
+      (config) => {
+          config.headers.Authorization = user.token;
+          config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+          config.headers.UserName = 'stub_user'
+          setIsLoading(true);
+          return config;
+      },
+      (error) => Promise.reject(error)
+  );
     axios.post('/investigationInfo/updateInvestigationStatus', {
       investigationStatus: handlingInvestigationStatus,
-      epidemiologyNumber: epidemiologyNumber
+      epidemiologyNumber: epidemiologyNumberVal
     }).then(() => {
-      setEpidemiologyNum(epidemiologyNumber)
+      setEpidemiologyNum(epidemiologyNumberVal)
       history.push('/investigation')
     });
   }
