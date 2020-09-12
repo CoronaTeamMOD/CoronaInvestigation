@@ -20,8 +20,9 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     const classes = useStyles();
     
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-    const [canConfirm, setCanConfirm] = useState<boolean>(false);
-    
+
+    const canConfirm = React.useMemo<boolean>(() => true, [])
+
     const { placeType, placeSubType, contacts } = interactionEventDialogData;
     
     React.useEffect(() => {

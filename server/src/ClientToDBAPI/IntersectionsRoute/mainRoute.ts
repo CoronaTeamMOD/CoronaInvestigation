@@ -49,17 +49,15 @@ const convertEventToDBType = (event: any) => {
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
     const newEvent = convertEventToDBType(request.body);
     graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
-    .then((result: any) => {
-        response.send(result);
-    });
+    .then(result => response.send(result))
+    .catch(error => response.send(error))
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
-    const newEvent = convertEventToDBType(request.body);
-    graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
-    .then((result: any) => {
-        response.send(result);
-    });
+    const updatedEvent = convertEventToDBType(request.body);
+    graphqlRequest(EDIT_CONTACT_EVENT, {contactEvent: JSON.stringify(updatedEvent)})
+    .then(result => response.send(result))
+    .catch(error => response.send(error))
 });
 
 export default intersectionsRoute;

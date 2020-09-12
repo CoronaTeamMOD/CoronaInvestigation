@@ -26,7 +26,7 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const [canConfirm, setCanConfirm] = useState<boolean>(true);
+    const canConfirm = React.useMemo<boolean>(() => true, [])
 
     const [interactionEventDialogData, setInteractionEventDialogData] = 
         useState<InteractionEventDialogData>(
