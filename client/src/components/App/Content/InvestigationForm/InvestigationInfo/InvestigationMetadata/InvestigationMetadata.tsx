@@ -14,24 +14,24 @@ const InvestigationMetadata = (props: Props) => {
 
     return (
         <Paper className={classes.metadata}>
-            <InfoItem test-id='investigationStartDate' name='תאריך תחילת החקירה' value={
+            <InfoItem testId='investigationStartDate' name='תאריך תחילת החקירה' value={
                 format(new Date(investigationMetaData.startTime), 'dd/MM/yyyy')
             }
             />
-            <InfoItem test-id='investigationLastUpdatedDate' name='תאריך עדכון אחרון' value={
+            <InfoItem testId='investigationLastUpdatedDate' name='תאריך עדכון אחרון' value={
                 format(new Date(investigationMetaData.lastUpdateTime), 'dd/MM/yyyy')
             }
             />
-            <InfoItem test-id='district' name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
-            <InfoItem test-id='investigatorName' name='מבצע החקירה' value={
+            <InfoItem testId='district' name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
+            <InfoItem testId='investigatorName' name='מבצע החקירה' value={
                 investigationMetaData.userByCreator.userName
             }
             />
-            <InfoItem test-id='updatingUser' name='משתמש מעדכן' value={
+            <InfoItem testId='updatingUser' name='משתמש מעדכן' value={
                 investigationMetaData.userByLastUpdator.userName
             }
             />
-            <InfoItem test-id='investigatorPhoneNumber' name='טלפון המבצע' value={investigationMetaData.userByCreator.phoneNumber} />
+            <InfoItem testId='investigatorPhoneNumber' name='טלפון המבצע' value={investigationMetaData.userByCreator.phoneNumber} />
         </Paper>
     );
 };

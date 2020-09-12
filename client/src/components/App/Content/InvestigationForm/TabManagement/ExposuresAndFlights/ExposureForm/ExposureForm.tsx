@@ -32,7 +32,7 @@ const ExposureForm = () => {
                     placeholder={placeholderText} test-id='confirmedPatientName' />
             </FormRowWithInput>
 
-            <FormRowWithInput fieldName='שם מקום החשיפה:' test-id='exposureLocation'>
+            <FormRowWithInput fieldName='שם מקום החשיפה:' testId='exposureLocation'>
                 <LocationInput selectedAddress={exposureLocation as (GoogleApiPlace | null)} setSelectedAddress={onLocationChange} />
             </FormRowWithInput>
 

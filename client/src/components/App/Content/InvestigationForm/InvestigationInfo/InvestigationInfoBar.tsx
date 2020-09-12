@@ -62,14 +62,14 @@ const InvestigationInfoBar = () => {
                 setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
             }
             else {
-                Swal.fire({
+                /*Swal.fire({
                     icon: 'warning',
                     title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
                     timer: 1750,
                     showConfirmButton: false
                 });
 
-                timeout(1900).then(() => history.push(landingPageRoute));
+                timeout(1900).then(() => history.push(landingPageRoute));*/
             }
         })
     }, [epidemiologyNumber]);
