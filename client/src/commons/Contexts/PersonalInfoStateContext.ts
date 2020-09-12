@@ -7,26 +7,19 @@ import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
 
 export const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
-    isInvestigatedPersonsNumber: true,
-    selectReasonNumberIsNotRelated: '',
-    writeReasonNumberIsNotRelated: '',
     additionalPhoneNumber: '',
-    gender: Gender.MALE,
-    identificationType: identificationType.ID,
-    identificationNumber: '',
-    age: '',
-    motherName: '',
-    fatherName: '',
+    contactPhoneNumber: '',
     insuranceCompany: '',
-    HMO: '',
     address: {
-        address: null,
-        entrance: '',
+        city: '',
+        street: '',
         floor: '',
-        apartment: ''
+        houseNum: ''
     },
-    relevantOccupation: relevantOccupations.MOH_Worker,
-    institutionName: ''
+    relevantOccupation: '',
+    educationOccupationCity: '',
+    institutionName: '',
+    otherOccupationExtraInfo: ''
 } 
 
 const initialPersonalInfoContext: PersonalInfoDataAndSet = {

@@ -3,7 +3,8 @@ enum relevantOccupations {
     EDU_System_Worker = 'עובד במערכת החינוך',
     MOI_or_DOT = 'משרד התחבורה/תעשייה',
     Geriatrics = 'גריאטריה',
-    DEF_Forces = 'כוחות הבטחון'
+    DEF_Forces = 'כוחות הבטחון',
+    OTHER = 'אחר'
 }
 
 export default relevantOccupations;

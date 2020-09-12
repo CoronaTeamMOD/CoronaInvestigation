@@ -5,14 +5,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         paddingTop: '2vh',
         height: '64vh'
     },
-    PersonalInfoFieldContainer: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    personalInfoLastFieldContainer: {
+    personalInfoFieldContainer: {
         display: 'flex',
         alignItems: 'center',
-        marginTop: '1vh'
+        margin: '2vh'
     },
     fieldsMargin: {
         marginTop: '3vh'
@@ -24,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     containerGrid: {
         padding: '0 3vw',
         maxWidth: '100vw',
-        maxHeight: 'fit-content'
+        height: '9vh'
     },
     selectReason: {
         width: '10vw',
@@ -74,7 +70,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     address: {
         width: '13vw',
-    }
+    },
+    circleSelect: {
+        paddingTop: 'unset'
+    }, 
 }));
 
 export default useStyles;

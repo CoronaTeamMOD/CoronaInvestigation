@@ -15,7 +15,11 @@ const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
     React.useEffect(() => {
         if (placeSubType === placeTypesCodesHierarchy.privateHouse.subTypesCodes.investigatedPersonHouse) {
-            setInteractionEventDialogData({...interactionEventDialogData, locationAddress: investigatedPersonAddress});
+            setInteractionEventDialogData({...interactionEventDialogData, locationAddress: {
+                ...interactionEventDialogData.locationAddress,
+                floor: investigatedPersonAddress.floor,
+                apartment: investigatedPersonAddress.houseNum
+            }});
         }
     }, [placeSubType])
 

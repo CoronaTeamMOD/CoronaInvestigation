@@ -1,9 +1,8 @@
 import { Tab } from 'models/Tab';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
-
-export interface useInvestigationFormIncome {
-    clinicalDetailsVariables: ClinicalDetailsDataAndSet;
-};
+import { PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
+import PersonalInfoDataContext from 'models/enums/PersonalInfoDataContextFields';
 
 export interface useInvestigationFormOutcome {
     currentTab: Tab;
@@ -12,3 +11,9 @@ export interface useInvestigationFormOutcome {
     handleInvestigationFinish: () => void;
     handleSwitchTab: () => void;
 };
+
+export interface useInvestigationFormParameters {
+    clinicalDetailsVariables: ClinicalDetailsDataAndSet;
+    personalInfoData: personalInfoContextData;
+    setPersonalInfoData: React.Dispatch<React.SetStateAction<(personalInfoContextData)>>;
+}
