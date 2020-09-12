@@ -79,7 +79,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 setCurrentTab={setCurrentTab}
                             />
                             <div className={classes.buttonSection}>
-                                <PrimaryButton
+                                <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                     onClick={() => {
                                         currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>

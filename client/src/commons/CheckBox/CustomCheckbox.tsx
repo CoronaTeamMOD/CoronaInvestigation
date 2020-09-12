@@ -14,6 +14,7 @@ const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
                         key={index}
                         control={
                             <Checkbox
+                                test-id={props.testId}
                                 size='small'
                                 name='checked'
                                 color='primary'
@@ -32,9 +33,11 @@ export default CustomCheckbox;
 
 interface CheckboxElement extends CheckboxProps {
     labelText: string | JSX.Element;
+    'test-id'?: string;
 };
 
 interface Props {
     checkboxElements: CheckboxElement[];
     checkboxesClassWrapper?: string;
+    testId?: string;
 };

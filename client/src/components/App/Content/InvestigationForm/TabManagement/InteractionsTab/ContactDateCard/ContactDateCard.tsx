@@ -12,13 +12,13 @@ import InteractionCard from './InteractionCard/InteractionCard';
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const { contactDate, interactions, createNewInteractionEvent, onEditClick } = props;
-    
+
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
     const classes = useStyle();
 
     return (
-        <Card key={contactDate.getTime()} className={classes.investigatedDateCard}>
+        <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
             <div className={classes.dateInfo}>
                 <div className={classes.dateSection}>
                     <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
@@ -28,21 +28,21 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 </div>
                 {
                     interactions !== undefined &&
-                        <div className={classes.infoSection}>
-                            <Typography>
-                                סה"כ מקומות: {interactions?.length} | סה"כ אנשים: {interactions?.map(interaction => interaction.contacts.length).reduce((sum, currentElement) => sum += currentElement)}
-                            </Typography>
-                        </div>
+                    <div className={classes.infoSection}>
+                        <Typography>
+                            סה"כ מקומות: {interactions?.length} | סה"כ אנשים: {interactions?.map(interaction => interaction.contacts.length).reduce((sum, currentElement) => sum += currentElement)}
+                        </Typography>
+                    </div>
                 }
-                <PrimaryButton onClick={() => createNewInteractionEvent()}>
+                <PrimaryButton test-id='openNewContactLocation' onClick={() => createNewInteractionEvent()}>
                     צור מקום/מגע
                 </PrimaryButton>
             </div>
             <Collapse in={areInteractionsOpen}>
-                {interactions?.map(interaction => 
-                    <InteractionCard 
-                    onEditClick={() => onEditClick(interaction)}
-                    key={interaction.startTime.getTime()} interaction={interaction} />
+                {interactions?.map(interaction =>
+                    <InteractionCard
+                        onEditClick={() => onEditClick(interaction)}
+                        key={interaction.startTime.getTime()} interaction={interaction} />
                 )}
             </Collapse>
         </Card>
