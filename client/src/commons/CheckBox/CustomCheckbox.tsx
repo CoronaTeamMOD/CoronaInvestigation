@@ -1,4 +1,4 @@
-import React, { AriaAttributes, DOMAttributes } from 'react';
+import React from 'react';
 import { FormControlLabel, Checkbox, CheckboxProps } from '@material-ui/core';
 
 const CustomCheckbox: React.FC<Props> = (props: Props): JSX.Element => {
