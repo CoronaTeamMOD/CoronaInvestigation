@@ -26,12 +26,10 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const canConfirm = React.useMemo<boolean>(() => true, [])
-
     const [interactionEventDialogData, setInteractionEventDialogData] = 
         useState<InteractionEventDialogData>(
             initialDialogData(defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
-
+        
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,
         setInteractionEventDialogData,
@@ -51,15 +49,15 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
                 </DialogContent>
             </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
-                <Button 
+                <Button
+                    test-id='cancelNewContactLocation'
                     onClick={() => closeDialog()}
                     color='default' 
                     className={classes.cancelButton}>
                     בטל
                 </Button>
-                <PrimaryButton 
-                    disabled={!canConfirm}
-                    id='createContact'
+                <PrimaryButton
+                    test-id='createContact'
                     onClick={() => onConfirm()}>
                     צור מקום/מגע
                 </PrimaryButton>

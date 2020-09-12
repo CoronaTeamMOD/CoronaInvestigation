@@ -53,9 +53,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const handleChangeAddress = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
         personalInfoStateContext.setPersonalInfoData({
-            ...personalInfoStateContext.personalInfoData, 
+            ...personalInfoStateContext.personalInfoData,
             address: {
-                ...personalInfoStateContext.personalInfoData.address, 
+                ...personalInfoStateContext.personalInfoData.address,
                 [fieldName]: fieldValue
             }
         });
@@ -63,13 +63,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
         personalInfoStateContext, subOccupations, setSubOccupations,subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets });
-    
+
     React.useEffect(()=> {
         fetchPersonalInfo();
     }, [])
 
     React.useEffect(() => {
-        if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES || 
+        if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
             personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) {
             getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
         } else if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM){
@@ -88,7 +88,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField 
+                    <CircleTextField
+                        test-id='personalDetailsPhone'
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
@@ -100,7 +101,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -109,7 +110,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField 
+                    <CircleTextField
+                        test-id='personalDetailsAdditionalPhone'
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
@@ -121,7 +123,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -130,7 +132,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField 
+                    <CircleTextField
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
@@ -142,7 +144,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -152,6 +154,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
+                        test-id='personalDetailsInsurer'
                         options={insuranceCompanies}
                         className={classes.selectWidth}
                         value={personalInfoStateContext.personalInfoData.insuranceCompany}
@@ -162,7 +165,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>          
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -182,7 +185,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId)
                             newValue && getStreetsByCity(newValue.cityId);
                         }}
-                        renderInput={(params) =>                     
+                        renderInput={(params) =>
                         <CircleTextField
                             {...params}
                             id={PersonalInfoDataContextFields.CITY}
@@ -204,7 +207,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 onChange={(event, newValue) => {
                                     handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
                                 }}
-                                renderInput={(params) =>                     
+                                renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
@@ -215,7 +218,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </Grid>
                     }
                 <Grid item xs={1}>
-                    <CircleTextField 
+                    <CircleTextField
                         id={PersonalInfoDataContextFields.FLOOR}
                         placeholder={'קומה'}
                         value={personalInfoStateContext.personalInfoData.address.floor}
@@ -225,7 +228,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 <Grid item xs={1}>
-                    <CircleTextField 
+                    <CircleTextField
                         id={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         placeholder={'מספר בית'}
                         value={personalInfoStateContext.personalInfoData.address.houseNum}
@@ -236,7 +239,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>          
+            <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -248,27 +251,27 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <FormControl component='fieldset'>
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
-                            { 
+                            {
                                 occupations.map((occupation) => {
-                                    return <FormControlLabel 
-                                                value={occupation} 
+                                    return <FormControlLabel
+                                                value={occupation}
                                                 key={occupation}
-                                                control={<Radio                                                           
+                                                control={<Radio
                                                             color='primary'
                                                             onChange={(event) => {
                                                                 setSubOccupationName('');
                                                                 personalInfoStateContext.setPersonalInfoData(
                                                                     {
-                                                                        ...personalInfoStateContext.personalInfoData, 
+                                                                        ...personalInfoStateContext.personalInfoData,
                                                                         [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
                                                                         [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
                                                                         [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
                                                                     });
-                                                            }}/>} 
-                                                label={<span style={{ fontSize: '15px' }}>{occupation}</span>} 
+                                                            }}/>}
+                                                label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
                                             />
                                 })
-                            }   
+                            }
                         </RadioGroup>
                     </FormControl>
                 </Grid>
@@ -285,7 +288,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 onChange={(event, newValue) => {
                                     newValue && getEducationSubOccupations(newValue.value.displayName);
                                 }}
-                                renderInput={(params) =>                     
+                                renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
                                     id={PersonalInfoDataContextFields.CITY}
@@ -294,7 +297,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 />}
                             />
                         </Grid>
-                }   
+                }
                 <Grid item xs={3}>
                     <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
                     {
@@ -311,7 +314,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 onInputChange={(event, newInputValue) => {
                                     setSubOccupationName(newInputValue)}
                                 }
-                                renderInput={(params) =>                     
+                                renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
                                     disabled={subOccupations.length === 0}
