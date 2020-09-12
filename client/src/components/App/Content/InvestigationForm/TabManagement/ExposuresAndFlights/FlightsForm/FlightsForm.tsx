@@ -4,7 +4,7 @@ import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
 import DatePick from "commons/DatePick/DatePick";
 import CircleTextField from "commons/CircleTextField/CircleTextField";
 import useFormStyles from "styles/formStyles";
-// import AirportInput from "./AirportInput/AirportInput";
+import AirportInput from "./AirportInput/AirportInput";
 
 const FlightsForm = (props: any) => {
   const {
@@ -15,35 +15,58 @@ const FlightsForm = (props: any) => {
 
   const classes = useFormStyles();
 
-
   return (
     <Grid className={classes.form} container justify="flex-start">
-      {/* <FormRowWithInput fieldName="יעד:">
-        <AirportInput airport={fromAirport} setAirport={setFromAirport} />
+      <FormRowWithInput fieldName="יעד:">
+        <AirportInput
+          country={exposureAndFlightsData[fieldsNames.destinationCountry]}
+          countryFieldName={fieldsNames.destinationCountry}
+          city={exposureAndFlightsData[fieldsNames.destinationCity]}
+          cityFieldName={fieldsNames.destinationCity}
+          airport={exposureAndFlightsData[fieldsNames.destinationAirport]}
+          airportFieldName={fieldsNames.destinationAirport}
+          handleChangeExposureDataAndFlightsField={
+            handleChangeExposureDataAndFlightsField
+          }
+        />
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="מוצא:">
-        <AirportInput airport={toAirport} setAirport={setToAirport} />
-      </FormRowWithInput> */}
+        <AirportInput
+          country={exposureAndFlightsData[fieldsNames.originCountry]}
+          countryFieldName={fieldsNames.originCountry}
+          city={exposureAndFlightsData[fieldsNames.originCity]}
+          cityFieldName={fieldsNames.originCity}
+          airport={exposureAndFlightsData[fieldsNames.originAirport]}
+          airportFieldName={fieldsNames.originAirport}
+          handleChangeExposureDataAndFlightsField={
+            handleChangeExposureDataAndFlightsField
+          }
+        />
+      </FormRowWithInput>
 
       <FormRowWithInput fieldName="תאריך טיסה:">
-        <div
-         className={classes.formRow}
-         >
+        <div className={classes.formRow}>
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightStartDate]}
-            onChange={e =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, e.target.value)
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightStartDate,
+                e.target.value
+              )
             }
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightEndDate]}
-            onChange={e =>
-                handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, e.target.value)
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightEndDate,
+                e.target.value
+              )
             }
           />
         </div>
@@ -52,8 +75,11 @@ const FlightsForm = (props: any) => {
       <FormRowWithInput fieldName="חברת תעופה:">
         <CircleTextField
           value={exposureAndFlightsData[fieldsNames.airline]}
-          onChange={e =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.airline, e.target.value)
+          onChange={(e) =>
+            handleChangeExposureDataAndFlightsField(
+              fieldsNames.airline,
+              e.target.value
+            )
           }
           placeholder="הזן חברת תעופה"
         />
@@ -62,9 +88,12 @@ const FlightsForm = (props: any) => {
       <FormRowWithInput fieldName="מספר טיסה:">
         <CircleTextField
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
-          onChange={e =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber, e.target.value)
-          }          
+          onChange={(e) =>
+            handleChangeExposureDataAndFlightsField(
+              fieldsNames.flightNumber,
+              e.target.value
+            )
+          }
           placeholder="הזן מספר טיסה"
         />
       </FormRowWithInput>

@@ -1,99 +1,121 @@
-import React, {Dispatch, SetStateAction} from 'react';
-import {Airport, City, Country} from '../FlightFormTypes';
-import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-import useFormStyle from 'styles/formStyles';
-import {AutocompletedFieldProps} from 'commons/AutoCompletedField/AutoCompletedFieldTypes';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import React, { Dispatch, SetStateAction } from "react";
+import { Airport, City, Country } from "../FlightFormTypes";
+import AutocompletedField from "commons/AutoCompletedField/AutocompletedField";
+import useFormStyle from "styles/formStyles";
+import { AutocompletedFieldProps } from "commons/AutoCompletedField/AutoCompletedFieldTypes";
+import CircleTextField from "commons/CircleTextField/CircleTextField";
 
 interface AirportInputProps {
-    airport: Airport | undefined;
-    setAirport: Dispatch<SetStateAction<Airport | undefined>>;
-};
+  airport: Airport | undefined;
+  setAirport: Dispatch<SetStateAction<Airport | undefined>>;
+}
 
-const AirportInput = ({airport, setAirport}: AirportInputProps) => {
-    const [selectedCountry, setSelectedCountry] = React.useState<Country | undefined>();
-    const [selectedCity, setSelectedCity] = React.useState<City | undefined>();
+const AirportInput = (props: any) => {
+  const {
+    country,
+    countryFieldName,
+    city,
+    cityFieldName,
+    airport,
+    airportFieldName,
+    handleChangeExposureDataAndFlightsField,
+  } = props;
 
-    // search states
-    const [cityPrefix, setCityPrefix] = React.useState<string>('');
-    const [airportPrefix, setAirportPrefix] = React.useState<string>('');
+  // const [selectedCountry, setSelectedCountry] = React.useState<Country | undefined>();
+  // const [selectedCity, setSelectedCity] = React.useState<City | undefined>();
 
-    // const {countries, cities, airports,} = useFlightsInvestigation({
-    //     selectedCountry,
-    //     selectedCity,
-    //     cityPrefix,
-    //     airportPrefix,
-    // });
+  // search states
+  // const [cityPrefix, setCityPrefix] = React.useState<string>('');
+  // const [airportPrefix, setAirportPrefix] = React.useState<string>('');
 
-    const classes = useFormStyle();
+  // const {countries, cities, airports,} = useFlightsInvestigation({
+  //     selectedCountry,
+  //     selectedCity,
+  //     cityPrefix,
+  //     airportPrefix,
+  // });
 
-    const onCountrySelect = (event: React.ChangeEvent<{}>, newValue: Country | undefined) => {
-        setSelectedCountry(newValue);
-    };
+  const classes = useFormStyle();
 
-    const onCitySelect = (event: React.ChangeEvent<{}>, newValue: City | undefined) => {
-        setSelectedCity(newValue);
-        newValue && onCountrySelect(event, newValue.country);
-    };
+  // const onCountrySelect = (event: React.ChangeEvent<{}>, newValue: Country | undefined) => {
+  //     setSelectedCountry(newValue);
+  // };
 
-    const onAirportSelect = (event: React.ChangeEvent<{}>, newValue: Airport | undefined) => {
-        setAirport(newValue);
-        // newValue && onCitySelect(event, newValue.city);
-    };
+  // const onCitySelect = (event: React.ChangeEvent<{}>, newValue: City | undefined) => {
+  //     setSelectedCity(newValue);
+  //     newValue && onCountrySelect(event, newValue.country);
+  // };
 
-    const onCityInput = (event: React.ChangeEvent<{}>,
-                         newInputValue: string,) => {
-        setCityPrefix(newInputValue);
-    };
+  // const onAirportSelect = (event: React.ChangeEvent<{}>, newValue: Airport | undefined) => {
+  //     setAirport(newValue);
+  //     // newValue && onCitySelect(event, newValue.city);
+  // };
 
-    const onAirportInput = (event: React.ChangeEvent<{}>,
-                            newInputValue: string,) => {
-        setAirportPrefix(newInputValue);
-    };
+  // const onCityInput = (event: React.ChangeEvent<{}>,
+  //                      newInputValue: string,) => {
+  //     setCityPrefix(newInputValue);
+  // };
 
-    const inputsProps = [
-        {
-            constOptions: true,
-            label: 'מדינה',
-            value: selectedCountry,
-            //   options: countries,
-            options: [],
-            onChange: onCountrySelect,
-        } as AutocompletedFieldProps<Country>, {
-            label: 'עיר',
-            value: selectedCity,
-            //  options: cities,
-            options: [],
-            onChange: onCitySelect,
-            onInputChange: onCityInput
-        } as AutocompletedFieldProps<City>, {
-            label: 'שדה תעופה',
-            value: airport,
-            //    options: airports,
-            options: [],
-            onChange: onAirportSelect,
-            onInputChange: onAirportInput,
-        } as AutocompletedFieldProps<Airport>];
-    ;
-    // Fields are temporarily text inputs only
-    // Autocomplete fields will be added when api is ready
-    const AutocomplteFields = () =>
-        inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>);
+  // const onAirportInput = (event: React.ChangeEvent<{}>,
+  //                         newInputValue: string,) => {
+  //     setAirportPrefix(newInputValue);
+  // };
 
-    return (
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <CircleTextField placeholder='מדינה' InputProps={{classes: {input: classes.roundedTextLabel}}}
+  // const inputsProps = [
+  //     {
+  //         constOptions: true,
+  //         label: 'מדינה',
+  //         value: selectedCountry,
+  //         //   options: countries,
+  //         options: [],
+  //         onChange: onCountrySelect,
+  //     } as AutocompletedFieldProps<Country>, {
+  //         label: 'עיר',
+  //         value: selectedCity,
+  //         //  options: cities,
+  //         options: [],
+  //         onChange: onCitySelect,
+  //         onInputChange: onCityInput
+  //     } as AutocompletedFieldProps<City>, {
+  //         label: 'שדה תעופה',
+  //         value: airport,
+  //         //    options: airports,
+  //         options: [],
+  //         onChange: onAirportSelect,
+  //         onInputChange: onAirportInput,
+  //     } as AutocompletedFieldProps<Airport>];
+  // ;
 
-                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
+  // Fields are temporarily text inputs only
+  // Autocomplete fields will be added when api is ready
+  // const AutocomplteFields = () =>
+  //     inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>);
 
-            <CircleTextField placeholder='עיר' InputProps={{classes: {input: classes.roundedTextLabel}}}
-
-                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
-
-            <CircleTextField placeholder='שדה תעופה' InputProps={{classes: {input: classes.roundedTextLabel}}}
-                             InputLabelProps={{classes: {root: classes.roundedTextLabel}}}/>
-        </div>
-    );
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <CircleTextField
+        value={country}
+        placeholder="מדינה"
+        onChange={(e) => handleChangeExposureDataAndFlightsField(countryFieldName, e.target.value)}
+        InputProps={{ classes: { input: classes.roundedTextLabel } }}
+        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
+      />
+      <CircleTextField
+        value={city}
+        placeholder="עיר"
+        onChange={(e) => handleChangeExposureDataAndFlightsField(cityFieldName, e.target.value)}
+        InputProps={{ classes: { input: classes.roundedTextLabel } }}
+        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
+      />
+      <CircleTextField
+        value={airport}
+        onChange={(e) => handleChangeExposureDataAndFlightsField(airportFieldName, e.target.value)}
+        placeholder="שדה תעופה"
+        InputProps={{ classes: { input: classes.roundedTextLabel } }}
+        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
+      />
+    </div>
+  );
 };
 
 export default AirportInput;
