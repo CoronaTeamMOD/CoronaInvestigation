@@ -21,14 +21,13 @@ import useClinicalDetails from './useClinicalDetails';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
+    const context = React.useContext(clinicalDetailsDataContext);
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
-    const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(false);
+    const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(context.clinicalDetailsData.backgroundDeseases.length > 0);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
-    const [selectedSymptoms, setSelectedSymptoms] = React.useState<string[]>([]);
-    const [selectedBackgroundDiseases, setSelectedBackgroundDiseases] = React.useState<string[]>([]);
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
     const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
     const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
@@ -36,21 +35,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
 
-    const context = React.useContext(clinicalDetailsDataContext);
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
         setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
-
-    React.useEffect(() => {
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
-    }, [selectedSymptoms]);
-
-    React.useEffect(() => {
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
-    }, [selectedBackgroundDiseases]);
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -62,13 +52,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     );
 
     const handleSymptomCheck = (checkedSymptom: string) => {
+        let selectedSymptoms = context.clinicalDetailsData.symptoms;
+
         if (selectedSymptoms.includes(checkedSymptom)) {
-            setSelectedSymptoms(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
+            updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
             if (checkIfOtherField(checkedSymptom)) {
                 setIsOtherSymptomChecked(false);
             }
         } else {
             selectedSymptoms.push(checkedSymptom);
+            updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
             if (checkIfOtherField(checkedSymptom)) {
                 setIsOtherSymptomChecked(true);
             }
@@ -76,12 +69,15 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
-        if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
-            setSelectedBackgroundDiseases(selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
+        let selectedBackgroundDiseases = context.clinicalDetailsData.backgroundDeseases;
+
+        if (selectedBackgroundDiseases.includes(backgroundIllness)) {
+            updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
             if (checkIfOtherField(backgroundIllness))
                 setIsOtherBackgroundIllnessChecked(false);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
+            updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
             if (checkIfOtherField(backgroundIllness))
                 setIsOtherBackgroundIllnessChecked(true);
         };
@@ -271,6 +267,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                 key: symptom,
                                                 value: symptoms.find((chosenSymptom) => chosenSymptom === symptom),
                                                 labelText: symptom,
+                                                checked: context.clinicalDetailsData.symptoms.includes(symptom),
                                                 onChange: () => {
                                                     handleSymptomCheck(symptom)
                                                 }
@@ -321,6 +318,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                 key: backgroundIllness,
                                                 value: backgroundDiseases.find((chosenBackgroundIllness) => chosenBackgroundIllness === backgroundIllness),
                                                 labelText: backgroundIllness,
+                                                checked: context.clinicalDetailsData.backgroundDeseases.includes(backgroundIllness),
                                                 onChange: () => {
                                                     handleBackgroundIllnessCheck(backgroundIllness)
                                                 }
