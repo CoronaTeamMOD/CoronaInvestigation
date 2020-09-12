@@ -8,21 +8,6 @@ import { InteractionEventDialogContext } from '../../InteractionsEventDialogCont
 
 const PrivateHouseEventForm : React.FC = () : JSX.Element => {
 
-    const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
-    const investigatedPersonAddress = React.useContext(personalInfoContext).personalInfoData.address;
-
-    const { placeSubType } = interactionEventDialogData;
-
-    React.useEffect(() => {
-        if (placeSubType === placeTypesCodesHierarchy.privateHouse.subTypesCodes.investigatedPersonHouse) {
-            setInteractionEventDialogData({...interactionEventDialogData, locationAddress: {
-                ...interactionEventDialogData.locationAddress,
-                floor: investigatedPersonAddress.floor,
-                apartment: investigatedPersonAddress.houseNum
-            }});
-        }
-    }, [placeSubType])
-
     return (
         <>
             <AddressForm/>
