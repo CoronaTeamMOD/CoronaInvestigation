@@ -22,6 +22,7 @@ const dateFormat = 'yyyy-MM-dd';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
+    const context = React.useContext(clinicalDetailsDataContext);
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
@@ -37,7 +38,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
 
-    const context = React.useContext(clinicalDetailsDataContext);
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -70,11 +70,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
             }
         } else {
             selectedSymptoms.push(checkedSymptom);
+            updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
             if (checkIfOtherField(checkedSymptom)) {
                 setIsOtherSymptomChecked(true);
             }
         }
     };
+
+    React.useEffect(() => {
+        setSelectedSymptoms(context.clinicalDetailsData.symptoms);
+    },[context.clinicalDetailsData.symptoms]);
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
         if (selectedBackgroundDiseases.find(checkedBackgroundIllness => checkedBackgroundIllness === backgroundIllness)) {
@@ -262,6 +267,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                 key: symptom,
                                                 value: symptoms.find((chosenSymptom) => chosenSymptom === symptom),
                                                 labelText: symptom,
+                                                checked: context.clinicalDetailsData.symptoms.includes(symptom),
                                                 onChange: () => {
                                                     handleSymptomCheck(symptom)
                                                 }

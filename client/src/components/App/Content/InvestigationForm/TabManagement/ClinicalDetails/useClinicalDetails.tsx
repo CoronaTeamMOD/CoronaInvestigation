@@ -59,11 +59,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                     const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
-                    const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes;
+                    const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     const patientAddress = patientInvestigation.addressByIsolationAddress;
                     setIsolationCityName(patientAddress.cityByCity.displayName);
                     setIsolationStreetName(patientAddress.streetByStreet.displayName);
+
+                    console.log(patientBackgroundDiseases)
                     
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
@@ -77,7 +79,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: new Date(patientInvestigation.isolationStartTime),
                         isolationEndDate: new Date(patientInvestigation.isolationEndTime),
-                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes,
+                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName),
                         symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
                         wasHospitalized: patientInvestigation.wasHospitalized,
@@ -98,6 +100,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         getBackgroundDiseases();
         getClinicalDetailsByEpidemiologyNumber();
     }, []);
+
+    React.useEffect(() => {
+    },[context.clinicalDetailsData.symptoms])
 
     return {
         hasBackgroundDeseasesToggle,
