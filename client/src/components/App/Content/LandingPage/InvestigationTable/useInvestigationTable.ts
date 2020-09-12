@@ -8,10 +8,10 @@ import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 export const createRowData = (
   epidemiologyNumber: number,
@@ -93,7 +93,6 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         console.log(err)
       });
   }, [user.id, classes.errorAlertTitle]);
-
 
   const onInvestigationRowClick = (epidemiologyNumber: number) => {
     axios.post('/investigationInfo/updateInvestigationStatus', {

@@ -1,7 +1,9 @@
 import React from 'react';
+
 import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
 import AutocompletedField from '../AutoCompletedField/AutocompletedField';
+import useStyles from './LocationInputFieldStyles';
 
 export interface GoogleApiPlace {
     description: string;
@@ -18,6 +20,8 @@ export interface GoogleApiPlace {
 }
 
 const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputProps) => {
+    const classes = useStyles({});
+
     const {autoCompletePlacesFromApi} = useGoogleApiAutocomplete();
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
     const [input, setInput] = React.useState<string>('');
@@ -65,6 +69,7 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
             onInputChange={onInputChange}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
             renderOption={LocationOptionItem}
+            className={classes.longAutoComplete}
         />
     );
 };

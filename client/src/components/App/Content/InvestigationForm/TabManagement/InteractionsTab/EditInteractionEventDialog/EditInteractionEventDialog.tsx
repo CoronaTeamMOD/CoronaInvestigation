@@ -20,7 +20,10 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     const classes = useStyles();
     
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-    const { placeType, placeSubType } = interactionEventDialogData;
+
+    const canConfirm = React.useMemo<boolean>(() => true, [])
+
+    const { placeType, placeSubType, contacts } = interactionEventDialogData;
     
     React.useEffect(() => {
         if (placeType === eventToEdit.placeType && placeSubType === eventToEdit.placeSubType) {
@@ -54,6 +57,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                     בטל
                 </Button>
                 <PrimaryButton 
+                    disabled={!canConfirm}
                     id='createContact'
                     onClick={() => onConfirm()}>
                     שמור שינויים

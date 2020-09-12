@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
@@ -16,9 +16,9 @@ import InteractionEventForm, { defaultContact } from '../InteractionEventForm/In
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
-const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
+const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
     const { eventDate, closeDialog, isOpen } = props;
-    const { createNewInteractionEvent } = useNewInteractionEventDialog({closeDialog});
+    const { createNewInteractionEvent } = useNewInteractionEventDialog({ closeDialog });
 
     const defaultDate = new Date(startOfDay(eventDate).toUTCString());
 
@@ -26,10 +26,12 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const [interactionEventDialogData, setInteractionEventDialogData] = 
+    const canConfirm = React.useMemo<boolean>(() => true, [])
+
+    const [interactionEventDialogData, setInteractionEventDialogData] =
         useState<InteractionEventDialogData>(
             initialDialogData(defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
-        
+
     const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
         interactionEventDialogData,
         setInteractionEventDialogData,
@@ -39,24 +41,26 @@ const NewInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element
     const onConfirm = () => createNewInteractionEvent(interactionEventDialogData);
 
     return (
-        <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
+        <Dialog classes={{ paper: classes.dialogPaper }} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
             <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm/>
+                    <InteractionEventForm />
                 </DialogContent>
             </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
-                <Button 
+                <Button
+                    test-id='cancelNewContactLocation'
                     onClick={() => closeDialog()}
-                    color='default' 
+                    color='default'
                     className={classes.cancelButton}>
                     בטל
                 </Button>
-                <PrimaryButton 
-                    id='createContact'
+                <PrimaryButton
+                    disabled={!canConfirm}
+                    test-id='createContact'
                     onClick={() => onConfirm()}>
                     צור מקום/מגע
                 </PrimaryButton>

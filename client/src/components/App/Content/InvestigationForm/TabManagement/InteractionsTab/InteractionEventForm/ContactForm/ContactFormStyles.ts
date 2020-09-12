@@ -2,13 +2,8 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     addContactFields: {
-        display: 'flex',
-        flexDirection: 'row',
         height: '25vh',
-        paddingRight: '0.5vw',
-        flexWrap: 'wrap',
-        marginBottom: '1vh',
-        alignItems: 'center',
+        width: '97%'
     },
     newContactField: {
         width: '15vw',

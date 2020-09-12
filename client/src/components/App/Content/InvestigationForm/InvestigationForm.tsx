@@ -65,23 +65,21 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables });
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, setPersonalInfoData });
         
     return (
         <div className={classes.content}>
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                        <InvestigationInfoBar
-                            epidemiologyNumber={epidemiologyNumber}
-                        />
+                        <InvestigationInfoBar />
                         <div className={classes.interactiveForm}>
                             <TabManagement
                                 currentTab={currentTab}
                                 setCurrentTab={setCurrentTab}
                             />
                             <div className={classes.buttonSection}>
-                                <PrimaryButton
+                                <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                     onClick={() => {
                                         currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>
