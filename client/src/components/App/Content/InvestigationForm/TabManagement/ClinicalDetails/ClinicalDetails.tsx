@@ -17,10 +17,11 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
+import { tabsObserver } from '../../InvestigationForm';
 
 const dateFormat = 'yyyy-MM-dd';
 
-const ClinicalDetails: React.FC = (): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
@@ -44,6 +45,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
         setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
+
+    React.useEffect(() => {
+        tabsObserver.subscribe(id, () => {
+            console.log(id);
+        })
+    }, [])
 
     React.useEffect(() => {
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
@@ -420,5 +427,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         </div>
     );
 };
+
+interface Props {
+    id: number;
+}
 
 export default ClinicalDetails;

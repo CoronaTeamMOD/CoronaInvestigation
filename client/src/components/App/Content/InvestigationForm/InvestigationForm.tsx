@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import StoreStateType from 'redux/storeStateType';
+import Observer from 'commons/ObserverDP/Observer';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
@@ -14,6 +15,7 @@ import {
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 
 import useStyles from './InvestigationFormStyles';
+import { tabs } from './TabManagement/TabManagement';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
@@ -21,6 +23,7 @@ import { StartInvestigationDateVariablesProvider } from './StartInvestiationDate
 
 export const LAST_TAB_ID = 3;
 const END_INVESTIGATION = 'סיים חקירה';
+export const tabsObserver = new Observer();
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const InvestigationForm: React.FC = (): JSX.Element => {
@@ -81,7 +84,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <div className={classes.buttonSection}>
                                 <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                     onClick={() => {
-                                        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                        tabsObserver.notifySpecific(currentTab.id);
+                                        setCurrentTab(tabs[(currentTab.id + 1) % tabs.length]);
+                                        //currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                     }}>
                                     {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>

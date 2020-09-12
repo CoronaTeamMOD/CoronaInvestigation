@@ -21,6 +21,7 @@ import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextF
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
+import { tabsObserver } from '../../InvestigationForm';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
@@ -32,7 +33,7 @@ const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const INSTITUTION_OPTIONS = ['אודם','ירושלים','צה"ל', 'מוסד', 'אחר','8600'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
-const PersonalInfoTab: React.FC = (): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
@@ -66,6 +67,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     React.useEffect(()=> {
         fetchPersonalInfo();
+        tabsObserver.subscribe(id, () => {
+                console.log(id);
+        });
     }, [])
 
     React.useEffect(() => {
@@ -336,5 +340,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         </div>
     );
 };
+
+interface Props {
+    id: number
+}
 
 export default PersonalInfoTab;

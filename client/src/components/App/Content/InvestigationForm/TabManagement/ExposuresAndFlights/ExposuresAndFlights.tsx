@@ -9,9 +9,10 @@ import useStyles from './ExposuresAndFlightsStyles';
 import { ExposureDetails, ExposuresContextProvider } from "commons/Contexts/ExposuresAndFlights";
 import { GoogleApiPlace } from "commons/LocationInputField/LocationInput";
 import PlaceType from "models/PlaceType";
+import { tabsObserver } from '../../InvestigationForm';
 
 
-const ExposuresAndFlights = () => {
+const ExposuresAndFlights: React.FC<Props> = ({ id }: Props) => {
     const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(false);
     const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
 
@@ -25,6 +26,12 @@ const ExposuresAndFlights = () => {
     const [flightNum, setFlightNumber] = React.useState<string>();
     const [departureDate, setDepartureDate] = React.useState<Date>();
     const [arrivalDate, setArrivalDate] = React.useState<Date>();
+
+    React.useEffect(() => {
+        tabsObserver.subscribe(id, () => {
+            console.log(id);
+        })
+    }, [])
 
     const contextInitialData: ExposureDetails = {
         exposureData: {
@@ -90,5 +97,9 @@ const ExposuresAndFlights = () => {
         </ExposuresContextProvider>
     );
 };
+
+interface Props {
+    id: number;
+}
 
 export default ExposuresAndFlights;
