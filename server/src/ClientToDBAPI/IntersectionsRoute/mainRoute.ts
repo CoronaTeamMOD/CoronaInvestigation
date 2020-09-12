@@ -6,6 +6,8 @@ import { GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Q
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 
+const errorStatusCode = 500;
+
 const intersectionsRoute = Router();
 
 intersectionsRoute.get('/', (request: Request, response: Response) => {
@@ -50,14 +52,14 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
     const newEvent = convertEventToDBType(request.body);
     graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
     .then(result => response.send(result))
-    .catch(error => response.send(error))
+    .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
     graphqlRequest(EDIT_CONTACT_EVENT, {contactEvent: JSON.stringify(updatedEvent)})
     .then(result => response.send(result))
-    .catch(error => response.send(error))
+    .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 export default intersectionsRoute;

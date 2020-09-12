@@ -1,4 +1,4 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
 export const EDIT_CONTACT_EVENT = gql`
 mutation editContactEvent ($event: ContactEventInput!) {
