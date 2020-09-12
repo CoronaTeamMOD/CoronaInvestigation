@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
+import TabNames from 'models/enums/TabNames';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -11,7 +12,7 @@ import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
 export const defaultTab: TabObj = {
     id: 0,
-    name: 'פרטים אישיים',
+    name: TabNames.PERSONAL_INFO,
     isDisabled: false,
     displayComponent: <PersonalInfoTab />
 };
@@ -20,19 +21,19 @@ export const tabs: TabObj[] = [
     defaultTab,
     {
         id: 1,
-        name: 'בידוד ופרטים קליניים',
+        name: TabNames.CLINICAL_DETAILS,
         isDisabled: false,
         displayComponent: <ClinicalDetails />
     },
     {
         id: 2,
-        name: 'חשיפה אפשרית וחו"ל',
+        name: TabNames.EXPOSURES_AND_FLIGHTS,
         isDisabled: false,
         displayComponent: <ExposuresAndFlights/>,
     },
     {
         id: 3,
-        name: 'מקומות ומגעים', 
+        name: TabNames.INTERACTIONS, 
         isDisabled: false,
         displayComponent: <InteractionsTab/>,
     },

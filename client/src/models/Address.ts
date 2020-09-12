@@ -7,6 +7,13 @@ export interface Address {
     apartment?: string;
 }
 
+export interface DBAddress {
+    city: string;
+    street: string;
+    floor: string;
+    houseNum: string;
+}
+
 export const initAddress : Address = {
     address:null,
     entrance: '',

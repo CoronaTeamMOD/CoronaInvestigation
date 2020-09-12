@@ -2,8 +2,12 @@ import axios from 'axios';
 import React from 'react';
 import { config } from 'dotenv';
 
+import User from 'models/User';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import { Environment } from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreatores';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
@@ -26,6 +30,22 @@ type AuthenticationReturn = [{
 const userNameClaimType = 'name';
 
 const App: React.FC = (): JSX.Element => {
+
+    const user = useSelector<StoreStateType, User>(state => state.user);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    React.useEffect(() => {
+        axios.interceptors.request.use(
+            (config) => {
+                config.headers.Authorization = user.token;
+                config.headers.EpidemiologyNumber = epidemiologyNumber;
+                config.headers.UserName = user.name
+                setIsLoading(true);
+                return config;
+            },
+            (error) => Promise.reject(error)
+        );
+    }, [epidemiologyNumber])
     
     React.useEffect(() => {
         if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV) {
@@ -41,7 +61,7 @@ const App: React.FC = (): JSX.Element => {
         } else {
             setUser({
                 id: '7',
-                name: 'רוני_1',
+                name: 'stub_user',
                 token: 'fake token!'
             });
         }

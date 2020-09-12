@@ -76,7 +76,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 externalizationApproval
         });
     }
-    
+
     const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, startTime)});
     };
@@ -91,13 +91,13 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <Grid className={formClasses.form} container justify='flex-start'>
-                <PlacesTypesAndSubTypes 
+                <PlacesTypesAndSubTypes
                 placeType={placeType}
                 placeSubType={placeSubType}
                 onPlaceTypeChange={onPlaceTypeChange}
                 onPlaceSubTypeChange={onPlaceSubTypeChange}/>
                 {
-                    placeType === privateHouse.code && 
+                    placeType === privateHouse.code &&
                     <Collapse in={placeType === privateHouse.code}>
                         <PrivateHouseEventForm/>
                     </Collapse>
@@ -148,6 +148,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                     <Grid item xs={6}>
                         <FormInput fieldName='משעה'>
                             <DatePick
+                                test-id='contactLocationStartTime'
                                 type='time'
                                 value={format(startTime, timeFormat)}
                                 onChange={onStartTimeChange}/>
@@ -156,6 +157,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                     <Grid item xs={6}>
                         <FormInput fieldName='עד שעה'>
                             <DatePick
+                                test-id='contactLocationEndTime'
                                 type='time'
                                 value={format(endTime, timeFormat)}
                                 onChange={onEndTimeChange}

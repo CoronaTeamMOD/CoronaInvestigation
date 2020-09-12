@@ -25,30 +25,30 @@ const FlightsForm = () => {
 
     return (
         <Grid className={classes.form} container justify='flex-start'>
-            <FormRowWithInput fieldName='טיסה הלוך:'>
+            <FormRowWithInput fieldName='טיסה הלוך:' test-id='fromFlight'>
                 <AirportInput airport={fromAirport} setAirport={setFromAirport}/>
             </FormRowWithInput>
 
-            <FormRowWithInput fieldName='טיסה חזור:'>
+            <FormRowWithInput fieldName='טיסה חזור:' test-id='toFlight'>
                 <AirportInput airport={toAirport} setAirport={setToAirport}/>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='תאריך טיסה:'>
                 <div className={classes.formRow}>
                     <Typography variant='caption'>מתאריך</Typography>
-                    <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} type='date'/>
+                    <DatePick value={formattedDate(departureDate)} onChange={handleStartDateInput} type='date' test-id='flightFromDate'/>
                     <Typography variant='caption'>עד תאריך</Typography>
-                    <DatePick value={formattedDate(arrivalDate)} onChange={handleEndDateInput} type='date'/>
+                    <DatePick value={formattedDate(arrivalDate)} onChange={handleEndDateInput} type='date' test-id='flightUntilDate'/>
                 </div>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='חברת תעופה:'>
-                <CircleTextField value={airline} onChange={handleAirlineInput}
+                <CircleTextField value={airline} onChange={handleAirlineInput} test-id='airline'
                                  placeholder='הזן חברת תעופה'/>
             </FormRowWithInput>
 
             <FormRowWithInput fieldName='מספר טיסה:'>
-                <CircleTextField value={flightNum} onChange={handleFlightNumberInput}
+                <CircleTextField value={flightNum} onChange={handleFlightNumberInput} test-id='flightNumber'
                                  placeholder='הזן מספר טיסה'/>
             </FormRowWithInput>
         </Grid>
