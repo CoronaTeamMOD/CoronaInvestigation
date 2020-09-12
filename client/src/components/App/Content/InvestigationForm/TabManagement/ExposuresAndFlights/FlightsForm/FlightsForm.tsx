@@ -25,11 +25,11 @@ const FlightsForm = () => {
 
     return (
         <Grid className={classes.form} container justify='flex-start'>
-            <FormRowWithInput fieldName='טיסה הלוך:' test-id='fromFlight'>
+            <FormRowWithInput fieldName='טיסה הלוך:' testId='fromFlight'>
                 <AirportInput airport={fromAirport} setAirport={setFromAirport}/>
             </FormRowWithInput>
 
-            <FormRowWithInput fieldName='טיסה חזור:' test-id='toFlight'>
+            <FormRowWithInput fieldName='טיסה חזור:' testId='toFlight'>
                 <AirportInput airport={toAirport} setAirport={setToAirport}/>
             </FormRowWithInput>
 
