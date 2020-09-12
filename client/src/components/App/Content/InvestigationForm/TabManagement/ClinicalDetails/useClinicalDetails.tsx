@@ -99,9 +99,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
-    React.useEffect(() => {
-    },[context.clinicalDetailsData.symptoms])
-
     return {
         hasBackgroundDeseasesToggle,
         getStreetByCity,
