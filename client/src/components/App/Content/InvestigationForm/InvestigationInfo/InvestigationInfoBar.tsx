@@ -1,9 +1,11 @@
 import React from 'react';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
+import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
@@ -43,17 +45,17 @@ const defaultInvestigationStaticInfo = {
     userByLastUpdator: defaultUser
 }
 
-const InvestigationInfoBar = (props: Props) => {
+const InvestigationInfoBar = () => {
 
     let history = useHistory();
-    const { epidemiologyNumber } = props;
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
-    React.useEffect(() => {
-        axios.post('/investigationInfo/staticInfo', {
-            investigationId: epidemiologyNumber
-        }).then((result: any) => {
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    React.useEffect(() => { 
+        axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
+        ).then((result: any) => {
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
                 setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
                 setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
@@ -70,7 +72,7 @@ const InvestigationInfoBar = (props: Props) => {
                 timeout(1900).then(() => history.push(landingPageRoute));
             }
         })
-    }, []);
+    }, [epidemiologyNumber]);
 
     return (
         <>
@@ -89,9 +91,5 @@ const InvestigationInfoBar = (props: Props) => {
         </>
     );
 };
-
-interface Props {
-    epidemiologyNumber: number;
-}
 
 export default InvestigationInfoBar;
