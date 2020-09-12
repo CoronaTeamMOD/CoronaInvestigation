@@ -1,13 +1,13 @@
 import React from 'react';
-import {Collapse, Divider, Typography} from '@material-ui/core';
+import { Collapse, Divider, Typography } from '@material-ui/core';
 import Toggle from 'commons/Toggle/Toggle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
-import {ExposureDetails, ExposuresContextProvider} from "commons/Contexts/ExposuresAndFlights";
-import {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import { ExposureDetails, ExposuresContextProvider } from "commons/Contexts/ExposuresAndFlights";
+import { GoogleApiPlace } from "commons/LocationInputField/LocationInput";
 import PlaceType from "models/PlaceType";
 
 
@@ -51,7 +51,7 @@ const ExposuresAndFlights = () => {
         }
     };
 
-    const {fieldName} = useFormStyles();
+    const { fieldName } = useFormStyles();
     const classes = useStyles();
 
     const handleVerifiedExposureToggle = (event: React.MouseEvent<HTMLElement>, value: any) => setHadVerifiedExposure(value);
@@ -64,15 +64,15 @@ const ExposuresAndFlights = () => {
                 </Typography>
 
                 <FormRowWithInput fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                    <Toggle value={verifiedExposure} onChange={handleVerifiedExposureToggle}/>
+                    <Toggle value={verifiedExposure} onChange={handleVerifiedExposureToggle} test-id='knownExposure' />
                 </FormRowWithInput>
 
                 <Collapse in={verifiedExposure} className={classes.additionalInformationForm}>
-                    <ExposureForm/>
+                    <ExposureForm />
                 </Collapse>
             </div>
 
-            <Divider/>
+            <Divider />
 
             <div className={classes.subForm}>
                 <Typography variant='caption' className={fieldName}>
@@ -80,11 +80,11 @@ const ExposuresAndFlights = () => {
                 </Typography>
 
                 <FormRowWithInput fieldName='האם חזר מחו״ל?'>
-                    <Toggle value={hasBeenAbroad} onChange={handleHasBeenAbroad}/>
+                    <Toggle value={hasBeenAbroad} onChange={handleHasBeenAbroad} test-id='wasPatientAbroad' />
                 </FormRowWithInput>
 
                 <Collapse in={hasBeenAbroad} className={classes.additionalInformationForm}>
-                    <FlightsForm/>
+                    <FlightsForm />
                 </Collapse>
             </div>
         </ExposuresContextProvider>

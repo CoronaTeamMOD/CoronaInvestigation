@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Typography, Paper } from '@material-ui/core';
-import {CheckCircleOutline, CakeOutlined, EventOutlined, Help} from '@material-ui/icons';
+import { CheckCircleOutline, CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
 import { getPersonFullName } from 'Utils/displayUtils';
@@ -25,9 +25,9 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
-    
+
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
-    
+
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
@@ -46,37 +46,37 @@ const InvestigatedPersonInfo = (props: Props) => {
 
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
-                    <InfoItemWithIcon name='גיל' value={
+                    <InfoItemWithIcon test-id='age' name='גיל' value={
                         getPersonAge(new Date(investigatedPatientByInvestigatedPatientId.personByPersonId.birthDate))
                     }
                         icon={CakeOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon name='תאריך הבדיקה' value={
-                            format(new Date(props.coronaTestDate), 'dd/MM/yyyy')
-                        }
+                    <InfoItemWithIcon test-id='examinationDate' name='תאריך הבדיקה' value={
+                        format(new Date(props.coronaTestDate), 'dd/MM/yyyy')
+                    }
                         icon={EventOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon name='מין' value={
+                    <InfoItemWithIcon test-id='gender' name='מין' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.gender
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon name='סוג תעודה מזהה' value={
+                    <InfoItemWithIcon test-id='idType' name='סוג תעודה מזהה' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.identificationType
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon name='מספר תעודה מזהה' value={
+                    <InfoItemWithIcon test-id='idNumber' name='מספר תעודה מזהה' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.identificationNumber
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon name='האם נפטר' value={
+                    <InfoItemWithIcon test-id='isDeceased' name='האם נפטר' value={
                         investigatedPatientByInvestigatedPatientId.isDeceased ?
                             'כן' :
                             'לא'
@@ -86,14 +86,15 @@ const InvestigatedPersonInfo = (props: Props) => {
                 </div>
                 <div className={classes.managementControllers}>
                     <PrimaryButton
-                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
+                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)} test-id='exitInvestigation'>
                         {leaveInvestigationMessage}
                     </PrimaryButton>
                     <CustomCheckbox
                         checkboxElements={[
                             {
-                                value: cantReachInvestigated, 
-                                labelText: 'אין מענה במספר זה', 
+                                'test-id': 'noResponseFromThisPhone',
+                                value: cantReachInvestigated,
+                                labelText: 'אין מענה במספר זה',
                                 onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCantReachInvestigatedCheck(checked))
                             }
                         ]}
