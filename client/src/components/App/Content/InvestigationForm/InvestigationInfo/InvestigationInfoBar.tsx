@@ -56,9 +56,6 @@ const InvestigationInfoBar = () => {
     React.useEffect(() => { 
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
-
-            console.log("RES: ", result)
-
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
                 setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
                 setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
