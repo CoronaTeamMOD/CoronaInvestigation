@@ -39,7 +39,7 @@ const App: React.FC = (): JSX.Element => {
             (config) => {
                 config.headers.Authorization = user.token;
                 config.headers.EpidemiologyNumber = epidemiologyNumber;
-                config.headers.UserName = 'stub_user'
+                config.headers.UserName = user.name
                 setIsLoading(true);
                 return config;
             },
@@ -61,7 +61,7 @@ const App: React.FC = (): JSX.Element => {
         } else {
             setUser({
                 id: '7',
-                name: 'רוני_1',
+                name: 'stub_user',
                 token: 'fake token!'
             });
         }
