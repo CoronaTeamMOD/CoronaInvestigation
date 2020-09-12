@@ -64,8 +64,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientAddress = patientInvestigation.addressByIsolationAddress;
                     setIsolationCityName(patientAddress.cityByCity.displayName);
                     setIsolationStreetName(patientAddress.streetByStreet.displayName);
-
-                    console.log(patientBackgroundDiseases)
                     
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
