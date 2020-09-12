@@ -36,7 +36,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
 
-    const showBackgroundDiseases = (hasBackgroundDiseases || context.clinicalDetailsData.backgroundDeseases.length > 0)
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -309,7 +308,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={showBackgroundDiseases}>
+                    <Collapse in={hasBackgroundDiseases}>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
