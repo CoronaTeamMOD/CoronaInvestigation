@@ -72,9 +72,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                        <InvestigationInfoBar
-                            epidemiologyNumber={epidemiologyNumber}
-                        />
+                        <InvestigationInfoBar />
                         <div className={classes.interactiveForm}>
                             <TabManagement
                                 currentTab={currentTab}
