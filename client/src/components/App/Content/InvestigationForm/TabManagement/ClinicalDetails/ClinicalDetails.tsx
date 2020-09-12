@@ -133,13 +133,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </b>
                 </Typography>
                 <Autocomplete
-                    test-id='currentQuarantineAddress'
+                    test-id='currentQuarantineCity'
                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
                     getOptionLabel={(option) => option.value.displayName}
                     inputValue={isolationCityName}
                     onChange={(event, selectedCity) => {
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, selectedCity?.id)
-                        selectedCity && getStreetByCity(selectedCity.id)}
+                        selectedCity && getStreetByCity(selectedCity.id)
+                    }
                     }
                     onInputChange={(event, selectedCityName) => {
                         setIsolationCityName(selectedCityName);
@@ -157,13 +158,15 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     getOptionLabel={(option) => option.displayName}
                     inputValue={isolationStreetName}
                     onChange={(event, selectedStreet) => {
-                        selectedStreet && updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet.id)}
+                        selectedStreet && updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet.id)
+                    }
                     }
                     onInputChange={(event, selectedStreetName) => {
                         setIsolationStreetName(selectedStreetName);
                     }}
                     renderInput={(params) =>
                         <CircleTextField
+                            test-id='currentQuarantineStreet'
                             {...params}
                             placeholder='רחוב'
                             className={classes.textField}
@@ -171,7 +174,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     }
                 />
                 <CircleTextField
-                    test-id='currentQuarantineAddress'
+                    test-id='currentQuarantineHomeNumber'
                     size='small'
                     placeholder='מספר הבית'
                     className={classes.textField}
@@ -181,6 +184,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     )}
                 />
                 <CircleTextField
+                    test-id='currentQuarantineFloor'
                     size='small'
                     placeholder='קומה'
                     className={classes.textField}

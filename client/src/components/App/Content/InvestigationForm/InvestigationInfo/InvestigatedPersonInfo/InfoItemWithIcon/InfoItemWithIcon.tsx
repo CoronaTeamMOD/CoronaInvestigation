@@ -13,7 +13,7 @@ const InfoItemWithIcon = ({ name, value, icon, testId }: Props) => {
     return (
         <div className={classes.additionalInfoItem}>
             {React.createElement(icon, { className: classes.infoIcon })}
-            <InfoItem name={name} value={value} test-id={testId} />
+            <InfoItem name={name} value={value} testId={testId} />
         </div>
     );
 };
