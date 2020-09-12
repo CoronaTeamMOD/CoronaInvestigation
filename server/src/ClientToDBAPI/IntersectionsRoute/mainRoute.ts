@@ -24,30 +24,42 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
     });
 });
 
+const resetEmptyFields = (object: any) => {
+    Object.keys(object).forEach(key => {
+        if (object[key] === '') object[key] = null
+    });
+}
+
 const convertEventToDBType = (event: any) => {
-    event.allowsHamagenData = false;
-    event.contacts.forEach((contact: any) => {
+    const updatedContacts = event.contacts.filter((contact: any) => contact.id && contact.firstName && contact.lastName && contact.phoneNumber);
+    updatedContacts.forEach((contact: any) => {
         contact.doesNeedIsolation = contact.contactType === ContactType.TIGHT;
-        delete contact.contactType
+        delete contact.contactType;
     })
+    event.contacts = updatedContacts;
+    resetEmptyFields(event);
+    resetEmptyFields(event.locationAddress);
+    event.contacted_number = updatedContacts.length;
+    event.locationAddress.floor = +event.locationAddress.floor;
+    event.locationAddress.apartment = +event.locationAddress.apartment;
 
     return event;
 }
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
-    // graphqlRequest(CREATE_CONTACT_EVENT, convertEventToDBType(request.body))
-    // .then((result: any) => {
-    //     response.send(result);
-    // });
-    response.send('done');
+    const newEvent = convertEventToDBType(request.body);
+    graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
+    .then((result: any) => {
+        response.send(result);
+    });
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
-    // graphqlRequest(EDIT_CONTACT_EVENT, convertEventToDBType(request.body))
-    // .then((result: any) => {
-    //     response.send(result);
-    // });
-    response.send('done');
+    const newEvent = convertEventToDBType(request.body);
+    graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
+    .then((result: any) => {
+        response.send(result);
+    });
 });
 
 export default intersectionsRoute;
