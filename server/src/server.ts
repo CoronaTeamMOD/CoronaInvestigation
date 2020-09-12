@@ -15,8 +15,6 @@ app.use(
     })
 );
 
-app.use(cors());
-
 app.use(bodyParser.json());
 app.use('/mohApi', MOHApi);
 app.use('/clientToDBApi', ClientToDBApi);

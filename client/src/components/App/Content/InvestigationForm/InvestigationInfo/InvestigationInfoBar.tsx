@@ -1,9 +1,9 @@
 import React from 'react';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
-import { useSelector } from 'react-redux';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';

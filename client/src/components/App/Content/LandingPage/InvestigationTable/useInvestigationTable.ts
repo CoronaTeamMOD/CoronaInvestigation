@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { differenceInYears } from 'date-fns';
 import { useHistory } from 'react-router-dom';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
