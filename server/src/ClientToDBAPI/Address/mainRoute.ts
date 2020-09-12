@@ -35,7 +35,7 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
 });
 
 addressRoute.get('/countries', (request: Request, response: Response) => {
-  graphqlRequest(GET_ALL_COUNTRIES).then((result: any) => {
+  graphqlRequest(GET_ALL_COUNTRIES, request.headers).then((result: any) => {
     let countries: Country[] = [];
     if (result && result.data && result.data.allCountries) {
       countries = result.data.allCountries.nodes.map((country: Country) => ({
