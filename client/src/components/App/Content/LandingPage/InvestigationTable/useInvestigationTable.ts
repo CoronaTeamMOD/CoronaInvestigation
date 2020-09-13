@@ -67,7 +67,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const user = useSelector<StoreStateType, User>(state => state.user);
 
   useEffect(() => {
-    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name })
+    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations')
       .then(response => {
         const { data } = response;
         if (data && data.data && data.data.userById) {

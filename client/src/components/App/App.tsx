@@ -39,7 +39,6 @@ const App: React.FC = (): JSX.Element => {
             (config) => {
                 config.headers.Authorization = user.token;
                 config.headers.EpidemiologyNumber = epidemiologyNumber;
-                config.headers.UserName = user.name
                 setIsLoading(true);
                 return config;
             },

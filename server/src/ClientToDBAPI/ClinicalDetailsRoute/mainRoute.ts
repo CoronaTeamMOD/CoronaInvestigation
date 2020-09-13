@@ -19,15 +19,15 @@ clinicalDetailsRoute.get('/', (request: Request, response: Response) => {
 });
 
 clinicalDetailsRoute.post('/symptoms', (request: Request, response: Response) => {
-    graphqlRequest(GET_SYMPTOMS, request.headers).then((result: any) => response.send(result));
+    graphqlRequest(GET_SYMPTOMS, response.locals).then((result: any) => response.send(result));
 });
 
 clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Response) => {
-    graphqlRequest(GET_BACKGROUND_DISEASES, request.headers).then((result: any) => response.send(result));
+    graphqlRequest(GET_BACKGROUND_DISEASES, response.locals).then((result: any) => response.send(result));
 });
 
 clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields/:epidemiologyNumber', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, request.headers,
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals,
         { epidemiologyNumber: +request.params.epidemiologyNumber }).then(
         (result: any) => response.send(result)
     );

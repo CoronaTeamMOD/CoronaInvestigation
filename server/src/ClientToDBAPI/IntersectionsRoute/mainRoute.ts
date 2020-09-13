@@ -17,7 +17,7 @@ intersectionsRoute.get('/', (request: Request, response: Response) => {
 })
 
 intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response: Response) => {
-    graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, request.headers)
+    graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, response.locals)
         .then((result: GetPlaceSubTypesByTypesResposne) => {
             const locationsSubTypesByTypes : PlacesSubTypesByTypes = {};
             result.data.allPlaceTypes.nodes.forEach(type =>
@@ -28,7 +28,7 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
 });
 
 intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
-    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, request.headers,{ currInvestigation: Number(request.params.investigationId)})
+    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals,{ currInvestigation: Number(request.params.investigationId)})
         .then((result: GetContactEventResponse) => {
             const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => {
                 const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
@@ -77,14 +77,14 @@ const convertEventToDBType = (event: any) => {
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
     const newEvent = convertEventToDBType(request.body);
-    graphqlRequest(CREATE_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(newEvent)})
+    graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
     .then(result => response.send(result))
     .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
-    graphqlRequest(EDIT_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(updatedEvent)})
+    graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(updatedEvent)})
     .then(result => response.send(result))
     .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
