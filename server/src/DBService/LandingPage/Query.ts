@@ -8,7 +8,9 @@ query InvestigationsInfoByUser($userName: String!) {
         epidemiologyNumber
         investigatedPatientByInvestigatedPatientId {
           addressByAddress {
-            city
+            cityByCity {
+              displayName
+            }
           }
           personByPersonId {
             birthDate
@@ -24,4 +26,5 @@ query InvestigationsInfoByUser($userName: String!) {
     }
   }
 }
+
 `;
