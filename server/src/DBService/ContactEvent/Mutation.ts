@@ -1,8 +1,8 @@
 import { gql } from 'postgraphile';
 
 export const EDIT_CONTACT_EVENT = gql`
-mutation editContactEvent ($event: ContactEventInput!) {
-  updateContactEventFunction(input: {inputData: $contactEvent}) {
+mutation editContactEvent ($event: JSON!) {
+  updateContactEventFunction(input: {inputData: $event}) {
     clientMutationId
   }
 }   

@@ -116,7 +116,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     }
 
     const savePersonalInfoData = () => {
-        axios.post('/personalDetails/updatePersonalDetails', 
+        return axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
             personalInfoData: personalInfoData, 
@@ -141,7 +141,30 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             'creator' : creator,
             'lastUpdator' : lastUpdator,
         });
-        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
+
+        if (!clinicalDetails.wasHospitalized) {
+            clinicalDetails.hospital = '';
+            clinicalDetails.hospitalizationStartDate = null;
+            clinicalDetails.hospitalizationEndDate = null;
+        }
+
+        if (!clinicalDetails.isInIsolation) {
+            clinicalDetails.isolationStartDate = null;
+            clinicalDetails.isolationEndDate = null;
+        }
+
+        if (!clinicalDetails.doesHaveSymptoms) {
+            clinicalDetails.symptoms = [];
+            clinicalDetails.symptomsStartDate = null;
+        }
+
+        if (!clinicalDetails.doesHaveBackgroundDiseases) {
+            clinicalDetails.backgroundDeseases = [];
+        }
+
+        return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails})).then(() => {
+            setCurrentTab(tabs[currentTab.id + 1]);
+        });;
     };
 
     const saveExposureAndFlightData = () => {

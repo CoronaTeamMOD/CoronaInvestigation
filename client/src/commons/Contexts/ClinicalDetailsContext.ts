@@ -24,6 +24,7 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     isIsolationProblemMoreInfo: '',
     symptomsStartDate: null,
     symptoms: [],
+    doesHaveBackgroundDiseases: false,
     backgroundDeseases: [],
     hospital: '',
     hospitalizationStartDate: null,

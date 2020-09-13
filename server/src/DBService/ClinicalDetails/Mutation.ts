@@ -32,9 +32,9 @@ mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
 }
 `;
 
-export const UPDATE_IS_PREGNANT = gql`
-mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!) {
-    updateInvestigatedPatientById(input: {investigatedPatientPatch: {isPregnant: $isPregnant}, id: $id}) {
+export const UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS = gql`
+mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!, , $doesHaveBackgroundDiseases: Boolean) {
+    updateInvestigatedPatientById(input: {investigatedPatientPatch: {isPregnant: $isPregnant, doesHaveBackgroundDiseases: $doesHaveBackgroundDiseases}, id: $id}) {
       clientMutationId
     }
 }

@@ -17,8 +17,8 @@ import InteractionEventForm, { defaultContact } from '../InteractionEventForm/In
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { eventDate, closeDialog, isOpen } = props;
-    const { createNewInteractionEvent } = useNewInteractionEventDialog({ closeDialog });
+    const { eventDate, closeDialog, isOpen, handleInteractionCreation } = props;
+    const { createNewInteractionEvent } = useNewInteractionEventDialog({ closeDialog, handleInteractionCreation});
 
     const defaultDate = new Date(startOfDay(eventDate).toUTCString());
 
@@ -72,7 +72,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
 export default NewInteractionEventDialog;
 
 export interface Props {
-    closeDialog: () => void,
     isOpen: boolean,
     eventDate: Date,
+    closeDialog: () => void,
+    handleInteractionCreation: (addedInteraction: InteractionEventDialogData) => void,
 }

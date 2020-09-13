@@ -5,7 +5,6 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 
 export interface useClinicalDetailsIncome {
-    setHasBackgroundDiseases: React.Dispatch<React.SetStateAction<boolean>>;
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
     context: ClinicalDetailsDataAndSet;

@@ -26,7 +26,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
-    const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(context.clinicalDetailsData.backgroundDeseases.length > 0);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
     const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
@@ -39,7 +38,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
-        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
     const handleUnkonwnDateCheck = () => {
@@ -309,14 +308,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Toggle
                         test-id='areThereBackgroundDiseases'
-                        value={hasBackgroundDiseases}
+                        value={context.clinicalDetailsData.doesHaveBackgroundDiseases}
                         onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={hasBackgroundDiseases}>
+                    <Collapse in={context.clinicalDetailsData.doesHaveBackgroundDiseases}>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
