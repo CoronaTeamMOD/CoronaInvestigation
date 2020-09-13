@@ -5,6 +5,7 @@ import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import Validator from 'Utils/Validations/Validator';
 
 const PHONE_LABEL = 'טלפון:';
+const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
 
 const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
     const [isError, setIsError] = React.useState<boolean>(false);
@@ -17,7 +18,7 @@ const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
             error={isError}
             onBlur={() => setIsError(value && !Validator.phoneValidation(value as string))}
             onFocus={() => setIsError(false)}
-            label={isError && 'שגיאה: מספר שהוזן אינו תקין'}
+            label={isError && NOT_PHONE_ERROR}
             test-id={testId}
             id={id}
             placeholder={PHONE_LABEL}
