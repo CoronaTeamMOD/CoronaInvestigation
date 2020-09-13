@@ -173,34 +173,34 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails,
                                            setExposuresAndFlightsData: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>) => {
+        let exposureAndDataToReturn = exposuresAndFlightsData;
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
-            setExposuresAndFlightsData({
-                ...exposuresAndFlightsData,
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
                 [fieldsNames.firstName]: '',
                 [fieldsNames.lastName]: '',
                 [fieldsNames.date]: undefined,
                 [fieldsNames.address]: null,
                 [fieldsNames.placeType]: '',
                 [fieldsNames.placeSubType] : 0,
-
-            })
+            }
         } 
         if (!exposuresAndFlightsData.wasAbroad) {
-            setExposuresAndFlightsData({
-                ...exposuresAndFlightsData,
-                [fieldsNames.destinationCountry]: '',
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                [fieldsNames.destinationCountry]: null,
                 [fieldsNames.destinationCity]: '',
                 [fieldsNames.destinationAirport]: '',
-                [fieldsNames.originCountry]: '',
+                [fieldsNames.originCountry]: null,
                 [fieldsNames.originCity]: '',
                 [fieldsNames.originAirport]: '',
                 [fieldsNames.flightStartDate]: undefined,
                 [fieldsNames.flightEndDate]: undefined,
                 [fieldsNames.airline]: '',
                 [fieldsNames.flightNumber]: ''
-            })
+            }
         }
-        return exposuresAndFlightsData;
+        return exposureAndDataToReturn;
     }
 
     return {
