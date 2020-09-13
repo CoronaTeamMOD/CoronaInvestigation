@@ -27,7 +27,7 @@ const handleConfidentialAuth = (
     next: NextFunction
 ) => {
     const cookie = request.headers.cookie;
-    if (!cookie) return response.status(401).json({error: "unauthorized"});
+    if (!cookie) return response.status(401).json({error: "unauthorized prod user"});
 
     const claimRoute = "/.auth/me";
     const headers = {Cookie: cookie};
@@ -62,7 +62,7 @@ const authMiddleware = (
         const token = request.headers.authorization;
         const user = stubUsers[token as keyof typeof stubUsers];
         if (!user)
-            return response.status(401).json({error: "unauthorized"});
+            return response.status(401).json({error: "unauthorized dev user"});
         else {
             response.locals.user = user;
             response.locals.epidemiologynumber = request.headers.EpidemiologyNumber;
