@@ -127,6 +127,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             setCurrentTab(tabs[currentTab.id + 1]);
         });
     }
+    
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
@@ -181,8 +182,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 [fieldsNames.lastName]: '',
                 [fieldsNames.date]: undefined,
                 [fieldsNames.address]: null,
-                [fieldsNames.placeType]: '',
-                [fieldsNames.placeSubType] : 0,
+                [fieldsNames.placeType]: null,
+                [fieldsNames.placeSubType] : null,
             }
         } 
         if (!exposuresAndFlightsData.wasAbroad) {

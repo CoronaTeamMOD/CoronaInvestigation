@@ -7,8 +7,8 @@ interface ExposureData {
     exposureLastName: string;
     exposureDate: Date | undefined;
     exposureAddress: GoogleApiPlace | null; 
-    exposurePlaceType: string;
-    exposurePlaceSubType: number
+    exposurePlaceType: string | null;
+    exposurePlaceSubType: number | null
 }
 
 export default ExposureData;

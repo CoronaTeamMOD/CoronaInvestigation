@@ -55,7 +55,7 @@ const ExposureForm = (props: any) => {
       <LocationInput 
           selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)} 
           setSelectedAddress={(e, newValue) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue)}/>
+            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue?.description)}/>
       </FormRowWithInput>
       
       <PlacesTypesAndSubTypes
