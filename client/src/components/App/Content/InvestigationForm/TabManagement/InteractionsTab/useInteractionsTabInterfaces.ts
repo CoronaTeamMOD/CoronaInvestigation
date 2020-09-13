@@ -3,8 +3,8 @@ import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 export interface useInteractionsTabInput {
-    interactions: Map<number, Interaction[]>;
-    setInteractions: React.Dispatch<React.SetStateAction<Map<number, Interaction[]>>>;
+    interactions: Interaction[];
+    setInteractions: React.Dispatch<React.SetStateAction<Interaction[]>>;
 };
 
 export interface useInteractionsTabOutcome {
