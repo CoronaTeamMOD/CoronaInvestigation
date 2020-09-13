@@ -4,8 +4,6 @@ import {TextField, StandardTextFieldProps} from '@material-ui/core';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import Validator from 'Utils/Validations/Validator';
 
-import {useStyles} from './PhoneNumberTextFieldStyles';
-
 const PHONE_LABEL = 'טלפון:';
 
 const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
