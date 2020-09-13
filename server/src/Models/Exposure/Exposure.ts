@@ -21,4 +21,4 @@ interface ExposureDetails {
             wasConfirmedExposure: boolean
 };
 
-export default ClinicalDetails;
+export default ExposureDetails;
