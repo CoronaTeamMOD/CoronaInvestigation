@@ -65,8 +65,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, setPersonalInfoData });
-        
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData });
+
     return (
         <div className={classes.content}>
             <PersonalInfoContextProvider value={personalInfoValue}>

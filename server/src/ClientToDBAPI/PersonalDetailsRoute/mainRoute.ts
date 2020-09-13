@@ -32,6 +32,7 @@ personalDetailsRoute.get('/educationSubOccupations', (request: Request, response
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
+    console.log(request.body);
     graphqlRequest(CREATE_ADRESS, request.headers, {
         city: request.body.personalInfoData.address.city,
         street: request.body.personalInfoData.address.street,
@@ -48,12 +49,14 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                 subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
                 address: result.data.createAddress.address.id,
             }
-        ).then((result: any) => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO, request.headers,
+        ).then((result: any) => {
+            graphqlRequest(UPDATE_PERSON_PERSONAL_INFO, request.headers,
                 {
                     id: result.data.updateInvestigatedPatientById.personByPersonId.id,
                     phoneNumber: request.body.personalInfoData.phoneNumber,
                     additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
-                }).then((result: any) => response.send(result)));
+                }).then((result: any) => response.send(result));
+            });
     });
 });
 

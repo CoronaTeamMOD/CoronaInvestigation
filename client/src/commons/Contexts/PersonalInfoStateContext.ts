@@ -1,21 +1,15 @@
 import {createContext} from 'react';
 
-import Gender from 'models/enums/Gender';
-import identificationType from 'models/enums/IdentificationTypes';
-import relevantOccupations from 'models/enums/relevantOccupations';
-import {personalInfoContextData} from 'models/Contexts/personalInfoContextData'
+import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
+
+import { initialAddress } from './ClinicalDetailsContext';
 
 export const initialPersonalInfo: personalInfoContextData = {
     phoneNumber: '',
     additionalPhoneNumber: '',
     contactPhoneNumber: '',
     insuranceCompany: '',
-    address: {
-        city: '',
-        street: '',
-        floor: '',
-        houseNum: ''
-    },
+    address: initialAddress,
     relevantOccupation: '',
     educationOccupationCity: '',
     institutionName: '',

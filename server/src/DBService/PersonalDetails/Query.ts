@@ -1,7 +1,7 @@
 import { gql } from 'postgraphile';
 
 export const GET_OCCUPATIONS = gql`
-query MyQuery {
+query getAllOccupations {
     allOccupations {
         nodes {
             displayName
@@ -11,7 +11,7 @@ query MyQuery {
 `;
 
 export const GET_HMOS = gql`
-query MyQuery {
+query getAllHmos {
     allHmos {
         nodes {
             displayName
@@ -21,7 +21,7 @@ query MyQuery {
 `;
 
 export const GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER = gql`
-query MyQuery($id: Int!) {
+query getInvestigationByEpidemiologyNumber($id: Int!) {
     investigationByEpidemiologyNumber(epidemiologyNumber: $id) {
       investigatedPatientByInvestigatedPatientId {
         id
@@ -57,7 +57,7 @@ query MyQuery($id: Int!) {
 `;
 
 export const GET_SUB_OCCUPATIONS_BY_OCCUPATION = gql`
-query MyQuery($parentOccupation: String!) {
+query getSubOccupationsByOccupation($parentOccupation: String!) {
     allSubOccupations(condition: {parentOccupation: $parentOccupation}) {
       nodes {
         displayName
@@ -68,7 +68,7 @@ query MyQuery($parentOccupation: String!) {
 `;
 
 export const GET_EDUCATION_SUB_OCCUPATION_BY_CITY = gql`
-query MyQuery($city: String!) {
+query getEducationSubOccupationsByCity($city: String!) {
     allSubOccupations(condition: {parentOccupation: "מערכת החינוך", city: $city}) {
       nodes {
         displayName
