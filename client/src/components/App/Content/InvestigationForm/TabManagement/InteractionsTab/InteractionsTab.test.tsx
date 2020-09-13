@@ -1,3 +1,4 @@
+import * as redux from 'react-redux'
 import MockAdapter from 'axios-mock-adapter';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
@@ -8,15 +9,20 @@ import { testHooksFunction } from 'TestHooks';
 import useInteractionsTab from './useInteractionsTab';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
         useInteractionsTabInput as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
-import { intialStartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
+import {
+    intialStartInvestigationDateVariables,
+    StartInvestigationDateVariables
+} from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
-let interactionsForTests = new Map<number, Interaction[]>();
+const spy = jest.spyOn(redux, 'useSelector');
+spy.mockReturnValue({});
+
 let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
-let useInteractionsTabInput: useInteactionsTabsInputInterface = { 
-    setNewInteractionEventId: () => {}, 
+let interactionsForTests: Interaction[] = [];
+let useInteractionsTabInput: useInteactionsTabsInputInterface = {
     interactions: interactionsForTests,
     // @ts-ignore
-    setInteractions: (map: Map<number, Interaction>) => {interactionsForTests = map;}
+    setInteractions: (interactionsArr: Interaction[]) => {interactionsForTests = interactionsArr;}
 };
 
 const mockAdapter = new MockAdapter(axios);
@@ -54,7 +60,7 @@ describe('useInteractionsTab tests', () => {
                     ...initialSymptomaticInvestigationDateVariables, endInvestigationDate
                 }
                 const recievedDates = useInteractionsTabOutcome.getDatesToInvestigate(startInvestigationDateVariables);
-                
+
                 expect(recievedDates).toEqual(eachDayOfInterval({start: subDays(endInvestigationDate, 10), end: endInvestigationDate}));
             });
         });
@@ -68,7 +74,7 @@ describe('useInteractionsTab tests', () => {
                     ...initialUnsymptomaticInvestigationDateVariables, endInvestigationDate
                 }
                 const recievedDates = useInteractionsTabOutcome.getDatesToInvestigate(startInvestigationDateVariables);
-                
+
                 expect(recievedDates).toEqual(eachDayOfInterval({start: subDays(endInvestigationDate, 7), end: endInvestigationDate}));
             });
         });
