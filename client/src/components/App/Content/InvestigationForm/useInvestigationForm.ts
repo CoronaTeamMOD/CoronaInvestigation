@@ -18,6 +18,7 @@ import { setCountries } from 'redux/Country/countryActionCreators';
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
+import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 
 const finishInvestigationStatus = 'טופלה';
 
@@ -145,11 +146,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     };
 
     const saveExposureAndFlightData = () => {
-        console.log(exposuresAndFlightsVariables);
-        if (exposuresAndFlightsVariables.exposureAndFlightsData.exposureId) {
+        if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
             axios.put('/exposure', {
-                exposureId : exposuresAndFlightsVariables.exposureAndFlightsData.exposureId,
-                data: exposuresAndFlightsVariables.exposureAndFlightsData
+                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
+                                                               exposuresAndFlightsVariables.setExposureDataAndFlights)
             })
             .then(() => {
                 setCurrentTab(tabs[currentTab.id + 1]);
@@ -158,13 +158,49 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             })
         } else {
             axios.post('/exposure', {
-                data: exposuresAndFlightsVariables.exposureAndFlightsData
+                exposureDetails: {
+                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
+                                                     exposuresAndFlightsVariables.setExposureDataAndFlights),
+                    investigationId: epidemiologyNumber
+                } 
             }).then(() => {
                 setCurrentTab(tabs[currentTab.id + 1]);
             }).catch(err => {
                 console.log(err);
             })
         }
+    }
+
+    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails,
+                                           setExposuresAndFlightsData: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>) => {
+        if (!exposuresAndFlightsData.wasConfirmedExposure) {
+            setExposuresAndFlightsData({
+                ...exposuresAndFlightsData,
+                [fieldsNames.firstName]: '',
+                [fieldsNames.lastName]: '',
+                [fieldsNames.date]: undefined,
+                [fieldsNames.address]: null,
+                [fieldsNames.placeType]: '',
+                [fieldsNames.placeSubType] : 0,
+
+            })
+        } 
+        if (!exposuresAndFlightsData.wasAbroad) {
+            setExposuresAndFlightsData({
+                ...exposuresAndFlightsData,
+                [fieldsNames.destinationCountry]: '',
+                [fieldsNames.destinationCity]: '',
+                [fieldsNames.destinationAirport]: '',
+                [fieldsNames.originCountry]: '',
+                [fieldsNames.originCity]: '',
+                [fieldsNames.originAirport]: '',
+                [fieldsNames.flightStartDate]: undefined,
+                [fieldsNames.flightEndDate]: undefined,
+                [fieldsNames.airline]: '',
+                [fieldsNames.flightNumber]: ''
+            })
+        }
+        return exposuresAndFlightsData;
     }
 
     return {

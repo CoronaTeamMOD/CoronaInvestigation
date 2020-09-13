@@ -32,7 +32,7 @@ export const fieldsNames = {
 };
   
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
-  exposureId: null,
+  id: null,
   wasConfirmedExposure: false,
   exposureFirstName: '',
   exposureLastName: '',

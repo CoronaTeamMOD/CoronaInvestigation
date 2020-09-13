@@ -1,7 +1,7 @@
 import { GoogleApiPlace } from '../commons/LocationInputField/LocationInput';
 
 interface ExposureData {
-    exposureId: number | null,
+    id: number | null,
     wasConfirmedExposure: boolean,
     exposureFirstName: string;
     exposureLastName: string;
