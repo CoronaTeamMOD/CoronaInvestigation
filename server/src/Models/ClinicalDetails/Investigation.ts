@@ -11,6 +11,7 @@ interface Investigation {
     wasHospitalized: boolean;
     doesHaveSymptoms: boolean;
     epidemiologyNumber: number;
+    isolationAddress: number | null;
 };
 
 export default Investigation;
