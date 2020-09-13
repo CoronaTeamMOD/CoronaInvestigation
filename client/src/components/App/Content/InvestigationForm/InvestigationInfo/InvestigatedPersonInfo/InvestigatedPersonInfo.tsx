@@ -86,13 +86,13 @@ const InvestigatedPersonInfo = (props: Props) => {
                 </div>
                 <div className={classes.managementControllers}>
                     <PrimaryButton
-                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)} testId='exitInvestigation'>
+                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)} test-id='exitInvestigation'>
                         {leaveInvestigationMessage}
                     </PrimaryButton>
                     <CustomCheckbox
                         checkboxElements={[
                             {
-                                'testId': 'noResponseFromThisPhone',
+                                'test-id': 'noResponseFromThisPhone',
                                 value: cantReachInvestigated,
                                 labelText: 'אין מענה במספר זה',
                                 onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCantReachInvestigatedCheck(checked))
