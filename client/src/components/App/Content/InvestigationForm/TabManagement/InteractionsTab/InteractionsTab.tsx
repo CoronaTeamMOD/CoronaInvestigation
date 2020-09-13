@@ -20,17 +20,17 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
     const [interactions, setInteractions] = React.useState<Interaction[]>([]);
-    const { getDatesToInvestigate, loadInteractions } =
+    const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
         });
 
     useEffect(() => {
-        loadInteractions()
+        loadInteractions();
     }, []);
 
-    const interactionsPerDate = React.useMemo<Map<number, Interaction[]>>(() => {
+    useEffect(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
         interactions.forEach(interaction => {
             const interactionStartTime : Date | undefined = interaction.startTime;
@@ -43,7 +43,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                 }
             }
         });
-        return mappedInteractionsArray;
+        setInteractionsMap(mappedInteractionsArray);
     }, [interactions]);
 
     return (
@@ -57,7 +57,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                                 <ContactDateCard contactDate={date}
                                     onEditClick={startEditInteraction}
                                     createNewInteractionEvent={() => onDateClick(date)} 
-                                    interactions={interactionsPerDate.get(date.getTime())}
+                                    interactions={interactionsMap.get(date.getTime())}
                                     key={date.getTime()}
                                 />
                                 )
@@ -66,13 +66,17 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                             newInteractionEventDate && <NewInteractionEventDialog
                                 isOpen={newInteractionEventDate !== undefined}
                                 eventDate={newInteractionEventDate}
-                                closeDialog={onNewEventDialogClose}/>
+                                closeDialog={onNewEventDialogClose}
+                                handleInteractionCreation={addNewInteraction}
+                            />
                         }
-                                                {
+                        {
                             interactionToEdit && <EditInteractionEventDialog
                                 isOpen={interactionToEdit !== undefined}
                                 eventToEdit={interactionToEdit}
-                                closeDialog={onEditEventDialogClose}/>
+                                closeDialog={onEditEventDialogClose}
+                                updateInteraction={updateInteraction}
+                            />
                         }
                     </>
             }

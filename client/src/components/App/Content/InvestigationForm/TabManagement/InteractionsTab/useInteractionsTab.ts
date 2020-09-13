@@ -45,9 +45,22 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
             });
     }
 
+    const updateInteraction = (updatedInteraction: InteractionEventDialogData) => {
+        const currContacts: InteractionEventDialogData[] = [...interactions];
+        const indexOfInteractionToUpdate = currContacts.findIndex(interactionElement => interactionElement.id === updatedInteraction.id);
+        currContacts.splice(indexOfInteractionToUpdate, 1, updatedInteraction);
+        setInteractions(currContacts);
+    }
+
+    const addNewInteraction = (addedInteraction: InteractionEventDialogData) => {
+        setInteractions([...interactions, addedInteraction]);
+    }
+
     return {        
         getDatesToInvestigate,
-        loadInteractions
+        loadInteractions,
+        addNewInteraction,
+        updateInteraction,
     }
 };
 
