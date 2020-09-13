@@ -106,12 +106,15 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                     {`${person.firstName} ${person.lastName}`}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={2}>
-                                <Typography>
-                                    <b>ת.ז: </b>
-                                    {person.id}
-                                </Typography>
-                            </Grid>
+                            {
+                                person.id &&
+                                <Grid item xs={2}>
+                                    <Typography>
+                                        <b>ת.ז: </b>
+                                        {person.id}
+                                    </Typography>
+                                </Grid>
+                            }
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>טלפון: </b>
