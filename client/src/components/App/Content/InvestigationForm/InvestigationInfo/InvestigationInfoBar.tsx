@@ -65,6 +65,9 @@ const InvestigationInfoBar = () => {
                 Swal.fire({
                     icon: 'warning',
                     title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
+                    customClass: {
+                        title: 'makeStyles-swalTitle-9'
+                    },
                     timer: 1750,
                     showConfirmButton: false
                 });
