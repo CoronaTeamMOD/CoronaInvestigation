@@ -12,15 +12,17 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
-        graphqlRequest(CREATE_EXPOSURE, request.headers, {data : removeExposureDetailsIdForMutation(request.body)})
+        graphqlRequest(CREATE_EXPOSURE,
+                       request.headers,
+                       {data : removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
 })
 
 exposureRoute.put('/', (request: Request, response: Response) => {
         graphqlRequest(UPDATE_EXPOSURE,
                        request.headers, 
-                       {exposureId : parseInt(request.body.id),
-                        data: removeExposureDetailsIdForMutation(request.body)})
+                       {exposureId : parseInt(request.body.exposureDetails.id),
+                        data: removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
 })
 
