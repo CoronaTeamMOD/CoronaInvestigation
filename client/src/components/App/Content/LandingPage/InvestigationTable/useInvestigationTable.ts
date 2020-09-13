@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
+import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
@@ -66,7 +67,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const user = useSelector<StoreStateType, User>(state => state.user);
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name })
+    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name })
       .then(response => {
         const { data } = response;
         if (data && data.data && data.data.userById) {
