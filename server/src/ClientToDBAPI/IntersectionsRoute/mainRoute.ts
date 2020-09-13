@@ -2,9 +2,10 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import ContactType from '../../Models/ContactEvent/Enums/ContactType';
-import { GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Query';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
+import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
+import { GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
 
@@ -17,12 +18,38 @@ intersectionsRoute.get('/', (request: Request, response: Response) => {
 
 intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response: Response) => {
     graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, request.headers)
-    .then((result: GetPlaceSubTypesByTypesResposne) => {
-        const locationsSubTypesByTypes : PlacesSubTypesByTypes = {};
-        result.data.allPlaceTypes.nodes.forEach(type =>
-            locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
-        );
-        response.send(locationsSubTypesByTypes);
+        .then((result: GetPlaceSubTypesByTypesResposne) => {
+            const locationsSubTypesByTypes : PlacesSubTypesByTypes = {};
+            result.data.allPlaceTypes.nodes.forEach(type =>
+                locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
+            );
+            response.send(locationsSubTypesByTypes);
+        });
+});
+
+intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
+    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, request.headers,{ currInvestigation: Number(request.params.investigationId)})
+        .then((result: GetContactEventResponse) => {
+            const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => {
+                const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+                const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
+                   const {personByPersonInfo, ...personNoData} = person;
+                   return {
+                       ...personNoData,
+                       firstName: personByPersonInfo.firstName,
+                       lastName: personByPersonInfo.lastName,
+                       phoneNumber: personByPersonInfo.phoneNumber,
+                       id: personByPersonInfo.identificationNumber,
+                   };
+                });
+                return {
+                    ...eventObjectToClient,
+                    contacts: contacts,
+                };
+            });
+            response.send(allContactEvents);
+    }).catch((err) => {
+        response.status(errorStatusCode).send('error in fetching data: ' + err)
     });
 });
 
@@ -50,14 +77,14 @@ const convertEventToDBType = (event: any) => {
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
     const newEvent = convertEventToDBType(request.body);
-    graphqlRequest(CREATE_CONTACT_EVENT, {contactEvent: JSON.stringify(newEvent)})
+    graphqlRequest(CREATE_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(newEvent)})
     .then(result => response.send(result))
     .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
-    graphqlRequest(EDIT_CONTACT_EVENT, {contactEvent: JSON.stringify(updatedEvent)})
+    graphqlRequest(EDIT_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(updatedEvent)})
     .then(result => response.send(result))
     .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
