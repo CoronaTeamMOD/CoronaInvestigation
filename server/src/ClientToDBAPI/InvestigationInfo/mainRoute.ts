@@ -7,7 +7,7 @@ import { UPDATE_INVESTIGATION_STATUS } from '../../DBService/InvestigationInfo/M
 const investigationInfo = Router();
 
 investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATION_INFO, request.headers, {
+    graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
         investigationId: +request.query.investigationId
     })
     .then((result: any) => response.send(result));
@@ -15,7 +15,7 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationStatus } = request.body;
-    graphqlRequest(UPDATE_INVESTIGATION_STATUS, request.headers, { epidemiologyNumber: +epidemiologyNumber, investigationStatus })
+    graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus })
     .then((result: any) => response.send(result));
 })
 
