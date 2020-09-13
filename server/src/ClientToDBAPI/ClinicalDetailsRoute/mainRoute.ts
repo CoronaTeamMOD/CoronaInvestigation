@@ -36,7 +36,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
-        epidemiologyNumber: clinicalDetails.epidemioligyNumber,
+        epidemiologyNumber: +request.headers.epidemiologynumber,
         hospital: clinicalDetails.hospital,
         hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
         hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
@@ -51,7 +51,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
     }
 
     graphqlRequest(UPDATE_INVESTIGATION, request.headers,{
-        epidemiologyNumber: +request.headers.epidemiologynumber,
+        epidemiologyNumber: requestInvestigation.epidemiologyNumber,
         hospital: requestInvestigation.hospital,
         hospitalizationEndTime: requestInvestigation.hospitalizationEndTime,
         hospitalizationStartTime: requestInvestigation.hospitalizationStartTime,
