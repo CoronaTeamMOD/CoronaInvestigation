@@ -9,6 +9,7 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -95,16 +96,25 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       });
   }, [user.id, classes.errorAlertTitle]);
 
-  const onInvestigationRowClick = (epidemiologyNumber: number) => {
+  const onInvestigationRowClick = (epidemiologyNumberVal: number) => {
+    axios.interceptors.request.use(
+        (config) => {
+            config.headers.Authorization = user.token;
+            config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+            config.headers.UserName = user.name
+            setIsLoading(true);
+            return config;
+        },
+        (error) => Promise.reject(error)
+    );
     axios.post('/investigationInfo/updateInvestigationStatus', {
       investigationStatus: handlingInvestigationStatus,
-      epidemiologyNumber: epidemiologyNumber
+      epidemiologyNumber: epidemiologyNumberVal
     }).then(() => {
-      setEpidemiologyNum(epidemiologyNumber)
+      setEpidemiologyNum(epidemiologyNumberVal)
       history.push('/investigation')
     });
   }
-
 
   return {
     tableRows: rows,
