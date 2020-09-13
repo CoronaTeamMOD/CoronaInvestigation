@@ -1,3 +1,4 @@
+
 export interface GetPlaceSubTypesByTypesResposne {
     data: {
         allPlaceTypes: {
