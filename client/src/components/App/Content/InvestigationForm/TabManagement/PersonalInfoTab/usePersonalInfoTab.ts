@@ -29,7 +29,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: (
                             (investigatedPatient.occupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) || 
-                            (investigatedPatient.occupation === 'מערכת החינוך')
+                            (investigatedPatient.occupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM)
                         ) ?
                         investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
