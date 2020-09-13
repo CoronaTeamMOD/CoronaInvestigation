@@ -90,6 +90,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.phoneNumber}
                         onChange={(event) => handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value)}
                         testId='personalDetailsPhone'
@@ -108,6 +109,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <PhoneNumberTextField
                         id={ADDITIONAL_PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.additionalPhoneNumber}
                         onChange={(event) => handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value)}
                         testId='personalDetailsAdditionalPhone'
@@ -126,6 +128,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <PhoneNumberTextField
                         id={CONTACT_PHONE_LABEL}
+                        placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.contactPhoneNumber}
                         onChange={(event) => handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value)}
                         testId='personalDetailsAdditionalPhone'

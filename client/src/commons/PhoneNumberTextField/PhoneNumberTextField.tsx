@@ -1,10 +1,9 @@
 import React from 'react';
 import {TextField, StandardTextFieldProps} from '@material-ui/core';
 
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import Validator from 'Utils/Validations/Validator';
+import CircleTextField, { Props as circleTextFieldProps } from 'commons/CircleTextField/CircleTextField';
 
-const PHONE_LABEL = 'טלפון:';
 const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
 
 const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
@@ -21,7 +20,6 @@ const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
             label={isError && NOT_PHONE_ERROR}
             test-id={testId}
             id={id}
-            placeholder={PHONE_LABEL}
             size='small'
             value={value}
             onChange={onChange}
@@ -31,7 +29,7 @@ const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default PhoneNumberTextField;
 
-interface Props extends StandardTextFieldProps {
+interface Props extends circleTextFieldProps {
     onChange: (event: any) => void;
     testId?: string;
 };
