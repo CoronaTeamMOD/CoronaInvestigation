@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
@@ -43,34 +42,12 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
                     }
                 });
                 setInteractions(allInteractions);
-            }).catch(() => {
-                handleLoadInteractionsError();
-        });
-    }
-
-    const handleLoadInteractionsError = () => {
-        Swal.fire({
-            title: 'הייתה שגיאה בטעינת האירועים והמגעים',
-            icon: 'error',
-        });
-    }
-
-    const updateInteraction = (updatedInteraction: InteractionEventDialogData) => {
-        const currContacts: InteractionEventDialogData[] = [...interactions];
-        const indexOfInteractionToUpdate = currContacts.findIndex(interactionElement => interactionElement.id === updatedInteraction.id);
-        currContacts.splice(indexOfInteractionToUpdate, 1, updatedInteraction);
-        setInteractions(currContacts);
-    }
-
-    const addNewInteraction = (addedInteraction: InteractionEventDialogData) => {
-        setInteractions([...interactions, addedInteraction]);
+            });
     }
 
     return {        
         getDatesToInvestigate,
-        loadInteractions,
-        addNewInteraction,
-        updateInteraction,
+        loadInteractions
     }
 };
 

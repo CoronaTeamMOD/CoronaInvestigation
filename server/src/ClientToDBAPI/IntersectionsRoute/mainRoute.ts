@@ -5,7 +5,7 @@ import ContactType from '../../Models/ContactEvent/Enums/ContactType';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
 import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Query'
+import { GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
 
@@ -68,6 +68,10 @@ const convertEventToDBType = (event: any) => {
     event.contacts = updatedContacts;
     resetEmptyFields(event);
     resetEmptyFields(event.locationAddress);
+    event.contacted_number = updatedContacts.length;
+    event.locationAddress.floor = +event.locationAddress.floor;
+    event.locationAddress.apartment = +event.locationAddress.apartment;
+
     return event;
 }
 
@@ -75,22 +79,14 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
     const newEvent = convertEventToDBType(request.body);
     graphqlRequest(CREATE_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(newEvent)})
     .then(result => response.send(result))
-    .catch(err => {
-        console.log(err);
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
-    });
+    .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
-    graphqlRequest(EDIT_CONTACT_EVENT, request.headers, {event: JSON.stringify(updatedEvent)})
-    .then(result => {
-        response.send(result)
-    })
-    .catch(err => {
-        console.log(err);
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
-    });
+    graphqlRequest(EDIT_CONTACT_EVENT, request.headers, {contactEvent: JSON.stringify(updatedEvent)})
+    .then(result => response.send(result))
+    .catch(err => response.status(errorStatusCode).send('error in fetching data: ' + err));
 });
 
 export default intersectionsRoute;

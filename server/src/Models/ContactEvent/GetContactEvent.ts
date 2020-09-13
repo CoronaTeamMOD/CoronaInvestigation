@@ -10,7 +10,6 @@ export interface GetContactEventResponse {
 }
 
 export interface ContactEvent {
-    id: number,
     airline: string,
     allowsHamagenData: boolean,
     boardingStation: string,

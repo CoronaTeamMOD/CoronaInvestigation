@@ -47,7 +47,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
-        personalInfoStateContext.setPersonalInfoData({...personalInfoStateContext.personalInfoData, [fieldName]: fieldValue});
+        personalInfoStateContext.setPersonalInfoData({ ...personalInfoStateContext.personalInfoData, [fieldName]: fieldValue });
     }
 
     const handleChangeAddress = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
@@ -60,18 +60,20 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         });
     }
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
-        personalInfoStateContext, subOccupations, setSubOccupations,subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets });
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
+        occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
+        personalInfoStateContext, subOccupations, setSubOccupations, subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets
+    });
 
-    React.useEffect(()=> {
+    React.useEffect(() => {
         fetchPersonalInfo();
     }, [])
 
     React.useEffect(() => {
-        if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
+        if (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
             personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) {
             getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
-        } else if(personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM){
+        } else if (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) {
             setSubOccupations([]);
         }
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
@@ -132,6 +134,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <CircleTextField
+                        test-id='personalDetailsContactPhone'
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
                         size='small'
@@ -185,37 +188,38 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             newValue && getStreetsByCity(newValue.cityId);
                         }}
                         renderInput={(params) =>
-                        <CircleTextField
-                            {...params}
-                            id={PersonalInfoDataContextFields.CITY}
-                            placeholder={'עיר'}
-                            value={personalInfoStateContext.personalInfoData.address.city}
-                        />}
+                            <CircleTextField
+                                {...params}
+                                test-id='personalDetailsCity'
+                                id={PersonalInfoDataContextFields.CITY}
+                                placeholder={'עיר'}
+                                value={personalInfoStateContext.personalInfoData.address.city}
+                            />}
                     />
                 </Grid>
                 {
                     cityName &&
-                        <Grid item xs={2}>
-                            <Autocomplete
-                                options={streets}
-                                getOptionLabel={(option) => option.displayName}
-                                inputValue={streetName}
-                                onInputChange={(event, newInputValue) => {
-                                    setStreetName(newInputValue);
-                                }}
-                                onChange={(event, newValue) => {
-                                    handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
-                                }}
-                                renderInput={(params) =>
+                    <Grid item xs={2}>
+                        <Autocomplete
+                            options={streets}
+                            getOptionLabel={(option) => option.displayName}
+                            inputValue={streetName}
+                            onInputChange={(event, newInputValue) => {
+                                setStreetName(newInputValue);
+                            }}
+                            onChange={(event, newValue) => {
+                                handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
+                            }}
+                            renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
                                     placeholder={'רחוב'}
                                     value={personalInfoStateContext.personalInfoData.address.street}
                                 />}
-                            />
-                        </Grid>
-                    }
+                        />
+                    </Grid>
+                }
                 <Grid item xs={1}>
                     <CircleTextField
                         id={PersonalInfoDataContextFields.FLOOR}
@@ -253,22 +257,22 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             {
                                 occupations.map((occupation) => {
                                     return <FormControlLabel
-                                                value={occupation}
-                                                key={occupation}
-                                                control={<Radio
-                                                            color='primary'
-                                                            onChange={(event) => {
-                                                                setSubOccupationName('');
-                                                                personalInfoStateContext.setPersonalInfoData(
-                                                                    {
-                                                                        ...personalInfoStateContext.personalInfoData,
-                                                                        [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
-                                                                        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
-                                                                        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
-                                                                    });
-                                                            }}/>}
-                                                label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
-                                            />
+                                        value={occupation}
+                                        key={occupation}
+                                        control={<Radio
+                                            color='primary'
+                                            onChange={(event) => {
+                                                setSubOccupationName('');
+                                                personalInfoStateContext.setPersonalInfoData(
+                                                    {
+                                                        ...personalInfoStateContext.personalInfoData,
+                                                        [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
+                                                        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
+                                                        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
+                                                    });
+                                            }} />}
+                                        label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
+                                    />
                                 })
                             }
                         </RadioGroup>
@@ -276,60 +280,65 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 {
                     personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM &&
-                        <Grid item xs={2}>
-                            <Autocomplete
-                                options={Array.from(cities, ([name, value]) => ({ name, value }))}
-                                getOptionLabel={(option) => option.value.displayName}
-                                inputValue={personalInfoStateContext.personalInfoData.educationOccupationCity}
-                                onInputChange={(event, newInputValue) => {
-                                    event && handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)}
-                                }
-                                onChange={(event, newValue) => {
-                                    newValue && getEducationSubOccupations(newValue.value.displayName);
-                                }}
-                                renderInput={(params) =>
+                    <Grid item xs={2}>
+                        <Autocomplete
+                            options={Array.from(cities, ([name, value]) => ({ name, value }))}
+                            getOptionLabel={(option) => option.value.displayName}
+                            inputValue={personalInfoStateContext.personalInfoData.educationOccupationCity}
+                            onInputChange={(event, newInputValue) => {
+                                event && handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)
+                            }
+                            }
+                            onChange={(event, newValue) => {
+                                newValue && getEducationSubOccupations(newValue.value.displayName);
+                            }}
+                            renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
+                                    test-id='personalDetailsInstitutionLocation'
                                     id={PersonalInfoDataContextFields.CITY}
                                     placeholder={'עיר המצאות המוסד'}
                                     value={personalInfoStateContext.personalInfoData.educationOccupationCity}
                                 />}
-                            />
-                        </Grid>
+                        />
+                    </Grid>
                 }
                 <Grid item xs={3}>
                     <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
-                    {
-                        (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
-                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ||
-                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) ?
-                            <Autocomplete
-                                options={subOccupations}
-                                getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
-                                inputValue={subOccupationName}
-                                onChange={(event, newValue) => {
-                                    newValue && handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, newValue.id)}
-                                }
-                                onInputChange={(event, newInputValue) => {
-                                    setSubOccupationName(newInputValue)}
-                                }
-                                renderInput={(params) =>
+                        {
+                            (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
+                                personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ||
+                                personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) ?
+                                <Autocomplete
+                                    options={subOccupations}
+                                    getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
+                                    inputValue={subOccupationName}
+                                    onChange={(event, newValue) => {
+                                        newValue && handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, newValue.id)
+                                    }
+                                    }
+                                    onInputChange={(event, newInputValue) => {
+                                        setSubOccupationName(newInputValue)
+                                    }
+                                    }
+                                    renderInput={(params) =>
+                                        <CircleTextField
+                                            {...params}
+                                            disabled={subOccupations.length === 0}
+                                            id={PersonalInfoDataContextFields.CITY}
+                                            placeholder={INSERT_INSTITUTION_NAME}
+                                        />}
+                                /> :
                                 <CircleTextField
-                                    {...params}
-                                    disabled={subOccupations.length === 0}
-                                    id={PersonalInfoDataContextFields.CITY}
+                                    test-id='personalDetailsInstitutionName'
+                                    value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
                                     placeholder={INSERT_INSTITUTION_NAME}
-                                />}
-                            /> :
-                            <CircleTextField
-                                value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
-                                placeholder={INSERT_INSTITUTION_NAME}
-                                onChange={(event) => {
-                                    handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, event.target.value);
-                                }}
-                                
-                            />
-                    }
+                                    onChange={(event) => {
+                                        handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, event.target.value);
+                                    }}
+
+                                />
+                        }
                     </Collapse>
                 </Grid>
             </Grid>

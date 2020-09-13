@@ -20,7 +20,6 @@ export const GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID = gql`
 query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
     nodes {
-      id
       airline
       allowsHamagenData
       boardingStation

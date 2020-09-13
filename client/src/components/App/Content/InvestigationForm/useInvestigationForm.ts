@@ -151,7 +151,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             clinicalDetails.symptomsStartDate = null;
         }
 
-        if (!clinicalDetails.doesHaveBackgroundDiseases) {
+        if (!clinicalDetails.doesHaveBackgrounDiseases) {
             clinicalDetails.backgroundDeseases = [];
         }
 

@@ -4,12 +4,10 @@ import { StartInvestigationDateVariables } from '../../StartInvestigationDateVar
 
 export interface useInteractionsTabInput {
     interactions: Interaction[];
-    setInteractions: (updatedInteractions: Interaction[]) => void;
+    setInteractions: React.Dispatch<React.SetStateAction<Interaction[]>>;
 };
 
 export interface useInteractionsTabOutcome {
     getDatesToInvestigate: (startInvestigationDateVariables: StartInvestigationDateVariables) => Date[];
     loadInteractions: () => void;
-    addNewInteraction: (addedInteraction: Interaction) => void;
-    updateInteraction: (updatedInteraction: Interaction) => void;
 };

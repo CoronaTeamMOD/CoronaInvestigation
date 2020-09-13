@@ -14,8 +14,8 @@ import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { closeDialog, eventToEdit, isOpen, updateInteraction } = props;
-    const { editInteractionEvent } = useEditInteractionEventDialog({closeDialog, updateInteraction});
+    const { closeDialog, eventToEdit, isOpen } = props;
+    const { editInteractionEvent } = useEditInteractionEventDialog({closeDialog});
     
     const classes = useStyles();
     
@@ -70,8 +70,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
 export default EditInteractionEventDialog;
 
 export interface Props {
+    closeDialog: () => void,
     isOpen: boolean,
     eventToEdit: InteractionEventDialogData
-    closeDialog: () => void,
-    updateInteraction: (updatedInteraction: InteractionEventDialogData) => void,
 }

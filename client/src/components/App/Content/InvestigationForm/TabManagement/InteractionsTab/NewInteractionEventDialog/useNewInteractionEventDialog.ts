@@ -7,11 +7,10 @@ import { useInteractionsTabOutcome, useInteractionsTabInput } from './NewInterac
 
 const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInteractionsTabOutcome => {
     
-    const { closeDialog, handleInteractionCreation } = input;
+    const { closeDialog } = input;
 
     const createNewInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
         axios.post('/intersections/createContactEvent', {...interactionEventVariables}).then(() => {
-            handleInteractionCreation(interactionEventVariables);
             closeDialog();
         }).catch(() => {
             handleCreateEventFailed();
