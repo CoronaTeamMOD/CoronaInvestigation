@@ -39,7 +39,9 @@ type InvestigationsReturnType = {
           epidemiologyNumber: number,
           investigatedPatientByInvestigatedPatientId: {
             addressByAddress: {
-              city: string
+              cityByCity: {
+                 displayName: string
+              }
             },
             personByPersonId: {
               birthDate: Date,
@@ -79,7 +81,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
               patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
               patient.personByPersonId.phoneNumber,
               Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-              patient.addressByAddress.city)
+              patient.addressByAddress.cityByCity.displayName)
           });
           setRows(investigationRows)
         }
