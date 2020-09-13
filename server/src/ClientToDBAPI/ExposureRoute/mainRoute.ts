@@ -15,7 +15,7 @@ exposureRoute.post('/', (request: Request, response: Response) => {
         .then((result: any) => response.send(result));
 })
 
-exposureRoute.post('/update', (request: Request, response: Response) => {
+exposureRoute.put('/', (request: Request, response: Response) => {
         graphqlRequest(UPDATE_EXPOSURE, request.headers, {exposureId : parseInt(request.body.exposureId), data: request.body.data})
         .then((result: any) => response.send(result));
 })
