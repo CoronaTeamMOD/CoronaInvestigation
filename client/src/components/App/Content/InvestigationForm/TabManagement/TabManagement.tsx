@@ -74,11 +74,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     }
                 </Tabs>
             {
-                tabs.map((tab) => (
-                    <div key={tab.id} className={classes.displayedTab} hidden={tab.id !== currentTab.id}>
-                        {tab.displayComponent}
-                    </div>
-                ))
+                <div key={currentTab.id} className={classes.displayedTab}>
+                    {currentTab.displayComponent }
+                </div>
             }
         </Card>
     )

@@ -1,94 +1,111 @@
-import React from 'react';
-import { Collapse, Divider, Typography } from '@material-ui/core';
-import Toggle from 'commons/Toggle/Toggle';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import FlightsForm from './FlightsForm/FlightsForm';
-import ExposureForm from './ExposureForm/ExposureForm';
-import useFormStyles from 'styles/formStyles';
-import useStyles from './ExposuresAndFlightsStyles';
-import { ExposureDetails, ExposuresContextProvider } from "commons/Contexts/ExposuresAndFlights";
-import { GoogleApiPlace } from "commons/LocationInputField/LocationInput";
-import PlaceType from "models/PlaceType";
-
+import React, { useEffect, useContext } from "react";
+import { Collapse, Divider, Typography } from "@material-ui/core";
+import Toggle from "commons/Toggle/Toggle";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import FlightsForm from "./FlightsForm/FlightsForm";
+import ExposureForm from "./ExposureForm/ExposureForm";
+import useFormStyles from "styles/formStyles";
+import useStyles from "./ExposuresAndFlightsStyles";
+import { exposureAndFlightsContext, fieldsNames} from "commons/Contexts/ExposuresAndFlights";
+import axios from "Utils/axios";
+import { useSelector } from "react-redux";
+import StoreStateType from "redux/storeStateType";
 
 const ExposuresAndFlights = () => {
-    const [verifiedExposure, setHadVerifiedExposure] = React.useState<boolean>(false);
-    const [hasBeenAbroad, setHasBeenAbroad] = React.useState<boolean>(false);
+  const context = useContext(exposureAndFlightsContext);
+  const { exposureAndFlightsData, setExposureDataAndFlights } = context;
+  
+  const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const [exposingPersonName, setExposingPersonName] = React.useState<string>();
-    const [exposureLocation, setExposureLocation] = React.useState<GoogleApiPlace | null | undefined>(null);
-    const [placeType, setPlaceType] = React.useState<PlaceType>();
+  const { fieldName } = useFormStyles();
+  const classes = useStyles();
 
-    const [fromAirport, setFromAirport] = React.useState<string>();
-    const [toAirport, setToAirport] = React.useState<string>();
-    const [airline, setAirline] = React.useState<string>();
-    const [flightNum, setFlightNumber] = React.useState<string>();
-    const [departureDate, setDepartureDate] = React.useState<Date>();
-    const [arrivalDate, setArrivalDate] = React.useState<Date>();
-
-    const contextInitialData: ExposureDetails = {
-        exposureData: {
-            exposingPersonName,
-            exposureLocation,
-            placeType,
-            fromAirport,
-            toAirport,
-            airline,
-            flightNum,
-            departureDate,
-            arrivalDate,
-        },
-        setExposureData: {
-            exposingPersonName: setExposingPersonName,
-            exposureLocation: setExposureLocation,
-            placeType: setPlaceType,
-            fromAirport: setFromAirport,
-            toAirport: setToAirport,
-            airline: setAirline,
-            flightNum: setFlightNumber,
-            departureDate: setDepartureDate,
-            arrivalDate: setArrivalDate,
+  useEffect(() => {
+    axios
+      .get("/exposure/" + investigationId)
+      .then((result: any) => {
+        const data = result.data.data.allExposures.nodes[0];
+        if (data) {
+          setExposureDataAndFlights(data);
         }
-    };
+      })
+      .catch((err) => console.log(err));
+  }, [investigationId]);
 
-    const { fieldName } = useFormStyles();
-    const classes = useStyles();
+  const handleChangeExposureDataAndFlightsField = (fieldName: string, value: any) => {
+    setExposureDataAndFlights({
+      ...exposureAndFlightsData,
+      [fieldName]: value,
+    });
+  };
 
-    const handleVerifiedExposureToggle = (event: React.MouseEvent<HTMLElement>, value: any) => setHadVerifiedExposure(value);
-    const handleHasBeenAbroad = (event: React.MouseEvent<HTMLElement>, value: any) => setHasBeenAbroad(value);
-    return (
-        <ExposuresContextProvider value={contextInitialData}>
-            <div className={classes.subForm}>
-                <Typography variant='caption' className={fieldName}>
-                    חשיפה אפשרית
-                </Typography>
+  return (
+    <>
+      <div className={classes.subForm}>
+        <Typography variant="caption" className={fieldName}>
+          חשיפה אפשרית
+        </Typography>
 
-                <FormRowWithInput fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-                    <Toggle value={verifiedExposure} onChange={handleVerifiedExposureToggle} test-id='knownExposure' />
-                </FormRowWithInput>
+        <FormRowWithInput fieldName="האם היה מגע ידוע עם חולה מאומת?">
+          <Toggle
+            value={exposureAndFlightsData.wasConfirmedExposure}
+            onChange={() => {
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.wasConfirmedExposure,
+                !exposureAndFlightsData.wasConfirmedExposure
+              );
+            }}
+          />
+        </FormRowWithInput>
 
-                <Collapse in={verifiedExposure} className={classes.additionalInformationForm}>
-                    <ExposureForm />
-                </Collapse>
-            </div>
+        <Collapse
+          in={exposureAndFlightsData.wasConfirmedExposure}
+          className={classes.additionalInformationForm}
+        >
+          <ExposureForm
+            exposureAndFlightsData={exposureAndFlightsData}
+            fieldsNames={fieldsNames}
+            handleChangeExposureDataAndFlightsField={
+              handleChangeExposureDataAndFlightsField
+            }
+          />
+        </Collapse>
+      </div>
 
-            <Divider />
+      <Divider />
 
-            <div className={classes.subForm}>
-                <Typography variant='caption' className={fieldName}>
-                    חזרה מחו״ל
-                </Typography>
+      <div className={classes.subForm}>
+        <Typography variant="caption" className={fieldName}>
+          חזרה מחו״ל
+        </Typography>
 
-                <FormRowWithInput fieldName='האם חזר מחו״ל?'>
-                    <Toggle value={hasBeenAbroad} onChange={handleHasBeenAbroad} test-id='wasPatientAbroad' />
-                </FormRowWithInput>
+        <FormRowWithInput fieldName="האם חזר מחו״ל?">
+          <Toggle
+            value={exposureAndFlightsData.wasAbroad}
+            onChange={() => {
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.wasAbroad,
+                !exposureAndFlightsData.wasAbroad
+              );
+            }}
+          />
+        </FormRowWithInput>
 
-                <Collapse in={hasBeenAbroad} className={classes.additionalInformationForm}>
-                    <FlightsForm />
-                </Collapse>
-            </div>
-        </ExposuresContextProvider>
-    );
+        <Collapse
+          in={exposureAndFlightsData.wasAbroad}
+          className={classes.additionalInformationForm}
+        >
+          <FlightsForm
+            exposureAndFlightsData={exposureAndFlightsData}
+            fieldsNames={fieldsNames}
+            handleChangeExposureDataAndFlightsField={
+              handleChangeExposureDataAndFlightsField
+            }
+          />
+        </Collapse>
+      </div>
+    </>
+  );
 };
 
 export default ExposuresAndFlights;

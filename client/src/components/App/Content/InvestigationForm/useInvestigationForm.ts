@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
-
 import City from 'models/City';
 import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
@@ -14,19 +13,22 @@ import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
-
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
+import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 
 const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
 
-    const { clinicalDetailsVariables, personalInfoData } = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables } = parameters;
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-   
+    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
+    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
@@ -93,9 +95,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             showConfirmButton: false
         }
         );
-        timeout(1900).then(() => {
-            history.push(landingPageRoute);
-        });
+        timeout(1900).then(() => history.push(landingPageRoute));
     };
 
     const handleSwitchTab = () => {
@@ -108,6 +108,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 saveClinicalDetails();
                 break;
             }
+            case(TabNames.EXPOSURES_AND_FLIGHTS): {
+                saveExposureAndFlightData();
+                break;
+            }
         }
     }
 
@@ -115,11 +119,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
-            personalInfoData, 
-        }).then(() => {
+            personalInfoData: personalInfoData, 
+        })
+        .then(() => {
             setCurrentTab(tabs[currentTab.id + 1]);
         });
     }
+    
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
@@ -130,14 +136,71 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const saveClinicalDetails = () => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
-            isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
-                null : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
-            investigatedPatientId,
+            'investigatedPatientId': investigatedPatientId,
+            'epidemioligyNumber' : epidemiologyNumber,
+            'creator' : creator,
+            'lastUpdator' : lastUpdator,
         });
-        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails})).then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
-        });;
+        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
+
+    const saveExposureAndFlightData = () => {
+        if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
+            axios.put('/exposure', {
+                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
+                                                               exposuresAndFlightsVariables.setExposureDataAndFlights)
+            })
+            .then(() => {
+                setCurrentTab(tabs[currentTab.id + 1]);
+            }).catch(err => {
+                console.log(err);
+            })
+        } else {
+            axios.post('/exposure', {
+                exposureDetails: {
+                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
+                                                     exposuresAndFlightsVariables.setExposureDataAndFlights),
+                    investigationId: epidemiologyNumber
+                } 
+            }).then(() => {
+                setCurrentTab(tabs[currentTab.id + 1]);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+    }
+
+    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails,
+                                           setExposuresAndFlightsData: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>) => {
+        let exposureAndDataToReturn = exposuresAndFlightsData;
+        if (!exposuresAndFlightsData.wasConfirmedExposure) {
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                [fieldsNames.firstName]: '',
+                [fieldsNames.lastName]: '',
+                [fieldsNames.date]: undefined,
+                [fieldsNames.address]: null,
+                [fieldsNames.placeType]: null,
+                [fieldsNames.placeSubType] : null,
+            }
+        } 
+        if (!exposuresAndFlightsData.wasAbroad) {
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                [fieldsNames.destinationCountry]: null,
+                [fieldsNames.destinationCity]: '',
+                [fieldsNames.destinationAirport]: '',
+                [fieldsNames.originCountry]: null,
+                [fieldsNames.originCity]: '',
+                [fieldsNames.originAirport]: '',
+                [fieldsNames.flightStartDate]: undefined,
+                [fieldsNames.flightEndDate]: undefined,
+                [fieldsNames.airline]: '',
+                [fieldsNames.flightNumber]: ''
+            }
+        }
+        return exposureAndDataToReturn;
+    }
 
     return {
         currentTab,

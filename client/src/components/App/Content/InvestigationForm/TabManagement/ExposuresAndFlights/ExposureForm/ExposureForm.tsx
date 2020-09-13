@@ -1,47 +1,67 @@
-import React, { useContext } from 'react';
-import { Grid } from '@material-ui/core';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import useFormStyles from 'styles/formStyles';
-import { exposuresContext } from "commons/Contexts/ExposuresAndFlights";
-import LocationInput, { GoogleApiPlace } from 'commons/LocationInputField/LocationInput';
+import React from "react";
+import { Grid } from "@material-ui/core";
+import useFormStyles from "styles/formStyles";
+import DatePick from "commons/DatePick/DatePick";
+import CircleTextField from "commons/CircleTextField/CircleTextField";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
+import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
 
-const ExposureForm = () => {
-    const placeholderText = 'הכנס שם...';
-    const classes = useFormStyles();
+const ExposureForm = (props: any) => {
+  const {
+    exposureAndFlightsData,
+    fieldsNames,
+    handleChangeExposureDataAndFlightsField,
+  } = props;
 
-    const { exposureData, setExposureData } = useContext(exposuresContext);
-    const { exposingPersonName, placeType, exposureLocation } = exposureData;
-    const { exposingPersonName: setExposingPersonName, placeType: setPlaceType, exposureLocation: setExposureLocation } = setExposureData;
+  const classes = useFormStyles();
 
-    const placeTypeOptions = [
-        { id: 1, name: 'מקום ציבורי' },
-        { id: 2, name: 'מקום דת' },
-        { id: 3, name: 'מקום מקומי' }
-    ];
+  return (
+    <Grid className={classes.form} container justify="flex-start">
+      <FormRowWithInput fieldName="שם החולה:">
+        <>
+          <CircleTextField
+            value={exposureAndFlightsData[fieldsNames.firstName]}
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
+            }
+            placeholder="שם פרטי..."
+          />
+          <CircleTextField
+            value={exposureAndFlightsData[fieldsNames.lastName]}
+            onChange={(e) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
+            }
+            placeholder="שם משפחה..."
+          />
+        </>
+      </FormRowWithInput>
 
-    const selectPlaceType = (event: React.ChangeEvent<any>) => setPlaceType(event.target.value);
-    const handlePersonNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setExposingPersonName(event.target.value);
-    const onLocationChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => setExposureLocation(newValue);
+      <FormRowWithInput fieldName="תאריך החשיפה:">
+        <DatePick
+          type="date"
+          value={exposureAndFlightsData[fieldsNames.date]}
+          onChange={(e) =>
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, e.target.value)
+          }
+        />
+      </FormRowWithInput>
 
-    return (
-        <Grid className={classes.form} container justify='flex-start'>
-            <FormRowWithInput fieldName='שם החולה:'>
-                <CircleTextField value={exposingPersonName} onChange={handlePersonNameInput}
-                    placeholder={placeholderText} test-id='confirmedPatientName' />
-            </FormRowWithInput>
-
-            <FormRowWithInput fieldName='שם מקום החשיפה:' testId='exposureLocation'>
-                <LocationInput selectedAddress={exposureLocation as (GoogleApiPlace | null)} setSelectedAddress={onLocationChange} />
-            </FormRowWithInput>
-
-            <FormRowWithInput fieldName='סוג מקום החשיפה:'>
-                <CircleSelect isNameUnique={false}
-                    value={placeType} onChange={selectPlaceType} options={placeTypeOptions} test-id='locationType' />
-            </FormRowWithInput>
-        </Grid>
-    );
+      <FormRowWithInput fieldName="כתובת החשיפה:">
+      <LocationInput 
+          selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)} 
+          setSelectedAddress={(e, newValue) =>
+            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue?.description)}/>
+      </FormRowWithInput>
+      
+      <PlacesTypesAndSubTypes
+        placeType={exposureAndFlightsData[fieldsNames.placeType]}
+        placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
+        onPlaceTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)}
+        onPlaceSubTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)}
+      />
+    </Grid>
+  );
 };
 
 export default ExposureForm;

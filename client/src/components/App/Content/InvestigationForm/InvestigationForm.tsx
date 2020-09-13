@@ -12,12 +12,13 @@ import {
     PersonalInfoDataAndSet
 } from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
-
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
+import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
+     initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
 
 export const LAST_TAB_ID = 3;
 const END_INVESTIGATION = 'סיים חקירה';
@@ -34,11 +35,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         () => ({
             personalInfoData,
             setPersonalInfoData
+
         }),
         [personalInfoData, setPersonalInfoData]
     );
 
     const [exposureDate, setExposureDate] = React.useState<Date>();
+    const [exposureAndFlightsData, setExposureDataAndFlights] = React.useState<ExposureAndFlightsDetails>(initialExposuresAndFlightsData)
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
@@ -49,6 +52,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setClinicalDetailsData
     }),
         [clinicalDetailsData, setClinicalDetailsData]
+    );
+
+    const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
+        exposureAndFlightsData,
+        setExposureDataAndFlights
+    }),
+        [exposureAndFlightsData, setExposureDataAndFlights]
     );
 
     const startInvestigationDateVariables: StartInvestigationDateVariables = React.useMemo(() => ({
@@ -65,10 +75,11 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData });
-
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables});
+        
     return (
         <div className={classes.content}>
+            <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
             <PersonalInfoContextProvider value={personalInfoValue}>
                 <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                     <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
@@ -91,6 +102,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     </StartInvestigationDateVariablesProvider>
                 </ClinicalDetailsDataContextProvider>
             </PersonalInfoContextProvider>
+            </ExposureAndFlightsContextProvider>
         </div>
     )
 }
