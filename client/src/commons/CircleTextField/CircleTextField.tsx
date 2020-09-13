@@ -21,5 +21,5 @@ const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default CircleTextField;
 
-interface Props extends StandardTextFieldProps {
+export interface Props extends StandardTextFieldProps {
 };
