@@ -27,7 +27,11 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: investigatedPatient.occupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ? investigatedPatient.subOccupationBySubOccupation.city : '',
+                    educationOccupationCity: (
+                            (investigatedPatient.occupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) || 
+                            (investigatedPatient.occupation === 'מערכת החינוך')
+                        ) ?
+                        investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo
                 });
