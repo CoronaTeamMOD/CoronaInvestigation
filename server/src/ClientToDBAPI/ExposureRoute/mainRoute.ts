@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_EXPOSURE_INFO } from '../../DBService/Exposure/Query';
 import { UPDATE_EXPOSURE, CREATE_EXPOSURE } from '../../DBService/Exposure/Mutation';
+import ExposureDetails from '../../Models/Exposure/Exposure';
 
 const exposureRoute = Router();
 
@@ -11,36 +12,22 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
-        graphqlRequest(CREATE_EXPOSURE, request.headers, {data : parseBodyToExposureJson(request.body)})
+        graphqlRequest(CREATE_EXPOSURE, request.headers, {data : removeExposureDetailsIdForMutation(request.body)})
         .then((result: any) => response.send(result));
 })
 
 exposureRoute.put('/', (request: Request, response: Response) => {
-        graphqlRequest(UPDATE_EXPOSURE, request.headers, {exposureId : parseInt(request.body.id), data: parseBodyToExposureJson(request.body)})
+        graphqlRequest(UPDATE_EXPOSURE,
+                       request.headers, 
+                       {exposureId : parseInt(request.body.id),
+                        data: removeExposureDetailsIdForMutation(request.body)})
         .then((result: any) => response.send(result));
 })
 
-const parseBodyToExposureJson = (data: any) => {
-    return {
-            investigationId: data.investigationId,
-            exposureFirstName: data.exposureFirstName,
-            exposureLastName: data.exposureLastName,
-            exposureDate: data.exposureDate,
-            exposureAddress: data.exposureAddress,
-            exposurePlaceSubType: data.exposurePlaceSubType,
-            exposurePlaceType: data.exposurePlaceType,
-            flightDestinationCity: data.flightDestinationCity,
-            flightDestinationAirport: data.flightDestinationAirport,
-            flightOriginCity: data.flightOriginCity,
-            flightOriginAirport: data.flightOriginAirport,
-            flightStartDate: data.flightStartDate,
-            flightEndDate: data.flightEndDate,
-            airline: data.airline,
-            flightNum: data.flightNum,
-            flightOriginCountry: data.flightOriginCountry,
-            flightDestinationCountry: data.flightDestinationCountry,
-            wasAbroad: data.wasAbroad,
-            wasConfirmedExposure: data.wasConfirmedExposure
-    }
+const removeExposureDetailsIdForMutation = (data: ExposureDetails) => {
+    const clinicalDetails: ExposureDetails = {...data};
+    delete clinicalDetails.id;
+    return clinicalDetails;
 }
+
 export default exposureRoute;
