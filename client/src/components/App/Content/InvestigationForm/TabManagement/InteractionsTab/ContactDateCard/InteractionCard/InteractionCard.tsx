@@ -15,7 +15,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick } = props;
 
     const classes = useStyle();
-    const parsedLocation = interaction.locationAddress && JSON.parse(interaction.locationAddress as unknown as string);
+    const parsedLocation = interaction.locationAddress !== null && JSON.parse(interaction.locationAddress as unknown as string);
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>

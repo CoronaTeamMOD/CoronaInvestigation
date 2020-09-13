@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
@@ -42,7 +43,16 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
                     }
                 });
                 setInteractions(allInteractions);
-            });
+            }).catch(() => {
+                handleLoadInteractionsError();
+        });
+    }
+
+    const handleLoadInteractionsError = () => {
+        Swal.fire({
+            title: 'הייתה שגיאה בטעינת האירועים והמגעים',
+            icon: 'error',
+        });
     }
 
     const updateInteraction = (updatedInteraction: InteractionEventDialogData) => {
