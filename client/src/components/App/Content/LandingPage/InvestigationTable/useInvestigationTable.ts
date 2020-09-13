@@ -103,18 +103,18 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         (config) => {
             config.headers.Authorization = user.token;
             config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-            config.headers.UserName = user.name
             setIsLoading(true);
             return config;
         },
         (error) => Promise.reject(error)
     );
+
     axios.post('/investigationInfo/updateInvestigationStatus', {
       investigationStatus: handlingInvestigationStatus,
       epidemiologyNumber: epidemiologyNumberVal
     }).then(() => {
       setEpidemiologyNum(epidemiologyNumberVal)
-      history.push('/investigation')
+      history.push('/investigation', {epidemiologyNumber: epidemiologyNumberVal})
     });
   }
 

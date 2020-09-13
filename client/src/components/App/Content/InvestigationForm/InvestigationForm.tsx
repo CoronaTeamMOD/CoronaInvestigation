@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import StoreStateType from 'redux/storeStateType';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -26,7 +27,8 @@ const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const {location} = useHistory<any>();
+    const epidemiologyNumber = location.state?.epidemiologyNumber;
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 

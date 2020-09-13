@@ -47,36 +47,36 @@ const defaultInvestigationStaticInfo = {
 }
 
 const InvestigationInfoBar = () => {
-
-    let history = useHistory();
+    const {location, push} = useHistory<any>();
+    const epidemiologyNumber = location.state?.epidemiologyNumber;
     const classes = useStyles();
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    React.useEffect(() => {
+        if(epidemiologyNumber) {
+            axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
+            ).then((result: any) => {
+                if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
+                    setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
+                    setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
+                    setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
+                }
+            })
+        }  else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
+                customClass: {
+                    title: classes.swalTitle
+                },
+                timer: 1750,
+                showConfirmButton: false
+            });
 
-    React.useEffect(() => { 
-        axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
-        ).then((result: any) => {
-            if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
-                setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
-                setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
-                setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
-            }
-            else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
-                    customClass: {
-                        title: classes.swalTitle
-                    },
-                    timer: 1750,
-                    showConfirmButton: false
-                });
+            timeout(1900).then(() => push(landingPageRoute));
+        }
 
-                timeout(1900).then(() => history.push(landingPageRoute));
-            }
-        })
     }, [epidemiologyNumber]);
 
     return (
