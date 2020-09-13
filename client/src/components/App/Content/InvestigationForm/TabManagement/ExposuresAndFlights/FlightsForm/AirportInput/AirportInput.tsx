@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { Airport } from "../FlightFormTypes";
+import React, { Dispatch, SetStateAction } from 'react';
+import { Airport } from '../FlightFormTypes';
 import Country from 'models/Country';
-import AutocompletedField from "commons/AutoCompletedField/AutocompletedField";
-import useFormStyle from "styles/formStyles";
-import CircleTextField from "commons/CircleTextField/CircleTextField";
-import StoreStateType from "redux/storeStateType";
-import { useSelector } from "react-redux";
+import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
+import useFormStyle from 'styles/formStyles';
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
 
 interface AirportInputProps {
   airport: Airport | undefined;
