@@ -1,12 +1,14 @@
-import PlaceType from './PlaceType';
-import {GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
+import { GoogleApiPlace } from '../commons/LocationInputField/LocationInput';
 
 interface ExposureData {
-    firstName: string;
-    lastName: string;
-    date: Date | undefined;
-    address: GoogleApiPlace | null; // To be changed once google api is integrated
-    placeType: PlaceType;
+    exposureId: number | null,
+    wasConfirmedExposure: boolean,
+    exposureFirstName: string;
+    exposureLastName: string;
+    exposureDate: Date | undefined;
+    exposureAddress: GoogleApiPlace | null; 
+    exposurePlaceType: string;
+    exposurePlaceSubType: number
 }
 
 export default ExposureData;

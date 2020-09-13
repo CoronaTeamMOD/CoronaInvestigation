@@ -23,7 +23,7 @@ const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
 
-    const { clinicalDetailsVariables, personalInfoData, setPersonalInfoData } = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, setPersonalInfoData } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
@@ -109,6 +109,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 saveClinicalDetails();
                 break;
             }
+            case(TabNames.EXPOSURES_AND_FLIGHTS): {
+                saveExposureAndFlightData();
+                break;
+            }
         }
     }
 
@@ -139,6 +143,29 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         });
         axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
+
+    const saveExposureAndFlightData = () => {
+        console.log(exposuresAndFlightsVariables);
+        if (exposuresAndFlightsVariables.exposureAndFlightsData.exposureId) {
+            axios.put('/exposure', {
+                exposureId : exposuresAndFlightsVariables.exposureAndFlightsData.exposureId,
+                data: exposuresAndFlightsVariables.exposureAndFlightsData
+            })
+            .then(() => {
+                setCurrentTab(tabs[currentTab.id + 1]);
+            }).catch(err => {
+                console.log(err);
+            })
+        } else {
+            axios.post('/exposure', {
+                data: exposuresAndFlightsVariables.exposureAndFlightsData
+            }).then(() => {
+                setCurrentTab(tabs[currentTab.id + 1]);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+    }
 
     return {
         currentTab,

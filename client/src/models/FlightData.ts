@@ -1,14 +1,15 @@
 interface FlightData {
-   destinationCountry: string;
-   destinationCity: string;
-   destinationAirport: string;
-   originCountry: string;
-   originCity: string;
-   originAirport: string; 
+   wasAbroad: boolean,
+   flightDestinationCountry: string;
+   flightDestinationCity: string;
+   flightDestinationAirport: string;
+   flightOriginCountry: string;
+   flightOriginCity: string;
+   flightOriginAirport: string; 
    flightStartDate: Date | undefined;
    flightEndDate: Date | undefined;
    airline: string;
-   flightNumber: string;
+   flightNum: string;
 }
 
 export default FlightData;
