@@ -62,7 +62,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
             }).then(() => {
                 graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,request.headers, {
                     isPregnant: clinicalDetails.isPregnant,
-                    doesHaveBackgrounDiseases: clinicalDetails.doesHaveBackgrounDiseases,
+                    doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
                     id: clinicalDetails.investigatedPatientId
                 })
             }).then(() => {

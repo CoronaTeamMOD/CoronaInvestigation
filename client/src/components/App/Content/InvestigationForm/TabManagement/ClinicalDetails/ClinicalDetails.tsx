@@ -309,14 +309,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Toggle
                         test-id='areThereBackgroundDiseases'
-                        value={context.clinicalDetailsData.doesHaveBackgrounDiseases}
+                        value={context.clinicalDetailsData.doesHaveBackgroundDiseases}
                         onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={context.clinicalDetailsData.doesHaveBackgrounDiseases}>
+                    <Collapse in={context.clinicalDetailsData.doesHaveBackgroundDiseases}>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
