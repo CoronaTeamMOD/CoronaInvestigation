@@ -19,8 +19,6 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 
-const dateFormat = 'yyyy-MM-dd';
-
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
@@ -248,7 +246,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 test-id='symptomsStartDate'
                                 type='date'
-                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormat) : dateFormat}
+                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -389,7 +387,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, new Date(event.target.value))
                                 )}
@@ -398,7 +396,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormat) : dateFormat}
+                                value={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, new Date(event.target.value))
                                 )}
