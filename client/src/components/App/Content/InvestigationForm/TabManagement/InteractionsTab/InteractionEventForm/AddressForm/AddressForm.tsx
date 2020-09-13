@@ -8,6 +8,7 @@ import LocationInput, {GoogleApiPlace} from "commons/LocationInputField/Location
 import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 import useStyles from './AddressFormStyles';
+import Map from "../../../../../../../../Map/Map";
 
 const AddressForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();
@@ -29,8 +30,8 @@ const AddressForm : React.FC = () : JSX.Element => {
             <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
                 <Grid item xs={6}>
                     <FormInput fieldName='כתובת'>
-                        <LocationInput selectedAddress={locationAddress}
-                                        setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                        <Map/>
+
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}/>

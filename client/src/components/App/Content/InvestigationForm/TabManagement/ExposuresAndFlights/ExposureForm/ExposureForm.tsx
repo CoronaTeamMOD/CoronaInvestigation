@@ -7,6 +7,8 @@ import LocationInput from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useFormStyles from 'styles/formStyles';
+import {exposuresContext} from "commons/Contexts/ExposuresAndFlights";
+import Map from "../../../../../../../Map/Map";
 
 const ExposureForm = (props: any) => {
   const {
@@ -55,6 +57,9 @@ const ExposureForm = (props: any) => {
           }
         />
       </FormRowWithInput>
+            <FormRowWithInput fieldName='שם מקום החשיפה:'>
+                <Map />
+            </FormRowWithInput>
 
       <FormRowWithInput fieldName="כתובת החשיפה:">
         <LocationInput
