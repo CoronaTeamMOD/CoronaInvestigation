@@ -11,7 +11,7 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
-    if(typeof (request.body.exposureId) === "number"){
+    if(!(request.body.exposureId === "")){
         graphqlRequest(UPDATE_EXPOSURE, request.headers, {exposureId : parseInt(request.body.exposureId), data: request.body.data})
         .then((result: any) => response.send(result));
     }
