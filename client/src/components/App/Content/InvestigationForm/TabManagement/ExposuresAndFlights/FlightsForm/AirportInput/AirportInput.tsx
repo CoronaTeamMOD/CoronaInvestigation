@@ -1,9 +1,15 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Airport, City, Country } from "../FlightFormTypes";
+import { Airport } from "../FlightFormTypes";
+import Country from 'models/Country';
 import AutocompletedField from "commons/AutoCompletedField/AutocompletedField";
 import useFormStyle from "styles/formStyles";
 import { AutocompletedFieldProps } from "commons/AutoCompletedField/AutoCompletedFieldTypes";
 import CircleTextField from "commons/CircleTextField/CircleTextField";
+import LocationOptionItem from 'commons/LocationInputField/OptionItem/LocationOptionItem';
+import StoreStateType from "redux/storeStateType";
+import { useSelector } from "react-redux";
+import { TextField } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
 interface AirportInputProps {
   airport: Airport | undefined;
@@ -20,85 +26,33 @@ const AirportInput = (props: any) => {
     airportFieldName,
     handleChangeExposureDataAndFlightsField,
   } = props;
-
-  // const [selectedCountry, setSelectedCountry] = React.useState<Country | undefined>();
-  // const [selectedCity, setSelectedCity] = React.useState<City | undefined>();
-
-  // search states
-  // const [cityPrefix, setCityPrefix] = React.useState<string>('');
-  // const [airportPrefix, setAirportPrefix] = React.useState<string>('');
-
-  // const {countries, cities, airports,} = useFlightsInvestigation({
-  //     selectedCountry,
-  //     selectedCity,
-  //     cityPrefix,
-  //     airportPrefix,
-  // });
-
   const classes = useFormStyle();
 
-  // const onCountrySelect = (event: React.ChangeEvent<{}>, newValue: Country | undefined) => {
-  //     setSelectedCountry(newValue);
-  // };
+  const [input, setInput] = React.useState<string>('');
 
-  // const onCitySelect = (event: React.ChangeEvent<{}>, newValue: City | undefined) => {
-  //     setSelectedCity(newValue);
-  //     newValue && onCountrySelect(event, newValue.country);
-  // };
+  const onInputChange = (event: React.ChangeEvent<{}>,
+    newInputValue: string,) => {
+    setInput(newInputValue);
+  };
+  const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
+  const options = Array.from(countries).map(([name, value]) => (value))
+  const getLabel = (option: any) => {
+    if (option.displayName) {
+      return option.displayName
+    }
+    else if (option !== '')
+      return countries.get(option)?.displayName
+    else return ''
 
-  // const onAirportSelect = (event: React.ChangeEvent<{}>, newValue: Airport | undefined) => {
-  //     setAirport(newValue);
-  //     // newValue && onCitySelect(event, newValue.city);
-  // };
-
-  // const onCityInput = (event: React.ChangeEvent<{}>,
-  //                      newInputValue: string,) => {
-  //     setCityPrefix(newInputValue);
-  // };
-
-  // const onAirportInput = (event: React.ChangeEvent<{}>,
-  //                         newInputValue: string,) => {
-  //     setAirportPrefix(newInputValue);
-  // };
-
-  // const inputsProps = [
-  //     {
-  //         constOptions: true,
-  //         label: 'מדינה',
-  //         value: selectedCountry,
-  //         //   options: countries,
-  //         options: [],
-  //         onChange: onCountrySelect,
-  //     } as AutocompletedFieldProps<Country>, {
-  //         label: 'עיר',
-  //         value: selectedCity,
-  //         //  options: cities,
-  //         options: [],
-  //         onChange: onCitySelect,
-  //         onInputChange: onCityInput
-  //     } as AutocompletedFieldProps<City>, {
-  //         label: 'שדה תעופה',
-  //         value: airport,
-  //         //    options: airports,
-  //         options: [],
-  //         onChange: onAirportSelect,
-  //         onInputChange: onAirportInput,
-  //     } as AutocompletedFieldProps<Airport>];
-  // ;
-
-  // Fields are temporarily text inputs only
-  // Autocomplete fields will be added when api is ready
-  // const AutocomplteFields = () =>
-  //     inputsProps.map((props: AutocompletedFieldProps<any>) => <AutocompletedField {...props}/>);
-
+  }
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <CircleTextField
+      <AutocompletedField
         value={country}
-        placeholder="מדינה"
-        onChange={(e) => handleChangeExposureDataAndFlightsField(countryFieldName, e.target.value)}
-        InputProps={{ classes: { input: classes.roundedTextLabel } }}
-        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
+        options={options}
+        onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue.id)}
+        onInputChange={onInputChange}
+        getOptionLabel={(option) => getLabel(option)}
       />
       <CircleTextField
         value={city}
