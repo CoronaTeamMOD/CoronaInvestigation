@@ -30,7 +30,6 @@ const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
-const INSTITUTION_OPTIONS = ['אודם','ירושלים','צה"ל', 'מוסד', 'אחר','8600'];
 const OCCUPATION_LABEL = 'תעסוקה:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {

@@ -18,6 +18,7 @@ interface ClinicalDetails {
     epidemioligyNumber: number;
     creator: string;
     lastUpdator: string;
+    doesHaveBackgroundDiseases: boolean;
 };
 
 export default ClinicalDetails;

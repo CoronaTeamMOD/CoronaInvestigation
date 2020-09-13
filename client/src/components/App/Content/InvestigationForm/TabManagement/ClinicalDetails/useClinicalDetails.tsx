@@ -9,14 +9,15 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import { initAddress } from 'models/Address';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
+    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES, value);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -54,44 +55,51 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         )};
     
     const getClinicalDetailsByEpidemiologyNumber = () => {
-        axios.get('/clinicalDetails/getInvestigatedPatientClinicalDetailsFields/' + epidemiologyNumber).then(
+        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
-                    const patientAddress = patientInvestigation.addressByIsolationAddress;
-                    setIsolationCityName(patientAddress.cityByCity.displayName);
-                    setIsolationStreetName(patientAddress.streetByStreet.displayName);
-                    
-                    context.setClinicalDetailsData({
-                        ...context.clinicalDetailsData,
-                        isPregnant: patientIsPregnant,
-                        backgroundDeseases: patientBackgroundDiseases,
-                        hospital: patientInvestigation.hospital,
-                        hospitalizationStartDate: new Date(patientInvestigation.hospitalizationStartTime),
-                        hospitalizationEndDate: new Date(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem,
-                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
-                        isolationStartDate: new Date(patientInvestigation.isolationStartTime),
-                        isolationEndDate: new Date(patientInvestigation.isolationEndTime),
-                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName),
-                        symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
-                        wasHospitalized: patientInvestigation.wasHospitalized,
-                        isolationAddress: {
+                    let patientAddress = patientInvestigation.addressByIsolationAddress;
+                    if (patientAddress !== null) {
+                        setIsolationCityName(patientAddress.cityByCity.displayName);
+                        setIsolationStreetName(patientAddress.streetByStreet.displayName);
+                        patientAddress = {
                             city: patientAddress.cityByCity.id,
                             street: patientAddress.streetByStreet.id,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
+                    } else {
+                        patientAddress = initAddress;
+                    }
+                    
+                    context.setClinicalDetailsData({
+                        ...context.clinicalDetailsData,
+                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
+                        backgroundDeseases: patientBackgroundDiseases,
+                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
+                        hospital: patientInvestigation.hospital,
+                        hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
+                        hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
+                        isInIsolation: patientInvestigation.isInIsolation,
+                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
+                        isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
+                        isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
+                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName),
+                        symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
+                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
+                        wasHospitalized: patientInvestigation.wasHospitalized,
+                        isolationAddress: patientAddress
                     })
                 }
             }
         );
     };
+
+    const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate); 
 
     React.useEffect(() => {
         getSymptoms();

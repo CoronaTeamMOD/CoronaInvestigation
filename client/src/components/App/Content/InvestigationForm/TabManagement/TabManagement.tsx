@@ -40,7 +40,7 @@ export const tabs: TabObj[] = [
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, setCurrentTab } = tabManagementProps;
+    const { currentTab, setCurrentTab, onTabClicked } = tabManagementProps;
     const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
         createStyles({
@@ -69,7 +69,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
+                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
                         })
                     }
                 </Tabs>
@@ -89,4 +89,5 @@ export default TabManagement;
 interface Props {
     currentTab: TabObj;
     setCurrentTab: (currentTab: TabObj) => void;
+    onTabClicked: () => void;
 };

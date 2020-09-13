@@ -23,13 +23,10 @@ const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
 
-    const { clinicalDetailsVariables, personalInfoData, setPersonalInfoData } = parameters;
+    const { clinicalDetailsVariables, personalInfoData } = parameters;
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-    const creator = useSelector<StoreStateType, string>(state => state.investigation.creator);
-    const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
-
+   
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
@@ -96,7 +93,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             showConfirmButton: false
         }
         );
-        timeout(1900).then(() => history.push(landingPageRoute));
+        timeout(1900).then(() => {
+            history.push(landingPageRoute);
+        });
     };
 
     const handleSwitchTab = () => {
@@ -113,12 +112,11 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     }
 
     const savePersonalInfoData = () => {
-        axios.post('/personalDetails/updatePersonalDetails', 
+        return axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
-            personalInfoData: personalInfoData, 
-        })
-        .then(() => {
+            personalInfoData, 
+        }).then(() => {
             setCurrentTab(tabs[currentTab.id + 1]);
         });
     }
@@ -132,12 +130,34 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const saveClinicalDetails = () => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
-            'investigatedPatientId': investigatedPatientId,
-            'epidemioligyNumber' : epidemiologyNumber,
-            'creator' : creator,
-            'lastUpdator' : lastUpdator,
+            isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
+                null : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
+            investigatedPatientId,
         });
-        axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
+
+        if (!clinicalDetails.wasHospitalized) {
+            clinicalDetails.hospital = '';
+            clinicalDetails.hospitalizationStartDate = null;
+            clinicalDetails.hospitalizationEndDate = null;
+        }
+
+        if (!clinicalDetails.isInIsolation) {
+            clinicalDetails.isolationStartDate = null;
+            clinicalDetails.isolationEndDate = null;
+        }
+
+        if (!clinicalDetails.doesHaveSymptoms) {
+            clinicalDetails.symptoms = [];
+            clinicalDetails.symptomsStartDate = null;
+        }
+
+        if (!clinicalDetails.doesHaveBackgroundDiseases) {
+            clinicalDetails.backgroundDeseases = [];
+        }
+
+        return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails})).then(() => {
+            setCurrentTab(tabs[currentTab.id + 1]);
+        });;
     };
 
     return {

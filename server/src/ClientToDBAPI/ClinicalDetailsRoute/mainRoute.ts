@@ -9,7 +9,7 @@ import {
     GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER
 } from '../../DBService/ClinicalDetails/Query';
 import {
-    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT, UPDATE_INVESTIGATION
+    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
@@ -26,20 +26,17 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
     graphqlRequest(GET_BACKGROUND_DISEASES, request.headers).then((result: any) => response.send(result));
 });
 
-clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields/:epidemiologyNumber', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, request.headers,
-        { epidemiologyNumber: +request.params.epidemiologyNumber }).then(
+clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, request.headers, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
         (result: any) => response.send(result)
     );
 });
 
-clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
-
-    const isolationAddress = request.body.clinicalDetails.isolationAddress;
+const saveClinicalDetails = (request: Request, response: Response, isolationAddress?: number, ) => {
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
-        epidemiologyNumber: clinicalDetails.epidemioligyNumber,
+        epidemiologyNumber: +request.headers.epidemiologynumber,
         hospital: clinicalDetails.hospital,
         hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
         hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
@@ -50,52 +47,51 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         isolationStartTime: clinicalDetails.isolationStartDate,
         symptomsStartTime: clinicalDetails.symptomsStartDate,
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
-        wasHospitalized: clinicalDetails.wasHospitalized
+        wasHospitalized: clinicalDetails.wasHospitalized,
+        isolationAddress
     }
 
-    const requestAddress: Address = {
-        cityValue: isolationAddress?.city,
-        streetValue: isolationAddress?.street,
-        floorValue: +isolationAddress?.floor,
-        houseNumValue: +isolationAddress?.houseNum,
-    }
-    
-    graphqlRequest(CREATE_ISOLATION_ADDRESS, {
-        input: { ...requestAddress }
-    }).then((result: CreateAddressResponse) => {
-        graphqlRequest(UPDATE_INVESTIGATION, {
-            epidemiologyNumber: requestInvestigation.epidemiologyNumber,
-            hospital: requestInvestigation.hospital,
-            hospitalizationEndTime: requestInvestigation.hospitalizationEndTime,
-            hospitalizationStartTime: requestInvestigation.hospitalizationStartTime,
-            isInIsolation: requestInvestigation.isInIsolation,
-            isIsolationProblem: requestInvestigation.isIsolationProblem,
-            isIsolationProblemMoreInfo: requestInvestigation.isIsolationProblemMoreInfo,
-            isolationEndTime: requestInvestigation.isolationEndTime,
-            isolationStartTime: requestInvestigation.isolationStartTime,
-            symptomsStartTime: requestInvestigation.symptomsStartTime,
-            wasHospitalized: requestInvestigation.wasHospitalized,
-            doesHaveSymptoms: requestInvestigation.doesHaveSymptoms,
-            isolationAddress: result.data.insertAndGetAddressId.integer
+    graphqlRequest(UPDATE_INVESTIGATION, request.headers,requestInvestigation).then(() => {
+        graphqlRequest(ADD_BACKGROUND_DISEASES, request.headers, {
+            investigatedPatientId: clinicalDetails.investigatedPatientId,
+            backgroundDeseases: clinicalDetails.backgroundDeseases
         }).then(() => {
-            graphqlRequest(ADD_BACKGROUND_DISEASES, {
-                investigatedPatientId: clinicalDetails.investigatedPatientId,
-                backgroundDeseases: clinicalDetails.backgroundDeseases
+            graphqlRequest(ADD_SYMPTOMS,request.headers, {
+                investigationIdValue: +request.headers.epidemiologynumber,
+                symptomNames: clinicalDetails.symptoms
             }).then(() => {
-                graphqlRequest(ADD_SYMPTOMS, {
-                    investigationIdValue: clinicalDetails.epidemioligyNumber,
-                    symptomNames: clinicalDetails.symptoms
-                }).then(() => {
-                    graphqlRequest(UPDATE_IS_PREGNANT, {
-                        isPregnant: clinicalDetails.isPregnant,
-                        id: clinicalDetails.investigatedPatientId
-                    })
-                }).then(() => {
-                    response.send('Added clinical details');
-                });
+                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,request.headers, {
+                    isPregnant: clinicalDetails.isPregnant,
+                    doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
+                    id: clinicalDetails.investigatedPatientId
+                })
+            }).then(() => {
+                response.send('Added clinical details');
             });
         });
     });
+}
+
+clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
+
+    const isolationAddress = request.body.clinicalDetails.isolationAddress;
+
+    if (isolationAddress !== null) {
+        const requestAddress: Address = {
+            cityValue: isolationAddress?.city,
+            streetValue: isolationAddress?.street,
+            floorValue: +isolationAddress?.floor,
+            houseNumValue: +isolationAddress?.houseNum,
+        }
+        graphqlRequest(CREATE_ISOLATION_ADDRESS, request.headers, {
+            input: { ...requestAddress }
+        }).then((result: CreateAddressResponse) => {
+            saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
+        });
+    } else {
+        saveClinicalDetails(request, response, null);
+    }
 });
+
 
 export default clinicalDetailsRoute;

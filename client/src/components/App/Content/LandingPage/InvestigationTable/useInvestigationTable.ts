@@ -7,7 +7,9 @@ import { useHistory } from 'react-router-dom';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
+import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -37,7 +39,9 @@ type InvestigationsReturnType = {
           epidemiologyNumber: number,
           investigatedPatientByInvestigatedPatientId: {
             addressByAddress: {
-              city: string
+              cityByCity: {
+                 displayName: string
+              }
             },
             personByPersonId: {
               birthDate: Date,
@@ -66,7 +70,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const user = useSelector<StoreStateType, User>(state => state.user);
 
   useEffect(() => {
-    axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name })
+    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations', { userName: user.name })
       .then(response => {
         const { data } = response;
         if (data && data.data && data.data.userById) {
@@ -77,7 +81,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
               patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
               patient.personByPersonId.phoneNumber,
               Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-              patient.addressByAddress.city)
+              patient.addressByAddress.cityByCity.displayName)
           });
           setRows(investigationRows)
         }
@@ -94,16 +98,25 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       });
   }, [user.id, classes.errorAlertTitle]);
 
-  const onInvestigationRowClick = (epidemiologyNumber: number) => {
+  const onInvestigationRowClick = (epidemiologyNumberVal: number) => {
+    axios.interceptors.request.use(
+        (config) => {
+            config.headers.Authorization = user.token;
+            config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+            config.headers.UserName = user.name
+            setIsLoading(true);
+            return config;
+        },
+        (error) => Promise.reject(error)
+    );
     axios.post('/investigationInfo/updateInvestigationStatus', {
       investigationStatus: handlingInvestigationStatus,
-      epidemiologyNumber: epidemiologyNumber
+      epidemiologyNumber: epidemiologyNumberVal
     }).then(() => {
-      setEpidemiologyNum(epidemiologyNumber)
+      setEpidemiologyNum(epidemiologyNumberVal)
       history.push('/investigation')
     });
   }
-
 
   return {
     tableRows: rows,
