@@ -25,14 +25,14 @@ const ExposureForm = (props: any) => {
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
             }
-            placeholder="שם פרטי..."
+            placeholder="שם פרטי"
           />
           <CircleTextField
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
             }
-            placeholder="שם משפחה..."
+            placeholder="שם משפחה"
           />
         </>
       </FormRowWithInput>
