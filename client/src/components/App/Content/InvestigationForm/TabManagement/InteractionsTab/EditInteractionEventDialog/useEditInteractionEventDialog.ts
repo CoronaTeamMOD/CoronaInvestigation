@@ -7,16 +7,14 @@ import { useEditInteractionEventInput, useEditInteractionEventOutcome } from './
 
 const useNewInteractionEventDialog = (input: useEditInteractionEventInput) :  useEditInteractionEventOutcome => {
     
-    const { closeDialog, updateInteraction } = input;
+    const { closeDialog } = input;
 
     const editInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
-        updateInteraction(interactionEventVariables);
-        closeDialog();
-        // TODO: Add db connection
-        // axios.post('/intersections/updateContactEvent', {...interactionEventVariables}).then(() => {
-        // }).catch(() => {
-        //     handleEditEventFailed();
-        // })
+        axios.post('/intersections/updateContactEvent', {...interactionEventVariables}).then(() => {
+            closeDialog();
+        }).catch(() => {
+            handleEditEventFailed();
+        })
     }
 
     const handleEditEventFailed = () => {

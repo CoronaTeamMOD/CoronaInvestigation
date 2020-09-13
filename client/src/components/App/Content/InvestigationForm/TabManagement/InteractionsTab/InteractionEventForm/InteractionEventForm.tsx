@@ -1,8 +1,8 @@
 import { format, parse } from 'date-fns';
-import React, {useState, useContext} from 'react';
-import { AddCircle as AddCircleIcon} from '@material-ui/icons';
+import React, { useState, useContext } from 'react';
+import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/core';
-    
+
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
@@ -34,8 +34,8 @@ export const defaultContact: Contact = {
 
 const addContactButton: string = 'הוסף מגע';
 
-const InteractionEventForm : React.FC = () : JSX.Element => {
-    
+const InteractionEventForm: React.FC = (): JSX.Element => {
+
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
     const { placeType, startTime, endTime, externalizationApproval, contacts, placeSubType, id, investigationId } = interactionEventDialogData;
 
@@ -46,78 +46,78 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
     React.useEffect(() => {
-        const hasInvalidContact : boolean = contacts
-            .some(contact => (!contact.id || !contact.firstName  || !contact.lastName || !contact.phoneNumber));
+        const hasInvalidContact: boolean = contacts
+            .some(contact => (!contact.id || !contact.firstName || !contact.lastName || !contact.phoneNumber));
         setCanAddContact(!hasInvalidContact);
     }, [contacts])
-    
+
     const onContactAdd = () => {
-        const updatedContacts = [...contacts, {...defaultContact}];
-        setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
+        const updatedContacts = [...contacts, { ...defaultContact }];
+        setInteractionEventDialogData({ ...interactionEventDialogData, contacts: updatedContacts });
     }
 
     const onPlaceTypeChange = (newPlaceType: string) => {
         setInteractionEventDialogData(
-        {
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
-            id,
-            placeType: newPlaceType,
-            externalizationApproval
-        });
+            {
+                ...initialDialogData(startTime, endTime, contacts, investigationId),
+                id,
+                placeType: newPlaceType,
+                externalizationApproval
+            });
     }
 
     const onPlaceSubTypeChange = (newPlaceSubType: number) => {
         setInteractionEventDialogData(
-        {
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
+            {
+                ...initialDialogData(startTime, endTime, contacts, investigationId),
                 id,
                 placeType,
                 placeSubType: newPlaceSubType,
                 externalizationApproval
-        });
+            });
     }
 
     const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, startTime)});
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, startTime) });
     };
 
     const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, endTime: parse(event.target.value, timeFormat, endTime)});
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, endTime: parse(event.target.value, timeFormat, endTime) });
     };
 
-    const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => 
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, externalizationApproval: val});
+    const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) =>
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, externalizationApproval: val });
 
     return (
         <>
             <Grid className={formClasses.form} container justify='flex-start'>
                 <PlacesTypesAndSubTypes
-                placeType={placeType}
-                placeSubType={placeSubType}
-                onPlaceTypeChange={onPlaceTypeChange}
-                onPlaceSubTypeChange={onPlaceSubTypeChange}/>
+                    placeType={placeType}
+                    placeSubType={placeSubType}
+                    onPlaceTypeChange={onPlaceTypeChange}
+                    onPlaceSubTypeChange={onPlaceSubTypeChange} />
                 {
                     placeType === privateHouse.code &&
                     <Collapse in={placeType === privateHouse.code}>
-                        <PrivateHouseEventForm/>
+                        <PrivateHouseEventForm />
                     </Collapse>
                 }
                 {
                     placeType === office.code &&
                     <Collapse in={placeType === office.code}>
-                        <OfficeEventForm/>
+                        <OfficeEventForm />
                     </Collapse>
                 }
                 {
                     placeType === transportation.code &&
                     <Collapse in={placeType === transportation.code}>
-                        <TransportationEventForm/>
+                        <TransportationEventForm />
                     </Collapse>
                 }
                 {
                     placeType === school.code &&
                     <Collapse in={placeType === school.code}>
-                        <SchoolEventForm/>
+                        <SchoolEventForm />
                     </Collapse>
                 }
                 {
@@ -141,23 +141,23 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 {
                     placeType === otherPublicPlaces.code &&
                     <Collapse in={placeType === otherPublicPlaces.code}>
-                        <OtherPublicLocationForm/>
+                        <OtherPublicLocationForm />
                     </Collapse>
                 }
                 <Grid className={formClasses.formRow} container justify='flex-start'>
                     <Grid item xs={6}>
                         <FormInput fieldName='משעה'>
                             <DatePick
-                                test-id='contactLocationStartTime'
+                                testId='contactLocationStartTime'
                                 type='time'
                                 value={format(startTime, timeFormat)}
-                                onChange={onStartTimeChange}/>
+                                onChange={onStartTimeChange} />
                         </FormInput>
                     </Grid>
                     <Grid item xs={6}>
                         <FormInput fieldName='עד שעה'>
                             <DatePick
-                                test-id='contactLocationEndTime'
+                                testId='contactLocationEndTime'
                                 type='time'
                                 value={format(endTime, timeFormat)}
                                 onChange={onEndTimeChange}
@@ -168,22 +168,23 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 <Grid className={formClasses.formRow} container justify='flex-start'>
                     <FormInput fieldName='האם מותר להחצנה'>
                         <Toggle
+                            test-id='allowExternalization'
                             className={formClasses.formToggle}
                             value={externalizationApproval}
-                            onChange={onExternalizationApprovalChange}/>
-                        </FormInput>
+                            onChange={onExternalizationApprovalChange} />
+                    </FormInput>
                 </Grid>
             </Grid>
-            <Divider light={true}/>
+            <Divider light={true} />
             <Grid container className={formClasses.form + ' ' + classes.spacedOutForm}>
                 <div className={classes.newContactFieldsContainer}>
                     {
-                        contacts.map((contact: Contact, index: number) => 
-                            <ContactForm updatedContactIndex={index}/>)
+                        contacts.map((contact: Contact, index: number) =>
+                            <ContactForm updatedContactIndex={index} />)
                     }
                     <Grid item>
-                        <IconButton onClick={onContactAdd} disabled={!canAddContact}>
-                            <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
+                        <IconButton test-id='addContact' onClick={onContactAdd} disabled={!canAddContact}>
+                            <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'} />
                         </IconButton>
                         <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{addContactButton}</Typography>
                     </Grid>
