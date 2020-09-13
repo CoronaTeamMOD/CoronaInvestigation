@@ -47,24 +47,11 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         isolationStartTime: clinicalDetails.isolationStartDate,
         symptomsStartTime: clinicalDetails.symptomsStartDate,
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
-        wasHospitalized: clinicalDetails.wasHospitalized
+        wasHospitalized: clinicalDetails.wasHospitalized,
+        isolationAddress
     }
 
-    graphqlRequest(UPDATE_INVESTIGATION, request.headers,{
-        epidemiologyNumber: requestInvestigation.epidemiologyNumber,
-        hospital: requestInvestigation.hospital,
-        hospitalizationEndTime: requestInvestigation.hospitalizationEndTime,
-        hospitalizationStartTime: requestInvestigation.hospitalizationStartTime,
-        isInIsolation: requestInvestigation.isInIsolation,
-        isIsolationProblem: requestInvestigation.isIsolationProblem,
-        isIsolationProblemMoreInfo: requestInvestigation.isIsolationProblemMoreInfo,
-        isolationEndTime: requestInvestigation.isolationEndTime,
-        isolationStartTime: requestInvestigation.isolationStartTime,
-        symptomsStartTime: requestInvestigation.symptomsStartTime,
-        wasHospitalized: requestInvestigation.wasHospitalized,
-        doesHaveSymptoms: requestInvestigation.doesHaveSymptoms,
-        isolationAddress
-    }).then(() => {
+    graphqlRequest(UPDATE_INVESTIGATION, request.headers,requestInvestigation).then(() => {
         graphqlRequest(ADD_BACKGROUND_DISEASES, request.headers, {
             investigatedPatientId: clinicalDetails.investigatedPatientId,
             backgroundDeseases: clinicalDetails.backgroundDeseases
@@ -88,7 +75,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
 
     const isolationAddress = request.body.clinicalDetails.isolationAddress;
 
-    if (isolationAddress) {
+    if (isolationAddress !== null) {
         const requestAddress: Address = {
             cityValue: isolationAddress?.city,
             streetValue: isolationAddress?.street,
@@ -101,7 +88,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         });
     } else {
-        saveClinicalDetails(request, response, undefined);
+        saveClinicalDetails(request, response, null);
     }
 });
 

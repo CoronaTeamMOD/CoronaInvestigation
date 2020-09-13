@@ -18,7 +18,6 @@ import { setCountries } from 'redux/Country/countryActionCreators';
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
-import { initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
 const finishInvestigationStatus = 'טופלה';
 
@@ -131,8 +130,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const saveClinicalDetails = () => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
-            isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress === initialAddress ? 
-                undefined : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
+            isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
+                null : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
             investigatedPatientId,
         });
         axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails})).then(() => {

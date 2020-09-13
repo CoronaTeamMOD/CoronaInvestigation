@@ -32,7 +32,6 @@ personalDetailsRoute.get('/educationSubOccupations', (request: Request, response
 });
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
-    console.log(request.body);
     graphqlRequest(CREATE_ADRESS, request.headers, {
         city: request.body.personalInfoData.address.city,
         street: request.body.personalInfoData.address.street,

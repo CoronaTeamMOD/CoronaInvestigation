@@ -9,6 +9,7 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import { initAddress } from 'models/Address';
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
@@ -61,9 +62,19 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
-                    const patientAddress = patientInvestigation.addressByIsolationAddress;
-                    setIsolationCityName(patientAddress.cityByCity.displayName);
-                    setIsolationStreetName(patientAddress.streetByStreet.displayName);
+                    let patientAddress = patientInvestigation.addressByIsolationAddress;
+                    if (patientAddress !== null) {
+                        setIsolationCityName(patientAddress.cityByCity.displayName);
+                        setIsolationStreetName(patientAddress.streetByStreet.displayName);
+                        patientAddress = {
+                            city: patientAddress.cityByCity.id,
+                            street: patientAddress.streetByStreet.id,
+                            floor: patientAddress.floor,
+                            houseNum: patientAddress.houseNum
+                        }
+                    } else {
+                        patientAddress = initAddress;
+                    }
                     
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
@@ -81,12 +92,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
                         wasHospitalized: patientInvestigation.wasHospitalized,
-                        isolationAddress: {
-                            city: patientAddress.cityByCity.id,
-                            street: patientAddress.streetByStreet.id,
-                            floor: patientAddress.floor,
-                            houseNum: patientAddress.houseNum
-                        }
+                        isolationAddress: patientAddress
                     })
                 }
             }

@@ -138,7 +138,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     getOptionLabel={(option) => option.value.displayName}
                     inputValue={isolationCityName}
                     onChange={(event, selectedCity) => {
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, selectedCity?.id)
+                        let cityId = selectedCity?.id;
+                        if (selectedCity === null) {
+                            cityId = '';
+                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
+                        }
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, cityId);
                         selectedCity && getStreetByCity(selectedCity.id)
                     }
                     }
