@@ -56,7 +56,7 @@ const authMiddleware = (
     response: Response,
     next: NextFunction
 ) => {
-    if (process.env.environment === 'dev' || process.env.environment === 'prod') {
+    if (process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'prod') {
         return handleConfidentialAuth(request, response, next);
     } else {
         const token = request.headers.authorization;
