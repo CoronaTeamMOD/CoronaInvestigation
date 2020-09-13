@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import { format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, Collapse } from '@material-ui/core';
@@ -6,15 +8,13 @@ import { Grid, Typography, Collapse } from '@material-ui/core';
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
-import { useSelector } from 'react-redux';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
-import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
+import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';

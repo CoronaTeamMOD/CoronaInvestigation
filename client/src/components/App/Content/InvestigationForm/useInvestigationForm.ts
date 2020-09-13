@@ -1,22 +1,25 @@
-import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
+import {setCities} from 'redux/City/cityActionCreators';
+import { setCountries } from 'redux/Country/countryActionCreators';
+import Swal from 'sweetalert2';
+
 import City from 'models/City';
-import axios from 'Utils/axios';
 import { Tab } from 'models/Tab';
-import theme from 'styles/theme';
 import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
+import axios from 'Utils/axios';
 import {landingPageRoute} from 'Utils/Routes/Routes';
-import {setCities} from 'redux/City/cityActionCreators';
-import { setCountries } from 'redux/Country/countryActionCreators';
-import useStyles from './InvestigationFormStyles';
-import { defaultTab, tabs } from './TabManagement/TabManagement';
-import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
 import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
+import useStyles from './InvestigationFormStyles';
+import theme from 'styles/theme';
+
+import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
+import { defaultTab, tabs } from './TabManagement/TabManagement';
+
 
 const finishInvestigationStatus = 'טופלה';
 
@@ -30,7 +33,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const lastUpdator = useSelector<StoreStateType, string>(state => state.investigation.lastUpdator);
 
     let history = useHistory();
-    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
+   const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
 
