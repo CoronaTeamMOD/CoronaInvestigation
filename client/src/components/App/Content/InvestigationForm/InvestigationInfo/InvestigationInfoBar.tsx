@@ -11,6 +11,7 @@ import { InvestigationInfo } from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
+import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
@@ -48,6 +49,7 @@ const defaultInvestigationStaticInfo = {
 const InvestigationInfoBar = () => {
 
     let history = useHistory();
+    const classes = useStyles();
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
@@ -66,7 +68,7 @@ const InvestigationInfoBar = () => {
                     icon: 'warning',
                     title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
                     customClass: {
-                        title: 'makeStyles-swalTitle-9'
+                        title: classes.swalTitle
                     },
                     timer: 1750,
                     showConfirmButton: false
