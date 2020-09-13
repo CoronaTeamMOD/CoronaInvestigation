@@ -1,14 +1,13 @@
 import axios from 'Utils/axios';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
 import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
+import {useHistory} from "react-router";
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
-
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const {location} = useHistory<any>();
+    const epidemiologyNumber = location.state?.epidemiologyNumber;
 
     const {occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext, 
         subOccupations, setSubOccupations, subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets} = parameters;

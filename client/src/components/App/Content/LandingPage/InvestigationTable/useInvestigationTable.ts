@@ -10,7 +10,6 @@ import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
@@ -113,7 +112,6 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       investigationStatus: handlingInvestigationStatus,
       epidemiologyNumber: epidemiologyNumberVal
     }).then(() => {
-      setEpidemiologyNum(epidemiologyNumberVal)
       history.push('/investigation', {epidemiologyNumber: epidemiologyNumberVal})
     });
   }

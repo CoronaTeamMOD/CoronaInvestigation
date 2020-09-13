@@ -94,7 +94,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         }
         );
         timeout(1900).then(() => {
-            history.push(landingPageRoute);
+            history.push(landingPageRoute, {});
         });
     };
 

@@ -7,15 +7,17 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
+import {useHistory} from "react-router";
 
 const investigationDaysBeforeSymptoms: number = 4;
 const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
-    
+    const {location} = useHistory<any>();
+    const epidemiologyNumber = location.state?.epidemiologyNumber;
+
     const { interactions, setInteractions } = props;
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const getDatesToInvestigate = (startInvestigationDateVariables: StartInvestigationDateVariables) : Date[] => {
         const { hasSymptoms, symptomsStartDate, endInvestigationDate } = startInvestigationDateVariables;

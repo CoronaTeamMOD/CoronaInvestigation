@@ -1,11 +1,6 @@
-export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
 export const SET_CANT_REACH_INVESTIGATED = 'SET_CANT_REACH_INVESTIGATED';
 export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
 
-interface SetEpidemiologyNum {
-    type: typeof SET_EPIDEMIOLOGY_NUM,
-    payload: {epidemiologyNumber: number}
-}
 
 interface SetCantReachInvestigated {
     type: typeof SET_CANT_REACH_INVESTIGATED,
@@ -17,4 +12,4 @@ interface SetInvestigatedPatientId {
     payload: {investigatedPatientId: number}
 }
 
-export type InvestigationAction = SetEpidemiologyNum | SetCantReachInvestigated | SetInvestigatedPatientId;
+export type InvestigationAction =  SetCantReachInvestigated | SetInvestigatedPatientId;
