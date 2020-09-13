@@ -27,7 +27,8 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
 });
 
 clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields/:epidemiologyNumber', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, { epidemiologyNumber: +request.params.epidemiologyNumber }).then(
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, request.headers,
+        { epidemiologyNumber: +request.params.epidemiologyNumber }).then(
         (result: any) => response.send(result)
     );
 });

@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_EXPOSURE_INFO } from '../../DBService/Exposure/Query';
 import { UPDATE_EXPOSURE, CREATE_EXPOSURE } from '../../DBService/Exposure/Mutation';
+import ExposureDetails from '../../Models/Exposure/Exposure';
 
 const exposureRoute = Router();
 
@@ -11,13 +12,24 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
-        graphqlRequest(CREATE_EXPOSURE, request.headers, { data: request.body.data })
+        graphqlRequest(CREATE_EXPOSURE,
+                       request.headers,
+                       {data : removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
 })
 
 exposureRoute.put('/', (request: Request, response: Response) => {
-        graphqlRequest(UPDATE_EXPOSURE, request.headers, {exposureId : parseInt(request.body.exposureId), data: request.body.data})
+        graphqlRequest(UPDATE_EXPOSURE,
+                       request.headers, 
+                       {exposureId : parseInt(request.body.exposureDetails.id),
+                        data: removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
 })
+
+const removeExposureDetailsIdForMutation = (data: ExposureDetails) => {
+    const clinicalDetails: ExposureDetails = {...data};
+    delete clinicalDetails.id;
+    return clinicalDetails;
+}
 
 export default exposureRoute;
