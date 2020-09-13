@@ -93,5 +93,4 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-
 export default clinicalDetailsRoute;
