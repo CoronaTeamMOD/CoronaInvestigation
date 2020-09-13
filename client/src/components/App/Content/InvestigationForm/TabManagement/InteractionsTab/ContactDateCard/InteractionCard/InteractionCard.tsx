@@ -15,7 +15,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick } = props;
 
     const classes = useStyle();
-    const parsedLocation = interaction.locationAddress && JSON.parse(interaction.locationAddress as unknown as string);
+    const parsedLocation = interaction.locationAddress !== null && JSON.parse(interaction.locationAddress as unknown as string);
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
@@ -59,7 +59,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {(parsedLocation)?.address?.description}
+                            {parsedLocation ? parsedLocation.address?.description : 'לא הוזן מיקום'}
                         </Typography>
                     </Grid>
                     {/* location number row */}
