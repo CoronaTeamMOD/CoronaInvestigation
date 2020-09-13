@@ -4,10 +4,10 @@ import Grid from '@material-ui/core/Grid';
 import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
 import FormLabel from '@material-ui/core/FormLabel';
-import { RadioGroup, Radio } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { RadioGroup, Radio, Button } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
@@ -283,7 +283,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 getOptionLabel={(option) => option.value.displayName}
                                 inputValue={personalInfoStateContext.personalInfoData.educationOccupationCity}
                                 onInputChange={(event, newInputValue) => {
-                                    handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)}
+                                    event && handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)}
                                 }
                                 onChange={(event, newValue) => {
                                     newValue && getEducationSubOccupations(newValue.value.displayName);
@@ -328,6 +328,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 onChange={(event) => {
                                     handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, event.target.value);
                                 }}
+                                
                             />
                     }
                     </Collapse>
