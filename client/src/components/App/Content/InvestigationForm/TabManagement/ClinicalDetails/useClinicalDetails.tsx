@@ -14,10 +14,10 @@ import { initAddress } from 'models/Address';
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => (setHasBackgroundDiseases(value));
+    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES, value);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -59,7 +59,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientIsPregnant = clinicalDetailsByEpidemiologyNumber.isPregnant;
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
@@ -78,18 +77,19 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
-                        isPregnant: patientIsPregnant,
+                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: patientBackgroundDiseases,
+                        doesHaveBackgrounDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgrounDiseases,
                         hospital: patientInvestigation.hospital,
-                        hospitalizationStartDate: new Date(patientInvestigation.hospitalizationStartTime),
-                        hospitalizationEndDate: new Date(patientInvestigation.hospitalizationEndTime),
+                        hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
+                        hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
                         isInIsolation: patientInvestigation.isInIsolation,
                         isIsolationProblem: patientInvestigation.isIsolationProblem,
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
-                        isolationStartDate: new Date(patientInvestigation.isolationStartTime),
-                        isolationEndDate: new Date(patientInvestigation.isolationEndTime),
+                        isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
+                        isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName),
-                        symptomsStartDate: new Date(patientInvestigation.symptomsStartTime),
+                        symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
                         wasHospitalized: patientInvestigation.wasHospitalized,
                         isolationAddress: patientAddress
@@ -98,6 +98,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             }
         );
     };
+
+    const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate); 
 
     React.useEffect(() => {
         getSymptoms();
