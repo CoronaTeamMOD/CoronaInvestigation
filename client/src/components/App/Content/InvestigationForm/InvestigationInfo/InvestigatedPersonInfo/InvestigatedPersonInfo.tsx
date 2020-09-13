@@ -1,8 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography, Paper } from '@material-ui/core';
-import { CheckCircleOutline, CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
+import { Typography, Paper, IconButton, Tooltip } from '@material-ui/core';
+import { CheckCircleOutline, CakeOutlined, EventOutlined, Help, Phone } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
 import { getPersonFullName } from 'Utils/displayUtils';
@@ -83,6 +83,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                     }
                         icon={Help}
                     />
+                    <Divider />
+                    <Tooltip title='חייג'>
+                        <IconButton color='secondary' size='small'>
+                            <Phone/>
+                        </IconButton>
+                    </Tooltip>
                 </div>
                 <div className={classes.managementControllers}>
                     <PrimaryButton
