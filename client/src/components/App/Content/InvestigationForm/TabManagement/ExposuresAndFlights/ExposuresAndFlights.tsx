@@ -1,15 +1,15 @@
-import React, { useEffect, useContext } from "react";
-import { Collapse, Divider, Typography } from "@material-ui/core";
-import Toggle from "commons/Toggle/Toggle";
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
-import FlightsForm from "./FlightsForm/FlightsForm";
-import ExposureForm from "./ExposureForm/ExposureForm";
-import useFormStyles from "styles/formStyles";
-import useStyles from "./ExposuresAndFlightsStyles";
-import { exposureAndFlightsContext, fieldsNames} from "commons/Contexts/ExposuresAndFlights";
-import axios from "Utils/axios";
-import { useSelector } from "react-redux";
-import StoreStateType from "redux/storeStateType";
+import React, { useEffect, useContext } from 'react';
+import { Collapse, Divider, Typography } from '@material-ui/core';
+import Toggle from 'commons/Toggle/Toggle';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import FlightsForm from './FlightsForm/FlightsForm';
+import ExposureForm from './ExposureForm/ExposureForm';
+import useFormStyles from 'styles/formStyles';
+import useStyles from './ExposuresAndFlightsStyles';
+import { exposureAndFlightsContext, fieldsNames} from 'commons/Contexts/ExposuresAndFlights';
+import axios from 'Utils/axios';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 const ExposuresAndFlights = () => {
   const context = useContext(exposureAndFlightsContext);
@@ -22,11 +22,13 @@ const ExposuresAndFlights = () => {
 
   useEffect(() => {
     axios
-      .get("/exposure/" + investigationId)
+      .get('/exposure/' + investigationId)
       .then((result: any) => {
-        const data = result.data.data.allExposures.nodes[0];
-        if (data) {
-          setExposureDataAndFlights(data);
+        if(result && result.data && result.data.data){
+          const data = result.data.data.allExposures.nodes[0];
+          if (data) {
+            setExposureDataAndFlights(data);
+          }
         }
       })
       .catch((err) => console.log(err));
