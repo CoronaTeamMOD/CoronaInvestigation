@@ -16,8 +16,8 @@ import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 import useStyles from './PersonalInfoTabStyles';
