@@ -11,7 +11,7 @@ enum ClinicalDetailsFields {
     IS_ISOLATION_PROBLEM_MORE_INFO = 'isIsolationProblemMoreInfo',
     SYMPTOMS_START_DATE = 'symptomsStartDate',
     SYMPTOMS = 'symptoms',
-    DOES_HAVE_BACKGROUND_DESEASSES = 'doesHaveBackgrounDiseases',
+    DOES_HAVE_BACKGROUND_DESEASSES = 'doesHaveBackgroundDiseases',
     BACKGROUND_DESEASSES = 'backgroundDeseases',
     HOSPITAL = 'hospital',
     HOSPITALIZATION_START_DATE = 'hospitalizationStartDate',

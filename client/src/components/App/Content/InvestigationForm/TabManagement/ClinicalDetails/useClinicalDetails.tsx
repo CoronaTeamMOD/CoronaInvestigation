@@ -79,7 +79,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         ...context.clinicalDetailsData,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: patientBackgroundDiseases,
-                        doesHaveBackgrounDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgrounDiseases,
+                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
