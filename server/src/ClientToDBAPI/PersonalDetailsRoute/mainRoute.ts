@@ -48,12 +48,14 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                 subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
                 address: result.data.createAddress.address.id,
             }
-        ).then((result: any) => graphqlRequest(UPDATE_PERSON_PERSONAL_INFO, request.headers,
+        ).then((result: any) => {
+            graphqlRequest(UPDATE_PERSON_PERSONAL_INFO, request.headers,
                 {
                     id: result.data.updateInvestigatedPatientById.personByPersonId.id,
                     phoneNumber: request.body.personalInfoData.phoneNumber,
                     additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
-                }).then((result: any) => response.send(result)));
+                }).then((result: any) => response.send(result));
+            });
     });
 });
 

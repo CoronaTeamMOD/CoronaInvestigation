@@ -23,7 +23,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
 
     const canConfirm = React.useMemo<boolean>(() => true, [])
 
-    const { placeType, placeSubType, contacts } = interactionEventDialogData;
+    const { placeType, placeSubType } = interactionEventDialogData;
     
     React.useEffect(() => {
         if (placeType === eventToEdit.placeType && placeSubType === eventToEdit.placeSubType) {
