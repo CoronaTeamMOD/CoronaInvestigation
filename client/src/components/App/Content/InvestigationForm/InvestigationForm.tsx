@@ -77,6 +77,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             <TabManagement
                                 currentTab={currentTab}
                                 setCurrentTab={setCurrentTab}
+                                onTabClicked={handleSwitchTab}
                             />
                             <div className={classes.buttonSection}>
                                 <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
