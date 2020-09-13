@@ -9,6 +9,7 @@ interface ClinicalDetailsData {
     isIsolationProblemMoreInfo: string;
     symptomsStartDate: Date | null;
     symptoms: string[];
+    doesHaveBackgroundDiseases: boolean;
     backgroundDeseases: string[];
     hospital: string;
     hospitalizationStartDate: Date | null;

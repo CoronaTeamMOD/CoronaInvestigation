@@ -9,7 +9,7 @@ import {
     GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER
 } from '../../DBService/ClinicalDetails/Query';
 import {
-    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_IS_PREGNANT, UPDATE_INVESTIGATION
+    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
 
 const clinicalDetailsRoute = Router();
@@ -60,8 +60,9 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
                 investigationIdValue: +request.headers.epidemiologynumber,
                 symptomNames: clinicalDetails.symptoms
             }).then(() => {
-                graphqlRequest(UPDATE_IS_PREGNANT,request.headers, {
+                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,request.headers, {
                     isPregnant: clinicalDetails.isPregnant,
+                    doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
                     id: clinicalDetails.investigatedPatientId
                 })
             }).then(() => {

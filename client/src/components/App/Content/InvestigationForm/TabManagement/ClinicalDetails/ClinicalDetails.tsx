@@ -19,6 +19,8 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 
+const dateFormat = 'yyyy-MM-dd';
+
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
@@ -26,7 +28,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
-    const [hasBackgroundDiseases, setHasBackgroundDiseases] = React.useState<boolean>(context.clinicalDetailsData.backgroundDeseases.length > 0);
     const [otherSymptom, setOtherSymptom] = React.useState<string>('');
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(false);
     const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
@@ -39,7 +40,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
-        setHasBackgroundDiseases, setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
     const handleUnkonwnDateCheck = () => {
@@ -247,7 +248,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 test-id='symptomsStartDate'
                                 type='date'
-                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormat) : dateFormat}
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -309,14 +310,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Toggle
                         test-id='areThereBackgroundDiseases'
-                        value={hasBackgroundDiseases}
+                        value={context.clinicalDetailsData.doesHaveBackgroundDiseases}
                         onChange={hasBackgroundDeseasesToggle}
                     />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={10}>
-                    <Collapse in={hasBackgroundDiseases}>
+                    <Collapse in={context.clinicalDetailsData.doesHaveBackgroundDiseases}>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
@@ -388,7 +389,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                value={context.clinicalDetailsData.hospitalizationStartDate ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, new Date(event.target.value))
                                 )}
@@ -397,7 +398,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                value={context.clinicalDetailsData.hospitalizationEndDate ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormat) : dateFormat}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, new Date(event.target.value))
                                 )}

@@ -47,7 +47,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
 
     React.useEffect(() => {
         const hasInvalidContact : boolean = contacts
-            .some(contact => (!contact.id || !contact.firstName  || !contact.lastName || !contact.phoneNumber));
+            .some(contact => (!contact.firstName || !contact.lastName || !contact.phoneNumber));
         setCanAddContact(!hasInvalidContact);
     }, [contacts])
     
