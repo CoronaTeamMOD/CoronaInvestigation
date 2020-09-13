@@ -4,9 +4,10 @@ import { Grid, Typography } from '@material-ui/core';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
+import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const businessContactFirstNameField = 'שם פרטי';
 const businessContactLastNameField = 'שם משפחה';
@@ -41,9 +42,11 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactNumField}>
-                        <CircleTextField
+                        <PhoneNumberTextField
+                            id={'businessContactedPersonPhone'}
                             value={contactPersonPhoneNumber}
-                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER)}/>
+                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER)}
+                        />
                     </FormInput>
                 </Grid>
             </Grid>

@@ -6,16 +6,16 @@ import { UPDATE_INVESTIGATION_METADATA } from './DBService/InvestigationMetadata
 export const graphqlURL = '/coronai/graphql';
 export const baseUrl = 'http://localhost:';
 
-const updateLastTimeAndUpdator = (requestHeaders: any) => {
+const updateLastTimeAndUpdator = (requestHeaders: any) =>
     httpRequest(baseUrl+process.env.PORT+graphqlURL, 'POST', {
         query: (UPDATE_INVESTIGATION_METADATA as DocumentNode).loc?.source.body,
         variables: {
             epidemiologyNumber: +requestHeaders.epidemiologynumber,
             lastUpdateTime: new Date(),
-            lastUpdator: requestHeaders.username
+            lastUpdator: requestHeaders.user.name
         }
     });
-}
+
 
 
 export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variables?: any) => (
@@ -24,7 +24,7 @@ export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variabl
         if (requestHeaders) {
             //@ts-ignore
             if (query.definitions[0].operation === 'mutation') {
-                updateLastTimeAndUpdator(requestHeaders);
+                updateLastTimeAndUpdator(requestHeaders)
             }
         }
         return result;
