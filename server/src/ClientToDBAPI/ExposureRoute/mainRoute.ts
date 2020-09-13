@@ -7,20 +7,20 @@ import ExposureDetails from '../../Models/Exposure/Exposure';
 const exposureRoute = Router();
 
 exposureRoute.get('/:investigationId', (request: Request, response: Response) => {
-    graphqlRequest(GET_EXPOSURE_INFO, request.headers, {investigationId : parseInt(request.params.investigationId)})
+    graphqlRequest(GET_EXPOSURE_INFO, response.locals,{investigationId : parseInt(request.params.investigationId)})
     .then((result: any) => response.send(result));
 })
 
 exposureRoute.post('/', (request: Request, response: Response) => {
         graphqlRequest(CREATE_EXPOSURE,
-                       request.headers,
+                        response.locals,
                        {data : removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
 })
 
 exposureRoute.put('/', (request: Request, response: Response) => {
         graphqlRequest(UPDATE_EXPOSURE,
-                       request.headers, 
+                       response.locals,
                        {exposureId : parseInt(request.body.exposureDetails.id),
                         data: removeExposureDetailsIdForMutation(request.body.exposureDetails)})
         .then((result: any) => response.send(result));
