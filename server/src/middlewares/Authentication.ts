@@ -62,7 +62,7 @@ const authMiddleware = (
         const token = request.headers.authorization;
         const user = stubUsers[token as keyof typeof stubUsers];
         if (!user)
-            return response.status(401).json({error: "unauthorized dev user"});
+            return response.status(401).json({error: "unauthorized noauth user"});
         else {
             response.locals.user = user;
             response.locals.epidemiologynumber = request.headers.EpidemiologyNumber;
