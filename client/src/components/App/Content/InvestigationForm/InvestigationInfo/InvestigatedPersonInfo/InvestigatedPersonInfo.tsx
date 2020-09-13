@@ -46,37 +46,37 @@ const InvestigatedPersonInfo = (props: Props) => {
 
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
-                    <InfoItemWithIcon test-id='age' name='גיל' value={
+                    <InfoItemWithIcon testId='age' name='גיל' value={
                         getPersonAge(new Date(investigatedPatientByInvestigatedPatientId.personByPersonId.birthDate))
                     }
                         icon={CakeOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon test-id='examinationDate' name='תאריך הבדיקה' value={
+                    <InfoItemWithIcon testId='examinationDate' name='תאריך הבדיקה' value={
                         format(new Date(props.coronaTestDate), 'dd/MM/yyyy')
                     }
                         icon={EventOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon test-id='gender' name='מין' value={
+                    <InfoItemWithIcon testId='gender' name='מין' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.gender
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon test-id='idType' name='סוג תעודה מזהה' value={
+                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.identificationType
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon test-id='idNumber' name='מספר תעודה מזהה' value={
+                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={
                         investigatedPatientByInvestigatedPatientId.personByPersonId.identificationNumber
                     }
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon test-id='isDeceased' name='האם נפטר' value={
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
                         investigatedPatientByInvestigatedPatientId.isDeceased ?
                             'כן' :
                             'לא'
