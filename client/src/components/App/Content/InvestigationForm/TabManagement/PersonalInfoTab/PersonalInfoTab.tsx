@@ -323,14 +323,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 />}
                             /> :
                             <CircleTextField
-                                value={
-                                    (   personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
-                                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ||
-                                        personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM
-                                    ) ?
-                                    subOccupationName :
-                                    personalInfoStateContext.personalInfoData.otherOccupationExtraInfo
-                                }
+                                value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
                                 placeholder={INSERT_INSTITUTION_NAME}
                                 onChange={(event) => {
                                     handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, event.target.value);
