@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { startOfDay } from 'date-fns';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
@@ -15,11 +15,19 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
     const onEditEventDialogClose = () => setInteractionToEdit(undefined);
     const startEditInteraction = (interaction: Interaction) => setInteractionToEdit(interaction);
-    
+
     const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
     const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
     const [interactions, setInteractions] = React.useState<Interaction[]>([]);
+    const { getDatesToInvestigate, loadInteractions } =
+        useInteractionsTab({
+            setInteractions: setInteractions,
+            interactions: interactions
+        });
+    useEffect(() => {
+        loadInteractions();
+    }, []);
 
     const interactionsPerDate = React.useMemo<Map<number, Interaction[]>>(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
@@ -35,17 +43,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
             }
         })
         return mappedInteractionsArray;
-    }, [interactions])
-
-    const { getDatesToInvestigate, loadInteractions } = 
-        useInteractionsTab({
-            setInteractions: setInteractionsMap,
-            interactions: interactionsMap
-        });
-
-    React.useEffect(() => {
-        loadInteractions();
-    }, []);
+    }, [interactions]);
 
     return (
         <StartInvestigationDateVariablesConsumer>

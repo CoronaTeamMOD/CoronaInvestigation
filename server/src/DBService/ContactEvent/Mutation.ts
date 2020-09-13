@@ -14,4 +14,4 @@ mutation createContactEvent ($contactEvent: JSON!) {
       clientMutationId
   }
 }   
-`; 
+`;
