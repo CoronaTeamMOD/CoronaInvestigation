@@ -7,6 +7,7 @@ import ContactType from 'models/enums/ContactType';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 
 import useStyles from './ContactFormStyles';
 import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
@@ -67,10 +68,10 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonPhone}>
-                        <CircleTextField id='contactedPersonPhone' key='contactedPersonPhone'
-                        className={classes.newContactField}
-                        value={phoneNumber}
-                        onChange={event => onChange(event.target.value, InteractionEventContactFields.PHONE_NUMBER)}
+                        <PhoneNumberTextField id='contactedPersonPhone' key='contactedPersonPhone'
+                            className={classes.newContactField}
+                            value={phoneNumber}
+                            onChange={event => onChange(event.target.value, InteractionEventContactFields.PHONE_NUMBER)}
                         />
                     </FormInput>
                 </Grid>
