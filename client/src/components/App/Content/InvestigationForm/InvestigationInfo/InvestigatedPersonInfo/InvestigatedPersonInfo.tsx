@@ -19,14 +19,14 @@ const leaveInvestigationMessage = 'צא מחקירה';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
+    const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber, onExitInvestigation } = props;
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
 
-    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
+    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo({onExitInvestigation});
 
     return (
         <Paper className={classes.paper}>
@@ -108,6 +108,7 @@ interface Props {
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
     epedemioligyNumber: number;
     coronaTestDate: Date;
+    onExitInvestigation: () => Promise<void>;
 }
 
 export default InvestigatedPersonInfo

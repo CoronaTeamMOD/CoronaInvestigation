@@ -8,12 +8,12 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome, InvestigatedPersonInfoIncome } from './InvestigatedPersonInfoInterfaces';
 
 const cantReachInvestigatedStatus = 'לא ניתן ליצור קשר';
 const unfinishedInvestigationStatus = 'בטיפול';
 
-const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
+const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
 
     let history = useHistory();
     const classes = useStyles({});
@@ -49,19 +49,19 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         });
     };
 
-    const handleInvestigationFinish = () => {
-        Swal.fire({
+    const handleInvestigationFinish = async () => {
+        onExitInvestigation().then(() => {
+            Swal.fire({
                 icon: 'success',
-                title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
+                title: 'בחרת לצאת מהחקירה לפני השלמתה! הפרטים נשמרו בהצלחה, הנך מועבר לעמוד הנחיתה',
                 customClass: {
                     title: classes.swalTitle,
                 },
                 timer: 1750,
                 showConfirmButton: false
-            }
-        );
-
-        timeout(1900).then(()=> history.push(landingPageRoute));
+            })
+            timeout(1900).then(()=> history.push(landingPageRoute));
+        }).catch(() => handleUnfinishedInvestigationFailed());    
     };
 
     const getPersonAge = (birthDate: Date) => {
@@ -78,7 +78,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const handleUnfinishedInvestigationFailed = () => {
         Swal.fire({
-            title: 'לא ניתן היה לסיים את החקירה',
+            title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות',
             icon: 'error',
         })
     };
