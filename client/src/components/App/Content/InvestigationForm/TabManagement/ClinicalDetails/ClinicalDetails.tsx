@@ -22,6 +22,7 @@ import useClinicalDetails from './useClinicalDetails';
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
+    const { city } = context.clinicalDetailsData.isolationAddress;
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
@@ -40,6 +41,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
+
+    React.useEffect(() => {
+        getStreetByCity(city);
+    }, [city])
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -142,7 +147,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
                         }
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, cityId);
-                        selectedCity && getStreetByCity(selectedCity.id)
                     }
                     }
                     onInputChange={(event, selectedCityName) => {
