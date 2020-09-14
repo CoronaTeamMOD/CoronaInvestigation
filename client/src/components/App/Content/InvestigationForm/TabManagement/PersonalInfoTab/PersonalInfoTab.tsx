@@ -131,7 +131,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.contactPhoneNumber}
                         onChange={(event) => handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value)}
-                        testId='personalDetailsAdditionalPhone'
+                        testId='personalDetailsContactPhone'
                     />
                 </Grid>
             </Grid>
@@ -180,6 +180,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         renderInput={(params) =>
                         <CircleTextField
                             {...params}
+                            test-id='personalDetailsCity'
                             id={PersonalInfoDataContextFields.CITY}
                             placeholder={'עיר'}
                             value={personalInfoStateContext.personalInfoData.address.city}
@@ -201,6 +202,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 }}
                                 renderInput={(params) =>
                                 <CircleTextField
+                                    test-id='personalDetailsStreet'
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
                                     placeholder={'רחוב'}
@@ -211,6 +213,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     }
                 <Grid item xs={1}>
                     <CircleTextField
+                        test-id='personalDetailsFloor'
                         id={PersonalInfoDataContextFields.FLOOR}
                         placeholder={'קומה'}
                         value={personalInfoStateContext.personalInfoData.address.floor}
@@ -221,6 +224,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField
+                        test-id='personalDetailsHouseNumber'
                         id={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         placeholder={'מספר בית'}
                         value={personalInfoStateContext.personalInfoData.address.houseNum}
@@ -283,6 +287,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
+                                    test-id='institutionCity'
                                     id={PersonalInfoDataContextFields.CITY}
                                     placeholder={'עיר המצאות המוסד'}
                                     value={personalInfoStateContext.personalInfoData.educationOccupationCity}
@@ -309,12 +314,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 renderInput={(params) =>
                                 <CircleTextField
                                     {...params}
+                                    test-id='insertInstitutionName'
                                     disabled={subOccupations.length === 0}
                                     id={PersonalInfoDataContextFields.CITY}
                                     placeholder={INSERT_INSTITUTION_NAME}
                                 />}
                             /> :
                             <CircleTextField
+                                test-id='institutionName'
                                 value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
                                 placeholder={INSERT_INSTITUTION_NAME}
                                 onChange={(event) => {

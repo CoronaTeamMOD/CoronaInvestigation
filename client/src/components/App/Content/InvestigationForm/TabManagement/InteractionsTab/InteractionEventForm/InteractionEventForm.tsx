@@ -168,6 +168,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 <Grid className={formClasses.formRow} container justify='flex-start'>
                     <FormInput fieldName='האם מותר להחצנה'>
                         <Toggle
+                            test-id='allowExternalization'
                             className={formClasses.formToggle}
                             value={externalizationApproval}
                             onChange={onExternalizationApprovalChange}/>
@@ -182,7 +183,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                             <ContactForm updatedContactIndex={index}/>)
                     }
                     <Grid item>
-                        <IconButton onClick={onContactAdd} disabled={!canAddContact}>
+                        <IconButton test-id='addContact' onClick={onContactAdd} disabled={!canAddContact}>
                             <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
                         </IconButton>
                         <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{addContactButton}</Typography>
