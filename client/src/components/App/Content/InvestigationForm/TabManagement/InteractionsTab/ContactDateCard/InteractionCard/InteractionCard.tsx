@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 
+import { initAddress } from 'models/Address';
 import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
@@ -15,7 +16,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick } = props;
 
     const classes = useStyle();
-    const parsedLocation = interaction.locationAddress !== null && JSON.parse(interaction.locationAddress as unknown as string);
+    const parsedLocation = interaction.locationAddress !== null ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress;
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
