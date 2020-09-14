@@ -8,6 +8,7 @@ export interface useInvestigationFormOutcome {
     confirmFinishInvestigation: (epidemiologyNumber: number) => void;
     handleInvestigationFinish: () => void;
     handleSwitchTab: () => void;
+    saveCurrentTab: () => Promise<void>;
 };
 
 export interface useInvestigationFormParameters {

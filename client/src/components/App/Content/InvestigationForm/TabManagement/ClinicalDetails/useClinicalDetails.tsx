@@ -62,7 +62,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
-                    if (patientAddress !== null) {
+                    if (patientAddress !== null && patientAddress.cityByCity !== null) {
                         setIsolationCityName(patientAddress.cityByCity.displayName);
                         setIsolationStreetName(patientAddress.streetByStreet.displayName);
                         patientAddress = {
