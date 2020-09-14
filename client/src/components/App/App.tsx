@@ -34,7 +34,7 @@ const App: React.FC = (): JSX.Element => {
                 .then((response) => {
                     const { data } = response;
                     setUser({
-                        id: data[0].user_id,
+                        id: data[0].user_id.split('@')[0],
                         name: data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string,
                         token: data[0].id_token
                     });
