@@ -36,6 +36,7 @@ intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, resp
                    const {personByPersonInfo, ...personNoData} = person;
                    return {
                        ...personNoData,
+                       serialId: personNoData.id,
                        firstName: personByPersonInfo.firstName,
                        lastName: personByPersonInfo.lastName,
                        phoneNumber: personByPersonInfo.phoneNumber,
@@ -60,9 +61,10 @@ const resetEmptyFields = (object: any) => {
 }
 
 const convertEventToDBType = (event: any) => {
-    const updatedContacts = event.contacts.filter((contact: any) => contact.id && contact.firstName && contact.lastName && contact.phoneNumber);
+    const updatedContacts = event.contacts.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
     updatedContacts.forEach((contact: any) => {
         contact.doesNeedIsolation = contact.contactType === ContactType.TIGHT;
+        contact.id = contact.id === '' ? null : contact.id;
         delete contact.contactType;
     })
     event.contacts = updatedContacts;
@@ -83,6 +85,7 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
+    console.log(JSON.stringify(updatedEvent));
     graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {event: JSON.stringify(updatedEvent)})
     .then(result => {
         response.send(result)

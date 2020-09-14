@@ -54,6 +54,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
       trainLine
       contactedPeopleByContactEvent {
         nodes {
+          id
           contactEvent
           doesNeedIsolation
           extraInfo
