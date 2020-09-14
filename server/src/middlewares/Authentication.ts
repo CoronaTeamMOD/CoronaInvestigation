@@ -5,7 +5,7 @@ import {NextFunction, Request, Response} from 'express';
 const stubUsers = {
     'fake token!': {
         id: '7',
-        name: 'stub_user',
+        name: 'stubuser',
     },
     'demo token': {
       id: '1',
