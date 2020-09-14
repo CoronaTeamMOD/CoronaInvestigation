@@ -57,9 +57,9 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
                 customClass: {
                     title: classes.swalTitle,
                 },
-                showConfirmButton: false
+                showConfirmButton: true
             }).then(() => {
-                history.push(landingPageRoute)
+                history.push(landingPageRoute);
             });
         }).catch(() => handleUnfinishedInvestigationFailed());    
     };
