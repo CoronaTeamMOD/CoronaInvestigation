@@ -1,16 +1,16 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext } from 'react';
 import Swal from 'sweetalert2'; 
-import { Collapse, Divider, Typography } from "@material-ui/core";
-import Toggle from "commons/Toggle/Toggle";
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
-import FlightsForm from "./FlightsForm/FlightsForm";
-import ExposureForm from "./ExposureForm/ExposureForm";
-import useFormStyles from "styles/formStyles";
-import useStyles from "./ExposuresAndFlightsStyles";
-import { exposureAndFlightsContext, fieldsNames} from "commons/Contexts/ExposuresAndFlights";
-import axios from "Utils/axios";
-import { useSelector } from "react-redux";
-import StoreStateType from "redux/storeStateType";
+import { Collapse, Divider, Typography } from '@material-ui/core';
+import Toggle from 'commons/Toggle/Toggle';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import FlightsForm from './FlightsForm/FlightsForm';
+import ExposureForm from './ExposureForm/ExposureForm';
+import useFormStyles from 'styles/formStyles';
+import useStyles from './ExposuresAndFlightsStyles';
+import { exposureAndFlightsContext, fieldsNames} from 'commons/Contexts/ExposuresAndFlights';
+import axios from 'Utils/axios';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 const ExposuresAndFlights = () => {
   const context = useContext(exposureAndFlightsContext);
