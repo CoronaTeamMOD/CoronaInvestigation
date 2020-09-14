@@ -52,16 +52,15 @@ const InteractionsTab: React.FC = (): JSX.Element => {
                 ctxt =>
                     <>
                         {
-                            interactions.length > 0 &&
-                                getDatesToInvestigate(ctxt)
-                                .map(date =>
-                                    <ContactDateCard contactDate={date}
-                                        onEditClick={startEditInteraction}
-                                        createNewInteractionEvent={() => onDateClick(date)}
-                                        interactions={interactionsMap.get(date.getTime())}
-                                        key={date.getTime()}
-                                    />
-                                    )
+                            getDatesToInvestigate(ctxt)
+                            .map(date =>
+                                <ContactDateCard contactDate={date}
+                                    onEditClick={startEditInteraction}
+                                    createNewInteractionEvent={() => onDateClick(date)}
+                                    interactions={interactionsMap.get(date.getTime())}
+                                    key={date.getTime()}
+                                />
+                                )
                         }
                         {
                             newInteractionEventDate && <NewInteractionEventDialog
