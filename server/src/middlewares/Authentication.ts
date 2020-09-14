@@ -65,7 +65,7 @@ const authMiddleware = (
             return response.status(401).json({error: "unauthorized noauth user"});
         else {
             response.locals.user = user;
-            response.locals.epidemiologynumber = request.headers.EpidemiologyNumber;
+            response.locals.epidemiologynumber = request.headers.epidemiologynumber;
             return next();
         }
     }
