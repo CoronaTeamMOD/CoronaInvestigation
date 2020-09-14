@@ -3,7 +3,7 @@ import { gql } from "postgraphile";
 export const GET_USER_INVESTIGATIONS = gql`
 query InvestigationsInfoByUser($userName: String!) {
   userById(id: $userName) {
-    investigationsByCreator {
+    investigationsByLastUpdator {
       nodes {
         epidemiologyNumber
         investigatedPatientByInvestigatedPatientId {
@@ -26,5 +26,4 @@ query InvestigationsInfoByUser($userName: String!) {
     }
   }
 }
-
 `;
