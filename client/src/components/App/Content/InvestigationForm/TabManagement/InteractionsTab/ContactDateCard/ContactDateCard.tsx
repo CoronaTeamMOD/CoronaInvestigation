@@ -42,7 +42,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 {interactions?.map(interaction =>
                     <InteractionCard
                         onEditClick={() => onEditClick(interaction)}
-                        key={interaction.startTime.getTime()} interaction={interaction} />
+                        key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
                 )}
             </Collapse>
         </Card>
