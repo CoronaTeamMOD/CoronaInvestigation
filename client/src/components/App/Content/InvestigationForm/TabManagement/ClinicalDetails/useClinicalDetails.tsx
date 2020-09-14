@@ -62,12 +62,18 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
+<<<<<<< HEAD
                     if (patientAddress !== null && patientAddress.cityByCity !== null) {
                         setIsolationCityName(patientAddress.cityByCity.displayName);
                         setIsolationStreetName(patientAddress.streetByStreet.displayName);
+=======
+                    if (patientAddress !== null) {
+                        setIsolationCityName(patientAddress.cityByCity?.displayName);
+                        setIsolationStreetName(patientAddress.streetByStreet?.displayName);
+>>>>>>> sqush for PR
                         patientAddress = {
-                            city: patientAddress.cityByCity.id,
-                            street: patientAddress.streetByStreet.id,
+                            city: patientAddress.cityByCity?.id,
+                            street: patientAddress.streetByStreet?.id,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
