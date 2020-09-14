@@ -103,7 +103,6 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         (config) => {
             config.headers.Authorization = user.token;
             config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-            config.headers.UserName = user.name
             setIsLoading(true);
             return config;
         },
