@@ -32,6 +32,7 @@ const useStyles = makeStyles({
     additionalInfo: {
         display: 'flex',
         flexWrap: 'wrap',
+        alignItems: 'center',
         whiteSpace: 'pre',
     },
     managementControllers: {
