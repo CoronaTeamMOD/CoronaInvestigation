@@ -33,7 +33,6 @@ export default CustomCheckbox;
 
 interface CheckboxElement extends CheckboxProps {
     labelText: string | JSX.Element;
-    'test-id'?: string;
 };
 
 interface Props {

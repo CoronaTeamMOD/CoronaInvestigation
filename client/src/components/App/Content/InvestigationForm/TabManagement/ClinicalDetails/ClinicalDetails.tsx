@@ -255,7 +255,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <CustomCheckbox
-                                test-id='unkownSymptomsDate'
+                                testId='unkownSymptomsDate'
                                 checkboxElements={[{
                                     value: isUnkonwnDateChecked, labelText: 'תאריך התחלת סימפטומים לא ידוע',
                                     onChange: () => (handleUnkonwnDateCheck())
@@ -340,6 +340,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             }
                             <Collapse in={isOtherBackgroundIllnessChecked}>
                                 <CircleTextField
+                                    test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
