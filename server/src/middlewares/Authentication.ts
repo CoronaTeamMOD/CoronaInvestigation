@@ -19,6 +19,10 @@ const stubUsers = {
         id: '7',
         name: 'stub_user',
     },
+    'demo token': {
+      id: '1',
+      name: 'XXXXXX',
+    }
 };
 
 const handleConfidentialAuth = (
