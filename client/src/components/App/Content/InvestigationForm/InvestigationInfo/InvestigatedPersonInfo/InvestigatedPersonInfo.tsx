@@ -1,8 +1,9 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography, Paper } from '@material-ui/core';
-import { CheckCircleOutline, CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
+import { Typography, Paper, IconButton, Tooltip } from '@material-ui/core';
+import { CakeOutlined, EventOutlined, Help, Phone } from '@material-ui/icons';
+import Swal from 'sweetalert2';
 
 import StoreStateType from 'redux/storeStateType';
 import { getPersonFullName } from 'Utils/displayUtils';
@@ -13,6 +14,8 @@ import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigatedP
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
+import User from 'models/User';
+import axios from 'Utils/axios';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 
@@ -25,14 +28,25 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
+    const user = useSelector<StoreStateType, User>(state => state.user);
 
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo({onExitInvestigation});
+
+    const callUser = () => {
+        axios.get(`/call/${investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}/${user.id.split('@')[0]}`)
+        .then((result : any) => { })
+        .catch(error => {
+            Swal.fire({
+                title: 'הייתה בעיה בביצוע שיחת הטלפון, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+    }
 
     return (
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                    <CheckCircleOutline color='primary' />
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {
                             getPersonFullName(investigatedPatientByInvestigatedPatientId.personByPersonId)
@@ -41,6 +55,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                             epedemioligyNumber
                         }
                     </Typography>
+                    <Tooltip title='חייג'>
+                        <IconButton onClick={callUser} color='primary'>
+                            <Phone/>
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
 
