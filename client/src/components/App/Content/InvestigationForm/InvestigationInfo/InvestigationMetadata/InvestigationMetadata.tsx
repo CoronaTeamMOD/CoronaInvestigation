@@ -23,10 +23,6 @@ const InvestigationMetadata = (props: Props) => {
             }
             />
             <InfoItem testId='district' name='נפה/מחוז' value={investigationMetaData.investigatingUnit} />
-            <InfoItem testId='investigatorName' name='מבצע החקירה' value={
-                investigationMetaData.userByCreator.userName
-            }
-            />
             <InfoItem testId='updatingUser' name='משתמש מעדכן' value={
                 investigationMetaData.userByLastUpdator.userName
             }
