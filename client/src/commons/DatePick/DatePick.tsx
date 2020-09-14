@@ -20,7 +20,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
             }
             <div className={classes.dateText}>
                 <CircleTextField
-                    test-ids={props.testId}
+                    test-id={props.testId}
                     id={type}
                     type={type}
                     className={classes.textField}
