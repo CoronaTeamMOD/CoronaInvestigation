@@ -35,7 +35,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const callUser = () => {
         axios.get(`/call/${investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}/${user.id.split('@')[0]}`)
         .then((result : any) => { })
-        .catch(e => {
+        .catch(error => {
             Swal.fire({
                 title: 'הייתה בעיה בביצוע שיחת הטלפון, אנא נסה שוב בעוד מספר דקות',
                 icon: 'error'
