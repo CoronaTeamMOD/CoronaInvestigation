@@ -11,9 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@graphile/operation-hooks": "^1.0.0",
     "@graphile/pg-pubsub": "^4.8.0",
-    "@graphile/pro": "^0.10.0",
     "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",

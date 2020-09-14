@@ -14,13 +14,12 @@ import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
+import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-
-const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
 
@@ -73,11 +72,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         }).then((result) => {
             if (result.value) {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationStatus: finishInvestigationStatus,
                     epidemiologyNumber,
-                    endTime: new Date()
+                    investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
-                    handleInvestigationFinish();
+                    axios.post('/investigationInfo/updateInvestigationEndTime', {
+                        investigationEndTime: new Date(),
+                        epidemiologyNumber
+                    }).then(() => handleInvestigationFinish()).catch(() => handleInvestigationFinishFailed())
                 }).catch(() => {
                     handleInvestigationFinishFailed();
                 })
