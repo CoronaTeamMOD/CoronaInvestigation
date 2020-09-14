@@ -34,7 +34,7 @@ export const createRowData = (
 type InvestigationsReturnType = {
   data: {
     userById: {
-      investigationsByCreator: {
+      investigationsByLastUpdator: {
         nodes: [{
           epidemiologyNumber: number,
           investigatedPatientByInvestigatedPatientId: {
@@ -74,7 +74,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       .then(response => {
         const { data } = response;
         if (data && data.data && data.data.userById) {
-          const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByCreator.nodes.map(investigation => {
+          const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByLastUpdator.nodes.map(investigation => {
             const patient = investigation.investigatedPatientByInvestigatedPatientId;
             return createRowData(investigation.epidemiologyNumber,
               investigation.investigationStatusByInvestigationStatus.displayName,
