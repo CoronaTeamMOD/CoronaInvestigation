@@ -74,7 +74,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             if (result.value) {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationStatus: finishInvestigationStatus,
-                    epidemiologyNumber
+                    epidemiologyNumber,
+                    endTime: new Date()
                 }).then(() => {
                     handleInvestigationFinish();
                 }).catch(() => {
