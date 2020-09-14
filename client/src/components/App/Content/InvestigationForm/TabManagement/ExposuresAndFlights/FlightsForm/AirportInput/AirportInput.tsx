@@ -6,6 +6,7 @@ import useFormStyle from 'styles/formStyles';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import StoreStateType from 'redux/storeStateType';
 import { useSelector } from 'react-redux';
+import { createFilterOptions } from '@material-ui/lab';
 
 interface AirportInputProps {
   airport: Airport | undefined;
@@ -35,13 +36,20 @@ const AirportInput = (props: any) => {
     else return ''
 
   }
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'start',
+    stringify: (option: Country) => option.displayName,
+  });
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <AutocompletedField
         value={country}
         options={options}
-        onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue.id)}
+        onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
         getOptionLabel={(option) => getLabel(option)}
+        filterOptions={filterOptions}
       />
       <CircleTextField
         value={city}
