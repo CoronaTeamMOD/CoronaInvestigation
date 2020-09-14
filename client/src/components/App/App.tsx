@@ -28,16 +28,17 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     React.useEffect(() => {
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV) {
-            axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
-            .then((response) => {
-                const { data } = response;
-                setUser({
-                    id: data[0].user_id,
-                    name: data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string,
-                    token: data[0].id_token
-                });
-            })
+        if (process.env.REACT_APP_IS_AUTH === 'true' && 
+            (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV)) {
+                axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
+                .then((response) => {
+                    const { data } = response;
+                    setUser({
+                        id: data[0].user_id,
+                        name: data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string,
+                        token: data[0].id_token
+                    });
+                })
         } else {
             setUser({
                 id: '7',
