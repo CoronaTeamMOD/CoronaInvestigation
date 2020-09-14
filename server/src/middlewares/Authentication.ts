@@ -1,18 +1,6 @@
-import axios from 'axios';
+// @ts-ignore
+import jwt_decode from "jwt-decode";
 import {NextFunction, Request, Response} from 'express';
-
-type AuthenticationReturn = [{
-    access_token: string;
-    expires_on: Date;
-    id_token: string;
-    provider_name: string;
-    refresh_token: string;
-    user_claims: [{
-        typ: string;
-        val: string;
-    }];
-    user_id: string;
-}];
 
 const stubUsers = {
     'fake token!': {
@@ -30,29 +18,21 @@ const handleConfidentialAuth = (
     response: Response,
     next: NextFunction
 ) => {
-    const cookie = request.headers.cookie;
-    if (!cookie) return response.status(401).json({error: "unauthorized prod user"});
+    const token = request.headers.authorization;
+    if (!token) return response.status(401).json({error: "unauthorized prod user"});
 
-    const claimRoute = "/.auth/me";
-    const headers = {Cookie: cookie};
+    const decoded = jwt_decode(token);
+    const user = {
+        id: decoded.upn,
+        name: decoded.name,
+    };
 
-    return axios
-        .get<AuthenticationReturn>(process.env.CLIENT_URL + claimRoute, {headers})
-        .then((result) => {
-            const {data} = result;
-            const user = ({
-                id: data[0].user_id,
-                name: data[0].user_claims.find(claim => claim.typ === 'name')?.val as string,
-            });
+    if(!user || !user.name || !user.id)
+        return response.status(403).json({error: "forbidden prod user"});
 
-            response.locals.user = user;
-            response.locals.epidemiologynumber = request.headers.epidemiologynumber;
-            return next();
-        })
-        .catch((e) => {
-            console.error('failed to authenticate user with error: ', e);
-            return response.status(403).json({error: 'forbidden'});
-        });
+    response.locals.user = user;
+    response.locals.epidemiologynumber = request.headers.epidemiologynumber;
+    return next();
 }
 
 const authMiddleware = (
