@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'; 
 import React, { useEffect, useContext } from "react";
 import { Collapse, Divider, Typography } from "@material-ui/core";
 import Toggle from "commons/Toggle/Toggle";
@@ -14,7 +15,7 @@ import StoreStateType from "redux/storeStateType";
 const ExposuresAndFlights = () => {
   const context = useContext(exposureAndFlightsContext);
   const { exposureAndFlightsData, setExposureDataAndFlights } = context;
-  
+
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
   const { fieldName } = useFormStyles();
@@ -29,7 +30,12 @@ const ExposuresAndFlights = () => {
           setExposureDataAndFlights(data);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        Swal.fire({
+            title: 'לא ניתן היה לטעון את החשיפה',
+            icon: 'error',
+        })
+      });
   }, [investigationId]);
 
   const handleChangeExposureDataAndFlightsField = (fieldName: string, value: any) => {

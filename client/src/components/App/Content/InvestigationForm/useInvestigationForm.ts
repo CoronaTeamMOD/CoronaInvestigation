@@ -173,10 +173,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
                                                                exposuresAndFlightsVariables.setExposureDataAndFlights)
             })
-            .then(() => {
+            .then((result) => {
                 setCurrentTab(tabs[currentTab.id + 1]);
-            }).catch(err => {
-                console.log(err);
+            }).catch((err) => {
+                Swal.fire({
+                    title: 'לא ניתן היה לעדכן את החשיפה',
+                    icon: 'error',
+                })
             })
         } else {
             axios.post('/exposure', {
@@ -188,7 +191,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             }).then(() => {
                 setCurrentTab(tabs[currentTab.id + 1]);
             }).catch(err => {
-                console.log(err);
+                Swal.fire({
+                    title: 'לא ניתן היה ליצור את החשיפה',
+                    icon: 'error',
+                })
             })
         }
     }
