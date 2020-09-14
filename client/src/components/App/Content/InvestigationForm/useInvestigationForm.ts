@@ -14,17 +14,19 @@ import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
+import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
-import { useInvestigationFormOutcome, useInvestigationFormParameters } from './InvestigationFormInterfaces';
+import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
 
 const finishInvestigationStatus = 'טופלה';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
 
-    const { clinicalDetailsVariables, personalInfoData } = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables  } = parameters;
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
    
     let history = useHistory();
@@ -106,9 +108,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             case(TabNames.CLINICAL_DETAILS): {
                 return saveClinicalDetails();
             }
+            case(TabNames.EXPOSURES_AND_FLIGHTS): {
+                return saveExposureAndFlightData();
+            }
             default: {
                 return new Promise<void>((resolve, reject) => resolve());
             }
+            
         }
     }
 
@@ -137,6 +143,21 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             icon: 'error',
         })
     };
+
+    const saveExposureAndFlightData = () : Promise<void> => {
+        if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
+            return axios.put('/exposure', {
+                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData)
+            });
+         } else {
+            return axios.post('/exposure', {
+                exposureDetails: {
+                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData),
+                    investigationId: epidemiologyNumber
+                } 
+            });
+        }
+    }
 
     const saveClinicalDetails = (): Promise<void> => {
         const clinicalDetails = ({
@@ -168,6 +189,37 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
         return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
+
+    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails ) => {
+        let exposureAndDataToReturn = exposuresAndFlightsData;
+        if (!exposuresAndFlightsData.wasConfirmedExposure) {
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                [fieldsNames.firstName]: '',
+                [fieldsNames.lastName]: '',
+                [fieldsNames.date]: undefined,
+                [fieldsNames.address]: null,
+                [fieldsNames.placeType]: null,
+                [fieldsNames.placeSubType] : null,
+            }
+        } 
+        if (!exposuresAndFlightsData.wasAbroad) {
+            exposureAndDataToReturn = {
+                ...exposureAndDataToReturn,
+                [fieldsNames.destinationCountry]: null,
+                [fieldsNames.destinationCity]: '',
+                [fieldsNames.destinationAirport]: '',
+                [fieldsNames.originCountry]: null,
+                [fieldsNames.originCity]: '',
+                [fieldsNames.originAirport]: '',
+                [fieldsNames.flightStartDate]: undefined,
+                [fieldsNames.flightEndDate]: undefined,
+                [fieldsNames.airline]: '',
+                [fieldsNames.flightNumber]: ''
+            }
+        }
+        return exposureAndDataToReturn;
+    }
 
     return {
         currentTab,

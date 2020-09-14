@@ -24,7 +24,7 @@ instance.interceptors.response.use(
     }, 
     (error) => {
         setIsLoading(false);
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 
