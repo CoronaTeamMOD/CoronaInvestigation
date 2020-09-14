@@ -10,10 +10,13 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
     const { closeDialog, handleInteractionCreation } = input;
 
     const createNewInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
-        axios.post('/intersections/createContactEvent', {...interactionEventVariables}).then(() => {
+        axios.post('/intersections/createContactEvent', {...interactionEventVariables}).then((response) => {
+            interactionEventVariables.id = response.data.data.updateContactEventFunction.integer;
             handleInteractionCreation(interactionEventVariables);
             closeDialog();
-        }).catch(() => {
+        }).catch((error) => {
+            console.log(error);
+            closeDialog();
             handleCreateEventFailed();
         })
     }
