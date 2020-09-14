@@ -106,7 +106,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
                             <DatePick
-                                testId='quarantinedFromDate'
+                                test-id='quarantinedFromDate'
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormat) : dateFormat}
@@ -115,7 +115,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
-                                testId='quarantinedUntilDate'
+                                test-id='quarantinedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormat) : dateFormat}
@@ -245,7 +245,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
                             <DatePick
-                                testId='symptomsStartDate'
+                                test-id='symptomsStartDate'
                                 type='date'
                                 value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormat) : dateFormat}
                                 lableText='תאריך התחלת סימפטומים'
@@ -386,7 +386,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                         <div className={classes.dates}>
                             <DatePick
-                                testId='wasHospitalizedFromDate'
+                                test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.hospitalizationStartDate ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormat) : dateFormat}
@@ -395,7 +395,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
-                                testId='wasHospitalizedUntilDate'
+                                test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.hospitalizationEndDate ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormat) : dateFormat}

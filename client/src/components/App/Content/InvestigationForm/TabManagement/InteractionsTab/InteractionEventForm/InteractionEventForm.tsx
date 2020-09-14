@@ -148,7 +148,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                     <Grid item xs={6}>
                         <FormInput fieldName='משעה'>
                             <DatePick
-                                testId='contactLocationStartTime'
+                                test-id='contactLocationStartTime'
                                 type='time'
                                 value={format(startTime, timeFormat)}
                                 onChange={onStartTimeChange}/>
@@ -157,7 +157,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                     <Grid item xs={6}>
                         <FormInput fieldName='עד שעה'>
                             <DatePick
-                                testId='contactLocationEndTime'
+                                test-id='contactLocationEndTime'
                                 type='time'
                                 value={format(endTime, timeFormat)}
                                 onChange={onEndTimeChange}
