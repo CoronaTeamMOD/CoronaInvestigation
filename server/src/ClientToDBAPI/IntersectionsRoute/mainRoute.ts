@@ -85,7 +85,6 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
     const updatedEvent = convertEventToDBType(request.body);
-    console.log(JSON.stringify(updatedEvent));
     graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {event: JSON.stringify(updatedEvent)})
     .then(result => {
         response.send(result)
