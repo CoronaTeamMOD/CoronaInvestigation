@@ -98,28 +98,39 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         });
     };
 
-    const handleSwitchTab = () => {
+    const saveCurrentTab = () => {
         switch(currentTab.name) {
             case(TabNames.PERSONAL_INFO): {
-                savePersonalInfoData();
-                break;
+                return savePersonalInfoData();
             }
             case(TabNames.CLINICAL_DETAILS): {
-                saveClinicalDetails();
-                break;
+                return saveClinicalDetails();
+            }
+            default: {
+                return new Promise<void>((resolve, reject) => resolve());
             }
         }
     }
 
-    const savePersonalInfoData = () => {
+    const handleSwitchTab = () => {
+        saveCurrentTab().then(() => {
+            setCurrentTab(tabs[currentTab.id + 1]);
+        }).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+    }
+
+    const savePersonalInfoData = (): Promise<void> => {
         return axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
             personalInfoData, 
-        }).then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
-        });
+        })
     }
+
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
@@ -127,7 +138,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
     };
 
-    const saveClinicalDetails = () => {
+    const saveClinicalDetails = (): Promise<void> => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
             isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
@@ -155,9 +166,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             clinicalDetails.backgroundDeseases = [];
         }
 
-        return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails})).then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
-        });;
+        return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
 
     return {
@@ -166,6 +175,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         confirmFinishInvestigation,
         handleInvestigationFinish,
         handleSwitchTab,
+        saveCurrentTab
     };
 };
 

@@ -2,7 +2,8 @@ import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 import { act } from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { testHooksFunction } from 'TestHooks';
+import { wait } from '@testing-library/react';
+import { testHooksFunction, testHooksFunctionWithRoute } from 'TestHooks';
 
 import axios from 'Utils/axios';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
@@ -21,7 +22,7 @@ describe('investigatedPersonInfo tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: jest.fn().mockResolvedValue({})});
                 mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
             });
         })
@@ -44,11 +45,10 @@ describe('investigatedPersonInfo tests', () => {
 
         const expectedSecondSwal = {
             icon: 'success',
-            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
+            title: 'בחרת לצאת מהחקירה לפני השלמתה! הפרטים נשמרו בהצלחה, הנך מועבר לעמוד הנחיתה',
             customClass: {
                 title: 'makeStyles-swalTitle-9'
             },
-            timer: 1750,
             showConfirmButton: false
         };
 
@@ -58,7 +58,7 @@ describe('investigatedPersonInfo tests', () => {
 
             await act(async () => {
                 await testHooksFunction(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
                 });
                 investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
@@ -69,20 +69,26 @@ describe('investigatedPersonInfo tests', () => {
         });
 
         it('Check that second swal was opened on acception', async () => {
-            jest.spyOn(Swal, 'fire').mockResolvedValue({
+            jest.spyOn(Swal, 'fire').mockResolvedValueOnce({
                 isConfirmed: true,
                 isDismissed: false,
                 value: true
             });
 
-            const myspy = jest.spyOn(Swal, 'fire');
+            mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').replyOnce(200);
+            const myspy = jest.spyOn(Swal, 'fire').mockResolvedValue({
+                isConfirmed: false,
+                isDismissed: false,
+                value: false
+            });
 
             await act(async () => {
-                await testHooksFunction(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                await testHooksFunctionWithRoute(() => {
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
                 });
                 await investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+                await wait();
             });
 
             expect(myspy).toHaveBeenCalled();
@@ -100,7 +106,7 @@ describe('investigatedPersonInfo tests', () => {
 
             await act(async () => {
                 await testHooksFunction(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
                 });
                 await investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
