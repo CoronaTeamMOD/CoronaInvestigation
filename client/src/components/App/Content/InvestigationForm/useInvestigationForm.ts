@@ -173,8 +173,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const saveExposureAndFlightData = () => {
         if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
             axios.put('/exposure', {
-                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
-                                                               exposuresAndFlightsVariables.setExposureDataAndFlights)
+                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData)
             })
             .then((result) => {
                 setCurrentTab(tabs[currentTab.id + 1]);
@@ -187,8 +186,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         } else {
             axios.post('/exposure', {
                 exposureDetails: {
-                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData,
-                                                     exposuresAndFlightsVariables.setExposureDataAndFlights),
+                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData),
                     investigationId: epidemiologyNumber
                 } 
             }).then(() => {
@@ -202,8 +200,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         }
     }
 
-    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails,
-                                           setExposuresAndFlightsData: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>) => {
+    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails ) => {
         let exposureAndDataToReturn = exposuresAndFlightsData;
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
             exposureAndDataToReturn = {
