@@ -1,10 +1,12 @@
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
+import { format } from 'date-fns';
 
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import DatePick from 'commons/DatePick/DatePick';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import useFormStyles from 'styles/formStyles';
+import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
 import AirportInput from './AirportInput/AirportInput';
 
@@ -52,23 +54,17 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightStartDate]}
+            value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.flightStartDate,
-                e.target.value
-              )
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, new Date(e.target.value))
             }
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightEndDate]}
+            value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.flightEndDate,
-                e.target.value
-              )
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, new Date(e.target.value))
             }
           />
         </div>

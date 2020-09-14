@@ -1,12 +1,14 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import useFormStyles from 'styles/formStyles';
+import { format } from 'date-fns';
 
 import DatePick from 'commons/DatePick/DatePick';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
+import LocationInput, { GoogleApiPlace } from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
 const ExposureForm = (props: any) => {
   const {
@@ -41,20 +43,20 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="תאריך החשיפה:">
         <DatePick
           type="date"
-          value={exposureAndFlightsData[fieldsNames.date]}
+          value={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
           onChange={(e) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.date, e.target.value)
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, new Date(e.target.value))
           }
         />
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="כתובת החשיפה:">
-      <LocationInput 
-          selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)} 
+        <LocationInput
+          selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)}
           setSelectedAddress={(e, newValue) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue?.description)}/>
+            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue?.description)} />
       </FormRowWithInput>
-      
+
       <PlacesTypesAndSubTypes
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
         placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
