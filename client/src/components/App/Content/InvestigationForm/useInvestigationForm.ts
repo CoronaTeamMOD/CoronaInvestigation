@@ -114,7 +114,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             default: {
                 return new Promise<void>((resolve, reject) => resolve());
             }
-            
         }
     }
 
