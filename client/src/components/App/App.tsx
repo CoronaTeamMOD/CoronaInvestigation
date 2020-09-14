@@ -41,7 +41,7 @@ const App: React.FC = (): JSX.Element => {
                 })
         } else {
             setUser({
-                id: '7',
+                id: 'pkra004@bynetace.com',
                 name: 'stub_user',
                 token: 'fake token!'
             });
