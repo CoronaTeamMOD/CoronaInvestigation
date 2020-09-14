@@ -49,6 +49,7 @@ describe('investigatedPersonInfo tests', () => {
             customClass: {
                 title: 'makeStyles-swalTitle-9'
             },
+            timer: 1750,
             showConfirmButton: false
         };
 
