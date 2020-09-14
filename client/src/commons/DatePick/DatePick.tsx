@@ -20,6 +20,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
             }
             <div className={classes.dateText}>
                 <CircleTextField
+                    test-ids={props.testId}
                     id={type}
                     type={type}
                     className={classes.textField}
@@ -36,4 +37,5 @@ export default DatePick;
 interface Props extends StandardTextFieldProps {
     lableText?: string;
     lableTextVariant?: Variant
+    testId?: string;
 };

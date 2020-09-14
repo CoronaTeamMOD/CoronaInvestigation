@@ -106,7 +106,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
                             <DatePick
-                                test-id='quarantinedFromDate'
+                                testId='quarantinedFromDate'
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormat) : dateFormat}
@@ -115,7 +115,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
-                                test-id='quarantinedUntilDate'
+                                testId='quarantinedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormat) : dateFormat}
@@ -245,7 +245,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
                             <DatePick
-                                test-id='symptomsStartDate'
+                                testId='symptomsStartDate'
                                 type='date'
                                 value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormat) : dateFormat}
                                 lableText='תאריך התחלת סימפטומים'
@@ -255,7 +255,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <CustomCheckbox
-                                test-id='unkownSymptomsDate'
+                                testId='unkownSymptomsDate'
                                 checkboxElements={[{
                                     value: isUnkonwnDateChecked, labelText: 'תאריך התחלת סימפטומים לא ידוע',
                                     onChange: () => (handleUnkonwnDateCheck())
@@ -340,6 +340,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             }
                             <Collapse in={isOtherBackgroundIllnessChecked}>
                                 <CircleTextField
+                                    test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
@@ -385,7 +386,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                         <div className={classes.dates}>
                             <DatePick
-                                test-id='wasHospitalizedFromDate'
+                                testId='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.hospitalizationStartDate ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormat) : dateFormat}
@@ -394,7 +395,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
-                                test-id='wasHospitalizedUntilDate'
+                                testId='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.hospitalizationEndDate ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormat) : dateFormat}
