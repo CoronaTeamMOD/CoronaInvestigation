@@ -79,7 +79,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     if (isolationAddress !== null) {
         const requestAddress: Address = {
             cityValue: isolationAddress?.city,
-            streetValue: isolationAddress?.street,
+            streetValue: isolationAddress?.street === '' ? null : isolationAddress?.street,
             floorValue: +isolationAddress?.floor,
             houseNumValue: +isolationAddress?.houseNum,
         }
