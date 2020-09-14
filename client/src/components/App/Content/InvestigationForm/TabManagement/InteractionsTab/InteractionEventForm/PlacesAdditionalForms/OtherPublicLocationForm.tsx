@@ -38,7 +38,7 @@ const OtherPublicLocationForm : React.FC = () : JSX.Element => {
                         onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>
             </Grid>
-            <AddressForm removeEntrance={isWideArea} removeFloor={isWideArea} />
+            <AddressForm removeEntrance removeFloor />
             {
                 !isWideArea && <BusinessContactForm/>
             }
