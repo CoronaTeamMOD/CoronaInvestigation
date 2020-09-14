@@ -25,6 +25,17 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
     };
 
+    const updateIsolationAddressOnCityChange = (city: string) => {
+        context.setClinicalDetailsData({
+            ...context.clinicalDetailsData,
+            isolationAddress: {
+                ...context.clinicalDetailsData.isolationAddress,
+                city,
+                street: ''
+            }
+        })
+    };
+
     const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
         context.setClinicalDetailsData({
             ...context.clinicalDetailsData as ClinicalDetailsData,
@@ -50,7 +61,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const getStreetByCity = (cityId: string) => {
-        axios.get('/addressDetails/city/' + cityId + '/streets').then(
+        cityId !== '' && axios.get('/addressDetails/city/' + cityId + '/streets').then(
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
@@ -63,11 +74,15 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
                     if (patientAddress !== null && patientAddress.cityByCity !== null) {
+                        let street = '';
+                        if (patientAddress.streetByStreet !== null) {
+                            street = patientAddress.streetByStreet.id;
+                            setIsolationStreetName(patientAddress.streetByStreet.displayName);
+                        }
                         setIsolationCityName(patientAddress.cityByCity.displayName);
-                        setIsolationStreetName(patientAddress.streetByStreet.displayName);
                         patientAddress = {
                             city: patientAddress.cityByCity.id,
-                            street: patientAddress.streetByStreet.id,
+                            street,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
@@ -111,7 +126,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         hasBackgroundDeseasesToggle,
         getStreetByCity,
         updateClinicalDetails,
-        updateIsolationAddress
+        updateIsolationAddress,
+        updateIsolationAddressOnCityChange
     };
 };
 

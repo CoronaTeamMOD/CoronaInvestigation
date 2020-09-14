@@ -18,4 +18,5 @@ export interface useClinicalDetailsOutcome {
     getStreetByCity: (cityId: string) => void;
     updateClinicalDetails: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
     updateIsolationAddress: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
+    updateIsolationAddressOnCityChange: (cityId: string) => void;
 };

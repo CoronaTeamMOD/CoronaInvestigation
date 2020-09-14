@@ -8,13 +8,13 @@ import { Grid, Typography, Collapse } from '@material-ui/core';
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import { dateFormatForDatePicker } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -22,7 +22,7 @@ import useClinicalDetails from './useClinicalDetails';
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
-    const { city } = context.clinicalDetailsData.isolationAddress;
+    const { city, street } = context.clinicalDetailsData.isolationAddress;
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
@@ -38,13 +38,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress } = useClinicalDetails({
+    const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
     React.useEffect(() => {
         getStreetByCity(city);
     }, [city])
+
+    React.useEffect(() => {
+        if (streetsInCity.length > 0 && street === '') {
+            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, streetsInCity[0].id);
+            setIsolationStreetName(streetsInCity[0].displayName);
+        }
+    }, [streetsInCity])
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -140,18 +147,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
                     getOptionLabel={(option) => option.value.displayName}
                     inputValue={isolationCityName}
-                    onChange={(event, selectedCity) => {
-                        let cityId = selectedCity?.id;
-                        if (selectedCity === null) {
-                            cityId = '';
-                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
-                        }
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_CITY, cityId);
-                    }
-                    }
-                    onInputChange={(event, selectedCityName) => {
-                        setIsolationCityName(selectedCityName);
-                    }}
+                    onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity === null ? '' : selectedCity.id)}
+                    onInputChange={(event, selectedCityName) => setIsolationCityName(selectedCityName)}
                     renderInput={(params) =>
                         <CircleTextField
                             {...params}
@@ -164,13 +161,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     options={streetsInCity}
                     getOptionLabel={(option) => option.displayName}
                     inputValue={isolationStreetName}
-                    onChange={(event, selectedStreet) => {
-                        selectedStreet && updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet.id)
-                    }
-                    }
-                    onInputChange={(event, selectedStreetName) => {
-                        setIsolationStreetName(selectedStreetName);
-                    }}
+                    onChange={(event, selectedStreet) => updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet === null ? '' : selectedStreet.id)}
+                    onInputChange={(event, selectedStreetName) => setIsolationStreetName(selectedStreetName)}
                     renderInput={(params) =>
                         <CircleTextField
                             test-id='currentQuarantineStreet'
