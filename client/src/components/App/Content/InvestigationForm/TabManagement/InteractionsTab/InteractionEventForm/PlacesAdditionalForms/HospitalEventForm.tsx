@@ -37,7 +37,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                     </FormInput>
                 </Grid>
             </div>
-            <AddressForm/>
+            <AddressForm removeEntrance removeFloor/>
             <BusinessContactForm/>
         </>
     );
