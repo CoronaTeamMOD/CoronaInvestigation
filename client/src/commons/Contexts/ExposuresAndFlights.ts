@@ -1,35 +1,61 @@
 import { createContext } from 'react';
+import ExposureData from 'models/ExposureData';
+import FlightData from 'models/FlightData';
 
-import ExposureData from "models/ExposureData";
-import FlightData from "models/FlightData";
+export type ExposureAndFlightsDetails = ExposureData & FlightData;
 
-type FormData = ExposureData & FlightData;
-
-type contentDataType = {[A in keyof FormData]: FormData[A] | undefined};
-export interface ExposureDetails {
-    exposureData: contentDataType,
-    setExposureData: {[A in keyof FormData] : React.Dispatch<React.SetStateAction<(FormData[A]| undefined)>>}
+export interface ExposureAndFlightsDetailsAndSet {
+    exposureAndFlightsData: ExposureAndFlightsDetails,
+    setExposureDataAndFlights: React.Dispatch<React.SetStateAction<ExposureAndFlightsDetails>>
 };
 
-export const initialDetails: FormData = {
-    placeType: {id:0,name:''},
-    exposureLocation: null,
-    exposingPersonName: '',
-    toAirport: '',
-    fromAirport: '',
-    airline: '',
-    departureDate: new Date(),
-    arrivalDate: new Date(),
-    flightNum: '',
+export const fieldsNames = {
+    wasConfirmedExposure: "wasConfirmedExposure",
+    firstName: "exposureFirstName",
+    lastName: "exposureLastName",
+    date: "exposureDate",
+    address: "exposureAddress",
+    placeType: "exposurePlaceType",
+    placeSubType: "exposurePlaceSubType",
+    wasAbroad: "wasAbroad",
+    destinationCountry: "flightDestinationCountry",
+    destinationCity: "flightDestinationCity",
+    destinationAirport: "flightDestinationAirport",
+    originCountry: "flightOriginCountry",
+    originCity: "flightOriginCity",
+    originAirport: "flightOriginAirport",
+    flightStartDate: "flightStartDate",
+    flightEndDate: "flightEndDate",
+    airline: "airline",
+    flightNumber: "flightNum",
+};
+  
+export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
+  id: null,
+  wasConfirmedExposure: false,
+  exposureFirstName: '',
+  exposureLastName: '',
+  exposureDate: undefined,
+  exposureAddress: null, 
+  exposurePlaceType: null,
+  exposurePlaceSubType : null,
+  wasAbroad: false,
+  flightDestinationCountry: null,
+  flightDestinationCity: '',
+  flightDestinationAirport: '',
+  flightOriginCountry: null,
+  flightOriginCity: '',
+  flightOriginAirport: '',
+  flightStartDate: undefined,
+  flightEndDate: undefined,
+  airline: '',
+  flightNum: ''
 };
 
-const initialContextValues: ExposureDetails = {
-    exposureData: initialDetails,
-    // @ts-ignore
-    setExposureData: () => {}
+const initialContextValues: ExposureAndFlightsDetailsAndSet = {
+    exposureAndFlightsData: initialExposuresAndFlightsData,
+    setExposureDataAndFlights: () => {}
 };
 
-
-export const exposuresContext = createContext<ExposureDetails>(initialContextValues);
-export const exposuresContextConsumer = exposuresContext.Consumer;
-export const ExposuresContextProvider = exposuresContext.Provider;
+export const exposureAndFlightsContext = createContext<ExposureAndFlightsDetailsAndSet>(initialContextValues);
+export const ExposureAndFlightsContextProvider = exposureAndFlightsContext.Provider;
