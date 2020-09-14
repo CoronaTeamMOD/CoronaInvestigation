@@ -1,11 +1,11 @@
-import React from "react";
-import { Grid } from "@material-ui/core";
-import useFormStyles from "styles/formStyles";
-import DatePick from "commons/DatePick/DatePick";
-import CircleTextField from "commons/CircleTextField/CircleTextField";
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import React from 'react';
+import { Grid } from '@material-ui/core';
+import useFormStyles from 'styles/formStyles';
+import DatePick from 'commons/DatePick/DatePick';
+import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
-import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 const ExposureForm = (props: any) => {
   const {
@@ -25,14 +25,14 @@ const ExposureForm = (props: any) => {
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
             }
-            placeholder="שם פרטי..."
+            placeholder="שם פרטי"
           />
           <CircleTextField
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
             }
-            placeholder="שם משפחה..."
+            placeholder="שם משפחה"
           />
         </>
       </FormRowWithInput>

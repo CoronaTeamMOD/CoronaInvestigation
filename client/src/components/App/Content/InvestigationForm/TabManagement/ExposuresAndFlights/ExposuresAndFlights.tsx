@@ -23,11 +23,13 @@ const ExposuresAndFlights = () => {
 
   useEffect(() => {
     axios
-      .get("/exposure/" + investigationId)
+      .get('/exposure/' + investigationId)
       .then((result: any) => {
-        const data = result.data.data.allExposures.nodes[0];
-        if (data) {
-          setExposureDataAndFlights(data);
+        if(result && result.data && result.data.data){
+          const data = result.data.data.allExposures.nodes[0];
+          if (data) {
+            setExposureDataAndFlights(data);
+          }
         }
       })
       .catch((err) => {

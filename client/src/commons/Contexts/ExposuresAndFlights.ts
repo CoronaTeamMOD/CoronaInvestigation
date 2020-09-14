@@ -1,7 +1,6 @@
 import { createContext } from 'react';
-
-import ExposureData from "models/ExposureData";
-import FlightData from "models/FlightData";
+import ExposureData from 'models/ExposureData';
+import FlightData from 'models/FlightData';
 
 export type ExposureAndFlightsDetails = ExposureData & FlightData;
 
@@ -57,7 +56,6 @@ const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,
     setExposureDataAndFlights: () => {}
 };
-
 
 export const exposureAndFlightsContext = createContext<ExposureAndFlightsDetailsAndSet>(initialContextValues);
 export const ExposureAndFlightsContextProvider = exposureAndFlightsContext.Provider;

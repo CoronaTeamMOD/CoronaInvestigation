@@ -9,7 +9,7 @@ import {GET_ALL_CITIES, GET_CITY_STREETS, GET_ALL_COUNTRIES} from '../../DBServi
 const addressRoute = Router();
 
 addressRoute.get('/cities', (request: Request, response: Response) => {
-  graphqlRequest(GET_ALL_CITIES, request.headers).then((result: any) => {
+  graphqlRequest(GET_ALL_CITIES, response.locals).then((result: any) => {
     let cities: City[] = [];
     if (result && result.data && result.data.allCities) {
       cities = result.data.allCities.nodes.map((city: City) => ({
@@ -22,7 +22,7 @@ addressRoute.get('/cities', (request: Request, response: Response) => {
 });
 
 addressRoute.get('/city/:cityId/streets', (request: Request, response: Response) => {
-  graphqlRequest(GET_CITY_STREETS, request.headers, {id: request.params.cityId}).then((result: any) => {
+  graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
     let streets: Street[] = [];
     if(result && result.data && result.data.cityById && result.data.cityById.streetsByCity){
       streets = result.data.cityById.streetsByCity.nodes.map((street: Street) => ({
@@ -35,7 +35,7 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
 });
 
 addressRoute.get('/countries', (request: Request, response: Response) => {
-  graphqlRequest(GET_ALL_COUNTRIES, request.headers).then((result: any) => {
+  graphqlRequest(GET_ALL_COUNTRIES, response.locals).then((result: any) => {
     let countries: Country[] = [];
     if (result && result.data && result.data.allCountries) {
       countries = result.data.allCountries.nodes.map((country: Country) => ({

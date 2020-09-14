@@ -1,7 +1,8 @@
-import { Tab } from 'models/Tab';
-import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 import { ExposureAndFlightsDetailsAndSet } from 'commons/Contexts/ExposuresAndFlights';
+
+import { Tab } from 'models/Tab';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 
 export interface useInvestigationFormOutcome {
     currentTab: Tab;

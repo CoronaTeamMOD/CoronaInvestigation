@@ -12,12 +12,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
 import { Street } from 'models/Street';
-import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
+import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -87,15 +88,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField
-                        test-id='personalDetailsPhone'
+                    <PhoneNumberTextField
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        size='small'
                         value={personalInfoStateContext.personalInfoData.phoneNumber}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value);
-                        }}
+                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value)}
+                        testId='personalDetailsPhone'
                     />
                 </Grid>
             </Grid>
@@ -109,15 +107,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField
-                        test-id='personalDetailsAdditionalPhone'
+                    <PhoneNumberTextField
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        size='small'
                         value={personalInfoStateContext.personalInfoData.additionalPhoneNumber}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value);
-                        }}
+                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value)}
+                        testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
             </Grid>
@@ -131,14 +126,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <CircleTextField
+                    <PhoneNumberTextField
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        size='small'
                         value={personalInfoStateContext.personalInfoData.contactPhoneNumber}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value);
-                        }}
+                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value)}
+                        testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
             </Grid>
