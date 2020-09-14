@@ -5,9 +5,9 @@ interface FlightData {
    flightDestinationAirport: string;
    flightOriginCountry: string | null;
    flightOriginCity: string;
-   flightOriginAirport: string; 
-   flightStartDate: Date | undefined;
-   flightEndDate: Date | undefined;
+   flightOriginAirport: string;
+   flightStartDate: Date | null;
+   flightEndDate: Date | null;
    airline: string;
    flightNum: string;
 }

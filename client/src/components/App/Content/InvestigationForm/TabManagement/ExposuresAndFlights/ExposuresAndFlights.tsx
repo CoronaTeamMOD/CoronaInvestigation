@@ -2,12 +2,12 @@ import React, { useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { Collapse, Divider, Typography } from '@material-ui/core';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 
 import axios from 'Utils/axios';
 import Toggle from 'commons/Toggle/Toggle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { exposureAndFlightsContext, fieldsNames} from 'commons/Contexts/ExposuresAndFlights';
+import { exposureAndFlightsContext, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
@@ -28,7 +28,7 @@ const ExposuresAndFlights = () => {
     axios
       .get('/exposure/' + investigationId)
       .then((result: any) => {
-        if(result && result.data && result.data.data){
+        if (result && result.data && result.data.data) {
           const data = result.data.data.allExposures.nodes[0];
           if (data) {
             setExposureDataAndFlights(data);
@@ -37,8 +37,8 @@ const ExposuresAndFlights = () => {
       })
       .catch((err) => {
         Swal.fire({
-            title: 'לא ניתן היה לטעון את החשיפה',
-            icon: 'error',
+          title: 'לא ניתן היה לטעון את החשיפה',
+          icon: 'error',
         })
       });
   }, [investigationId]);

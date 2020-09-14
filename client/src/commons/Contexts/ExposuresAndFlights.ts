@@ -29,32 +29,32 @@ export const fieldsNames = {
     airline: "airline",
     flightNumber: "flightNum",
 };
-  
+
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
-  id: null,
-  wasConfirmedExposure: false,
-  exposureFirstName: '',
-  exposureLastName: '',
-  exposureDate: undefined,
-  exposureAddress: null, 
-  exposurePlaceType: null,
-  exposurePlaceSubType : null,
-  wasAbroad: false,
-  flightDestinationCountry: null,
-  flightDestinationCity: '',
-  flightDestinationAirport: '',
-  flightOriginCountry: null,
-  flightOriginCity: '',
-  flightOriginAirport: '',
-  flightStartDate: undefined,
-  flightEndDate: undefined,
-  airline: '',
-  flightNum: ''
+    id: null,
+    wasConfirmedExposure: false,
+    exposureFirstName: '',
+    exposureLastName: '',
+    exposureDate: null,
+    exposureAddress: null,
+    exposurePlaceType: null,
+    exposurePlaceSubType: null,
+    wasAbroad: false,
+    flightDestinationCountry: null,
+    flightDestinationCity: '',
+    flightDestinationAirport: '',
+    flightOriginCountry: null,
+    flightOriginCity: '',
+    flightOriginAirport: '',
+    flightStartDate: null,
+    flightEndDate: null,
+    airline: '',
+    flightNum: ''
 };
 
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,
-    setExposureDataAndFlights: () => {}
+    setExposureDataAndFlights: () => { }
 };
 
 export const exposureAndFlightsContext = createContext<ExposureAndFlightsDetailsAndSet>(initialContextValues);
