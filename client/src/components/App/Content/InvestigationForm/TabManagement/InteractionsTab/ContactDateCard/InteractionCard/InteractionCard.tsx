@@ -16,7 +16,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick } = props;
 
     const classes = useStyle();
-    const parsedLocation = interaction.locationAddress !== null ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress;
+    // Im making this check because somehow interaction.locationAddress sometimes gets saved as a string and sometimes
+    // as an object, for now this is a quickfix for the problem that allows the user to save contact events
+    const parsedLocation = (interaction.locationAddress !== null && interaction.locationAddress instanceof String) ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress;
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
