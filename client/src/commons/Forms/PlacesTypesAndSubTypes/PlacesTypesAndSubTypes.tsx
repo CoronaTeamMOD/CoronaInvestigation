@@ -33,6 +33,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
             <Grid item xs={6}>
                 <FormInput fieldName='סוג אתר'>
                     <CircleSelect
+                        disabled={Object.keys(placesSubTypesByTypes).length === 0}
                         value={placeType}
                         onChange={(event) => onPlaceTypeChange(event.target.value as string)}
                         className={formClasses.formSelect}
