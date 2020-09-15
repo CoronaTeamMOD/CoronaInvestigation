@@ -47,14 +47,14 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const getSymptoms = () => {
-        axios.post('/clinicalDetails/symptoms').then(
+        axios.post('/clinicalDetails/symptoms', {}).then(
             result => (result && result.data && result.data.data) &&
                 setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
         );
     };
 
     const getBackgroundDiseases = () => {
-        axios.post('/clinicalDetails/backgroundDiseases').then(
+        axios.post('/clinicalDetails/backgroundDiseases', {}).then(
             result => (result?.data && result.data.data) &&
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
         );
