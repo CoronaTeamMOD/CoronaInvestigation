@@ -14,8 +14,8 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
 })
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
-    const { epidemiologyNumber, investigationStatus, endTime } = request.body;
-    graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus, endTime })
+    const { epidemiologyNumber, investigationStatus } = request.body;
+    graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus })
     .then((result: any) => response.send(result));
 })
 
