@@ -9,12 +9,12 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
-import InvestigationStatus from 'models/enums/InvestigationStatus';
 
 export const createRowData = (
   epidemiologyNumber: number,
