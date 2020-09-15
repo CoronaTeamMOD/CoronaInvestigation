@@ -49,6 +49,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                         </IconButton>
                     </Tooltip>
                 </div>
+                <PrimaryButton
+                    onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
+                    {leaveInvestigationMessage}
+                </PrimaryButton>
             </div>
 
             <div className={classes.informationBar}>
@@ -92,10 +96,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                 </div>
                 <div className={classes.managementControllers}>
-                    <PrimaryButton
-                        onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
-                        {leaveInvestigationMessage}
-                    </PrimaryButton>
                     <CustomCheckbox
                         checkboxElements={[
                             {

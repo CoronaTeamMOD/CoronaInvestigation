@@ -23,7 +23,7 @@ const handleConfidentialAuth = (
 
     const decoded = jwt_decode(token);
     const user = {
-        id: decoded.upn,
+        id: (decoded.upn as string).split('@')[0],
         name: decoded.name,
     };
 
@@ -48,6 +48,8 @@ const authMiddleware = (
         if (!user)
             return response.status(401).json({error: "unauthorized noauth user"});
         else {
+            console.log(user)
+            console.log(request.headers.epidemiologynumber)
             response.locals.user = user;
             response.locals.epidemiologynumber = request.headers.epidemiologynumber;
             return next();
