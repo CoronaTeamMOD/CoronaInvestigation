@@ -14,7 +14,8 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
         axios.post('/intersections/createContactEvent',
         {
             ...interactionEventVariables, 
-            contactPersonPhoneNumber: interactionEventVariables.contactPersonPhoneNumber?.number
+            contactPersonPhoneNumber: interactionEventVariables.contactPersonPhoneNumber?.number,
+            contacts: interactionEventVariables.contacts.map(contact => ({...contact, phoneNumber: contact.phoneNumber.number}))
         }).then((response) => {
             interactionEventVariables.id = response.data.data.updateContactEventFunction.integer;
             handleInteractionCreation(interactionEventVariables);
