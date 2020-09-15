@@ -123,6 +123,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
                             <DatePick
+                                required
                                 test-id='quarantinedFromDate'
                                 type='date'
                                 lableText='מתאריך'
@@ -132,6 +133,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
+                                required
                                 test-id='quarantinedUntilDate'
                                 type='date'
                                 lableText='עד'
@@ -246,6 +248,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
                             <DatePick
+                                required={!isUnkonwnDateChecked}
+                                label={!isUnkonwnDateChecked && "שדה חובה"}
                                 test-id='symptomsStartDate'
                                 type='date'
                                 value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
@@ -267,7 +271,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                         {
                             context.clinicalDetailsData.doesHaveSymptoms &&
-                            <Typography>סימפטומים:</Typography>
+                            <Typography>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
                         }
                         <Grid container className={classes.smallGrid}>
                             {
@@ -290,6 +294,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             }
                             <Collapse in={isOtherSymptomChecked}>
                                 <CircleTextField
+                                    required
+                                    label="שדה חובה"
                                     test-id='symptomInput'
                                     size='small'
                                     className={classes.otherTextField}
@@ -320,6 +326,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={10}>
                     <Collapse in={context.clinicalDetailsData.doesHaveBackgroundDiseases}>
+                    <Typography>מחלות רקע: (יש לבחור לפחות מחלת רקע אחת)</Typography>
                         <Grid container className={classes.smallGrid}>
                             {
                                 backgroundDiseases.map((backgroundIllness: string) => (
@@ -334,15 +341,15 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                                 onChange: () => {
                                                     handleBackgroundIllnessCheck(backgroundIllness)
                                                 }
-
                                             }]}
                                         />
-
                                     </Grid>
                                 ))
                             }
                             <Collapse in={isOtherBackgroundIllnessChecked}>
                                 <CircleTextField
+                                    required
+                                    label="שדה חובה"
                                     test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
@@ -380,6 +387,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </b>
                             </Typography>
                             <CircleTextField
+                                required
+                                label="שדה חובה"
                                 test-id='hospitalInput'
                                 value={context.clinicalDetailsData.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
@@ -389,6 +398,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </div>
                         <div className={classes.dates}>
                             <DatePick
+                                required
+                                label="שדה חובה"
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
@@ -398,6 +409,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                             <DatePick
+                                required
+                                label="שדה חובה"
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'

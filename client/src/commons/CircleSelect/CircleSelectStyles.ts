@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     unsetSelectColor: {
         backgroundColor: 'unset !important'
     },
+    label: {
+        marginLeft: 2.2*theme.spacing(1),
+    },
 }));
 
 export default useStyles;

@@ -24,6 +24,7 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="שם החולה:">
         <>
           <CircleTextField
+            required
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
@@ -31,6 +32,7 @@ const ExposureForm = (props: any) => {
             placeholder="שם פרטי"
           />
           <CircleTextField
+            required
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>
               handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
@@ -58,6 +60,7 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
+        required
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
         placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
         onPlaceTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)}

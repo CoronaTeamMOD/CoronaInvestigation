@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid , FormControl, FormHelperText, InputLabel} from '@material-ui/core';
     
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
@@ -10,7 +10,7 @@ import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element => {
     
-    const { placeSubType, placeType, onPlaceTypeChange, onPlaceSubTypeChange } = props;
+    const { placeSubType, placeType, onPlaceTypeChange, onPlaceSubTypeChange, required } = props;
 
     const formClasses = useFormStyles();
     const [placesSubTypesByTypes, setPlacesSubTypesByTypes] = useState<PlacesSubTypesByTypes>({});
@@ -32,28 +32,30 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
         <Grid className={formClasses.formRow} container justify='flex-start'>
             <Grid item xs={6}>
                 <FormInput fieldName='סוג אתר'>
-                    <CircleSelect
-                        disabled={Object.keys(placesSubTypesByTypes).length === 0}
-                        value={placeType}
-                        onChange={(event) => onPlaceTypeChange(event.target.value as string)}
-                        className={formClasses.formSelect}
-                        options={Object.keys(placesSubTypesByTypes)}
-                    />
+                        <CircleSelect
+                            required={required}
+                            disabled={Object.keys(placesSubTypesByTypes).length === 0}
+                            value={placeType}
+                            onChange={(event) => onPlaceTypeChange(event.target.value as string)}
+                            className={formClasses.formSelect}
+                            options={Object.keys(placesSubTypesByTypes)}
+                        />
                 </FormInput>
             </Grid>
             {
                 placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 && 
                 <Grid item xs={6}>
                     <FormInput fieldName='תת סוג'>
-                        <CircleSelect
-                            value={placeSubType}
-                            onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
-                            className={formClasses.formSelect}
-                            isNameUnique={false}
-                            idKey='id'
-                            nameKey='displayName'
-                            options={placesSubTypesByTypes[placeType] || []}
-                        />
+                            <CircleSelect
+                                required={required}
+                                value={placeSubType}
+                                onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
+                                className={formClasses.formSelect}
+                                isNameUnique={false}
+                                idKey='id'
+                                nameKey='displayName'
+                                options={placesSubTypesByTypes[placeType] || []}
+                            />
                     </FormInput>
                 </Grid>
             }
@@ -64,6 +66,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
 export default PlacesTypesAndSubTypes;
 
 interface Props {
+    required?: boolean;
     placeType: string;
     placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
