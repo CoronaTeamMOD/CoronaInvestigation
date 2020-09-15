@@ -5,13 +5,11 @@ import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
+import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome, InvestigatedPersonInfoIncome } from './InvestigatedPersonInfoInterfaces';
-
-const cantReachInvestigatedStatus = 'לא ניתן ליצור קשר';
-const unfinishedInvestigationStatus = 'בטיפול';
 
 const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
 
@@ -19,8 +17,8 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
     const classes = useStyles({});
 
     const getInvestigationStatus = (cantReachInvestigated: boolean) => {
-        if (cantReachInvestigated) return cantReachInvestigatedStatus;
-        return unfinishedInvestigationStatus;
+        if (cantReachInvestigated) return InvestigationStatus.CANT_REACH;
+        return InvestigationStatus.IN_PROCESS;
     }
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number, cantReachInvestigated: boolean) => {

@@ -1,15 +1,18 @@
 import { Pool } from 'pg';
+import PgPubsub from '@graphile/pg-pubsub';
+import { makePluginHook, PostGraphileOptions } from 'postgraphile';
 
 require('dotenv').config();
 
 const ConnectionFilterPlugin = require('postgraphile-plugin-connection-filter');
+const pluginHook = makePluginHook([PgPubsub]);
 
-const genericOptions = {
+const genericOptions: PostGraphileOptions = {
     watchPg: true,
     graphiql: process.env.ENVIRONMENT !== 'prod',
     enhanceGraphiql: true,
     enableCors: true,
-    appendPlugin: [ConnectionFilterPlugin],
+    appendPlugins: [ConnectionFilterPlugin, pluginHook],
     graphileBuildOptions: {
         connectionFilterRelations: true
     },

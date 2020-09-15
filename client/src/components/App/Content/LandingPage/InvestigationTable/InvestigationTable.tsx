@@ -39,7 +39,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     key={row.epidemiologyNumber}
                                     className={classes.investigationRow}
                                     onClick={() => {
-                                        onInvestigationRowClick(row.epidemiologyNumber)
+                                        onInvestigationRowClick(row.epidemiologyNumber, row.status)
                                     }}
                                 >
                                     <TableCell component="th" scope="row">

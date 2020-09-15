@@ -3,7 +3,7 @@ import { gql } from "postgraphile";
 export const GET_USER_INVESTIGATIONS = gql`
 query InvestigationsInfoByUser($userName: String!) {
   userById(id: $userName) {
-    investigationsByLastUpdator {
+    investigationsByLastUpdator(filter: {investigationStatus: {notEqualTo: "טופלה"}}) {
       nodes {
         epidemiologyNumber
         investigatedPatientByInvestigatedPatientId {

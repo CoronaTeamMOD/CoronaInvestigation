@@ -9,6 +9,7 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
@@ -59,8 +60,6 @@ type InvestigationsReturnType = {
   }
 };
 
-const handlingInvestigationStatus = 'בטיפול';
-
 const useInvestigationTable = (): useInvestigationTableOutcome => {
 
   const history = useHistory();
@@ -98,7 +97,12 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
       });
   }, [user.id, classes.errorAlertTitle]);
 
-  const onInvestigationRowClick = (epidemiologyNumberVal: number) => {
+  const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
+    setEpidemiologyNum(epidemiologyNumberVal);
+    history.push('/investigation');
+  }
+
+  const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {
     axios.interceptors.request.use(
         (config) => {
             config.headers.Authorization = user.token;
@@ -108,13 +112,31 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         },
         (error) => Promise.reject(error)
     );
-    axios.post('/investigationInfo/updateInvestigationStatus', {
-      investigationStatus: handlingInvestigationStatus,
-      epidemiologyNumber: epidemiologyNumberVal
-    }).then(() => {
-      setEpidemiologyNum(epidemiologyNumberVal)
-      history.push('/investigation')
-    });
+    if (currentInvestigationStatus === InvestigationStatus.NEW) {
+      axios.post('/investigationInfo/updateInvestigationStartTime', {
+        investigationStartTime: new Date(),
+        epidemiologyNumber: epidemiologyNumberVal
+      }).then(() => {
+        axios.post('/investigationInfo/updateInvestigationStatus', {
+          investigationStatus: InvestigationStatus.IN_PROCESS,
+          epidemiologyNumber: epidemiologyNumberVal
+        }).then(() => {
+          moveToTheInvestigationForm(epidemiologyNumberVal);
+        }).catch(() => failToUpdateInvestigationData());
+      }).catch(() => failToUpdateInvestigationData())
+    } else {
+      moveToTheInvestigationForm(epidemiologyNumberVal);
+    }
+  }
+
+  const failToUpdateInvestigationData = () => {
+    swal.fire({
+      title: 'לא הצלחנו לפתוח את החקירה',
+      icon: 'error',
+      customClass: {
+        title: classes.errorAlertTitle
+      }
+    })
   }
 
   return {
