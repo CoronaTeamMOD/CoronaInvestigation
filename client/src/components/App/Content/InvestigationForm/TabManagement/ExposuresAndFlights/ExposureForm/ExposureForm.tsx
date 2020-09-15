@@ -44,9 +44,10 @@ const ExposureForm = (props: any) => {
         <DatePick
           type="date"
           value={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
-          onChange={(e) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.date, new Date(e.target.value))
-          }
+          onChange={(e) => {
+            const newDate = e.target.value ? new Date(e.target.value) : null
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
+          }}
         />
       </FormRowWithInput>
 
