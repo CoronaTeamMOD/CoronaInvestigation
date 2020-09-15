@@ -11,6 +11,7 @@ import theme from 'styles/theme';
 import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import {timeout} from 'Utils/Timeout/Timeout';
+import Validator from 'Utils/Validations/Validator';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
@@ -191,6 +192,16 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
 
+    const isButtonDisabled = (tabName: string): boolean => {
+        switch(tabName) {
+            case(TabNames.PERSONAL_INFO): {
+                return Validator.formValidation(personalInfoData);
+            }
+            default: {
+                return false;
+            }
+        }
+    }
     const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails ) => {
         let exposureAndDataToReturn = exposuresAndFlightsData;
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
@@ -228,6 +239,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         confirmFinishInvestigation,
         handleInvestigationFinish,
         handleSwitchTab,
+        isButtonDisabled,
         saveCurrentTab
     };
 };

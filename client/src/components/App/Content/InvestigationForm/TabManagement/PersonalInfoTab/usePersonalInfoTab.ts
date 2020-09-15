@@ -21,9 +21,9 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
-                    additionalPhoneNumber: investigatedPatient.personByPersonId.additionalPhoneNumber,
-                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
+                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
+                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
+                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.personByPersonId.patientContactPhoneNumber},
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,

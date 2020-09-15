@@ -1,13 +1,14 @@
 import Swal from 'sweetalert2';
 
 import axios from 'Utils/axios';
+import Validator from 'Utils/Validations/Validator';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import { useEditInteractionEventInput, useEditInteractionEventOutcome } from './EditInteractionEventDialogInterfaces';
 
 const useNewInteractionEventDialog = (input: useEditInteractionEventInput) :  useEditInteractionEventOutcome => {
     
-    const { closeDialog, updateInteraction } = input;
+    const { closeDialog, updateInteraction, canConfirm, interactionEventDialogData } = input;
 
     const editInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
         // TODO: Add db connection
@@ -26,9 +27,17 @@ const useNewInteractionEventDialog = (input: useEditInteractionEventInput) :  us
             icon: 'error',
         })
     };
+    
+    const shouldDisableSubmitButton = () : boolean => {
+        return (
+           !canConfirm || Validator.formValidation(interactionEventDialogData) || 
+           interactionEventDialogData.contacts.some((contact) => Validator.formValidation(contact))
+        );
+   }
 
     return {        
         editInteractionEvent,
+        shouldDisableSubmitButton
     }
 };
 

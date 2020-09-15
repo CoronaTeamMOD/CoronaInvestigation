@@ -45,7 +45,7 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                 otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo
                 ? request.body.personalInfoData.otherOccupationExtraInfo : null,
                 occupation: request.body.personalInfoData.relevantOccupation,
-                patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
+                patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
                 subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
                 address: result.data.createAddress.address.id,
             }
@@ -53,11 +53,11 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
             graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,  response.locals,
                 {
                     id: result.data.updateInvestigatedPatientById.personByPersonId.id,
-                    phoneNumber: request.body.personalInfoData.phoneNumber,
-                    additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
-                }).then((result: any) => response.send(result));
-            });
-    });
+                    phoneNumber: request.body.personalInfoData.phoneNumber.number,
+                    additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber.number
+                }).then((result: any) => response.send(result)).catch(err => response.send(err));
+            }).catch(err => response.send(err));
+    }).catch(err => response.send(err));
 });
 
 export default personalDetailsRoute;

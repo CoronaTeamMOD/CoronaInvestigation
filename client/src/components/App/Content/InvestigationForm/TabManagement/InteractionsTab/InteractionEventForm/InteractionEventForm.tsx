@@ -27,7 +27,7 @@ import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 export const defaultContact: Contact = {
     firstName: '',
     lastName: '',
-    phoneNumber: '',
+    phoneNumber: {number: '', isValid: true},
     id: '',
     contactType: '',
 };

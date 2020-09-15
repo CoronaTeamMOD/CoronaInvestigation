@@ -91,8 +91,24 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.phoneNumber}
-                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, event.target.value)}
+                        value={personalInfoStateContext.personalInfoData.phoneNumber.number}
+                        isValid={personalInfoStateContext.personalInfoData.phoneNumber.isValid}
+                        setIsValid={(isValid) => {
+                            handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.phoneNumber,
+                                    isValid: isValid
+                                }
+                            )
+                        }}
+                        onChange={(event) => 
+                            handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.phoneNumber,
+                                    number: event.target.value, 
+                                }
+                            )
+                        }
                         testId='personalDetailsPhone'
                     />
                 </Grid>
@@ -110,8 +126,24 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <PhoneNumberTextField
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.additionalPhoneNumber}
-                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, event.target.value)}
+                        value={personalInfoStateContext.personalInfoData.additionalPhoneNumber.number}
+                        isValid={personalInfoStateContext.personalInfoData.additionalPhoneNumber.isValid}
+                        setIsValid={(isValid) => {
+                            handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.additionalPhoneNumber,
+                                    isValid: isValid
+                                }
+                            )
+                        }}
+                        onChange={(event) => 
+                            handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.additionalPhoneNumber,
+                                    number: event.target.value,
+                                }
+                            )
+                        }
                         testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
@@ -129,9 +161,25 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <PhoneNumberTextField
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.contactPhoneNumber}
-                        onChange={(event) => handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, event.target.value)}
-                        testId='personalDetailsContactPhone'
+                        value={personalInfoStateContext.personalInfoData.contactPhoneNumber.number}
+                        isValid={personalInfoStateContext.personalInfoData.contactPhoneNumber.isValid}
+                        setIsValid={(isValid) => {
+                            handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.contactPhoneNumber,
+                                    isValid: isValid
+                                }
+                            )
+                        }}
+                        onChange={(event) => 
+                            handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER, 
+                                {
+                                    ...personalInfoStateContext.personalInfoData.contactPhoneNumber,
+                                    number: event.target.value
+                                }
+                            )
+                        }
+                        testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
             </Grid>
