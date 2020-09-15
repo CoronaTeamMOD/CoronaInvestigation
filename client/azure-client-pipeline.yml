@@ -36,7 +36,7 @@ stages:
 
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_MABAR_DEV)"
-        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_MABAR)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
         echo "##vso[task.setvariable variable=REACT_APP_IS_AUTH]$(IS_AUTH_MABAR)"
       condition: eq(variables.isMabarDev,true)
