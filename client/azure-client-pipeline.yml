@@ -2,7 +2,7 @@ trigger:
   branches:
     include:
     - dev
-    - dev_mabar
+    - dev-mabar
     - test
     - master
   paths:
