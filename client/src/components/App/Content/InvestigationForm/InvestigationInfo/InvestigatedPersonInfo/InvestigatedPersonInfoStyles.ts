@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     headerTopPart:{
         display: 'flex',
         justifyContent: 'space-between',
-        paddingLeft: '3vh',
+        paddingLeft: '1vw',
         flip:false,
     },
     investigationHeaderInfo: {

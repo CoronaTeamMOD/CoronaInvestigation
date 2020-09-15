@@ -7,12 +7,14 @@ import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 const investigationDaysBeforeSymptoms: number = 4;
 const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
+    const {parseAddress} = useGoogleApiAutocomplete();
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -59,6 +61,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const convertDBInteractionToInteraction = (dbInteraction: any): any => {
         return ({
             ...dbInteraction,
+            locationAddress: parseAddress(dbInteraction.locationAddress) || '',
             contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
             contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
             startTime: new Date(dbInteraction.startTime),
