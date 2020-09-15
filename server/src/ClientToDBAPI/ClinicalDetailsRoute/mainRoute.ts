@@ -48,6 +48,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         symptomsStartTime: clinicalDetails.symptomsStartDate,
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
         wasHospitalized: clinicalDetails.wasHospitalized,
+        otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
         isolationAddress
     }
 

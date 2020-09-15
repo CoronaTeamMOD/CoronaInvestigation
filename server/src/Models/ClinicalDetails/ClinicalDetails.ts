@@ -20,6 +20,7 @@ interface ClinicalDetails {
     creator: string;
     lastUpdator: string;
     doesHaveBackgroundDiseases: boolean;
+    otherSymptomsMoreInfo: string;
 };
 
 export default ClinicalDetails;

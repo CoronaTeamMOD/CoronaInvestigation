@@ -17,6 +17,7 @@ interface ClinicalDetailsData {
     doesHaveSymptoms: boolean;
     wasHospitalized: boolean;
     isPregnant: boolean;
+    otherSymptomsMoreInfo: string;
 };
 
 export default ClinicalDetailsData;
