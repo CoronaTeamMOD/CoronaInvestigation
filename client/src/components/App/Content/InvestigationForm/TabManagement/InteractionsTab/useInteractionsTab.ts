@@ -50,7 +50,11 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
                     const allInteractions: InteractionEventDialogData[] = [...interactions];
                     let indexOfInteraction = allInteractions.findIndex((interaction) => interaction.id === eventId);
                     const currEvent = convertDBInteractionToInteraction(changedInteraction);
-                    allInteractions.splice(indexOfInteraction, 1, currEvent);
+                    if (indexOfInteraction === -1) {
+                        allInteractions.push(currEvent);
+                    } else {
+                        allInteractions.splice(indexOfInteraction, 1, currEvent);
+                    }
                     setInteractions(allInteractions);
                 }
             }).catch(() => {
@@ -80,7 +84,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     const addNewInteraction = (addedInteraction: InteractionEventDialogData) => {
-        setInteractions([...interactions, addedInteraction]);
+        loadInteractionById(addedInteraction.id as number);
     }
 
     return {        
