@@ -42,7 +42,8 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
             {
                 id: request.body.id, 
                 hmo: request.body.personalInfoData.insuranceCompany,
-                otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo,
+                otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo === '' 
+                ? null : request.body.personalInfoData.otherOccupationExtraInfo,
                 occupation: request.body.personalInfoData.relevantOccupation,
                 patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
                 subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
