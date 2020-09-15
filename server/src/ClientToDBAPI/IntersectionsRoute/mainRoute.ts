@@ -85,7 +85,7 @@ const convertEventToDBType = (event: any) => {
     })
     event.contacts = updatedContacts;
     resetEmptyFields(event);
-    resetEmptyFields(event.locationAddress);
+    (event.locationAddress) && resetEmptyFields(event.locationAddress);
     return event;
 }
 
