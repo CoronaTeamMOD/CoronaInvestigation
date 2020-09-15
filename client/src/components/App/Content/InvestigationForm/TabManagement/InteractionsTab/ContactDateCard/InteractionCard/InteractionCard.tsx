@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
+import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
 import { initAddress } from 'models/Address';
 import { timeFormat } from 'Utils/displayUtils';
@@ -75,7 +75,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {interaction.contactPersonPhoneNumber}
+                            {interaction.contactPersonPhoneNumber?.number}
                         </Typography>
                     </Grid>
                     {/* time row */}
@@ -118,7 +118,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             <Grid item xs={2}>
                                 <Typography>
                                     <b>טלפון: </b>
-                                    {person.phoneNumber}
+                                    {person.phoneNumber.number}
                                 </Typography>
                             </Grid>
                             <Grid item xs={6} />

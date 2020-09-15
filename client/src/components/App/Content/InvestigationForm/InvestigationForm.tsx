@@ -98,7 +98,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     <TabManagement
                                         currentTab={currentTab}
                                         setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : handleSwitchTab()}
+                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
                                         shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>

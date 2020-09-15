@@ -12,7 +12,11 @@ const useNewInteractionEventDialog = (input: useEditInteractionEventInput) :  us
 
     const editInteractionEvent = (interactionEventVariables: InteractionEventDialogData) : void => {
         // TODO: Add db connection
-        axios.post('/intersections/updateContactEvent', {...interactionEventVariables})
+        axios.post('/intersections/updateContactEvent', {
+            ...interactionEventVariables,
+            contactPersonPhoneNumber: interactionEventVariables.contactPersonPhoneNumber?.number,
+            contacts: interactionEventVariables.contacts.map(contact => ({...contact, phoneNumber: contact.phoneNumber.number}))
+        })
             .then(() => {
                 updateInteraction(interactionEventVariables);
                 closeDialog();

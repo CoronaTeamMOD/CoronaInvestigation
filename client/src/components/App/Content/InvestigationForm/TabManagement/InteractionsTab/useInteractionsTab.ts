@@ -38,6 +38,8 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
                 const allInteractions: InteractionEventDialogData[] = result.data.map((interaction: InteractionEventDialogData) => {
                     return {
                         ...interaction,
+                        contactPersonPhoneNumber: {number: interaction.contactPersonPhoneNumber === null ? '' : interaction.contactPersonPhoneNumber, isValid: true},
+                        contacts: interaction.contacts.map(contact => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
                         startTime: new Date(interaction.startTime),
                         endTime: new Date(interaction.endTime),
                     }
