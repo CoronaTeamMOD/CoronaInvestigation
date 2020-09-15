@@ -19,6 +19,11 @@ const FlightsForm = (props: any) => {
 
   const classes = useFormStyles();
 
+  const updateDateOnBlur = (event: React.FocusEvent<HTMLInputElement>, fieldName: string) => {
+    const newDate = event.target.value ? new Date(event.target.value) : null
+    handleChangeExposureDataAndFlightsField(fieldName, newDate);
+  }
+
   return (
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="יעד:">
@@ -54,18 +59,14 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, new Date(e.target.value))
-            }
+            defaultValue={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
+            onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.flightStartDate)}
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, new Date(e.target.value))
-            }
+            defaultValue={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
+            onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.flightEndDate)}
           />
         </div>
       </FormRowWithInput>

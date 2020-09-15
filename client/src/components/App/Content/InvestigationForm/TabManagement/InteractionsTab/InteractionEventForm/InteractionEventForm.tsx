@@ -1,8 +1,8 @@
-import { format, parse } from 'date-fns';
-import React, {useState, useContext} from 'react';
-import { AddCircle as AddCircleIcon} from '@material-ui/icons';
+import { format, parse, startOfDay } from 'date-fns';
+import React, { useState, useContext } from 'react';
+import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/core';
-    
+
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
@@ -27,15 +27,15 @@ import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 export const defaultContact: Contact = {
     firstName: '',
     lastName: '',
-    phoneNumber: {number: '', isValid: true},
+    phoneNumber: { number: '', isValid: true },
     id: '',
     contactType: '',
 };
 
 const addContactButton: string = 'הוסף מגע';
 
-const InteractionEventForm : React.FC = () : JSX.Element => {
-    
+const InteractionEventForm: React.FC = (): JSX.Element => {
+
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
     const { placeType, startTime, endTime, externalizationApproval, contacts, placeSubType, id, investigationId } = interactionEventDialogData;
 
@@ -46,78 +46,80 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
     const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
     React.useEffect(() => {
-        const hasInvalidContact : boolean = contacts
+        const hasInvalidContact: boolean = contacts
             .some(contact => (!contact.firstName || !contact.lastName || !contact.phoneNumber));
         setCanAddContact(!hasInvalidContact);
     }, [contacts])
-    
+
     const onContactAdd = () => {
-        const updatedContacts = [...contacts, {...defaultContact}];
-        setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
+        const updatedContacts = [...contacts, { ...defaultContact }];
+        setInteractionEventDialogData({ ...interactionEventDialogData, contacts: updatedContacts });
     }
 
     const onPlaceTypeChange = (newPlaceType: string) => {
         setInteractionEventDialogData(
-        {
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
-            id,
-            placeType: newPlaceType,
-            externalizationApproval
-        });
+            {
+                ...initialDialogData(startTime, endTime, contacts, investigationId),
+                id,
+                placeType: newPlaceType,
+                externalizationApproval
+            });
     }
 
     const onPlaceSubTypeChange = (newPlaceSubType: number) => {
         setInteractionEventDialogData(
-        {
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
+            {
+                ...initialDialogData(startTime, endTime, contacts, investigationId),
                 id,
                 placeType,
                 placeSubType: newPlaceSubType,
                 externalizationApproval
-        });
+            });
     }
 
-    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, startTime: parse(event.target.value, timeFormat, startTime)});
+    const onStartTimeChange = (event: React.FocusEvent<HTMLInputElement>) => {
+        const newDate = event.target.value !== '' ? event.target.value : format(startOfDay(interactionEventDialogData.startTime), timeFormat)
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, startTime: parse(newDate, timeFormat, startTime) });
     };
 
-    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, endTime: parse(event.target.value, timeFormat, endTime)});
+    const onEndTimeChange = (event: React.FocusEvent<HTMLInputElement>) => {
+        const newDate = event.target.value !== '' ? event.target.value : format(startOfDay(interactionEventDialogData.endTime), timeFormat)
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, endTime: parse(newDate, timeFormat, endTime) });
     };
 
-    const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) => 
-        setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, externalizationApproval: val});
+    const onExternalizationApprovalChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, val: boolean) =>
+        setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, externalizationApproval: val });
 
     return (
         <>
             <Grid className={formClasses.form} container justify='flex-start'>
                 <PlacesTypesAndSubTypes
-                placeType={placeType}
-                placeSubType={placeSubType}
-                onPlaceTypeChange={onPlaceTypeChange}
-                onPlaceSubTypeChange={onPlaceSubTypeChange}/>
+                    placeType={placeType}
+                    placeSubType={placeSubType}
+                    onPlaceTypeChange={onPlaceTypeChange}
+                    onPlaceSubTypeChange={onPlaceSubTypeChange} />
                 {
                     placeType === privateHouse.code &&
                     <Collapse in={placeType === privateHouse.code}>
-                        <PrivateHouseEventForm/>
+                        <PrivateHouseEventForm />
                     </Collapse>
                 }
                 {
                     placeType === office.code &&
                     <Collapse in={placeType === office.code}>
-                        <OfficeEventForm/>
+                        <OfficeEventForm />
                     </Collapse>
                 }
                 {
                     placeType === transportation.code &&
                     <Collapse in={placeType === transportation.code}>
-                        <TransportationEventForm/>
+                        <TransportationEventForm />
                     </Collapse>
                 }
                 {
                     placeType === school.code &&
                     <Collapse in={placeType === school.code}>
-                        <SchoolEventForm/>
+                        <SchoolEventForm />
                     </Collapse>
                 }
                 {
@@ -141,7 +143,7 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                 {
                     placeType === otherPublicPlaces.code &&
                     <Collapse in={placeType === otherPublicPlaces.code}>
-                        <OtherPublicLocationForm/>
+                        <OtherPublicLocationForm />
                     </Collapse>
                 }
                 <Grid className={formClasses.formRow} container justify='flex-start'>
@@ -150,8 +152,8 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                             <DatePick
                                 test-id='contactLocationStartTime'
                                 type='time'
-                                value={format(startTime, timeFormat)}
-                                onChange={onStartTimeChange}/>
+                                defaultValue={format(startTime, timeFormat)}
+                                onBlur={onStartTimeChange} />
                         </FormInput>
                     </Grid>
                     <Grid item xs={6}>
@@ -159,8 +161,8 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                             <DatePick
                                 test-id='contactLocationEndTime'
                                 type='time'
-                                value={format(endTime, timeFormat)}
-                                onChange={onEndTimeChange}
+                                defaultValue={format(endTime, timeFormat)}
+                                onBlur={onEndTimeChange}
                             />
                         </FormInput>
                     </Grid>
@@ -171,20 +173,20 @@ const InteractionEventForm : React.FC = () : JSX.Element => {
                             test-id='allowExternalization'
                             className={formClasses.formToggle}
                             value={externalizationApproval}
-                            onChange={onExternalizationApprovalChange}/>
-                        </FormInput>
+                            onChange={onExternalizationApprovalChange} />
+                    </FormInput>
                 </Grid>
             </Grid>
-            <Divider light={true}/>
+            <Divider light={true} />
             <Grid container className={formClasses.form + ' ' + classes.spacedOutForm}>
                 <div className={classes.newContactFieldsContainer}>
                     {
-                        contacts.map((contact: Contact, index: number) => 
-                            <ContactForm updatedContactIndex={index}/>)
+                        contacts.map((contact: Contact, index: number) =>
+                            <ContactForm updatedContactIndex={index} />)
                     }
                     <Grid item>
                         <IconButton test-id='addContact' onClick={onContactAdd} disabled={!canAddContact}>
-                            <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
+                            <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'} />
                         </IconButton>
                         <Typography variant='caption' className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{addContactButton}</Typography>
                     </Grid>
