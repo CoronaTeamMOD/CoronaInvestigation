@@ -1,8 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import StoreStateType from 'redux/storeStateType';
 import { Grid, Typography, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
@@ -41,6 +41,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
+
+    React.useEffect(() => {
+        if (context.clinicalDetailsData.symptoms.length > 0) {
+            setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
+        }
+    },[context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
 
     React.useEffect(() => {
         getStreetByCity(city);
@@ -252,7 +258,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <CustomCheckbox
                                 testId='unkownSymptomsDate'
                                 checkboxElements={[{
-                                    value: isUnkonwnDateChecked, labelText: 'תאריך התחלת סימפטומים לא ידוע',
+                                    value: isUnkonwnDateChecked,
+                                    labelText: 'תאריך התחלת סימפטומים לא ידוע',
+                                    checked: isUnkonwnDateChecked,
                                     onChange: () => (handleUnkonwnDateCheck())
                                 }]}
                             />
