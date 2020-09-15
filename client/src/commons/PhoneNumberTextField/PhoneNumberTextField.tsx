@@ -1,5 +1,4 @@
 import React from 'react';
-import {TextField, StandardTextFieldProps} from '@material-ui/core';
 
 import Validator from 'Utils/Validations/Validator';
 import CircleTextField, { Props as circleTextFieldProps } from 'commons/CircleTextField/CircleTextField';

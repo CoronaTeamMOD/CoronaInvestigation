@@ -1,10 +1,9 @@
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
-import Validator from 'Utils/Validations/Validator';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
@@ -12,7 +11,7 @@ import useStyles from './NewInteractionEventDialogStyles';
 import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import InteractionEventForm, { defaultContact } from '../InteractionEventForm/InteractionEventForm';
 import {
-    InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet, InteractionEventDialogContext
+    InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';

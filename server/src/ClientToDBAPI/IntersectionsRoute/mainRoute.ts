@@ -3,9 +3,9 @@ import { Router, Request, Response } from 'express';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import ContactType from '../../Models/ContactEvent/Enums/ContactType';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
-import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
+import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES } from '../../DBService/ContactEvent/Query'
+import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID } from '../../DBService/ContactEvent/Query'
 
 const errorStatusCode = 500;
 
@@ -27,28 +27,39 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
         });
 });
 
+const convertDBEvent = (event: ContactEvent) => {
+    const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+    const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
+        const {personByPersonInfo, ...personNoData} = person;
+        return {
+            ...personNoData,
+            serialId: personNoData.id,
+            firstName: personByPersonInfo.firstName,
+            lastName: personByPersonInfo.lastName,
+            phoneNumber: personByPersonInfo.phoneNumber,
+            id: personByPersonInfo.identificationNumber,
+        };
+    });
+    return {
+        ...eventObjectToClient,
+        contacts: contacts,
+    };
+}
+
 intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals,{ currInvestigation: Number(request.params.investigationId)})
         .then((result: GetContactEventResponse) => {
-            const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => {
-                const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
-                const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
-                   const {personByPersonInfo, ...personNoData} = person;
-                   return {
-                       ...personNoData,
-                       serialId: personNoData.id,
-                       firstName: personByPersonInfo.firstName,
-                       lastName: personByPersonInfo.lastName,
-                       phoneNumber: personByPersonInfo.phoneNumber,
-                       id: personByPersonInfo.identificationNumber,
-                   };
-                });
-                return {
-                    ...eventObjectToClient,
-                    contacts: contacts,
-                };
-            });
+            const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => convertDBEvent(event));
             response.send(allContactEvents);
+    }).catch((err) => {
+        response.status(errorStatusCode).send('error in fetching data: ' + err)
+    });
+});
+
+intersectionsRoute.get('/contactEventById/:eventId', (request: Request, response: Response) => {
+    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_ID, response.locals,{ currEventId: Number(request.params.eventId)})
+        .then((result: GetContactEventByIdResponse) => {
+            response.send(convertDBEvent(result.data.contactEventById));
     }).catch((err) => {
         response.status(errorStatusCode).send('error in fetching data: ' + err)
     });
