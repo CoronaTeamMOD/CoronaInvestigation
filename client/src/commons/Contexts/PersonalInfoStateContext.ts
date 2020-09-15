@@ -1,13 +1,14 @@
 import {createContext} from 'react';
 
 import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
+import { initialPhoneNumberControl } from 'models/PhoneNumberControl';
 
 import { initialAddress } from './ClinicalDetailsContext';
 
 export const initialPersonalInfo: personalInfoContextData = {
-    phoneNumber: '',
-    additionalPhoneNumber: '',
-    contactPhoneNumber: '',
+    phoneNumber: initialPhoneNumberControl,
+    additionalPhoneNumber: initialPhoneNumberControl,
+    contactPhoneNumber: initialPhoneNumberControl,
     insuranceCompany: '',
     address: initialAddress,
     relevantOccupation: '',

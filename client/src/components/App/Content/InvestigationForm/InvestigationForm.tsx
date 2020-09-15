@@ -1,5 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+
 import StoreStateType from 'redux/storeStateType';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -9,7 +12,8 @@ import StartInvestigationDateVariables from 'models/StartInvestigationDateVariab
 import {
     initialPersonalInfo,
     PersonalInfoContextProvider,
-    PersonalInfoDataAndSet
+    PersonalInfoDataAndSet,
+    personalInfoContext
 } from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
@@ -42,6 +46,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         [personalInfoData, setPersonalInfoData]
     );
 
+    const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
     const [exposureDate, setExposureDate] = React.useState<Date>();
     const [exposureAndFlightsData, setExposureDataAndFlights] = React.useState<ExposureAndFlightsDetails>(initialExposuresAndFlightsData)
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
@@ -77,8 +82,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
 
+    const shouldDisableButton = isButtonDisabled(currentTab.name);
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -92,14 +98,16 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     <TabManagement
                                         currentTab={currentTab}
                                         setCurrentTab={setCurrentTab}
-                                        onTabClicked={saveCurrentTab}
+                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : handleSwitchTab()}
+                                        shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>
                                         <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
                                                 currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
-                                            }}>
-                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                            }}
+                                            disabled={shouldDisableButton}>
+                                           {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>
@@ -107,6 +115,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         </ClinicalDetailsDataContextProvider>
                     </PersonalInfoContextProvider>
             </ExposureAndFlightsContextProvider>
+
+            <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>
+                <MuiAlert onClose={() => setShowSnackbar(false)} severity="warning" elevation={6} variant="filled">
+                    חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.
+                </MuiAlert>
+            </Snackbar>
         </div>
     )
 }

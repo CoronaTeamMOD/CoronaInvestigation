@@ -61,7 +61,7 @@ const resetEmptyFields = (object: any) => {
 }
 
 const convertEventToDBType = (event: any) => {
-    const updatedContacts = event.contacts.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
+    const updatedContacts = event.contacts.filter((contact: any) => contact.id && contact.firstName && contact.lastName && contact.phoneNumber.number);
     updatedContacts.forEach((contact: any) => {
         contact.doesNeedIsolation = contact.contactType === ContactType.TIGHT;
         contact.id = contact.id ? contact.id : null;

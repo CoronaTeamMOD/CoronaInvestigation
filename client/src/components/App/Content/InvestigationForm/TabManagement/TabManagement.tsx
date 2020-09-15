@@ -40,7 +40,7 @@ export const tabs: TabObj[] = [
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, setCurrentTab, onTabClicked } = tabManagementProps;
+    const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
         createStyles({
@@ -65,7 +65,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     value={currentTab.id}
                     indicatorColor='primary'
                     textColor='primary'
-                    onChange={handleTabChange}
+                    onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
                 >
                     {
                         tabs.map((tab) => {
@@ -88,4 +88,5 @@ interface Props {
     currentTab: TabObj;
     setCurrentTab: (currentTab: TabObj) => void;
     onTabClicked: () => void;
+    shouldDisableChangeTab: boolean;
 };

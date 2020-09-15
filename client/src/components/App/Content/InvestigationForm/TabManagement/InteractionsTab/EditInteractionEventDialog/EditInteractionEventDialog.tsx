@@ -15,13 +15,14 @@ const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
     const { closeDialog, eventToEdit, isOpen, updateInteraction } = props;
-    const { editInteractionEvent } = useEditInteractionEventDialog({closeDialog, updateInteraction});
     
     const classes = useStyles();
     
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
+    
+    const canConfirm = React.useMemo<boolean>(() => true, []);
 
-    const canConfirm = React.useMemo<boolean>(() => true, [])
+    const { editInteractionEvent, shouldDisableSubmitButton } = useEditInteractionEventDialog({closeDialog, updateInteraction, canConfirm, interactionEventDialogData});
 
     const { placeType, placeSubType } = interactionEventDialogData;
     
@@ -57,7 +58,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                     בטל
                 </Button>
                 <PrimaryButton 
-                    disabled={!canConfirm}
+                    disabled={shouldDisableSubmitButton()}
                     id='createContact'
                     onClick={() => onConfirm()}>
                     שמור שינויים

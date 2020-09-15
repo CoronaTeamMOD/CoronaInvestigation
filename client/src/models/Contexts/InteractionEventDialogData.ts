@@ -1,5 +1,6 @@
 import Contact from 'models/Contact';
 import Address from 'models/Address';
+import PhoneNumberControl from 'models/PhoneNumberControl';
 
 export default interface InteractionEventDialogData {
     id?: number;
@@ -22,7 +23,7 @@ export default interface InteractionEventDialogData {
     cityDestination?: string;
     contactPersonFirstName?: string;
     contactPersonLastName?: string;
-    contactPersonPhoneNumber?: string;
+    contactPersonPhoneNumber?: PhoneNumberControl;
     hospitalDepartment?: string;
     contacts: Contact[];
     flightDestinationAirport?: string;

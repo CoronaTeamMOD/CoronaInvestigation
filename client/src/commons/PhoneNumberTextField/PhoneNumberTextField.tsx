@@ -7,17 +7,16 @@ import CircleTextField, { Props as circleTextFieldProps } from 'commons/CircleTe
 const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
 
 const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
-    const [isError, setIsError] = React.useState<boolean>(false);
 
-    const {id, value, onChange, testId, ...rest } = props;
+    const {id, value, onChange, testId, isValid, setIsValid, ...rest } = props;
 
     return (
         <CircleTextField
             {...rest}
-            error={isError}
-            onBlur={() => setIsError(value && !Validator.phoneValidation(value as string))}
-            onFocus={() => setIsError(false)}
-            label={isError && NOT_PHONE_ERROR}
+            error={!isValid}
+            onBlur={() => setIsValid(!value || Validator.phoneValidation(value as string))}
+            onFocus={() => setIsValid(true)}
+            label={!isValid && NOT_PHONE_ERROR}
             test-id={testId}
             id={id}
             size='small'
@@ -32,4 +31,6 @@ export default PhoneNumberTextField;
 interface Props extends circleTextFieldProps {
     onChange: (event: any) => void;
     testId?: string;
+    isValid: boolean;
+    setIsValid: (isValid: boolean) => void;
 };

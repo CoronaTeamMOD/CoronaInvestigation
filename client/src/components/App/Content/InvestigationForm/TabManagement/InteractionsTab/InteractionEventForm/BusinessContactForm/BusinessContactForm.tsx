@@ -20,8 +20,8 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
     const { contactPersonFirstName, contactPersonLastName, contactPersonPhoneNumber } = interactionEventDialogData;
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventDialogFields) =>
-        setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value as string});
+    const onChange = (value: any, updatedField: InteractionEventDialogFields) =>
+        setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
     return (
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
@@ -30,22 +30,37 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                     <FormInput fieldName={businessContactFirstNameField}>
                         <CircleTextField
                             value={contactPersonFirstName}
-                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
+                            onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactLastNameField}>
                         <CircleTextField
                             value={contactPersonLastName}
-                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
+                            onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactNumField}>
                         <PhoneNumberTextField
                             id={'businessContactedPersonPhone'}
-                            value={contactPersonPhoneNumber}
-                            onChange={event => onChange(event, InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER)}
+                            value={contactPersonPhoneNumber?.number}
+                            isValid={ctxt.interactionEventDialogData.contactPersonPhoneNumber?.isValid as boolean}
+                            setIsValid={isValid => onChange(
+                                {
+                                    ...ctxt.interactionEventDialogData.contactPersonPhoneNumber,
+                                    isValid: isValid
+                                }, 
+                                InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER
+                            )
+                            }
+                            onChange={event => onChange(
+                                {
+                                    ...ctxt.interactionEventDialogData.contactPersonPhoneNumber,
+                                    number: event.target.value,
+                                }, 
+                                InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER
+                            )} 
                         />
                     </FormInput>
                 </Grid>

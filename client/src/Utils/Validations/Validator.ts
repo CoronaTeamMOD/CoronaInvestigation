@@ -4,8 +4,13 @@ const phoneValidation = (phoneNumber: string) => {
     return IsraelPhoneNumberRegEx.test(phoneNumber);
 }
 
+const formValidation = (form: any): boolean => {
+    return Object.values(form).some((value: any) => value && value.isValid === false)
+}
+
 const Validator = {
-    phoneValidation
+    phoneValidation,
+    formValidation
 }
 
 export default Validator;

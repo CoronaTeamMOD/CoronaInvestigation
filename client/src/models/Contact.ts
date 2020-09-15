@@ -1,8 +1,10 @@
+import PhoneNumberControl from "./PhoneNumberControl";
+
 interface Contact {
     serialId?: string;
     firstName: string;
     lastName: string;
-    phoneNumber: string;
+    phoneNumber: PhoneNumberControl;
     id?: string;
     contactType: string;
     extraInfo?: string;

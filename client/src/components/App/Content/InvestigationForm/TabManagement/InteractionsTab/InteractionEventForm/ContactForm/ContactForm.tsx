@@ -42,7 +42,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
         setInteractionEventDialogData({...interactionEventDialogData, contacts: updatedContacts});
     }
 
-    const onChange = (newValue: string, updatedField: InteractionEventContactFields) =>
+    const onChange = (newValue: any, updatedField: InteractionEventContactFields) =>
         updateContacts({...contact, [updatedField]: newValue});
 
     return (
@@ -70,8 +70,23 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                     <FormInput fieldName={contactedPersonPhone}>
                         <PhoneNumberTextField id='contactedPersonPhone' key='contactedPersonPhone'
                             className={classes.newContactField}
-                            value={phoneNumber}
-                            onChange={event => onChange(event.target.value, InteractionEventContactFields.PHONE_NUMBER)}
+                            value={phoneNumber.number}
+                            isValid={phoneNumber.isValid}
+                            setIsValid={isValid => onChange(
+                                {
+                                    ...phoneNumber,
+                                    isValid: isValid
+                                }, 
+                                InteractionEventContactFields.PHONE_NUMBER
+                            )
+                            }
+                            onChange={event => onChange(
+                                {
+                                    ...phoneNumber,
+                                    number: event.target.value,
+                                }, 
+                                InteractionEventContactFields.PHONE_NUMBER
+                            )} 
                         />
                     </FormInput>
                 </Grid>
