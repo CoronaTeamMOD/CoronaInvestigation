@@ -121,18 +121,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE, new Date(event.target.value))
-                                )}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newDate = event.target.value ? new Date(event.target.value) : null
+                                    updateClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE, newDate)
+                                }}
                             />
                             <DatePick
                                 test-id='quarantinedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, new Date(event.target.value))
-                                )}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newDate = event.target.value ? new Date(event.target.value) : null
+                                    updateClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, newDate)
+                                }}
                             />
                         </div>
                     </Collapse>
@@ -245,9 +247,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, new Date(event.target.value))
-                                )}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newDate = event.target.value ? new Date(event.target.value) : null
+                                    updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, newDate)
+                                }}
                             />
                             <CustomCheckbox
                                 testId='unkownSymptomsDate'
@@ -385,18 +388,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 type='date'
                                 lableText='מתאריך'
                                 value={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, new Date(event.target.value))
-                                )}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newDate = event.target.value ? new Date(event.target.value) : null
+                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, newDate)
+                                }}
                             />
                             <DatePick
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
                                 value={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, new Date(event.target.value))
-                                )}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    const newDate = event.target.value ? new Date(event.target.value) : null
+                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, newDate)
+                                }}
                             />
                         </div>
                     </Collapse>

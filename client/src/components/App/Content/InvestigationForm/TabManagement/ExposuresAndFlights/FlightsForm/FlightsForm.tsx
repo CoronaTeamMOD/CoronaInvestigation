@@ -55,17 +55,19 @@ const FlightsForm = (props: any) => {
           <DatePick
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, new Date(e.target.value))
-            }
+            onChange={(e) => {
+              const newDate = e.target.value ? new Date(e.target.value) : null
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate)
+            }}
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, new Date(e.target.value))
-            }
+            onChange={(e) => {
+              const newDate = e.target.value ? new Date(e.target.value) : null
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate)
+            }}
           />
         </div>
       </FormRowWithInput>
