@@ -33,23 +33,23 @@ export const fieldsNames = {
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     id: null,
     wasConfirmedExposure: false,
-    exposureFirstName: '',
-    exposureLastName: '',
+    exposureFirstName: null,
+    exposureLastName: null,
     exposureDate: null,
     exposureAddress: null,
     exposurePlaceType: null,
     exposurePlaceSubType: null,
     wasAbroad: false,
     flightDestinationCountry: null,
-    flightDestinationCity: '',
-    flightDestinationAirport: '',
+    flightDestinationCity: null,
+    flightDestinationAirport: null,
     flightOriginCountry: null,
-    flightOriginCity: '',
-    flightOriginAirport: '',
+    flightOriginCity: null,
+    flightOriginAirport: null,
     flightStartDate: null,
     flightEndDate: null,
-    airline: '',
-    flightNum: ''
+    airline: null,
+    flightNum: null
 };
 
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
