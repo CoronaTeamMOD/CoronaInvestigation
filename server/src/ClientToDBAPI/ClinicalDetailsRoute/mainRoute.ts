@@ -36,7 +36,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
     const clinicalDetails: ClinicalDetails = request.body.clinicalDetails;
 
     const requestInvestigation: Investigation = {
-        epidemiologyNumber: +request.headers.epidemiologynumber,
+        epidemiologyNumber: clinicalDetails.epidemiologyNumber,
         hospital: clinicalDetails.hospital,
         hospitalizationEndTime: clinicalDetails.hospitalizationEndDate,
         hospitalizationStartTime: clinicalDetails.hospitalizationStartDate,
@@ -57,7 +57,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
             backgroundDeseases: clinicalDetails.backgroundDeseases
         }).then(() => {
             graphqlRequest(ADD_SYMPTOMS, response.locals, {
-                investigationIdValue: +request.headers.epidemiologynumber,
+                investigationIdValue: clinicalDetails.epidemiologyNumber,
                 symptomNames: clinicalDetails.symptoms
             }).then(() => {
                 graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,response.locals, {
@@ -75,7 +75,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
     const isolationAddress = request.body.clinicalDetails.isolationAddress;
-
+    
     if (isolationAddress !== null) {
         const requestAddress: Address = {
             cityValue: isolationAddress?.city,
