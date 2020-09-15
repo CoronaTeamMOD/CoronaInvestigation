@@ -54,8 +54,8 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) => {
+            defaultValue={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
               const newDate = e.target.value ? new Date(e.target.value) : null
               handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate)
             }}
@@ -63,8 +63,8 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             type="date"
-            value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) => {
+            defaultValue={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
               const newDate = e.target.value ? new Date(e.target.value) : null
               handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate)
             }}

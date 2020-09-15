@@ -46,7 +46,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         if (context.clinicalDetailsData.symptoms.length > 0) {
             setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
         }
-    },[context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
+    }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
 
     React.useEffect(() => {
         getStreetByCity(city);
@@ -126,8 +126,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='quarantinedFromDate'
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                defaultValue={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                                     const newDate = event.target.value ? new Date(event.target.value) : null
                                     updateClinicalDetails(ClinicalDetailsFields.ISOLATION_START_DATE, newDate)
                                 }}
@@ -136,8 +136,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='quarantinedUntilDate'
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                defaultValue={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                                     const newDate = event.target.value ? new Date(event.target.value) : null
                                     updateClinicalDetails(ClinicalDetailsFields.ISOLATION_END_DATE, newDate)
                                 }}
@@ -250,10 +250,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 test-id='symptomsStartDate'
                                 type='date'
-                                value={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                defaultValue={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
                                 lableText='תאריך התחלת סימפטומים'
                                 disabled={isUnkonwnDateChecked}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                                     const newDate = event.target.value ? new Date(event.target.value) : null
                                     updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, newDate)
                                 }}
@@ -395,8 +395,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                defaultValue={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                                     const newDate = event.target.value ? new Date(event.target.value) : null
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, newDate)
                                 }}
@@ -405,8 +405,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                defaultValue={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
                                     const newDate = event.target.value ? new Date(event.target.value) : null
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, newDate)
                                 }}
