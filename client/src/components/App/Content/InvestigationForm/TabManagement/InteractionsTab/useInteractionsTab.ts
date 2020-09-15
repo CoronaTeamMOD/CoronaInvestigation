@@ -6,15 +6,15 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
-
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 const investigationDaysBeforeSymptoms: number = 4;
 const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
-    
+    const {parseAddress} = useGoogleApiAutocomplete();
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -31,11 +31,11 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         else startInvestigationDate = subDays(endInvestigationDate, unsymptomaticInvestigationDaysBeforeConfirmed);
         return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
     }
-    
+
     const loadInteractions = () => {
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
-                const allInteractions: InteractionEventDialogData[] = result.data.map((interaction: InteractionEventDialogData) => convertDBInteractionToInteraction(interaction));
+                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 setInteractions(allInteractions);
             }).catch(() => {
                 handleLoadInteractionsError();
@@ -61,6 +61,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const convertDBInteractionToInteraction = (dbInteraction: any): any => {
         return ({
             ...dbInteraction,
+            locationAddress: parseAddress(dbInteraction.locationAddress) || '',
             contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
             contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
             startTime: new Date(dbInteraction.startTime),
@@ -83,7 +84,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         setInteractions([...interactions, addedInteraction]);
     }
 
-    return {        
+    return {
         getDatesToInvestigate,
         loadInteractions,
         addNewInteraction,

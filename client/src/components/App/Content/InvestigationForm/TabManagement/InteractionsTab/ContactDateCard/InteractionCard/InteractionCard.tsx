@@ -1,26 +1,17 @@
 import React from 'react';
-import { format } from 'date-fns';
-import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
-import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
-
-import { initAddress } from 'models/Address';
-import { timeFormat } from 'Utils/displayUtils';
+import {format} from 'date-fns';
+import {Card, Collapse, IconButton, Typography, Grid, Divider} from '@material-ui/core';
+import {KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete} from '@material-ui/icons';
+import {timeFormat} from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useStyle from './InteractionCardStyles';
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
-
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
-
-    const { interaction, onEditClick } = props;
-
+    const {interaction, onEditClick} = props;
     const classes = useStyle();
-    // Im making this check because somehow interaction.locationAddress sometimes gets saved as a string and sometimes
-    // as an object, for now this is a quickfix for the problem that allows the user to save contact events
-    const parsedLocation = interaction.locationAddress instanceof String ?
-        interaction.locationAddress !== null ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress
-    : interaction.locationAddress;
+
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
@@ -64,7 +55,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography>
-                            {parsedLocation ? parsedLocation.address?.description : 'לא הוזן מיקום'}
+                            {interaction.locationAddress ? (interaction.locationAddress as any).description : 'לא הוזן מיקום'}
                         </Typography>
                     </Grid>
                     {/* location number row */}

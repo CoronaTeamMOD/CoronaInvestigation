@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import DatePick from 'commons/DatePick/DatePick';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import LocationInput, { GoogleApiPlace } from 'commons/LocationInputField/LocationInput';
+import LocationInput from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
@@ -54,9 +54,9 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput fieldName="כתובת החשיפה:">
         <LocationInput
-          selectedAddress={exposureAndFlightsData[fieldsNames.address] as (GoogleApiPlace | null)}
+          selectedAddress={exposureAndFlightsData[fieldsNames.address]}
           setSelectedAddress={(e, newValue) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue?.description)} />
+            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue)} />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes

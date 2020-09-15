@@ -7,7 +7,7 @@ import useStyles from './LocationInputFieldStyles';
 
 export interface GoogleApiPlace {
     description: string;
-    structured_formatting: {
+    structured_formatting?: {
         main_text: string;
         secondary_text: string;
         main_text_matched_substrings: [
@@ -17,14 +17,37 @@ export interface GoogleApiPlace {
             },
         ];
     };
+    place_id: string;
+};
+
+interface GeocodeAddressComponent {
+    types: string[];
+    long_name: string;
+}
+
+interface LocationObject {
+lon: () => number | number;
+lat: () => number | number;
+}
+
+export interface GeocodeResponse {
+    address_components: GeocodeAddressComponent[];
+    formatted_address: string;
+    geometry: {
+        location: LocationObject;
+    };
+    types: string[],
+    place_id: string;
+    description?: string;
 }
 
 const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputProps) => {
     const classes = useStyles({});
-
-    const {autoCompletePlacesFromApi} = useGoogleApiAutocomplete();
+    const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
     const [input, setInput] = React.useState<string>('');
+
+    const parsedSelected = React.useMemo(() => parseAddress(selectedAddress), [selectedAddress]);
 
     React.useEffect(() => {
         let active = true;
@@ -36,17 +59,7 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
 
         autoCompletePlacesFromApi( input , (data?: GoogleApiPlace[]) => {
             if (active) {
-                let newOptions = [] as GoogleApiPlace[];
-
-                if (selectedAddress) {
-                    newOptions = [selectedAddress];
-                }
-
-                if (data) {
-                    newOptions = [...newOptions, ...data];
-                }
-
-                setLocationOptions(newOptions);
+                setLocationOptions(data || []);
             }
         });
 
@@ -63,7 +76,7 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
 
     return (
         <AutocompletedField
-            value={selectedAddress}
+            value={parsedSelected}
             options={locationOptions}
             onChange={setSelectedAddress}
             onInputChange={onInputChange}
