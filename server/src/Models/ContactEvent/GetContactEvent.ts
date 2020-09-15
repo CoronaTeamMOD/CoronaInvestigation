@@ -9,6 +9,11 @@ export interface GetContactEventResponse {
     }
 }
 
+export interface GetContactEventByIdResponse {
+    data: {
+        contactEventById: ContactEvent
+}
+
 export interface ContactEvent {
     id: number,
     airline: string,

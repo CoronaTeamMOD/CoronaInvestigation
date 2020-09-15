@@ -31,23 +31,41 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         else startInvestigationDate = subDays(endInvestigationDate, unsymptomaticInvestigationDaysBeforeConfirmed);
         return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
     }
-
+    
     const loadInteractions = () => {
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
-                const allInteractions: InteractionEventDialogData[] = result.data.map((interaction: InteractionEventDialogData) => {
-                    return {
-                        ...interaction,
-                        contactPersonPhoneNumber: {number: interaction.contactPersonPhoneNumber === null ? '' : interaction.contactPersonPhoneNumber, isValid: true},
-                        contacts: interaction.contacts.map(contact => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
-                        startTime: new Date(interaction.startTime),
-                        endTime: new Date(interaction.endTime),
-                    }
-                });
+                const allInteractions: InteractionEventDialogData[] = result.data.map((interaction: InteractionEventDialogData) => convertDBInteractionToInteraction(interaction));
                 setInteractions(allInteractions);
             }).catch(() => {
                 handleLoadInteractionsError();
         });
+    }
+
+    const loadInteractionById = (eventId: number) => {
+        axios.get(`/intersections/contactEventById/${eventId}`)
+            .then((result) => {
+                if(result.data) {
+                    let changedInteraction = result.data;
+                    const allInteractions: InteractionEventDialogData[] = [...interactions];
+                    let indexOfInteraction = allInteractions.findIndex((interaction) => interaction.id === eventId);
+                    const currEvent = convertDBInteractionToInteraction(changedInteraction);
+                    allInteractions.splice(indexOfInteraction, 1, currEvent);
+                    setInteractions(allInteractions);
+                }
+            }).catch(() => {
+                handleLoadInteractionsError();
+        });
+    }
+
+    const convertDBInteractionToInteraction = (dbInteraction: any): any => {
+        return ({
+            ...dbInteraction,
+            contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
+            contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
+            startTime: new Date(dbInteraction.startTime),
+            endTime: new Date(dbInteraction.endTime),
+        })
     }
 
     const handleLoadInteractionsError = () => {
@@ -58,10 +76,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     const updateInteraction = (updatedInteraction: InteractionEventDialogData) => {
-        const currContacts: InteractionEventDialogData[] = [...interactions];
-        const indexOfInteractionToUpdate = currContacts.findIndex(interactionElement => interactionElement.id === updatedInteraction.id);
-        currContacts.splice(indexOfInteractionToUpdate, 1, updatedInteraction);
-        setInteractions(currContacts);
+        loadInteractionById(updatedInteraction.id as number);
     }
 
     const addNewInteraction = (addedInteraction: InteractionEventDialogData) => {
