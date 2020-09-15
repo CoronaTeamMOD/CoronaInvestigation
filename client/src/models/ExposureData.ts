@@ -1,4 +1,4 @@
-import { GoogleApiPlace } from '../commons/LocationInputField/LocationInput';
+import {GeocodeResponse, GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
 
 interface ExposureData {
     id: number | null,
@@ -6,7 +6,7 @@ interface ExposureData {
     exposureFirstName: string | null;
     exposureLastName: string | null;
     exposureDate: Date | null;
-    exposureAddress: GoogleApiPlace | null;
+    exposureAddress: GoogleApiPlace | GeocodeResponse | null;
     exposurePlaceType: string | null;
     exposurePlaceSubType: number | null
 }

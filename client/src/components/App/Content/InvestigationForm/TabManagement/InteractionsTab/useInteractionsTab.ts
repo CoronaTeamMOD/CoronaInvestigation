@@ -6,7 +6,6 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
-
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 const investigationDaysBeforeSymptoms: number = 4;
@@ -14,7 +13,6 @@ const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
-    
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -31,11 +29,11 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         else startInvestigationDate = subDays(endInvestigationDate, unsymptomaticInvestigationDaysBeforeConfirmed);
         return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
     }
-    
+
     const loadInteractions = () => {
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
-                const allInteractions: InteractionEventDialogData[] = result.data.map((interaction: InteractionEventDialogData) => convertDBInteractionToInteraction(interaction));
+                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 setInteractions(allInteractions);
             }).catch(() => {
                 handleLoadInteractionsError();
@@ -83,7 +81,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         setInteractions([...interactions, addedInteraction]);
     }
 
-    return {        
+    return {
         getDatesToInvestigate,
         loadInteractions,
         addNewInteraction,
