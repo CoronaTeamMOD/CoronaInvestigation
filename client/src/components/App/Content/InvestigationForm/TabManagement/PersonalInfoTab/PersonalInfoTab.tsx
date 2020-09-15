@@ -77,6 +77,10 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         }
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
 
+    React.useEffect(() => {
+        getStreetsByCity(personalInfoStateContext.personalInfoData.address.city);
+    }, [personalInfoStateContext.personalInfoData.address.city]);
+
     return (
         <div className={classes.tabInitialContainer}>
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
@@ -222,8 +226,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             setCityName(newInputValue);
                         }}
                         onChange={(event, newValue) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId)
-                            newValue && getStreetsByCity(newValue.cityId);
+                            handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId);
                         }}
                         renderInput={(params) =>
                         <CircleTextField
