@@ -12,6 +12,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
@@ -125,6 +126,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         }).catch(() => failToUpdateInvestigationData());
       }).catch(() => failToUpdateInvestigationData())
     } else {
+      setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
       moveToTheInvestigationForm(epidemiologyNumberVal);
     }
   }
