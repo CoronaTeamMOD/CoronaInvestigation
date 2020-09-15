@@ -15,7 +15,10 @@ const useStyles = makeStyles({
         height: '8vh',
     },
     systemName: {
-        margin: '0.5vw',
+        margin: '0.5vw'
+    },
+    centering: {
+        alignSelf: 'center'
     }
 });
 

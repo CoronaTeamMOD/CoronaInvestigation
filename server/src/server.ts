@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import MOHApi from './MOHAPI/mainRoute';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
 import postgraphileServices from './DBService/postgraphile';
+import convertToJson from './middlewares/ConvertToObject';
 
 require('dotenv').config();
 
@@ -15,7 +16,8 @@ app.use(
     })
 );
 
-app.use(bodyParser.json());
+app.use(bodyParser.text());
+app.use(convertToJson)
 app.use('/mohApi', MOHApi);
 app.use('/clientToDBApi', ClientToDBApi);
 
