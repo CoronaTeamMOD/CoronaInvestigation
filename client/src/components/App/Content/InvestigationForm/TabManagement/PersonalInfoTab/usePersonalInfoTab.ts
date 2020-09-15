@@ -10,8 +10,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {occupations, setOccupations, insuranceCompanies, setInsuranceCompanies, personalInfoStateContext, 
-        subOccupations, setSubOccupations, subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets} = parameters;
+    const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
+        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
 
     const fetchPersonalInfo = () => {
         axios.get('/personalDetails/occupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));

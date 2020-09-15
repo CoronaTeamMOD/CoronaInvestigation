@@ -61,8 +61,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         });
     }
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({occupations, setOccupations, insuranceCompanies, setInsuranceCompanies,
-        personalInfoStateContext, subOccupations, setSubOccupations,subOccupationName, setSubOccupationName, cityName, setCityName, streetName, setStreetName, setStreets });
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setOccupations, setInsuranceCompanies,
+        personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets });
 
     React.useEffect(()=> {
         fetchPersonalInfo();

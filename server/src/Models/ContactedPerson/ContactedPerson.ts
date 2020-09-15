@@ -4,4 +4,5 @@ export interface ContactedPerson {
     doesNeedIsolation: boolean,
     extraInfo: string,
     personByPersonInfo: Person,
+    id: number,
 }
