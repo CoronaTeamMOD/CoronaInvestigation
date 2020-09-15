@@ -64,7 +64,7 @@ const convertEventToDBType = (event: any) => {
     const updatedContacts = event.contacts.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
     updatedContacts.forEach((contact: any) => {
         contact.doesNeedIsolation = contact.contactType === ContactType.TIGHT;
-        contact.id = contact.id === '' ? null : contact.id;
+        contact.id = contact.id ? contact.id : null;
         delete contact.contactType;
     })
     event.contacts = updatedContacts;
