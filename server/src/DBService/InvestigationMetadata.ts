@@ -1,9 +1,9 @@
 import { gql } from 'postgraphile';
 
 export const UPDATE_INVESTIGATION_METADATA = gql`
-mutation UpdateInvestigatinoUpdateTimeAndUpdator ($epidemiologyNumber: Int!, $lastUpdateTime: Datetime!, $lastUpdator: String!) {
+mutation UpdateInvestigatinUpdateTimeAndUpdator ($epidemiologyNumber: Int!, $lastUpdateTime: Datetime!, $lastUpdator: String!) {
     updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {lastUpdateTime: $lastUpdateTime, lastUpdator: $lastUpdator}, epidemiologyNumber: $epidemiologyNumber}) {
       clientMutationId
     }
   }
-`;  
+`;
