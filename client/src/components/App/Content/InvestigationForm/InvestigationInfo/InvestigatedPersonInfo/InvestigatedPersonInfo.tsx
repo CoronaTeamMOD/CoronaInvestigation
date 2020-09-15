@@ -99,7 +99,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <CustomCheckbox
                         checkboxElements={[
                             {
-                                value: cantReachInvestigated,
+                                checked: cantReachInvestigated,
                                 labelText: 'אין מענה במספר זה',
                                 onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCantReachInvestigatedCheck(checked))
                             }
