@@ -43,8 +43,8 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="תאריך החשיפה:">
         <DatePick
           type="date"
-          value={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
-          onChange={(e) => {
+          defaultValue={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
+          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
             const newDate = e.target.value ? new Date(e.target.value) : null
             handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
           }}

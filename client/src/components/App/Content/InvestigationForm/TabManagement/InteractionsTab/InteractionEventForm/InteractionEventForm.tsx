@@ -27,7 +27,7 @@ import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 export const defaultContact: Contact = {
     firstName: '',
     lastName: '',
-    phoneNumber: {number: '', isValid: true},
+    phoneNumber: { number: '', isValid: true },
     id: '',
     contactType: '',
 };
@@ -77,12 +77,12 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
             });
     }
 
-    const onStartTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onStartTimeChange = (event: React.FocusEvent<HTMLInputElement>) => {
         const newDate = event.target.value !== '' ? event.target.value : format(startOfDay(interactionEventDialogData.startTime), timeFormat)
         setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, startTime: parse(newDate, timeFormat, startTime) });
     };
 
-    const onEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onEndTimeChange = (event: React.FocusEvent<HTMLInputElement>) => {
         const newDate = event.target.value !== '' ? event.target.value : format(startOfDay(interactionEventDialogData.endTime), timeFormat)
         setInteractionEventDialogData({ ...interactionEventDialogData as InteractionEventDialogData, endTime: parse(newDate, timeFormat, endTime) });
     };
@@ -152,8 +152,8 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                             <DatePick
                                 test-id='contactLocationStartTime'
                                 type='time'
-                                value={format(startTime, timeFormat)}
-                                onChange={onStartTimeChange} />
+                                defaultValue={format(startTime, timeFormat)}
+                                onBlur={onStartTimeChange} />
                         </FormInput>
                     </Grid>
                     <Grid item xs={6}>
@@ -161,8 +161,8 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                             <DatePick
                                 test-id='contactLocationEndTime'
                                 type='time'
-                                value={format(endTime, timeFormat)}
-                                onChange={onEndTimeChange}
+                                defaultValue={format(endTime, timeFormat)}
+                                onBlur={onEndTimeChange}
                             />
                         </FormInput>
                     </Grid>
