@@ -38,7 +38,10 @@ const InvestigatedPersonInfo = (props: Props) => {
         .catch(error => {
             Swal.fire({
                 title: 'הייתה בעיה בביצוע שיחת הטלפון, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
+                icon: 'error',
+                customClass: {
+                    title: classes.swalTitle
+                }
             });
         });
     }
