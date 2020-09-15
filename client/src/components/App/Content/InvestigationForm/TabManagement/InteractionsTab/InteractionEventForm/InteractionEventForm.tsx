@@ -66,15 +66,16 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
             });
     }
 
-    const onPlaceSubTypeChange = (newPlaceSubType: number) => {
+    const onPlaceSubTypeChange = (newPlaceSubType: number, placeSubTypeDispalyName?: string) => {
         setInteractionEventDialogData(
             {
                 ...initialDialogData(startTime, endTime, contacts, investigationId),
                 id,
                 placeType,
                 placeSubType: newPlaceSubType,
-                externalizationApproval
-            });
+                externalizationApproval,
+                placeName: (placeType === transportation.code && placeSubTypeDispalyName) ? `${placeType} - ${placeSubTypeDispalyName}` : undefined
+        });
     }
 
     const onStartTimeChange = (event: React.FocusEvent<HTMLInputElement>) => {

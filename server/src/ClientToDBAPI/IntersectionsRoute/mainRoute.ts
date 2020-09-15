@@ -43,7 +43,7 @@ const convertDBEvent = (event: ContactEvent) => {
     });
     return {
         ...eventObjectToClient,
-        contacts: contacts,
+        contacts,
     };
 }
 

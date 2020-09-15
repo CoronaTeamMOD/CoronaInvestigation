@@ -22,8 +22,11 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
     }, [placesSubTypesByTypes]);
 
     React.useEffect(() => {
-        if (placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType][0] && !placesSubTypesByTypes[placeType].map(type => type.id).includes(placeSubType)) {
-            onPlaceSubTypeChange(placesSubTypesByTypes[placeType][0].id);
+        if (placesSubTypesByTypes[placeType]) {
+            const defaultPlaceSubType = placesSubTypesByTypes[placeType][0];
+            if (defaultPlaceSubType && !placesSubTypesByTypes[placeType].map(type => type.id).includes(placeSubType)) {
+                onPlaceSubTypeChange(defaultPlaceSubType.id, defaultPlaceSubType.displayName);
+            }
         }
     }, [placeType]);
 
@@ -71,5 +74,5 @@ interface Props {
     placeType: string;
     placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
-    onPlaceSubTypeChange: (newPlaceSubType: number) => void;
+    onPlaceSubTypeChange: (newPlaceSubType: number, placeSubTypeDispalyName?: string) => void;
 }

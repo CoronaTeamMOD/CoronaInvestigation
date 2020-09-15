@@ -1,11 +1,24 @@
 import React from 'react';
 import {format} from 'date-fns';
-import {Card, Collapse, IconButton, Typography, Grid, Divider} from '@material-ui/core';
-import {KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete} from '@material-ui/icons';
-import {timeFormat} from 'Utils/displayUtils';
+import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete} from '@material-ui/icons';
+import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
+
+import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+
+import ContactGrid from './ContactGrid/ContactGrid';
+import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
+import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
+import MedicalLocationGrid from './PlacesAdditionalGrids/MedicalLocationGrid';
+import DefaultPlaceEventGrid from './PlacesAdditionalGrids/DefaultPlaceEventGrid';
+import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
+import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
+import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
 import useStyle from './InteractionCardStyles';
+
+const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
@@ -35,43 +48,42 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                 </div>
             </div>
             <Collapse in={areDetailsOpen}>
-                <Grid container className={classes.gridContainer}>
-                    {/* location name row */}
+                <Grid container justify='flex-start'>
+                {
+                    interaction.placeType === privateHouse.code &&
+                    <PrivateHouseEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === office.code &&
+                    <OfficeEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === transportation.code &&
+                    <TransportationEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === school.code &&
+                    <SchoolEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === medical.code &&
+                    <MedicalLocationGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === religion.code &&
+                    <DefaultPlaceEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === geriatric.code &&
+                    <DefaultPlaceEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === otherPublicPlaces.code &&
+                    <OtherPublicLocationGrid interaction={interaction}/>
+                }
+                <Grid container justify='flex-start'>
                     <Grid item xs={2}>
-                        <Typography>
-                            <b>שם המקום: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {interaction.placeName}
-                        </Typography>
-                    </Grid>
-                    {/* location address row */}
-                    <Grid item xs={2}>
-                        <Typography>
-                            <b> כתובת: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {interaction.locationAddress ? (interaction.locationAddress as any).description : 'לא הוזן מיקום'}
-                        </Typography>
-                    </Grid>
-                    {/* location number row */}
-                    <Grid item xs={2}>
-                        <Typography>
-                            <b>טלפון המקום: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {interaction.contactPersonPhoneNumber?.number}
-                        </Typography>
-                    </Grid>
-                    {/* time row */}
-                    <Grid item xs={2}>
-                        <Typography>
+                        <Typography variant='caption'>
                             <b>שעה: </b>
                         </Typography>
                     </Grid>
@@ -82,40 +94,15 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
                 <Divider className={classes.divider} />
-                {/* Contacted persons section */}
-                <Grid container className={classes.gridContainer}>
+                <Grid container>
                     <Grid item xs={12}>
                         <Typography>
                             <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
                     </Grid>
-                    {interaction.contacts.map(person => (
-                        <>
-                            <Grid item xs={2}>
-                                <Typography>
-                                    <b>שם: </b>
-                                    {`${person.firstName} ${person.lastName}`}
-                                </Typography>
-                            </Grid>
-                            {
-                                person.id &&
-                                <Grid item xs={2}>
-                                    <Typography>
-                                        <b>ת.ז: </b>
-                                        {person.id}
-                                    </Typography>
-                                </Grid>
-                            }
-                            <Grid item xs={2}>
-                                <Typography>
-                                    <b>טלפון: </b>
-                                    {person.phoneNumber.number}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6} />
-                        </>
-                    ))}
+                    {interaction.contacts.map(person => <ContactGrid contact={person}/>)}
                 </Grid>
+            </Grid>
             </Collapse>
         </Card>
     );
