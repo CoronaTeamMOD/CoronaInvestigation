@@ -19,6 +19,11 @@ const ExposureForm = (props: any) => {
 
   const classes = useFormStyles();
 
+  const updateDateOnBlur = (event: React.FocusEvent<HTMLInputElement>, fieldName: string) => {
+    const newDate = event.target.value ? new Date(event.target.value) : null
+    handleChangeExposureDataAndFlightsField(fieldName, newDate);
+  }
+
   return (
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="שם החולה:">
@@ -44,10 +49,7 @@ const ExposureForm = (props: any) => {
         <DatePick
           type="date"
           defaultValue={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
-          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-            const newDate = e.target.value ? new Date(e.target.value) : null
-            handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
-          }}
+          onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.date)}
         />
       </FormRowWithInput>
 
