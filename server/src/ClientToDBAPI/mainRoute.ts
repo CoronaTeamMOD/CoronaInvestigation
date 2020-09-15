@@ -12,7 +12,7 @@ import authMiddleware from '../middlewares/Authentication';
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
-clientToDBRouter.use('/call',authMiddleware, callRoute);
+clientToDBRouter.use('/call', callRoute);
 clientToDBRouter.use('/exposure', exposureRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);
