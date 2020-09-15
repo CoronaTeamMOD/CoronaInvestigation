@@ -40,7 +40,7 @@ const App: React.FC = (): JSX.Element => {
                 })
         } else {
             setUser({
-                id: 'roie.rom',
+                id: 'pkra004',
                 name: 'stubuser',
                 token: 'fake token!'
             });
