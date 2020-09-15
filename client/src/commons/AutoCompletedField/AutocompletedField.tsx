@@ -6,12 +6,12 @@ import AutocompletedFieldType from './AutoCompletedFieldTypes';
 import CircleTextField from '../CircleTextField/CircleTextField';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const { value, options, onChange, onInputChange, constOptions = false, className, filterOptions } = props;
+    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions } = props;
     const classes = useStyles();
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <CircleTextField {...params} fullWidth />;
+        <CircleTextField required={required} {...params} fullWidth />;
 
     const staticOptionConfig = {
         autoComplete: true,

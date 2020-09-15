@@ -48,6 +48,7 @@ const AirportInput = (props: any) => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <AutocompletedField
+        required
         value={country}
         options={options}
         onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
@@ -55,6 +56,7 @@ const AirportInput = (props: any) => {
         filterOptions={filterOptions}
       />
       <CircleTextField
+        required
         value={city}
         placeholder="עיר"
         onChange={(e) => handleChangeExposureDataAndFlightsField(cityFieldName, e.target.value)}
@@ -62,6 +64,7 @@ const AirportInput = (props: any) => {
         InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
       />
       <CircleTextField
+        required
         value={airport}
         onChange={(e) => handleChangeExposureDataAndFlightsField(airportFieldName, e.target.value)}
         placeholder="שדה תעופה"

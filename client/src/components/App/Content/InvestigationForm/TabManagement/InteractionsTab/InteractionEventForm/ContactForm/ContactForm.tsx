@@ -69,6 +69,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonPhone}>
                         <PhoneNumberTextField id='contactedPersonPhone' key='contactedPersonPhone'
+                            required={firstName.length > 0}
                             className={classes.newContactField}
                             value={phoneNumber.number}
                             isValid={phoneNumber.isValid}

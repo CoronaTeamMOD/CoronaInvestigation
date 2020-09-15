@@ -9,12 +9,13 @@ const CircleTextField: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <TextField
             {...props}
+            label={props.required && "שדה חובה"}
             variant='outlined'
             size='small'
             InputProps={{
                 ...props.InputProps,  className: classes.borderRadius, classes: {input: classes.label},
             }}
-            InputLabelProps={{className: classes.label}}
+            InputLabelProps={{className: classes.label, shrink: true}}
         />
     );
 };

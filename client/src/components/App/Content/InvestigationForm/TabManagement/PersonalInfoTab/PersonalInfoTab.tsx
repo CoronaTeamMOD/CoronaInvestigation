@@ -94,6 +94,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
+                        required
                         placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.phoneNumber.number}
                         isValid={personalInfoStateContext.personalInfoData.phoneNumber.isValid}
@@ -198,6 +199,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleSelect
+                        required
                         test-id='personalDetailsInsurer'
                         options={insuranceCompanies}
                         className={classes.selectWidth}
@@ -230,6 +232,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         }}
                         renderInput={(params) =>
                         <CircleTextField
+                            required
                             {...params}
                             test-id='personalDetailsCity'
                             id={PersonalInfoDataContextFields.CITY}
@@ -253,6 +256,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 }}
                                 renderInput={(params) =>
                                 <CircleTextField
+                                    required
                                     test-id='personalDetailsStreet'
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
@@ -264,6 +268,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     }
                 <Grid item xs={1}>
                     <CircleTextField
+                        required
                         test-id='personalDetailsFloor'
                         id={PersonalInfoDataContextFields.FLOOR}
                         placeholder={'קומה'}
@@ -275,6 +280,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <CircleTextField
+                        required
                         test-id='personalDetailsHouseNumber'
                         id={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         placeholder={'מספר בית'}

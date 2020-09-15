@@ -37,6 +37,7 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מוצא:">
         <AirportInput
+          
           country={exposureAndFlightsData[fieldsNames.originCountry]}
           countryFieldName={fieldsNames.originCountry}
           city={exposureAndFlightsData[fieldsNames.originCity]}
@@ -53,6 +54,7 @@ const FlightsForm = (props: any) => {
         <div className={classes.formRow}>
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
+            required
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
             onChange={(e) =>
@@ -61,6 +63,7 @@ const FlightsForm = (props: any) => {
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
+            required
             type="date"
             value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
             onChange={(e) =>
@@ -72,6 +75,7 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="חברת תעופה:">
         <CircleTextField
+          required
           value={exposureAndFlightsData[fieldsNames.airline]}
           onChange={(e) =>
             handleChangeExposureDataAndFlightsField(
@@ -85,6 +89,7 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מספר טיסה:">
         <CircleTextField
+          required
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
           onChange={(e) =>
             handleChangeExposureDataAndFlightsField(
