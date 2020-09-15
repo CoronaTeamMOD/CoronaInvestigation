@@ -1,4 +1,5 @@
 interface ClinicalDetails {
+    epidemiologyNumber: number;
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
     isolationAddress: string;

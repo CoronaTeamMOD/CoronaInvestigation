@@ -167,6 +167,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
                 null : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
             investigatedPatientId,
+            epidemiologyNumber
         });
 
         if (!clinicalDetails.wasHospitalized) {
