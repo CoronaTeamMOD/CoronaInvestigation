@@ -23,7 +23,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 personalInfoStateContext.setPersonalInfoData({
                     phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
                     additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.personByPersonId.patientContactPhoneNumber},
+                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
