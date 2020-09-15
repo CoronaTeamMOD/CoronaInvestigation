@@ -62,7 +62,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             getOptionLabel={(option) => option.value.displayName}
                             inputValue={cities.get(cityDestination as string)?.displayName}
                             onChange={(event, selectedCity) => {
-                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
+                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
                             }}
                             renderInput={(params) =>
                                 <CircleTextField

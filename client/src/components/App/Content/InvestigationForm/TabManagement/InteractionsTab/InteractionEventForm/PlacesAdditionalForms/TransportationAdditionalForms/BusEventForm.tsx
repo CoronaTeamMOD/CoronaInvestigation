@@ -10,8 +10,8 @@ import FormInput from 'commons/FormInput/FormInput';
 import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const BusEventForm : React.FC = () : JSX.Element => {
     
@@ -78,7 +78,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             getOptionLabel={(option) => option.value.displayName}
                             inputValue={cities.get(cityDestination as string)?.displayName}
                             onChange={(event, selectedCity) => {
-                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
+                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
                             }}
                             renderInput={(params) =>
                                 <CircleTextField
