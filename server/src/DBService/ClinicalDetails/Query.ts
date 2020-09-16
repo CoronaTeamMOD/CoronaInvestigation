@@ -64,6 +64,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
           backgroundDeseasName
         }
       }
+      otherBackgroundDiseasesMoreInfo
     }
   }
 }

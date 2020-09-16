@@ -32,7 +32,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     doesHaveSymptoms: false,
     wasHospitalized: false,
     isPregnant: false,
-    otherSymptomsMoreInfo: ''
+    otherSymptomsMoreInfo: '',
+    otherBackgroundDiseasesMoreInfo: ''
 };
 
 const initialClinicalDetailsContext: ClinicalDetailsDataAndSet = {

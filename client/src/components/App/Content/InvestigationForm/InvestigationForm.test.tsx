@@ -50,7 +50,8 @@ describe('investigationForm tests', () => {
         wasHospitalized: false,
         isPregnant: false,
         doesHaveBackgroundDiseases: false,
-        otherSymptomsMoreInfo: ''
+        otherSymptomsMoreInfo: '',
+        otherBackgroundDiseasesMoreInfo: ''
     };
     
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {

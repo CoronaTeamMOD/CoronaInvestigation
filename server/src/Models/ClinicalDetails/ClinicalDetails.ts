@@ -21,6 +21,7 @@ interface ClinicalDetails {
     lastUpdator: string;
     doesHaveBackgroundDiseases: boolean;
     otherSymptomsMoreInfo: string;
+    otherBackgroundDiseasesMoreInfo: string;
 };
 
 export default ClinicalDetails;

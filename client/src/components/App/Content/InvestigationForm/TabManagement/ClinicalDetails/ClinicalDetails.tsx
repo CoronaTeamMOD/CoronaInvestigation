@@ -28,8 +28,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(context.clinicalDetailsData.otherSymptomsMoreInfo !== null);
-    const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(false);
-    const [otherBackgroundIllness, setOtherBackgroundIllness] = React.useState<string>('');
+    const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo !== null);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
@@ -354,8 +353,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     size='small'
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
-                                    onBlur={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                        setOtherBackgroundIllness(event.target.value as string)
+                                    value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, event.target.value as string)
                                     )}
                                 />
                             </Collapse>

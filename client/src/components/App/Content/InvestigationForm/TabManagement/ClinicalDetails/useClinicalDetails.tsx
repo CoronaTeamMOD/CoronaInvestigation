@@ -108,7 +108,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
                         wasHospitalized: patientInvestigation.wasHospitalized,
                         isolationAddress: patientAddress,
-                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo
+                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
+                        otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo
                     })
                 }
             }

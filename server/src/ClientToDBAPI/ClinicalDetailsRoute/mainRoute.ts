@@ -61,10 +61,11 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
                 investigationIdValue: clinicalDetails.epidemiologyNumber,
                 symptomNames: clinicalDetails.symptoms
             }).then(() => {
-                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,response.locals, {
+                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, {
                     isPregnant: clinicalDetails.isPregnant,
                     doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
-                    id: clinicalDetails.investigatedPatientId
+                    id: clinicalDetails.investigatedPatientId,
+                    otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
                 })
             }).then(() => {
                 response.send('Added clinical details');
