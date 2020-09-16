@@ -1,9 +1,8 @@
 import React, {useContext, useState} from 'react';
-import {Grid, TextField} from '@material-ui/core';
+import {FormControl, Grid, InputLabel, MenuItem, Select, TextField} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
@@ -65,12 +64,20 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                     grades.length > 0 &&
                     <Grid item xs={6}>
                         <FormInput fieldName='כיתה'>
-                            <CircleSelect
+                        <FormControl fullWidth>
+                            <InputLabel>כיתה</InputLabel>
+                            <Select
+                                label='כיתה'
                                 value={interactionEventDialogData.grade}
                                 onChange={(event: React.ChangeEvent<any>) => onChange(event, InteractionEventDialogFields.GRADE)}
-                                className={formClasses.formSelect}
-                                options={grades}
-                            />
+                            >
+                                {
+                                    grades.map((currentGrade) => (
+                                        <MenuItem key={currentGrade} value={currentGrade}>{currentGrade}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
                         </FormInput>
                     </Grid>
                 }

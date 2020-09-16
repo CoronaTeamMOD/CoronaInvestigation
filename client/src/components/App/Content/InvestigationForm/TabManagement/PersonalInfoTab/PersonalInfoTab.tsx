@@ -7,12 +7,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { RadioGroup, Radio, Button, TextField } from '@material-ui/core';
+import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
 import { Street } from 'models/Street';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
@@ -197,16 +196,22 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                    <CircleSelect
-                        required
-                        test-id='personalDetailsInsurer'
-                        options={insuranceCompanies}
-                        className={classes.selectWidth}
-                        value={personalInfoStateContext.personalInfoData.insuranceCompany}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
-                        }}
-                    />
+                    <FormControl required fullWidth>
+                        <InputLabel>גורם מבטח</InputLabel>
+                        <Select
+                            label='גורם מבטח'
+                            value={personalInfoStateContext.personalInfoData.insuranceCompany}
+                            onChange={(event) => {
+                                handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
+                            }}
+                        >
+                            {
+                                insuranceCompanies.map((insuranceCompany) => (
+                                    <MenuItem key={insuranceCompany} value={insuranceCompany}>{insuranceCompany}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
 

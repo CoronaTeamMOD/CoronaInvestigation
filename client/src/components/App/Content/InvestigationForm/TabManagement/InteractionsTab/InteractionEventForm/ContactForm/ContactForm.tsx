@@ -1,11 +1,10 @@
-import {  Grid, TextField } from '@material-ui/core';
+import {  FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
     
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 import ContactType from 'models/enums/ContactType';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 
 import useStyles from './ContactFormStyles';
@@ -103,12 +102,20 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactTypeField}>
-                        <CircleSelect id='contactType'
-                        className={classes.newContactField}
-                        value={contactType}
-                        onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
-                        options={Object.values(ContactType)}
-                        />
+                        <FormControl fullWidth>
+                            <InputLabel>סוג מגע</InputLabel>
+                            <Select
+                                label='סוג מגע'
+                                value={contactType}
+                                onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
+                            >
+                                {
+                                    Object.values(ContactType).map((currentContactType) => (
+                                        <MenuItem key={currentContactType} value={currentContactType}>{currentContactType}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
                     </FormInput>
                 </Grid>
             </Grid>

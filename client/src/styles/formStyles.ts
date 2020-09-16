@@ -23,9 +23,6 @@ const useStyles = makeStyles({
     roundedTextLabel: {
         lineHeight: 0,
     },
-    formSelect: {
-        width: '9vw'
-    },
     formToggle: {
         marginLeft: '1vw'
     },

@@ -74,9 +74,10 @@ const theme = createMuiTheme({
             variant: 'outlined',
             size: 'small'
         },
-        MuiInputLabel: {
-            shrink: true
-        }
+        MuiFormControl: {
+            size: 'small',
+            variant: 'outlined'
+        },
     }
 });
 
