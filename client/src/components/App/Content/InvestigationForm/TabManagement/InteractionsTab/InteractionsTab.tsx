@@ -22,6 +22,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
     const [interactions, setInteractions] = React.useState<Interaction[]>([]);
     const [coronaTestDate, setCoronaTestDate] = React.useState<Date | null>(null);
+    const [investigationStartTime, setInvestigationStartTime] = React.useState<Date | null>(null);
     const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction, getCoronaTestDate } =
         useInteractionsTab({
             setInteractions: setInteractions,
@@ -30,7 +31,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
 
     useEffect(() => {
         loadInteractions();
-        getCoronaTestDate(setCoronaTestDate);
+        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
 
     }, []);
 
@@ -54,7 +55,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         <>
             {
                 getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
-                    coronaTestDate).map(date =>
+                    coronaTestDate, investigationStartTime).map(date =>
                     <ContactDateCard contactDate={date}
                         onEditClick={startEditInteraction}
                         createNewInteractionEvent={() => onDateClick(date)}
