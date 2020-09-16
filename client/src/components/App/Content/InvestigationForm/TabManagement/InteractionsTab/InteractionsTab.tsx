@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { startOfDay } from 'date-fns';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
@@ -6,8 +6,8 @@ import Interaction from 'models/Contexts/InteractionEventDialogData';
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
-import { StartInvestigationDateVariablesConsumer } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
+import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Contexts/ClinicalDetailsContext';
 
 const InteractionsTab: React.FC = (): JSX.Element => {
 
@@ -16,11 +16,13 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const onEditEventDialogClose = () => setInteractionToEdit(undefined);
     const startEditInteraction = (interaction: Interaction) => setInteractionToEdit(interaction);
 
+    const clinicalDetailsCtxt: ClinicalDetailsDataAndSet = useContext(clinicalDetailsDataContext);
     const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
     const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
     const [interactions, setInteractions] = React.useState<Interaction[]>([]);
-    const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction } =
+    const [coronaTestDate, setCoronaTestDate] = React.useState<Date | null>(null);
+    const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction, getCoronaTestDate } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
@@ -28,6 +30,8 @@ const InteractionsTab: React.FC = (): JSX.Element => {
 
     useEffect(() => {
         loadInteractions();
+        getCoronaTestDate(setCoronaTestDate);
+
     }, []);
 
     useEffect(() => {
@@ -47,40 +51,35 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     }, [interactions]);
 
     return (
-        <StartInvestigationDateVariablesConsumer>
+        <>
             {
-                ctxt =>
-                    <>
-                        {
-                            getDatesToInvestigate(ctxt)
-                            .map(date =>
-                                <ContactDateCard contactDate={date}
-                                    onEditClick={startEditInteraction}
-                                    createNewInteractionEvent={() => onDateClick(date)}
-                                    interactions={interactionsMap.get(date.getTime())}
-                                    key={date.getTime()}
-                                />
-                                )
-                        }
-                        {
-                            newInteractionEventDate && <NewInteractionEventDialog
-                                isOpen={newInteractionEventDate !== undefined}
-                                eventDate={newInteractionEventDate}
-                                closeDialog={onNewEventDialogClose}
-                                handleInteractionCreation={addNewInteraction}
-                            />
-                        }
-                        {
-                            interactionToEdit && <EditInteractionEventDialog
-                                isOpen={interactionToEdit !== undefined}
-                                eventToEdit={interactionToEdit}
-                                closeDialog={onEditEventDialogClose}
-                                updateInteraction={updateInteraction}
-                            />
-                        }
-                    </>
+                getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
+                    coronaTestDate).map(date =>
+                    <ContactDateCard contactDate={date}
+                        onEditClick={startEditInteraction}
+                        createNewInteractionEvent={() => onDateClick(date)}
+                        interactions={interactionsMap.get(date.getTime())}
+                        key={date.getTime()}
+                    />
+                    )
             }
-        </StartInvestigationDateVariablesConsumer>
+            {
+                newInteractionEventDate && <NewInteractionEventDialog
+                    isOpen={newInteractionEventDate !== undefined}
+                    eventDate={newInteractionEventDate}
+                    closeDialog={onNewEventDialogClose}
+                    handleInteractionCreation={addNewInteraction}
+                />
+            }
+            {
+                interactionToEdit && <EditInteractionEventDialog
+                    isOpen={interactionToEdit !== undefined}
+                    eventToEdit={interactionToEdit}
+                    closeDialog={onEditEventDialogClose}
+                    updateInteraction={updateInteraction}
+                />
+            }
+        </>
     )
 };
 

@@ -1,37 +1,48 @@
+import React from 'react';
 import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
-import { subDays, eachDayOfInterval, max } from 'date-fns';
+import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
 import { initAddress } from 'models/Address';
 import StoreStateType from 'redux/storeStateType';
+import { convertDate } from '../ClinicalDetails/useClinicalDetails';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
-import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
-const investigationDaysBeforeSymptoms: number = 4;
-const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
-const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
+const symptomsWithKnownStartDate: number = 4;
+const nonSymptomaticPatient: number = 7;
+const symptomsWithUnknownStartDate: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const getDatesToInvestigate = (startInvestigationDateVariables: StartInvestigationDateVariables) : Date[] => {
-        const { hasSymptoms, symptomsStartDate, endInvestigationDate } = startInvestigationDateVariables;
-        if (!endInvestigationDate) return [];
-        let startInvestigationDate : Date;
-        const symptomaticStartInvestigationDate =
-            subDays(endInvestigationDate, symptomaticInvestigationDaysBeforeConfirmed);
-        if (hasSymptoms) {
-            if (symptomsStartDate) startInvestigationDate = max([subDays(symptomsStartDate, investigationDaysBeforeSymptoms), symptomaticStartInvestigationDate]);
-            else startInvestigationDate = subDays(endInvestigationDate, symptomaticInvestigationDaysBeforeConfirmed);
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+        axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
+            if(res.data !== null) {
+                setTestDate(convertDate(res.data));
+            }
+        })
+    }
+
+    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) : Date[] => {
+        if(coronaTestDate !== null) {
+            const endInvestigationDate = new Date();
+            let startInvestigationDate : Date;
+            if (doesHaveSymptoms) {
+                if(symptomsStartDate)
+                    startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                else
+                    startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
+            } else {
+                startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
+            }
+            return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
         }
-        else startInvestigationDate = subDays(endInvestigationDate, unsymptomaticInvestigationDaysBeforeConfirmed);
-        return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
+        return [];
     }
 
     const loadInteractions = () => {
@@ -68,7 +79,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         if (interaction.locationAddress === null) return initAddress;
         if (interaction.locationAddress instanceof String) return JSON.parse(interaction.locationAddress as unknown as string);
         return interaction.locationAddress;
-    } 
+    }
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
@@ -97,6 +108,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     return {
+        getCoronaTestDate,
         getDatesToInvestigate,
         loadInteractions,
         addNewInteraction,
