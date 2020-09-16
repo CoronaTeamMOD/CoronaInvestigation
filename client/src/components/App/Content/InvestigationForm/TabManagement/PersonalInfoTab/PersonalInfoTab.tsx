@@ -14,7 +14,6 @@ import City from 'models/City';
 import { Street } from 'models/Street';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';

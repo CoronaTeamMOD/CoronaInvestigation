@@ -8,7 +8,6 @@ import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
