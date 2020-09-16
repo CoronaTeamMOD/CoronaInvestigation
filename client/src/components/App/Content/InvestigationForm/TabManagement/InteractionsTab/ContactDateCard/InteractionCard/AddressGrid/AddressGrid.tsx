@@ -11,12 +11,6 @@ const AddressGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     const { removeFloor, removeEntrance, interaction } = props;
         
     const formClasses = useFormStyles();
-
-    // Im making this check because somehow interaction.locationAddress sometimes gets saved as a string and sometimes
-    // as an object, for now this is a quickfix for the problem that allows the user to save contact events
-    // const parsedLocation = interaction.locationAddress instanceof String ?
-    //     interaction.locationAddress !== null ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress
-    // : interaction.locationAddress;
     
     return (
         <>
