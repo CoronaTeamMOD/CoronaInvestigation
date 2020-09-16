@@ -7,6 +7,7 @@ import { setUser } from 'redux/User/userActionCreatores';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
+import HospitalsInput from 'commons/HospitalsInput/HospitalsInput';
 
 config();
 
@@ -49,6 +50,7 @@ const App: React.FC = (): JSX.Element => {
 
     return (
         <>
+            <HospitalsInput />
             <AppToolbar/>
             <Content/>
         </>
