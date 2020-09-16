@@ -4,7 +4,7 @@ import Validator from 'Utils/Validations/Validator';
 import { TextField, StandardTextFieldProps } from '@material-ui/core';
 
 const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
-const REQUIRED_TITLE = 'שדה חובה';
+const REQUIRED_TITLE = 'טלפון';
 
 
 const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {

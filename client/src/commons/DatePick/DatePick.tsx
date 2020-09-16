@@ -18,10 +18,14 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
             }
             <div className={classes.dateText}>
                 <TextField
+                    InputLabelProps={{
+                        shrink: true
+                    }}
                     id={type}
                     type={type}
                     className={classes.textField}
                     size='small'
+                    label={lableText}
                     {...rest}
                 />
             </div>

@@ -248,7 +248,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 required={!isUnkonwnDateChecked}
-                                label={!isUnkonwnDateChecked && "שדה חובה"}
+                                label={!isUnkonwnDateChecked && "תאריך התחלת סימפטומים"}
                                 test-id='symptomsStartDate'
                                 type='date'
                                 defaultValue={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
@@ -292,7 +292,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <Collapse in={isOtherSymptomChecked}>
                                 <TextField
                                     required
-                                    label="שדה חובה"
+                                    label="סימפטום"
                                     test-id='symptomInput'
                                     size='small'
                                     className={classes.otherTextField}
@@ -346,7 +346,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <Collapse in={isOtherBackgroundIllnessChecked}>
                                 <TextField
                                     required
-                                    label="שדה חובה"
+                                    label="מחלת רקע"
                                     test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
@@ -385,7 +385,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </Typography>
                             <TextField
                                 required
-                                label="שדה חובה"
+                                label="בית חולים"
                                 test-id='hospitalInput'
                                 value={context.clinicalDetailsData.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
@@ -396,7 +396,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 required
-                                label="שדה חובה"
+                                label="מתאריך"
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
@@ -405,7 +405,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             />
                             <DatePick
                                 required
-                                label="שדה חובה"
+                                label="עד"
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'
