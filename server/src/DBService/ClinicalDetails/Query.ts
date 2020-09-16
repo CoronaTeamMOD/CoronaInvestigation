@@ -75,6 +75,7 @@ query getCoronaTestDateOfInvestigation($currInvestigation: Int!) {
   allInvestigations(condition: {epidemiologyNumber: $currInvestigation}) {
     nodes {
       coronaTestDate
+      startTime
     }
   }
 }

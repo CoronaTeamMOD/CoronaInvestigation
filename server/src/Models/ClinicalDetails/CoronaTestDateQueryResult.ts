@@ -3,6 +3,7 @@ export default interface CoronaTestDateQueryResult {
         allInvestigations: {
             nodes: [{
                 coronaTestDate: string,
+                startTime: string,
             }]
         }
     }

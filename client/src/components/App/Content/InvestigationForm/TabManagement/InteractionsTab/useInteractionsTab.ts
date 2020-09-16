@@ -20,17 +20,19 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
         axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
             if(res.data !== null) {
-                setTestDate(convertDate(res.data));
+                console.log(res.data);
+                setTestDate(convertDate(res.data.coronaTestDate));
+                setInvestigationStartTime(convertDate(res.data.startTime));
             }
         })
     }
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) : Date[] => {
-        if(coronaTestDate !== null) {
-            const endInvestigationDate = new Date();
+    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null, investigationStartTime: Date | null) : Date[] => {
+        if(coronaTestDate !== null && investigationStartTime !== null) {
+            const endInvestigationDate = investigationStartTime;
             let startInvestigationDate : Date;
             if (doesHaveSymptoms) {
                 if(symptomsStartDate)
