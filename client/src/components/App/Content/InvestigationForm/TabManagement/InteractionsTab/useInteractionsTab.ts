@@ -3,18 +3,20 @@ import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval, max } from 'date-fns';
 
 import axios from 'Utils/axios';
+import { initAddress } from 'models/Address';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 const investigationDaysBeforeSymptoms: number = 4;
 const unsymptomaticInvestigationDaysBeforeConfirmed: number = 7;
 const symptomaticInvestigationDaysBeforeConfirmed: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
-    const {parseAddress} = useGoogleApiAutocomplete();
+    const { parseAddress } = useGoogleApiAutocomplete();
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -62,7 +64,13 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         });
     }
 
-    const convertDBInteractionToInteraction = (dbInteraction: any): any => {
+    const parseLocation = (interaction: InteractionEventDialogData) => {
+        if (interaction.locationAddress === null) return initAddress;
+        if (interaction.locationAddress instanceof String) return JSON.parse(interaction.locationAddress as unknown as string);
+        return interaction.locationAddress;
+    } 
+
+    const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
             locationAddress: parseAddress(dbInteraction.locationAddress) || '',

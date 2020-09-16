@@ -4,7 +4,8 @@ const useStyle = makeStyles({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        marginBottom: '1vh'
+        marginBottom: '1vh',
+        padding: '0 2vw'
     },
     rowAlignment: {
         display: 'flex',
