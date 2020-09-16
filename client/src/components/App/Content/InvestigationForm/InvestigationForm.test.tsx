@@ -49,7 +49,9 @@ describe('investigationForm tests', () => {
         doesHaveSymptoms: false,
         wasHospitalized: false,
         isPregnant: false,
-        doesHaveBackgroundDiseases: false
+        doesHaveBackgroundDiseases: false,
+        otherSymptomsMoreInfo: '',
+        otherBackgroundDiseasesMoreInfo: ''
     };
     
     const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {

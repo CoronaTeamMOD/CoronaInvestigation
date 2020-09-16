@@ -49,7 +49,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
           hospital
           hospitalizationStartTime
           hospitalizationEndTime
-          symptomsStartTime
+          otherSymptomsMoreInfo
           investigatedPatientSymptomsByInvestigationId {
             nodes {
               symptomName
@@ -64,6 +64,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
           backgroundDeseasName
         }
       }
+      otherBackgroundDiseasesMoreInfo
     }
   }
 }
