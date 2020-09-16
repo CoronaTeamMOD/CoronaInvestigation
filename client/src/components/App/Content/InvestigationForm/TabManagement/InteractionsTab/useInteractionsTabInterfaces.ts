@@ -1,6 +1,5 @@
+import React from 'react';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-
-import { StartInvestigationDateVariables } from '../../StartInvestigationDateVariables/StartInvestigationDateVariables';
 
 export interface useInteractionsTabInput {
     interactions: Interaction[];
@@ -8,8 +7,9 @@ export interface useInteractionsTabInput {
 };
 
 export interface useInteractionsTabOutcome {
-    getDatesToInvestigate: (startInvestigationDateVariables: StartInvestigationDateVariables) => Date[];
     loadInteractions: () => void;
+    getCoronaTestDate: (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => void;
     addNewInteraction: (addedInteraction: Interaction) => void;
     updateInteraction: (updatedInteraction: Interaction) => void;
+    getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
 };

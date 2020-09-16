@@ -69,3 +69,13 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
   }
 }
 `;
+
+export const GET_CORONA_TEST_DATE_OF_PATIENT = gql`
+query getCoronaTestDateOfInvestigation($currInvestigation: Int!) {
+  allInvestigations(condition: {epidemiologyNumber: $currInvestigation}) {
+    nodes {
+      coronaTestDate
+    }
+  }
+}
+`;

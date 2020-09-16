@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 
 import Address from '../../Models/Address';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
+import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import {
-    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER
+    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT
 } from '../../DBService/ClinicalDetails/Query';
 import {
     CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
@@ -93,6 +94,13 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     } else {
         saveClinicalDetails(request, response, null);
     }
+});
+
+clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(response.locals.epidemiologynumber)})
+        .then((result: CoronaTestDateQueryResult) => {
+            response.send(result.data.allInvestigations.nodes[0].coronaTestDate);
+        })
 });
 
 export default clinicalDetailsRoute;

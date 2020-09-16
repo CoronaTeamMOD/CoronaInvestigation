@@ -11,6 +11,8 @@ import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 import { initAddress } from 'models/Address';
 
+export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
@@ -115,8 +117,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             }
         );
     };
-
-    const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate); 
 
     React.useEffect(() => {
         getSymptoms();
