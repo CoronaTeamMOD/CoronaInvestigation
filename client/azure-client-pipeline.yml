@@ -34,35 +34,42 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
 
+    # load env variables for the client
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_MABAR_DEV)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_MABAR)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isMabarDev,true)
       displayName: 'setting .env for mabar-dev environment'
+
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isDev,true)
       displayName: 'setting .env for dev environment'
+
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_TEST)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isTest,true)
       displayName: 'setting .env db route to test route'
+
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_PROD)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isMaster,true)
       displayName: 'setting .env db route to prod route'
+
+    # building first dev image (dev without authentication) / mabar environments
     - script: |
         cd client
         npm install
         npm run build
       displayName: 'npm build client'
+
     - task: Docker@2
       condition: eq(variables.isDev,true)
       continueOnError: 'false'
@@ -75,31 +82,22 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-dev            
-    - task: Docker@2
-      condition: eq(variables.isDev,true)
-      continueOnError: 'false'
-      displayName: Build and push Dev client image to MOH container
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(MOHarcName)'
-        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
-        containerRegistry: '$(MOHContainerRegistry)'
-        tags: |
-          client-dev
 
+    # loading environment variables to the dev with the authentication (click azure)
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV_AUTH)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isDev,true)
       displayName: 'setting .env for dev-auth environment'
-      
+    
+    # building the client dev with authentication (click azure)
     - script: |
         cd client
         npm install
         npm run build
-      displayName: 'npm build client with auth'
+      condition: eq(variables.isDev,true)
+      displayName: 'Building client with authentication (Click)'
 
     - task: Docker@2
       condition: eq(variables.isDev,true)
@@ -113,6 +111,35 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-dev-auth
+
+    # loading environment variables to MOH environment test
+    - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV_AUTH)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
+      condition: eq(variables.isDev,true)
+      displayName: 'setting .env for mabar test environment'
+      
+    # building client to mabar test
+    - script: |
+        cd client
+        npm install
+        npm run build
+      condition: eq(variables.isDev,true)
+      displayName: 'Building client with authentication (MOH)'
+    
+    - task: Docker@2
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push Dev client image to MOH container
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          client-test
     
     - task: Docker@2
       condition: eq(variables.isMabarDev,true)
@@ -127,6 +154,7 @@ stages:
         tags: |
           client-mabar-dev
 
+    # deploying image to mabar preprod environment
     - task: Docker@2
       condition: eq(variables.isTest,true)
       continueOnError: 'false'
@@ -134,12 +162,13 @@ stages:
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
         tags: |
           client-test
 
+    # deploying image to mabar prod environment
     - task: Docker@2
       condition: eq(variables.isMaster,true)
       continueOnError: 'false'
@@ -151,7 +180,9 @@ stages:
         azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
         containerRegistry: '$(MOHContainerRegistry)'
         tags: |
-          client-master
+          client-prod
+
+  # semantic release job
   - job: 
     dependsOn: [BuildJob]
     displayName: SemanticRelease
