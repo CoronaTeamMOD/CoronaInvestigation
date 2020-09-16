@@ -7,8 +7,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
 
 import City from 'models/City';
 import { Street } from 'models/Street';

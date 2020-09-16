@@ -46,7 +46,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
 
     React.useEffect(() => {
-        getStreetByCity(city);
+        city !== '' ? getStreetByCity(city) : setStreetsInCity([]);
     }, [city])
 
     React.useEffect(() => {
@@ -153,7 +153,13 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     getOptionLabel={(option) => option.value.displayName}
                     inputValue={isolationCityName}
                     onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity === null ? '' : selectedCity.id)}
-                    onInputChange={(event, selectedCityName) => setIsolationCityName(selectedCityName)}
+                    onInputChange={(event, selectedCityName) => {
+                        setIsolationCityName(selectedCityName);
+                        if (selectedCityName === '') {
+                            updateIsolationAddressOnCityChange('');
+                            setIsolationStreetName('');
+                        }
+                    }}
                     renderInput={(params) =>
                         <TextField
                             {...params}
@@ -167,7 +173,12 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     getOptionLabel={(option) => option.displayName}
                     inputValue={isolationStreetName}
                     onChange={(event, selectedStreet) => updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet === null ? '' : selectedStreet.id)}
-                    onInputChange={(event, selectedStreetName) => setIsolationStreetName(selectedStreetName)}
+                    onInputChange={(event, selectedStreetName) => {
+                        setIsolationStreetName(selectedStreetName);
+                        if (selectedStreetName === '') {
+                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
+                        }
+                    }}
                     renderInput={(params) =>
                         <TextField
                             test-id='currentQuarantineStreet'

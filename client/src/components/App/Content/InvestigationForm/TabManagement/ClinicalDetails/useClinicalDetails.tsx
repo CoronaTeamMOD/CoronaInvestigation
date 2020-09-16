@@ -63,7 +63,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const getStreetByCity = (cityId: string) => {
-        cityId !== '' && axios.get('/addressDetails/city/' + cityId + '/streets').then(
+        axios.get('/addressDetails/city/' + cityId + '/streets').then(
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
