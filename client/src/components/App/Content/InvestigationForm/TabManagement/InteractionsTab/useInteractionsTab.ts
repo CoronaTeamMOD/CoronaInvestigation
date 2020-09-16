@@ -23,7 +23,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
         axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
             if(res.data !== null) {
-                console.log(res.data);
                 setTestDate(convertDate(res.data.coronaTestDate));
                 setInvestigationStartTime(convertDate(res.data.startTime));
             }
