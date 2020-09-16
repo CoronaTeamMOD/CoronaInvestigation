@@ -16,16 +16,16 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { fieldsNames, ExposureAndFlightsDetails } from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
+import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
+    const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
 
-    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables  } = parameters;
-
+    const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
    
@@ -146,21 +146,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
     };
 
-    const saveExposureAndFlightData = () : Promise<void> => {
-        if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
-            return axios.put('/exposure', {
-                exposureDetails: extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData)
-            });
-         } else {
-            return axios.post('/exposure', {
-                exposureDetails: {
-                    ...extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData),
-                    investigationId: epidemiologyNumber
-                } 
-            });
-        }
-    }
-
     const saveClinicalDetails = (): Promise<void> => {
         const clinicalDetails = ({
             ...clinicalDetailsVariables.clinicalDetailsData,
@@ -194,7 +179,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     };
 
     const isButtonDisabled = (tabName: string): boolean => {
-        switch(tabName) {
+        switch (tabName) {
             case(TabNames.PERSONAL_INFO): {
                 return Validator.formValidation(personalInfoData);
             }
@@ -202,36 +187,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 return false;
             }
         }
-    }
-    const extractExposuresAndFlightData = (exposuresAndFlightsData : ExposureAndFlightsDetails ) => {
-        let exposureAndDataToReturn = exposuresAndFlightsData;
-        if (!exposuresAndFlightsData.wasConfirmedExposure) {
-            exposureAndDataToReturn = {
-                ...exposureAndDataToReturn,
-                [fieldsNames.firstName]: '',
-                [fieldsNames.lastName]: '',
-                [fieldsNames.date]: undefined,
-                [fieldsNames.address]: null,
-                [fieldsNames.placeType]: null,
-                [fieldsNames.placeSubType] : null,
-            }
-        } 
-        if (!exposuresAndFlightsData.wasAbroad) {
-            exposureAndDataToReturn = {
-                ...exposureAndDataToReturn,
-                [fieldsNames.destinationCountry]: null,
-                [fieldsNames.destinationCity]: '',
-                [fieldsNames.destinationAirport]: '',
-                [fieldsNames.originCountry]: null,
-                [fieldsNames.originCity]: '',
-                [fieldsNames.originAirport]: '',
-                [fieldsNames.flightStartDate]: undefined,
-                [fieldsNames.flightEndDate]: undefined,
-                [fieldsNames.airline]: '',
-                [fieldsNames.flightNumber]: ''
-            }
-        }
-        return exposureAndDataToReturn;
     }
 
     return {

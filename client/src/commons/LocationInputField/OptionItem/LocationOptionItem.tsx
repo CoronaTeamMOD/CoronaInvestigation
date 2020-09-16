@@ -1,10 +1,10 @@
 import React from 'react';
 import {Grid, Typography} from "@material-ui/core";
 import {LocationOn} from "@material-ui/icons";
-import {GoogleApiPlace} from "../LocationInput";
+import {GeocodeResponse, GoogleApiPlace} from "../LocationInput";
 
-const LocationOptionItem = ({structured_formatting}: GoogleApiPlace) => {
-    const {main_text, secondary_text} = structured_formatting;
+// @ts-ignore
+const LocationOptionItem = ({structured_formatting, description , formatted_address}: GoogleApiPlace | GeocodeResponse) => {
     return (
         <Grid container alignItems="center">
             <Grid item>
@@ -12,10 +12,10 @@ const LocationOptionItem = ({structured_formatting}: GoogleApiPlace) => {
             </Grid>
             <Grid item xs>
                 <span style={{fontWeight: 700}}>
-                  {main_text}
+                  {structured_formatting?.main_text || description}
                 </span>
                 <Typography variant="body2" color="textSecondary">
-                    {secondary_text}
+                    {structured_formatting?.secondary_text || formatted_address}
                 </Typography>
             </Grid>
         </Grid>
