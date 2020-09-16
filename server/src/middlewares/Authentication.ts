@@ -23,7 +23,7 @@ const handleConfidentialAuth = (
 
     const decoded = jwt_decode(token);
     const user = {
-        id: (decoded.upn as string).split('@')[0],
+        id: (decoded.unique_name as string).split('@')[0],
         name: decoded.name,
     };
 
