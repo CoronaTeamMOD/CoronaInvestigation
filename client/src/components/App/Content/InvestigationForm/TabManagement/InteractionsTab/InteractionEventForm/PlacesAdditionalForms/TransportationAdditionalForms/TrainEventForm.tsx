@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
 import { Autocomplete } from '@material-ui/lab';
@@ -7,7 +7,6 @@ import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext'
@@ -38,7 +37,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
                             }}
                             renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     className={formClasses.autocomplete}
                                 />
@@ -48,7 +47,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת עליה'>
-                        <CircleTextField
+                        <TextField
                             value={boardingStation}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BOARDING_STATION)}/>
                     </FormInput>
@@ -65,7 +64,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
                             }}
                             renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     className={formClasses.autocomplete}
                                 />
@@ -75,7 +74,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת ירידה'>
-                        <CircleTextField
+                        <TextField
                             value={endStation}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.END_STATION)}/>
                     </FormInput>

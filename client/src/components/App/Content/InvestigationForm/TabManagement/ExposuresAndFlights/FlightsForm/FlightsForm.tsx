@@ -1,10 +1,9 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, TextField, Typography } from '@material-ui/core';
 import { format } from 'date-fns';
 
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import DatePick from 'commons/DatePick/DatePick';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import useFormStyles from 'styles/formStyles';
 import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
@@ -75,7 +74,7 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="חברת תעופה:">
-        <CircleTextField
+        <TextField
           required
           value={exposureAndFlightsData[fieldsNames.airline]}
           onChange={(e) =>
@@ -89,7 +88,7 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="מספר טיסה:">
-        <CircleTextField
+        <TextField
           required
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
           onChange={(e) =>

@@ -7,7 +7,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { RadioGroup, Radio, Button } from '@material-ui/core';
+import { RadioGroup, Radio, Button, TextField } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
@@ -231,7 +231,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId);
                         }}
                         renderInput={(params) =>
-                        <CircleTextField
+                        <TextField
                             required
                             {...params}
                             test-id='personalDetailsCity'
@@ -245,6 +245,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     cityName &&
                         <Grid item xs={2}>
                             <Autocomplete
+                                size='small'
                                 options={streets}
                                 getOptionLabel={(option) => option.displayName}
                                 inputValue={streetName}
@@ -254,20 +255,21 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 onChange={(event, newValue) => {
                                     handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
                                 }}
-                                renderInput={(params) =>
-                                <CircleTextField
-                                    required
-                                    test-id='personalDetailsStreet'
-                                    {...params}
-                                    id={PersonalInfoDataContextFields.STREET}
-                                    placeholder={'רחוב'}
-                                    value={personalInfoStateContext.personalInfoData.address.street}
-                                />}
+                                renderInput={(params) =>{
+                                    return <TextField
+                                        required
+                                        test-id='personalDetailsStreet'
+                                        {...params}
+                                        id={PersonalInfoDataContextFields.STREET}
+                                        placeholder={'רחוב'}
+                                        value={personalInfoStateContext.personalInfoData.address.street}
+                                    />
+                                }}
                             />
                         </Grid>
                     }
                 <Grid item xs={1}>
-                    <CircleTextField
+                    <TextField
                         required
                         test-id='personalDetailsFloor'
                         id={PersonalInfoDataContextFields.FLOOR}
@@ -279,7 +281,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 <Grid item xs={1}>
-                    <CircleTextField
+                    <TextField
                         required
                         test-id='personalDetailsHouseNumber'
                         id={PersonalInfoDataContextFields.HOUSE_NUMBER}
@@ -342,7 +344,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     newValue && getEducationSubOccupations(newValue.value.displayName);
                                 }}
                                 renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     test-id='institutionCity'
                                     id={PersonalInfoDataContextFields.CITY}
@@ -369,7 +371,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     setSubOccupationName(newInputValue)}
                                 }
                                 renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     test-id='insertInstitutionName'
                                     disabled={subOccupations.length === 0}
@@ -377,7 +379,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     placeholder={INSERT_INSTITUTION_NAME}
                                 />}
                             /> :
-                            <CircleTextField
+                            <TextField
                                 test-id='institutionName'
                                 value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
                                 placeholder={INSERT_INSTITUTION_NAME}

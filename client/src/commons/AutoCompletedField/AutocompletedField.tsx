@@ -3,7 +3,7 @@ import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
 import useStyles from './AutoCompletedFieldStyles';
 import AutocompletedFieldType from './AutoCompletedFieldTypes';
-import CircleTextField from '../CircleTextField/CircleTextField';
+import { TextField } from '@material-ui/core';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
     const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x:any) => x} = props;
@@ -11,7 +11,7 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <CircleTextField required={required} {...params} fullWidth />;
+        <TextField required={required} {...params} fullWidth />;
 
     const staticOptionConfig = {
         autoComplete: true,

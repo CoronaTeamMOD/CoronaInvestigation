@@ -1,10 +1,9 @@
 import React, {useContext, useState} from 'react';
-import {Grid} from '@material-ui/core';
+import {Grid, TextField} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
@@ -57,7 +56,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
             <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='שם המוסד'>
-                        <CircleTextField
+                        <TextField
                             value={interactionEventDialogData.placeName}
                             onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                     </FormInput>

@@ -1,7 +1,8 @@
 import React from 'react';
 
 import Validator from 'Utils/Validations/Validator';
-import CircleTextField, { Props as circleTextFieldProps } from 'commons/CircleTextField/CircleTextField';
+import { Props as circleTextFieldProps } from 'commons/CircleTextField/CircleTextField';
+import { TextField } from '@material-ui/core';
 
 const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
 const REQUIRED_TITLE = 'שדה חובה';
@@ -12,7 +13,7 @@ const PhoneNumberTextField: React.FC<Props> = (props: Props): JSX.Element => {
     const {id, value, onChange, testId, isValid, setIsValid, required, ...rest } = props;
 
     return (
-        <CircleTextField
+        <TextField
             {...rest}
             required={required}
             error={!isValid}

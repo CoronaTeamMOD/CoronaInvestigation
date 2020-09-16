@@ -6,9 +6,9 @@ import { createFilterOptions } from '@material-ui/lab';
 import Country from 'models/Country';
 import useFormStyle from 'styles/formStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 
 import { Airport } from '../FlightFormTypes';
+import { TextField } from '@material-ui/core';
 
 
 interface AirportInputProps {
@@ -55,7 +55,7 @@ const AirportInput = (props: any) => {
         getOptionLabel={(option) => getLabel(option)}
         filterOptions={filterOptions}
       />
-      <CircleTextField
+      <TextField
         required
         value={city}
         placeholder="עיר"
@@ -63,7 +63,7 @@ const AirportInput = (props: any) => {
         InputProps={{ classes: { input: classes.roundedTextLabel } }}
         InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
       />
-      <CircleTextField
+      <TextField
         required
         value={airport}
         onChange={(e) => handleChangeExposureDataAndFlightsField(airportFieldName, e.target.value)}

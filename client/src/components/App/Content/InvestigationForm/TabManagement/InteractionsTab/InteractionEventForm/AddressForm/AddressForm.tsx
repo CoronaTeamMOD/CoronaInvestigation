@@ -1,9 +1,8 @@
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import LocationInput, {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
 import InteractionEventAddressFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventAddressFields';
@@ -44,7 +43,7 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={6}>
                     { !removeEntrance && <FormInput fieldName='כניסה'>
-                            <CircleTextField
+                            <TextField
                                 value={entrance}
                                 onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.ENTRANCE)}/>
                         </FormInput>
@@ -52,7 +51,7 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     { !removeFloor && <FormInput fieldName='קומה'>
-                        <CircleTextField
+                        <TextField
                             value={floor}
                             onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.FLOOR)}/>
                     </FormInput> }
