@@ -12,8 +12,8 @@ import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAut
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 
 const symptomsWithKnownStartDate: number = 4;
-const symptomsWithUnknownStartDate: number = 7;
-const nonSymptomaticPatient: number = 10;
+const nonSymptomaticPatient: number = 7;
+const symptomsWithUnknownStartDate: number = 10;
 
 const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
     const { parseAddress } = useGoogleApiAutocomplete();
