@@ -1,13 +1,11 @@
-import React from 'react';
-import { Grid, TextField } from '@material-ui/core';
-import useFormStyles from 'styles/formStyles';
-import { format } from 'date-fns';
+import React from "react";
+import { Grid, TextField } from "@material-ui/core";
+import useFormStyles from "styles/formStyles";
 
-import DatePick from 'commons/DatePick/DatePick';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import LocationInput from 'commons/LocationInputField/LocationInput';
-import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
+import DatePick from "commons/DatePick/DatePick";
+import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
+import LocationInput from "commons/LocationInputField/LocationInput";
+import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
 
 const ExposureForm = (props: any) => {
   const {
@@ -18,11 +16,6 @@ const ExposureForm = (props: any) => {
 
   const classes = useFormStyles();
 
-  const updateDateOnBlur = (event: React.FocusEvent<HTMLInputElement>, fieldName: string) => {
-    const newDate = event.target.value ? new Date(event.target.value) : null
-    handleChangeExposureDataAndFlightsField(fieldName, newDate);
-  }
-
   return (
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="שם החולה:">
@@ -31,7 +24,10 @@ const ExposureForm = (props: any) => {
             required
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, e.target.value)
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.firstName,
+                e.target.value
+              )
             }
             placeholder="שם פרטי"
           />
@@ -39,7 +35,10 @@ const ExposureForm = (props: any) => {
             required
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, e.target.value)
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.lastName,
+                e.target.value
+              )
             }
             placeholder="שם משפחה"
           />
@@ -48,9 +47,11 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput fieldName="תאריך החשיפה:">
         <DatePick
-          type="date"
-          defaultValue={exposureAndFlightsData[fieldsNames.date] ? format(new Date(exposureAndFlightsData[fieldsNames.date]), dateFormatForDatePicker) : dateFormatForDatePicker}
-          onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.date)}
+          labelText="תאריך"
+          value={exposureAndFlightsData[fieldsNames.date]}
+          onChange={(newDate: Date) =>
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
+          }
         />
       </FormRowWithInput>
 
@@ -58,15 +59,27 @@ const ExposureForm = (props: any) => {
         <LocationInput
           selectedAddress={exposureAndFlightsData[fieldsNames.address]}
           setSelectedAddress={(e, newValue) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.address, newValue)} />
+            handleChangeExposureDataAndFlightsField(
+              fieldsNames.address,
+              newValue
+            )
+          }
+        />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
         required
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
         placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
-        onPlaceTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)}
-        onPlaceSubTypeChange={(value) => handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)}
+        onPlaceTypeChange={(value) =>
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
+        }
+        onPlaceSubTypeChange={(value) =>
+          handleChangeExposureDataAndFlightsField(
+            fieldsNames.placeSubType,
+            value
+          )
+        }
       />
     </Grid>
   );
