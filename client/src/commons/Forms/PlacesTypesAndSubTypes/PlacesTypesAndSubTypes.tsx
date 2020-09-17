@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import { Grid , FormControl, FormHelperText, InputLabel} from '@material-ui/core';
+import { Grid , FormControl, InputLabel, Select, MenuItem} from '@material-ui/core';
     
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
@@ -34,32 +33,54 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
 
     return (
         <Grid className={formClasses.formRow} container justify='flex-start'>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
                 <FormInput fieldName='סוג אתר'>
-                        <CircleSelect
-                            required={required}
-                            disabled={Object.keys(placesSubTypesByTypes).length === 0}
-                            value={placeType}
+                    <FormControl 
+                        disabled={Object.keys(placesSubTypesByTypes).length === 0}
+                        required={required} 
+                        fullWidth 
+                    >
+                        <InputLabel>סוג אתר</InputLabel>
+                        <Select
+                            label='סוג אתר'
+                            value={placeType? placeType : ''}
                             onChange={(event) => onPlaceTypeChange(event.target.value as string)}
-                            className={formClasses.formSelect}
-                            options={Object.keys(placesSubTypesByTypes)}
-                        />
+                        >
+                            {
+                                Object.keys(placesSubTypesByTypes).map((currentPlaceType) => (
+                                    <MenuItem key={currentPlaceType} value={currentPlaceType}>{currentPlaceType}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
                 </FormInput>
             </Grid>
             {
                 placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 && 
                 <Grid item xs={6}>
                     <FormInput fieldName='תת סוג'>
-                            <CircleSelect
-                                required={required}
-                                value={placeSubType}
+                        <FormControl 
+                            required={required} 
+                            fullWidth 
+                        >
+                            <InputLabel>תת סוג</InputLabel>
+                            <Select
+                                label='תת סוג'
+                                value={placeSubType? placeSubType : ''}
                                 onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
-                                className={formClasses.formSelect}
-                                isNameUnique={false}
-                                idKey='id'
-                                nameKey='displayName'
-                                options={placesSubTypesByTypes[placeType] || []}
-                            />
+                            >
+                                {
+                                    placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
+                                        <MenuItem 
+                                            key={currentPlaceSubType.id} 
+                                            value={currentPlaceSubType.id}
+                                        >
+                                            {currentPlaceSubType.displayName}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
                     </FormInput>
                 </Grid>
             }

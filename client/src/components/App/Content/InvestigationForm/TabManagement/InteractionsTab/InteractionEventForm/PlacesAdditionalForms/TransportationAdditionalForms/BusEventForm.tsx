@@ -1,4 +1,4 @@
-import {Grid} from '@material-ui/core';
+import {Grid, TextField} from '@material-ui/core';
 import React, {useContext} from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -7,7 +7,6 @@ import StoreStateType from 'redux/storeStateType';
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -30,14 +29,14 @@ const BusEventForm : React.FC = () : JSX.Element => {
             <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='קו'>
-                        <CircleTextField
+                        <TextField
                             value={busLine}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_LINE)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='חברה'>
-                        <CircleTextField
+                        <TextField
                             value={busCompany}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_COMPANY)}/>
                     </FormInput>
@@ -54,7 +53,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
                             }}
                             renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     className={formClasses.autocomplete}
                                 />
@@ -64,7 +63,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת עליה'>
-                        <CircleTextField
+                        <TextField
                             value={boardingStation}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BOARDING_STATION)}/>
                     </FormInput>
@@ -81,7 +80,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
                             }}
                             renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     className={formClasses.autocomplete}
                                 />
@@ -91,7 +90,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת ירידה'>
-                        <CircleTextField
+                        <TextField
                             value={endStation}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.END_STATION)}/>
                     </FormInput>

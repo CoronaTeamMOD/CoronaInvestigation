@@ -1,5 +1,5 @@
 
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -8,7 +8,6 @@ import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -39,14 +38,14 @@ const FlightEventForm : React.FC = () : JSX.Element => {
             <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='מספר טיסה'>
-                        <CircleTextField
+                        <TextField
                             value={flightNum}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_NUM)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='חברת תעופה'>
-                        <CircleTextField
+                        <TextField
                             value={airline}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.AIR_LINE)}/>
                     </FormInput>
@@ -63,7 +62,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                                 onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY)
                             }}
                             renderInput={(params) =>
-                                <CircleTextField
+                                <TextField
                                     {...params}
                                     className={formClasses.autocomplete}
                                 />
@@ -73,7 +72,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר מוצא'>
-                        <CircleTextField
+                        <TextField
                             value={flightOriginCity}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_ORIGIN_CITY)}/>
                     </FormInput>
@@ -90,7 +89,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY)
                         }}
                         renderInput={(params) =>
-                            <CircleTextField
+                            <TextField
                                 {...params}
                                 className={formClasses.autocomplete}
                             />
@@ -100,7 +99,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר יעד'>
-                        <CircleTextField
+                        <TextField
                             value={flightDestinationCity}
                             onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_DESTINATION_CITY)}/>
                     </FormInput>

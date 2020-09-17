@@ -1,10 +1,9 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import useFormStyles from 'styles/formStyles';
 import { format } from 'date-fns';
 
 import DatePick from 'commons/DatePick/DatePick';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import LocationInput from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -28,7 +27,7 @@ const ExposureForm = (props: any) => {
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="שם החולה:">
         <>
-          <CircleTextField
+          <TextField
             required
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(e) =>
@@ -36,7 +35,7 @@ const ExposureForm = (props: any) => {
             }
             placeholder="שם פרטי"
           />
-          <CircleTextField
+          <TextField
             required
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(e) =>

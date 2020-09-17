@@ -26,5 +26,5 @@ export default FormInput;
 
 interface Props extends TypographyProps {
     fieldName: string;
-    children: JSX.Element;
+    children: JSX.Element | JSX.Element[];
 };

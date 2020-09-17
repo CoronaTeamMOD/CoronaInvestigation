@@ -44,6 +44,41 @@ const theme = createMuiTheme({
         fontFamily: 'Assistant',
         fontWeightRegular: 400,
         fontWeightMedium: 500,
+    },
+    overrides: {
+        MuiOutlinedInput: {
+            root: {
+                borderRadius: 24,
+            },
+            inputMarginDense: {
+                paddingTop: 6.5,
+                paddingBottom: 6.5
+            }
+        },
+        MuiInputLabel: {
+            root: {
+                fontSize: 16
+            }
+        },
+        //@ts-ignore
+        MuiAutocomplete: {
+            inputRoot: {
+              '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
+                flip: false,
+                padding: '1px 10px 1px 10px'
+              }
+            }
+          }
+    },
+    props: {
+        MuiTextField: {
+            variant: 'outlined',
+            size: 'small'
+        },
+        MuiFormControl: {
+            size: 'small',
+            variant: 'outlined'
+        },
     }
 });
 

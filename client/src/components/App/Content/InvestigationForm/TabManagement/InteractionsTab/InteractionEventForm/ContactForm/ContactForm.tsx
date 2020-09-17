@@ -1,12 +1,10 @@
-import {  Grid } from '@material-ui/core';
+import {  FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
     
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 import ContactType from 'models/enums/ContactType';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleSelect from 'commons/CircleSelect/CircleSelect';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 
 import useStyles from './ContactFormStyles';
@@ -50,7 +48,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonFirstName}>
-                        <CircleTextField id='contactedPersonFirstName' key='contactedPersonFirstName'
+                        <TextField id='contactedPersonFirstName' key='contactedPersonFirstName'
                         className={classes.newContactField}
                         value={firstName}
                         onChange={event => onChange(event.target.value, InteractionEventContactFields.FIRST_NAME)}
@@ -59,7 +57,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonLastName}>
-                        <CircleTextField id='contactedPersonLastName' key='contactedPersonLastName'
+                        <TextField id='contactedPersonLastName' key='contactedPersonLastName'
                         className={classes.newContactField}
                         value={lastName}
                         onChange={event => onChange(event.target.value, InteractionEventContactFields.LAST_NAME)}
@@ -95,7 +93,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonID}>
-                        <CircleTextField  id='contactedPersonID'
+                        <TextField  id='contactedPersonID'
                         className={classes.newContactField}
                         value={id}
                         onChange={event => onChange(event.target.value, InteractionEventContactFields.ID)}
@@ -104,17 +102,25 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactTypeField}>
-                        <CircleSelect id='contactType'
-                        className={classes.newContactField}
-                        value={contactType}
-                        onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
-                        options={Object.values(ContactType)}
-                        />
+                        <FormControl fullWidth>
+                            <InputLabel>סוג מגע</InputLabel>
+                            <Select
+                                label='סוג מגע'
+                                value={contactType}
+                                onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
+                            >
+                                {
+                                    Object.values(ContactType).map((currentContactType) => (
+                                        <MenuItem key={currentContactType} value={currentContactType}>{currentContactType}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
                     </FormInput>
                 </Grid>
             </Grid>
             <FormInput fieldName={contactTypeMoreDetails}>
-                <CircleTextField className={classes.moreContactDetails}
+                <TextField className={classes.moreContactDetails}
                         id='extraInfo'
                         value={extraInfo}
                         onChange={event => onChange(event.target.value, InteractionEventContactFields.EXTRA_INFO)}

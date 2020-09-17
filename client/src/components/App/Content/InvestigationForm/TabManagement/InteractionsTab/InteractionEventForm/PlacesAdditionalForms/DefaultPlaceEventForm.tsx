@@ -1,9 +1,8 @@
 import React, {useContext} from 'react';
-import {Grid} from '@material-ui/core';
+import {Grid, TextField} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
@@ -20,7 +19,7 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
         <>
             <Grid item xs={6}>
                 <FormInput fieldName='שם המוסד'>
-                    <CircleTextField
+                    <TextField
                         value={ctxt.interactionEventDialogData.placeName}
                         onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>

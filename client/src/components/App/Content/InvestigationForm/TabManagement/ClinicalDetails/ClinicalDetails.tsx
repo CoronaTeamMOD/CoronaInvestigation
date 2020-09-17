@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
-import { Grid, Typography, Collapse } from '@material-ui/core';
+import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
@@ -12,7 +12,6 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import { dateFormatForDatePicker } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 
@@ -156,7 +155,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity === null ? '' : selectedCity.id)}
                     onInputChange={(event, selectedCityName) => setIsolationCityName(selectedCityName)}
                     renderInput={(params) =>
-                        <CircleTextField
+                        <TextField
                             {...params}
                             placeholder='עיר'
                             className={classes.textField}
@@ -170,7 +169,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     onChange={(event, selectedStreet) => updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet === null ? '' : selectedStreet.id)}
                     onInputChange={(event, selectedStreetName) => setIsolationStreetName(selectedStreetName)}
                     renderInput={(params) =>
-                        <CircleTextField
+                        <TextField
                             test-id='currentQuarantineStreet'
                             {...params}
                             placeholder='רחוב'
@@ -178,7 +177,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                     }
                 />
-                <CircleTextField
+                <TextField
                     test-id='currentQuarantineHomeNumber'
                     size='small'
                     placeholder='מספר הבית'
@@ -188,7 +187,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
                     )}
                 />
-                <CircleTextField
+                <TextField
                     test-id='currentQuarantineFloor'
                     size='small'
                     placeholder='קומה'
@@ -213,7 +212,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
                 />
                 <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
-                    <CircleTextField
+                    <TextField
                         test-id='problematicQuarantineReason'
                         value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
@@ -247,7 +246,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 required={!isUnkonwnDateChecked}
-                                label={!isUnkonwnDateChecked && "שדה חובה"}
+                                label={!isUnkonwnDateChecked && "תאריך התחלת סימפטומים"}
                                 test-id='symptomsStartDate'
                                 type='date'
                                 defaultValue={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
@@ -289,9 +288,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 ))
                             }
                             <Collapse in={isOtherSymptomChecked}>
-                                <CircleTextField
+                                <TextField
                                     required
-                                    label="שדה חובה"
+                                    label="סימפטום"
                                     test-id='symptomInput'
                                     size='small'
                                     className={classes.otherTextField}
@@ -344,9 +343,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 ))
                             }
                             <Collapse in={isOtherBackgroundIllnessChecked}>
-                                <CircleTextField
+                                <TextField
                                     required
-                                    label="שדה חובה"
+                                    label="מחלת רקע"
                                     test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
@@ -384,9 +383,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     בית חולים:
                                 </b>
                             </Typography>
-                            <CircleTextField
+                            <TextField
                                 required
-                                label="שדה חובה"
+                                label="בית חולים"
                                 test-id='hospitalInput'
                                 value={context.clinicalDetailsData.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
@@ -397,7 +396,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                             <DatePick
                                 required
-                                label="שדה חובה"
+                                label="מתאריך"
                                 test-id='wasHospitalizedFromDate'
                                 type='date'
                                 lableText='מתאריך'
@@ -406,7 +405,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             />
                             <DatePick
                                 required
-                                label="שדה חובה"
+                                label="עד"
                                 test-id='wasHospitalizedUntilDate'
                                 type='date'
                                 lableText='עד'

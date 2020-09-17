@@ -55,9 +55,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     ageText: {
         maxWidth: '4vw'
     },
-    selectWidth: {
-        width: '7vw'
-    },
     selectPlaceHolder: {
         left: 'unset',
         fontSize: 13
