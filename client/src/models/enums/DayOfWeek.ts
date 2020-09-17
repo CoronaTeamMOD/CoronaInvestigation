@@ -1,11 +1,11 @@
 enum DayOfWeek {
-    'א' = 0,
-    'ב',
+    'ב' = 0,
     'ג',
     'ד',
     'ה',
     'ו',
-    'ש'
+    'ש',
+    'א'
 }
 
 export default DayOfWeek;

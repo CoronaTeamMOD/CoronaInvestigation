@@ -26,7 +26,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         {interactions !== undefined && (areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />)}
                     </IconButton>
                         <Typography variant='body1'>
-                            יום {DayOfWeek[contactDate.getUTCDay() + 1] + ' '}
+                            יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
                             {format(contactDate, 'dd/MM/yyyy')}
                         </Typography>
                 </div>
