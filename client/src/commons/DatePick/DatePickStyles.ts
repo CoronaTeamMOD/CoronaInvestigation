@@ -7,9 +7,6 @@ export const useStyles = makeStyles({
   },
   dateText: {
     direction: "rtl",
-    paddingRight: "1vw",
-    paddingLeft: "1vw",
-    paddingBottom: "1.5vh",
   },
   textField: {
     minWidth: "10vw",
