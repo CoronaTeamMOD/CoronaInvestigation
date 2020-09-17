@@ -16,25 +16,23 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const { labelText, value, onChange } = props;
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
-      <KeyboardDatePicker
-        className={classes.dateText}
-        disableToolbar
-        variant="inline"
-        format="dd/MM/yyyy"
-        placeholder="dd/MM/yyyy"
-        margin="normal"
-        label={labelText}
-        value={value}
-        onChange={onChange}
-        KeyboardButtonProps={{
-          "aria-label": "change date",
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    </MuiPickersUtilsProvider>
+    <KeyboardDatePicker
+      className={classes.dateText}
+      disableToolbar
+      variant="inline"
+      format="dd/MM/yyyy"
+      placeholder="dd/MM/yyyy"
+      margin="normal"
+      label={labelText}
+      value={value}
+      onChange={onChange}
+      KeyboardButtonProps={{
+        "aria-label": "change date",
+      }}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
   );
 };
 
