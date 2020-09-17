@@ -41,7 +41,7 @@ stages:
       condition: eq(variables.isMabarDev,true)
       displayName: 'setting .env for mabar-dev environment'
     - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV)"
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV_NO_AUTH)"
         echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_DEV)"
         echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
       condition: eq(variables.isDev,true)
