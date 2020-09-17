@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Variant } from '@material-ui/core/styles/createTypography';
 import { StandardTextFieldProps } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';

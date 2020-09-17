@@ -5,7 +5,7 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import DatePick from 'commons/DatePick/DatePick';
 import useFormStyles from 'styles/formStyles';
 
-import AirportInput from './AirportInput/AirportInput';
+import AirportInput from "./AirportInput/AirportInput";
 
 const FlightsForm = (props: any) => {
   const {

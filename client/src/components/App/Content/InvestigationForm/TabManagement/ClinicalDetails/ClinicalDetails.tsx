@@ -13,8 +13,8 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 
-import { useStyles } from './ClinicalDetailsStyles';
-import useClinicalDetails from './useClinicalDetails';
+import { useStyles } from "./ClinicalDetailsStyles";
+import useClinicalDetails from "./useClinicalDetails";
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
   const classes = useStyles();
