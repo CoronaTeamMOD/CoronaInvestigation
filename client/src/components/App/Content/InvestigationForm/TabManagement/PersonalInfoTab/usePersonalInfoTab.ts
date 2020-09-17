@@ -64,14 +64,16 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
     }
 
     const getStreetsByCity = (cityId: string) => {
-        // axios.get('/addressDetails/city/' + cityId + '/streets').then((res: any) => {
-        //     setStreets(res && res.data && res.data.map((node: any) => (
-        //         {
-        //             displayName: node.displayName,
-        //             id: node.id
-        //         }
-        //     )));
-        // });
+        if(cityId !== '') {
+            axios.get('/addressDetails/city/' + cityId + '/streets').then((res: any) => {
+                setStreets(res && res.data && res.data.map((node: any) => (
+                    {
+                        displayName: node.displayName,
+                        id: node.id
+                    }
+                )));
+            });
+        }
     }
 
     return {
