@@ -64,7 +64,8 @@ const theme = createMuiTheme({
         MuiAutocomplete: {
             inputRoot: {
               '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
-                padding: 1
+                flip: false,
+                padding: '1px 10px 1px 10px'
               }
             }
           }
