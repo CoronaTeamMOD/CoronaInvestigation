@@ -5,10 +5,10 @@ import DateFnsUtils from "@date-io/date-fns";
 import heLocale from "date-fns/locale/he";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  KeyboardTimePicker,
 } from "@material-ui/pickers";
-import { useStyles } from "./DatePickStyles";
 import { ParsableDate } from "@material-ui/pickers/constants/prop-types";
+import { useStyles } from "./DatePickStyles";
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
@@ -17,12 +17,10 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
-      <KeyboardDatePicker
+      <KeyboardTimePicker
         className={classes.dateText}
-        disableToolbar
-        variant="inline"
-        format="dd/MM/yyyy"
-        placeholder="dd/MM/yyyy"
+        format="HH:mm"
+        placeholder="HH:mm"
         margin="normal"
         label={labelText}
         value={value}
