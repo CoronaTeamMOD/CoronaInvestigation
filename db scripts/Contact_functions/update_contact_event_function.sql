@@ -128,7 +128,7 @@ if curr_event is null then
 		trim(placeName,'"'),
 	    trim(placeType,'"'),
 		placeSubType,
-		locationAddress,
+		trim(locationAddress,'"'),
 		externalizationApproval,
 		contacted_number,
 		trim(busLine,'"'),
