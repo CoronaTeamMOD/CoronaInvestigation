@@ -78,7 +78,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
 
     React.useEffect(() => {
-        getStreetsByCity(personalInfoStateContext.personalInfoData.address.city);
+        personalInfoStateContext.personalInfoData.address.city && getStreetsByCity(personalInfoStateContext.personalInfoData.address.city);
     }, [personalInfoStateContext.personalInfoData.address.city]);
 
     return (
