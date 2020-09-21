@@ -123,30 +123,15 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       externalizationApproval: val,
     });
   
-  const handleStartTimeChange =(newStartTime: Date) => {
-    if(newStartTime){
-      let newStart = new Date(interactionEventDialogData.startTime.getTime())
-      newStart.setHours(newStartTime.getHours())
-      newStart.setMinutes(newStartTime.getMinutes())
-      if(newStart.getTime()){
+  const handleTimeChange = (currentTime : Date, currentDate : Date , fieldName : string) => {
+    if(currentTime){
+      let newTime = new Date(currentDate.getTime())
+      newTime.setHours(currentTime.getHours())
+      newTime.setMinutes(currentTime.getMinutes())
+      if(newTime.getTime()){
         setInteractionEventDialogData({
         ...(interactionEventDialogData as InteractionEventDialogData),
-        startTime: newStart,
-        });
-      }
-    }
-  }
-    
-
-  const handleEndTimeChange = (newEndDate: Date) => {
-      if(newEndDate){
-        let newEnd = new Date(interactionEventDialogData.endTime.getTime())
-        newEnd.setHours(newEndDate.getHours())
-        newEnd.setMinutes(newEndDate.getMinutes())
-        if(newEnd.getTime()){
-        setInteractionEventDialogData({
-          ...(interactionEventDialogData as InteractionEventDialogData),
-          endTime: newEnd,
+        [fieldName]: newTime,
         });
       }
     }
@@ -209,7 +194,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationStartTime"
                 labelText="משעה"
                 value={startTime}
-                onChange={handleStartTimeChange}
+                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.startTime,"startTime")}
               />
             </FormInput>
           </Grid>
@@ -220,7 +205,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationEndTime"
                 labelText="עד שעה"
                 value={endTime}
-                onChange={handleEndTimeChange}
+                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.endTime,"endTime")}
               />
             </FormInput>
           </Grid>
