@@ -18,7 +18,7 @@ const AddressGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='כתובת'>
                         <Typography variant='caption'>
-                            {interaction.locationAddress.address}
+                            {interaction.locationAddress.description}
                         </Typography>
                     </FormInput>
                 </Grid>
