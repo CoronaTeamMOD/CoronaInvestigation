@@ -9,6 +9,6 @@ export interface DBAddress {
     houseNum: string;
 }
 
-export const initAddress  = null;
+export const initAddress: Address  = null;
 
 export default Address;
