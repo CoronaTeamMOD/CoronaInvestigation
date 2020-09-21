@@ -26,76 +26,24 @@ const BusEventForm : React.FC = () : JSX.Element => {
 
     return (
         <>
-            <div className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='קו'>
-                        <TextField
-                            value={busLine}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_LINE)}/>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='חברה'>
-                        <TextField
-                            value={busCompany}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_COMPANY)}/>
-                    </FormInput>
-                </Grid>
-            </div>
-            <div className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר מוצא'>
-                        <Autocomplete
-                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={cities.get(cityOrigin as string)?.displayName}
-                            onChange={(event, selectedCity) => {
-                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    className={formClasses.autocomplete}
-                                />
-                            }
-                        />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת עליה'>
-                        <TextField
-                            value={boardingStation}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BOARDING_STATION)}/>
-                    </FormInput>
-                </Grid>
-            </div>
-            <div className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר יעד'>
-                        <Autocomplete
-                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={cities.get(cityDestination as string)?.displayName}
-                            onChange={(event, selectedCity) => {
-                                onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    className={formClasses.autocomplete}
-                                />
-                            }
-                        />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת ירידה'>
-                        <TextField
-                            value={endStation}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.END_STATION)}/>
-                    </FormInput>
-                </Grid>
-            </div>
+            <>
+                <div className={formClasses.formRow}>
+                    <Grid item xs={6}>
+                        <FormInput fieldName='קו'>
+                            <TextField
+                                value={busLine}
+                                onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_LINE)}/>
+                        </FormInput>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormInput fieldName='חברה'>
+                            <TextField
+                                value={busCompany}
+                                onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BUS_COMPANY)}/>
+                        </FormInput>
+                    </Grid>
+                </div>
+            </>
         </>
     );
 };

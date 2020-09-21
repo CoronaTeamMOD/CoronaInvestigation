@@ -20,14 +20,6 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
 
     return (
         <>
-            <div className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='שם בית חולים'>
-                        <TextField
-                            value={ctxt.interactionEventDialogData.placeName}
-                            onChange={(event) => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
-                    </FormInput>
-                </Grid>
                 <Grid item xs={3}>
                     <FormInput fieldName='מחלקה'>
                         <TextField
@@ -35,9 +27,6 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                             onChange={(event) => onChange(event, InteractionEventDialogFields.HOSPITAL_DEPARTMENT)}/>
                     </FormInput>
                 </Grid>
-            </div>
-            <AddressForm removeEntrance removeFloor/>
-            <BusinessContactForm/>
         </>
     );
 };

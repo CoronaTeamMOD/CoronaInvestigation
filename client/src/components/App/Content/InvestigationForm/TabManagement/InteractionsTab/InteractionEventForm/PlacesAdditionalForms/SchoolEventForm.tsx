@@ -3,10 +3,8 @@ import {FormControl, Grid, InputLabel, MenuItem, Select, TextField} from '@mater
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy, {getSubtypeCodeByName} from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -29,9 +27,10 @@ export const highSchoolGrades = [
     'יב',
 ]
 
-const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
-
 const SchoolEventForm : React.FC = () : JSX.Element => {
+
+    const elementarySchool = getSubtypeCodeByName(placeTypesCodesHierarchy.school.code, 'elementarySchool');
+    const highSchool = getSubtypeCodeByName(placeTypesCodesHierarchy.school.code, 'highSchool');
 
     const formClasses = useFormStyles();
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
@@ -52,14 +51,6 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
     
     return (
         <>
-            <div className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='שם המוסד'>
-                        <TextField
-                            value={interactionEventDialogData.placeName}
-                            onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
-                    </FormInput>
-                </Grid>
                 {
                     grades.length > 0 &&
                     <Grid item xs={6}>
@@ -81,9 +72,6 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                         </FormInput>
                     </Grid>
                 }
-            </div>
-            <AddressForm removeEntrance removeFloor/>
-            <BusinessContactForm/>
         </>
     );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy, {getSubtypeCodeByName} from 'Utils/placeTypesCodesHierarchy';
 
 import HospitalEventGrid from './HospitalEventGrid';
 import DefaultPlaceEventGrid from './DefaultPlaceEventGrid';
@@ -13,7 +13,7 @@ const MedicalLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
         {
-            interaction.placeSubType === placeTypesCodesHierarchy.medical.subTypesCodes.hospital ?
+            interaction.placeSubType === getSubtypeCodeByName(placeTypesCodesHierarchy.medical.code, 'hospital') ?
                 <HospitalEventGrid interaction={interaction}/>
             : 
                 <DefaultPlaceEventGrid interaction={interaction}/>

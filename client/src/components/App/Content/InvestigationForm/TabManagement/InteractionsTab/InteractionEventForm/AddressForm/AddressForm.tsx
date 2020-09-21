@@ -10,19 +10,14 @@ import { InteractionEventDialogContext } from 'components/App/Content/Investigat
 
 import useStyles from './AddressFormStyles';
 
-const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { removeFloor, removeEntrance } = props;
-        
+const AddressForm : React.FC<Props> = () : JSX.Element => {
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
 
     const ctxt = useContext(InteractionEventDialogContext);
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
-    const { address, entrance, floor } = interactionEventDialogData.locationAddress;
 
-    const onTextFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, updatedField: InteractionEventAddressFields) =>
-        setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, 
-            locationAddress: {...interactionEventDialogData.locationAddress, [updatedField]: event.target.value}});
+    const  address = interactionEventDialogData.locationAddress;
 
     const onGoogleApiLocationTextFieldChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
         setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData,
@@ -30,34 +25,17 @@ const AddressForm : React.FC<Props> = (props: Props) : JSX.Element => {
     };
 
     return (
-        <>
-            <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='כתובת'>
-                        <LocationInput selectedAddress={address}
-                                        setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}/>
+        <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
+            <Grid item xs={6}>
+                <FormInput fieldName='כתובת'>
+                    <LocationInput
+                        // @ts-ignore
+                        selectedAddress={address}
+                                   setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                </FormInput>
             </Grid>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
-                <Grid item xs={6}>
-                    { !removeEntrance && <FormInput fieldName='כניסה'>
-                            <TextField
-                                value={entrance}
-                                onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.ENTRANCE)}/>
-                        </FormInput>
-                    }
-                </Grid>
-                <Grid item xs={6}>
-                    { !removeFloor && <FormInput fieldName='קומה'>
-                        <TextField
-                            value={floor}
-                            onChange={(event) => onTextFieldChange(event, InteractionEventAddressFields.FLOOR)}/>
-                    </FormInput> }
-                </Grid>
-            </Grid>
-        </>
+            <Grid item xs={6}/>
+        </Grid>
     );
 };
 

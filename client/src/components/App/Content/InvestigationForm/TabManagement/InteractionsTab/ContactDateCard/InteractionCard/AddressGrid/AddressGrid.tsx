@@ -1,6 +1,5 @@
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
-
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';

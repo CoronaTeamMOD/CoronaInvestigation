@@ -8,20 +8,11 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import AddressGrid from '../AddressGrid/AddressGrid';
 import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
-const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 
-const wideAreas = [
-    publicPark,
-    zoo,
-    stadium,
-    amphitheater,
-    beach
-]
 
 const OtherPublicLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     
     const { interaction } = props;
-    const isWideArea : boolean = wideAreas.includes(interaction.placeSubType);
 
     return (
         <>
@@ -33,9 +24,10 @@ const OtherPublicLocationGrid : React.FC<Props> = (props: Props) : JSX.Element =
                 </FormInput>
             </Grid>
             <AddressGrid removeEntrance removeFloor interaction={interaction}/>
-            {
-                !isWideArea && <BusinessContactGrid interaction={interaction}/>
-            }
+            {/*{*/}
+            {/*//TODO add handeling*/}
+            {/*    !isWideArea && <BusinessContactGrid interaction={interaction}/>*/}
+            {/*}*/}
         </>
     );
 };

@@ -9,7 +9,7 @@ import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
 import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
-const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
+// const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
 
 const TransportationEventForm : React.FC = () : JSX.Element => {
 
@@ -17,30 +17,7 @@ const TransportationEventForm : React.FC = () : JSX.Element => {
 
     return (
         <>
-            {
-                placeSubType === bus &&
-                <Collapse in={placeSubType === bus}>
-                    <BusEventForm/>
-                </Collapse>
-            }
-            {
-                placeSubType === train &&
-                <Collapse in={placeSubType === train}>
-                    <TrainEventForm/>                        
-                </Collapse>
-            }
-            {
-                placeSubType === flight &&
-                <Collapse in={placeSubType === flight}>
-                    <FlightEventForm/>                    
-                </Collapse>
-            }
-            {
-                placeSubType === organizedTransport &&
-                <Collapse in={placeSubType === organizedTransport}>
-                    <OrganizedTransportEventForm/>
-                </Collapse>
-            }
+          d
         </>
     );
 };

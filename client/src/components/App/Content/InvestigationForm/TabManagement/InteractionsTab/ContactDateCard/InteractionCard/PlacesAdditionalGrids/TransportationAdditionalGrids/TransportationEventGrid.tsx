@@ -11,6 +11,10 @@ import OrganizedTransportEventGrid from './OrganizedTransportEventGrid';
 const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
 
 const TransportationEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
+    const bus = getSubtypeCodeByName(placeTypesCodesHierarchy.transportation.code, 'bus');
+    const train = getSubtypeCodeByName(placeTypesCodesHierarchy.transportation.code, 'train');
+    const flight = getSubtypeCodeByName(placeTypesCodesHierarchy.transportation.code, 'flight');
+    const organizedTransport = getSubtypeCodeByName(placeTypesCodesHierarchy.transportation.code, 'organizedTransport');
 
     const { interaction } = props;
 

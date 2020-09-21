@@ -12,7 +12,7 @@ export interface InteractionsEventDialogDataAndSet {
 export const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
     placeType: '',
     placeSubType: -1,
-    investigationId,
+    investigationId, 
     locationAddress: initAddress,
     startTime,
     endTime,

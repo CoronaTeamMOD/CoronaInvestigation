@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import placeTypesCodesHierarchy, {getSubtypeCodeByName} from 'Utils/placeTypesCodesHierarchy';
 
 import HospitalEventForm from './HospitalEventForm';
 import DefaultPlaceEventForm from './DefaultPlaceEventForm';
@@ -13,7 +13,8 @@ const MedicalLocationForm : React.FC = () : JSX.Element => {
     return (
         <>
         {
-            placeSubType === placeTypesCodesHierarchy.medical.subTypesCodes.hospital ?
+            // TODO delete file
+            placeSubType === getSubtypeCodeByName(placeTypesCodesHierarchy.medical.code, 'hospital') ?
                 <HospitalEventForm/>
             : 
                 <DefaultPlaceEventForm/>
