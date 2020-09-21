@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { Collapse, Divider, Typography } from '@material-ui/core';
@@ -7,22 +7,52 @@ import Swal from 'sweetalert2';
 import axios from 'Utils/axios';
 import Toggle from 'commons/Toggle/Toggle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { exposureAndFlightsContext, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
+import { tabsObserver } from '../../InvestigationForm';
 import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
+import { ExposureAndFlightsDetails, fieldsNames, useExposuresAndFlightsSaving } from './hooks/useExposuresAndFlightsSaving'
 
+const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
+  id: null,
+  wasConfirmedExposure: false,
+  exposureFirstName: null,
+  exposureLastName: null,
+  exposureDate: null,
+  exposureAddress: null,
+  exposurePlaceType: null,
+  exposurePlaceSubType: null,
+  wasAbroad: false,
+  flightDestinationCountry: null,
+  flightDestinationCity: null,
+  flightDestinationAirport: null,
+  flightOriginCountry: null,
+  flightOriginCity: null,
+  flightOriginAirport: null,
+  flightStartDate: null,
+  flightEndDate: null,
+  airline: null,
+  flightNum: null
+};
 
-const ExposuresAndFlights = () => {
-  const context = useContext(exposureAndFlightsContext);
-  const { exposureAndFlightsData, setExposureDataAndFlights } = context;
-
-  const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+const ExposuresAndFlights: React.FC<Props> = ({ id }: Props) => {
 
   const { fieldName } = useFormStyles();
   const classes = useStyles();
+
+  const  [exposureAndFlightsData, setExposureDataAndFlights] = useState(initialExposuresAndFlightsData);
+  const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+
+  const { saveExposuresAndFlightsData } = useExposuresAndFlightsSaving(exposureAndFlightsData);
+
+  useEffect(() => {
+    console.log("1,2,3");
+    tabsObserver.subscribe(id, () => {
+      saveExposuresAndFlightsData();
+    })
+  }, [exposureAndFlightsData])
 
   useEffect(() => {
     axios
@@ -118,5 +148,9 @@ const ExposuresAndFlights = () => {
     </>
   );
 };
+
+interface Props {
+  id: number;
+}
 
 export default ExposuresAndFlights;

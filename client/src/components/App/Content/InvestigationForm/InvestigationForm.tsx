@@ -6,6 +6,7 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import StoreStateType from 'redux/storeStateType';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import Observer from 'commons/ObserverDP/Observer';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
@@ -21,12 +22,14 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
+import { tabs } from './TabManagement/TabManagement';
 import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 
 export const LAST_TAB_ID = 3;
+export const tabsObserver = new Observer();
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
@@ -98,13 +101,14 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     <TabManagement
                                         currentTab={currentTab}
                                         setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
+                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : tabsObserver.notifySpecific(currentTab.id)}
                                         shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>
                                         <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
-                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                                tabsObserver.notifySpecific(currentTab.id);
+                                                setCurrentTab(tabs[(currentTab.id + 1) % tabs.length]);
                                             }}
                                             disabled={shouldDisableButton}>
                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}

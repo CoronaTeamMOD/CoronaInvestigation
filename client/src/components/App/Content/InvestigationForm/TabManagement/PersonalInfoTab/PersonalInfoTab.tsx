@@ -30,7 +30,7 @@ const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 
-const PersonalInfoTab: React.FC = (): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
@@ -399,5 +399,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         </div>
     );
 };
+
+interface Props {
+    id: number
+}
 
 export default PersonalInfoTab;
