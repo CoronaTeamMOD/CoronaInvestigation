@@ -123,7 +123,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       externalizationApproval: val,
     });
   
-  const handleTimeChange = (currentTime : Date, currentDate : Date , fieldName : string) => {
+  const handleTimeChange = (currentTime : Date, currentDate : Date , fieldName : keyof typeof interactionEventDialogData) => {
     if(currentTime){
       let newTime = new Date(currentDate.getTime())
       newTime.setHours(currentTime.getHours())
