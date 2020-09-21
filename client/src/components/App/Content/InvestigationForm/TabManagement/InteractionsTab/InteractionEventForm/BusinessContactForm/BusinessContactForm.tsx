@@ -28,6 +28,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactFirstNameField}>
                         <TextField
+                            test-id={'businessContactFirstName'}
                             value={contactPersonFirstName}
                             onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
                     </FormInput>
@@ -35,6 +36,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactLastNameField}>
                         <TextField
+                            test-id={'businessContactLastName'}
                             value={contactPersonLastName}
                             onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
                     </FormInput>
