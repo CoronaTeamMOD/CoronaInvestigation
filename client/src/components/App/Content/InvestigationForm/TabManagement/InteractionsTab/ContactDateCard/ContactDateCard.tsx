@@ -22,13 +22,18 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
             <div className={classes.dateInfo}>
                 <div className={classes.dateSection}>
-                    <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
-                        {interactions !== undefined && (areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />)}
-                    </IconButton>
-                        <Typography variant='body1'>
-                            יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
-                            {format(contactDate, 'dd/MM/yyyy')}
-                        </Typography>
+                    <div className={classes.arrowWrapper}>
+                        {
+                            interactions !== undefined && 
+                            <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
+                                {areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
+                            </IconButton>
+                        }
+                    </div>
+                    <Typography variant='body1'>
+                        יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
+                        {format(contactDate, 'dd/MM/yyyy')}
+                    </Typography>
                 </div>
                 {
                     interactions !== undefined &&
