@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import ContactType from '../../Models/ContactEvent/Enums/ContactType';
-import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
+import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
 import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID } from '../../DBService/ContactEvent/Query'
@@ -12,14 +12,13 @@ const errorStatusCode = 500;
 const intersectionsRoute = Router();
 
 intersectionsRoute.get('/', (request: Request, response: Response) => {
-    // TODO: add data parsing from DB
     response.send(request.query.epidemioligyNumber);
 })
 
 intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response: Response) => {
     graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, response.locals)
         .then((result: GetPlaceSubTypesByTypesResposne) => {
-            console.log(result)
+            console.log(result);
             const locationsSubTypesByTypes : PlacesSubTypesByTypes = {};
             result.data.allPlaceTypes.nodes.forEach(type =>
                 locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
@@ -50,29 +49,29 @@ const convertDBEvent = (event: ContactEvent) => {
 intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals,{ currInvestigation: Number(request.params.investigationId)})
         .then((result: GetContactEventResponse) => {
-            console.log(result)
+            console.log(result);
             const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => convertDBEvent(event));
             response.send(allContactEvents);
     }).catch((err) => {
-        console.log(err)
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
+        console.log(err);
+        response.status(errorStatusCode).send('error in fetching data: ' + err);
     });
 });
 
 intersectionsRoute.get('/contactEventById/:eventId', (request: Request, response: Response) => {
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_ID, response.locals,{ currEventId: Number(request.params.eventId)})
         .then((result: GetContactEventByIdResponse) => {
-            console.log(result)
+            console.log(result);
             response.send(convertDBEvent(result.data.contactEventById));
     }).catch((err) => {
-        console.log(err)
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
+        console.log(err);
+        response.status(errorStatusCode).send('error in fetching data: ' + err);
     });
 });
 
 const resetEmptyFields = (object: any) => {
     Object.keys(object).forEach(key => {
-        if (object[key] === '') object[key] = null
+        if (object[key] === '') object[key] = null;
     });
 }
 
@@ -93,12 +92,12 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
     const newEvent = convertEventToDBType(request.body);
     graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
     .then(result => {
-        console.log(result)
-        response.send(result)
+        console.log(result);
+        response.send(result);
         })
     .catch(err => {
         console.log(err);
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
+        response.status(errorStatusCode).send('error in creating event: ' + err);
     });
 });
 
@@ -106,12 +105,25 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
     const updatedEvent = convertEventToDBType(request.body);
     graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {event: JSON.stringify(updatedEvent)})
     .then(result => {
-        console.log(result)
-        response.send(result)
+        console.log(result);
+        response.send(result);
     })
     .catch(err => {
         console.log(err);
-        response.status(errorStatusCode).send('error in fetching data: ' + err)
+        response.status(errorStatusCode).send('error in updating event: ' + err);
+    });
+});
+
+intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Response) => {
+    const contactEventId = +request.query.contactEventId;
+    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
+    .then(result => {
+        console.log(result);
+        response.send(result);
+    })
+    .catch(err => {
+        console.log(err);
+        response.status(errorStatusCode).send('error in deleting event: ' + err);
     });
 });
 

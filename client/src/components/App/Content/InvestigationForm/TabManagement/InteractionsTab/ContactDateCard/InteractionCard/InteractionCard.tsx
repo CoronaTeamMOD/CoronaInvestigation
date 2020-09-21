@@ -22,7 +22,7 @@ const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, rel
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
-    const {interaction, onEditClick} = props;
+    const { interaction, onEditClick, onDeleteClick } = props;
     const classes = useStyle();
 
     return (
@@ -42,7 +42,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     <IconButton onClick={onEditClick}>
                         <Edit />
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
                 </div>
@@ -110,7 +110,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
 interface Props {
     interaction: Interaction,
-    onEditClick: () => void
+    onEditClick: () => void,
+    onDeleteClick: () => void
 }
 
 export default InteractionCard;

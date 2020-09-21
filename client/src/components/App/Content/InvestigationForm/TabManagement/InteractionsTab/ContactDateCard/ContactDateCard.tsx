@@ -12,7 +12,7 @@ import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
-    const { contactDate, interactions, createNewInteractionEvent, onEditClick } = props;
+    const { contactDate, interactions, createNewInteractionEvent, onEditClick, onDeleteClick } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -51,6 +51,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 {interactions?.map(interaction =>
                     <InteractionCard
                         onEditClick={() => onEditClick(interaction)}
+                        onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
                 )}
             </Collapse>
@@ -63,6 +64,7 @@ interface Props {
     interactions: Interaction[] | undefined;
     createNewInteractionEvent: () => void;
     onEditClick: (interaction: Interaction) => void
+    onDeleteClick: (contactEventId: number) => void
 }
 
 export default ContactDateCard;
