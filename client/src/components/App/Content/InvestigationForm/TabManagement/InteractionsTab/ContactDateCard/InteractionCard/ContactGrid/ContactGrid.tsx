@@ -1,5 +1,5 @@
+import React from 'react';
 import {  Grid, Typography } from '@material-ui/core';
-import React, { useContext } from 'react';
     
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
@@ -9,7 +9,6 @@ const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';
 const contactedPersonLastName: string = 'שם משפחה';
 const contactedPersonID: string = 'ת.ז';
-const contactTypeField: string = 'סוג מגע';
 const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
 
 const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {

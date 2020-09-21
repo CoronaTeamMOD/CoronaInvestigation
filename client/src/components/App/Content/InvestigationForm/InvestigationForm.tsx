@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 import StoreStateType from 'redux/storeStateType';
 
@@ -13,7 +13,6 @@ import {
     initialPersonalInfo,
     PersonalInfoContextProvider,
     PersonalInfoDataAndSet,
-    personalInfoContext
 } from 'commons/Contexts/PersonalInfoStateContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
