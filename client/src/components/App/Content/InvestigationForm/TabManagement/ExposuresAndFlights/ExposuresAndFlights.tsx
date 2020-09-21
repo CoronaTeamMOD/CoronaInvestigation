@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
 import StoreStateType from 'redux/storeStateType';
 import { Collapse, Divider, Typography } from '@material-ui/core';
 import Swal from 'sweetalert2';
@@ -38,7 +39,7 @@ const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
 };
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props) => {
-
+  
   const { fieldName } = useFormStyles();
   const classes = useStyles();
 
@@ -105,7 +106,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props) => {
         >
           <ExposureForm
             exposureAndFlightsData={exposureAndFlightsData}
-            fieldsNames={fieldsNames}
             handleChangeExposureDataAndFlightsField={
               handleChangeExposureDataAndFlightsField
             }
