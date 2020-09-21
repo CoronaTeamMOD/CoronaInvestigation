@@ -19,6 +19,7 @@ variables:
   isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
   isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
+  isMabarDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev-mabar')]
 
 stages:
 - stage:
@@ -44,6 +45,19 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           server-dev
+
+    - task: Docker@2
+      condition: eq(variables.isMabarDev,true)
+      continueOnError: 'false'
+      displayName: Build and push mabar-dev server image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/server/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          server-mabar-dev
 
     - task: Docker@2
       condition: eq(variables.isTest,true)
