@@ -122,6 +122,35 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       ...(interactionEventDialogData as InteractionEventDialogData),
       externalizationApproval: val,
     });
+  
+  const handleStartTimeChange =(newStartTime: Date) => {
+    if(newStartTime){
+      let newStart = new Date(interactionEventDialogData.startTime.getTime())
+      newStart.setHours(newStartTime.getHours())
+      newStart.setMinutes(newStartTime.getMinutes())
+      if(newStart.getTime()){
+        setInteractionEventDialogData({
+        ...(interactionEventDialogData as InteractionEventDialogData),
+        startTime: newStart,
+        });
+      }
+    }
+  }
+    
+
+  const handleEndTimeChange = (newEndDate: Date) => {
+      if(newEndDate){
+        let newEnd = new Date(interactionEventDialogData.endTime.getTime())
+        newEnd.setHours(newEndDate.getHours())
+        newEnd.setMinutes(newEndDate.getMinutes())
+        if(newEnd.getTime()){
+        setInteractionEventDialogData({
+          ...(interactionEventDialogData as InteractionEventDialogData),
+          endTime: newEnd,
+        });
+      }
+    }
+  }
 
   return (
     <>
@@ -180,12 +209,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationStartTime"
                 labelText="משעה"
                 value={startTime}
-                onChange={(newStartTime: Date) => {
-                  setInteractionEventDialogData({
-                    ...(interactionEventDialogData as InteractionEventDialogData),
-                    startTime: newStartTime,
-                  });
-                }}
+                onChange={handleStartTimeChange}
               />
             </FormInput>
           </Grid>
@@ -196,12 +220,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationEndTime"
                 labelText="עד שעה"
                 value={endTime}
-                onChange={(newEndTime: Date) => {
-                  setInteractionEventDialogData({
-                    ...(interactionEventDialogData as InteractionEventDialogData),
-                    endTime: newEndTime,
-                  });
-                }}
+                onChange={handleEndTimeChange}
               />
             </FormInput>
           </Grid>
