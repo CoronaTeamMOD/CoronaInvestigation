@@ -99,6 +99,7 @@ stages:
         cd client
         npm install
         npm run build
+      condition: eq(variables.isDev,true)
       displayName: 'npm build client with auth'
 
     - task: Docker@2
