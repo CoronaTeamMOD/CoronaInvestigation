@@ -32,7 +32,7 @@ const OtherPublicLocationGrid : React.FC<Props> = (props: Props) : JSX.Element =
                     </Typography>
                 </FormInput>
             </Grid>
-            <AddressGrid removeEntrance removeFloor interaction={interaction}/>
+            <AddressGrid interaction={interaction}/>
             {
                 !isWideArea && <BusinessContactGrid interaction={interaction}/>
             }

@@ -33,7 +33,7 @@ const SchoolEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </FormInput>
                 </Grid>
             </Grid>
-            <AddressGrid interaction={interaction} removeEntrance removeFloor/>
+            <AddressGrid interaction={interaction} />
             <BusinessContactGrid interaction={interaction}/>
         </>
     );

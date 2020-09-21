@@ -14,7 +14,7 @@ const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInte
     const { closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData } = input;
 
     const createNewInteractionEvent = async(interactionEventVariables: InteractionEventDialogData) : Promise<any> => {
-        const locationAddress = await parseLocation(interactionEventVariables.locationAddress.address);
+        const locationAddress = await parseLocation(interactionEventVariables.locationAddress);
 
         const newData =  {
             ...interactionEventVariables,

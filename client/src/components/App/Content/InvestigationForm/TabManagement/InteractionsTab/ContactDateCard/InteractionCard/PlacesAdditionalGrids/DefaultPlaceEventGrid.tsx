@@ -20,7 +20,7 @@ const DefaultPlaceEventGrid : React.FC<Props> = (props: Props) : JSX.Element => 
                     </Typography>
                 </FormInput>
             </Grid>
-            <AddressGrid interaction={interaction} removeEntrance removeFloor/>
+            <AddressGrid interaction={interaction}/>
             <BusinessContactGrid interaction={interaction}/>
         </>
     );

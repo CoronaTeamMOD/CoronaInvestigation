@@ -82,7 +82,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                     </Grid>
                 }
             </div>
-            <AddressForm removeEntrance removeFloor/>
+            <AddressForm />
             <BusinessContactForm/>
         </>
     );
