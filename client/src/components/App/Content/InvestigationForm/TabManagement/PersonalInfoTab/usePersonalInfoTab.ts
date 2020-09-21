@@ -18,9 +18,9 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
-                let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
-                let patientAddress = investigatedPatient.addressByAddress;
+                const patientAddress = investigatedPatient.addressByAddress;
                 personalInfoStateContext.setPersonalInfoData({
                     phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
                     additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
