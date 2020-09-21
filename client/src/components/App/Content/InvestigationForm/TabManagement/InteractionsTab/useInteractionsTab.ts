@@ -4,12 +4,14 @@ import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
-import { initAddress } from 'models/Address';
+import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import { convertDate } from '../ClinicalDetails/useClinicalDetails';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
+import useStyles from './InteractionsTabStyles';
 
 const symptomsWithKnownStartDate: number = 4;
 const nonSymptomaticPatient: number = 7;
@@ -19,6 +21,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const { parseAddress } = useGoogleApiAutocomplete();
     const { interactions, setInteractions } = props;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const classes = useStyles({});
 
     const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
         axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
@@ -76,12 +79,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         });
     }
 
-    const parseLocation = (interaction: InteractionEventDialogData) => {
-        if (interaction.locationAddress === null) return initAddress;
-        if (interaction.locationAddress instanceof String) return JSON.parse(interaction.locationAddress as unknown as string);
-        return interaction.locationAddress;
-    }
-
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
@@ -97,6 +94,9 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         Swal.fire({
             title: 'הייתה שגיאה בטעינת האירועים והמגעים',
             icon: 'error',
+            customClass: {
+                title: classes.swalTitle
+            }
         });
     }
 
@@ -108,12 +108,50 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         loadInteractionById(addedInteraction.id as number);
     }
 
+    const handleDeleteContactEvent = (contactEventId: number) => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'האם אתה בטוח שתרצה למחוק את האירוע?',
+            text: 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו',
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+            customClass: {
+                title: classes.swalTitle,
+                content: classes.swalText
+            }
+        }).then((result) => {
+            if (result.value) {
+                axios.delete('/intersections/deleteContactEvent', {
+                    data: {contactEventId}
+                }).then(() => {
+                    setInteractions(interactions.filter(interaction => interaction.id !== contactEventId));
+                }).catch(() => {
+                    handleDeleteEventFailed();
+                })
+            };
+        });
+
+        const handleDeleteEventFailed = () => {
+            Swal.fire({
+                title: 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות',
+                icon: 'error',
+                customClass: {
+                    title: classes.swalTitle
+                }
+            })
+        };
+    }
+
     return {
         getCoronaTestDate,
         getDatesToInvestigate,
         loadInteractions,
         addNewInteraction,
         updateInteraction,
+        handleDeleteContactEvent,
     }
 };
 

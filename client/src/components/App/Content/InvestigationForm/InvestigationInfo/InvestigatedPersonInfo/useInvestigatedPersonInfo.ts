@@ -78,6 +78,9 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
         Swal.fire({
             title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות',
             icon: 'error',
+            customClass: {
+                title: classes.swalTitle
+            }
         })
     };
 
