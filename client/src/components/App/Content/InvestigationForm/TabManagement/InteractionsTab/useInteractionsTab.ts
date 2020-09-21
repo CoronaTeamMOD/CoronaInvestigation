@@ -125,7 +125,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         }).then((result) => {
             if (result.value) {
                 axios.delete('/intersections/deleteContactEvent', {
-                    params: {contactEventId}
+                    data: {contactEventId}
                 }).then(() => {
                     setInteractions(interactions.filter(interaction => interaction.id !== contactEventId));
                 }).catch(() => {
