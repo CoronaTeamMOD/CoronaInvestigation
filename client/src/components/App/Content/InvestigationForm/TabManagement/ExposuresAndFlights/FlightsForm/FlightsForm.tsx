@@ -1,11 +1,9 @@
 import React from 'react';
 import { Grid, TextField, Typography } from '@material-ui/core';
-import { format } from 'date-fns';
 
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import DatePick from 'commons/DatePick/DatePick';
 import useFormStyles from 'styles/formStyles';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
 
 import AirportInput from './AirportInput/AirportInput';
 
@@ -17,11 +15,6 @@ const FlightsForm = (props: any) => {
   } = props;
 
   const classes = useFormStyles();
-
-  const updateDateOnBlur = (event: React.FocusEvent<HTMLInputElement>, fieldName: string) => {
-    const newDate = event.target.value ? new Date(event.target.value) : null
-    handleChangeExposureDataAndFlightsField(fieldName, newDate);
-  }
 
   return (
     <Grid className={classes.form} container justify="flex-start">
@@ -41,7 +34,6 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מוצא:">
         <AirportInput
-          
           country={exposureAndFlightsData[fieldsNames.originCountry]}
           countryFieldName={fieldsNames.originCountry}
           city={exposureAndFlightsData[fieldsNames.originCity]}
@@ -59,16 +51,26 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             required
-            type="date"
-            defaultValue={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.flightStartDate)}
+            labelText="מתאריך"
+            value={exposureAndFlightsData[fieldsNames.flightStartDate]}
+            onChange={(newDate: Date) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightStartDate,
+                newDate
+              )
+            }
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             required
-            type="date"
-            defaultValue={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,fieldsNames.flightEndDate)}
+            labelText="עד"
+            value={exposureAndFlightsData[fieldsNames.flightEndDate]}
+            onChange={(newDate: Date) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightEndDate,
+                newDate
+              )
+            }
           />
         </div>
       </FormRowWithInput>

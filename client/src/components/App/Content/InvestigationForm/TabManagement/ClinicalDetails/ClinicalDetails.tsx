@@ -1,5 +1,4 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
@@ -10,7 +9,6 @@ import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
@@ -97,10 +95,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         };
     };
 
-    const updateDateOnBlur = (event: React.FocusEvent<HTMLInputElement>, fieldName: ClinicalDetailsFields) => {
-        const newDate = event.target.value ? new Date(event.target.value) : null
-        updateClinicalDetails(fieldName, newDate);
-    }
     return (
         <div>
             <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
@@ -123,22 +117,30 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
-                            <DatePick
-                                required
-                                test-id='quarantinedFromDate'
-                                type='date'
-                                lableText='מתאריך'
-                                defaultValue={context.clinicalDetailsData.isolationStartDate !== null ? format(context.clinicalDetailsData.isolationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,ClinicalDetailsFields.ISOLATION_START_DATE)}
-                            />
-                            <DatePick
-                                required
-                                test-id='quarantinedUntilDate'
-                                type='date'
-                                lableText='עד'
-                                defaultValue={context.clinicalDetailsData.isolationEndDate !== null ? format(context.clinicalDetailsData.isolationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,ClinicalDetailsFields.ISOLATION_END_DATE)}
-                            />
+                        <DatePick
+                            required
+                            test-id="quarantinedFromDate"
+                            labelText="מתאריך"
+                            value={context.clinicalDetailsData.isolationStartDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.ISOLATION_START_DATE,
+                                newDate
+                            )
+                            }
+                        />
+                        <DatePick
+                            required
+                            test-id="quarantinedUntilDate"
+                            labelText="עד"
+                            value={context.clinicalDetailsData.isolationEndDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.ISOLATION_END_DATE,
+                                newDate
+                            )
+                            }
+                        />
                         </div>
                     </Collapse>
                 </Grid>
@@ -255,16 +257,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
-                            <DatePick
-                                required={!isUnkonwnDateChecked}
-                                label={!isUnkonwnDateChecked && "תאריך התחלת סימפטומים"}
-                                test-id='symptomsStartDate'
-                                type='date'
-                                defaultValue={(!isUnkonwnDateChecked && context.clinicalDetailsData.symptomsStartDate !== null) ? format(context.clinicalDetailsData.symptomsStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                lableText='תאריך התחלת סימפטומים'
-                                disabled={isUnkonwnDateChecked}
-                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,ClinicalDetailsFields.SYMPTOMS_START_DATE)}
-                            />
+                        <DatePick
+                            required={!isUnkonwnDateChecked}
+                            label={!isUnkonwnDateChecked && "תאריך התחלת סימפטומים"}
+                            test-id="symptomsStartDate"
+                            value={context.clinicalDetailsData.symptomsStartDate}
+                            labelText="תאריך התחלת סימפטומים"
+                            disabled={isUnkonwnDateChecked}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.SYMPTOMS_START_DATE,
+                                newDate
+                            )
+                            }
+                        />
                             <CustomCheckbox
                                 testId='unkownSymptomsDate'
                                 checkboxElements={[{
@@ -405,24 +411,32 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             />
                         </div>
                         <div className={classes.dates}>
-                            <DatePick
-                                required
-                                label="מתאריך"
-                                test-id='wasHospitalizedFromDate'
-                                type='date'
-                                lableText='מתאריך'
-                                defaultValue={context.clinicalDetailsData.hospitalizationStartDate !== null ? format(context.clinicalDetailsData.hospitalizationStartDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,ClinicalDetailsFields.HOSPITALIZATION_START_DATE)}
-                            />
-                            <DatePick
-                                required
-                                label="עד"
-                                test-id='wasHospitalizedUntilDate'
-                                type='date'
-                                lableText='עד'
-                                defaultValue={context.clinicalDetailsData.hospitalizationEndDate !== null ? format(context.clinicalDetailsData.hospitalizationEndDate as Date, dateFormatForDatePicker) : dateFormatForDatePicker}
-                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => updateDateOnBlur(event,ClinicalDetailsFields.HOSPITALIZATION_END_DATE)}
-                            />
+                        <DatePick
+                            required
+                            label="מתאריך"
+                            test-id="wasHospitalizedFromDate"
+                            labelText="מתאריך"
+                            value={context.clinicalDetailsData.hospitalizationStartDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
+                                newDate
+                            )
+                            }
+                        />
+                        <DatePick
+                            required
+                            label="עד"
+                            test-id="wasHospitalizedUntilDate"
+                            labelText="עד"
+                            value={context.clinicalDetailsData.hospitalizationEndDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
+                                newDate
+                            )
+                            }
+                        />
                         </div>
                     </Collapse>
                 </Grid>
