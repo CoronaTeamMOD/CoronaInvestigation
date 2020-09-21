@@ -15,7 +15,7 @@ const AddressForm : React.FC = () : JSX.Element => {
 
     const ctxt = useContext(InteractionEventDialogContext);
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
-    const  address = interactionEventDialogData.locationAddress;
+    const {locationAddress} = interactionEventDialogData;
 
     const onGoogleApiLocationTextFieldChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
         setInteractionEventDialogData({
@@ -29,7 +29,7 @@ const AddressForm : React.FC = () : JSX.Element => {
             <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
                 <Grid item xs={6}>
                     <FormInput fieldName='כתובת'>
-                        <LocationInput selectedAddress={address}
+                        <LocationInput selectedAddress={locationAddress}
                                         setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
                     </FormInput>
                 </Grid>
