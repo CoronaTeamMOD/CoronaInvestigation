@@ -1,20 +1,20 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Autocomplete } from "@material-ui/lab";
-import StoreStateType from "redux/storeStateType";
-import { Grid, Typography, Collapse, TextField } from "@material-ui/core";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+import { Autocomplete } from '@material-ui/lab';
+import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 
-import City from "models/City";
-import Gender from "models/enums/Gender";
-import Street from "models/enums/Street";
-import Toggle from "commons/Toggle/Toggle";
-import DatePick from "commons/DatePick/DatePick";
-import CustomCheckbox from "commons/CheckBox/CustomCheckbox";
-import ClinicalDetailsFields from "models/enums/ClinicalDetailsFields";
-import { clinicalDetailsDataContext } from "commons/Contexts/ClinicalDetailsContext";
+import City from 'models/City';
+import Gender from 'models/enums/Gender';
+import Street from 'models/enums/Street';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import Toggle from 'commons/Toggle/Toggle';
+import DatePick from 'commons/DatePick/DatePick';
+import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 
-import { useStyles } from "./ClinicalDetailsStyles";
-import useClinicalDetails from "./useClinicalDetails";
+import { useStyles } from './ClinicalDetailsStyles';
+import useClinicalDetails from './useClinicalDetails';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
   const classes = useStyles();
