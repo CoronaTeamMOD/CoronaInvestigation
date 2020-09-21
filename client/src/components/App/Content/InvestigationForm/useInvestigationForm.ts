@@ -25,7 +25,7 @@ import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
     const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
 
-    const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
+    // const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
    
@@ -110,9 +110,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             }
             case(TabNames.CLINICAL_DETAILS): {
                 return saveClinicalDetails();
-            }
-            case(TabNames.EXPOSURES_AND_FLIGHTS): {
-                return saveExposureAndFlightData();
             }
             default: {
                 return new Promise<void>((resolve, reject) => resolve());

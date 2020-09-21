@@ -9,7 +9,7 @@ import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractio
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Contexts/ClinicalDetailsContext';
 
-const InteractionsTab: React.FC = (): JSX.Element => {
+const InteractionsTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const onDateClick = (date: Date) => setNewInteractionEventDate(date);
     const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
@@ -32,7 +32,6 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     useEffect(() => {
         loadInteractions();
         getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
-
     }, []);
 
     useEffect(() => {
@@ -83,5 +82,9 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         </>
     )
 };
+
+interface Props {
+    id: number
+}
 
 export default InteractionsTab;

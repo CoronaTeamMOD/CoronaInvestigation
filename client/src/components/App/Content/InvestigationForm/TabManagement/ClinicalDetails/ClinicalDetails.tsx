@@ -18,7 +18,7 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 
-const ClinicalDetails: React.FC = (): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
@@ -436,5 +436,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         </div>
     );
 };
+
+interface Props {
+    id: number
+}
 
 export default ClinicalDetails;
