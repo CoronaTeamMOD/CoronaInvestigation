@@ -12,7 +12,7 @@ const useNewInteractionEventDialog =  (input: useEditInteractionEventInput) :  u
     const { closeDialog, updateInteraction, canConfirm, interactionEventDialogData } = input;
 
     const editInteractionEvent = async (interactionEventVariables: InteractionEventDialogData) : Promise<any> => {
-        const locationAddress = await parseLocation(interactionEventVariables.locationAddress.address);
+        const locationAddress = await parseLocation(interactionEventVariables.locationAddress);
         const newData = {
             ...interactionEventVariables,
             locationAddress,

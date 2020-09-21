@@ -24,7 +24,7 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
                         onChange={event => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
                 </FormInput>
             </Grid>
-            <AddressForm removeEntrance removeFloor/>
+            <AddressForm />
             <BusinessContactForm/>
         </>
     );
