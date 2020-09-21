@@ -27,7 +27,7 @@ mutation updateAddress($id: Int!, $city: String!, $street: String!, $floor: Int,
 `;
 
 export const CREATE_ADRESS = gql`
-mutation createAddress($city: String!, $street: String, $houseNum: Int, $floor: Int) {
+mutation createAddress($city: String, $street: String, $houseNum: Int, $floor: Int) {
     createAddress(input: {address: {city: $city, street: $street, houseNum: $houseNum, floor: $floor}}) {
       address {
         id

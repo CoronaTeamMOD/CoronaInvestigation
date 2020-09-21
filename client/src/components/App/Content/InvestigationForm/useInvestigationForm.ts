@@ -16,11 +16,12 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
+import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
     const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
@@ -154,6 +155,18 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             investigatedPatientId,
             epidemiologyNumber
         });
+
+        if (clinicalDetails.symptoms.includes(otherSymptomFieldName)) {
+            clinicalDetails.symptoms = clinicalDetails.symptoms.filter(symptom => symptom !== otherSymptomFieldName)
+        } else {
+            clinicalDetails.otherSymptomsMoreInfo = '';
+        }
+
+        if (clinicalDetails.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
+            clinicalDetails.backgroundDeseases = clinicalDetails.backgroundDeseases.filter(symptom => symptom !== otherBackgroundDiseaseFieldName)
+        } else {
+            clinicalDetails.otherBackgroundDiseasesMoreInfo = '';
+        }
 
         if (!clinicalDetails.wasHospitalized) {
             clinicalDetails.hospital = '';
