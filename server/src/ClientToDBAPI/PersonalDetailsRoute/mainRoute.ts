@@ -46,6 +46,7 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
                 ? request.body.personalInfoData.otherOccupationExtraInfo : null,
                 occupation: request.body.personalInfoData.relevantOccupation,
                 patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
+                patientContactInfo: request.body.personalInfoData.contactInfo,
                 subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
                 address: result.data.createAddress.address.id,
             }

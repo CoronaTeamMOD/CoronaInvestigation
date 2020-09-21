@@ -1,7 +1,7 @@
 import {createContext} from 'react';
 
-import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
 import { initialPhoneNumberControl } from 'models/PhoneNumberControl';
+import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
 
 import { initialAddress } from './ClinicalDetailsContext';
 
@@ -14,7 +14,8 @@ export const initialPersonalInfo: personalInfoContextData = {
     relevantOccupation: '',
     educationOccupationCity: '',
     institutionName: '',
-    otherOccupationExtraInfo: ''
+    otherOccupationExtraInfo: '',
+    contactInfo: '',
 } 
 
 const initialPersonalInfoContext: PersonalInfoDataAndSet = {
