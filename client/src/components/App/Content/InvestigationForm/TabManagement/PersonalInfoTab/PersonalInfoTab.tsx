@@ -29,6 +29,7 @@ const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
+const CONTACT_INFO = 'תיאור איש קשר:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
@@ -204,6 +205,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
+                <TextField
+                    id={PersonalInfoDataContextFields.CONTACT_INFO}
+                    placeholder={CONTACT_INFO}
+                    value={personalInfoStateContext.personalInfoData.contactInfo}
+                        onChange={(event) => {
+                            handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, event.target.value);
+                        }}
+                />
             </Grid>
 
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>

@@ -41,6 +41,7 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
             ? request.body.personalInfoData.otherOccupationExtraInfo : null,
             occupation: request.body.personalInfoData.relevantOccupation,
             patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
+            patientContactInfo: request.body.personalInfoData.contactInfo ? request.body.personalInfoData.contactInfo : null,
             subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
             address,
         }

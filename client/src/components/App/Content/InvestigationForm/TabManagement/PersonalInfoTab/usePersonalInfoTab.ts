@@ -32,7 +32,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     ?
                     investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
-                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo
+                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
+                    contactInfo: investigatedPatient.patientContactInfo
                 });
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
                 if (patientAddress.cityByCity !== null) {
