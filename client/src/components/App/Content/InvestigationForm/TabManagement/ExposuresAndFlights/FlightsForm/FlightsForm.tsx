@@ -1,11 +1,11 @@
-import React from "react";
-import { Grid, TextField, Typography } from "@material-ui/core";
+import React from 'react';
+import { Grid, TextField, Typography } from '@material-ui/core';
 
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
-import DatePick from "commons/DatePick/DatePick";
-import useFormStyles from "styles/formStyles";
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import DatePick from 'commons/DatePick/DatePick';
+import useFormStyles from 'styles/formStyles';
 
-import AirportInput from "./AirportInput/AirportInput";
+import AirportInput from './AirportInput/AirportInput';
 
 const FlightsForm = (props: any) => {
   const {
