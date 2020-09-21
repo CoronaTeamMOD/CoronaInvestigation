@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
@@ -9,6 +10,8 @@ import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -47,6 +50,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
             },
+            wrapper: {
+                flexDirection: "row-reverse",
+            },
         }),
     )(Tab);
 
@@ -59,6 +65,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     });
   };
 
+  const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
+
     return (
         <Card className={classes.card}>
                 <Tabs
@@ -69,7 +77,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
+                            if (!formsValidations[tab.id] && formsValidations[tab.id] !== null) {
+                            return (
+                               <StyledTab className={classes.errorIcon} onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled} icon={<ErrorOutlineIcon/>}/>
+                            )} 
+                            else
+                            {return (
+                                <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled} />
+                             )}
                         })
                     }
                 </Tabs>

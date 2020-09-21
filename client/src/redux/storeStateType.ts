@@ -10,4 +10,5 @@ export default interface StoreStateType {
     gender: string;
     cities: Map<string, City>;
     countries: Map<string, Country>;
+    formsValidations: (boolean | null)[];
 }

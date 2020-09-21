@@ -7,6 +7,7 @@ import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
 import investigationReducer from './Investigation/investigationReducer';
+import formReducer from './Form/formReducer';
 
 export default combineReducers<StoreStateType>({
      user: userReducer,
@@ -14,5 +15,6 @@ export default combineReducers<StoreStateType>({
      investigation: investigationReducer,
      gender: genderReducer,
      cities: cityReducer,
-     countries: countryReducer
+     countries: countryReducer,
+     formsValidations: formReducer,
 })
