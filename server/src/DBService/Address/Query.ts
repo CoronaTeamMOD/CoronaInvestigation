@@ -17,7 +17,7 @@ query getCityStreets($id: String!) {
     streetsByCity {
       nodes {
         displayName
-        id: mhoCode
+        id
       }
     }
   }
