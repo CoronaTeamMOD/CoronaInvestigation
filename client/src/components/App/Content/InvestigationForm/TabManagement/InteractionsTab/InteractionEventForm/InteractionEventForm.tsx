@@ -122,6 +122,20 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       ...(interactionEventDialogData as InteractionEventDialogData),
       externalizationApproval: val,
     });
+  
+  const handleTimeChange = (currentTime : Date, currentDate : Date , fieldName : keyof typeof interactionEventDialogData) => {
+    if(currentTime){
+      let newTime = new Date(currentDate.getTime())
+      newTime.setHours(currentTime.getHours())
+      newTime.setMinutes(currentTime.getMinutes())
+      if(newTime.getTime()){
+        setInteractionEventDialogData({
+        ...(interactionEventDialogData as InteractionEventDialogData),
+        [fieldName]: newTime,
+        });
+      }
+    }
+  }
 
   return (
     <>
@@ -180,12 +194,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationStartTime"
                 labelText="משעה"
                 value={startTime}
-                onChange={(newStartTime: Date) => {
-                  setInteractionEventDialogData({
-                    ...(interactionEventDialogData as InteractionEventDialogData),
-                    startTime: newStartTime,
-                  });
-                }}
+                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.startTime,"startTime")}
               />
             </FormInput>
           </Grid>
@@ -196,12 +205,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                 test-id="contactLocationEndTime"
                 labelText="עד שעה"
                 value={endTime}
-                onChange={(newEndTime: Date) => {
-                  setInteractionEventDialogData({
-                    ...(interactionEventDialogData as InteractionEventDialogData),
-                    endTime: newEndTime,
-                  });
-                }}
+                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.endTime,"endTime")}
               />
             </FormInput>
           </Grid>
