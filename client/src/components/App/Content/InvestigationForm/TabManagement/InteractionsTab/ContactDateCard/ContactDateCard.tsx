@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 
+import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
@@ -24,7 +25,10 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
                         {interactions !== undefined && (areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />)}
                     </IconButton>
-                    <Typography variant='body1'>{format(contactDate, 'dd/MM/yyyy')}</Typography>
+                        <Typography variant='body1'>
+                            יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
+                            {format(contactDate, 'dd/MM/yyyy')}
+                        </Typography>
                 </div>
                 {
                     interactions !== undefined &&
