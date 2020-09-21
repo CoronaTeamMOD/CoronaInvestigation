@@ -20,6 +20,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
                 let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
+                let patientAddress = investigatedPatient.addressByAddress;
                 personalInfoStateContext.setPersonalInfoData({
                     phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
                     additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
@@ -34,8 +35,12 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo
                 });
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
-                setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);
-                setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                if (patientAddress.cityByCity !== null) {
+                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
+                }
+                if (patientAddress.streetByStreet !== null) {
+                    setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                }
             }
         })
     }

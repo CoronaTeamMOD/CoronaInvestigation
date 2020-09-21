@@ -7,6 +7,7 @@ import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIO
     GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY } from '../../DBService/PersonalDetails/Query';
 
 const personalDetailsRoute = Router();
+const errorStatusCode = 500;
 
 personalDetailsRoute.get('/', (request: Request, response: Response) => {
     response.send('Hello from Personal Details route');
@@ -31,33 +32,38 @@ personalDetailsRoute.get('/educationSubOccupations', (request: Request, response
     graphqlRequest(GET_EDUCATION_SUB_OCCUPATION_BY_CITY, response.locals, {city: request.query.city}).then((result: any) => response.send(result));
 });
 
-personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
-    graphqlRequest(CREATE_ADRESS, response.locals, {
-        city: request.body.personalInfoData.address.city,
-        street: request.body.personalInfoData.address.street,
-        floor: +request.body.personalInfoData.address.floor,
-        houseNum: +request.body.personalInfoData.address.houseNum
-    }).then((result: any) => {
-        graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, response.locals,
+const savePersonalDetails = (request: Request, response: Response, address?: number, ) => {
+    graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, response.locals,
+        {
+            id: request.body.id, 
+            hmo: request.body.personalInfoData.insuranceCompany,
+            otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo
+            ? request.body.personalInfoData.otherOccupationExtraInfo : null,
+            occupation: request.body.personalInfoData.relevantOccupation,
+            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
+            subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
+            address,
+        }
+    ).then((result: any) => {
+        graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,  response.locals,
             {
-                id: request.body.id, 
-                hmo: request.body.personalInfoData.insuranceCompany,
-                otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo
-                ? request.body.personalInfoData.otherOccupationExtraInfo : null,
-                occupation: request.body.personalInfoData.relevantOccupation,
-                patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
-                subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
-                address: result.data.createAddress.address.id,
-            }
-        ).then((result: any) => {
-            graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,  response.locals,
-                {
-                    id: result.data.updateInvestigatedPatientById.personByPersonId.id,
-                    phoneNumber: request.body.personalInfoData.phoneNumber.number,
-                    additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber.number
-                }).then((result: any) => response.send(result)).catch(err => response.send(err));
-            }).catch(err => response.send(err));
-    }).catch(err => response.send(err));
+                id: result.data.updateInvestigatedPatientById.personByPersonId.id,
+                phoneNumber: request.body.personalInfoData.phoneNumber.number,
+                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber.number
+            }).then((result: any) => response.send(result)).catch(err => response.status(errorStatusCode).send(err));
+        }).catch(err => response.status(errorStatusCode).send(err));
+}
+personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
+    const address = request.body.personalInfoData.address;
+    graphqlRequest(CREATE_ADRESS, response.locals, {
+        city: address.city ? address.city : null,
+        street: address.street ? address.street : null,
+        floor: +address.floor,
+        houseNum: +address.houseNum
+    }).then((result) => savePersonalDetails(request, response, result.data.createAddress.address.id))
+    .catch(err => {
+        response.status(errorStatusCode).send(err);
+    });
 });
 
 export default personalDetailsRoute;

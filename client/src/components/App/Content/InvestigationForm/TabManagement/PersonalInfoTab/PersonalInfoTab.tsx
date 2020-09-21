@@ -42,6 +42,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streets, setStreets] = React.useState<Street[]>([]);
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
+    const { city, street } = personalInfoStateContext.personalInfoData.address;
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -58,6 +59,17 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             }
         });
     }
+
+    const handleChangeAddressOnCityChange = (city: string) => {
+        personalInfoStateContext.setPersonalInfoData({
+            ...personalInfoStateContext.personalInfoData,
+            address: {
+                ...personalInfoStateContext.personalInfoData.address,
+                city,
+                street: ''
+            }
+        })
+    };
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setOccupations, setInsuranceCompanies,
         personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets });
@@ -76,8 +88,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
 
     React.useEffect(() => {
-        personalInfoStateContext.personalInfoData.address.city && getStreetsByCity(personalInfoStateContext.personalInfoData.address.city);
-    }, [personalInfoStateContext.personalInfoData.address.city]);
+        city && getStreetsByCity(city);
+    }, [city]);
+
+    React.useEffect(() => {
+        if (streets.length > 0 && street === '') {
+            handleChangeAddress(PersonalInfoDataContextFields.STREET, streets[0].id);
+            setStreetName(streets[0].displayName);
+        }
+    }, [streets])
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -230,9 +249,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         inputValue={cityName}
                         onInputChange={(event, newInputValue) => {
                             setCityName(newInputValue);
+                            if (newInputValue === '') {
+                                handleChangeAddressOnCityChange('');
+                                setStreetName('');
+                            }
                         }}
                         onChange={(event, newValue) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.CITY, newValue?.cityId);
+                            handleChangeAddressOnCityChange(newValue ? newValue.cityId : '');
                         }}
                         renderInput={(params) =>
                         <TextField
@@ -255,6 +278,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 inputValue={streetName}
                                 onInputChange={(event, newInputValue) => {
                                     setStreetName(newInputValue);
+                                    if (newInputValue === '') {
+                                        handleChangeAddress(PersonalInfoDataContextFields.STREET, '');
+                                    }
                                 }}
                                 onChange={(event, newValue) => {
                                     handleChangeAddress(PersonalInfoDataContextFields.STREET, newValue?.id)
