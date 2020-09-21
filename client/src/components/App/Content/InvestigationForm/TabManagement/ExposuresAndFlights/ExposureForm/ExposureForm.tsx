@@ -1,11 +1,12 @@
-import React from "react";
-import { Grid, TextField } from "@material-ui/core";
-import useFormStyles from "styles/formStyles";
+import React from 'react';
+import { Grid, TextField } from '@material-ui/core';
 
-import DatePick from "commons/DatePick/DatePick";
-import FormRowWithInput from "commons/FormRowWithInput/FormRowWithInput";
-import LocationInput from "commons/LocationInputField/LocationInput";
-import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
+import DatePick from 'commons/DatePick/DatePick';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import LocationInput from 'commons/LocationInputField/LocationInput';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+
+import useFormStyles from 'styles/formStyles';
 
 const ExposureForm = (props: any) => {
   const {
