@@ -67,11 +67,11 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
                     doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
                     id: clinicalDetails.investigatedPatientId,
                     otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
-                })
-            }).then(() => {
-                response.send('Added clinical details');
-            });
-        });
+                }).then(() => {
+                    response.send('Added clinical details');
+                }).catch(err => response.send(err));
+            }).catch(err => response.send(err));
+        }).catch(err => response.send(err));;
     });
 }
 

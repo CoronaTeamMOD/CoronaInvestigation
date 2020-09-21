@@ -5,6 +5,7 @@ export interface Address {
     entrance?: string;
     floor?: string;
     apartment?: string;
+    description?: string;
 }
 
 export interface DBAddress {

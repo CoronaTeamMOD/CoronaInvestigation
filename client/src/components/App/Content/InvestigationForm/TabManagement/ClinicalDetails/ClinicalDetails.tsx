@@ -16,6 +16,9 @@ import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsCont
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 
+export const otherBackgroundDiseaseFieldName = 'אחר';
+export const otherSymptomFieldName = 'אחר';
+
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
     const context = React.useContext(clinicalDetailsDataContext);
@@ -24,8 +27,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
-    const [isOtherSymptomChecked, setIsOtherSymptomChecked] = React.useState<boolean>(context.clinicalDetailsData.otherSymptomsMoreInfo !== null);
-    const [isOtherBackgroundIllnessChecked, setIsOtherBackgroundIllnessChecked] = React.useState<boolean>(context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo !== null);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
@@ -59,40 +60,28 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
     };
 
-    const checkIfOtherField = (checkedField: string) => (
-        checkedField === 'אחר'
-    );
-
     const handleSymptomCheck = (checkedSymptom: string) => {
         let selectedSymptoms = context.clinicalDetailsData.symptoms;
 
         if (selectedSymptoms.includes(checkedSymptom)) {
-            updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
-            if (checkIfOtherField(checkedSymptom)) {
-                setIsOtherSymptomChecked(false);
-            }
+            selectedSymptoms = selectedSymptoms.filter((symptom) => symptom !== checkedSymptom);
         } else {
             selectedSymptoms.push(checkedSymptom);
-            updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
-            if (checkIfOtherField(checkedSymptom)) {
-                setIsOtherSymptomChecked(true);
-            }
         }
+            
+        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
         let selectedBackgroundDiseases = context.clinicalDetailsData.backgroundDeseases;
 
         if (selectedBackgroundDiseases.includes(backgroundIllness)) {
-            updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness));
-            if (checkIfOtherField(backgroundIllness))
-                setIsOtherBackgroundIllnessChecked(false);
+            selectedBackgroundDiseases = selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness);
         } else {
             selectedBackgroundDiseases.push(backgroundIllness);
-            updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
-            if (checkIfOtherField(backgroundIllness))
-                setIsOtherBackgroundIllnessChecked(true);
         };
+
+        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
     return (
@@ -154,7 +143,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
                     getOptionLabel={(option) => option.value.displayName}
                     inputValue={isolationCityName}
-                    onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity === null ? '' : selectedCity.id)}
+                    onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity ? selectedCity.id : '')}
                     onInputChange={(event, selectedCityName) => {
                         setIsolationCityName(selectedCityName);
                         if (selectedCityName === '') {
@@ -293,18 +282,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                             key={symptom}
                                             checkboxElements={[{
                                                 key: symptom,
-                                                value: symptoms.find((chosenSymptom) => chosenSymptom === symptom),
+                                                value: symptom,
                                                 labelText: symptom,
                                                 checked: context.clinicalDetailsData.symptoms.includes(symptom),
-                                                onChange: () => {
-                                                    handleSymptomCheck(symptom)
-                                                }
+                                                onChange: () => handleSymptomCheck(symptom)
                                             }]}
                                         />
                                     </Grid>
                                 ))
                             }
-                            <Collapse in={isOtherSymptomChecked}>
+                            <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
                                 <TextField
                                     required
                                     label="סימפטום"
@@ -313,9 +300,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
                                     value={context.clinicalDetailsData.otherSymptomsMoreInfo}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, event.target.value as string)
-                                    )}
+                                    }
                                 />
                             </Collapse>
                         </Grid>
@@ -348,18 +335,16 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                             key={backgroundIllness}
                                             checkboxElements={[{
                                                 key: backgroundIllness,
-                                                value: backgroundDiseases.find((chosenBackgroundIllness) => chosenBackgroundIllness === backgroundIllness),
+                                                value: backgroundIllness,
                                                 labelText: backgroundIllness,
                                                 checked: context.clinicalDetailsData.backgroundDeseases.includes(backgroundIllness),
-                                                onChange: () => {
-                                                    handleBackgroundIllnessCheck(backgroundIllness)
-                                                }
+                                                onChange: () => handleBackgroundIllnessCheck(backgroundIllness)
                                             }]}
                                         />
                                     </Grid>
                                 ))
                             }
-                            <Collapse in={isOtherBackgroundIllnessChecked}>
+                            <Collapse in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
                                 <TextField
                                     required
                                     label="מחלת רקע"
@@ -368,9 +353,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     className={classes.otherTextField}
                                     placeholder='הזן מחלת רקע...'
                                     value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, event.target.value as string)
-                                    )}
+                                    }
                                 />
                             </Collapse>
                         </Grid>

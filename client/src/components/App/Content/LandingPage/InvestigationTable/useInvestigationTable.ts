@@ -76,12 +76,13 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         if (data && data.data && data.data.userById) {
           const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByLastUpdator.nodes.map(investigation => {
             const patient = investigation.investigatedPatientByInvestigatedPatientId;
+            const patientCity = patient.addressByAddress.cityByCity;
             return createRowData(investigation.epidemiologyNumber,
               investigation.investigationStatusByInvestigationStatus.displayName,
               patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
               patient.personByPersonId.phoneNumber,
               Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-              patient.addressByAddress.cityByCity.displayName)
+              patientCity ? patientCity.displayName : '')
           });
           setRows(investigationRows)
         }
