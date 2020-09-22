@@ -97,12 +97,11 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     });
   };
 
-  const a = (placeSubTypeDispalyName?: string) => {
+  const placeNameByPlaceType = (placeSubTypeDispalyName?: string) => {
     if (placeType === transportation.code && placeSubTypeDispalyName) {
       return `${placeType} - ${placeSubTypeDispalyName}`
-    } else {
-      return undefined
     }
+    return undefined;
   }
 
   const onPlaceSubTypeChange = (
@@ -115,7 +114,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       placeType,
       placeSubType: newPlaceSubType,
       externalizationApproval,
-      placeName: a(placeSubTypeDispalyName)
+      placeName: placeNameByPlaceType(placeSubTypeDispalyName)
     });
   };
 

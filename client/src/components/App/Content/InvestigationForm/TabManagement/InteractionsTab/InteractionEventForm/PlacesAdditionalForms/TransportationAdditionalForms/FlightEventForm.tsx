@@ -89,8 +89,8 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                     <Autocomplete
                         options={Array.from(countries, ([id, value]) => ({ id, value }))}
                         getOptionLabel={(option) => option.value?.displayName || ''}
-                            defaultValue={{ id: flightDestinationCountry as string, value: countries.get(flightDestinationCountry as string)}}
-                            onChange={(event, selectedCountry) => {
+                        defaultValue={{ id: flightDestinationCountry as string, value: countries.get(flightDestinationCountry as string)}}
+                        onChange={(event, selectedCountry) => {
                             onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY)
                         }}
                         onInputChange={(event, newInputValue) => {
