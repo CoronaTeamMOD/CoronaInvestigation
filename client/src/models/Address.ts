@@ -9,6 +9,13 @@ export interface DBAddress {
     houseNum: string;
 }
 
+export const initDBAddress: DBAddress  = {
+    city: '',
+    street: '',
+    floor: '',
+    houseNum: '',
+};
+
 export const initAddress: Address  = null;
 
 export default Address;
