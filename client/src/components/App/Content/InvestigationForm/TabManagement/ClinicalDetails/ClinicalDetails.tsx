@@ -1,5 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers";
+import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
@@ -7,11 +10,12 @@ import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -21,6 +25,7 @@ export const otherSymptomFieldName = 'אחר';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
+    const { control, handleSubmit, errors, setError, clearErrors } = useForm({});
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
 
@@ -86,7 +91,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
     return (
         <div>
-            <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
+            <form>
+                <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>
                         <b>
@@ -179,26 +185,30 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                     }
                 />
-                <TextField
+                <AlphanumericTextField
                     test-id='currentQuarantineHomeNumber'
-                    size='small'
+                    name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
+                    value={context.clinicalDetailsData.isolationAddress.houseNum}
+                    onChange={(newValue: string) => (
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, newValue)
+                    )}
+                    setError={setError}
+                    clearErrors={clearErrors}
                     placeholder='מספר הבית'
                     className={classes.floorHouseNumTextField}
-                    value={context.clinicalDetailsData.isolationAddress.houseNum}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
-                    )}
                 />
-                <TextField
+                <AlphanumericTextField
                     test-id='currentQuarantineFloor'
-                    size='small'
+                    name={ClinicalDetailsFields.ISOLATION_FLOOR}
+                    value={context.clinicalDetailsData.isolationAddress.floor}
+                    onChange={(newValue: string) => (
+                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, newValue)
+                    )}    
+                    setError={setError}
+                    clearErrors={clearErrors}
                     placeholder='קומה'
                     className={classes.floorHouseNumTextField}
-                    value={context.clinicalDetailsData.isolationAddress.floor}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                        updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
-                    )}
-                />
+                    />
                 <Grid item xs={12}>
                 </Grid>
                 <Grid item xs={2}>
@@ -214,15 +224,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
                 />
                 <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
-                    <TextField
+                    <AlphanumericTextField
                         test-id='problematicQuarantineReason'
+                        name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                         value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
-                            updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, event.target.value)
+                        onChange={(newValue: string) => (
+                            updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, newValue)
                         )}
-                        size='small'
-                        className={classes.isolationProblemTextField}
+                        setError={setError}
+                        clearErrors={clearErrors}
                         placeholder='הכנס סיבה:'
+                        className={classes.isolationProblemTextField}
                     />
                 </Collapse>
                 <Grid item xs={12}>
@@ -294,17 +306,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 ))
                             }
                             <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
-                                <TextField
+                                <AlphanumericTextField
+                                    test-id='symptomInput'
+                                    name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
+                                    value={context.clinicalDetailsData.otherSymptomsMoreInfo}
+                                    onChange={(newValue : string) =>
+                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
+                                    }
                                     required
                                     label='סימפטום'
-                                    test-id='symptomInput'
-                                    size='small'
+                                    setError={setError}
+                                    clearErrors={clearErrors}
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
-                                    value={context.clinicalDetailsData.otherSymptomsMoreInfo}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
-                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, event.target.value as string)
-                                    }
+                                    
                                 />
                             </Collapse>
                         </Grid>
@@ -347,17 +362,19 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 ))
                             }
                             <Collapse in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
-                                <TextField
-                                    required
-                                    label='מחלת רקע'
+                                <AlphanumericTextField
                                     test-id='otherBackgroundDisease'
-                                    size='small'
-                                    className={classes.otherTextField}
-                                    placeholder='הזן מחלת רקע...'
+                                    name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                                     value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) =>
-                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, event.target.value as string)
+                                    onChange={(newValue: string) =>
+                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
                                     }
+                                    required
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    label='מחלת רקע'
+                                    placeholder='הזן מחלת רקע...'
+                                    className={classes.otherTextField}
                                 />
                             </Collapse>
                         </Grid>
@@ -387,14 +404,17 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     בית חולים:
                                 </b>
                             </Typography>
-                            <TextField
-                                required
-                                label='בית חולים'
+                            <AlphanumericTextField
                                 test-id='hospitalInput'
+                                name={ClinicalDetailsFields.HOSPITAL}
                                 value={context.clinicalDetailsData.hospital}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
+                                onChange={(newValue: string) => (
+                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, newValue)
                                 )}
+                                required
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                label='בית חולים'
                             />
                         </div>
                         <div className={classes.dates}>
@@ -445,6 +465,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     : <></>
                 }
             </Grid>
+            </form>    
         </div>
     );
 };
