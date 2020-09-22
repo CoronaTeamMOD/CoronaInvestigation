@@ -2,11 +2,7 @@ import { createContext } from 'react';
 import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
 
-export type Exposure = ExposureData & FlightData;
-
-export interface ExposureAndFlightsDetails {
-    exposures: Exposure[]
-}
+export type ExposureAndFlightsDetails = ExposureData & FlightData;
 
 export interface ExposureAndFlightsDetailsAndSet {
     exposureAndFlightsData: ExposureAndFlightsDetails,
@@ -35,10 +31,6 @@ export const fieldsNames = {
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
-    exposures: []
-};
-
-export const initialExposureOrFlight: Exposure = {
     id: null,
     wasConfirmedExposure: false,
     exposureFirstName: null,
