@@ -56,10 +56,15 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                     <FormInput fieldName='ארץ מוצא'>
                         <Autocomplete
                             options={Array.from(countries, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={countries.get(flightOriginCountry as string)?.displayName}
+                            getOptionLabel={(option) => option.value?.displayName || ''}
+                            defaultValue={{ id: flightOriginCountry as string, value: countries.get(flightOriginCountry as string)}}
                             onChange={(event, selectedCountry) => {
                                 onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY)
+                            }}
+                            onInputChange={(event, newInputValue) => {
+                                if (newInputValue === '') {
+                                    onChange('', InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY);
+                                }
                             }}
                             renderInput={(params) =>
                                 <TextField
@@ -83,10 +88,15 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                     <FormInput fieldName='ארץ יעד'>
                     <Autocomplete
                         options={Array.from(countries, ([id, value]) => ({ id, value }))}
-                        getOptionLabel={(option) => option.value.displayName}
-                        inputValue={countries.get(flightDestinationCountry as string)?.displayName}
+                        getOptionLabel={(option) => option.value?.displayName || ''}
+                        defaultValue={{ id: flightDestinationCountry as string, value: countries.get(flightDestinationCountry as string)}}
                         onChange={(event, selectedCountry) => {
                             onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY)
+                        }}
+                        onInputChange={(event, newInputValue) => {
+                            if (newInputValue === '') {
+                                onChange('', InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY);
+                            }
                         }}
                         renderInput={(params) =>
                             <TextField

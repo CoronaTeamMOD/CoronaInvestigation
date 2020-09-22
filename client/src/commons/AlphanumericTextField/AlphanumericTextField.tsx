@@ -8,7 +8,7 @@ const stringAlphanum = yup
   .required()
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
 
-const AutocompletedField: AlphanumericTextFieldType = (props) => {
+const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     const { onBlur, onChange, value, name, setError, clearErrors } = props;
     return (
         <TextField
@@ -32,4 +32,4 @@ const AutocompletedField: AlphanumericTextFieldType = (props) => {
     );
 };
 
-export default AutocompletedField;
+export default AlphanumericTextField;
