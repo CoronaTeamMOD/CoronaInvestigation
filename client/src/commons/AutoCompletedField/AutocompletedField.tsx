@@ -6,12 +6,12 @@ import AutocompletedFieldType from './AutoCompletedFieldTypes';
 import { TextField } from '@material-ui/core';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x:any) => x} = props;
+    const { required, inputRef, name, error, label, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x:any) => x} = props;
     const classes = useStyles();
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <TextField required={required} {...params} fullWidth />;
+        <TextField required={required} inputRef={inputRef} label={label} name={name} error={error} {...params} fullWidth />;
 
     const staticOptionConfig = {
         autoComplete: true,

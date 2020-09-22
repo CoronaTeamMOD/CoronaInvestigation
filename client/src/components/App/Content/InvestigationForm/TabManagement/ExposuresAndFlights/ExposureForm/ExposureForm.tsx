@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers";
 import * as yup from "yup";
 import { Grid, TextField, Typography } from "@material-ui/core";
@@ -15,7 +15,7 @@ import { fieldsNames } from "../hooks/useExposuresAndFlightsSaving";
 const schema = yup.object().shape({
   [fieldsNames.firstName]: yup.string().required('שם פרטי הוא שדה חובה'),
   [fieldsNames.lastName]: yup.string().required('שם משפחה הוא שדה חובה'),
-  [fieldsNames.date]: yup.date().required('תאריך שדה חובה'),
+  [fieldsNames.address]: yup.string().required('כתובת היא שדה חובה'),
 });
 
 const ExposureForm = (props: any) => {
@@ -25,10 +25,11 @@ const ExposureForm = (props: any) => {
   } = props;
 
   const classes = useFormStyles();
-  const { register, handleSubmit, watch, errors } = useForm({
+  const { register, handleSubmit, watch, errors, control } = useForm({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
+  console.log(errors);
 
   return (
     <Grid className={classes.form} container justify="flex-start">
@@ -77,15 +78,19 @@ const ExposureForm = (props: any) => {
         </FormRowWithInput>
 
         <FormRowWithInput fieldName="כתובת החשיפה:">
-          <LocationInput
-            selectedAddress={exposureAndFlightsData[fieldsNames.address]}
-            setSelectedAddress={(e, newValue) =>
+            <LocationInput
+              inputRef={register}
+              label={errors[fieldsNames.address]?.message}
+              error={errors[fieldsNames.address]}
+              name={fieldsNames.address}
+              selectedAddress={exposureAndFlightsData[fieldsNames.address]}
+              setSelectedAddress={(e, newValue) =>
               handleChangeExposureDataAndFlightsField(
                 fieldsNames.address,
                 newValue
               )
             }
-          />
+            />
         </FormRowWithInput>
 
         <PlacesTypesAndSubTypes
