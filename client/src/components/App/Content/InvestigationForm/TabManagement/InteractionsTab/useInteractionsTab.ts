@@ -8,10 +8,11 @@ import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import { convertDate } from '../ClinicalDetails/useClinicalDetails';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
-import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import useStyles from './InteractionsTabStyles';
+import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
+
 
 const symptomsWithKnownStartDate: number = 4;
 const nonSymptomaticPatient: number = 7;

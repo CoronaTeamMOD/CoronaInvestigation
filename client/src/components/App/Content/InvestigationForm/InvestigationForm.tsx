@@ -25,7 +25,7 @@ import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 
-export const LAST_TAB_ID = 3;
+export const LAST_TAB_ID = 4;
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
