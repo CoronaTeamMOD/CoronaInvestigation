@@ -9,12 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { useForm } from "react-hook-form";
 
 import City from 'models/City';
 import { Street } from 'models/Street';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
@@ -98,6 +100,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             setStreetName(streets[0].displayName);
         }
     }, [streets])
+
+    const { register, handleSubmit, watch, errors, setError, clearErrors } = useForm();
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -205,12 +209,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
-                <TextField
-                    id={PersonalInfoDataContextFields.CONTACT_INFO}
+                <AlphanumericTextField
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    name={PersonalInfoDataContextFields.CONTACT_INFO}
                     placeholder={CONTACT_INFO}
                     value={personalInfoStateContext.personalInfoData.contactInfo}
-                        onChange={(event) => {
-                            handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, event.target.value);
+                        onChange={(newValue) => {
+                            handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, newValue);
                         }}
                 />
             </Grid>
@@ -308,26 +314,28 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </Grid>
                     }
                 <Grid item xs={1}>
-                    <TextField
-                        required
+                    <AlphanumericTextField
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        name={PersonalInfoDataContextFields.FLOOR}
                         test-id='personalDetailsFloor'
-                        id={PersonalInfoDataContextFields.FLOOR}
                         placeholder={'קומה'}
                         value={personalInfoStateContext.personalInfoData.address.floor}
-                        onChange={(event) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.FLOOR, event.target.value);
+                        onChange={(newValue) => {
+                            handleChangeAddress(PersonalInfoDataContextFields.FLOOR, newValue);
                         }}
                     />
                 </Grid>
                 <Grid item xs={1}>
-                    <TextField
-                        required
+                    <AlphanumericTextField
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         test-id='personalDetailsHouseNumber'
-                        id={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         placeholder={'מספר בית'}
                         value={personalInfoStateContext.personalInfoData.address.houseNum}
-                        onChange={(event) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.HOUSE_NUMBER, event.target.value);
+                        onChange={(newValue) => {
+                            handleChangeAddress(PersonalInfoDataContextFields.HOUSE_NUMBER, newValue);
                         }}
                     />
                 </Grid>
@@ -418,12 +426,15 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     placeholder={INSERT_INSTITUTION_NAME}
                                 />}
                             /> :
-                            <TextField
+                            <AlphanumericTextField
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                 test-id='institutionName'
                                 value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
                                 placeholder={INSERT_INSTITUTION_NAME}
-                                onChange={(event) => {
-                                    handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, event.target.value);
+                                onChange={(newValue) => {
+                                    handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue);
                                 }}
                                 
                             />

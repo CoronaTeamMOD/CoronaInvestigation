@@ -9,7 +9,7 @@ const stringAlphanum = yup
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
-    const { onBlur, onChange, value, name, setError, clearErrors } = props;
+    const { onBlur, onChange, value, name, setError, clearErrors, placeholder } = props;
     return (
         <TextField
             onBlur={onBlur}
@@ -28,6 +28,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
             }}
             value={value}
             name={name}
+            placeholder={placeholder}
         />
     );
 };
