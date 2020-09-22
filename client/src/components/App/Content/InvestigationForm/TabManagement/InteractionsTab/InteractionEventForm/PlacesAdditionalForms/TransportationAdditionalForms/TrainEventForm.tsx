@@ -36,6 +36,11 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             onChange={(event, selectedCity) => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
                             }}
+                            onInputChange={(event, newInputValue) => {
+                                if (newInputValue === '') {
+                                    onChange('', InteractionEventDialogFields.CITY_ORIGIN);
+                                }
+                            }}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
@@ -62,6 +67,11 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             defaultValue={{ id: cityDestination as string, value: cities.get(cityDestination as string)}}
                             onChange={(event, selectedCity) => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
+                            }}
+                            onInputChange={(event, newInputValue) => {
+                                if (newInputValue === '') {
+                                    onChange('', InteractionEventDialogFields.CITY_DESTINATION);
+                                }
                             }}
                             renderInput={(params) =>
                                 <TextField

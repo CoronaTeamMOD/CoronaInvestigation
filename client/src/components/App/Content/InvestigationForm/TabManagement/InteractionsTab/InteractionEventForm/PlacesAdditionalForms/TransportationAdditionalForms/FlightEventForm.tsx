@@ -61,6 +61,11 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={(event, selectedCountry) => {
                                 onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY)
                             }}
+                            onInputChange={(event, newInputValue) => {
+                                if (newInputValue === '') {
+                                    onChange('', InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY);
+                                }
+                            }}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
@@ -87,6 +92,11 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             defaultValue={{ id: flightDestinationCountry as string, value: countries.get(flightDestinationCountry as string)}}
                             onChange={(event, selectedCountry) => {
                             onChange(selectedCountry?.id as string, InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY)
+                        }}
+                        onInputChange={(event, newInputValue) => {
+                            if (newInputValue === '') {
+                                onChange('', InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY);
+                            }
                         }}
                         renderInput={(params) =>
                             <TextField
