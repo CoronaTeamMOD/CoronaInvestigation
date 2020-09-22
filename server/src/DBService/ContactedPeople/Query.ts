@@ -1,6 +1,6 @@
 import { gql } from "postgraphile";
 
-export const GET_CONTACTED_PEPOLE = gql`
+export const GET_CONTACTED_PEOPLE = gql`
 query ContactedPepoleByInvestigationId ($investigationId: Int!){
     allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
         nodes {
