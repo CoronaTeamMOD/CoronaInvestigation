@@ -8,6 +8,7 @@ export interface AlphanumericTextFieldProps<T> {
     setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void,
     clearErrors: (name?: string | string[]) => void
     placeholder?: string;
+    className?: any;
 }
 
 type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;

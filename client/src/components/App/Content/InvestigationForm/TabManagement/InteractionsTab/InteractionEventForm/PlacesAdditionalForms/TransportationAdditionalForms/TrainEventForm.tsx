@@ -2,12 +2,14 @@ import { Grid, TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
 import { Autocomplete } from '@material-ui/lab';
+import { useForm } from "react-hook-form";
 
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 
 import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -23,6 +25,8 @@ const TrainEventForm : React.FC = () : JSX.Element => {
 
     const onChange = (value: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
+    
+    const { setError, clearErrors } = useForm();
 
     return (
         <>
@@ -52,9 +56,12 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת עליה'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.BOARDING_STATION}
                             value={boardingStation}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.BOARDING_STATION)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.BOARDING_STATION)}/>
                     </FormInput>
                 </Grid>
             </div>
@@ -84,9 +91,12 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת ירידה'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.END_STATION}
                             value={endStation}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.END_STATION)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.END_STATION)}/>
                     </FormInput>
                 </Grid>
             </div>

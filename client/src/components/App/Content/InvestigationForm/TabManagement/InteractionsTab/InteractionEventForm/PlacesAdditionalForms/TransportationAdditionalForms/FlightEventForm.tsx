@@ -3,12 +3,14 @@ import { Grid, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import { useForm } from "react-hook-form";
 
 import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
@@ -33,21 +35,29 @@ const FlightEventForm : React.FC = () : JSX.Element => {
     const onChange = (value: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
 
+    const { setError, clearErrors } = useForm();
+
     return (
         <>
             <div className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='מספר טיסה'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.FLIGHT_NUM}
                             value={flightNum}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_NUM)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_NUM)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='חברת תעופה'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.AIR_LINE}
                             value={airline}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.AIR_LINE)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.AIR_LINE)}/>
                     </FormInput>
                 </Grid>
             </div>
@@ -77,9 +87,12 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר מוצא'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.FLIGHT_ORIGIN_CITY}
                             value={flightOriginCity}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_ORIGIN_CITY)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_ORIGIN_CITY)}/>
                     </FormInput>
                 </Grid>
             </div>
@@ -109,9 +122,12 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר יעד'>
-                        <TextField
+                        <AlphanumericTextField
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.FLIGHT_DESTINATION_CITY}
                             value={flightDestinationCity}
-                            onChange={event => onChange(event.target.value as string, InteractionEventDialogFields.FLIGHT_DESTINATION_CITY)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_DESTINATION_CITY)}/>
                     </FormInput>
                 </Grid>
             </div>
