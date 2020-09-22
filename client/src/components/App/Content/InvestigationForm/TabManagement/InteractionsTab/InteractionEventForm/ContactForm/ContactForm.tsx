@@ -45,7 +45,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
     const onChange = (newValue: any, updatedField: InteractionEventContactFields) =>
         updateContacts({...contact, [updatedField]: newValue});
 
-    const { setError, clearErrors } = useForm();
+    const {errors, setError, clearErrors } = useForm();
 
     return (
         <div className={classes.addContactFields} key='addContactFields'>
@@ -53,6 +53,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonFirstName}>
                         <AlphanumericTextField
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventContactFields.FIRST_NAME}
@@ -66,6 +67,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonLastName}>
                         <AlphanumericTextField
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventContactFields.LAST_NAME}
@@ -106,6 +108,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonID}>
                         <AlphanumericTextField
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventContactFields.ID}
@@ -136,6 +139,7 @@ const ContactForm : React.FC<Props> = (props: Props) : JSX.Element => {
             </Grid>
             <FormInput fieldName={contactTypeMoreDetails}>
                 <AlphanumericTextField className={classes.moreContactDetails}
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventContactFields.EXTRA_INFO}

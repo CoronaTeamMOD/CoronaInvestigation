@@ -26,7 +26,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
     const onChange = (value: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
     
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
@@ -57,6 +57,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת עליה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.BOARDING_STATION}
@@ -92,6 +93,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת ירידה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.END_STATION}

@@ -24,7 +24,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
     const onChange = (value: any, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
 
-    const { setError, clearErrors } = useForm();
+    const {errors, setError, clearErrors } = useForm();
 
     return (
         <div>
@@ -33,6 +33,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactFirstNameField}>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
@@ -44,6 +45,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactLastNameField}>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}

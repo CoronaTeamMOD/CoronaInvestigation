@@ -20,7 +20,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
     ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
 
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
@@ -28,6 +28,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='שם בית חולים'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.PLACE_NAME}
@@ -38,6 +39,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={3}>
                     <FormInput fieldName='מחלקה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.HOSPITAL_DEPARTMENT}

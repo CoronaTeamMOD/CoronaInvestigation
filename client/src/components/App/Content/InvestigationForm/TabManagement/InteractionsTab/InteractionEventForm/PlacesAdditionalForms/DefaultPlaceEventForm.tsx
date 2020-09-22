@@ -17,13 +17,14 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
         ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
     
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <Grid item xs={6}>
                 <FormInput fieldName='שם המוסד'>
                     <AlphanumericTextField
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventDialogFields.PLACE_NAME}

@@ -52,7 +52,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
     
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
@@ -60,6 +60,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='שם המוסד'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.PLACE_NAME}

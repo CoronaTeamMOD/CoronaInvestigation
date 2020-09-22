@@ -26,7 +26,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
     const onChange = (value: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
         
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
@@ -34,6 +34,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='קו'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.BUS_LINE}
@@ -44,6 +45,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='חברה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.BUS_COMPANY}
@@ -79,6 +81,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת עליה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.BOARDING_STATION}
@@ -114,6 +117,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='תחנת ירידה'>
                         <AlphanumericTextField
+                            errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.END_STATION}

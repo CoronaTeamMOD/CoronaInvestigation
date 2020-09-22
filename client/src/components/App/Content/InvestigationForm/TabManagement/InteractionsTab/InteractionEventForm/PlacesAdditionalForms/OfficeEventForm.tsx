@@ -18,13 +18,14 @@ const OfficeEventForm : React.FC = () : JSX.Element => {
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
         ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue as string});
 
-    const { setError, clearErrors } = useForm();
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <div className={formClasses.formRow}>
                 <FormInput fieldName='שם המשרד'>
                     <AlphanumericTextField
+                        errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}
                         name={InteractionEventDialogFields.PLACE_NAME}

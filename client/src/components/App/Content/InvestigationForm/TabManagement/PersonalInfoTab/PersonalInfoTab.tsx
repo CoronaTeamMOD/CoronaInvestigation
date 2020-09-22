@@ -101,7 +101,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         }
     }, [streets])
 
-    const { setError, clearErrors } = useForm();
+    const { setError, clearErrors, errors } = useForm();
 
     return (
         <div className={classes.tabInitialContainer}>
