@@ -108,8 +108,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                         <DatePick
                             required
-                            test-id="quarantinedFromDate"
-                            labelText="מתאריך"
+                            test-id='quarantinedFromDate'
+                            labelText='מתאריך'
                             value={context.clinicalDetailsData.isolationStartDate}
                             onChange={(newDate: Date) =>
                             updateClinicalDetails(
@@ -120,8 +120,8 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                         <DatePick
                             required
-                            test-id="quarantinedUntilDate"
-                            labelText="עד"
+                            test-id='quarantinedUntilDate'
+                            labelText='עד'
                             value={context.clinicalDetailsData.isolationEndDate}
                             onChange={(newDate: Date) =>
                             updateClinicalDetails(
@@ -246,20 +246,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={10}>
                     <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
                         <div className={classes.dates}>
-                        <DatePick
-                            required={!isUnkonwnDateChecked}
-                            label={!isUnkonwnDateChecked && "תאריך התחלת סימפטומים"}
-                            test-id="symptomsStartDate"
-                            value={context.clinicalDetailsData.symptomsStartDate}
-                            labelText="תאריך התחלת סימפטומים"
-                            disabled={isUnkonwnDateChecked}
-                            onChange={(newDate: Date) =>
-                            updateClinicalDetails(
-                                ClinicalDetailsFields.SYMPTOMS_START_DATE,
-                                newDate
-                            )
-                            }
-                        />
+                        {
+                            !isUnkonwnDateChecked &&
+                            <DatePick
+                                required={!isUnkonwnDateChecked}
+                                label={'תאריך התחלת סימפטומים'}
+                                test-id='symptomsStartDate'
+                                value={context.clinicalDetailsData.symptomsStartDate}
+                                labelText='תאריך התחלת סימפטומים'
+                                onChange={(newDate: Date) =>
+                                updateClinicalDetails(
+                                    ClinicalDetailsFields.SYMPTOMS_START_DATE,
+                                    newDate
+                                )
+                                }
+                            />
+                        }
                             <CustomCheckbox
                                 testId='unkownSymptomsDate'
                                 checkboxElements={[{
@@ -294,7 +296,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
                                 <TextField
                                     required
-                                    label="סימפטום"
+                                    label='סימפטום'
                                     test-id='symptomInput'
                                     size='small'
                                     className={classes.otherTextField}
@@ -347,7 +349,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <Collapse in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
                                 <TextField
                                     required
-                                    label="מחלת רקע"
+                                    label='מחלת רקע'
                                     test-id='otherBackgroundDisease'
                                     size='small'
                                     className={classes.otherTextField}
@@ -387,7 +389,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             </Typography>
                             <TextField
                                 required
-                                label="בית חולים"
+                                label='בית חולים'
                                 test-id='hospitalInput'
                                 value={context.clinicalDetailsData.hospital}
                                 onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
@@ -398,9 +400,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.dates}>
                         <DatePick
                             required
-                            label="מתאריך"
-                            test-id="wasHospitalizedFromDate"
-                            labelText="מתאריך"
+                            label='מתאריך'
+                            test-id='wasHospitalizedFromDate'
+                            labelText='מתאריך'
                             value={context.clinicalDetailsData.hospitalizationStartDate}
                             onChange={(newDate: Date) =>
                             updateClinicalDetails(
@@ -411,9 +413,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                         <DatePick
                             required
-                            label="עד"
-                            test-id="wasHospitalizedUntilDate"
-                            labelText="עד"
+                            label='עד'
+                            test-id='wasHospitalizedUntilDate'
+                            labelText='עד'
                             value={context.clinicalDetailsData.hospitalizationEndDate}
                             onChange={(newDate: Date) =>
                             updateClinicalDetails(
