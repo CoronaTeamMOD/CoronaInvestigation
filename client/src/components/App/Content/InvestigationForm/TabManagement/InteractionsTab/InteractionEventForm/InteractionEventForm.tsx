@@ -99,7 +99,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
 
   const placeNameByPlaceType = (placeSubTypeDispalyName?: string) => {
     if (placeType === transportation.code && placeSubTypeDispalyName) {
-      return `${placeType} - ${placeSubTypeDispalyName}`
+      return `${placeType} ${placeSubTypeDispalyName}`
     }
     return undefined;
   }
