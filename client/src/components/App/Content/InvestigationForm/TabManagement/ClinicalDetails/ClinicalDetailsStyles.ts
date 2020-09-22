@@ -12,7 +12,7 @@ export const useStyles = makeStyles({
     smallGrid: {
         width: '40vw'
     },
-    floorHouseNumtextField: {
+    floorHouseNumTextField: {
         marginLeft: '1vw',
         width: '9vw'
     },

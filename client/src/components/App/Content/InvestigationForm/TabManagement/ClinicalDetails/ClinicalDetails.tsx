@@ -183,7 +183,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     test-id='currentQuarantineHomeNumber'
                     size='small'
                     placeholder='מספר הבית'
-                    className={classes.floorHouseNumtextField}
+                    className={classes.floorHouseNumTextField}
                     value={context.clinicalDetailsData.isolationAddress.houseNum}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
@@ -193,7 +193,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     test-id='currentQuarantineFloor'
                     size='small'
                     placeholder='קומה'
-                    className={classes.floorHouseNumtextField}
+                    className={classes.floorHouseNumTextField}
                     value={context.clinicalDetailsData.isolationAddress.floor}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
