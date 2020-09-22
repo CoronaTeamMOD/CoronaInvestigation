@@ -68,15 +68,24 @@ const useGoogleApiAutocomplete = () => {
     const parseAddress = (address: string | GeocodeResponse | GoogleApiPlace | null) => {
         const parseString = (location: string) => {
             try {
-                const parsed = JSON.parse(location.replace(/\\/g, ""));
+                const parsed = JSON.parse(location);
                 return typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
             } catch (error) {
-                const invalidLocation = {
-                    description: 'מיקום לא תקין',
-                    place_id: null,
-                };
+                try {
+                    const wrappedLocation = `"${location}"`;
+                    const wrappedParsedLocation = JSON.parse(wrappedLocation);
+                    return typeof wrappedParsedLocation === 'string' ? JSON.parse(wrappedParsedLocation) : wrappedParsedLocation;
+                } catch (secondError) {
+                    console.error('error parsing location regularly:', error);
+                    console.error('error parsing location wrapped with quote marks:', secondError);
 
-                return invalidLocation;
+                    const invalidLocation = {
+                        description: 'מיקום לא תקין',
+                        place_id: null,
+                    };
+
+                    return invalidLocation;
+                }
             }
         };
 
