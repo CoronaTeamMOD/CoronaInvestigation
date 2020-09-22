@@ -9,7 +9,7 @@ enum InteractionEventDialogFields {
     PLACE_NAME = 'placeName',
     LOCATION_ADDRESS = 'locationAddress',
     BUS_LINE = 'busLine',
-    AIR_LINE = 'airLine',
+    AIR_LINE = 'airline',
     FLIGHT_NUM = 'flightNum',
     BUS_COMPANY = 'busCompany',
     GRADE = 'grade',

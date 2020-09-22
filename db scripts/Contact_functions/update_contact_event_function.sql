@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION public.update_contact_event_function(input_data json)
- RETURNS integer
- LANGUAGE plpgsql
+    RETURNS integer
+    LANGUAGE plpgsql
 AS $function$declare
 --Event variables:
 placeType varchar;
@@ -84,7 +84,7 @@ begin
 	select nullif((input_data->'flightDestinationCountry')::text,'null') as val into flightDestinationCountry;
 	select nullif((input_data->'flightOriginAirport')::text,'null') as val into flightOriginAirport;
 	select nullif((input_data->'flightOriginCity')::text,'null') as val into flightOriginCity;
-	select nullif((input_data->'flightOriginCountry')::text,'null') as val into flightOriginCity;
+	select nullif((input_data->'flightOriginCountry')::text,'null') as val into flightOriginCountry;
 
 	select nullif((input_data->'contactPhoneNumber')::text,'null') as val into contactPhoneNumber;
 
@@ -179,13 +179,13 @@ else
 	contact_person_last_name=trim(contactPersonLastName,'"'),
 	contact_person_phone_number=trim(contactPersonPhoneNumber,'"'), 
 	number_of_contacted=contacted_number,
-	city_origin=trim(city_origin,'"'), 
-	city_destination=trim(city_destination,'"'),
+	city_origin=trim(cityOrigin,'"'), 
+	city_destination=trim(cityDestination,'"'),
 	location_address=trim(locationAddress,'"'), 
 	flight_origin_country=trim(flightOriginCountry,'"'), 
 	flight_origin_city=	trim(flightOriginCity,'"'), 
 	flight_origin_airport=trim(flightOriginAirport,'"'),  
-	flight_destination_country=trim(flightOriginAirport,'"'), 
+	flight_destination_country=trim(flightDestinationCountry,'"'), 
 	flight_destination_city=trim(flightDestinationCity,'"'),
 	flight_destination_airport=trim(flightDestinationAirport,'"'),
 	place_sub_type=placeSubType
