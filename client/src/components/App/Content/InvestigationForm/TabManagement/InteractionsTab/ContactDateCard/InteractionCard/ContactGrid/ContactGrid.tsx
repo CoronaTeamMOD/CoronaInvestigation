@@ -42,11 +42,13 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={3}>
-                    <FormInput fieldName={contactedPersonID}>
-                        <Typography variant='caption'>
-                            {contact.id}
-                        </Typography>
-                    </FormInput>
+                    {
+                        contact.id && <FormInput fieldName={contactedPersonID}>
+                            <Typography variant='caption'>
+                                {contact.id}
+                            </Typography>
+                        </FormInput>
+                    }
                 </Grid>
             </Grid>
             <Grid className={formClasses.formRow} container justify='flex-start'>

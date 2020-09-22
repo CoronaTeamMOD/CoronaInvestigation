@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
-import { initAddress } from 'models/Address';
+import { initDBAddress } from 'models/Address';
 import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
@@ -89,7 +89,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             houseNum: patientAddress.houseNum
                         }
                     } else {
-                        patientAddress = initAddress;
+                        patientAddress = initDBAddress;
                     }
 
                     context.setClinicalDetailsData({
