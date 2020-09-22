@@ -223,7 +223,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <FormControl required fullWidth>
                         <InputLabel>גורם מבטח</InputLabel>
                         <Select
