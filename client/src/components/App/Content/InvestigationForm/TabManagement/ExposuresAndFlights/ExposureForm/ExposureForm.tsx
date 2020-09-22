@@ -25,6 +25,7 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName="שם החולה:">
         <>
           <AlphanumericTextField
+            required
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(value : string) =>
@@ -40,6 +41,7 @@ const ExposureForm = (props: any) => {
             label="שם פרטי"
           />
           <AlphanumericTextField
+            required
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(value : string) =>
