@@ -37,6 +37,7 @@ const ExposureForm = (props: any) => {
             clearErrors={clearErrors}
             name={fieldsNames.firstName}
             placeholder="שם פרטי"
+            label="שם פרטי"
           />
           <AlphanumericTextField
             errors={errors}
@@ -51,6 +52,7 @@ const ExposureForm = (props: any) => {
             setError={setError}
             clearErrors={clearErrors}
             placeholder="שם משפחה"
+            label="שם משפחה"
           />
         </>
       </FormRowWithInput>

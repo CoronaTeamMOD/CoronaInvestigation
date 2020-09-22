@@ -64,6 +64,7 @@ const AirportInput = (props: any) => {
         required
         value={city}
         placeholder="עיר"
+        label="עיר"
         onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
       />
       <AlphanumericTextField
@@ -75,6 +76,7 @@ const AirportInput = (props: any) => {
         value={airport}
         onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
         placeholder="שדה תעופה"
+        label="שדה תעופה"
       />
     </div>
   );
