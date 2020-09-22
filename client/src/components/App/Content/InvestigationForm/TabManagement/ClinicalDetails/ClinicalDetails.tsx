@@ -194,6 +194,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     )}
                     setError={setError}
                     clearErrors={clearErrors}
+                    errors={errors}
                     placeholder='מספר הבית'
                     className={classes.floorHouseNumTextField}
                 />
@@ -206,6 +207,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     )}    
                     setError={setError}
                     clearErrors={clearErrors}
+                    errors={errors}
                     placeholder='קומה'
                     className={classes.floorHouseNumTextField}
                     />
@@ -233,6 +235,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         )}
                         setError={setError}
                         clearErrors={clearErrors}
+                        errors={errors}
                         placeholder='הכנס סיבה:'
                         className={classes.isolationProblemTextField}
                     />
@@ -317,6 +320,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     label='סימפטום'
                                     setError={setError}
                                     clearErrors={clearErrors}
+                                    errors={errors}
                                     className={classes.otherTextField}
                                     placeholder='הזן סימפטום...'
                                     
@@ -372,6 +376,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     required
                                     setError={setError}
                                     clearErrors={clearErrors}
+                                    errors={errors}
                                     label='מחלת רקע'
                                     placeholder='הזן מחלת רקע...'
                                     className={classes.otherTextField}
@@ -414,6 +419,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 required
                                 setError={setError}
                                 clearErrors={clearErrors}
+                                errors={errors}
                                 label='בית חולים'
                             />
                         </div>

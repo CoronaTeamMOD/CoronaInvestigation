@@ -212,6 +212,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <AlphanumericTextField
                     setError={setError}
                     clearErrors={clearErrors}
+                    errors={errors}
                     name={PersonalInfoDataContextFields.CONTACT_INFO}
                     placeholder={CONTACT_INFO}
                     value={personalInfoStateContext.personalInfoData.contactInfo}
@@ -317,6 +318,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <AlphanumericTextField
                         setError={setError}
                         clearErrors={clearErrors}
+                        errors={errors}
                         name={PersonalInfoDataContextFields.FLOOR}
                         test-id='personalDetailsFloor'
                         placeholder={'קומה'}
@@ -330,6 +332,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <AlphanumericTextField
                         setError={setError}
                         clearErrors={clearErrors}
+                        errors={errors}
                         name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         test-id='personalDetailsHouseNumber'
                         placeholder={'מספר בית'}
@@ -429,6 +432,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             <AlphanumericTextField
                                 setError={setError}
                                 clearErrors={clearErrors}
+                                errors={errors}
                                 name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                 test-id='institutionName'
                                 value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
