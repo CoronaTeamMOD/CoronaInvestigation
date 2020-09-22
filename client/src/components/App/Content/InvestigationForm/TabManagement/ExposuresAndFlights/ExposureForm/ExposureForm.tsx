@@ -7,6 +7,8 @@ import LocationInput from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useFormStyles from 'styles/formStyles';
+import { useForm } from 'react-hook-form';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 const ExposureForm = (props: any) => {
   const {
@@ -16,31 +18,38 @@ const ExposureForm = (props: any) => {
   } = props;
 
   const classes = useFormStyles();
+  const { errors, setError, clearErrors } = useForm();
 
   return (
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="שם החולה:">
         <>
-          <TextField
-            required
+          <AlphanumericTextField
+            errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
-            onChange={(e) =>
+            onChange={(value : string) =>
               handleChangeExposureDataAndFlightsField(
                 fieldsNames.firstName,
-                e.target.value
+                value
               )
             }
+            setError={setError}
+            clearErrors={clearErrors}
+            name={fieldsNames.firstName}
             placeholder="שם פרטי"
           />
-          <TextField
-            required
+          <AlphanumericTextField
+            errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
-            onChange={(e) =>
+            onChange={(value : string) =>
               handleChangeExposureDataAndFlightsField(
                 fieldsNames.lastName,
-                e.target.value
+                value
               )
             }
+            name={fieldsNames.lastName}
+            setError={setError}
+            clearErrors={clearErrors}
             placeholder="שם משפחה"
           />
         </>
