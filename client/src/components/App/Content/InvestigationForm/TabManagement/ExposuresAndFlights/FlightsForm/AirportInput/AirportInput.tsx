@@ -4,11 +4,10 @@ import { useSelector } from 'react-redux';
 import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
-import useFormStyle from 'styles/formStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 
 import { Airport } from '../FlightFormTypes';
-import { TextField } from '@material-ui/core';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 
 interface AirportInputProps {
@@ -18,6 +17,9 @@ interface AirportInputProps {
 
 const AirportInput = (props: any) => {
   const {
+    errors,
+    setError,
+    clearErrors,
     country,
     countryFieldName,
     city,
@@ -26,7 +28,6 @@ const AirportInput = (props: any) => {
     airportFieldName,
     handleChangeExposureDataAndFlightsField,
   } = props;
-  const classes = useFormStyle();
 
   const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
   const options = Array.from(countries).map(([name, value]) => (value))
@@ -55,21 +56,25 @@ const AirportInput = (props: any) => {
         getOptionLabel={(option) => getLabel(option)}
         filterOptions={filterOptions}
       />
-      <TextField
+      <AlphanumericTextField
+        name={cityFieldName}
+        errors={errors}
+        setError={setError}
+        clearErrors={clearErrors}
         required
         value={city}
         placeholder="עיר"
-        onChange={(e) => handleChangeExposureDataAndFlightsField(cityFieldName, e.target.value)}
-        InputProps={{ classes: { input: classes.roundedTextLabel } }}
-        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
+        onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
       />
-      <TextField
+      <AlphanumericTextField
+        name={airportFieldName}
+        errors={errors}
+        setError={setError}
+        clearErrors={clearErrors}
         required
         value={airport}
-        onChange={(e) => handleChangeExposureDataAndFlightsField(airportFieldName, e.target.value)}
+        onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
         placeholder="שדה תעופה"
-        InputProps={{ classes: { input: classes.roundedTextLabel } }}
-        InputLabelProps={{ classes: { root: classes.roundedTextLabel } }}
       />
     </div>
   );

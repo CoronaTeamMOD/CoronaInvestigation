@@ -22,6 +22,9 @@ const FlightsForm = (props: any) => {
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="יעד:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.destinationCountry]}
           countryFieldName={fieldsNames.destinationCountry}
           city={exposureAndFlightsData[fieldsNames.destinationCity]}
@@ -36,6 +39,9 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מוצא:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.originCountry]}
           countryFieldName={fieldsNames.originCountry}
           city={exposureAndFlightsData[fieldsNames.originCity]}
