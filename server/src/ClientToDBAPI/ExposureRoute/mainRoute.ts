@@ -12,19 +12,22 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
         .catch(error => response.status(500).json({error: 'failed to fetch exposures'}))
 );
 
-exposureRoute.post('/', (request: Request, response: Response) => {
-    const { id, ...data} = request.body.exposureDetails;
-   return graphqlRequest(CREATE_EXPOSURE, response.locals, {data})
-        .then((result: any) => response.send(result))
-        .catch(error => response.status(500).json({error: 'failed to save exposures'}))
+exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
+    const { exposures, investigationId } = request.body;
+    console.log(JSON.stringify(request.body));
+    response.send(investigationId);
+//    return graphqlRequest(CREATE_EXPOSURE, response.locals, {exposures, investigationId})
+//         .then((result: any) => response.send(result))
+//         .catch(error => response.status(500).json({error: 'failed to save exposures'}))
 });
 
-exposureRoute.put('/', (request: Request, response: Response) => {
-    const {id, ...data} = request.body.exposureDetails;
-    return graphqlRequest(UPDATE_EXPOSURE, response.locals, {exposureId: id, data,})
-            .then((result: any) => response.send(result))
-            .catch(error => response.status(500).json({error: 'failed to update exposures'}))
-    }
-);
+// exposureRoute.put('/', (request: Request, response: Response) => {
+//     console.log(request.body);
+//     const { exposures, investigationId } = request.body;
+//     response.send('hey');
+//     return graphqlRequest(UPDATE_EXPOSURE, response.locals, {exposures, investigationId,})
+//             .then((result: any) => response.send(result))
+//             .catch(error => response.status(500).json({error: 'failed to update exposures'}))
+// });
 
 export default exposureRoute;
