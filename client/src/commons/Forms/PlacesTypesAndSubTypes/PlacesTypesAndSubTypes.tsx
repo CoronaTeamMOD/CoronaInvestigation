@@ -67,7 +67,8 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                             <Select
                                 label='תת סוג'
                                 value={placeSubType? placeSubType : ''}
-                                onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
+                                onChange={(event) => onPlaceSubTypeChange(event.target.value as number, 
+                                    placesSubTypesByTypes[placeType].find(place => place.id === event.target.value as number)?.displayName)}
                             >
                                 {
                                     placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (

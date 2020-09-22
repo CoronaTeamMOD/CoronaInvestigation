@@ -47,8 +47,8 @@ const BusEventForm : React.FC = () : JSX.Element => {
                     <FormInput fieldName='עיר מוצא'>
                         <Autocomplete
                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={cities.get(cityOrigin as string)?.displayName}
+                            getOptionLabel={(option) => option.value?.displayName || ''}
+                            defaultValue={{ id: cityOrigin as string, value: cities.get(cityOrigin as string)}}
                             onChange={(event, selectedCity) => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_ORIGIN)
                             }}
@@ -74,8 +74,8 @@ const BusEventForm : React.FC = () : JSX.Element => {
                     <FormInput fieldName='עיר יעד'>
                         <Autocomplete
                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={cities.get(cityDestination as string)?.displayName}
+                            getOptionLabel={(option) => option.value?.displayName || ''}
+                            defaultValue={{ id: cityDestination as string, value: cities.get(cityDestination as string)}}
                             onChange={(event, selectedCity) => {
                                 onChange(selectedCity?.id as string, InteractionEventDialogFields.CITY_DESTINATION)
                             }}

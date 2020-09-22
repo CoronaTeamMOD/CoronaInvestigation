@@ -19,7 +19,7 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
 
     return (
         <>
-            <div className={formClasses.formRow}>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='מספר טיסה'>
                         <Typography variant='caption'>
@@ -34,8 +34,8 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                         </Typography>
                     </FormInput>
                 </Grid>
-            </div>
-            <div className={formClasses.formRow}>
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='ארץ מוצא'>
                         <Typography>
@@ -46,12 +46,12 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={6}>
                     <FormInput fieldName='עיר מוצא'>
                         <Typography variant='caption'>
-                            {interaction.flightDestinationCity}
+                            {interaction.flightOriginCity}
                         </Typography>
                     </FormInput>
                 </Grid>
-            </div>
-            <div className={formClasses.formRow}>
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={6}>
                     <FormInput fieldName='ארץ יעד'>
                         <Typography>
@@ -66,7 +66,7 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                         </Typography>
                     </FormInput>
                 </Grid>
-            </div>
+            </Grid>
         </>
     );
 };
