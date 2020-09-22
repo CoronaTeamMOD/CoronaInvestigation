@@ -1,17 +1,19 @@
-import React, {useContext, useEffect} from 'react';
 import { startOfDay } from 'date-fns';
+import { useSelector } from 'react-redux';
+import React, {useContext, useEffect} from 'react';
 
+import StoreStateType from 'redux/storeStateType';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import { setInteractions } from 'redux/Interaction/interactionActionCreators';
 import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Contexts/ClinicalDetailsContext';
 
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
-import { interactionsDataContext } from 'commons/Contexts/InteractionsContext';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 
 const InteractionsTab: React.FC = (): JSX.Element => {
-    const interactionsContext = React.useContext(interactionsDataContext);
+    const interactions = useSelector<StoreStateType, Interaction[]>(state => state.interactions);
 
     const onDateClick = (date: Date) => setNewInteractionEventDate(date);
     const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
@@ -22,10 +24,9 @@ const InteractionsTab: React.FC = (): JSX.Element => {
     const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
     const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
     const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
-    const [interactions, setInteractions] = React.useState<Interaction[]>([]);
     const [coronaTestDate, setCoronaTestDate] = React.useState<Date | null>(null);
     const [investigationStartTime, setInvestigationStartTime] = React.useState<Date | null>(null);
-    const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction, 
+    const { getDatesToInvestigate, addNewInteraction, updateInteraction, 
         getCoronaTestDate, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
@@ -33,12 +34,10 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         });
 
     useEffect(() => {
-        loadInteractions();
         getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
     }, []);
 
     useEffect(() => {
-        interactionsContext.interactions = interactions;
         const mappedInteractionsArray = new Map<number, Interaction[]>();
         interactions.forEach(interaction => {
             const interactionStartTime : Date | undefined = interaction.startTime;

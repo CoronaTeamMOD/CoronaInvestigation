@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
+import StoreStateType from 'redux/storeStateType';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -47,6 +50,8 @@ export const tabs: TabObj[] = [
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
+    const interactions = useSelector<StoreStateType, Interaction[]>(state => state.interactions);
+
     const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
@@ -75,9 +80,16 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
                 >
                     {
-                        tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
-                        })
+                        tabs.map((tab) => (
+                            (tab.name === TabNames.INTERACTIONS_QUESTIONING && interactions.length === 0) ?
+                                <></> :
+                                <StyledTab
+                                    onClick={onTabClicked}
+                                    key={tab.id}
+                                    label={tab.name}
+                                    disabled={tab.isDisabled}
+                                />
+                        ))
                     }
                 </Tabs>
             {

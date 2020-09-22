@@ -16,7 +16,10 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
+import { setInteractions } from 'redux/Interaction/interactionActionCreators';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -31,6 +34,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
    
     let history = useHistory();
+    const { parseAddress } = useGoogleApiAutocomplete();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
@@ -58,6 +62,37 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
         .catch(err=> console.log(err));
     }, []);
+
+    useEffect(() => {
+        axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
+            .then((result) => {
+                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
+                setInteractions(allInteractions);
+            }).catch(() => {
+                handleLoadInteractionsError();
+        });
+    }, []);
+
+    const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
+        return ({
+            ...dbInteraction,
+            locationAddress: parseAddress(dbInteraction.locationAddress) || '',
+            contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
+            contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
+            startTime: new Date(dbInteraction.startTime),
+            endTime: new Date(dbInteraction.endTime),
+        })
+    }
+
+    const handleLoadInteractionsError = () => {
+        Swal.fire({
+            title: 'הייתה שגיאה בטעינת האירועים והמגעים',
+            icon: 'error',
+            customClass: {
+                title: classes.swalTitle
+            }
+        });
+    }
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({

@@ -2,6 +2,7 @@ import User from 'models/User';
 import City from 'models/City';
 import Country from 'models/Country';
 import InvestigationRedux from 'models/InvestigationRedux';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 export default interface StoreStateType {
     user: User;
@@ -10,4 +11,5 @@ export default interface StoreStateType {
     gender: string;
     cities: Map<string, City>;
     countries: Map<string, Country>;
+    interactions: Interaction[];
 }

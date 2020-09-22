@@ -50,16 +50,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         return [];
     }
 
-    const loadInteractions = () => {
-        axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
-            .then((result) => {
-                const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
-                setInteractions(allInteractions);
-            }).catch(() => {
-                handleLoadInteractionsError();
-        });
-    }
-
     const loadInteractionById = (eventId: number) => {
         axios.get(`/intersections/contactEventById/${eventId}`)
             .then((result) => {
@@ -149,7 +139,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     return {
         getCoronaTestDate,
         getDatesToInvestigate,
-        loadInteractions,
         addNewInteraction,
         updateInteraction,
         handleDeleteContactEvent,
