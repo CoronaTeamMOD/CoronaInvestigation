@@ -1,7 +1,9 @@
-import classes from '*.module.css';
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Divider, Grid, TextField, Typography } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
-import React, { useContext, useEffect } from 'react';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import DatePick from 'commons/DatePick/DatePick';
+import FormInput from 'commons/FormInput/FormInput';
+import React from 'react';
 import useStyles from './ContactQuestioningStyles';
 
 const ContactQuestioning: React.FC = (): JSX.Element => {
@@ -36,7 +38,44 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                 <AccordionDetails>
                     <Grid container>
                         <Grid item xs={4}>
-                            first
+                            <Grid container direction='column' spacing={4}>
+                                <Grid container item direction='row' alignItems='center'>
+                                    <Avatar className={classes.avatar}>1</Avatar>
+                                    <Typography><b>פרטים אישיים נוספים</b></Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Grid container>
+                                        <FormInput fieldName='סוג תעודה מזהה'>
+                                            <ToggleButtonGroup exclusive size='small'>
+                                                <ToggleButton selected>
+                                                    ת.ז
+                                            </ToggleButton>
+                                                <ToggleButton>
+                                                    דרכון
+                                            </ToggleButton>
+                                            </ToggleButtonGroup>
+                                        </FormInput>
+                                        <FormInput fieldName='מספר תעודה מזהה'>
+                                            <TextField />
+                                        </FormInput>
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <FormInput fieldName='תאריך לידה'>
+                                        <DatePick value='dd/mm/yyyy' onChange={() => { }} />
+                                    </FormInput>
+                                </Grid>
+                                <Grid item>
+                                    <FormInput fieldName='גיל'>
+                                        <TextField />
+                                    </FormInput>
+                                </Grid>
+                                <Grid item>
+                                    <FormInput fieldName='טלפון נוסף'>
+                                        <TextField />
+                                    </FormInput>
+                                </Grid>
+                            </Grid>
                         </Grid>
                         <Grid item xs={3}>
                             second
