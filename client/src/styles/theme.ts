@@ -1,15 +1,16 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-export const primaryBackgroundColor =  '#F3F6FB';
+export const primaryBackgroundColor = '#F3F6FB';
+const primaryColor = {
+    light: 'rgb(133, 220, 245)',
+    main: 'rgb(44, 151, 185)',
+    dark: 'rgb(5, 105, 137)',
+    contrastText: '#fff',
+};
 
 const theme = createMuiTheme({
     palette: {
-        primary: {
-            light: 'rgb(133, 220, 245)',
-            main: 'rgb(44, 151, 185)',
-            dark: 'rgb(5, 105, 137)',
-            contrastText: '#fff',
-        },
+        primary: primaryColor,
         secondary: {
             light: 'rgb(212, 195, 253)',
             main: 'rgb(185, 168, 245)',
@@ -63,12 +64,24 @@ const theme = createMuiTheme({
         //@ts-ignore
         MuiAutocomplete: {
             inputRoot: {
-              '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
-                flip: false,
-                padding: '1px 10px 1px 10px'
-              }
+                '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
+                    flip: false,
+                    padding: '1px 10px 1px 10px'
+                }
             }
-          }
+        },
+        MuiToggleButton: {
+            root: {
+                borderRadius: 20,
+                '&$selected': {
+                    color: 'white',
+                    backgroundColor: primaryColor.main,
+                    '&:hover': {
+                        backgroundColor: primaryColor.main
+                    }
+                }
+            }
+        }
     },
     props: {
         MuiTextField: {
