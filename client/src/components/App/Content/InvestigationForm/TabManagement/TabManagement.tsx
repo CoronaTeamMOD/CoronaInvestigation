@@ -9,6 +9,7 @@ import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -37,6 +38,12 @@ export const tabs: TabObj[] = [
         isDisabled: false,
         displayComponent: <InteractionsTab/>,
     },
+    {
+        id: 4,
+        name: TabNames.CONTACT_QUESTIONING,
+        isDisabled: false,
+        displayComponent: <ContactQuestioning/>
+    }
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
