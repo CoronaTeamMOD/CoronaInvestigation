@@ -155,7 +155,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <TextField
                             {...params}
                             placeholder='עיר'
-                            className={classes.textField}
+                            className={classes.cityStreetTextField}
                         />
                     }
                 />
@@ -175,7 +175,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             test-id='currentQuarantineStreet'
                             {...params}
                             placeholder='רחוב'
-                            className={classes.textField}
+                            className={classes.cityStreetTextField}
                         />
                     }
                 />
@@ -183,7 +183,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     test-id='currentQuarantineHomeNumber'
                     size='small'
                     placeholder='מספר הבית'
-                    className={classes.textField}
+                    className={classes.floorHouseNumTextField}
                     value={context.clinicalDetailsData.isolationAddress.houseNum}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, event.target.value)
@@ -193,7 +193,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     test-id='currentQuarantineFloor'
                     size='small'
                     placeholder='קומה'
-                    className={classes.textField}
+                    className={classes.floorHouseNumTextField}
                     value={context.clinicalDetailsData.isolationAddress.floor}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => (
                         updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, event.target.value)
@@ -221,7 +221,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, event.target.value)
                         )}
                         size='small'
-                        className={classes.textField}
+                        className={classes.isolationProblemTextField}
                         placeholder='הכנס סיבה:'
                     />
                 </Collapse>
