@@ -115,7 +115,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
                         required
@@ -142,7 +142,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
@@ -151,7 +150,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
@@ -177,7 +176,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
@@ -186,7 +184,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
@@ -212,6 +210,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     />
                 </Grid>
                 <AlphanumericTextField
+                    className={classes.contactDescription}
                     setError={setError}
                     clearErrors={clearErrors}
                     errors={errors}
@@ -223,7 +222,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     }}
                 />
             </Grid>
-
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
@@ -232,7 +230,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.personalInfoItem}>
                     <FormControl required fullWidth>
                         <InputLabel>גורם מבטח</InputLabel>
                         <Select
@@ -252,7 +250,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
             </Grid>
-
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
@@ -261,7 +258,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.personalInfoItem}>
                     <Autocomplete
                         options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
                         getOptionLabel={(option) => option.value.displayName}
@@ -289,7 +286,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 {
                     cityName &&
-                    <Grid item xs={2}>
+                    <Grid item xs={2} className={classes.personalInfoItem}>
                         <Autocomplete
                             size='small'
                             options={streets}
@@ -317,7 +314,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         />
                     </Grid>
                 }
-                <Grid item xs={1}>
+                <Grid item xs={1} className={classes.homeAddressItem}>
                     <AlphanumericTextField
                         required
                         setError={setError}
@@ -332,7 +329,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         }}
                     />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1} className={classes.homeAddressItem}>
                     <AlphanumericTextField
                         required
                         setError={setError}
@@ -357,7 +354,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.responsiveOccupation}>
                     <FormControl component='fieldset'>
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
