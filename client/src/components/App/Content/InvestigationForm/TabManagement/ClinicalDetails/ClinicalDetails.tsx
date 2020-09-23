@@ -24,7 +24,7 @@ export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
 const schema = yup.object().shape({
-    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean(),
+    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: yup.date().when(
         ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
@@ -37,19 +37,18 @@ const schema = yup.object().shape({
         then: yup.date().required(),
         otherwise: yup.date().nullable()
     }),
-    [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.string(),
-    [ClinicalDetailsFields.ISOLATION_CITY]: yup.string(),
-    [ClinicalDetailsFields.ISOLATION_STREET]: yup.string(),
-    [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string(),
-    [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string(),
-    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean(),
+    [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(),
+    [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(),
+    [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.number().required(),
+    [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.number().required(),
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
             is: true,
             then: yup.string().required(),
             otherwise: yup.string() 
         }),
-    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean(),
+    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.string(),
     [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
