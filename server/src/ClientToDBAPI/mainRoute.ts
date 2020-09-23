@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import addressRoute from './Address/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
+import contactedPeopleRoute from './contactedPeople/mainRoute';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
@@ -11,6 +12,7 @@ import authMiddleware from '../middlewares/Authentication';
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
+clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/exposure', exposureRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);
