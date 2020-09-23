@@ -49,7 +49,13 @@ const schema = yup.object().shape({
             otherwise: yup.string() 
         }),
     [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(),
-    [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.string(),
+    [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when(
+        ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
+            is: true,
+            then: yup.date().required(),
+            otherwise: yup.date().nullable()
+        }
+    ),
     [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
@@ -373,18 +379,20 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <div className={classes.dates}>
                         {
                             !isUnkonwnDateChecked &&
-                            <DatePick
-                                required={!isUnkonwnDateChecked}
-                                label={'תאריך התחלת סימפטומים'}
-                                testId='symptomsStartDate'
-                                value={context.clinicalDetailsData.symptomsStartDate}
-                                labelText='תאריך התחלת סימפטומים'
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.SYMPTOMS_START_DATE,
-                                        newDate
-                                    )
-                                }
+                            <Controller
+                                name={ClinicalDetailsFields.ISOLATION_START_DATE}
+                                control={control}
+                                render={(props) => (
+                                    <DatePick
+                                        label='תאריך התחלת סימפטומים'
+                                        test-id='symptomsStartDate'
+                                        value={props.value}
+                                        labelText='תאריך התחלת סימפטומים'
+                                        onChange={(newDate: Date) =>
+                                            props.onChange(newDate)
+                                        }
+                                    />
+                                )}
                             />
                         }
                         <div className={classes.symptomsDateCheckBox}>
