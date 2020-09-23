@@ -7,7 +7,7 @@ import { GET_IS_USER_ACTIVE } from "../../DBService/Users/Query";
 const usersRoute = Router();
 
 usersRoute.get('/userActivityStatus', (request: Request, response: Response) => {
-    graphqlRequest(GET_IS_USER_ACTIVE, response.locals, {id: request.query.userId})
+    graphqlRequest(GET_IS_USER_ACTIVE, response.locals, {id: response.locals.user.id})
     .then((result:any) => {
         if (result.data?.userById)
             response.send(result.data?.userById);
@@ -18,8 +18,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
 })
 
 usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
-    const {id, isActive} = request.body;
-    graphqlRequest(UPDATE_IS_USER_ACTIVE, response.locals, {id, isActive})
+    graphqlRequest(UPDATE_IS_USER_ACTIVE, response.locals, {id: response.locals.user.id, isActive: request.body.isActive})
        .then((result:any) => {
         if(result.data.updateUserById)
             response.send(result.data.updateUserById.user);

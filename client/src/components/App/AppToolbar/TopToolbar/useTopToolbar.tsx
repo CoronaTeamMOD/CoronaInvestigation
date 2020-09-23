@@ -18,7 +18,7 @@ const useTopToolbar = (props: useInteractionsTabInput) :  useTopToolbarOutcome =
     const classes = useStyles({});
 
     const getUserActivityStatus = (userId: string) => {
-        axios.get(`/usersInfo/userActivityStatus?userId=${userId}`)
+        axios.get(`/usersInfo/userActivityStatus`)
         .then((result) => { 
             props.setIsActive(result.data.isActive)
         }).catch(() => {
@@ -34,7 +34,6 @@ const useTopToolbar = (props: useInteractionsTabInput) :  useTopToolbarOutcome =
 
     const setUserActivityStatus = (userId: string, isActive: boolean) => {
         axios.post('usersInfo/updateIsUserActive', {
-            id: userId,
             isActive
         }).then((result) => {
             if(result.data)
