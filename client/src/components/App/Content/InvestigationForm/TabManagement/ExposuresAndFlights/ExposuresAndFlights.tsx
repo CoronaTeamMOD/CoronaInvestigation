@@ -15,7 +15,7 @@ import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
 
 
-const ExposuresAndFlights = () => {
+const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   const context = useContext(exposureAndFlightsContext);
   const { exposureAndFlightsData, setExposureDataAndFlights } = context;
 
@@ -50,9 +50,14 @@ const ExposuresAndFlights = () => {
     });
   };
 
+  const saveExposure = () => {
+    console.log("ExposureTab");
+  }
+
   return (
     <>
-      <div className={classes.subForm}>
+      <form id={`form-${id}`} onSubmit={saveExposure}>
+        <div className={classes.subForm}>
         <Typography variant="caption" className={fieldName}>
           חשיפה אפשרית
         </Typography>
@@ -83,9 +88,9 @@ const ExposuresAndFlights = () => {
         </Collapse>
       </div>
 
-      <Divider />
+        <Divider />
 
-      <div className={classes.subForm}>
+        <div className={classes.subForm}>
         <Typography variant="caption" className={fieldName}>
           חזרה מחו״ל
         </Typography>
@@ -115,8 +120,13 @@ const ExposuresAndFlights = () => {
           />
         </Collapse>
       </div>
+      </form>
     </>
   );
 };
+
+interface Props {
+  id: number
+}
 
 export default ExposuresAndFlights;

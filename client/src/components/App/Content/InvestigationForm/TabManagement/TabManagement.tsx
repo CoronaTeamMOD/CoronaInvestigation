@@ -14,7 +14,7 @@ export const defaultTab: TabObj = {
     id: 0,
     name: TabNames.PERSONAL_INFO,
     isDisabled: false,
-    displayComponent: <PersonalInfoTab />
+    displayComponent: <PersonalInfoTab id={0}/>
 };
 
 export const tabs: TabObj[] = [
@@ -23,19 +23,19 @@ export const tabs: TabObj[] = [
         id: 1,
         name: TabNames.CLINICAL_DETAILS,
         isDisabled: false,
-        displayComponent: <ClinicalDetails />
+        displayComponent: <ClinicalDetails id={1}/>
     },
     {
         id: 2,
         name: TabNames.EXPOSURES_AND_FLIGHTS,
         isDisabled: false,
-        displayComponent: <ExposuresAndFlights/>,
+        displayComponent: <ExposuresAndFlights id={2}/>,
     },
     {
         id: 3,
         name: TabNames.INTERACTIONS, 
         isDisabled: false,
-        displayComponent: <InteractionsTab/>,
+        displayComponent: <InteractionsTab id={3}/>,
     },
 ];
 
@@ -69,7 +69,12 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
+                            return <StyledTab 
+                                        onClick={onTabClicked}
+                                        key={tab.id}
+                                        label={tab.name}
+                                        disabled={tab.isDisabled}
+                                    />
                         })
                     }
                 </Tabs>

@@ -101,10 +101,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>
-                                        <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={() => {
-                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
-                                            }}
+                                        <PrimaryButton 
+                                            type="submit"
+                                            form={`form-${currentTab.id}`}
+                                            test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                            // onClick={() => {
+                                            //     currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                            // }}
                                             disabled={shouldDisableButton}>
                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>

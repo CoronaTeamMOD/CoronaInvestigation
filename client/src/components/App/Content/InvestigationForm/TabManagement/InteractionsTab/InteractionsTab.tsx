@@ -9,7 +9,7 @@ import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractio
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Contexts/ClinicalDetailsContext';
 
-const InteractionsTab: React.FC = (): JSX.Element => {
+const InteractionsTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const onDateClick = (date: Date) => setNewInteractionEventDate(date);
     const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
@@ -52,38 +52,48 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         setInteractionsMap(mappedInteractionsArray);
     }, [interactions]);
 
+    const SaveInteraction = () => {
+        console.log("Interaction");
+    }
+
     return (
         <>
-            {
-                getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
-                    coronaTestDate, investigationStartTime).map(date =>
-                    <ContactDateCard contactDate={date}
-                        onEditClick={startEditInteraction}
-                        onDeleteClick={handleDeleteContactEvent}
-                        createNewInteractionEvent={() => onDateClick(date)}
-                        interactions={interactionsMap.get(date.getTime())}
-                        key={date.getTime()}
+            <form id={`form-${id}`} onSubmit={SaveInteraction}>
+                {
+                    getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
+                        coronaTestDate, investigationStartTime).map(date =>
+                        <ContactDateCard contactDate={date}
+                            onEditClick={startEditInteraction}
+                            onDeleteClick={handleDeleteContactEvent}
+                            createNewInteractionEvent={() => onDateClick(date)}
+                            interactions={interactionsMap.get(date.getTime())}
+                            key={date.getTime()}
+                        />
+                        )
+                }
+                {
+                    newInteractionEventDate && <NewInteractionEventDialog
+                        isOpen={newInteractionEventDate !== undefined}
+                        eventDate={newInteractionEventDate}
+                        closeDialog={onNewEventDialogClose}
+                        handleInteractionCreation={addNewInteraction}
                     />
-                    )
-            }
-            {
-                newInteractionEventDate && <NewInteractionEventDialog
-                    isOpen={newInteractionEventDate !== undefined}
-                    eventDate={newInteractionEventDate}
-                    closeDialog={onNewEventDialogClose}
-                    handleInteractionCreation={addNewInteraction}
-                />
-            }
-            {
-                interactionToEdit && <EditInteractionEventDialog
-                    isOpen={interactionToEdit !== undefined}
-                    eventToEdit={interactionToEdit}
-                    closeDialog={onEditEventDialogClose}
-                    updateInteraction={updateInteraction}
-                />
-            }
+                }
+                {
+                    interactionToEdit && <EditInteractionEventDialog
+                        isOpen={interactionToEdit !== undefined}
+                        eventToEdit={interactionToEdit}
+                        closeDialog={onEditEventDialogClose}
+                        updateInteraction={updateInteraction}
+                    />
+                }
+            </form>
         </>
     )
 };
+
+interface Props {
+    id: number
+}
 
 export default InteractionsTab;

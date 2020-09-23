@@ -23,7 +23,7 @@ import useClinicalDetails from './useClinicalDetails';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
-const ClinicalDetails: React.FC = (): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
     const { control, handleSubmit, errors, setError, clearErrors } = useForm({});
     const context = React.useContext(clinicalDetailsDataContext);
@@ -89,9 +89,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
+    const saveClinicalDetails = () => {
+        console.log("ClinicalTab");
+    }
+
     return (
         <div>
-            <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
+            <form id={`form-${id}`} onSubmit={saveClinicalDetails}>
+                <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>
                         <b>
@@ -470,8 +475,13 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     : <></>
                 }
             </Grid>
+            </form>
         </div>
     );
 };
+
+interface Props {
+    id: number
+}
 
 export default ClinicalDetails;

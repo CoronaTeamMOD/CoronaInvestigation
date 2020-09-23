@@ -14,11 +14,11 @@ import { useForm } from "react-hook-form";
 import City from 'models/City';
 import { Street } from 'models/Street';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -33,7 +33,7 @@ const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
-const PersonalInfoTab: React.FC = (): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
     const classes = useStyles({});
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
@@ -105,9 +105,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const { setError, clearErrors, errors } = useForm();
 
+    const savePersonalData = () => {
+        console.log("PersonalTab")
+    }
+    
     return (
         <div className={classes.tabInitialContainer}>
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+            <form id={`form-${id}`} onSubmit={savePersonalData}>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -143,7 +148,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -178,7 +183,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -224,7 +229,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 />
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -252,7 +257,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -348,7 +353,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>
+                <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
@@ -453,8 +458,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Collapse>
                 </Grid>
             </Grid>
+            </form>
         </div>
     );
 };
+
+interface Props {
+    id: number
+}
 
 export default PersonalInfoTab;
