@@ -11,7 +11,10 @@ const useStyles = makeStyles({
         },
     },
     contactToggle: {
-        marginLeft: '-8vw',
+        '@media screen and (max-width: 1900px) and (min-width: 1280px)': {
+            marginLeft: '-9vw',
+        },
+        marginLeft: '-13vw',
     },
     abroadToggle: {
       marginLeft: '-13vw',

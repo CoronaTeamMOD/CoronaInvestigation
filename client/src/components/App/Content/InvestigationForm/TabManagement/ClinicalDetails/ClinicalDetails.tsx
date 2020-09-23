@@ -163,7 +163,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <TextField
                                 {...params}
                                 placeholder='עיר'
-                                className={classes.cityStreetTextField}
                             />
                         }
                     />
@@ -185,12 +184,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='currentQuarantineStreet'
                                 {...params}
                                 placeholder='רחוב'
-                                className={classes.cityStreetTextField}
                             />
                         }
                     />
                 </Grid>
-                <Grid item xs={2} className={classes.cancelWhiteSpace}>
+                <Grid item xs={2}>
                     <AlphanumericTextField
                         test-id='currentQuarantineHomeNumber'
                         name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
@@ -202,7 +200,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         clearErrors={clearErrors}
                         errors={errors}
                         placeholder='מספר הבית'
-                        className={classes.floorHouseNumTextField}
                     />
                 </Grid>
                 <Grid item xs={2}>
@@ -216,9 +213,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
-                        placeholder='קומה'
-                        className={classes.floorHouseNumTextField}
-                    />
+                        placeholder='קומה'/>
                 </Grid>
             </Grid>
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -409,83 +404,81 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={10}>
                     <Toggle
                         test-id='wasHospitalized'
                         value={context.clinicalDetailsData.wasHospitalized}
                         onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
                     />
                 </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                <Grid item xs={10}>
+                    <Collapse in={context.clinicalDetailsData.wasHospitalized}>
+                        <div className={classes.dates}>
+                            <Typography>
+                                <b>
+                                    בית חולים:
+                                </b>
+                            </Typography>
+                            <TextField
+                                required
+                                label='בית חולים'
+                                test-id='hospitalInput'
+                                value={context.clinicalDetailsData.hospital}
+                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
+                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
+                                )}
+                            />
+                        </div>
+                        <div className={classes.dates}>
+                        <DatePick
+                            required
+                            label='מתאריך'
+                            test-id='wasHospitalizedFromDate'
+                            labelText='מתאריך'
+                            value={context.clinicalDetailsData.hospitalizationStartDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
+                                newDate
+                            )
+                            }
+                        />
+                        <DatePick
+                            required
+                            label='עד'
+                            test-id='wasHospitalizedUntilDate'
+                            labelText='עד'
+                            value={context.clinicalDetailsData.hospitalizationEndDate}
+                            onChange={(newDate: Date) =>
+                            updateClinicalDetails(
+                                ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
+                                newDate
+                            )
+                            }
+                        />
+                        </div>
+                    </Collapse>
+                </Grid>
+                {patientGender === Gender.FEMALE ?
+                    <>
+                        <Grid item xs={2}>
+                            <Typography>
+                                <b>
+                                    האם בהריון:
+                                </b>
+                            </Typography>
+                        </Grid>
+                        <Toggle
+                            test-id='isPregnant'
+                            value={context.clinicalDetailsData.isPregnant}
+                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData.isPregnant)}
+                        />
+                    </>
+                    : <></>
+                }
             </Grid>
-            <Collapse in={context.clinicalDetailsData.wasHospitalized}>
-                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                    <Typography className={classes.hospitalLabel}>
-                        <b>
-                            בית חולים:
-                        </b>
-                    </Typography>
-                    <AlphanumericTextField
-                        test-id='hospitalInput'
-                        name={ClinicalDetailsFields.HOSPITAL}
-                        value={context.clinicalDetailsData.hospital}
-                        onChange={(newValue: string) => (
-                            updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, newValue)
-                        )}
-                        required
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        label='בית חולים'
-                    />
-                    <Grid item xs={2} className={classes.dates}>
-                        <div className={classes.hospitalizedDates + ' ' + classes.spacedDates}>
-                            <DatePick
-                                required
-                                label='מתאריך'
-                                test-id='wasHospitalizedFromDate'
-                                labelText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
-                                        newDate
-                                    )}
-                            />
-                        </div>
-                        <div className={classes.hospitalizedDates}>
-                            <DatePick
-                                required
-                                label='עד'
-                                test-id='wasHospitalizedUntilDate'
-                                labelText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
-                                        newDate
-                                    )}
-                            />
-                        </div>
-                    </Grid>
-                </Grid>
-            </Collapse>
-            {patientGender === Gender.FEMALE ?
-                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                    <Grid item xs={2} className={classes.fieldLabel}>
-                        <Typography>
-                            <b>
-                                האם בהריון:
-                            </b>
-                        </Typography>
-                    </Grid>
-                    <Toggle
-                        test-id='isPregnant'
-                        value={context.clinicalDetailsData.isPregnant}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData.isPregnant)}
-                    />
-                </Grid>
-                : <></>
-            }
         </div>
     );
 };

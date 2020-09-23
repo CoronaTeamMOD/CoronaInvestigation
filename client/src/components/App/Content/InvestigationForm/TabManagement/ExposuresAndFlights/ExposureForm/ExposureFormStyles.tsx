@@ -5,9 +5,14 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
     },
+    exposureContactNameFields: {
+        marginLeft: '-14vw'
+    },
     exposureContactName: {
-        marginLeft: '-10vw',
-        marginRight: '1vw'
+        marginLeft: '1vw',
+    },
+    exposureNameLabel: {
+        marginRight: '-14vw',
     },
     exposureFields: {
         marginLeft: '-2.5vw',

@@ -6,9 +6,11 @@ const useStyles = makeStyles({
     },
     airportDetails: {
         display: 'flex',
-        marginLeft: '1vw',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     airportTextField: {
+        marginLeft: '1vw',
         width: '15vw',
         marginRight: '1vw',
     }

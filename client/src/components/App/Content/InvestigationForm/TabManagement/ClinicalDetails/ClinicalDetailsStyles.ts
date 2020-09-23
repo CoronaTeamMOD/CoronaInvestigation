@@ -35,14 +35,7 @@ export const useStyles = makeStyles({
     smallGrid: {
         width: '40vw'
     },
-    floorHouseNumTextField: {
-        marginLeft: '1vw',
-        width: '9vw'
-    },
-    cityStreetTextField: {
-        marginLeft: '1vw',
-        width: '20vw'
-    },
+
     isolationProblemTextField: {
         marginLeft: '1vw',
         width: '15vw',
@@ -76,5 +69,5 @@ export const useStyles = makeStyles({
         'media screen and (min-width: 1500px)': {
             marginRight: '-5vw'
         },
-    }
+    },
 });

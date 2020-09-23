@@ -24,7 +24,7 @@ const ExposureForm = (props: any) => {
     return (
         <Grid className={classes.exposureForm} container justify="flex-start">
             <FormRowWithInput fieldName="שם החולה:">
-                <div className={classes.exposureFields}>
+                <div className={classes.exposureContactNameFields}>
                     <AlphanumericTextField
                         className={classes.exposureContactName}
                         required
@@ -43,6 +43,7 @@ const ExposureForm = (props: any) => {
                         label="שם פרטי"
                     />
                     <AlphanumericTextField
+                        className={classes.exposureContactName}
                         required
                         errors={errors}
                         value={exposureAndFlightsData[fieldsNames.lastName]}
