@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_CONTACTED_PEOPLE } from '../../DBService/ContactedPeople/Query';
 
