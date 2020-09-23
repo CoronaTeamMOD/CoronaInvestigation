@@ -227,6 +227,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <FormControl required fullWidth>
                         <InputLabel>גורם מבטח</InputLabel>
                         <Select
+                            test-id={'personalDetailsInsurer'}
                             label='גורם מבטח'
                             value={personalInfoStateContext.personalInfoData.insuranceCompany}
                             onChange={(event) => {

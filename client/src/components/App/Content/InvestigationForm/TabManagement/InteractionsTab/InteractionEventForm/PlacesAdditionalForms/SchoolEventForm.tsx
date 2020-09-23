@@ -67,6 +67,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                         <FormControl fullWidth>
                             <InputLabel>כיתה</InputLabel>
                             <Select
+                                test-id={'classGrade'}
                                 label='כיתה'
                                 value={interactionEventDialogData.grade}
                                 onChange={(event: React.ChangeEvent<any>) => onChange(event, InteractionEventDialogFields.GRADE)}
