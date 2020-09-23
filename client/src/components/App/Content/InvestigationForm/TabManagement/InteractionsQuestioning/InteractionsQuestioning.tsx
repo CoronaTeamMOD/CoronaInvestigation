@@ -49,10 +49,12 @@ const InteractionsQuestioning: React.FC = (): JSX.Element => {
                                     <div className={classes.menuItem}><b>שם משפחה: </b>{interactionContact.lastName}</div>
                                     <div className={classes.menuItem}><b>מספר טלפון: </b>{interactionContact.phoneNumber}</div>
                                     <div className={classes.menuItem}><b>תאריך המגע: </b>{format(new Date(interactionContact.contactDate), 'dd/MM/yyyy')}</div>
-                                    {interactionContact.contactType &&
+                                    {
+                                        interactionContact.contactType &&
                                         <div className={classes.menuItem}><b>סוג מגע: </b>{interactionContact.contactType}</div>
                                     }
-                                    {interactionContact.extraInfo &&
+                                    {
+                                        interactionContact.extraInfo &&
                                         <div className={classes.menuItem}><b>פירוט אופי המגע: </b>{interactionContact.extraInfo}</div>
                                     }
                                 </div>

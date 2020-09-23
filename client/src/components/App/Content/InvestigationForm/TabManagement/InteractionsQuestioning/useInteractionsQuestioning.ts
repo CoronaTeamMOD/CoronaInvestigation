@@ -23,7 +23,7 @@ const useInteractionsQuestioning = (parameters: useInteractionsQuestioningIncome
         })
     ))
 
-    interactionContacts.sort((a, b) => a.lastName.localeCompare(b.lastName));
+    interactionContacts.sort((firstContact, secondContact) => firstContact.lastName.localeCompare(secondContact.lastName));
 };
 
 export default useInteractionsQuestioning;
