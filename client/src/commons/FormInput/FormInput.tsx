@@ -9,7 +9,7 @@ const FormInput: React.FC<Props> = (props: Props): JSX.Element => {
     const { fieldName, children, ...rest } = props;
 
     return (
-        <div className={formClasses.formField}>
+        <div test-id={'textFormInput'} className={formClasses.formField}>
             <Grid item xs={4}>
                 <Typography className={formClasses.fieldName} variant='caption' {...rest}>
                     <b>{fieldName + ':'}</b>

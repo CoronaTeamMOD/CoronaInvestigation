@@ -1,11 +1,22 @@
 require('dotenv').config();
 const path = require('path');
-const cors = require('cors');
 const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware')
+
+require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+    '/db',
+    createProxyMiddleware({
+        target: process.env.DB_API,
+        pathRewrite: {
+            '^/db': ''
+        },
+        changeOrigin: true
+    })
+)
 
 app.use(express.static(path.join(__dirname, '..', 'build')));
 
