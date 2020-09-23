@@ -42,6 +42,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                     >
                         <InputLabel>סוג אתר</InputLabel>
                         <Select
+                            test-id={'placeType'}
                             label='סוג אתר'
                             value={placeType? placeType : ''}
                             onChange={(event) => onPlaceTypeChange(event.target.value as string)}
@@ -65,6 +66,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                         >
                             <InputLabel>תת סוג</InputLabel>
                             <Select
+                                test-id={'placeSubType'}
                                 label='תת סוג'
                                 value={placeSubType? placeSubType : ''}
                                 onChange={(event) => onPlaceSubTypeChange(event.target.value as number, 

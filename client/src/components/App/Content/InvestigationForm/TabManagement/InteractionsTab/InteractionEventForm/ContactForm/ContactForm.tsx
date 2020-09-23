@@ -123,6 +123,7 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
                         <FormControl fullWidth>
                             <InputLabel>סוג מגע</InputLabel>
                             <Select
+                                test-id={'contactType'}
                                 label='סוג מגע'
                                 value={contactType}
                                 onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
