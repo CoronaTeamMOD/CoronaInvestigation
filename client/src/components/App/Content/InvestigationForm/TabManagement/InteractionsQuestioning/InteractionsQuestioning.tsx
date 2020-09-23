@@ -6,6 +6,7 @@ import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import { useStyles } from './InteractionsQuestioningStyles';
 import useInteractionsQuestioning from './useInteractionsQuestioning';
+import { Typography } from '@material-ui/core';
 
 const InteractionsQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -16,6 +17,7 @@ const InteractionsQuestioning: React.FC = (): JSX.Element => {
 
     return (
         <div>
+            <Typography variant='h4' className={classes.form}>טופס תשאול מגעים ( {interactions.length} )</Typography>
             {
                 interactions.map((interaction: Interaction) => (
                     <div className={classes.form}>

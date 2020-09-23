@@ -84,9 +84,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
 
-    const isLastTab = () => {
-        return (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && interactions.length === 0))
-    }
+    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && interactions.length === 0));
 
     const shouldDisableButton = isButtonDisabled(currentTab.name);
     return (
@@ -106,12 +104,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>
-                                        <PrimaryButton test-id={isLastTab() ? 'endInvestigation' : 'continueToNextStage'}
+                                        <PrimaryButton test-id={isLastTab ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
-                                                isLastTab() ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                                isLastTab ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                             }}
                                             disabled={shouldDisableButton}>
-                                           {isLastTab() ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                           {isLastTab ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>
