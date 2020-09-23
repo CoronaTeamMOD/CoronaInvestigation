@@ -9,12 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers";
+import * as yup from "yup";
 
 import City from 'models/City';
 import { Street } from 'models/Street';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
-import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
+import { initialPersonalInfo, personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
@@ -33,6 +35,10 @@ const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
+const schema = yup.object().shape({
+    [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().required(),
+})
+
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
@@ -45,6 +51,12 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streets, setStreets] = React.useState<Street[]>([]);
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
+
+    const { control, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
+        defaultValues: initialPersonalInfo,
+        resolver: yupResolver(schema)
+    });
+
     const { city, street } = personalInfoStateContext.personalInfoData.address;
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -102,8 +114,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
             setStreetName(streets[0].displayName);
         }
     }, [streets])
-
-    const { setError, clearErrors, errors } = useForm();
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -211,16 +221,23 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         testId='personalDetailsAdditionalPhone'
                     />
                 </Grid>
-                <AlphanumericTextField
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    errors={errors}
+                <Controller
                     name={PersonalInfoDataContextFields.CONTACT_INFO}
-                    placeholder={CONTACT_INFO}
-                    value={personalInfoStateContext.personalInfoData.contactInfo}
-                    onChange={(newValue) => {
-                        handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, newValue);
-                    }}
+                    control={control}
+                    render={(props) => (
+                        <AlphanumericTextField
+                            name={PersonalInfoDataContextFields.CONTACT_INFO}
+                            value={props.value}
+                            onChange={(newValue: string) => (
+                                props.onChange(newValue)
+                            )}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            errors={errors}
+                            placeholder={CONTACT_INFO}
+                            onBlur={props.onBlur}
+                        />
+                    )}
                 />
             </Grid>
 
@@ -318,33 +335,45 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Grid>
                 }
                 <Grid item xs={1}>
-                    <AlphanumericTextField
-                        required
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
+                    <Controller
                         name={PersonalInfoDataContextFields.FLOOR}
-                        test-id='personalDetailsFloor'
-                        placeholder={'קומה'}
-                        value={personalInfoStateContext.personalInfoData.address.floor}
-                        onChange={(newValue) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.FLOOR, newValue);
-                        }}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                required
+                                test-id='personalDetailsFloor'
+                                name={PersonalInfoDataContextFields.FLOOR}
+                                value={props.value}
+                                onChange={(newValue: string) => (
+                                    props.onChange(newValue)
+                                )}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                placeholder={'קומה'}
+                            />
+                        )}
                     />
                 </Grid>
                 <Grid item xs={1}>
-                    <AlphanumericTextField
-                        required
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
+                    <Controller
                         name={PersonalInfoDataContextFields.HOUSE_NUMBER}
-                        test-id='personalDetailsHouseNumber'
-                        placeholder={'מספר בית'}
-                        value={personalInfoStateContext.personalInfoData.address.houseNum}
-                        onChange={(newValue) => {
-                            handleChangeAddress(PersonalInfoDataContextFields.HOUSE_NUMBER, newValue);
-                        }}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                required
+                                test-id='personalDetailsHouseNumber'
+                                name={PersonalInfoDataContextFields.HOUSE_NUMBER}
+                                value={props.value}
+                                onChange={(newValue: string) => (
+                                    props.onChange(newValue)
+                                )}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                placeholder={'מספר בית'}
+                            />
+                        )}
                     />
                 </Grid>
             </Grid>
@@ -437,18 +466,23 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                             placeholder={INSERT_INSTITUTION_NAME}
                                         />}
                                 /> :
-                                <AlphanumericTextField
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
+                                <Controller
                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                    test-id='institutionName'
-                                    value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
-                                    placeholder={INSERT_INSTITUTION_NAME}
-                                    onChange={(newValue) => {
-                                        handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue);
-                                    }}
-
+                                    control={control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            test-id='institutionName'
+                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                            value={props.value}
+                                            onChange={(newValue: string) => (
+                                                props.onChange(newValue)
+                                            )}
+                                            setError={setError}
+                                            clearErrors={clearErrors}
+                                            errors={errors}
+                                            placeholder={INSERT_INSTITUTION_NAME}
+                                        />
+                                    )}
                                 />
                         }
                     </Collapse>
