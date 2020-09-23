@@ -30,7 +30,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-    const interactedContacts = useContext(interactedContactsContext);
+    const context = useContext(interactedContactsContext);
 
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
@@ -62,11 +62,12 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     }, []);
 
     useEffect(() => {
+        context.interactedContacts = [];
         let contactInteractionId = 0;
 
         axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
-                interactedContacts.interactedContacts.push(
+                context.interactedContacts.push(
                     {
                         id: contactInteractionId,
                         firstName: contact.personByPersonInfo.firstName,
@@ -78,6 +79,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         doesNeedIsolation: contact.doesNeedIsolation,
                     }
                 )
+
+                contactInteractionId++;
             });
         })
     },[]);

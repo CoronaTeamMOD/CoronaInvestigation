@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import StoreStateType from 'redux/storeStateType';
-
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import {
     initialPersonalInfo,
     PersonalInfoContextProvider,
@@ -24,8 +24,7 @@ import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-
-export const LAST_TAB_ID = 3;
+export const LAST_TAB_ID = 4;
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
@@ -33,6 +32,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const context = useContext(interactedContactsContext);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
@@ -83,6 +83,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
 
+    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && context.interactedContacts.length === 0));
     const shouldDisableButton = isButtonDisabled(currentTab.name);
     return (
         <div className={classes.content}>
@@ -101,12 +102,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         shouldDisableChangeTab={shouldDisableButton}
                                     />
                                     <div className={classes.buttonSection}>
-                                        <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                        <PrimaryButton test-id={isLastTab ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
-                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                                isLastTab ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
                                             }}
                                             disabled={shouldDisableButton}>
-                                           {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                           {isLastTab ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>

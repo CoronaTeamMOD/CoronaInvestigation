@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
@@ -9,6 +9,7 @@ import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -37,11 +38,18 @@ export const tabs: TabObj[] = [
         isDisabled: false,
         displayComponent: <InteractionsTab/>,
     },
+    {
+        id: 4,
+        name: TabNames.CONTACT_QUESTIONING,
+        isDisabled: false,
+        displayComponent: <></>
+    },
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
     const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
+    const context = useContext(interactedContactsContext);
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
@@ -61,21 +69,28 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     return (
         <Card className={classes.card}>
-                <Tabs
-                    value={currentTab.id}
-                    indicatorColor='primary'
-                    textColor='primary'
-                    onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
-                >
-                    {
-                        tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
-                        })
-                    }
-                </Tabs>
+            <Tabs
+                value={currentTab.id}
+                indicatorColor='primary'
+                textColor='primary'
+                onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
+            >
+                {
+                    tabs.map((tab) => (
+                        (tab.name === TabNames.CONTACT_QUESTIONING && context.interactedContacts.length === 0) ?
+                            <></> :
+                            <StyledTab
+                                onClick={onTabClicked}
+                                key={tab.id}
+                                label={tab.name}
+                                disabled={tab.isDisabled}
+                            />
+                    ))
+                }
+            </Tabs>
             {
                 <div key={currentTab.id} className={classes.displayedTab}>
-                    {currentTab.displayComponent }
+                    {currentTab.displayComponent}
                 </div>
             }
         </Card>
