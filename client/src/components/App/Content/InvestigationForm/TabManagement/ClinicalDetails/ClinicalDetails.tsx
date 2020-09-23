@@ -53,7 +53,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean(),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.string(),
     [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
-    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES]: yup.string(),
+    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: yup.string(),
