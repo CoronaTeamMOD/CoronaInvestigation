@@ -1,7 +1,7 @@
-import React from 'react';
+import InteractionContact from 'models/InteractionContact';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 export interface useInteractionsQuestioningIncome {
-};
-
-export interface useInteractionsQuestioningOutcome {
+    interactions: Interaction[];
+    interactionContacts: InteractionContact[];
 };
