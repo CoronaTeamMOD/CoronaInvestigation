@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
+import { useState, useEffect, useContext } from 'react';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -16,7 +16,8 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -29,7 +30,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-   
+    const interactedContacts = useContext(interactedContactsContext);
+
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
@@ -58,6 +60,27 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
         .catch(err=> console.log(err));
     }, []);
+
+    useEffect(() => {
+        let contactInteractionId = 0;
+
+        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
+            result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
+                interactedContacts.interactedContacts.push(
+                    {
+                        id: contactInteractionId,
+                        firstName: contact.personByPersonInfo.firstName,
+                        lastName: contact.personByPersonInfo.lastName,
+                        phoneNumber: contact.personByPersonInfo.phoneNumber,
+                        contactDate: contact.contactEventByContactEvent.startTime,
+                        contactType: '',
+                        extraInfo: contact.extraInfo,
+                        doesNeedIsolation: contact.doesNeedIsolation,
+                    }
+                )
+            });
+        })
+    },[]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({

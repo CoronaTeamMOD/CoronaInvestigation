@@ -11,5 +11,4 @@ ContactedPeopleRoute.get('/:investigationId', (request: Request, response: Respo
         .catch(error => response.status(500).json({error: 'failed to fetch contacted people'}))
 );
 
-
 export default ContactedPeopleRoute;
