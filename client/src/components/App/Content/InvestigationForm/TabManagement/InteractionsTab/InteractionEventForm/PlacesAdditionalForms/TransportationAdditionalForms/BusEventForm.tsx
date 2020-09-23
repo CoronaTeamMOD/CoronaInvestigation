@@ -55,7 +55,6 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             name={InteractionEventDialogFields.BUS_COMPANY}
                             value={busCompany}
                             onChange={newValue => onChange(newValue as string, InteractionEventDialogFields.BUS_COMPANY)}/>
-                            onChange={newValue => onChange(newValue as string, InteractionEventDialogFields.BUS_COMPANY)}/>
                     </FormInput>
                 </Grid>
             </div>
