@@ -1,6 +1,8 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers";
+import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 
@@ -12,7 +14,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
+import { clinicalDetailsDataContext, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { useStyles } from './ClinicalDetailsStyles';
@@ -21,9 +23,51 @@ import useClinicalDetails from './useClinicalDetails';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
+const schema = yup.object().shape({
+    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean(),
+    [ClinicalDetailsFields.ISOLATION_START_DATE]: yup.date().when(
+        ClinicalDetailsFields.IS_IN_ISOLATION, {
+        is: true,
+        then: yup.date().required(),
+        otherwise: yup.date().nullable()
+    }),
+    [ClinicalDetailsFields.ISOLATION_END_DATE]: yup.date().when(
+        ClinicalDetailsFields.IS_IN_ISOLATION, {
+        is: true,
+        then: yup.date().required(),
+        otherwise: yup.date().nullable()
+    }),
+    [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.string(),
+    [ClinicalDetailsFields.ISOLATION_CITY]: yup.string(),
+    [ClinicalDetailsFields.ISOLATION_STREET]: yup.string(),
+    [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string(),
+    [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string(),
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean(),
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
+        ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
+            is: true,
+            then: yup.string().required(),
+            otherwise: yup.string() 
+        }),
+    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean(),
+    [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.string(),
+    [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
+    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES]: yup.string(),
+    [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
+    [ClinicalDetailsFields.HOSPITAL]: yup.string(),
+    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: yup.string(),
+    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: yup.string(),
+    [ClinicalDetailsFields.IS_PREGNANT]: yup.string(),
+    [ClinicalDetailsFields.INVESTIGATED_PATIENT_ID]: yup.string(),
+    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string(),
+})
+
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
-    const { errors, setError, clearErrors } = useForm({});
+    const { control, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
+        defaultValues: initialClinicalDetails,
+        resolver: yupResolver(schema)
+    });
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
 
@@ -87,6 +131,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
+    const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
+    const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
+    const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
+
     return (
         <div className={classes.form}>
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -98,40 +146,54 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Toggle
-                        test-id='isInQuarantine'
-                        value={context.clinicalDetailsData.isInIsolation}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION, !context.clinicalDetailsData.isInIsolation)}
+                    <Controller
+                        name={ClinicalDetailsFields.IS_IN_ISOLATION}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='isInQuarantine'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if(value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />      
+                        )}
                     />
                 </Grid>
             </Grid>
-            <Collapse in={context.clinicalDetailsData.isInIsolation}>
+            <Collapse in={watchIsInIsolation}>
                 <Grid item xs={2} className={classes.dates}>
-                    <div className={classes.spacedDates}>
-                        <DatePick
-                            required
-                            testId='quarantinedFromDate'
-                            labelText='מתאריך'
-                            value={context.clinicalDetailsData.isolationStartDate}
-                            onChange={(newDate: Date) =>
-                                updateClinicalDetails(
-                                    ClinicalDetailsFields.ISOLATION_START_DATE,
-                                    newDate
-                                )
-                            }
-                        />
-                    </div>
-                    <DatePick
-                        required
-                        testId='quarantinedUntilDate'
-                        labelText='עד'
-                        value={context.clinicalDetailsData.isolationEndDate}
-                        onChange={(newDate: Date) =>
-                            updateClinicalDetails(
-                                ClinicalDetailsFields.ISOLATION_END_DATE,
-                                newDate
-                            )
-                        }
+                    <Controller
+                        name={ClinicalDetailsFields.ISOLATION_START_DATE}
+                        control={control}
+                        render={(props) => (
+                            <div className={classes.spacedDates}>
+                                <DatePick
+                                    test-id='quarantinedFromDate'
+                                    labelText='מתאריך'
+                                    value={props.value}
+                                    onChange={(newDate: Date) => {
+                                        props.onChange(newDate);
+                                    }}
+                                />     
+                            </div>
+                        )}
+                    />
+                    <Controller
+                        name={ClinicalDetailsFields.ISOLATION_END_DATE}
+                        control={control}
+                        render={(props) => (
+                            <DatePick
+                                test-id='quarantinedUntilDate'
+                                labelText='עד'
+                                value={props.value}
+                                onChange={(newDate: Date) => {
+                                    props.onChange(newDate);
+                                }}
+                            />   
+                        )}
                     />
                 </Grid>
             </Collapse>
@@ -223,26 +285,42 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Toggle
-                        test-id='isQuarantineProblematic'
-                        value={context.clinicalDetailsData.isIsolationProblem}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
+                    <Controller
+                        name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='isQuarantineProblematic'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if(value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />
+                        )}
                     />
                 </Grid>
                 <Grid item xs={2}>
-                    <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
-                        <AlphanumericTextField
-                            testId='problematicQuarantineReason'
+                    <Collapse in={watchIsIsolationProblem}>
+                        <Controller
                             name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                            value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
-                            onChange={(newValue: string) => (
-                                updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, newValue)
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    test-id='problematicQuarantineReason'
+                                    name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
+                                    value={props.value}
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
+                                    )}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    errors={errors}
+                                    placeholder='הכנס סיבה:'
+                                    className={classes.isolationProblemTextField}
+                                />
                             )}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
-                            placeholder='הכנס סיבה:'
-                            className={classes.isolationProblemTextField}
                         />
                     </Collapse>
                 </Grid>
@@ -256,14 +334,24 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Toggle
-                        test-id='areThereSymptoms'
-                        value={context.clinicalDetailsData.doesHaveSymptoms}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, !context.clinicalDetailsData.doesHaveSymptoms)}
+                    <Controller
+                        name={ClinicalDetailsFields.DOES_HAVE_SYMPTOMS}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='areThereSymptoms'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if(value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />
+                        )}
                     />
                 </Grid>
             </Grid>
-            <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
+            <Collapse in={watchDoesHaveSymptoms}>
                 <Grid item xs={7}>
                     <div className={classes.dates}>
                         {
