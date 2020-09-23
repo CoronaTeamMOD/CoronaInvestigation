@@ -20,7 +20,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES, value);
+    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, value);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
