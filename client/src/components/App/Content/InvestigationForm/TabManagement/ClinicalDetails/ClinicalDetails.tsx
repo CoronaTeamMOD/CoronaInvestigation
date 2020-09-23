@@ -91,8 +91,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
 
     return (
         <div>
-            <form>
-                <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
+            <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>
                         <b>
@@ -471,7 +470,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     : <></>
                 }
             </Grid>
-            </form>    
         </div>
     );
 };
