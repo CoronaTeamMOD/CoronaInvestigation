@@ -6,6 +6,8 @@ import DatePick from 'commons/DatePick/DatePick';
 import useFormStyles from 'styles/formStyles';
 
 import AirportInput from './AirportInput/AirportInput';
+import { useForm } from 'react-hook-form';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 const FlightsForm = (props: any) => {
   const {
@@ -13,13 +15,16 @@ const FlightsForm = (props: any) => {
     fieldsNames,
     handleChangeExposureDataAndFlightsField,
   } = props;
-
   const classes = useFormStyles();
+  const { errors, setError, clearErrors } = useForm();
 
   return (
     <Grid className={classes.form} container justify="flex-start">
       <FormRowWithInput fieldName="יעד:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.destinationCountry]}
           countryFieldName={fieldsNames.destinationCountry}
           city={exposureAndFlightsData[fieldsNames.destinationCity]}
@@ -34,6 +39,9 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מוצא:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.originCountry]}
           countryFieldName={fieldsNames.originCountry}
           city={exposureAndFlightsData[fieldsNames.originCity]}
@@ -76,13 +84,17 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="חברת תעופה:">
-        <TextField
+        <AlphanumericTextField
+          name={fieldsNames.airline}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           required
           value={exposureAndFlightsData[fieldsNames.airline]}
-          onChange={(e) =>
+          onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
               fieldsNames.airline,
-              e.target.value
+              value
             )
           }
           placeholder="הזן חברת תעופה"
@@ -90,13 +102,17 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="מספר טיסה:">
-        <TextField
+        <AlphanumericTextField
+          name={fieldsNames.flightNumber}
           required
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
-          onChange={(e) =>
+          onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
               fieldsNames.flightNumber,
-              e.target.value
+              value
             )
           }
           placeholder="הזן מספר טיסה"

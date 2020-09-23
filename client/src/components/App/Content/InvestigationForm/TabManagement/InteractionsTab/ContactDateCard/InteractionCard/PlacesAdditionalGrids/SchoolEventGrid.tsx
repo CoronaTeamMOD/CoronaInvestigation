@@ -26,11 +26,14 @@ const SchoolEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={6}>
-                    <FormInput fieldName='כיתה'>
-                        <Typography variant='caption'>
-                            {interaction.grade}
-                        </Typography>
-                    </FormInput>
+                    {
+                        interaction.grade &&
+                        <FormInput fieldName='כיתה'>
+                            <Typography variant='caption'>
+                                {interaction.grade}
+                            </Typography>
+                        </FormInput>
+                    }
                 </Grid>
             </Grid>
             <AddressGrid interaction={interaction} />
