@@ -12,7 +12,7 @@ const updateLastTimeAndUpdator = (requestHeaders: any) =>
         variables: {
             epidemiologyNumber: +requestHeaders.epidemiologynumber,
             lastUpdateTime: new Date(),
-            lastUpdator: requestHeaders.user.name
+            lastUpdator: requestHeaders.user.id
         }
     });
 
