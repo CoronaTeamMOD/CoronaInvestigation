@@ -3,6 +3,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 import { useForm } from "react-hook-form";
 
 import useFormStyles from 'styles/formStyles';
+import useStyles from './BusinessContactFormStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
@@ -17,6 +18,7 @@ const businessContactNumField = 'טלפון';
 const BusinessContactForm : React.FC = () : JSX.Element => {
         
     const formClasses = useFormStyles();
+    const classes = useStyles();
     const ctxt = useContext(InteractionEventDialogContext);
     const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
     const { contactPersonFirstName, contactPersonLastName, contactPersonPhoneNumber } = interactionEventDialogData;
@@ -30,9 +32,10 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
             <Grid container className={formClasses.formRow}>
-                <Grid item xs={4}>
+                <Grid item xs={3} className={classes.detailsItemField}>
                     <FormInput fieldName={businessContactFirstNameField}>
                         <AlphanumericTextField
+                            className={classes.detailsTextField}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
@@ -42,9 +45,10 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3} className={classes.detailsItemField}>
                     <FormInput fieldName={businessContactLastNameField}>
                         <AlphanumericTextField
+                            className={classes.detailsTextField}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
@@ -54,9 +58,10 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3} className={classes.detailsItemField}>
                     <FormInput fieldName={businessContactNumField}>
                         <PhoneNumberTextField
+                            className={classes.detailsTextField}
                             id={'businessContactedPersonPhone'}
                             value={contactPersonPhoneNumber?.number}
                             isValid={ctxt.interactionEventDialogData.contactPersonPhoneNumber?.isValid as boolean}

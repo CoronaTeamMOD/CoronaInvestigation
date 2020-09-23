@@ -1,13 +1,13 @@
-
-import { Grid, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import { Grid, TextField } from '@material-ui/core';
 import { useForm } from "react-hook-form";
 
 import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
+import useStyles from './TransportationFormsStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
@@ -18,6 +18,7 @@ import {InteractionEventDialogContext} from '../../../InteractionsEventDialogCon
 const FlightEventForm : React.FC = () : JSX.Element => {
 
     const formClasses = useFormStyles();
+    const classes = useStyles();
 
     const countries : Map<string, Country> = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
 
@@ -40,9 +41,10 @@ const FlightEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='מספר טיסה'>
                         <AlphanumericTextField
+                            className={classes.mainTextField}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
@@ -51,7 +53,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_NUM)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                     <FormInput fieldName='חברת תעופה'>
                         <AlphanumericTextField
                             errors={errors}
@@ -64,7 +66,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='ארץ מוצא'>
                         <Autocomplete
                             options={Array.from(countries, ([id, value]) => ({ id, value }))}
@@ -81,15 +83,16 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
-                                    className={formClasses.autocomplete}
+                                    className={classes.mainTextField}
                                 />
                             }
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר מוצא'>
+                <Grid item xs={2} className={classes.secondaryTextItem}>
+                    <FormInput fieldName='עיר מוצא' className={classes.secondaryTextLabel}>
                         <AlphanumericTextField
+                            className={classes.secondaryTextField}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
@@ -100,7 +103,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                 </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='ארץ יעד'>
                     <Autocomplete
                         options={Array.from(countries, ([id, value]) => ({ id, value }))}
@@ -117,15 +120,16 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                         renderInput={(params) =>
                             <TextField
                                 {...params}
-                                className={formClasses.autocomplete}
+                                className={classes.mainTextField}
                             />
                         }
                     />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר יעד'>
+                <Grid item xs={2} className={classes.secondaryTextItem}>
+                    <FormInput fieldName='עיר יעד' className={classes.secondaryTextLabel}>
                         <AlphanumericTextField
+                            className={classes.secondaryTextField}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}

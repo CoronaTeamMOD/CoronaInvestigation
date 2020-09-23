@@ -2,14 +2,20 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     subForm: {
-        width: '75vw', padding: '3vh 3vw 3vh 0'
+        width: '93vw',
+        padding: '3vh 1.5vw 3vw 3vh'
     },
     additionalInformationForm: {
         '@media screen and (min-width: 1220px)': {
-            paddingRight: '19vw',
             flip: false
         },
     },
+    contactToggle: {
+        marginLeft: '-8vw',
+    },
+    abroadToggle: {
+      marginLeft: '-13vw',
+    }
 });
 
 export default useStyles;

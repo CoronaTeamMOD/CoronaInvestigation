@@ -57,7 +57,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                     <FormInput fieldName='שם המוסד'>
                         <AlphanumericTextField
                             errors={errors}
@@ -70,7 +70,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 {
                     grades.length > 0 &&
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <FormInput fieldName='כיתה'>
                         <FormControl fullWidth>
                             <InputLabel>כיתה</InputLabel>

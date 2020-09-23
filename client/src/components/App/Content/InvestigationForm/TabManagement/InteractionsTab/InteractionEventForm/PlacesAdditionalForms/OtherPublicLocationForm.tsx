@@ -34,7 +34,7 @@ const OtherPublicLocationForm : React.FC = () : JSX.Element => {
 
     return (
         <>
-            <Grid item xs={6}>
+            <Grid item xs={2}>
                 <FormInput fieldName='שם המוסד'>
                     <AlphanumericTextField
                         errors={errors}

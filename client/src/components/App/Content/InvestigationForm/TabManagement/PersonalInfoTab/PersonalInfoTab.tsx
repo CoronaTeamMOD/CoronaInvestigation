@@ -357,7 +357,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} className={classes.responsiveOccupation}>
                     <FormControl component='fieldset'>
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>

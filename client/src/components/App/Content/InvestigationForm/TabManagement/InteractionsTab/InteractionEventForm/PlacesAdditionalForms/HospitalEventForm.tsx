@@ -25,7 +25,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                     <FormInput fieldName='שם בית חולים'>
                         <AlphanumericTextField
                             errors={errors}
@@ -36,7 +36,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                             onChange={(newValue) => onChange(newValue, InteractionEventDialogFields.PLACE_NAME)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <FormInput fieldName='מחלקה'>
                         <AlphanumericTextField
                             errors={errors}
