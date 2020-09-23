@@ -57,7 +57,13 @@ const schema = yup.object().shape({
             otherwise: yup.date().nullable()
         }
     ),
-    [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
+    [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
+        ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
+            is: true,
+            then: yup.array().of(yup.string()).required(),
+            otherwise: yup.array().of(yup.string())
+        }
+    ),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
@@ -134,16 +140,16 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
     };
 
-    const handleSymptomCheck = (checkedSymptom: string) => {
-        let selectedSymptoms = context.clinicalDetailsData.symptoms;
-
+    const handleSymptomCheck = (
+        checkedSymptom: string,
+        onChange: (newSymptoms: string[]) => void,
+        selectedSymptoms: string[]
+    ) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
-            selectedSymptoms = selectedSymptoms.filter((symptom) => symptom !== checkedSymptom);
+            onChange(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
         } else {
-            selectedSymptoms.push(checkedSymptom);
+            onChange([...selectedSymptoms, checkedSymptom]);
         }
-
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
     };
 
     const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
@@ -470,22 +476,30 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Typography>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
                     }
                     <Grid item container className={classes.smallGrid}>
-                        {
-                            symptoms.map((symptom: string) => (
-                                <Grid item xs={5} key={symptom} className={classes.symptomsAndDiseasesCheckbox}>
-                                    <CustomCheckbox
-                                        key={symptom}
-                                        checkboxElements={[{
-                                            key: symptom,
-                                            value: symptom,
-                                            labelText: symptom,
-                                            checked: context.clinicalDetailsData.symptoms.includes(symptom),
-                                            onChange: () => handleSymptomCheck(symptom)
-                                        }]}
-                                    />
-                                </Grid>
-                            ))
-                        }
+                        <Controller
+                            name={ClinicalDetailsFields.SYMPTOMS}
+                            control={control}
+                            render={(props) => (
+                                <>
+                                    {
+                                        symptoms.map((symptom: string) => (
+                                            <Grid item xs={5} key={symptom} className={classes.symptomsAndDiseasesCheckbox}>
+                                                <CustomCheckbox
+                                                    key={symptom}
+                                                    checkboxElements={[{
+                                                        key: symptom,
+                                                        value: symptom,
+                                                        labelText: symptom,
+                                                        checked: props.value.includes(symptom),
+                                                        onChange: () => handleSymptomCheck(symptom, props.onChange, props.value)
+                                                    }]}
+                                                />
+                                            </Grid>
+                                        ))
+                                    }
+                                </>
+                            )}
+                        />
                         <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
                             <Grid item xs={2}>
                                 <AlphanumericTextField
