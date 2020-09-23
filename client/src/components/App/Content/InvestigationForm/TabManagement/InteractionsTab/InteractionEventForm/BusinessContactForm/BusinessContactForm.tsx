@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid, TextField, Typography } from '@material-ui/core';
+import { useForm } from "react-hook-form";
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
@@ -7,6 +8,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
 import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 const businessContactFirstNameField = 'שם פרטי';
 const businessContactLastNameField = 'שם משפחה';
@@ -21,24 +23,35 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
 
     const onChange = (value: any, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
+
+    const {errors, setError, clearErrors } = useForm();
+
     return (
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
             <Grid container className={formClasses.formRow}>
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactFirstNameField}>
-                        <TextField
+                        <AlphanumericTextField
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             test-id={'businessContactFirstName'}
-                            value={contactPersonFirstName}
-                            onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
+                            value={contactPersonFirstName ? contactPersonFirstName : null}
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={businessContactLastNameField}>
-                        <TextField
+                        <AlphanumericTextField
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             test-id={'businessContactLastName'}
                             value={contactPersonLastName}
-                            onChange={event => onChange(event.target.value, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
