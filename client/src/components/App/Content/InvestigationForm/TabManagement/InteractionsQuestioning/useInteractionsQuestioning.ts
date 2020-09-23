@@ -5,6 +5,7 @@ const useInteractionsQuestioning = (parameters: useInteractionsQuestioningIncome
     const { interactionContacts, interactions } = parameters;
 
     let contactInteractionId = 0;
+
     interactions.map((interaction) => ((interaction?.contacts?.length > 0) &&
         interaction?.contacts.forEach(contact => {
             interactionContacts.push(
@@ -21,6 +22,8 @@ const useInteractionsQuestioning = (parameters: useInteractionsQuestioningIncome
             contactInteractionId++;
         })
     ))
+
+    interactionContacts.sort((a, b) => a.lastName.localeCompare(b.lastName));
 };
 
 export default useInteractionsQuestioning;
