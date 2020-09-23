@@ -9,8 +9,8 @@ export interface useInteractionsTabInput {
 
 
 export interface useTopToolbarOutcome  {
-    getUserActivityStatus: (userId: string) => void;
-    setUserActivityStatus: (userId: string, isActive: boolean) => void;
+    getUserActivityStatus: () => void;
+    setUserActivityStatus: (isActive: boolean) => void;
 }
 
 const useTopToolbar = (props: useInteractionsTabInput) :  useTopToolbarOutcome => {

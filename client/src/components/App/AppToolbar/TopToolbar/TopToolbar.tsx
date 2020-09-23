@@ -38,7 +38,7 @@ const TopToolbar: React.FC = (): JSX.Element => {
             firstUserUpdate.current = false;
             return;
         } else {
-            getUserActivityStatus(user.id);
+            getUserActivityStatus();
         }
     }, [user])
 
@@ -53,13 +53,13 @@ const TopToolbar: React.FC = (): JSX.Element => {
                     <ToggleButtonGroup value={isActive} exclusive className={classes.isActiveToggle}>
                         <ToggleButton className={classes.toggle} 
                             style={isActive ? activeButtonStyle : {}}
-                            onClick={()=> setUserActivityStatus(user.id, !isActive)}
+                            onClick={()=> setUserActivityStatus(!isActive)}
                             value={isActive}>
                                 פעיל
                         </ToggleButton>
                         <ToggleButton className={classes.toggle} 
                             style={!isActive ? notActiveButtonStyle : {}}
-                            onClick={()=> setUserActivityStatus(user.id, !isActive)}
+                            onClick={()=> setUserActivityStatus(!isActive)}
                             value={isActive}>
                                 לא פעיל  
                         </ToggleButton>
