@@ -1,21 +1,18 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import StoreStateType from 'redux/storeStateType';
+import React from 'react';
+import { Grid } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
+import useFormStyles from 'styles/formStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-
-import { Airport } from '../FlightFormTypes';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-
-interface AirportInputProps {
-  airport: Airport | undefined;
-  setAirport: Dispatch<SetStateAction<Airport | undefined>>;
-}
-
 const AirportInput = (props: any) => {
+
+  const formClasses = useFormStyles();
+
   const {
     errors,
     setError,
@@ -30,7 +27,7 @@ const AirportInput = (props: any) => {
   } = props;
 
   const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
-  const options = Array.from(countries).map(([name, value]) => (value))
+  const options = Array.from(countries).map(([name, value]) => (value));
   const getLabel = (option: any) => {
     if (option.displayName) {
       return option.displayName
@@ -47,38 +44,44 @@ const AirportInput = (props: any) => {
   });
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <AutocompletedField
-        required
-        value={country}
-        options={options}
-        onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
-        getOptionLabel={(option) => getLabel(option)}
-        filterOptions={filterOptions}
-      />
-      <AlphanumericTextField
-        name={cityFieldName}
-        errors={errors}
-        setError={setError}
-        clearErrors={clearErrors}
-        required
-        value={city}
-        placeholder="עיר"
-        label="עיר"
-        onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
-      />
-      <AlphanumericTextField
-        name={airportFieldName}
-        errors={errors}
-        setError={setError}
-        clearErrors={clearErrors}
-        required
-        value={airport}
-        onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
-        placeholder="שדה תעופה"
-        label="שדה תעופה"
-      />
-    </div>
+    <Grid container justify='flex-start' className={formClasses.formRow}>
+      <Grid item xs={4}>
+        <AutocompletedField
+          required
+          value={country}
+          options={options}
+          onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+          getOptionLabel={(option) => getLabel(option)}
+          filterOptions={filterOptions}
+        />
+      </Grid>
+      <Grid item xs={4}>
+        <AlphanumericTextField
+          name={cityFieldName}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
+          required
+          value={city}
+          placeholder="עיר"
+          label="עיר"
+          onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
+        />
+      </Grid>
+      <Grid item xs={4}>
+        <AlphanumericTextField
+          name={airportFieldName}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
+          required
+          value={airport}
+          onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
+          placeholder="שדה תעופה"
+          label="שדה תעופה"
+        />
+      </Grid>
+    </Grid>
   );
 };
 

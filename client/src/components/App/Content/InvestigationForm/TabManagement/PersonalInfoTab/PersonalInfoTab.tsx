@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
+import { useForm } from "react-hook-form";
 import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -9,16 +10,15 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { useForm } from "react-hook-form";
 
 import City from 'models/City';
 import { Street } from 'models/Street';
+import Occupations from 'models/enums/Occupations';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -30,6 +30,9 @@ const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
 const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
+const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
+const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
+const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
@@ -45,7 +48,9 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streets, setStreets] = React.useState<Street[]>([]);
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
-    const { city, street } = personalInfoStateContext.personalInfoData.address;
+    const { relevantOccupation, phoneNumber, address, contactInfo, insuranceCompany,
+        otherOccupationExtraInfo, educationOccupationCity, additionalPhoneNumber, contactPhoneNumber } = personalInfoStateContext.personalInfoData;
+    const { city, street, floor, houseNum } = address;
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -57,7 +62,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         personalInfoStateContext.setPersonalInfoData({
             ...personalInfoStateContext.personalInfoData,
             address: {
-                ...personalInfoStateContext.personalInfoData.address,
+                ...address,
                 [fieldName]: fieldValue
             }
         });
@@ -67,12 +72,23 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
         personalInfoStateContext.setPersonalInfoData({
             ...personalInfoStateContext.personalInfoData,
             address: {
-                ...personalInfoStateContext.personalInfoData.address,
+                ...address,
                 city,
                 street: ''
             }
         })
     };
+
+    const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSubOccupationName('');
+        personalInfoStateContext.setPersonalInfoData(
+        {
+            ...personalInfoStateContext.personalInfoData,
+            [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
+            [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
+            [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
+        });
+    }
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
         setOccupations, setInsuranceCompanies,
@@ -84,13 +100,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }, [])
 
     React.useEffect(() => {
-        if (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
-            personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM) {
-            getSubOccupations(personalInfoStateContext.personalInfoData.relevantOccupation);
-        } else if (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) {
+        if (relevantOccupation === Occupations.DEFENSE_FORCES ||
+            relevantOccupation === Occupations.HEALTH_SYSTEM) {
+            getSubOccupations(relevantOccupation);
+        } else {
             setSubOccupations([]);
         }
-    }, [personalInfoStateContext.personalInfoData.relevantOccupation]);
+    }, [relevantOccupation]);
 
     React.useEffect(() => {
         city && getStreetsByCity(city);
@@ -104,6 +120,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }, [streets])
 
     const { setError, clearErrors, errors } = useForm();
+
+    const subOccupationsPlaceHolderByOccupation = () => {
+        if (relevantOccupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
+        if (relevantOccupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
+        if (relevantOccupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
+        return INSERT_INSTITUTION_NAME;
+    }
 
     return (
         <div className={classes.tabInitialContainer}>
@@ -120,22 +143,16 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         id={PHONE_LABEL}
                         required
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.phoneNumber.number}
-                        isValid={personalInfoStateContext.personalInfoData.phoneNumber.isValid}
-                        setIsValid={(isValid) => {
+                        value={phoneNumber.number}
+                        isValid={phoneNumber.isValid}
+                        setIsValid={(isValid) =>
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.phoneNumber,
-                                    isValid: isValid
-                                }
+                                {...phoneNumber, isValid}
                             )
-                        }}
+                        }
                         onChange={(event) =>
                             handleChangeField(PersonalInfoDataContextFields.PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.phoneNumber,
-                                    number: event.target.value,
-                                }
+                                {...phoneNumber, number: event.target.value}
                             )
                         }
                         testId='personalDetailsPhone'
@@ -154,22 +171,16 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <PhoneNumberTextField
                         id={ADDITIONAL_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.additionalPhoneNumber.number}
-                        isValid={personalInfoStateContext.personalInfoData.additionalPhoneNumber.isValid}
-                        setIsValid={(isValid) => {
+                        value={additionalPhoneNumber.number}
+                        isValid={additionalPhoneNumber.isValid}
+                        setIsValid={(isValid) =>
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.additionalPhoneNumber,
-                                    isValid: isValid
-                                }
+                                {...additionalPhoneNumber, isValid}
                             )
-                        }}
+                        }
                         onChange={(event) =>
                             handleChangeField(PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.additionalPhoneNumber,
-                                    number: event.target.value,
-                                }
+                                {...additionalPhoneNumber, number: event.target.value}
                             )
                         }
                         testId='personalDetailsAdditionalPhone'
@@ -188,22 +199,16 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     <PhoneNumberTextField
                         id={CONTACT_PHONE_LABEL}
                         placeholder={PHONE_LABEL}
-                        value={personalInfoStateContext.personalInfoData.contactPhoneNumber.number}
-                        isValid={personalInfoStateContext.personalInfoData.contactPhoneNumber.isValid}
-                        setIsValid={(isValid) => {
+                        value={contactPhoneNumber.number}
+                        isValid={contactPhoneNumber.isValid}
+                        setIsValid={(isValid) =>
                             handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.contactPhoneNumber,
-                                    isValid: isValid
-                                }
+                                {...contactPhoneNumber, isValid}
                             )
-                        }}
+                        }
                         onChange={(event) =>
                             handleChangeField(PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER,
-                                {
-                                    ...personalInfoStateContext.personalInfoData.contactPhoneNumber,
-                                    number: event.target.value
-                                }
+                                {...contactPhoneNumber,number: event.target.value}
                             )
                         }
                         testId='personalDetailsAdditionalPhone'
@@ -216,10 +221,10 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     errors={errors}
                     name={PersonalInfoDataContextFields.CONTACT_INFO}
                     placeholder={CONTACT_INFO}
-                    value={personalInfoStateContext.personalInfoData.contactInfo}
-                    onChange={(newValue) => {
-                        handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, newValue);
-                    }}
+                    value={contactInfo}
+                    onChange={(newValue) =>
+                        handleChangeField(PersonalInfoDataContextFields.CONTACT_INFO, newValue)
+                    }
                 />
             </Grid>
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
@@ -236,10 +241,10 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         <Select
                             test-id={'personalDetailsInsurer'}
                             label='גורם מבטח'
-                            value={personalInfoStateContext.personalInfoData.insuranceCompany}
-                            onChange={(event) => {
-                                handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value);
-                            }}
+                            value={insuranceCompany}
+                            onChange={(event) =>
+                                handleChangeField(PersonalInfoDataContextFields.INSURANCE_COMPANY, event.target.value)
+                            }
                         >
                             {
                                 insuranceCompanies.map((insuranceCompany) => (
@@ -280,7 +285,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 test-id='personalDetailsCity'
                                 id={PersonalInfoDataContextFields.CITY}
                                 placeholder={'עיר'}
-                                value={personalInfoStateContext.personalInfoData.address.city}
+                                value={city}
                             />}
                     />
                 </Grid>
@@ -308,7 +313,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
                                     placeholder={'רחוב'}
-                                    value={personalInfoStateContext.personalInfoData.address.street}
+                                    value={street}
                                 />
                             }}
                         />
@@ -323,7 +328,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         name={PersonalInfoDataContextFields.FLOOR}
                         test-id='personalDetailsFloor'
                         placeholder={'קומה'}
-                        value={personalInfoStateContext.personalInfoData.address.floor}
+                        value={floor}
                         onChange={(newValue) => {
                             handleChangeAddress(PersonalInfoDataContextFields.FLOOR, newValue);
                         }}
@@ -338,7 +343,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                         test-id='personalDetailsHouseNumber'
                         placeholder={'מספר בית'}
-                        value={personalInfoStateContext.personalInfoData.address.houseNum}
+                        value={houseNum}
                         onChange={(newValue) => {
                             handleChangeAddress(PersonalInfoDataContextFields.HOUSE_NUMBER, newValue);
                         }}
@@ -356,7 +361,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2} className={classes.responsiveOccupation}>
                     <FormControl component='fieldset'>
-                        <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
+                        <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             {
                                 occupations.map((occupation) => {
@@ -365,16 +370,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                         key={occupation}
                                         control={<Radio
                                             color='primary'
-                                            onChange={(event) => {
-                                                setSubOccupationName('');
-                                                personalInfoStateContext.setPersonalInfoData(
-                                                    {
-                                                        ...personalInfoStateContext.personalInfoData,
-                                                        [PersonalInfoDataContextFields.INSTITUTION_NAME]: '',
-                                                        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: '',
-                                                        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: event.target.value
-                                                    });
-                                            }} />}
+                                            onChange={handleChangeOccupation} />}
                                         label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
                                     />
                                 })
@@ -383,48 +379,41 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </FormControl>
                 </Grid>
                 {
-                    personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM &&
+                    relevantOccupation === Occupations.EDUCATION_SYSTEM &&
                     <Grid item xs={2}>
                         <Autocomplete
                             options={Array.from(cities, ([name, value]) => ({ name, value }))}
                             getOptionLabel={(option) => option.value.displayName}
-                            inputValue={personalInfoStateContext.personalInfoData.educationOccupationCity}
-                            onInputChange={(event, newInputValue) => {
+                            inputValue={educationOccupationCity}
+                            onInputChange={(event, newInputValue) =>
                                 event && handleChangeField(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, newInputValue)
                             }
+                            onChange={(event, newValue) =>
+                                newValue && getEducationSubOccupations(newValue.value.displayName)
                             }
-                            onChange={(event, newValue) => {
-                                newValue && getEducationSubOccupations(newValue.value.displayName);
-                            }}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
                                     test-id='institutionCity'
                                     id={PersonalInfoDataContextFields.CITY}
                                     placeholder={'עיר המצאות המוסד'}
-                                    value={personalInfoStateContext.personalInfoData.educationOccupationCity}
+                                    value={educationOccupationCity}
                                 />}
                         />
                     </Grid>
                 }
                 <Grid item xs={3}>
-                    <Collapse in={personalInfoStateContext.personalInfoData.relevantOccupation !== 'לא עובד'}>
+                    <Collapse in={relevantOccupation !== Occupations.UNEMPLOYED}>
                         {
-                            (personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.DEFENSE_FORCES ||
-                                personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.HEALTH_SYSTEM ||
-                                personalInfoStateContext.personalInfoData.relevantOccupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM) ?
+                            (subOccupations.length > 0) ?
                                 <Autocomplete
                                     options={subOccupations}
                                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                                     inputValue={subOccupationName}
-                                    onChange={(event, newValue) => {
+                                    onChange={(event, newValue) =>
                                         newValue && handleChangeField(PersonalInfoDataContextFields.INSTITUTION_NAME, newValue.id)
                                     }
-                                    }
-                                    onInputChange={(event, newInputValue) => {
-                                        setSubOccupationName(newInputValue)
-                                    }
-                                    }
+                                    onInputChange={(event, newInputValue) => setSubOccupationName(newInputValue)}
                                     renderInput={(params) =>
                                         <TextField
                                             {...params}
@@ -433,18 +422,18 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                             id={PersonalInfoDataContextFields.CITY}
                                             placeholder={INSERT_INSTITUTION_NAME}
                                         />}
-                                /> :
+                                /> : relevantOccupation !== Occupations.EDUCATION_SYSTEM &&
                                 <AlphanumericTextField
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     errors={errors}
                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                     test-id='institutionName'
-                                    value={personalInfoStateContext.personalInfoData.otherOccupationExtraInfo}
-                                    placeholder={INSERT_INSTITUTION_NAME}
-                                    onChange={(newValue) => {
-                                        handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue);
-                                    }}
+                                    value={otherOccupationExtraInfo}
+                                    placeholder={subOccupationsPlaceHolderByOccupation()}
+                                    onChange={(newValue) =>
+                                        handleChangeField(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, newValue)
+                                    }
 
                                 />
                         }
