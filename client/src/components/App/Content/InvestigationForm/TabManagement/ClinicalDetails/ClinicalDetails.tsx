@@ -53,11 +53,29 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.SYMPTOMS]: yup.string(),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
-    [ClinicalDetailsFields.HOSPITAL]: yup.string(),
-    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: yup.string(),
-    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: yup.string(),
-    [ClinicalDetailsFields.IS_PREGNANT]: yup.string(),
-    [ClinicalDetailsFields.INVESTIGATED_PATIENT_ID]: yup.string(),
+    [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
+    [ClinicalDetailsFields.HOSPITAL]: yup.string().when(
+        ClinicalDetailsFields.WAS_HOPITALIZED, {
+            is: true,
+            then: yup.string().required(),
+            else: yup.string()
+        }
+    ),
+    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: yup.date().when(
+        ClinicalDetailsFields.WAS_HOPITALIZED, {
+            is: true,
+            then: yup.date().required(),
+            else: yup.date().nullable()
+        }
+    ),
+    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: yup.date().when(
+        ClinicalDetailsFields.WAS_HOPITALIZED, {
+            is: true,
+            then: yup.date().required(),
+            else: yup.date().nullable()
+        }
+    ),
+    [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
     [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string(),
 })
 
