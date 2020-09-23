@@ -82,8 +82,11 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     );
 
     const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
-
+        
     const shouldDisableButton = isButtonDisabled(currentTab.name);
+    const handleClick = () => {
+        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+    };
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -105,9 +108,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                             type="submit"
                                             form={`form-${currentTab.id}`}
                                             test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
-                                            // onClick={() => {
-                                            //     currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
-                                            // }}
+                                            onClick={handleClick}
                                             disabled={shouldDisableButton}>
                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>

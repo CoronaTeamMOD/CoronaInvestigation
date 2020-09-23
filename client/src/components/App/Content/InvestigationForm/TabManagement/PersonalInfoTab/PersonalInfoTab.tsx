@@ -111,7 +111,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
     
     return (
         <div className={classes.tabInitialContainer}>
-            <form id={`form-${id}`} onSubmit={savePersonalData}>
+            <form id={`form-${id}`} onSubmit={(e)=> {e.preventDefault(); savePersonalData()}}>
                 <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
