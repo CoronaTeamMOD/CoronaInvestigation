@@ -1,6 +1,8 @@
-import React, {useCallback} from 'react';
+import React, {ReactElement, useCallback} from 'react';
 import {withGoogleMap, GoogleMap, withScriptjs, InfoWindow, Marker} from "react-google-maps";
-import LocationInput, {PlaceDetails} from "../commons/LocationInputField/LocationInput";
+import LocationInput, {GeocodeResponse, GoogleApiPlace} from "../commons/LocationInputField/LocationInput";
+import useDBParser from "../Utils/vendor/useDBParsing";
+import injectScript from "../commons/LocationInputField/useGoogleScriptInjector";
 import useGoogleApiAutocomplete from "../commons/LocationInputField/useGoogleApiAutocomplete";
 
 interface MapProps {
@@ -8,35 +10,48 @@ interface MapProps {
 }
 
 const Map = (props: MapProps) => {
-    const {getDetailsFromGeometry, loadScript} = useGoogleApiAutocomplete();
-    const defaultMapPosition = {lon: 0, lat: 0};
-    const defaultMarkerPosition = {lon: 0, lat: 0};
+    const {parseLocation} = useDBParser();
+    const mapContainer = <div style={{height: props.height || '40vh', width: '55vw'}}/>;
+    const mapElement = <div style={{height: `100%`}}/>;
+
+    const {
+       requestDetailsFromPlaceId} = useGoogleApiAutocomplete();
+    const defaultMapPosition = {lng: 34.8516, lat: 31.0461};
+    const defaultMarkerPosition = {lng: 0, lat: 0};
     const [mapPosition, setMapPosition] = React.useState(defaultMapPosition);
     const [markerPosition, setMarkerPosition] = React.useState(defaultMarkerPosition);
-    const [selectedAddress, setSelectedAddress] = React.useState<PlaceDetails | null>(null);
-    const [mapComponent, setMapComponent] = React.useState<React.ElementType>(() => <div>sandy</div>);
+    const [selectedAddress, setSelectedAddress] = React.useState<GeocodeResponse | null>(null);
+    const [mapComponent, setMapComponent] = React.useState<React.ReactElement>( <div>sandy</div>);
 
     React.useEffect(() => {
-        loadScript()
-            .then(() => setMapComponent( () => <AsyncMap containerElement={mapContainer} mapElement={mapElement}/>))
-            .catch(() => setMapComponent(() =>  <div>ERROR</div>))
-    })
+        injectScript()
+            .then(() => setMapComponent(  <AsyncMap containerElement={mapContainer} mapElement={mapElement}/>))
+            .catch(() => setMapComponent( <div>ERROR</div>))
+            .finally(() => console.log((window as any).google.maps))
+    }, []);
+
+
     const onMarkerDragEnd = async (event: any) => {
         const lat = event.latLng.lat(),
-            lon = event.latLng.lon();
+            lng = event.latLng.lng();
 
-        // todo make it update the search field
-        const placeDetails = await getDetailsFromGeometry({lat, lon});
-        setSelectedAddress(placeDetails);
+        // // todo make it update the search field
+        // const placeDetails = await getDetailsFromGeometry({lat, lng});
+        // setSelectedAddress(placeDetails);
     };
 
-    const handleAddressSelected = (placeData: PlaceDetails | null) => {
-        setSelectedAddress(placeData);
+    const handleAddressSelected = async (event:React.ChangeEvent<{}>, placeData: GoogleApiPlace | null) => {
+        const details = placeData ? await requestDetailsFromPlaceId(placeData.place_id) : null;
+        const description = placeData?.description;
+        const detailsDBPayload = Array.isArray(details) ? details[0] : details;
 
-        if (placeData) {
+        const geoCodedAddress =  detailsDBPayload ? ({...detailsDBPayload, description}) : null;
+        setSelectedAddress(geoCodedAddress);
+
+        if (geoCodedAddress) {
             const newLocation = {
-                lon: placeData.geometry.location.lon(),
-                lat: placeData.geometry.location.lat(),
+                lng: geoCodedAddress.geometry.location.lng(),
+                lat: geoCodedAddress.geometry.location.lat(),
             };
 
             setMarkerPosition(newLocation);
@@ -56,16 +71,13 @@ const Map = (props: MapProps) => {
                         onDragEnd={onMarkerDragEnd}
                         position={{...markerPosition}}
                 />
-                <LocationInput handleLocationSelect={handleAddressSelected}/>
+                <LocationInput selectedAddress={selectedAddress as GoogleApiPlace} setSelectedAddress={handleAddressSelected}/>
             </GoogleMap>
     );
 
-    const mapContainer = <div style={{height: props.height || '50vh'}}/>;
-    const mapElement = <div style={{height: `100%`}}/>;
 
-    return (
-        {mapComponent}
-    );
+
+    return mapComponent;
 };
 
 export default Map;

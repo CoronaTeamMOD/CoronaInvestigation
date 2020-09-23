@@ -15,13 +15,7 @@ const useGoogleApiAutocomplete = () => {
     React.useEffect(() => {
         const init = async () => {
             try {
-                if (!(window as any).google) {
-                    if (process.env.REACT_APP_GOOGLE_API_KEY) {
-                        await injectScript(process.env.REACT_APP_GOOGLE_API_KEY);
-                    } else {
-                        throw Error('no google api key found')
-                    }
-                }
+                await injectScript();
                 setAutoCompleteService(new (window as any).google.maps.places.AutocompleteService());
                 setGeocoder(new (window as any).google.maps.Geocoder());
             } catch (error) {

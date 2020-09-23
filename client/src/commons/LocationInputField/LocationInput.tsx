@@ -26,7 +26,7 @@ interface GeocodeAddressComponent {
 }
 
 interface LocationObject {
-lon: () => number | number;
+lng: () => number | number;
 lat: () => number | number;
 }
 

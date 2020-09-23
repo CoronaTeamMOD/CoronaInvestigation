@@ -8,7 +8,11 @@ let injectionError: Error | null = null;
 let onScriptLoadCallbacks: (() => void)[] = [];
 let onScriptLoadErrorCallbacks: ((error: Error | null) => void)[] = [];
 
-const injectScript = (apiKey: string): Promise<void> => {
+const injectScript = (): Promise<void> => {
+    if ((window as any).google) return Promise.resolve();
+    if (!process.env.REACT_APP_GOOGLE_API_KEY) return Promise.reject();
+
+    const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
     switch (injectionState) {
         case INJECTION_STATE_DONE:
             return injectionError ? Promise.reject(injectionError) : Promise.resolve();
