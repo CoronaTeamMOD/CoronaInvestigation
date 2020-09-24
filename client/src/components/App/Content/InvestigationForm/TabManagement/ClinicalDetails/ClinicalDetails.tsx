@@ -23,20 +23,24 @@ import useClinicalDetails from './useClinicalDetails';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
+const isInIsolationDateSchema = yup.date().when(
+    ClinicalDetailsFields.IS_IN_ISOLATION, {
+    is: true,
+    then: yup.date().required(),
+    otherwise: yup.date().nullable()
+});
+
+const wasHospitilizedDateSchema = yup.date().when(
+    ClinicalDetailsFields.IS_IN_ISOLATION, {
+    is: true,
+    then: yup.date().required(),
+    otherwise: yup.date().nullable()
+});
+
 const schema = yup.object().shape({
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
-    [ClinicalDetailsFields.ISOLATION_START_DATE]: yup.date().when(
-        ClinicalDetailsFields.IS_IN_ISOLATION, {
-        is: true,
-        then: yup.date().required(),
-        otherwise: yup.date().nullable()
-    }),
-    [ClinicalDetailsFields.ISOLATION_END_DATE]: yup.date().when(
-        ClinicalDetailsFields.IS_IN_ISOLATION, {
-        is: true,
-        then: yup.date().required(),
-        otherwise: yup.date().nullable()
-    }),
+    [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationDateSchema,
+    [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationDateSchema,
     [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(),
     [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(),
     [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.number().required(),
@@ -73,20 +77,8 @@ const schema = yup.object().shape({
             else: yup.string()
         }
     ),
-    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: yup.date().when(
-        ClinicalDetailsFields.WAS_HOPITALIZED, {
-            is: true,
-            then: yup.date().required(),
-            else: yup.date().nullable()
-        }
-    ),
-    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: yup.date().when(
-        ClinicalDetailsFields.WAS_HOPITALIZED, {
-            is: true,
-            then: yup.date().required(),
-            else: yup.date().nullable()
-        }
-    ),
+    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
+    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
     [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string(),
 })
