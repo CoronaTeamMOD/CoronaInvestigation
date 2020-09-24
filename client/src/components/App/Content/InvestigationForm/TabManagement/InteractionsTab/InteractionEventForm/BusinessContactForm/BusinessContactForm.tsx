@@ -37,7 +37,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
-                            test-id={'businessContactFirstName'}
+                            testId={'businessContactFirstName'}
                             value={contactPersonFirstName ? contactPersonFirstName : null}
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME)}/>
                     </FormInput>
@@ -49,7 +49,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             setError={setError}
                             clearErrors={clearErrors}
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
-                            test-id={'businessContactLastName'}
+                            testId={'businessContactLastName'}
                             value={contactPersonLastName}
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME)}/>
                     </FormInput>

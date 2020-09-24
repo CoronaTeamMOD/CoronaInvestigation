@@ -20,7 +20,7 @@ const FlightsForm = (props: any) => {
 
   return (
     <Grid className={classes.form} container justify="flex-start">
-      <FormRowWithInput fieldName="יעד:">
+      <FormRowWithInput testId='flightDestination' fieldName="יעד:">
         <AirportInput
           errors={errors}
           setError={setError}
@@ -37,7 +37,7 @@ const FlightsForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="מוצא:">
+      <FormRowWithInput testId='flightStartingPoint' fieldName="מוצא:">
         <AirportInput
           errors={errors}
           setError={setError}
@@ -58,6 +58,7 @@ const FlightsForm = (props: any) => {
         <div className={classes.formRow}>
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
+            testId='flightFromDate'
             required
             labelText="מתאריך"
             value={exposureAndFlightsData[fieldsNames.flightStartDate]}
@@ -70,6 +71,7 @@ const FlightsForm = (props: any) => {
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
+            testId='flightToDate'
             required
             labelText="עד"
             value={exposureAndFlightsData[fieldsNames.flightEndDate]}
@@ -85,6 +87,7 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="חברת תעופה:">
         <AlphanumericTextField
+          testId={'airlineCompany'}
           name={fieldsNames.airline}
           errors={errors}
           setError={setError}
@@ -103,6 +106,7 @@ const FlightsForm = (props: any) => {
 
       <FormRowWithInput fieldName="מספר טיסה:">
         <AlphanumericTextField
+          testId={'airlineNumber'}
           name={fieldsNames.flightNumber}
           required
           errors={errors}

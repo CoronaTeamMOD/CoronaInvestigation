@@ -21,6 +21,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
     nodes {
       id
+      hospitalDepartment
       airline
       allowsHamagenData
       boardingStation
@@ -75,7 +76,8 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
 export const GET_FULL_CONTACT_EVENT_BY_ID = gql`
 query getEventByID($currEventId: Int!) {
   contactEventById(id: $currEventId) {
-	    id
+      id
+      hospitalDepartment
       airline
       allowsHamagenData
       boardingStation

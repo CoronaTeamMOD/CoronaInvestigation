@@ -1,12 +1,13 @@
-import axios from 'Utils/axios';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+
+import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
+import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
-import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
@@ -30,7 +31,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: (investigatedPatient.occupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM)
+                    educationOccupationCity: 
+                    (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
                     ?
                     investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,

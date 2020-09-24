@@ -13,6 +13,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <KeyboardTimePicker
+      test-id={props.testId}
       className={classes.dateText}
       format="HH:mm"
       placeholder="HH:mm"
@@ -37,4 +38,5 @@ interface Props extends StandardTextFieldProps {
   labelTextVariant?: Variant;
   value: ParsableDate;
   onChange: any;
+  testId?: string;
 }

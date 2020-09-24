@@ -2,13 +2,38 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     tabInitialContainer: {
-        paddingTop: '2vh',
+        padding: '2vh',
         height: '64vh'
+    },
+    personalInfoItem: {
+        marginLeft: '-5vw',
+        '@media screen and (max-width: 1700px)': {
+            marginRight: '2vw',
+        },
+    },
+    spacedOutAddress: {
+        marginRight: '4vw'
+    },
+    homeAddressItem: {
+        '@media screen and (max-width: 1700px)': {
+            marginRight: '2vw',
+            marginLeft: '-2vw',
+        }
+    },
+    contactDescription: {
+        marginLeft: '-3vw',
     },
     personalInfoFieldContainer: {
         display: 'flex',
         alignItems: 'center',
-        margin: '2vh'
+        margin: '2vh',
+        '@media screen and (min-width: 1870px)': {
+            marginRight: '-6vw'
+        },
+        '@media screen and (max-width: 1000px)': {
+            marginRight: '0.5vw',
+        },
+        marginRight: '-3vw',
     },
     fieldsMargin: {
         marginTop: '3vh'
@@ -18,7 +43,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: '3vh'
     },
     containerGrid: {
-        padding: '0 3vw',
         maxWidth: '100vw',
         height: '9vh'
     },
@@ -43,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     writeReason: {
         width: '22vw',
-        marginLeft: '1vw'        
+        marginLeft: '1vw'
     },
     textFieldWithLabel: {
         width: '8vw',
@@ -70,7 +94,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     circleSelect: {
         paddingTop: 'unset'
-    }, 
+    },
+    responsiveOccupation: {
+        '@media screen and (max-width: 950px)': {
+            marginLeft: '5vw',
+        },
+    }
 }));
 
 export default useStyles;
