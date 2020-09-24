@@ -21,7 +21,8 @@ import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
+import { otherSymptomFieldName } from './TabManagement/ClinicalDetails/SymptomsFields';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
     const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
