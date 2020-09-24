@@ -14,6 +14,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <KeyboardDatePicker
+      test-id={props.testId}
       autoOk
       className={classes.dateText}
       disableToolbar
@@ -41,4 +42,5 @@ interface Props extends StandardTextFieldProps {
   labelTextVariant?: Variant;
   value: ParsableDate;
   onChange: any;
+  testId?: string;
 }

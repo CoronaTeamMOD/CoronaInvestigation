@@ -211,7 +211,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                 {...contactPhoneNumber,number: event.target.value}
                             )
                         }
-                        testId='personalDetailsAdditionalPhone'
+                        testId='personalDetailsContactPhone'
                     />
                 </Grid>
                 <AlphanumericTextField
@@ -327,7 +327,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         clearErrors={clearErrors}
                         errors={errors}
                         name={PersonalInfoDataContextFields.FLOOR}
-                        test-id='personalDetailsFloor'
+                        testId='personalDetailsFloor'
                         placeholder={'קומה'}
                         value={floor}
                         onChange={(newValue) => {
@@ -342,7 +342,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         clearErrors={clearErrors}
                         errors={errors}
                         name={PersonalInfoDataContextFields.HOUSE_NUMBER}
-                        test-id='personalDetailsHouseNumber'
+                        testId='personalDetailsHouseNumber'
                         placeholder={'מספר בית'}
                         value={houseNum}
                         onChange={(newValue) => {
@@ -429,7 +429,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                     clearErrors={clearErrors}
                                     errors={errors}
                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                    test-id='institutionName'
+                                    testId='institutionName'
                                     value={otherOccupationExtraInfo}
                                     placeholder={subOccupationsPlaceHolderByOccupation()}
                                     onChange={(newValue) =>

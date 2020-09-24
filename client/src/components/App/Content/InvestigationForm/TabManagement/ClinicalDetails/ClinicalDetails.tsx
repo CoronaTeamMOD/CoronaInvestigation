@@ -112,7 +112,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <div className={classes.spacedDates}>
                         <DatePick
                             required
-                            test-id='quarantinedFromDate'
+                            testId='quarantinedFromDate'
                             labelText='מתאריך'
                             value={context.clinicalDetailsData.isolationStartDate}
                             onChange={(newDate: Date) =>
@@ -125,7 +125,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </div>
                     <DatePick
                         required
-                        test-id='quarantinedUntilDate'
+                        testId='quarantinedUntilDate'
                         labelText='עד'
                         value={context.clinicalDetailsData.isolationEndDate}
                         onChange={(newDate: Date) =>
@@ -190,7 +190,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <AlphanumericTextField
-                        test-id='currentQuarantineHomeNumber'
+                        testId='currentQuarantineHomeNumber'
                         name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
                         value={context.clinicalDetailsData.isolationAddress.houseNum}
                         onChange={(newValue: string) => (
@@ -204,7 +204,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2} className={classes.cancelWhiteSpace}>
                     <AlphanumericTextField
-                        test-id='currentQuarantineFloor'
+                        testId='currentQuarantineFloor'
                         name={ClinicalDetailsFields.ISOLATION_FLOOR}
                         value={context.clinicalDetailsData.isolationAddress.floor}
                         onChange={(newValue: string) => (
@@ -234,7 +234,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
                         <AlphanumericTextField
-                            test-id='problematicQuarantineReason'
+                            testId='problematicQuarantineReason'
                             name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                             value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
                             onChange={(newValue: string) => (
@@ -273,7 +273,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 required={!isUnkonwnDateChecked}
                                 label={'תאריך התחלת סימפטומים'}
-                                test-id='symptomsStartDate'
+                                testId='symptomsStartDate'
                                 value={context.clinicalDetailsData.symptomsStartDate}
                                 labelText='תאריך התחלת סימפטומים'
                                 onChange={(newDate: Date) =>
@@ -320,7 +320,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
                             <Grid item xs={2}>
                                 <AlphanumericTextField
-                                    test-id='symptomInput'
+                                    testId='symptomInput'
                                     name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
                                     value={context.clinicalDetailsData.otherSymptomsMoreInfo}
                                     onChange={(newValue : string) =>
@@ -379,7 +379,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Collapse
                         in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
                         <AlphanumericTextField
-                            test-id='otherBackgroundDisease'
+                            testId='otherBackgroundDisease'
                             name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                             value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
                             onChange={(newValue: string) =>
@@ -435,7 +435,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 required
                                 label='מתאריך'
-                                test-id='wasHospitalizedFromDate'
+                                testId='wasHospitalizedFromDate'
                                 labelText='מתאריך'
                                 value={context.clinicalDetailsData.hospitalizationStartDate}
                                 onChange={(newDate: Date) =>
@@ -448,7 +448,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <DatePick
                                 required
                                 label='עד'
-                                test-id='wasHospitalizedUntilDate'
+                                testId='wasHospitalizedUntilDate'
                                 labelText='עד'
                                 value={context.clinicalDetailsData.hospitalizationEndDate}
                                 onChange={(newDate: Date) =>
