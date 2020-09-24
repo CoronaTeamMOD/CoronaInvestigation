@@ -1,9 +1,10 @@
 import { Street } from 'models/Street';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
-import { PersonalInfoDataAndSet } from "commons/Contexts/PersonalInfoStateContext";
+import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
+import { PersonalInfoDataAndSet } from 'commons/Contexts/PersonalInfoStateContext';
 
 export interface usePersoanlInfoTabParameters {
-    setOccupations: React.Dispatch<React.SetStateAction<string[]>>;
+    occupationsStateContext: OccupationsContext;
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
     personalInfoStateContext: PersonalInfoDataAndSet;
     setSubOccupations: React.Dispatch<React.SetStateAction<SubOccupationAndStreet[]>>;

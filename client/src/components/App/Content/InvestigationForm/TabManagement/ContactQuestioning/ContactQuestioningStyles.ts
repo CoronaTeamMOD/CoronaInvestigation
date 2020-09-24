@@ -3,10 +3,10 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
-        padding: '1.7vw',
+        padding: '1vh 1.3vw 2.5vh 1.3vw',
     },
     title: {
-        paddingLeft: '2vw'
+        paddingLeft: '2vw',
     },
     accordion: {
         margin: theme.spacing(2),
@@ -16,8 +16,22 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: 30,
         height: 30,
         marginLeft: theme.spacing(1),
-        flip: false
-    }
+        flip: false,
+    },
+    text: {
+        fontSize: '1.2vw',
+    },
+    textField: {
+        width: '9.5vw',
+    },
+    idTextField: {
+        width: '9vw',
+        marginTop: '-1vh',
+    },
+    autocompleteTextField: {
+        width: '13vw',
+        marginTop: '-1vh',
+    },
 }));
 
 export default useStyles;

@@ -4,9 +4,8 @@ interface InteractedContact {
     lastName: string;
     phoneNumber: string;
     contactDate: Date;
-    contactType: string;
+    contactType: boolean;
     extraInfo: string;
-    doesNeedIsolation: boolean;
 }
 
 export default InteractedContact;

@@ -1,4 +1,5 @@
-import React from 'react';
+import { useForm } from 'react-hook-form';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import StoreStateType from 'redux/storeStateType';
@@ -9,7 +10,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { useForm } from "react-hook-form";
 
 import City from 'models/City';
 import { Street } from 'models/Street';
@@ -22,13 +22,14 @@ import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOc
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
+import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 
 const PHONE_LABEL = 'טלפון:';
 const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
 const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
-const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
+export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
@@ -36,7 +37,6 @@ const CONTACT_INFO = 'תיאור איש קשר:';
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const [occupations, setOccupations] = React.useState<string[]>(['']);
     const [subOccupationName, setSubOccupationName] = React.useState<string>('');
     const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
     const [subOccupations, setSubOccupations] = React.useState<SubOccupationAndStreet[]>([]);
@@ -44,7 +44,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streetName, setStreetName] = React.useState<string>('');
     const [streets, setStreets] = React.useState<Street[]>([]);
 
-    const personalInfoStateContext = React.useContext(personalInfoContext);
+    const personalInfoStateContext = useContext(personalInfoContext);
+    const occupationsStateContext = useContext(occupationsContext);
     const { city, street } = personalInfoStateContext.personalInfoData.address;
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -75,8 +76,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     };
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
-        setOccupations, setInsuranceCompanies,
-        personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
+        occupationsStateContext, setInsuranceCompanies, personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
     });
 
     React.useEffect(() => {
@@ -362,7 +362,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={personalInfoStateContext.personalInfoData.relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             {
-                                occupations.map((occupation) => {
+                                occupationsStateContext.occupations.map((occupation) => {
                                     return <FormControlLabel
                                         value={occupation}
                                         key={occupation}

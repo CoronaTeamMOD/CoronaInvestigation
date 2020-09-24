@@ -74,9 +74,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         lastName: contact.personByPersonInfo.lastName,
                         phoneNumber: contact.personByPersonInfo.phoneNumber,
                         contactDate: contact.contactEventByContactEvent.startTime,
-                        contactType: '',
+                        contactType: contact.doesNeedIsolation,
                         extraInfo: contact.extraInfo,
-                        doesNeedIsolation: contact.doesNeedIsolation,
                     }
                 )
 
