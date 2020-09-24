@@ -49,7 +49,6 @@ const AirportInput = (props: any) => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <AutocompletedField
-        required
         value={country}
         options={options}
         onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
@@ -61,7 +60,6 @@ const AirportInput = (props: any) => {
         errors={errors}
         setError={setError}
         clearErrors={clearErrors}
-        required
         value={city}
         placeholder="עיר"
         label="עיר"
@@ -72,7 +70,6 @@ const AirportInput = (props: any) => {
         errors={errors}
         setError={setError}
         clearErrors={clearErrors}
-        required
         value={airport}
         onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
         placeholder="שדה תעופה"

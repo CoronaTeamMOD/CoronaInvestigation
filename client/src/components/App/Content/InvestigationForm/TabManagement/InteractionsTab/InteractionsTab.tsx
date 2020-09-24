@@ -20,7 +20,7 @@ import EditInteractionEventDialog from './EditInteractionEventDialog/EditInterac
 import useStyles from '../../InvestigationFormStyles';
 
 
-const InteractionsTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
+const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     
     let history = useHistory();
     const classes = useStyles({});
@@ -69,6 +69,7 @@ const InteractionsTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const SaveInteraction = (e : any) => {
         e.preventDefault();
         console.log("Interaction");
+        onSubmit();
         // Swal.fire({
         //     icon: 'warning',
         //     title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -157,7 +158,8 @@ const InteractionsTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 };
 
 interface Props {
-    id: number
+    id: number,
+    onSubmit: any
 }
 
 export default InteractionsTab;

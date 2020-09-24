@@ -14,12 +14,12 @@ import {
     PersonalInfoContextProvider,
     PersonalInfoDataAndSet,
 } from 'commons/Contexts/PersonalInfoStateContext';
-// import { SubmitTabContextProvider } from 'commons/Contexts/SubmitTabContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
         initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
 
 import useStyles from './InvestigationFormStyles';
+import useTabManagement from './TabManagement/useTabManagement';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
@@ -82,14 +82,21 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
-        
-    const shouldDisableButton = isButtonDisabled(currentTab.name);
+    const { confirmFinishInvestigation } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const {
+        currentTab,
+        moveToNextTab,
+        setCurrentTab,
+        setNextTab
+    } = useTabManagement();
+
     const handleClick = () => {
-        currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
-    };
-    const handleTabClick = () => {
-        //shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab();
+        if(currentTab === LAST_TAB_ID){
+            confirmFinishInvestigation(epidemiologyNumber);
+            setNextTab(currentTab);
+        } else {
+            setNextTab(currentTab+1)
+        }
     }
     return (
         <div className={classes.content}>
@@ -98,23 +105,23 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                         <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
                             <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
                                 <InvestigationInfoBar
-                                    onExitInvestigation={saveCurrentTab}
+                                    currentTab = {currentTab}
                                 />
                                     <div className={classes.interactiveForm}>
                                         <TabManagement
-                                            currentTab={currentTab}
-                                            setCurrentTab={setCurrentTab}
-                                            onTabClicked={handleTabClick}
-                                            shouldDisableChangeTab={shouldDisableButton}
+                                            currentTab = {currentTab}
+                                            moveToNextTab = {moveToNextTab}
+                                            setCurrentTab = {setCurrentTab}
+                                            setNextTab = {setNextTab}
                                         />
                                         <div className={classes.buttonSection}>
                                             <PrimaryButton 
                                                 type="submit"
-                                                form={`form-${currentTab.id}`}
-                                                test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                                form={`form-${currentTab}`}
+                                                test-id={currentTab === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                                 onClick={handleClick}
-                                                disabled={shouldDisableButton}>
-                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                                disabled={false}>
+                                            {currentTab === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                             </PrimaryButton>
                                         </div>
                                     </div>

@@ -19,14 +19,14 @@ const leaveInvestigationMessage = 'צא מחקירה';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber, onExitInvestigation } = props;
+    const { currentTab, investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
 
-    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo({onExitInvestigation});
+    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
 
     return (
         <Paper className={classes.paper}>
@@ -50,8 +50,11 @@ const InvestigatedPersonInfo = (props: Props) => {
                     </Tooltip>
                 </div>
                 <PrimaryButton
-                    onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
-                    {leaveInvestigationMessage}
+                    onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}
+                    type="submit"
+                    form={`form-${currentTab}`}
+                >
+                    {leaveInvestigationMessage} 
                 </PrimaryButton>
             </div>
 
@@ -115,7 +118,7 @@ interface Props {
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
     epedemioligyNumber: number;
     coronaTestDate: Date;
-    onExitInvestigation: () => Promise<void>;
+    currentTab: number;
 }
 
 export default InvestigatedPersonInfo

@@ -16,7 +16,7 @@ import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
 
 
-const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
+const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
   const context = useContext(exposureAndFlightsContext);
   const { exposureAndFlightsData, setExposureDataAndFlights } = context;
   const { saveExposuresAndFlightsData } = useExposuresAndFlightsSaving();
@@ -55,6 +55,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   const saveExposure = (e: any, exposuresAndFlightsData: any | ExposureAndFlightsDetails) => {
     e.preventDefault();
     console.log("ExposureTab");
+    onSubmit();
     // saveExposuresAndFlightsData(exposuresAndFlightsData);
   }
 
@@ -130,7 +131,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
 };
 
 interface Props {
-  id: number
+  id: number,
+  onSubmit: any
 }
 
 export default ExposuresAndFlights;

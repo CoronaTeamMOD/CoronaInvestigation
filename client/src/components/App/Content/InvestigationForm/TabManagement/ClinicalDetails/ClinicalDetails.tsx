@@ -26,7 +26,7 @@ import useClinicalDetails from './useClinicalDetails';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
-const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const { control, handleSubmit, errors, setError, clearErrors } = useForm({});
     const context = React.useContext(clinicalDetailsDataContext);
@@ -98,6 +98,8 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const saveClinicalDetails = (e: any, clinicalDetailsData : any | ClinicalDetailsData) => {
         e.preventDefault();
         console.log("ClinicalTab");
+        onSubmit();
+        return true;
         // const clinicalDetails = ({
         //     ...clinicalDetailsData,
         //     isolationAddress: clinicalDetailsData.isolationAddress.city === '' ? 
@@ -148,7 +150,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     return (
         <div>
-            <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e, { name: "itay" })}>
+            <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e,{ name: "itay" })}>
                 <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>
@@ -170,7 +172,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     <Collapse in={context.clinicalDetailsData.isInIsolation}>
                         <div className={classes.dates}>
                         <DatePick
-                            required
                             test-id='quarantinedFromDate'
                             labelText='מתאריך'
                             value={context.clinicalDetailsData.isolationStartDate}
@@ -182,7 +183,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             }
                         />
                         <DatePick
-                            required
                             test-id='quarantinedUntilDate'
                             labelText='עד'
                             value={context.clinicalDetailsData.isolationEndDate}
@@ -321,7 +321,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         {
                             !isUnkonwnDateChecked &&
                             <DatePick
-                                required={!isUnkonwnDateChecked}
                                 label={'תאריך התחלת סימפטומים'}
                                 test-id='symptomsStartDate'
                                 value={context.clinicalDetailsData.symptomsStartDate}
@@ -373,7 +372,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     onChange={(newValue : string) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
                                     }
-                                    required
                                     label='סימפטום'
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -430,7 +428,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                     onChange={(newValue: string) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
                                     }
-                                    required
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     errors={errors}
@@ -473,7 +470,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 onChange={(newValue: string) => (
                                     updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, newValue)
                                 )}
-                                required
                                 setError={setError}
                                 clearErrors={clearErrors}
                                 errors={errors}
@@ -482,7 +478,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                         </div>
                         <div className={classes.dates}>
                         <DatePick
-                            required
                             label='מתאריך'
                             test-id='wasHospitalizedFromDate'
                             labelText='מתאריך'
@@ -495,7 +490,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             }
                         />
                         <DatePick
-                            required
                             label='עד'
                             test-id='wasHospitalizedUntilDate'
                             labelText='עד'
@@ -534,7 +528,8 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 };
 
 interface Props {
-    id: number
+    id: number,
+    onSubmit: any,
 }
 
 export default ClinicalDetails;

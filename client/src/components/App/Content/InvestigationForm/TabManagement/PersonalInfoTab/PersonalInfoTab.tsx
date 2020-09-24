@@ -36,7 +36,7 @@ const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
-const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const classes = useStyles({});
 
     const [occupations, setOccupations] = React.useState<string[]>(['']);
@@ -111,7 +111,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
 
     const savePersonalData = (e: any, personalInfoData: any | personalInfoContextData) => {
         e.preventDefault();
-        console.log("PersonalTab")
+        console.log("PersonalTab");
+        onSubmit();
+        return false;
         // axios.post('/personalDetails/updatePersonalDetails', 
         // {
         //     id : investigatedPatientId, 
@@ -137,7 +139,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                 <Grid item xs={2}>
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
-                        required
                         placeholder={PHONE_LABEL}
                         value={personalInfoStateContext.personalInfoData.phoneNumber.number}
                         isValid={personalInfoStateContext.personalInfoData.phoneNumber.isValid}
@@ -252,7 +253,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <FormControl required fullWidth>
+                    <FormControl fullWidth>
                         <InputLabel>גורם מבטח</InputLabel>
                         <Select
                             label='גורם מבטח'
@@ -296,7 +297,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                         }}
                         renderInput={(params) =>
                             <TextField
-                                required
                                 {...params}
                                 test-id='personalDetailsCity'
                                 id={PersonalInfoDataContextFields.CITY}
@@ -324,7 +324,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                             }}
                             renderInput={(params) => {
                                 return <TextField
-                                    required
                                     test-id='personalDetailsStreet'
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
@@ -337,7 +336,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                 }
                 <Grid item xs={1}>
                     <AlphanumericTextField
-                        required
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
@@ -352,7 +350,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
                 </Grid>
                 <Grid item xs={1}>
                     <AlphanumericTextField
-                        required
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
@@ -478,7 +475,8 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
 };
 
 interface Props {
-    id: number
+    id: number,
+    onSubmit: any
 }
 
 export default PersonalInfoTab;

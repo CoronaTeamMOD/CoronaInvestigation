@@ -58,7 +58,6 @@ const FlightsForm = (props: any) => {
         <div className={classes.formRow}>
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
-            required
             labelText="מתאריך"
             value={exposureAndFlightsData[fieldsNames.flightStartDate]}
             onChange={(newDate: Date) =>
@@ -70,7 +69,6 @@ const FlightsForm = (props: any) => {
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
-            required
             labelText="עד"
             value={exposureAndFlightsData[fieldsNames.flightEndDate]}
             onChange={(newDate: Date) =>
@@ -89,7 +87,6 @@ const FlightsForm = (props: any) => {
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}
-          required
           value={exposureAndFlightsData[fieldsNames.airline]}
           onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
@@ -104,7 +101,6 @@ const FlightsForm = (props: any) => {
       <FormRowWithInput fieldName="מספר טיסה:">
         <AlphanumericTextField
           name={fieldsNames.flightNumber}
-          required
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}
