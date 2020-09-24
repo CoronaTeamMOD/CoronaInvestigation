@@ -19,6 +19,8 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
+import IsolationDatesFields from './IsolationDatesFields';
+import IsolationProblemFields from './IsolationProblemFields'
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
@@ -156,71 +158,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
     const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
+    const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
 
     return (
         <div className={classes.form}>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם שהית בבידוד:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Controller
-                        name={ClinicalDetailsFields.IS_IN_ISOLATION}
-                        control={control}
-                        render={(props) => (
-                            <Toggle
-                                test-id='isInQuarantine'
-                                value={props.value}
-                                onChange={(e, value) => {
-                                    if (value !== null) {
-                                        props.onChange(value)
-                                    }
-                                }}
-                            />
-                        )}
-                    />
-                </Grid>
-            </Grid>
-            <Collapse in={watchIsInIsolation}>
-                <Grid item xs={2} className={classes.dates}>
-                    <Controller
-                        name={ClinicalDetailsFields.ISOLATION_START_DATE}
-                        control={control}
-                        render={(props) => (
-                            <div className={classes.spacedDates}>
-                                <DatePick
-                                    onBlur={props.onBlur}
-                                    test-id='quarantinedFromDate'
-                                    labelText='מתאריך'
-                                    value={props.value}
-                                    onChange={(newDate: Date) => {
-                                        props.onChange(newDate);
-                                    }}
-                                />
-                            </div>
-                        )}
-                    />
-                    <Controller
-                        name={ClinicalDetailsFields.ISOLATION_END_DATE}
-                        control={control}
-                        render={(props) => (
-                            <DatePick
-                                onBlur={props.onBlur}
-                                test-id='quarantinedUntilDate'
-                                labelText='עד'
-                                value={props.value}
-                                onChange={(newDate: Date) => {
-                                    props.onChange(newDate);
-                                }}
-                            />
-                        )}
-                    />
-                </Grid>
-            </Collapse>
+            <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
@@ -300,55 +242,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         placeholder='קומה' />
                 </Grid>
             </Grid>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם בעייתי לקיים בידוד:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Controller
-                        name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
-                        control={control}
-                        render={(props) => (
-                            <Toggle
-                                test-id='isQuarantineProblematic'
-                                value={props.value}
-                                onChange={(e, value) => {
-                                    if (value !== null) {
-                                        props.onChange(value)
-                                    }
-                                }}
-                            />
-                        )}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Collapse in={watchIsIsolationProblem}>
-                        <Controller
-                            name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    test-id='problematicQuarantineReason'
-                                    name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                                    value={props.value}
-                                    onChange={(newValue: string) => (
-                                        props.onChange(newValue)
-                                    )}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
-                                    placeholder='הכנס סיבה:'
-                                    className={classes.isolationProblemTextField}
-                                />
-                            )}
-                        />
-                    </Collapse>
-                </Grid>
-            </Grid>
+            <IsolationProblemFields
+                classes={classes}
+                watchIsIsolationProblem={watchIsIsolationProblem}
+                control={control}
+                setError={setError}
+                clearErrors={clearErrors}
+                errors={errors}
+            />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
@@ -438,7 +339,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </>
                             )}
                         />
-                        <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
+                        <Collapse in={watchSymptoms.includes(otherSymptomFieldName)}>
                             <Grid item xs={2}>
                                 <AlphanumericTextField
                                     testId='symptomInput'
