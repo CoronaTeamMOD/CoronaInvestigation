@@ -41,7 +41,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
 
     const onConfirm = () => editInteractionEvent(
         {...interactionEventDialogData, 
-            placeName: interactionEventDialogData.placeName ? interactionEventDialogData.placeName : defaultPlaceName
+            placeName: interactionEventDialogData.placeName || defaultPlaceName
         }
     );
 

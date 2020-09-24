@@ -41,7 +41,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
 
     const onConfirm = () => createNewInteractionEvent(
         {...interactionEventDialogData, 
-            placeName: interactionEventDialogData.placeName ? interactionEventDialogData.placeName : defaultPlaceName
+            placeName: interactionEventDialogData.placeName || defaultPlaceName
         }
     );
 
