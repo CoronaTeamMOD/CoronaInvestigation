@@ -10,7 +10,7 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange, useBigCalender } = props;
+  const { labelText, value, onChange, useBigCalender, onBlur } = props;
 
   return (
     <KeyboardDatePicker
@@ -25,6 +25,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
       label={labelText}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       KeyboardButtonProps={{
         "aria-label": "change date",
       }}
@@ -44,4 +45,5 @@ interface Props extends StandardTextFieldProps {
   value: ParsableDate;
   onChange: any;
   testId?: string;
+  onBlur?: any;
 }

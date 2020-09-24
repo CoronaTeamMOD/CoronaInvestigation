@@ -87,6 +87,7 @@ const schema = yup.object().shape({
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const { control, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
+        mode: 'onBlur',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(schema)
     });
@@ -250,6 +251,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         render={(props) => (
                             <div className={classes.spacedDates}>
                                 <DatePick
+                                    onBlur={props.onBlur}
                                     test-id='quarantinedFromDate'
                                     labelText='מתאריך'
                                     value={props.value}
@@ -265,6 +267,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         control={control}
                         render={(props) => (
                             <DatePick
+                                onBlur={props.onBlur}
                                 test-id='quarantinedUntilDate'
                                 labelText='עד'
                                 value={props.value}
@@ -440,6 +443,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 control={control}
                                 render={(props) => (
                                     <DatePick
+                                        onBlur={props.onBlur}
                                         label='תאריך התחלת סימפטומים'
                                         test-id='symptomsStartDate'
                                         value={props.value}
