@@ -4,13 +4,14 @@ import StoreStateType from 'redux/storeStateType';
 import { Collapse, Divider, Typography } from '@material-ui/core';
 import Swal from 'sweetalert2';
 
-import axios from 'Utils/axios';
+import { exposureAndFlightsContext, ExposureAndFlightsDetails, fieldsNames } from "commons/Contexts/ExposuresAndFlights";
 import Toggle from 'commons/Toggle/Toggle';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { exposureAndFlightsContext, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
+import axios from 'Utils/axios';
 
 import FlightsForm from './FlightsForm/FlightsForm';
 import ExposureForm from './ExposureForm/ExposureForm';
+import useExposuresAndFlightsSaving from "./useExposuresAndFlightsSaving";
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ExposuresAndFlightsStyles';
 
@@ -18,6 +19,7 @@ import useStyles from './ExposuresAndFlightsStyles';
 const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   const context = useContext(exposureAndFlightsContext);
   const { exposureAndFlightsData, setExposureDataAndFlights } = context;
+  const { saveExposuresAndFlightsData } = useExposuresAndFlightsSaving();
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -50,13 +52,15 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
     });
   };
 
-  const saveExposure = () => {
+  const saveExposure = (e: any, exposuresAndFlightsData: any | ExposureAndFlightsDetails) => {
+    e.preventDefault();
     console.log("ExposureTab");
+    // saveExposuresAndFlightsData(exposuresAndFlightsData);
   }
 
   return (
     <>
-      <form id={`form-${id}`} onSubmit={saveExposure}>
+      <form id={`form-${id}`} onSubmit={(e) => saveExposure(e, { name: "itay" })}>
         <div className={classes.subForm}>
         <Typography variant="caption" className={fieldName}>
           חשיפה אפשרית
