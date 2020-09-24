@@ -39,10 +39,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Typography>
                 </div>
                 <div>
-                    <IconButton onClick={onEditClick}>
+                    <IconButton test-id={'editContactLocation'} onClick={onEditClick}>
                         <Edit />
                     </IconButton>
-                    <IconButton onClick={onDeleteClick}>
+                    <IconButton test-id={'deleteContactLocation'} onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
                 </div>

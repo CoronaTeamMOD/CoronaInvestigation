@@ -25,7 +25,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     <div className={classes.arrowWrapper}>
                         {
                             interactions !== undefined && 
-                            <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
+                            <IconButton test-id={'collpaseContactLocationDate'} onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
                                 {areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
                             </IconButton>
                         }
