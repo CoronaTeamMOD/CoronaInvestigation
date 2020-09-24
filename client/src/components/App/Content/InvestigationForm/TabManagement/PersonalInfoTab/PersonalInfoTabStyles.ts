@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             marginRight: '2vw',
         },
     },
+    spacedOutAddress: {
+        marginRight: '4vw'
+    },
     homeAddressItem: {
         '@media screen and (max-width: 1700px)': {
             marginRight: '2vw',

@@ -340,7 +340,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     </Grid>
                 </Grid>
             </Collapse>
-            <Grid spacing={5} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+            <Grid spacing={5} container className={classes.containerGrid + ' ' + classes.verticalSpacing} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
                         <b>
