@@ -29,7 +29,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM)
+                    educationOccupationCity: 
+                    (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
                     ?
                     investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,

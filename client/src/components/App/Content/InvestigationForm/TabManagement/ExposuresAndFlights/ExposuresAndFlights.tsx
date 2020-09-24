@@ -57,7 +57,7 @@ const ExposuresAndFlights = () => {
           חשיפה אפשרית
         </Typography>
 
-        <FormRowWithInput fieldName="האם היה מגע ידוע עם חולה מאומת?">
+        <FormRowWithInput testId='wasConfirmedExposure' fieldName="האם היה מגע ידוע עם חולה מאומת?">
           <Toggle
             value={exposureAndFlightsData.wasConfirmedExposure}
             onChange={() => {
@@ -90,7 +90,7 @@ const ExposuresAndFlights = () => {
           חזרה מחו״ל
         </Typography>
 
-        <FormRowWithInput fieldName="האם חזר מחו״ל?">
+        <FormRowWithInput testId='wasAbroad' fieldName="האם חזר מחו״ל?">
           <Toggle
             value={exposureAndFlightsData.wasAbroad}
             onChange={() => {
