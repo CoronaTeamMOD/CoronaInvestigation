@@ -1,9 +1,7 @@
-import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
-import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 

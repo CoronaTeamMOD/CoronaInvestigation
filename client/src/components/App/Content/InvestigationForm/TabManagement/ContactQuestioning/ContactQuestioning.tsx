@@ -3,7 +3,8 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { ExpandMore } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Divider, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Divider, FormControl,
+         FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
 import Toggle from 'commons/Toggle/Toggle';
