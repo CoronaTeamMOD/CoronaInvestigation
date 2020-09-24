@@ -21,7 +21,7 @@ import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/BackgroundDiseasesFields';
 import { otherSymptomFieldName } from './TabManagement/ClinicalDetails/SymptomsFields';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
