@@ -22,9 +22,9 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
                 personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
-                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
+                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                    additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
@@ -36,12 +36,12 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     contactInfo: investigatedPatient.patientContactInfo
                 });
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
-                if (patientAddress.cityByCity !== null) {
-                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
-                }
-                if (patientAddress.streetByStreet !== null) {
-                    setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
-                }
+                // if (patientAddress.cityByCity !== null) {
+                //     setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
+                // }
+                // if (patientAddress.streetByStreet !== null) {
+                //     setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                // }
             }
         })
     }

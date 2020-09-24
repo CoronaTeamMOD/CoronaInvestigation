@@ -6,9 +6,9 @@ import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
 import { initialAddress } from './ClinicalDetailsContext';
 
 export const initialPersonalInfo: personalInfoContextData = {
-    phoneNumber: initialPhoneNumberControl,
-    additionalPhoneNumber: initialPhoneNumberControl,
-    contactPhoneNumber: initialPhoneNumberControl,
+    phoneNumber: '',
+    additionalPhoneNumber: '',
+    contactPhoneNumber: '',
     insuranceCompany: '',
     address: initialAddress,
     relevantOccupation: '',

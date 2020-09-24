@@ -46,6 +46,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
         label={label}
         placeholder={placeholder}
         className={className}
+        error={errors[name]}
       />
     </Tooltip>
   );
