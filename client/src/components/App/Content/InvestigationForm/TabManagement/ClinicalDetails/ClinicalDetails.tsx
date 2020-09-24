@@ -95,7 +95,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     return (
         <div>
-            <form id={`form-${id}`} onSubmit={saveClinicalDetails}>
+            <form id={`form-${id}`} onSubmit={(e)=> {e.preventDefault(); saveClinicalDetails()}}>
                 <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>

@@ -14,6 +14,7 @@ import {
     PersonalInfoContextProvider,
     PersonalInfoDataAndSet,
 } from 'commons/Contexts/PersonalInfoStateContext';
+// import { SubmitTabContextProvider } from 'commons/Contexts/SubmitTabContext';
 import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
         initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
@@ -87,37 +88,40 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const handleClick = () => {
         currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
     };
+    const handleTabClick = () => {
+        //shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab();
+    }
     return (
         <div className={classes.content}>
-            <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
-                <PersonalInfoContextProvider value={personalInfoValue}>
-                    <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
-                        <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                            <InvestigationInfoBar
-                                onExitInvestigation={saveCurrentTab}
-                            />
-                                <div className={classes.interactiveForm}>
-                                    <TabManagement
-                                        currentTab={currentTab}
-                                        setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
-                                        shouldDisableChangeTab={shouldDisableButton}
-                                    />
-                                    <div className={classes.buttonSection}>
-                                        <PrimaryButton 
-                                            type="submit"
-                                            form={`form-${currentTab.id}`}
-                                            test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={handleClick}
-                                            disabled={shouldDisableButton}>
-                                           {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                                        </PrimaryButton>
+                <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
+                    <PersonalInfoContextProvider value={personalInfoValue}>
+                        <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
+                            <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
+                                <InvestigationInfoBar
+                                    onExitInvestigation={saveCurrentTab}
+                                />
+                                    <div className={classes.interactiveForm}>
+                                        <TabManagement
+                                            currentTab={currentTab}
+                                            setCurrentTab={setCurrentTab}
+                                            onTabClicked={handleTabClick}
+                                            shouldDisableChangeTab={shouldDisableButton}
+                                        />
+                                        <div className={classes.buttonSection}>
+                                            <PrimaryButton 
+                                                type="submit"
+                                                form={`form-${currentTab.id}`}
+                                                test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                                onClick={handleClick}
+                                                disabled={shouldDisableButton}>
+                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                            </PrimaryButton>
+                                        </div>
                                     </div>
-                                </div>
-                            </StartInvestigationDateVariablesProvider>
-                        </ClinicalDetailsDataContextProvider>
-                    </PersonalInfoContextProvider>
-            </ExposureAndFlightsContextProvider>
+                                </StartInvestigationDateVariablesProvider>
+                            </ClinicalDetailsDataContextProvider>
+                        </PersonalInfoContextProvider>
+                </ExposureAndFlightsContextProvider>
 
             <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>
                 <MuiAlert onClose={() => setShowSnackbar(false)} severity="warning" elevation={6} variant="filled">

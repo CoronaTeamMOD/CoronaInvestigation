@@ -51,6 +51,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     )(Tab);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
+    console.log("changeTab");
     setCurrentTab({
         id: selectedTab,
         name: tabs[selectedTab].name, 
@@ -65,11 +66,15 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     value={currentTab.id}
                     indicatorColor='primary'
                     textColor='primary'
-                    onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
+                    //onChange={(event, selectedTab) => handleTabChange(event, selectedTab)}
+                    onChange={()=> console.log("changeTab")}
                 >
                     {
                         tabs.map((tab) => {
                             return <StyledTab 
+                                        // @ts-ignore
+                                        type="submit"
+                                        form={`form-${currentTab.id}`}
                                         onClick={onTabClicked}
                                         key={tab.id}
                                         label={tab.name}
