@@ -10,6 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './TopToolbarStyles';
 import useTopToolbar from './useTopToolbar';
+import IsActiveToggle from "./IsActiveToggle/IsActiveToggle";
 
 const toggleMessage ='מה הסטטוס שלך?';
 
@@ -22,16 +23,6 @@ const TopToolbar: React.FC = (): JSX.Element => {
     const [isActive, setIsActive] = React.useState<boolean>(false);
 
     const {getUserActivityStatus, setUserActivityStatus} = useTopToolbar({ setIsActive });
-   
-    const activeButtonStyle = {
-        backgroundColor: '#117243',
-        color: 'white'
-    }
-
-    const notActiveButtonStyle = {
-        backgroundColor: '#9e2a2b',
-        color: 'white'
-    }
 
     React.useEffect( () => {
         if (firstUserUpdate.current) {
@@ -49,20 +40,7 @@ const TopToolbar: React.FC = (): JSX.Element => {
             </div>
             <div className={classes.leftToolbarSection}>
                 <Tooltip title={toggleMessage} arrow>
-                    <ToggleButtonGroup value={isActive} exclusive className={classes.isActiveToggle}>
-                        <ToggleButton className={classes.toggle} 
-                            style={isActive ? activeButtonStyle : {}}
-                            onClick={()=> setUserActivityStatus(!isActive)}
-                            value={isActive}>
-                                פעיל
-                        </ToggleButton>
-                        <ToggleButton className={classes.toggle} 
-                            style={!isActive ? notActiveButtonStyle : {}}
-                            onClick={()=> setUserActivityStatus(!isActive)}
-                            value={isActive}>
-                                לא פעיל  
-                        </ToggleButton>
-                    </ToggleButtonGroup>
+                    <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive/>
                 </Tooltip>
                 <Typography>שלום, {user.name}</Typography>
             </div>
