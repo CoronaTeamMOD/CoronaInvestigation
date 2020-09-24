@@ -24,6 +24,7 @@ import IsolationDatesFields from './IsolationDatesFields';
 import IsolationProblemFields from './IsolationProblemFields'
 import SymptomsFields from './SymptomsFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
+import HospitalFields from './HospitalFields';
 
 const isInIsolationDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
@@ -333,72 +334,15 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 updateClinicalDetails={updateClinicalDetails}
             />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם אושפז:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={10}>
-                    <Toggle
-                        test-id='wasHospitalized'
-                        value={context.clinicalDetailsData.wasHospitalized}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <Collapse in={context.clinicalDetailsData.wasHospitalized}>
-                        <div className={classes.dates}>
-                            <Typography>
-                                <b>
-                                    בית חולים:
-                                </b>
-                            </Typography>
-                            <AlphanumericTextField
-                                className={classes.hospitalInput}
-                                name={ClinicalDetailsFields.HOSPITAL}
-                                label='בית חולים'
-                                testId='hospitalInput'
-                                setError={setError}
-                                clearErrors={clearErrors}
-                                errors={errors}
-                                value={context.clinicalDetailsData.hospital}
-                                onChange={(newValue: string) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, newValue as string)
-                                )}
-                            />
-                        </div>
-                        <div className={classes.hospitalizationDates}>
-                            <div className={classes.spacedDates}>
-                                <DatePick
-                                    label='מתאריך'
-                                    testId='wasHospitalizedFromDate'
-                                    labelText='מתאריך'
-                                    value={context.clinicalDetailsData.hospitalizationStartDate}
-                                    onChange={(newDate: Date) =>
-                                        updateClinicalDetails(
-                                            ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
-                                            newDate
-                                        )
-                                    }
-                                />
-                            </div>
-                            <DatePick
-                                label='עד'
-                                testId='wasHospitalizedUntilDate'
-                                labelText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
-                                        newDate
-                                    )
-                                }
-                            />
-                        </div>
-                    </Collapse>
-                </Grid>
+                <HospitalFields
+                    classes={classes}
+                    control={control}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                    context={context}
+                    updateClinicalDetails={updateClinicalDetails}
+                />
                 {patientGender === Gender.FEMALE ?
                     <>
                         <Grid item xs={2}>
