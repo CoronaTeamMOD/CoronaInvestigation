@@ -9,7 +9,8 @@ import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-import { otherBackgroundDiseaseFieldName, otherSymptomFieldName } from './ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './ClinicalDetails';
+import { otherSymptomFieldName } from './SymptomsFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
