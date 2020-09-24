@@ -315,12 +315,10 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 isUnkonwnDateChecked={isUnkonwnDateChecked}
                 handleUnkonwnDateCheck={handleUnkonwnDateCheck}
                 handleSymptomCheck={handleSymptomCheck}
-                updateClinicalDetails={updateClinicalDetails}
                 symptoms={symptoms}
                 setError={setError}
                 clearErrors={clearErrors}
                 errors={errors}
-                context={context}
             />
             <BackgroundDiseasesFields
                 classes={classes}
