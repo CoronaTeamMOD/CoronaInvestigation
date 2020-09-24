@@ -48,34 +48,34 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
-            is: true,
-            then: yup.string().required(),
-            otherwise: yup.string() 
-        }),
+        is: true,
+        then: yup.string().required(),
+        otherwise: yup.string()
+    }),
     [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
-            is: true,
-            then: yup.date().required(),
-            otherwise: yup.date().nullable()
-        }
+        is: true,
+        then: yup.date().required(),
+        otherwise: yup.date().nullable()
+    }
     ),
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
-            is: true,
-            then: yup.array().of(yup.string()).required(),
-            otherwise: yup.array().of(yup.string())
-        }
+        is: true,
+        then: yup.array().of(yup.string()).required(),
+        otherwise: yup.array().of(yup.string())
+    }
     ),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string().when(
         ClinicalDetailsFields.WAS_HOPITALIZED, {
-            is: true,
-            then: yup.string().required(),
-            else: yup.string()
-        }
+        is: true,
+        then: yup.string().required(),
+        else: yup.string()
+    }
     ),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
@@ -175,11 +175,11 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='isInQuarantine'
                                 value={props.value}
                                 onChange={(e, value) => {
-                                    if(value !== null) {
+                                    if (value !== null) {
                                         props.onChange(value)
                                     }
                                 }}
-                            />      
+                            />
                         )}
                     />
                 </Grid>
@@ -198,7 +198,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                     }}
-                                />     
+                                />
                             </div>
                         )}
                     />
@@ -213,7 +213,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                 }}
-                            />   
+                            />
                         )}
                     />
                 </Grid>
@@ -229,7 +229,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={2}>
                     <Autocomplete
                         test-id='currentQuarantineCity'
-                        options={Array.from(cities, ([id, value]) => ({id, value}))}
+                        options={Array.from(cities, ([id, value]) => ({ id, value }))}
                         getOptionLabel={(option) => option.value.displayName}
                         inputValue={isolationCityName}
                         onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity ? selectedCity.id : '')}
@@ -294,7 +294,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
-                        placeholder='קומה'/>
+                        placeholder='קומה' />
                 </Grid>
             </Grid>
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -314,7 +314,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='isQuarantineProblematic'
                                 value={props.value}
                                 onChange={(e, value) => {
-                                    if(value !== null) {
+                                    if (value !== null) {
                                         props.onChange(value)
                                     }
                                 }}
@@ -363,7 +363,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 test-id='areThereSymptoms'
                                 value={props.value}
                                 onChange={(e, value) => {
-                                    if(value !== null) {
+                                    if (value !== null) {
                                         props.onChange(value)
                                     }
                                 }}
@@ -440,7 +440,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     testId='symptomInput'
                                     name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
                                     value={context.clinicalDetailsData.otherSymptomsMoreInfo}
-                                    onChange={(newValue : string) =>
+                                    onChange={(newValue: string) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
                                     }
                                     required
