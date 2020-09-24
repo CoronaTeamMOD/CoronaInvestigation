@@ -24,7 +24,8 @@ import { tabs } from './TabManagement/TabManagement';
 import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
 import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
+import { otherSymptomFieldName } from './TabManagement/ClinicalDetails/SymptomsFields';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
     const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState } = parameters;
