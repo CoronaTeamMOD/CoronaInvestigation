@@ -265,6 +265,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2} className={classes.personalInfoItem}>
                     <Autocomplete
+                        className={classes.spacedOutAddress}
                         options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
                         getOptionLabel={(option) => option.value.displayName}
                         inputValue={cityName}
