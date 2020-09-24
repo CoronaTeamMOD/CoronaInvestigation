@@ -30,14 +30,7 @@ lng: () => number | number;
 lat: () => number | number;
 }
 
-export interface GeocodeResponse {
-    address_components: GeocodeAddressComponent[];
-    formatted_address: string;
-    geometry: {
-        location: LocationObject;
-    };
-    types: string[],
-    place_id: string;
+export interface GeocodeResponse extends google.maps.GeocoderResult {
     description?: string;
 }
 

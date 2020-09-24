@@ -42,7 +42,7 @@ const useGoogleApiAutocomplete = () => {
     const getDetailsFromPlaceId = (placeId: string): Promise<GeocodeResponse[] | GeocodeResponse> =>
         new Promise((resolve, reject) => {
             if (geocoder) {
-                (geocoder as any).geocode({placeId, language: 'iw',},
+                geocoder.geocode({placeId, language: 'iw',},
                     (data: GeocodeResponse, status: string) => {
                         if (status === 'OK') {
                             resolve(data)
@@ -56,8 +56,28 @@ const useGoogleApiAutocomplete = () => {
             }
         });
 
-    const geocodeUseCallback = React.useCallback(getDetailsFromPlaceId, [geocoder]);
-    const requestDetailsFromPlaceId = (placeId: string) => geocodeUseCallback(placeId);
+    const getDetailsFromGeometry = (location: google.maps.LatLngLiteral): Promise<GeocodeResponse[] | GeocodeResponse> =>
+        new Promise((resolve, reject) => {
+            if (geocoder) {
+                geocoder.geocode({location, language: 'iw',},
+                    (data: GeocodeResponse, status: string) => {
+                        if (status === 'OK') {
+                            resolve(data)
+                        } else {
+                            reject({error: {status}})
+                        }
+                    }
+                );
+            } else {
+                reject({error: 'geocoder undefined'})
+            }
+        });
+
+    const dataFromPlaceIdCallback = React.useCallback(getDetailsFromPlaceId, [geocoder]);
+    const requestDetailsFromPlaceId = (placeId: string) => dataFromPlaceIdCallback(placeId);
+
+    const requestDetailsFromLocation = React.useCallback(getDetailsFromGeometry, [geocoder]);
+    // const requestDetailsFromLocation = (location: google.maps.LatLngLiteral) => dataFromLocationCallback(location);
 
     const parseAddress = (address: string | GeocodeResponse | GoogleApiPlace | null) => {
         const parseString = (location: string) => {
@@ -96,7 +116,8 @@ const useGoogleApiAutocomplete = () => {
     return {
         autoCompletePlacesFromApi,
         requestDetailsFromPlaceId,
-        parseAddress
+        parseAddress,
+        requestDetailsFromLocation
     }
 };
 
