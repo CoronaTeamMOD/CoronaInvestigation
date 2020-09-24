@@ -3,13 +3,14 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
+import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 export const defaultTab: TabObj = {
     id: 0,
@@ -42,7 +43,7 @@ export const tabs: TabObj[] = [
         id: 4,
         name: TabNames.CONTACT_QUESTIONING,
         isDisabled: false,
-        displayComponent: <></>
+        displayComponent: <ContactQuestioning/>
     },
 ];
 
@@ -50,6 +51,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
     const context = useContext(interactedContactsContext);
+    
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
