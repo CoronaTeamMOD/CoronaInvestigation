@@ -41,7 +41,7 @@ export const defaultContact: Contact = {
 
 const addContactButton: string = "הוסף מגע";
 
-const InteractionEventForm: React.FC = (): JSX.Element => {
+const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
   const {
     interactionEventDialogData,
     setInteractionEventDialogData,
@@ -57,10 +57,13 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     investigationId,
   } = interactionEventDialogData;
 
+  const { setDefaultPlaceName } = props;
+
   const classes = useStyles();
   const formClasses = useFormStyles();
-  const [canAddContact, setCanAddContact] = useState<boolean>(false);
 
+  const [canAddContact, setCanAddContact] = useState<boolean>(false);
+  
   const {
     geriatric,
     school,
@@ -97,24 +100,17 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     });
   };
 
-  const placeNameByPlaceType = (placeSubTypeDispalyName?: string) => {
-    if (placeType === transportation.code && placeSubTypeDispalyName) {
-      return `${placeType} ${placeSubTypeDispalyName}`
-    }
-    return undefined;
-  }
-
   const onPlaceSubTypeChange = (
     newPlaceSubType: number,
     placeSubTypeDispalyName?: string
   ) => {
+    setDefaultPlaceName(`${placeType} ${placeSubTypeDispalyName}`)
     setInteractionEventDialogData({
       ...initialDialogData(startTime, endTime, contacts, investigationId),
       id,
       placeType,
       placeSubType: newPlaceSubType,
       externalizationApproval,
-      placeName: placeNameByPlaceType(placeSubTypeDispalyName)
     });
   };
 
@@ -256,3 +252,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
 };
 
 export default InteractionEventForm;
+
+interface Props {
+  setDefaultPlaceName: React.Dispatch<React.SetStateAction<string>>
+}

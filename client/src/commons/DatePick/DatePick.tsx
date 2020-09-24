@@ -14,6 +14,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <KeyboardDatePicker
+      autoOk
       className={classes.dateText}
       disableToolbar
       variant="inline"

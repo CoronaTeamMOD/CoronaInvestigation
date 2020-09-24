@@ -111,6 +111,7 @@ if curr_event is null then
 	contact_person_first_name ,
 	contact_person_last_name ,
 	contact_person_phone_number,
+	hospital_department,
 	flight_destination_airport ,
 	flight_destination_city ,
 	flight_destination_country ,
@@ -144,7 +145,7 @@ if curr_event is null then
 		trim(contactPersonLastName,'"'),
 		trim(contactPersonPhoneNumber,'"'),
 		trim(flightDestinationAirport,'"'),
-	--	hospitalDepartment,
+		trim(hospitalDepartment, '""'),
 		trim(flightDestinationCity,'"'),
 		trim(flightDestinationCountry,'"'),
 		trim(flightOriginAirport,'"'),
@@ -188,7 +189,8 @@ else
 	flight_destination_country=trim(flightDestinationCountry,'"'), 
 	flight_destination_city=trim(flightDestinationCity,'"'),
 	flight_destination_airport=trim(flightDestinationAirport,'"'),
-	place_sub_type=placeSubType
+	place_sub_type=placeSubType,
+	hospital_department = trim(hospitalDepartment,'"')
 	
 	
 WHERE id=curr_event;

@@ -18,8 +18,9 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     
     const classes = useStyles();
     
+    const [defaultPlaceName, setDefaultPlaceName] = useState<string>('');
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-    
+
     const canConfirm = React.useMemo<boolean>(() => true, []);
 
     const { editInteractionEvent, shouldDisableSubmitButton } = useEditInteractionEventDialog({closeDialog, updateInteraction, canConfirm, interactionEventDialogData});
@@ -38,7 +39,11 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     }),
         [interactionEventDialogData, setInteractionEventDialogData]);
 
-    const onConfirm = () => editInteractionEvent(interactionEventDialogData)
+    const onConfirm = () => editInteractionEvent(
+        {...interactionEventDialogData, 
+            placeName: interactionEventDialogData.placeName || defaultPlaceName
+        }
+    );
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
@@ -47,7 +52,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
             </DialogTitle>
             <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm/>
+                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
                 </DialogContent>
             </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
