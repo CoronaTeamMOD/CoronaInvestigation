@@ -1,7 +1,7 @@
 import React from 'react';
+import { TextField, StandardTextFieldProps } from '@material-ui/core';
 
 import Validator from 'Utils/Validations/Validator';
-import { TextField, StandardTextFieldProps } from '@material-ui/core';
 
 const NOT_PHONE_ERROR = 'שגיאה: מספר שהוזן אינו תקין';
 const REQUIRED_TITLE = 'טלפון';

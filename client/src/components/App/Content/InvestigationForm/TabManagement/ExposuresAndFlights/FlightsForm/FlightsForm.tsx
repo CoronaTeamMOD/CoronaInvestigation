@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import DatePick from 'commons/DatePick/DatePick';
