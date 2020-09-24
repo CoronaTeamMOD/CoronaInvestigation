@@ -12,17 +12,6 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
         .catch(error => response.status(500).json({error: 'failed to fetch exposures'}))
 );
 
-// exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
-//     const { exposures, investigationId } = request.body;
-//     response.send('hey')
-//     return graphqlRequest(UPDATE_EXPOSURES, response.locals, { exposures, investigationId })
-//         .then((result: any) => response.send(result))
-//         .catch(error => {
-//             console.log(error);
-//             response.status(500).json({error: 'failed to save exposures'});
-//         })
-// });
-
 exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
     console.log(JSON.stringify(request.body));
     return graphqlRequest(UPDATE_EXPOSURES, response.locals, {
