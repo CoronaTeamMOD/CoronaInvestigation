@@ -9,7 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-import { otherBackgroundDiseaseFieldName } from './ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { otherSymptomFieldName } from './SymptomsFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
