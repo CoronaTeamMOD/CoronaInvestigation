@@ -10,15 +10,18 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { useForm } from "react-hook-form";
+import Swal from 'sweetalert2';
 
 import City from 'models/City';
 import { Street } from 'models/Street';
 import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import axios from 'Utils/axios'
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -46,6 +49,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
 
     const personalInfoStateContext = React.useContext(personalInfoContext);
     const { city, street } = personalInfoStateContext.personalInfoData.address;
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -105,13 +109,23 @@ const PersonalInfoTab: React.FC<Props> = ( { id } : Props ): JSX.Element => {
 
     const { setError, clearErrors, errors } = useForm();
 
-    const savePersonalData = () => {
+    const savePersonalData = (e: any, personalInfoData: any | personalInfoContextData) => {
+        e.preventDefault();
         console.log("PersonalTab")
+        // axios.post('/personalDetails/updatePersonalDetails', 
+        // {
+        //     id : investigatedPatientId, 
+        //     personalInfoData, 
+        // }).catch(() => {
+        //     Swal.fire({
+        //         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        //         icon: 'error'
+        //     });
     }
     
     return (
         <div className={classes.tabInitialContainer}>
-            <form id={`form-${id}`} onSubmit={(e)=> {e.preventDefault(); savePersonalData()}}>
+            <form id={`form-${id}`} onSubmit={(e) => savePersonalData(e, { name: "itay" })}>
                 <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>

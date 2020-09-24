@@ -6,16 +6,19 @@ import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
+import Swal from 'sweetalert2';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import axios from 'Utils/axios'
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -38,6 +41,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
@@ -89,13 +95,60 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
-    const saveClinicalDetails = () => {
+    const saveClinicalDetails = (e: any, clinicalDetailsData : any | ClinicalDetailsData) => {
+        e.preventDefault();
         console.log("ClinicalTab");
+        // const clinicalDetails = ({
+        //     ...clinicalDetailsData,
+        //     isolationAddress: clinicalDetailsData.isolationAddress.city === '' ? 
+        //                       null : clinicalDetailsData.isolationAddress,
+        //     investigatedPatientId,
+        //     epidemiologyNumber
+        // });
+
+        // if (clinicalDetails.symptoms.includes(otherSymptomFieldName)) {
+        //     clinicalDetails.symptoms = clinicalDetails.symptoms.filter(symptom => symptom !== otherSymptomFieldName)
+        // } else {
+        //     clinicalDetails.otherSymptomsMoreInfo = '';
+        // }
+
+        // if (clinicalDetails.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
+        //     clinicalDetails.backgroundDeseases = clinicalDetails.backgroundDeseases.filter(symptom => symptom !== otherBackgroundDiseaseFieldName)
+        // } else {
+        //     clinicalDetails.otherBackgroundDiseasesMoreInfo = '';
+        // }
+
+        // if (!clinicalDetails.wasHospitalized) {
+        //     clinicalDetails.hospital = '';
+        //     clinicalDetails.hospitalizationStartDate = null;
+        //     clinicalDetails.hospitalizationEndDate = null;
+        // }
+
+        // if (!clinicalDetails.isInIsolation) {
+        //     clinicalDetails.isolationStartDate = null;
+        //     clinicalDetails.isolationEndDate = null;
+        // }
+
+        // if (!clinicalDetails.doesHaveSymptoms) {
+        //     clinicalDetails.symptoms = [];
+        //     clinicalDetails.symptomsStartDate = null;
+        // }
+
+        // if (!clinicalDetails.doesHaveBackgroundDiseases) {
+        //     clinicalDetails.backgroundDeseases = [];
+        // }
+
+        // axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails })).catch(() => {
+        //     Swal.fire({
+        //         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        //         icon: 'error'
+        //     });
+        // })
     }
 
     return (
         <div>
-            <form id={`form-${id}`} onSubmit={saveClinicalDetails}>
+            <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e, { name: "itay" })}>
                 <Grid spacing={3} className={classes.form} container justify='flex-start' alignItems='center'>
                 <Grid item xs={2}>
                     <Typography>
