@@ -57,6 +57,9 @@ export const useStyles = makeStyles({
     spacedDates: {
         marginRight: '1vw',
     },
+    verticalSpacing: {
+        marginBottom: '1vh',
+    },
     hospitalizedDates: {
         '@media screen and (min-width: 1870px)': {
             width: '14vw',
