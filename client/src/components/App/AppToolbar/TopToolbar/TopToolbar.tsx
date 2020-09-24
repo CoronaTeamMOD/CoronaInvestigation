@@ -36,7 +36,6 @@ const TopToolbar: React.FC = (): JSX.Element => {
     React.useEffect( () => {
         if (firstUserUpdate.current) {
             firstUserUpdate.current = false;
-            return;
         } else {
             getUserActivityStatus();
         }

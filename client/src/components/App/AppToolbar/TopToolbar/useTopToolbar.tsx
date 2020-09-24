@@ -16,11 +16,12 @@ export interface useTopToolbarOutcome  {
 const useTopToolbar = (props: useInteractionsTabInput) :  useTopToolbarOutcome => {
 
     const classes = useStyles({});
+    const {setIsActive} = props;
 
     const getUserActivityStatus = () => {
-        axios.get(`/usersInfo/userActivityStatus`)
+        axios.get(`/users/userActivityStatus`)
         .then((result) => { 
-            props.setIsActive(result.data.isActive)
+            setIsActive(result.data.isActive)
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לקבל את הסטטוס הנוכחי שלך',
@@ -33,11 +34,11 @@ const useTopToolbar = (props: useInteractionsTabInput) :  useTopToolbarOutcome =
     }
 
     const setUserActivityStatus = (isActive: boolean) => {
-        axios.post('usersInfo/updateIsUserActive', {
+        axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
             if(result.data)
-                props.setIsActive(result.data.isActive);
+                setIsActive(result.data.isActive);
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לעדכן את הסטטוס שלך',

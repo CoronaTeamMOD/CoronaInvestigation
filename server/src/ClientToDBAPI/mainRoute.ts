@@ -19,6 +19,6 @@ clientToDBRouter.use('/investigationInfo', investigationInfo);
 clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/addressDetails', addressRoute);
-clientToDBRouter.use('/usersInfo', usersRoute);
+clientToDBRouter.use('/users', usersRoute);
 
 export default clientToDBRouter;
