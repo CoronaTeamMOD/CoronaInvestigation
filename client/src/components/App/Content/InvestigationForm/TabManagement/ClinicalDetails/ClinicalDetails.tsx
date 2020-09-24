@@ -350,10 +350,20 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 </b>
                             </Typography>
                         </Grid>
-                        <Toggle
-                            test-id='isPregnant'
-                            value={context.clinicalDetailsData.isPregnant}
-                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData.isPregnant)}
+                        <Controller
+                            name={ClinicalDetailsFields.IS_PREGNANT}
+                            control={control}
+                            render={(props) => (
+                                <Toggle
+                                    test-id='isPregnant'
+                                    value={props.value}
+                                    onChange={(e, value) => {
+                                        if (value !== null) {
+                                            props.onChange(value)
+                                        }
+                                    }}
+                                />
+                            )}
                         />
                     </>
                     : <></>
