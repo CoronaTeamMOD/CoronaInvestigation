@@ -36,33 +36,47 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                 </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='ארץ מוצא'>
                         <Typography>
                             {countries.get(interaction.flightOriginCountry as string)?.displayName}
                         </Typography>
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='עיר מוצא'>
                         <Typography variant='caption'>
                             {interaction.flightOriginCity}
                         </Typography>
                     </FormInput>
                 </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName='שדה תעופה מוצא'>
+                        <Typography variant='caption'>
+                            {interaction.flightOriginAirport}
+                        </Typography>
+                    </FormInput>
+                </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='ארץ יעד'>
                         <Typography>
                             {countries.get(interaction.flightDestinationCountry as string)?.displayName}
                         </Typography>
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='עיר יעד'>
                         <Typography variant='caption'>
                             {interaction.flightDestinationCity}
+                        </Typography>
+                    </FormInput>
+                </Grid>
+                <Grid item xs={4}>
+                    <FormInput fieldName='שדה תעופה יעד'>
+                        <Typography variant='caption'>
+                            {interaction.flightDestinationAirport}
                         </Typography>
                     </FormInput>
                 </Grid>
