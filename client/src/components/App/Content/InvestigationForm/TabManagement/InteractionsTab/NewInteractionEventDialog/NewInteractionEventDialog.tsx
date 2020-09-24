@@ -23,6 +23,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+    const [defaultPlaceName, setDefaultPlaceName] = useState<string>('');
     const [interactionEventDialogData, setInteractionEventDialogData] =
     useState<InteractionEventDialogData>(
         initialDialogData(defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
@@ -34,12 +35,15 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
     }),
         [interactionEventDialogData, setInteractionEventDialogData]);       
         
-        const classes = useStyles();            
+    const classes = useStyles();            
 
-        const { createNewInteractionEvent, shouldDisableSubmitButton } = useNewInteractionEventDialog({ closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData});
+    const { createNewInteractionEvent, shouldDisableSubmitButton } = useNewInteractionEventDialog({ closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData});
 
-
-    const onConfirm = () => createNewInteractionEvent(interactionEventDialogData);
+    const onConfirm = () => createNewInteractionEvent(
+        {...interactionEventDialogData, 
+            placeName: interactionEventDialogData.placeName ? interactionEventDialogData.placeName : defaultPlaceName
+        }
+    );
 
     return (
         <Dialog classes={{ paper: classes.dialogPaper }} open={isOpen} maxWidth={false}>
@@ -48,7 +52,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             </DialogTitle>
             <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm />
+                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
                 </DialogContent>
             </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
