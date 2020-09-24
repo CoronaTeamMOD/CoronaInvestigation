@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 
+import formReducer from './Form/formReducer';
 import cityReducer from './City/cityReducer';
 import userReducer from './User/userReducer';
 import StoreStateType from './storeStateType';
@@ -14,5 +15,6 @@ export default combineReducers<StoreStateType>({
      investigation: investigationReducer,
      gender: genderReducer,
      cities: cityReducer,
-     countries: countryReducer
+     countries: countryReducer,
+     formsValidations: formReducer
 })

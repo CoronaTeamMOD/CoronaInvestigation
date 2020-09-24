@@ -3,13 +3,16 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
-import useTabManagement from './useTabManagement';
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
+
+import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
 
 export const tabs: TabObj[] = [
     {
@@ -43,8 +46,13 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
             },
+            wrapper: {
+                flexDirection: "row-reverse",
+            }
         }),
     )(Tab);
+
+    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
 
     return (
         <Card className={classes.card}>
@@ -55,14 +63,25 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab 
+                            if (!formsValidations[tab.id] && formsValidations[tab.id] !== null) {
+                                return <StyledTab 
+                                // @ts-ignore
+                                type="submit"
+                                form={`form-${currentTab}`}
+                                onClick={() => {setNextTab(tab.id)}}
+                                key={tab.id}
+                                label={tab.name}
+                                icon={<ErrorOutlineIcon/>}
+                                className={classes.errorIcon}
+                            />} else {
+                                    return <StyledTab 
                                         // @ts-ignore
                                         type="submit"
                                         form={`form-${currentTab}`}
                                         onClick={() => {setNextTab(tab.id)}}
                                         key={tab.id}
                                         label={tab.name}
-                                    />
+                                    />}
                         })
                     }
                 </Tabs>

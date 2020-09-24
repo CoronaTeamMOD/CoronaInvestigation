@@ -1,4 +1,5 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -32,6 +33,8 @@ const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
+
+    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -90,12 +93,29 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setNextTab
     } = useTabManagement();
 
+    const isInvestigationValid = () => {
+        let isFormValid = true;
+        formsValidations.forEach((formValidation)=> {
+            if(!formValidation){
+                isFormValid = false;
+            }
+        })
+        return isFormValid;
+    }
+
     const handleClick = () => {
         if(currentTab === LAST_TAB_ID){
-            confirmFinishInvestigation(epidemiologyNumber);
             setNextTab(currentTab);
+            if(isInvestigationValid()){
+                confirmFinishInvestigation(epidemiologyNumber);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.'
+                });
+            }
         } else {
-            setNextTab(currentTab+1)
+            setNextTab(currentTab+1);
         }
     }
     return (
