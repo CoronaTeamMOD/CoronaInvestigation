@@ -18,12 +18,10 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
         isUnkonwnDateChecked,
         handleUnkonwnDateCheck,
         handleSymptomCheck,
-        updateClinicalDetails,
         symptoms,
         setError,
         clearErrors,
         errors,
-        context
     } = props;
 
     return (
@@ -89,7 +87,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         </div>
                     </div>
                     {
-                        context.clinicalDetailsData.doesHaveSymptoms &&
+                        watchDoesHaveSymptoms &&
                         <Typography>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
                     }
                     <Grid item container className={classes.smallGrid}>
@@ -119,21 +117,26 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         />
                         <Collapse in={watchSymptoms.includes(otherSymptomFieldName)}>
                             <Grid item xs={2}>
-                                <AlphanumericTextField
-                                    test-id='symptomInput'
+                                <Controller
                                     name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
-                                    value={context.clinicalDetailsData.otherSymptomsMoreInfo}
-                                    onChange={(newValue: string) =>
-                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
-                                    }
-                                    required
-                                    label='סימפטום'
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
-                                    className={classes.otherTextField}
-                                    placeholder='הזן סימפטום...'
-
+                                    control={control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            test-id='symptomInput'
+                                            name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
+                                            value={props.value}
+                                            onChange={(newValue: string) =>
+                                                props.onChange(newValue)
+                                            }
+                                            required
+                                            label='סימפטום'
+                                            setError={setError}
+                                            clearErrors={clearErrors}
+                                            errors={errors}
+                                            className={classes.otherTextField}
+                                            placeholder='הזן סימפטום...'
+                                        />
+                                    )}
                                 />
                             </Grid>
                         </Collapse>
@@ -152,12 +155,10 @@ interface Props {
     isUnkonwnDateChecked: any;
     handleUnkonwnDateCheck: any;
     handleSymptomCheck: any;
-    updateClinicalDetails: any;
     symptoms: any;
     setError: any;
     clearErrors: any;
     errors: any;
-    context: any;
 };
 
 export default SymptomsFields;
