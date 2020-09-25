@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Divider, FormControl,
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Checkbox, Divider, FormControl,
          FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
@@ -38,8 +38,24 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                     expandIcon={<ExpandMore />}
                                     aria-controls='panel1a-content'
                                     id='panel1a-header'
+                                    dir='ltr'
                                 >
-                                    <Grid container item xs={9} justify='space-between'>
+                                    <Grid item xs={2}>
+                                        <Grid container>
+                                            <Grid item xs={9}>
+                                                <Grid container>
+                                                    <FormControlLabel
+                                                    onClick={(event) => event.stopPropagation()}
+                                                    onFocus={(event) => event.stopPropagation()}
+                                                    control={<Checkbox color='primary' />}
+                                                    label='אין מענה'
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                            <Divider variant='fullWidth' orientation='vertical' flexItem />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-between'>
                                         <Typography variant='body2'>
                                             <b>שם פרטי:</b> {interactedContact.firstName}
                                         </Typography>
@@ -52,9 +68,12 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                         <Typography variant='body2'>
                                             <b>תאריך המגע:</b> {format(new Date(interactedContact.contactDate), 'dd/MM/yyyy')}
                                         </Typography>
-                                        <Typography variant='body2'>
-                                            <b>סוג מגע:</b> {interactedContact.contactType}
-                                        </Typography>
+                                        {
+                                            interactedContact.contactType &&
+                                            <Typography variant='body2'>
+                                                <b>סוג מגע:</b> {interactedContact.contactType}
+                                            </Typography>
+                                        }
                                         {
                                             interactedContact.extraInfo &&
                                             <Typography variant='body2'>
@@ -86,7 +105,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             <Typography variant='body2' className={classes.text}><b>מספר תעודה:</b></Typography>
                                                         </Grid>
                                                         <Grid item xs={3}>
-                                                            <TextField placeholder={'מספר תעודה'} required className={classes.idTextField} />
+                                                            <TextField
+                                                                required
+                                                                label={'מספר תעודה'}
+                                                                className={classes.idTextField} />
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
