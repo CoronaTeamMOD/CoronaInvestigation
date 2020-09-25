@@ -63,13 +63,12 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     useEffect(() => {
         context.interactedContacts = [];
-        let contactInteractionId = 0;
 
         axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
                 context.interactedContacts.push(
                     {
-                        id: contactInteractionId,
+                        id: contact.personByPersonInfo.id,
                         firstName: contact.personByPersonInfo.firstName,
                         lastName: contact.personByPersonInfo.lastName,
                         phoneNumber: contact.personByPersonInfo.phoneNumber,
@@ -78,8 +77,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         extraInfo: contact.extraInfo,
                     }
                 )
-
-                contactInteractionId++;
             });
         })
     },[]);

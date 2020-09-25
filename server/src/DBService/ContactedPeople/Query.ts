@@ -5,6 +5,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
   allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
     nodes {
       personByPersonInfo {
+        id
         firstName
         lastName
         phoneNumber
