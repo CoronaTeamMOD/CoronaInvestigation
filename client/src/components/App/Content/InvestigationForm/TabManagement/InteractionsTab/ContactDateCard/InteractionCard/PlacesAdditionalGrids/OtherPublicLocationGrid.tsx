@@ -8,14 +8,15 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import AddressGrid from '../AddressGrid/AddressGrid';
 import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
-const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
+const { publicPark, zoo, stadium, amphitheater, beach, mall } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 
 const wideAreas = [
     publicPark,
     zoo,
     stadium,
     amphitheater,
-    beach
+    beach,
+    mall
 ]
 
 const OtherPublicLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
