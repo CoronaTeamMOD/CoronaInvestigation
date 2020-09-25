@@ -63,6 +63,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                     בטל
                 </Button>
                 <PrimaryButton 
+                    form="interactionEventForm"
                     disabled={shouldDisableSubmitButton()}
                     id='createContact'
                     onClick={() => onConfirm()}>

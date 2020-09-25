@@ -1,21 +1,17 @@
 import React, { useState, useContext } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from "@material-ui/icons";
-import {
-  Collapse,
-  Grid,
-  Typography,
-  Divider,
-  IconButton,
-} from "@material-ui/core";
+import { Collapse, Grid, Typography, Divider, IconButton} from "@material-ui/core";
 
 import Contact from "models/Contact";
+import InteractionEventDialogData from "models/Contexts/InteractionEventDialogData";
 import Toggle from "commons/Toggle/Toggle";
-import useFormStyles from "styles/formStyles";
 import TimePick from "commons/DatePick/TimePick";
 import FormInput from "commons/FormInput/FormInput";
-import placeTypesCodesHierarchy from "Utils/placeTypesCodesHierarchy";
-import InteractionEventDialogData from "models/Contexts/InteractionEventDialogData";
 import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
+import placeTypesCodesHierarchy from "Utils/placeTypesCodesHierarchy";
+import useFormStyles from "styles/formStyles";
 
 import ContactForm from "./ContactForm/ContactForm";
 import useStyles from "./InteractionEventFormStyles";
@@ -30,6 +26,7 @@ import {
 } from "../InteractionsEventDialogContext/InteractionsEventDialogContext";
 import OtherPublicLocationForm from "./PlacesAdditionalForms/OtherPublicLocationForm";
 import MedicalLocationForm from "./PlacesAdditionalForms/MedicalLocationForm";
+import useSchema from "./useSchema";
 
 export const defaultContact: Contact = {
   firstName: "",
@@ -40,6 +37,7 @@ export const defaultContact: Contact = {
 };
 
 const addContactButton: string = "הוסף מגע";
+const { schema } = useSchema();
 
 const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
   const {
@@ -139,114 +137,119 @@ const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
 
   return (
     <>
-      <Grid className={formClasses.form} container justify="flex-start">
-        <PlacesTypesAndSubTypes
-          placeType={placeType}
-          placeSubType={placeSubType}
-          onPlaceTypeChange={onPlaceTypeChange}
-          onPlaceSubTypeChange={onPlaceSubTypeChange}
-        />
-        {placeType === privateHouse.code && (
-          <Collapse in={placeType === privateHouse.code}>
-            <PrivateHouseEventForm />
-          </Collapse>
-        )}
-        {placeType === office.code && (
-          <Collapse in={placeType === office.code}>
-            <OfficeEventForm />
-          </Collapse>
-        )}
-        {placeType === transportation.code && (
-          <Collapse in={placeType === transportation.code}>
-            <TransportationEventForm />
-          </Collapse>
-        )}
-        {placeType === school.code && (
-          <Collapse in={placeType === school.code}>
-            <SchoolEventForm />
-          </Collapse>
-        )}
-        {placeType === medical.code && (
-          <Collapse in={placeType === medical.code}>
-            <MedicalLocationForm />
-          </Collapse>
-        )}
-        {placeType === religion.code && (
-          <Collapse in={placeType === religion.code}>
-            <DefaultPlaceEventForm />
-          </Collapse>
-        )}
-        {placeType === geriatric.code && (
-          <Collapse in={placeType === geriatric.code}>
-            <DefaultPlaceEventForm />
-          </Collapse>
-        )}
-        {placeType === otherPublicPlaces.code && (
-          <Collapse in={placeType === otherPublicPlaces.code}>
-            <OtherPublicLocationForm />
-          </Collapse>
-        )}
-        <Grid className={formClasses.formRow} container justify="flex-start">
-          <Grid item xs={6}>
-            <FormInput fieldName="משעה">
-              <TimePick
-                required
-                testId="contactLocationStartTime"
-                labelText="משעה"
-                value={startTime}
-                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.startTime,"startTime")}
-              />
-            </FormInput>
+    <FormProvider {...methods}>
+      <form id="interactionEventForm">
+        <Grid className={formClasses.form} container justify="flex-start">
+          <PlacesTypesAndSubTypes
+            placeType={placeType}
+            placeSubType={placeSubType}
+            onPlaceTypeChange={onPlaceTypeChange}
+            onPlaceSubTypeChange={onPlaceSubTypeChange}
+          />
+          {placeType === privateHouse.code && (
+            <Collapse in={placeType === privateHouse.code}>
+              <PrivateHouseEventForm />
+            </Collapse>
+          )}
+          {placeType === office.code && (
+            <Collapse in={placeType === office.code}>
+              <OfficeEventForm />
+            </Collapse>
+          )}
+          {placeType === transportation.code && (
+            <Collapse in={placeType === transportation.code}>
+              <TransportationEventForm />
+            </Collapse>
+          )}
+          {placeType === school.code && (
+            <Collapse in={placeType === school.code}>
+              <SchoolEventForm />
+            </Collapse>
+          )}
+          {placeType === medical.code && (
+            <Collapse in={placeType === medical.code}>
+              <MedicalLocationForm />
+            </Collapse>
+          )}
+          {placeType === religion.code && (
+            <Collapse in={placeType === religion.code}>
+              <DefaultPlaceEventForm />
+            </Collapse>
+          )}
+          {placeType === geriatric.code && (
+            <Collapse in={placeType === geriatric.code}>
+              <DefaultPlaceEventForm />
+            </Collapse>
+          )}
+          {placeType === otherPublicPlaces.code && (
+            <Collapse in={placeType === otherPublicPlaces.code}>
+              <OtherPublicLocationForm />
+            </Collapse>
+          )}
+          <Grid className={formClasses.formRow} container justify="flex-start">
+            <Grid item xs={6}>
+              <FormInput fieldName="משעה">
+                <TimePick
+                  required
+                  test-id="contactLocationStartTime"
+                  labelText="משעה"
+                  value={startTime}
+                  onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.startTime,"startTime")}
+                />
+              </FormInput>
+            </Grid>
+            <Grid item xs={6}>
+              <FormInput fieldName="עד שעה">
+                <TimePick
+                  required
+                  test-id="contactLocationEndTime"
+                  labelText="עד שעה"
+                  value={endTime}
+                  onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.endTime,"endTime")}
+                />
+              </FormInput>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <FormInput fieldName="עד שעה">
-              <TimePick
-                required
-                testId="contactLocationEndTime"
-                labelText="עד שעה"
-                value={endTime}
-                onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.endTime,"endTime")}
+          <Grid className={formClasses.formRow} container justify="flex-start">
+            <FormInput fieldName="האם מותר להחצנה">
+              <Toggle
+                test-id="allowExternalization"
+                className={formClasses.formToggle}
+                value={externalizationApproval}
+                onChange={onExternalizationApprovalChange}
               />
             </FormInput>
           </Grid>
         </Grid>
-        <Grid className={formClasses.formRow} container justify="flex-start">
-          <FormInput fieldName="האם מותר להחצנה">
-            <Toggle
-              test-id="allowExternalization"
-              className={formClasses.formToggle}
-              value={externalizationApproval}
-              onChange={onExternalizationApprovalChange}
-            />
-          </FormInput>
+        <Divider light={true} />
+        <Grid
+          container
+          className={formClasses.form + " " + classes.spacedOutForm}
+        >
+          <div className={classes.newContactFieldsContainer}>
+            {contacts.map((contact: Contact, index: number) => (
+              <ContactForm updatedContactIndex={index} />
+            ))}
+            <Grid item>
+              <IconButton
+                test-id="addContact"
+                onClick={onContactAdd}
+                disabled={!canAddContact}
+              >
+                <AddCircleIcon color={!canAddContact ? "disabled" : "primary"} />
+              </IconButton>
+              <Typography
+                variant="caption"
+                className={formClasses.fieldName + " " + classes.fieldNameNoWrap}
+              >
+                {addContactButton}
+              </Typography>
+            </Grid>
+          </div>
         </Grid>
-      </Grid>
-      <Divider light={true} />
-      <Grid
-        container
-        className={formClasses.form + " " + classes.spacedOutForm}
-      >
-        <div className={classes.newContactFieldsContainer}>
-          {contacts.map((contact: Contact, index: number) => (
-            <ContactForm updatedContactIndex={index} />
-          ))}
-          <Grid item>
-            <IconButton
-              test-id="addContact"
-              onClick={onContactAdd}
-              disabled={!canAddContact}
-            >
-              <AddCircleIcon color={!canAddContact ? "disabled" : "primary"} />
-            </IconButton>
-            <Typography
-              variant="caption"
-              className={formClasses.fieldName + " " + classes.fieldNameNoWrap}
-            >
-              {addContactButton}
-            </Typography>
-          </Grid>
-        </div>
-      </Grid>
+      </form>
+    </FormProvider>
+     
     </>
   );
 };
