@@ -12,6 +12,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
@@ -35,6 +36,11 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
         let contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
         interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
     };
+
+    const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: any) => {
+        const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
+        updateInteractedContact(interactedContact, 'identificationType', newIdentificationType);
+    }
 
     return (
         <>
@@ -115,25 +121,27 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             <Toggle
                                                                 firstOption={'ת.ז'}
                                                                 secondOption={'דרכון'}
+                                                                value={interactedContact.identificationType !== IdentificationTypes.ID}
+                                                                onChange={(event, booleanValue) => changeIdentificationType(interactedContact, booleanValue)}
                                                             />
                                                         </Grid>
                                                         <Grid item xs={3}>
                                                             <Typography variant='body2' className={classes.text}><b>מספר תעודה:</b></Typography>
                                                         </Grid>
                                                         <Grid item xs={3}>
-                                                        <AlphanumericTextField
-                                                            required
-                                                            name={'identificationNumber'}
-                                                            placeholder='מספר תעודה'
-                                                            className={classes.idTextField}
-                                                            value={interactedContact.identificationNumber}
-                                                            onChange={(newValue: string) =>
-                                                                updateInteractedContact(interactedContact, 'identificationNumber', newValue as string
-                                                            )}
-                                                            setError={()=>{}}
-                                                            clearErrors={()=>{}}
-                                                            errors={()=>{}}
-                                                        />
+                                                            <AlphanumericTextField
+                                                                required
+                                                                name={'identificationNumber'}
+                                                                placeholder='מספר תעודה'
+                                                                className={classes.idTextField}
+                                                                value={interactedContact.identificationNumber}
+                                                                onChange={(newValue: string) =>
+                                                                    updateInteractedContact(interactedContact, 'identificationNumber', newValue as string
+                                                                )}
+                                                                setError={()=>{}}
+                                                                clearErrors={()=>{}}
+                                                                errors={()=>{}}
+                                                            />
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -196,7 +204,18 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 </Grid>
                                                 <Grid item>
                                                     <FormInput fieldName='קשר'>
-                                                        <TextField className={classes.textField} />
+                                                        <AlphanumericTextField
+                                                            required
+                                                            name={'relationship'}
+                                                            placeholder='קשר'
+                                                            value={interactedContact.relationship}
+                                                            onChange={(newValue: string) =>
+                                                                updateInteractedContact(interactedContact, 'relationship', newValue as string
+                                                            )}
+                                                            setError={()=>{}}
+                                                            clearErrors={()=>{}}
+                                                            errors={()=>{}}
+                                                        />
                                                     </FormInput>
                                                 </Grid>
                                                 <Grid item>

@@ -16,6 +16,7 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
@@ -73,12 +74,14 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         lastName: contact.personByPersonInfo.lastName,
                         phoneNumber: contact.personByPersonInfo.phoneNumber,
                         contactDate: contact.contactEventByContactEvent.startTime,
-                        contactType: contact.doesNeedIsolation,
-                        extraInfo: contact.extraInfo,
                         cantReachContact: false,
-                        identificationType: contact.personByPersonInfo.identificationType,
+                        identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
                         identificationNumber: contact.personByPersonInfo.identificationNumber,
                         birthDate: contact.personByPersonInfo.birthDate,
+                        additionalPhoneNumber: {number: contact.personByPersonInfo.additionalPhoneNumber, isValid: contact.personByPersonInfo.additionalPhoneNumber},
+                        contactType: contact.doesNeedIsolation,
+                        extraInfo: contact.extraInfo,
+                        relationship: contact.relationship,
                     }
                 )
             });

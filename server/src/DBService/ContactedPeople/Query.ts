@@ -12,12 +12,14 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
         identificationType
         identificationNumber
         birthDate
+        additionalPhoneNumber
       }
       contactEventByContactEvent {
         startTime
       }
       doesNeedIsolation
       extraInfo
+      relationship
     }
   }
 }

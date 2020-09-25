@@ -1,4 +1,5 @@
 import PhoneNumberControl from './PhoneNumberControl';
+import IdentificationTypes from './enums/IdentificationTypes';
 
 interface InteractedContact {
     id: number;
@@ -8,11 +9,12 @@ interface InteractedContact {
     contactDate: Date;
     contactType: boolean;
     extraInfo: string;
-    identificationType: string;
+    identificationType: IdentificationTypes;
     identificationNumber: string;
     birthDate?: Date;
     cantReachContact: boolean;
-    additionalPhoneNumber?: PhoneNumberControl;
+    additionalPhoneNumber: PhoneNumberControl;
+    relationship: string;
 }
 
 export default InteractedContact;

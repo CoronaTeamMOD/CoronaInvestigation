@@ -79,8 +79,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab) => (
-                        (tab.name === TabNames.CONTACT_QUESTIONING && context.interactedContacts.length === 0) ?
-                            <></> :
+                        !(tab.name === TabNames.CONTACT_QUESTIONING && context.interactedContacts.length === 0) &&
                             <StyledTab
                                 onClick={onTabClicked}
                                 key={tab.id}
