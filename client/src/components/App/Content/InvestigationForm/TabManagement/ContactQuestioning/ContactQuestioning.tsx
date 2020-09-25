@@ -121,10 +121,19 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             <Typography variant='body2' className={classes.text}><b>מספר תעודה:</b></Typography>
                                                         </Grid>
                                                         <Grid item xs={3}>
-                                                            <TextField
-                                                                required
-                                                                label={'מספר תעודה'}
-                                                                className={classes.idTextField} />
+                                                        <AlphanumericTextField
+                                                            required
+                                                            name={'identificationNumber'}
+                                                            placeholder='מספר תעודה'
+                                                            className={classes.idTextField}
+                                                            value={interactedContact.identificationNumber}
+                                                            onChange={(newValue: string) =>
+                                                                updateInteractedContact(interactedContact, 'identificationNumber', newValue as string
+                                                            )}
+                                                            setError={()=>{}}
+                                                            clearErrors={()=>{}}
+                                                            errors={()=>{}}
+                                                        />
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
