@@ -45,11 +45,24 @@ const placeTypesCodesHierarchy = {
     otherPublicPlaces: {
         code: 'מקומות ציבוריים נוספים',
         subTypesCodes: {
-            publicPark: 77,
-            zoo: 288,
+            eventsHall: 2,
             stadium: 5,
             amphitheater: 6,
+            hotel: 12,
+            pool: 22,
+            gardenEvents: 24,
+            gym: 32,
             beach: 33,
+            shops: 35,
+            sportsHall: 44,
+            sportsField: 45,
+            museumOrGallery: 47,
+            restaurantAndCoffeeShop: 59,
+            other: 64,
+            super: 70,
+            publicPark: 77,
+            bar: 79,
+            zoo: 288,
         }
     },
 }
