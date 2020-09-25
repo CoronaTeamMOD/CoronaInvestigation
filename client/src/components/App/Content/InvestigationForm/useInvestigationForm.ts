@@ -75,6 +75,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         contactDate: contact.contactEventByContactEvent.startTime,
                         contactType: contact.doesNeedIsolation,
                         extraInfo: contact.extraInfo,
+                        cantReachContact: false,
+                        identificationType: contact.personByPersonInfo.identificationType,
+                        identificationNumber: contact.personByPersonInfo.identificationNumber,
+                        birthDate: contact.personByPersonInfo.birthDate,
                     }
                 )
             });

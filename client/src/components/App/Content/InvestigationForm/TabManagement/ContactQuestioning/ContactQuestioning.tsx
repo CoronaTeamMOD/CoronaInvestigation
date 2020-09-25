@@ -1,8 +1,8 @@
-import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { differenceInYears, format } from 'date-fns';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Checkbox, Divider, FormControl,
          FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
 
@@ -11,31 +11,42 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import InteractedContact from 'models/InteractedContact';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
+import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
-import { RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import { ADDITIONAL_PHONE_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
-    const { interactedContacts } = useContext(interactedContactsContext);
+    const interactedContactsState = useContext(interactedContactsContext);
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
+    const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
+
+    const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: any, value: any) => {
+        setCurrentInteractedContact(interactedContact);
+        let contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
+        interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
+    };
 
     return (
         <>
-            <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({interactedContacts.length})</b></Typography>
+            <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({interactedContactsState.interactedContacts.length})</b></Typography>
             {
-                interactedContacts.sort((firstInteractedContact, secondInteractedContact) =>
+                interactedContactsState.interactedContacts.sort((firstInteractedContact, secondInteractedContact) =>
                     firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (
-                        <div className={classes.form}>
+                        <div key={interactedContact.id} className={classes.form}>
                             <Accordion className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
+                                    onClick={() => updateInteractedContact(interactedContact, 'cantReachContact', false)}
                                     aria-controls='panel1a-content'
                                     id='panel1a-header'
                                     dir='ltr'
@@ -45,10 +56,15 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                             <Grid item xs={9}>
                                                 <Grid container>
                                                     <FormControlLabel
-                                                    onClick={(event) => event.stopPropagation()}
-                                                    onFocus={(event) => event.stopPropagation()}
-                                                    control={<Checkbox color='primary' />}
-                                                    label='אין מענה'
+                                                        onClick={(event) => event.stopPropagation()}
+                                                        onChange={((event: any, checked: boolean) => updateInteractedContact(interactedContact, 'cantReachContact', checked))}
+                                                        control={
+                                                            <Checkbox
+                                                                color='primary'
+                                                                checked={currentInteractedContact === interactedContact ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
+                                                            />
+                                                        }
+                                                        label='אין מענה'
                                                     />
                                                 </Grid>
                                             </Grid>
@@ -119,12 +135,35 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 </Grid>
                                                 <Grid item>
                                                     <FormInput fieldName='גיל'>
-                                                        <TextField />
+                                                        <AlphanumericTextField
+                                                            name={'age'}
+                                                            placeholder='הכנס גיל:'
+                                                            value={differenceInYears(new Date(), new Date(interactedContact.birthDate as Date))}
+                                                            onChange={(newValue: string) =>
+                                                                updateInteractedContact(interactedContact, '', newValue as string
+                                                            )}
+                                                            setError={()=>{}}
+                                                            clearErrors={()=>{}}
+                                                            errors={()=>{}}
+                                                        />
                                                     </FormInput>
                                                 </Grid>
                                                 <Grid item>
-                                                    <FormInput fieldName='טלפון נוסף'>
-                                                        <TextField />
+                                                    <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
+                                                        <PhoneNumberTextField
+                                                            name={'additionalPhoneNumber'}
+                                                            placeholder='הכנס טלפון:'
+                                                            value={interactedContact.additionalPhoneNumber?.number}
+                                                            onChange={(event) =>
+                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber', { ...interactedContact.additionalPhoneNumber, number: event.target.value }
+                                                            )}
+                                                            isValid={interactedContact.additionalPhoneNumber?.isValid as boolean}
+                                                            setIsValid={(isValid) =>
+                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber',
+                                                                    { ...interactedContact.additionalPhoneNumber, isValid }
+                                                                )
+                                                            }
+                                                        />
                                                     </FormInput>
                                                 </Grid>
                                             </Grid>

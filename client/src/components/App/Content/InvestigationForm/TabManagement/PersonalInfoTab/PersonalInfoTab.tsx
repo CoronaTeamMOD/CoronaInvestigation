@@ -25,7 +25,7 @@ import usePersonalInfoTab from './usePersonalInfoTab';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 
 const PHONE_LABEL = 'טלפון:';
-const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
+export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
@@ -163,13 +163,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            {ADDITIONAL_PHONE_LABEL}
+                            {ADDITIONAL_PHONE_LABEL + ':'}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
-                        id={ADDITIONAL_PHONE_LABEL}
+                        id={ADDITIONAL_PHONE_LABEL + ':'}
                         placeholder={PHONE_LABEL}
                         value={additionalPhoneNumber.number}
                         isValid={additionalPhoneNumber.isValid}

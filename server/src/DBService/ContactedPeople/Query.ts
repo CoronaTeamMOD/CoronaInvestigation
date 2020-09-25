@@ -9,6 +9,9 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
         firstName
         lastName
         phoneNumber
+        identificationType
+        identificationNumber
+        birthDate
       }
       contactEventByContactEvent {
         startTime
