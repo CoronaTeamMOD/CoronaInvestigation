@@ -1,8 +1,10 @@
 import React from 'react';
+import { Controller } from 'react-hook-form'
+import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
+import { TextField } from '@material-ui/core';
 
 import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
-import AutocompletedField from '../AutoCompletedField/AutocompletedField';
 import useStyles from './LocationInputFieldStyles';
 
 export interface GoogleApiPlace {
@@ -41,13 +43,30 @@ export interface GeocodeResponse {
     description?: string;
 }
 
-const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputProps) => {
+const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
+
+const  LocationInput = ({control, name, selectedAddress, constOptions = false }: LocationInputProps) => {
     const classes = useStyles({});
-    const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
+
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
     const [input, setInput] = React.useState<string>('');
 
+    const { autoCompletePlacesFromApi, parseAddress } = useGoogleApiAutocomplete();
+
     const parsedSelected = React.useMemo(() => parseAddress(selectedAddress), [selectedAddress]);
+
+    const filterOptions = (x: any) => x;
+
+    const staticOptionConfig = {
+        autoComplete: true,
+        filterSelectedOptions: true,
+        includeInputInList: true,
+        clearOnBlur: false,
+        disableClearable: true,
+        filterOptions
+    };
+
+    const config = (!constOptions) ? { ...staticOptionConfig } : {};
 
     React.useEffect(() => {
         let active = true;
@@ -67,29 +86,43 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
         return () => {
             active = false;
         };
-    }, [selectedAddress,input]);
-
-    const onInputChange = (event: React.ChangeEvent<{}>,
-                           newInputValue: string,) => {
-        setInput(newInputValue);
-    };
+    }, [selectedAddress, input]);
 
     return (
-        <AutocompletedField
-            value={parsedSelected}
-            options={locationOptions}
-            onChange={setSelectedAddress}
-            onInputChange={onInputChange}
-            getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
-            renderOption={LocationOptionItem}
-            className={classes.longAutoComplete}
+        <Controller
+            name={name}
+            control={control}
+            render={(props) => (
+                <Autocomplete
+                    options={locationOptions} 
+                    value={parsedSelected}
+                    onInputChange={(event: React.ChangeEvent<{}>, newInputValue: string) => setInput(newInputValue as string)}
+                    onChange={(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => props.onChange(newValue)}
+                    noOptionsText={noOptionsMessage}
+                    filterOptions={filterOptions}
+                    getOptionLabel={(option: any) => typeof option === 'string' ? option : option.description}
+                    renderInput={(params: AutocompleteRenderInputParams) =>
+                        <TextField  
+                            {...params} 
+                            fullWidth 
+                        />
+                    }
+                    className={classes.autcompleteField + classes.longAutoComplete}
+
+                    {...config}
+                    {...(LocationOptionItem) ? { LocationOptionItem: LocationOptionItem } : {}}
+                />
+            )}
         />
     );
 };
 
 interface LocationInputProps {
+    name?: any,
+    control?: any,
     selectedAddress: GoogleApiPlace | null;
-    setSelectedAddress:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
+    setSelectedAddress?:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
+    constOptions?: boolean;
 }
 
 export default LocationInput;

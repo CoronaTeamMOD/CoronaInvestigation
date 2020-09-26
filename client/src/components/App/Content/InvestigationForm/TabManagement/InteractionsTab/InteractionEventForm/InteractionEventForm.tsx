@@ -1,32 +1,32 @@
-import React, { useState, useContext } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import React, { useState, useContext } from 'react';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
-import { AddCircle as AddCircleIcon } from "@material-ui/icons";
-import { Collapse, Grid, Typography, Divider, IconButton} from "@material-ui/core";
+import { AddCircle as AddCircleIcon } from '@material-ui/icons';
+import { Collapse, Grid, Typography, Divider, IconButton} from '@material-ui/core';
 
-import Contact from "models/Contact";
-import InteractionEventDialogData from "models/Contexts/InteractionEventDialogData";
-import Toggle from "commons/Toggle/Toggle";
-import TimePick from "commons/DatePick/TimePick";
-import FormInput from "commons/FormInput/FormInput";
-import PlacesTypesAndSubTypes from "commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes";
-import placeTypesCodesHierarchy from "Utils/placeTypesCodesHierarchy";
-import useFormStyles from "styles/formStyles";
+import Contact from 'models/Contact';
+import Toggle from 'commons/Toggle/Toggle';
+import TimePick from 'commons/DatePick/TimePick';
+import FormInput from 'commons/FormInput/FormInput';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import useFormStyles from 'styles/formStyles';
 
-import ContactForm from "./ContactForm/ContactForm";
-import useStyles from "./InteractionEventFormStyles";
-import OfficeEventForm from "../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm";
-import SchoolEventForm from "../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm";
-import DefaultPlaceEventForm from "../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm";
-import PrivateHouseEventForm from "../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm";
-import TransportationEventForm from "../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm";
+import ContactForm from './ContactForm/ContactForm';
+import useStyles from './InteractionEventFormStyles';
+import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
+import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
+import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
+import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import {
   InteractionEventDialogContext,
   initialDialogData,
-} from "../InteractionsEventDialogContext/InteractionsEventDialogContext";
-import OtherPublicLocationForm from "./PlacesAdditionalForms/OtherPublicLocationForm";
-import MedicalLocationForm from "./PlacesAdditionalForms/MedicalLocationForm";
-import useSchema from "./useSchema";
+} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
+import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
+import useSchema from './useSchema';
+import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 export const defaultContact: Contact = {
   firstName: "",
@@ -42,9 +42,12 @@ const { schema } = useSchema();
 const InteractionEventForm: React.FC = (): JSX.Element => {
   const methods = useForm({
     defaultValues: initialDialogData( new Date(), new Date(), [], -1),
+    mode: "onBlur",
     resolver: yupResolver(schema)
   });
-  
+  console.log(methods.getValues());
+  console.log(methods.errors);
+  const formValues = methods.getValues();
   const {
     interactionEventDialogData,
     setInteractionEventDialogData,
@@ -120,34 +123,26 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       placeName: placeNameByPlaceType(placeSubTypeDispalyName)
     });
   };
-
-  const onExternalizationApprovalChange = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-    val: boolean
-  ) =>
-    setInteractionEventDialogData({
-      ...(interactionEventDialogData as InteractionEventDialogData),
-      externalizationApproval: val,
-    });
   
-  const handleTimeChange = (currentTime : Date, currentDate : Date , fieldName : keyof typeof interactionEventDialogData) => {
-    if(currentTime){
-      let newTime = new Date(currentDate.getTime())
-      newTime.setHours(currentTime.getHours())
-      newTime.setMinutes(currentTime.getMinutes())
-      if(newTime.getTime()){
-        setInteractionEventDialogData({
-        ...(interactionEventDialogData as InteractionEventDialogData),
-        [fieldName]: newTime,
-        });
+  const handleTimeChange = (currentTime : Date, interactionDate : Date, fieldName: string) => {
+    if(currentTime) {
+      let newDate = new Date(interactionDate.getTime())
+      newDate.setHours(currentTime.getHours())
+      newDate.setMinutes(currentTime.getMinutes())
+      if(newDate.getTime()) {
+        methods.setValue(fieldName, newDate)
       }
     }
+  }
+
+  const onSubmit = (data: any) => {
+    console.log(data);
   }
 
   return (
     <>
     <FormProvider {...methods}>
-      <form id="interactionEventForm">
+      <form id="interactionEventForm" onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid className={formClasses.form} container justify="flex-start">
           <PlacesTypesAndSubTypes
             placeType={placeType}
@@ -180,13 +175,8 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
               <MedicalLocationForm />
             </Collapse>
           )}
-          {placeType === religion.code && (
-            <Collapse in={placeType === religion.code}>
-              <DefaultPlaceEventForm />
-            </Collapse>
-          )}
-          {placeType === geriatric.code && (
-            <Collapse in={placeType === geriatric.code}>
+          {(placeType === religion.code || placeType === geriatric.code) && (
+            <Collapse in={placeType === religion.code || placeType === geriatric.code}>
               <DefaultPlaceEventForm />
             </Collapse>
           )}
@@ -198,34 +188,56 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
           <Grid className={formClasses.formRow} container justify="flex-start">
             <Grid item xs={6}>
               <FormInput fieldName="משעה">
-                <TimePick
-                  required
-                  test-id="contactLocationStartTime"
-                  labelText="משעה"
-                  value={startTime}
-                  onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.startTime,"startTime")}
+                <Controller 
+                  name={InteractionEventDialogFields.START_TIME}
+                  control={methods.control}
+                  render={(props) => (
+                    <TimePick
+                      test-id="contactLocationStartTime"
+                      value={props.value}
+                      onChange={(newTime: Date) => handleTimeChange(newTime, 
+                                                                    formValues[InteractionEventDialogFields.START_TIME],
+                                                                    InteractionEventDialogFields.START_TIME)}
+                      required
+                      labelText="משעה"
+                    />
+                  )}
                 />
               </FormInput>
             </Grid>
             <Grid item xs={6}>
               <FormInput fieldName="עד שעה">
-                <TimePick
-                  required
-                  test-id="contactLocationEndTime"
-                  labelText="עד שעה"
-                  value={endTime}
-                  onChange={(newTime:Date)=>handleTimeChange(newTime,interactionEventDialogData.endTime,"endTime")}
+                <Controller 
+                  name={InteractionEventDialogFields.END_TIME}
+                  control={methods.control}
+                  render={(props) => (
+                    <TimePick
+                      test-id="contactLocationEndTime"
+                      value={props.value}
+                      onChange={(newTime:Date) => handleTimeChange(newTime, 
+                                                                   formValues[InteractionEventDialogFields.END_TIME],
+                                                                   InteractionEventDialogFields.END_TIME)}
+                      required
+                      labelText="עד שעה"
+                    />
+                  )}
                 />
               </FormInput>
             </Grid>
           </Grid>
           <Grid className={formClasses.formRow} container justify="flex-start">
             <FormInput fieldName="האם מותר להחצנה">
-              <Toggle
-                test-id="allowExternalization"
-                className={formClasses.formToggle}
-                value={externalizationApproval}
-                onChange={onExternalizationApprovalChange}
+              <Controller 
+                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                control={methods.control}
+                render={(props) => (
+                  <Toggle
+                    test-id="allowExternalization"
+                    value={props.value}
+                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                    className={formClasses.formToggle}       
+                  />
+                )}
               />
             </FormInput>
           </Grid>
