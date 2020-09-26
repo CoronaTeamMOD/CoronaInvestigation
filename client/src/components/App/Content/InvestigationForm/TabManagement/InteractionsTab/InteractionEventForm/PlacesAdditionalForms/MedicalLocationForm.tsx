@@ -1,22 +1,22 @@
-import React, {useContext} from 'react';
+import React from 'react';
+import { useFormContext } from 'react-hook-form'
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import HospitalEventForm from './HospitalEventForm';
 import DefaultPlaceEventForm from './DefaultPlaceEventForm';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const MedicalLocationForm : React.FC = () : JSX.Element => {
-
-    const { placeSubType } = useContext(InteractionEventDialogContext).interactionEventDialogData;
+    const { getValues } = useFormContext();
+    const { placeSubType } = getValues();
 
     return (
         <>
         {
             placeSubType === placeTypesCodesHierarchy.medical.subTypesCodes.hospital ?
-                <HospitalEventForm/>
+                <HospitalEventForm />
             : 
-                <DefaultPlaceEventForm/>
+                <DefaultPlaceEventForm />
         }
         </>
     );

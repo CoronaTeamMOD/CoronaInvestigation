@@ -1,12 +1,11 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useContext } from 'react';
-import { useForm } from "react-hook-form";
+import { Controller, useFormContext } from 'react-hook-form';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
 import ContactType from 'models/enums/ContactType';
 import FormInput from 'commons/FormInput/FormInput';
-import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactFormStyles';
@@ -21,6 +20,7 @@ const contactTypeField: string = 'סוג מגע';
 const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
 
 const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
+    const { control, errors, setError, clearErrors} = useFormContext();
 
     const { updatedContactIndex } = props;
 
@@ -30,7 +30,6 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
     const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
     const { contacts } = interactionEventDialogData;
     const contact = contacts[updatedContactIndex];
-    const { extraInfo, contactType, lastName, firstName, phoneNumber, id } = contact;
 
     React.useEffect(() => {
         onChange(ContactType.TIGHT, InteractionEventContactFields.CONTACT_TYPE);
@@ -45,60 +44,60 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
     const onChange = (newValue: any, updatedField: InteractionEventContactFields) =>
         updateContacts({ ...contact, [updatedField]: newValue });
 
-    const { errors, setError, clearErrors } = useForm();
-
     return (
         <div className={classes.addContactFields} key='addContactFields'>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonFirstName}>
-                        <AlphanumericTextField
-                            errors={errors}
-                            setError={setError}
-                            clearErrors={clearErrors}
+                        <Controller 
                             name={InteractionEventContactFields.FIRST_NAME}
-                            key='contactedPersonFirstName'
-                            className={classes.newContactField}
-                            value={firstName}
-                            onChange={newValue => onChange(newValue, InteractionEventContactFields.FIRST_NAME)}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    name={InteractionEventContactFields.FIRST_NAME}
+                                    key='contactedPersonFirstName'
+                                    value={props.value}
+                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    className={classes.newContactField}
+                                />
+                            )}
                         />
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonLastName}>
-                        <AlphanumericTextField
-                            errors={errors}
-                            setError={setError}
-                            clearErrors={clearErrors}
+                        <Controller 
                             name={InteractionEventContactFields.LAST_NAME}
-                            key='contactedPersonLastName'
-                            className={classes.newContactField}
-                            value={lastName}
-                            onChange={newValue => onChange(newValue, InteractionEventContactFields.LAST_NAME)}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    name={InteractionEventContactFields.LAST_NAME}
+                                    key='contactedPersonLastName'
+                                    value={props.value}
+                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    className={classes.newContactField}
+                                />
+                            )}
                         />
+                        
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonPhone}>
-                        <PhoneNumberTextField id='contactedPersonPhone' key='contactedPersonPhone'
-                            required={firstName.length > 0}
-                            className={classes.newContactField}
-                            value={phoneNumber.number}
-                            isValid={phoneNumber.isValid}
-                            setIsValid={isValid => onChange(
-                                {
-                                    ...phoneNumber,
-                                    isValid: isValid
-                                },
-                                InteractionEventContactFields.PHONE_NUMBER
-                            )
-                            }
-                            onChange={event => onChange(
-                                {
-                                    ...phoneNumber,
-                                    number: event.target.value,
-                                },
-                                InteractionEventContactFields.PHONE_NUMBER
+                        <Controller 
+                            name={InteractionEventContactFields.PHONE_NUMBER}
+                            control={control}
+                            render={(props) => (
+                                <TextField 
+                                    value={props.value}
+                                    onChange={event => props.onChange(event.target.value as string)}
+                                />
                             )}
                         />
                     </FormInput>
@@ -107,46 +106,69 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonID}>
-                        <AlphanumericTextField
-                            errors={errors}
-                            setError={setError}
-                            clearErrors={clearErrors}
+                        <Controller 
                             name={InteractionEventContactFields.ID}
-                            className={classes.newContactField}
-                            value={id}
-                            onChange={newValue => onChange(newValue, InteractionEventContactFields.ID)}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    name={InteractionEventContactFields.ID}
+                                    value={props.value}
+                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    className={classes.newContactField}
+                                />
+                            )}
                         />
+                        
                     </FormInput>
                 </Grid>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactTypeField}>
                         <FormControl fullWidth>
                             <InputLabel>סוג מגע</InputLabel>
-                            <Select
-                                test-id={'contactType'}
-                                label='סוג מגע'
-                                value={contactType}
-                                onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}
-                            >
-                                {
-                                    Object.values(ContactType).map((currentContactType) => (
-                                        <MenuItem key={currentContactType} value={currentContactType}>{currentContactType}</MenuItem>
-                                    ))
-                                }
-                            </Select>
+                            <Controller 
+                                name={InteractionEventContactFields.CONTACT_TYPE}
+                                control={control}
+                                render={(props) => (
+                                    <Select
+                                        test-id='contactType'
+                                        value={props.value}
+                                        onChange={event => props.onChange(event.target.value as string)}
+                                        label='סוג מגע'  
+                                    >
+                                        {
+                                            Object.values(ContactType).map((currentContactType) => (
+                                                <MenuItem  key={currentContactType} value={currentContactType}>
+                                                    {currentContactType}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            />
                         </FormControl>
                     </FormInput>
                 </Grid>
             </Grid>
             <FormInput fieldName={contactTypeMoreDetails}>
-                <AlphanumericTextField className={classes.moreContactDetails}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
+                <Controller 
                     name={InteractionEventContactFields.EXTRA_INFO}
-                    value={extraInfo}
-                    onChange={newValue => onChange(newValue, InteractionEventContactFields.EXTRA_INFO)}
+                    control={control}
+                    render={(props) => (
+                        <AlphanumericTextField 
+                            name={InteractionEventContactFields.EXTRA_INFO}
+                            value={props.value}
+                            onChange={(newValue: string) => props.onChange(newValue as string)}
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}   
+                            className={classes.moreContactDetails}
+                        />
+                    )}
                 />
+                
             </FormInput>
         </div>
     );
