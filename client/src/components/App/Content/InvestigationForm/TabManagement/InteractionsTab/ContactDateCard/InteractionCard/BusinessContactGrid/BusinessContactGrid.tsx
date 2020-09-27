@@ -26,11 +26,11 @@ const BusinessContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </Grid>
                 }
                 {
-                    (interaction.contactPersonPhoneNumber && interaction.contactPersonPhoneNumber.number) &&
+                    (interaction.contactPersonPhoneNumber && interaction.contactPersonPhoneNumber) &&
                     <Grid item xs={6}>
                         <FormInput fieldName={businessContactNumField}>
                             <Typography variant='caption'>
-                                {interaction.contactPersonPhoneNumber.number}
+                                {interaction.contactPersonPhoneNumber}
                             </Typography>
                         </FormInput>
                     </Grid>
