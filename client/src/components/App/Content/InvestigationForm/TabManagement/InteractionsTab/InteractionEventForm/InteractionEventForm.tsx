@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
@@ -31,7 +31,7 @@ import InteractionEventDialogFields from '../InteractionsEventDialogContext/Inte
 export const defaultContact: Contact = {
   firstName: "",
   lastName: "",
-  phoneNumber: { number: "", isValid: true },
+  phoneNumber: "",
   id: "",
   contactType: "",
 };
@@ -45,20 +45,24 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     mode: "onBlur",
     resolver: yupResolver(schema)
   });
+
   console.log(methods.getValues());
   console.log(methods.errors);
-  const formValues = methods.getValues();
+
+  const formData = methods.getValues();
+  const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
+  const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
+
+  console.log(placeType)
   const {
     interactionEventDialogData,
     setInteractionEventDialogData,
   } = useContext(InteractionEventDialogContext);
   const {
-    placeType,
     startTime,
     endTime,
     externalizationApproval,
     contacts,
-    placeSubType,
     id,
     investigationId,
   } = interactionEventDialogData;
@@ -93,36 +97,6 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       contacts: updatedContacts,
     });
   };
-
-  const onPlaceTypeChange = (newPlaceType: string) => {
-    setInteractionEventDialogData({
-      ...initialDialogData(startTime, endTime, contacts, investigationId),
-      id,
-      placeType: newPlaceType,
-      externalizationApproval,
-    });
-  };
-
-  const placeNameByPlaceType = (placeSubTypeDispalyName?: string) => {
-    if (placeType === transportation.code && placeSubTypeDispalyName) {
-      return `${placeType} ${placeSubTypeDispalyName}`
-    }
-    return undefined;
-  }
-
-  const onPlaceSubTypeChange = (
-    newPlaceSubType: number,
-    placeSubTypeDispalyName?: string
-  ) => {
-    setInteractionEventDialogData({
-      ...initialDialogData(startTime, endTime, contacts, investigationId),
-      id,
-      placeType,
-      placeSubType: newPlaceSubType,
-      externalizationApproval,
-      placeName: placeNameByPlaceType(placeSubTypeDispalyName)
-    });
-  };
   
   const handleTimeChange = (currentTime : Date, interactionDate : Date, fieldName: string) => {
     if(currentTime) {
@@ -145,10 +119,11 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
       <form id="interactionEventForm" onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid className={formClasses.form} container justify="flex-start">
           <PlacesTypesAndSubTypes
+            control={methods.control}
+            placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
+            placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
             placeType={placeType}
             placeSubType={placeSubType}
-            onPlaceTypeChange={onPlaceTypeChange}
-            onPlaceSubTypeChange={onPlaceSubTypeChange}
           />
           {placeType === privateHouse.code && (
             <Collapse in={placeType === privateHouse.code}>
@@ -162,17 +137,17 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
           )}
           {placeType === transportation.code && (
             <Collapse in={placeType === transportation.code}>
-              <TransportationEventForm />
+              <TransportationEventForm placeSubType={placeSubType} />
             </Collapse>
           )}
           {placeType === school.code && (
             <Collapse in={placeType === school.code}>
-              <SchoolEventForm />
+              <SchoolEventForm placeSubType={placeSubType} />
             </Collapse>
           )}
           {placeType === medical.code && (
             <Collapse in={placeType === medical.code}>
-              <MedicalLocationForm />
+              <MedicalLocationForm placeSubType={placeSubType} />
             </Collapse>
           )}
           {(placeType === religion.code || placeType === geriatric.code) && (
@@ -182,7 +157,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
           )}
           {placeType === otherPublicPlaces.code && (
             <Collapse in={placeType === otherPublicPlaces.code}>
-              <OtherPublicLocationForm />
+              <OtherPublicLocationForm placeSubType={placeSubType} />
             </Collapse>
           )}
           <Grid className={formClasses.formRow} container justify="flex-start">
@@ -196,7 +171,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                       test-id="contactLocationStartTime"
                       value={props.value}
                       onChange={(newTime: Date) => handleTimeChange(newTime, 
-                                                                    formValues[InteractionEventDialogFields.START_TIME],
+                                                                    formData[InteractionEventDialogFields.START_TIME],
                                                                     InteractionEventDialogFields.START_TIME)}
                       required
                       labelText="משעה"
@@ -215,7 +190,7 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
                       test-id="contactLocationEndTime"
                       value={props.value}
                       onChange={(newTime:Date) => handleTimeChange(newTime, 
-                                                                   formValues[InteractionEventDialogFields.END_TIME],
+                                                                   formData[InteractionEventDialogFields.END_TIME],
                                                                    InteractionEventDialogFields.END_TIME)}
                       required
                       labelText="עד שעה"
