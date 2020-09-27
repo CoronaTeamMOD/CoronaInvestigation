@@ -28,7 +28,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.BUS_LINE}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -46,7 +46,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.BUS_COMPANY}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -93,7 +93,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.BOARDING_STATION}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -142,7 +142,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.END_STATION}                               
+                                    name={props.name}                               
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
