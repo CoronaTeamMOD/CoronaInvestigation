@@ -29,7 +29,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.FLIGHT_NUM}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -48,7 +48,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.AIR_LINE}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -96,7 +96,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.FLIGHT_ORIGIN_CITY}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -115,7 +115,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.FLIGHT_ORIGIN_AIRPORT}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -163,7 +163,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.FLIGHT_DESTINATION_CITY}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -182,7 +182,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.FLIGHT_DESTINATION_AIRPORT}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}

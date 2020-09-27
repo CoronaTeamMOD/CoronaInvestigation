@@ -56,7 +56,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.BOARDING_STATION}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue : string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -103,7 +103,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.END_STATION}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: String) => props.onChange(newValue as string)}
                                     errors={errors}

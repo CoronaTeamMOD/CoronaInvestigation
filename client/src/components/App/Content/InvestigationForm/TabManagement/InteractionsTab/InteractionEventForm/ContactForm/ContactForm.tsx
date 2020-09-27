@@ -38,7 +38,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
+                                    name={props.name}
                                     key='contactedPersonFirstName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
@@ -58,7 +58,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
+                                    name={props.name}
                                     key='contactedPersonLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
@@ -95,7 +95,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}
@@ -143,7 +143,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                     control={control}
                     render={(props) => (
                         <AlphanumericTextField 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
+                            name={props.name}
                             value={props.value}
                             onChange={(newValue: string) => props.onChange(newValue as string)}
                             errors={errors}

@@ -55,7 +55,7 @@ const SchoolEventForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Elemen
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.PLACE_NAME}
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     errors={errors}

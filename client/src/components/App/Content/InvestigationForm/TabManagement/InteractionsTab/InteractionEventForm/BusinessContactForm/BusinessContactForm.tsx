@@ -29,7 +29,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
+                                    name={props.name}
                                     test-id='businessContactFirstName'
                                     value={props.value ? props.value : null}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
@@ -48,7 +48,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
+                                    name={props.name}
                                     test-id='businessContactLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
