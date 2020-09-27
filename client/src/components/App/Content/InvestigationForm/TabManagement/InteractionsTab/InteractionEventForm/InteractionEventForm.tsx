@@ -49,9 +49,9 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const addContactButton: string = "הוסף מגע";
 const { schema } = useSchema();
 
-const InteractionEventForm: React.FC = (): JSX.Element => {
+const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.Element => {
   const methods = useForm({
-    defaultValues: initialDialogData( new Date(), new Date(), [], -1),
+    defaultValues: intractionData ? intractionData : initialDialogData( new Date(), new Date(), [], -1),
     mode: "onBlur",
     resolver: yupResolver(schema)
   });
@@ -228,5 +228,9 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     </>
   );
 };
+
+interface Props {
+  intractionData?: InteractionEventDialogData;
+}
 
 export default InteractionEventForm;

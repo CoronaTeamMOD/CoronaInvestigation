@@ -46,11 +46,9 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
-            <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
                     <InteractionEventForm />
                 </DialogContent>
-            </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
                 <Button
                     test-id='cancelNewContactLocation'
@@ -63,7 +61,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                     form="interactionEventForm"
                     disabled={shouldDisableSubmitButton()}
                     test-id='createContact'
-                    onClick={() => onConfirm()}>
+                    // onClick={() => onConfirm()}
+                >
                     צור מקום/מגע
                 </PrimaryButton>
             </DialogActions>
