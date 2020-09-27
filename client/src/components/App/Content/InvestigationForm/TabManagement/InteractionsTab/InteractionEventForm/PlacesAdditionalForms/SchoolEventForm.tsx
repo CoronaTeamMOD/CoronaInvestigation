@@ -31,10 +31,8 @@ export const highSchoolGrades = [
 
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
-const SchoolEventForm : React.FC = () : JSX.Element => {
-    const { control, errors, setError, clearErrors, getValues, setValue} = useFormContext();
-    const { placeSubType } = getValues();
-    
+const SchoolEventForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Element => {
+    const { control, errors, setError, clearErrors, setValue} = useFormContext();    
     const formClasses = useFormStyles();
     
     const [grades, setGrades] = useState<string[]>([]);
@@ -104,5 +102,9 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
         </>
     );
 };
+
+interface Props {
+    placeSubType: number;
+}
 
 export default SchoolEventForm;
