@@ -1,10 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import React from 'react';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Divider, IconButton} from '@material-ui/core';
 
 import Contact from 'models/Contact';
+import { initAddress } from 'models/Address';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Toggle from 'commons/Toggle/Toggle';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
@@ -19,10 +21,6 @@ import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/Schoo
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
-import {
-  InteractionEventDialogContext,
-  initialDialogData,
-} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
 import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 import useSchema from './useSchema';
@@ -36,6 +34,18 @@ export const defaultContact: Contact = {
   contactType: "",
 };
 
+const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
+  placeType: '',
+  placeSubType: -1,
+  investigationId,
+  locationAddress: initAddress,
+  startTime,
+  endTime,
+  externalizationApproval: false,
+  contacts,
+  contactPersonPhoneNumber: "",
+})
+
 const addContactButton: string = "הוסף מגע";
 const { schema } = useSchema();
 
@@ -47,29 +57,15 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
   });
 
   console.log(methods.getValues());
-  console.log(methods.errors);
 
   const formData = methods.getValues();
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
-
-  console.log(placeType)
-  const {
-    interactionEventDialogData,
-    setInteractionEventDialogData,
-  } = useContext(InteractionEventDialogContext);
-  const {
-    startTime,
-    endTime,
-    externalizationApproval,
-    contacts,
-    id,
-    investigationId,
-  } = interactionEventDialogData;
+  const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
+  const contacts = fields;
 
   const classes = useStyles();
   const formClasses = useFormStyles();
-  const [canAddContact, setCanAddContact] = useState<boolean>(false);
 
   const {
     geriatric,
@@ -81,22 +77,6 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
     religion,
     transportation,
   } = placeTypesCodesHierarchy;
-
-  React.useEffect(() => {
-    const hasInvalidContact: boolean = contacts.some(
-      (contact) =>
-        !contact.firstName || !contact.lastName || !contact.phoneNumber
-    );
-    setCanAddContact(!hasInvalidContact);
-  }, [contacts]);
-
-  const onContactAdd = () => {
-    const updatedContacts = [...contacts, { ...defaultContact }];
-    setInteractionEventDialogData({
-      ...interactionEventDialogData,
-      contacts: updatedContacts,
-    });
-  };
   
   const handleTimeChange = (currentTime : Date, interactionDate : Date, fieldName: string) => {
     if(currentTime) {
@@ -223,16 +203,15 @@ const InteractionEventForm: React.FC = (): JSX.Element => {
           className={formClasses.form + " " + classes.spacedOutForm}
         >
           <div className={classes.newContactFieldsContainer}>
-            {contacts.map((contact: Contact, index: number) => (
-              <ContactForm updatedContactIndex={index} />
+            {contacts.map((contact, index: number) => (
+              <ContactForm updatedContactIndex={index}/>
             ))}
             <Grid item>
               <IconButton
                 test-id="addContact"
-                onClick={onContactAdd}
-                disabled={!canAddContact}
+                onClick={() => append(defaultContact)}
               >
-                <AddCircleIcon color={!canAddContact ? "disabled" : "primary"} />
+                <AddCircleIcon color="primary" />
               </IconButton>
               <Typography
                 variant="caption"
