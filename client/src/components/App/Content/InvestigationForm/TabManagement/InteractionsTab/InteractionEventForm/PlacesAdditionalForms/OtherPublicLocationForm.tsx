@@ -20,9 +20,8 @@ const wideAreas = [
     beach
 ]
 
-const OtherPublicLocationForm : React.FC = () : JSX.Element => {
-    const { control, errors, setError, clearErrors, getValues} = useFormContext();
-    const { placeSubType } = getValues();
+const OtherPublicLocationForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Element => {
+    const { control, errors, setError, clearErrors} = useFormContext();
 
     const isWideArea : boolean = wideAreas.includes(placeSubType);
     
@@ -53,5 +52,9 @@ const OtherPublicLocationForm : React.FC = () : JSX.Element => {
         </>
     );
 };
+
+interface Props {
+    placeSubType: number;
+}
 
 export default OtherPublicLocationForm;

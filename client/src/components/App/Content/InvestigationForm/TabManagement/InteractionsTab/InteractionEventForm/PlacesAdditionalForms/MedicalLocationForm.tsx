@@ -1,15 +1,11 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form'
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import HospitalEventForm from './HospitalEventForm';
 import DefaultPlaceEventForm from './DefaultPlaceEventForm';
 
-const MedicalLocationForm : React.FC = () : JSX.Element => {
-    const { getValues } = useFormContext();
-    const { placeSubType } = getValues();
-
+const MedicalLocationForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Element => {
     return (
         <>
         {
@@ -21,5 +17,9 @@ const MedicalLocationForm : React.FC = () : JSX.Element => {
         </>
     );
 };
+
+interface Props {
+    placeSubType: number;
+}
 
 export default MedicalLocationForm;
