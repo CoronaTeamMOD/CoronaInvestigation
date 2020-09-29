@@ -9,7 +9,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
-
+import { setFormState } from 'redux/Form/formActionCreators';
 import useFormStyles from 'styles/formStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
@@ -109,6 +109,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const saveExposure = (e: any, exposuresAndFlightsData: any ) => {
     e.preventDefault();
     console.log("ExposureTab");
+    setFormState(id,true);
     saveExposureAndFlightData().then(onSubmit);
     
     // saveExposuresAndFlightsData(exposuresAndFlightsData);
