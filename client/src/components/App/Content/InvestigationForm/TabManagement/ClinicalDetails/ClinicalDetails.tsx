@@ -67,7 +67,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
         is: true,
-        then: yup.array().of(yup.string()).required(),
+        then: yup.array().of(yup.string()).min(1).required(),
         otherwise: yup.array().of(yup.string())
     }
     ),
