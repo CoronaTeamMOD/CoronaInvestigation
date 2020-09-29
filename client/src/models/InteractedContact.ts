@@ -1,9 +1,10 @@
 import { Person } from './Person';
+import ContactType from './enums/ContactType';
 
 interface InteractedContact extends Person {
     id: number;
     contactDate: Date;
-    contactType: string;
+    contactType: ContactType;
     extraInfo: string;
     birthDate: Date;
     cantReachContact: boolean;

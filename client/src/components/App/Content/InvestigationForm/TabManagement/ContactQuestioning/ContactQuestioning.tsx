@@ -14,7 +14,6 @@ import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
-import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
