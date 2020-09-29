@@ -64,6 +64,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value
@@ -143,6 +144,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         }
     }, [streets])
 
+
     const savePersonalData = (e: any, personalInfoData: any | personalInfoFormData) => {
         e.preventDefault();
         axios.post('/personalDetails/updatePersonalDetails', 
@@ -156,11 +158,10 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
             });
         }) 
         schema.isValid(getValues()).then(valid=>{
-            setFormState(0,valid);
+            setFormState(investigationId, id, valid);
         })
         onSubmit();
     }
-
 
     const subOccupationsPlaceHolderByOccupation = () => {
         if (occupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
