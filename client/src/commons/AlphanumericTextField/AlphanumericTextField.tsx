@@ -1,18 +1,22 @@
-import React from "react";
-import { TextField, Tooltip } from "@material-ui/core";
-import AlphanumericTextFieldType from "./AlphanumericTextFieldTypes";
-import * as yup from "yup";
+import React from 'react';
+import { TextField, Tooltip } from '@material-ui/core';
+import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
+import * as yup from 'yup';
+import _ from 'lodash'
 
 const stringAlphanum = yup
   .string()
   .required()
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
 
+const errMessage = "השדה יכול להכיל רק אותיות ומספרים";
+
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   const value =  (props.value == null || props.value === undefined) ? "" : props.value;
   const {
     name,
     onChange,
+    onBlur,
     setError,
     clearErrors,
     errors,
@@ -24,7 +28,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   } = props;
 
   return (
-    <Tooltip open={errors.hasOwnProperty(name)} title={errors[name]?.message}>
+    <Tooltip open={_.get(errors, name)} title={_.get(errors, name)? errMessage : ""}>
       <TextField
         test-id={testId}
         required={required}
@@ -39,14 +43,13 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
           } else {
             setError(name, {
               type: "manual",
-              message: "השדה יכול להכיל רק אותיות ומספרים",
+              message: errMessage,
             });
           }
         }}
-        onBlur={() => {
-            clearErrors(name);
-        } }
-        label={label}
+        onBlur={onBlur}
+        error={_.get(errors, name)}
+        label={_.get(errors, name) ? _.get(errors, name).message : label}
         placeholder={placeholder}
         className={className}
       />

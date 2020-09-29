@@ -11,7 +11,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
+    const {setOccupations, setInsuranceCompanies, setPersonalInfoData, 
         setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
 
     const fetchPersonalInfo = () => {
@@ -22,12 +22,15 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
-                personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
-                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
+                setPersonalInfoData({
+                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                    additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    address: {...investigatedPatient.addressByAddress},
+                    city : investigatedPatient.addressByAddress.city,
+                    street : investigatedPatient.addressByAddress.street,
+                    floor : investigatedPatient.addressByAddress.floor,
+                    houseNum : investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: 
                     (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)

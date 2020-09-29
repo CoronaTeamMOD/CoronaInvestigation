@@ -1,7 +1,7 @@
 import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 import { ExposureAndFlightsDetailsAndSet } from 'commons/Contexts/ExposuresAndFlights';
 
-import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { personalInfoFormData } from 'models/Contexts/personalInfoContextData';
 
 export interface useInvestigationFormOutcome {
     confirmFinishInvestigation: (epidemiologyNumber: number) => void;
@@ -11,6 +11,6 @@ export interface useInvestigationFormOutcome {
 
 export interface useInvestigationFormParameters {
     clinicalDetailsVariables: ClinicalDetailsDataAndSet;
-    personalInfoData: personalInfoContextData;
+    personalInfoData: personalInfoFormData;
     exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet;
 }
