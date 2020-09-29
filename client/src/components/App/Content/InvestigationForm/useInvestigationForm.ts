@@ -1,12 +1,11 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
-import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
@@ -19,7 +18,6 @@ import InvestigationStatus from 'models/enums/InvestigationStatus';
 import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 
 import useStyles from './InvestigationFormStyles';
-import { defaultTab, tabs } from './TabManagement/TabManagement';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
 import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
 
@@ -31,7 +29,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
    
     let history = useHistory();
-    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
 
@@ -104,34 +101,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         });
     };
 
-    const saveCurrentTab = () => {
-        switch(currentTab.name) {
-            case(TabNames.PERSONAL_INFO): {
-                return savePersonalInfoData();
-            }
-            case(TabNames.CLINICAL_DETAILS): {
-                return saveClinicalDetails();
-            }
-            case(TabNames.EXPOSURES_AND_FLIGHTS): {
-                return saveExposureAndFlightData();
-            }
-            default: {
-                return new Promise<void>((resolve, reject) => resolve());
-            }
-        }
-    }
-
-    const handleSwitchTab = () => {
-        saveCurrentTab().then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
-        }).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
-        });
-    }
-
     const savePersonalInfoData = (): Promise<void> => {
         return axios.post('/personalDetails/updatePersonalDetails', 
         {
@@ -203,13 +172,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     }
 
     return {
-        currentTab,
-        setCurrentTab,
         confirmFinishInvestigation,
         handleInvestigationFinish,
-        handleSwitchTab,
         isButtonDisabled,
-        saveCurrentTab
     };
 };
 

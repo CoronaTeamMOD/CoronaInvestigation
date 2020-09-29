@@ -46,7 +46,7 @@ const defaultInvestigationStaticInfo = {
     userByLastUpdator: defaultUser
 }
 
-const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) => {
+const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     let history = useHistory();
     const classes = useStyles();
@@ -85,7 +85,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
                 investigatedPatientByInvestigatedPatientId={
                     investigationStaticInfo.investigatedPatientByInvestigatedPatientId
                 }
-                onExitInvestigation={onExitInvestigation}
+                currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}
                 coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
@@ -99,7 +99,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
 };
 
 interface Props {
-    onExitInvestigation: () => Promise<void>;
+    currentTab: number;
 }
 
 export default InvestigationInfoBar;
