@@ -43,6 +43,12 @@ const wasHospitilizedDateSchema = yup.date().when(
 });
 
 const schema = yup.object().shape({
+    [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
+        [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
+        [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(requiredText),
+        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText),
+        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText)
+    }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationDateSchema,
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationDateSchema,
@@ -125,10 +131,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
         }
     }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
-
-    React.useEffect(() => {
-        city !== '' ? getStreetByCity(city) : setStreetsInCity([]);
-    }, [city])
 
     React.useEffect(() => {
         if (streetsInCity.length > 0 && street === '') {
@@ -276,74 +278,126 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Autocomplete
-                        test-id='currentQuarantineCity'
-                        options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                        getOptionLabel={(option) => option.value.displayName}
-                        inputValue={isolationCityName}
-                        onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity ? selectedCity.id : '')}
-                        onInputChange={(event, selectedCityName) => {
-                            setIsolationCityName(selectedCityName);
-                            if (selectedCityName === '') {
-                                updateIsolationAddressOnCityChange('');
-                                setIsolationStreetName('');
-                            }
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                placeholder='עיר'
+                    <Controller
+                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
+                        control={control}
+                        render={(props) => (
+                            <Autocomplete
+                                test-id='currentQuarantineCity'
+                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => option? option.value.displayName : option}
+                                inputValue={isolationCityName}
+                                onChange={(event, selectedCity) => props.onChange(selectedCity? selectedCity.id : '')}
+                                onInputChange={(event, selectedCityName) => {
+                                    setIsolationCityName(selectedCityName);
+                                    if (selectedCityName === '') {
+                                        setStreetsInCity([])
+                                        setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, '');
+                                        setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                    } else {
+                                        getStreetByCity(selectedCityName);
+                                    }
+                                }}
+                                renderInput={(params) =>
+                                    <TextField
+                                        error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]? true : false}
+                                        helperText={
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY] &&
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY].message
+                                        }
+                                        {...params}
+                                        placeholder='עיר'
+                                    />
+                                }
                             />
-                        }
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        options={streetsInCity}
-                        getOptionLabel={(option) => option.displayName}
-                        inputValue={isolationStreetName}
-                        onChange={(event, selectedStreet) => updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet === null ? '' : selectedStreet.id)}
-                        onInputChange={(event, selectedStreetName) => {
-                            setIsolationStreetName(selectedStreetName);
-                            if (selectedStreetName === '') {
-                                updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
-                            }
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                test-id='currentQuarantineStreet'
-                                {...params}
-                                placeholder='רחוב'
-                            />
-                        }
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <AlphanumericTextField
-                        testId='currentQuarantineHomeNumber'
-                        name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
-                        value={context.clinicalDetailsData.isolationAddress.houseNum}
-                        onChange={(newValue: string) => (
-                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, newValue)
                         )}
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        placeholder='מספר הבית'
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <Controller
+                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`}
+                        control={control}
+                        render={(props) => (
+                            <Autocomplete
+                                options={streetsInCity}
+                                getOptionLabel={(option) => option? option.displayName : option}
+                                inputValue={isolationStreetName}
+                                onChange={(event, selectedStreet) => props.onChange(selectedStreet? selectedStreet.id : '')}
+                                onInputChange={(event, selectedStreetName) => {
+                                    setIsolationStreetName(selectedStreetName);
+                                    if (selectedStreetName === '') {
+                                        setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                    }
+                                }}
+                                renderInput={(params) =>
+                                    <TextField
+                                        test-id='currentQuarantineStreet'
+                                        error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]? true : false}
+                                        helperText={
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] && 
+                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
+                                        }
+                                        {...params}
+                                        placeholder='רחוב'
+                                    />
+                                }
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <Controller
+                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]? true : false}
+                                helperText={
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] && 
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
+                                }
+                                testId='currentQuarantineHomeNumber'
+                                name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
+                                value={props.value}
+                                onChange={(newValue: string) => (
+                                    props.onChange(newValue)
+                                )}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                placeholder='מספר הבית'
+                            />
+                        )}
                     />
                 </Grid>
                 <Grid item xs={2} className={classes.cancelWhiteSpace}>
-                    <AlphanumericTextField
-                        testId='currentQuarantineFloor'
-                        name={ClinicalDetailsFields.ISOLATION_FLOOR}
-                        value={context.clinicalDetailsData.isolationAddress.floor}
-                        onChange={(newValue: string) => (
-                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, newValue)
+                    <Controller
+                        name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]? true : false}
+                                helperText={
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] && 
+                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
+                                }
+                                testId='currentQuarantineFloor'
+                                name={ClinicalDetailsFields.ISOLATION_FLOOR}
+                                value={props.value}
+                                onChange={(newValue: string) => (
+                                    props.onChange(newValue)
+                                )}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                placeholder='קומה'
+                            />
                         )}
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        placeholder='קומה' />
+                    />
                 </Grid>
             </Grid>
             <IsolationProblemFields
