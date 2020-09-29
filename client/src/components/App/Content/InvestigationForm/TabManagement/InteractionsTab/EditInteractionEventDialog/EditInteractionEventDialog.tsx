@@ -6,9 +6,6 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import useStyles from './EditInteractionEventDialogStyles';
 import useEditInteractionEventDialog from './useEditInteractionEventDialog';
-import {
-    InteractionEventDialogProvider, InteractionsEventDialogDataAndSet
-} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'עריכת מקום/מגע';
@@ -18,43 +15,23 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     
     const classes = useStyles();
     
-    const [defaultPlaceName, setDefaultPlaceName] = useState<string>('');
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
 
     const canConfirm = React.useMemo<boolean>(() => true, []);
 
     const { editInteractionEvent, shouldDisableSubmitButton } = useEditInteractionEventDialog({closeDialog, updateInteraction, canConfirm, interactionEventDialogData});
 
-    const { placeType, placeSubType } = interactionEventDialogData;
-    
-    React.useEffect(() => {
-        if (placeType === eventToEdit.placeType && placeSubType === eventToEdit.placeSubType) {
-            setInteractionEventDialogData(eventToEdit)
-        } 
-    }, [placeType, placeSubType])
+    const onConfirm = () => editInteractionEvent(interactionEventDialogData)
 
-    const interactionEventDialogDataVariables: InteractionsEventDialogDataAndSet = React.useMemo(() => ({
-        interactionEventDialogData,
-        setInteractionEventDialogData,
-    }),
-        [interactionEventDialogData, setInteractionEventDialogData]);
-
-    const onConfirm = () => editInteractionEvent(
-        {...interactionEventDialogData, 
-            placeName: interactionEventDialogData.placeName || defaultPlaceName
-        }
-    );
 
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
-            <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
+                    <InteractionEventForm intractionData={eventToEdit} />
                 </DialogContent>
-            </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
                 <Button 
                     onClick={() => closeDialog()}
@@ -62,10 +39,13 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                     className={classes.cancelButton}>
                     בטל
                 </Button>
-                <PrimaryButton 
+                <PrimaryButton
+                    form="interactionEventForm"
+                    type="submit"
                     disabled={shouldDisableSubmitButton()}
                     id='createContact'
-                    onClick={() => onConfirm()}>
+                    // onClick={() => onConfirm()}
+                >
                     שמור שינויים
                 </PrimaryButton>
             </DialogActions>
