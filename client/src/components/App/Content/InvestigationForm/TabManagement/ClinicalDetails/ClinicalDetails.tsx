@@ -14,6 +14,7 @@ import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -21,7 +22,7 @@ import useClinicalDetails from './useClinicalDetails';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 export const otherSymptomFieldName = 'אחר';
 
-const ClinicalDetails: React.FC = (): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const { errors, setError, clearErrors } = useForm({});
     const context = React.useContext(clinicalDetailsDataContext);
@@ -37,6 +38,9 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
@@ -87,8 +91,63 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
+    const saveClinicalDetails = (e: any, clinicalDetailsData : any | ClinicalDetailsData) => {
+        e.preventDefault();
+        console.log("ClinicalTab");
+        onSubmit();
+        return true;
+        // const clinicalDetails = ({
+        //     ...clinicalDetailsData,
+        //     isolationAddress: clinicalDetailsData.isolationAddress.city === '' ? 
+        //                       null : clinicalDetailsData.isolationAddress,
+        //     investigatedPatientId,
+        //     epidemiologyNumber
+        // });
+
+        // if (clinicalDetails.symptoms.includes(otherSymptomFieldName)) {
+        //     clinicalDetails.symptoms = clinicalDetails.symptoms.filter(symptom => symptom !== otherSymptomFieldName)
+        // } else {
+        //     clinicalDetails.otherSymptomsMoreInfo = '';
+        // }
+
+        // if (clinicalDetails.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
+        //     clinicalDetails.backgroundDeseases = clinicalDetails.backgroundDeseases.filter(symptom => symptom !== otherBackgroundDiseaseFieldName)
+        // } else {
+        //     clinicalDetails.otherBackgroundDiseasesMoreInfo = '';
+        // }
+
+        // if (!clinicalDetails.wasHospitalized) {
+        //     clinicalDetails.hospital = '';
+        //     clinicalDetails.hospitalizationStartDate = null;
+        //     clinicalDetails.hospitalizationEndDate = null;
+        // }
+
+        // if (!clinicalDetails.isInIsolation) {
+        //     clinicalDetails.isolationStartDate = null;
+        //     clinicalDetails.isolationEndDate = null;
+        // }
+
+        // if (!clinicalDetails.doesHaveSymptoms) {
+        //     clinicalDetails.symptoms = [];
+        //     clinicalDetails.symptomsStartDate = null;
+        // }
+
+        // if (!clinicalDetails.doesHaveBackgroundDiseases) {
+        //     clinicalDetails.backgroundDeseases = [];
+        // }
+
+        // axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails })).catch(() => {
+        //     Swal.fire({
+        //         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        //         icon: 'error'
+        //     });
+        // })
+    }
+
     return (
         <div className={classes.form}>
+                        <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e,{ name: "itay" })}>
+
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
@@ -109,7 +168,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.dates}>
                     <div className={classes.spacedDates}>
                         <DatePick
-                            required
                             testId='quarantinedFromDate'
                             labelText='מתאריך'
                             value={context.clinicalDetailsData.isolationStartDate}
@@ -122,7 +180,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         />
                     </div>
                     <DatePick
-                        required
                         testId='quarantinedUntilDate'
                         labelText='עד'
                         value={context.clinicalDetailsData.isolationEndDate}
@@ -269,7 +326,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         {
                             !isUnkonwnDateChecked &&
                             <DatePick
-                                required={!isUnkonwnDateChecked}
                                 label={'תאריך התחלת סימפטומים'}
                                 testId='symptomsStartDate'
                                 value={context.clinicalDetailsData.symptomsStartDate}
@@ -324,7 +380,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     onChange={(newValue : string) =>
                                         updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
                                     }
-                                    required
                                     label='סימפטום'
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -384,7 +439,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 onChange={(newValue: string) =>
                                     updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
                                 }
-                                required
                                 setError={setError}
                                 clearErrors={clearErrors}
                                 errors={errors}
@@ -422,7 +476,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                             <AlphanumericTextField
                                 className={classes.hospitalInput}
                                 name={ClinicalDetailsFields.HOSPITAL}
-                                required
                                 label='בית חולים'
                                 test-id='hospitalInput'
                                 setError={setError}
@@ -437,7 +490,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         <div className={classes.hospitalizationDates}>
                             <div className={classes.spacedDates}>
                                 <DatePick
-                                    required
                                     label='מתאריך'
                                     test-id='wasHospitalizedFromDate'
                                     labelText='מתאריך'
@@ -451,7 +503,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 />
                             </div>
                             <DatePick
-                                required
                                 label='עד'
                                 testId='wasHospitalizedUntilDate'
                                 labelText='עד'
@@ -484,8 +535,14 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     : <></>
                 }
             </Grid>
+            </form>
         </div>
     );
 };
+
+interface Props {
+    id: number,
+    onSubmit: any,
+}
 
 export default ClinicalDetails;
