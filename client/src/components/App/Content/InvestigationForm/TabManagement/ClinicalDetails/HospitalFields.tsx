@@ -30,11 +30,21 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={10}>
-                    <Toggle
-                        test-id='wasHospitalized'
-                        value={context.clinicalDetailsData.wasHospitalized}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
-                    />
+                    <Controller
+                        name={ClinicalDetailsFields.WAS_HOPITALIZED}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='wasHospitalized'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if (value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />
+                        )}
+                    />  
                 </Grid>
                 <Grid item xs={4}>
                     <Collapse in={context.clinicalDetailsData.wasHospitalized}>
@@ -57,32 +67,44 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                         </div>
                         <div className={classes.hospitalizationDates}>
                             <div className={classes.spacedDates}>
-                                <DatePick
-                                    required
-                                    label='מתאריך'
-                                    test-id='wasHospitalizedFromDate'
-                                    labelText='מתאריך'
-                                    value={context.clinicalDetailsData.hospitalizationStartDate}
-                                    onChange={(newDate: Date) =>
-                                        updateClinicalDetails(
-                                            ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
-                                            newDate
-                                        )
-                                    }
+                                <Controller
+                                    name={ClinicalDetailsFields.HOSPITALIZATION_START_DATE}
+                                    control={control}
+                                    render={(props) => (
+                                        <DatePick
+                                            required
+                                            label='מתאריך'
+                                            test-id='wasHospitalizedFromDate'
+                                            labelText='מתאריך'
+                                            value={props.value}
+                                            onBlur={props.onBlur}
+                                            onChange={(newDate: Date) =>
+                                                props.onChange(newDate)
+                                            }
+                                            error={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? true : false}
+                                            errorText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : null}
+                                        />
+                                    )}
                                 />
                             </div>
-                            <DatePick
-                                required
-                                label='עד'
-                                test-id='wasHospitalizedUntilDate'
-                                labelText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
-                                        newDate
-                                    )
-                                }
+                            <Controller
+                                name={ClinicalDetailsFields.HOSPITALIZATION_END_DATE}
+                                control={control}
+                                render={(props) => (
+                                    <DatePick
+                                        required
+                                        label='עד'
+                                        test-id='wasHospitalizedUntilDate'
+                                        labelText='עד'
+                                        value={props.value}
+                                        onBlur={props.onBlur}
+                                        onChange={(newDate: Date) =>
+                                            props.onChange(newDate)
+                                        }
+                                        error={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? true : false}
+                                        errorText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : null}
+                                    />
+                                )}
                             />
                         </div>
                     </Collapse>
