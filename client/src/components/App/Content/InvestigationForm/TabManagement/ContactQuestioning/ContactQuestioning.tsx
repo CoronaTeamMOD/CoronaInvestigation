@@ -59,7 +59,6 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     };
     
     const saveContact = (interactedContact: InteractedContact) => {
-        console.log(interactedContact);
     };
 
     return (
@@ -213,7 +212,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <Avatar className={classes.avatar}>2</Avatar>
                                                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                                                 </Grid>
-                                                <Grid container direction='row'>
+                                                <Grid container>
                                                     <Grid item xs={6}>
                                                         <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
                                                     </Grid>
