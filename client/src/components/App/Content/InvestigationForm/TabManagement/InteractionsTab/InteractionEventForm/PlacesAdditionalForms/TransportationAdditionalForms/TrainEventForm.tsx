@@ -1,8 +1,8 @@
-import { Grid, TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
+import { useForm } from 'react-hook-form';
 import { Autocomplete } from '@material-ui/lab';
-import { useForm } from "react-hook-form";
+import { Grid, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
@@ -11,27 +11,29 @@ import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 
+import useStyles from './TransportationFormsStyles';
 import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const TrainEventForm : React.FC = () : JSX.Element => {
-    
+
     const formClasses = useFormStyles();
-    
+    const classes = useStyles();
+
     const cities : Map<string, City> = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    
+
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
     const { cityOrigin, boardingStation, cityDestination, endStation } = interactionEventDialogData;
 
     const onChange = (value: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: value});
-    
+
     const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='עיר מוצא'>
                         <Autocomplete
                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
@@ -48,15 +50,16 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
-                                    className={formClasses.autocomplete}
+                                    className={classes.mainTextField}
                                 />
                             }
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת עליה'>
+                <Grid item xs={2} className={classes.secondaryTextItem}>
+                    <FormInput fieldName='תחנת עליה' className={classes.secondaryTextLabel}>
                         <AlphanumericTextField
+                            className={classes.secondaryTextItem}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}
@@ -67,7 +70,7 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                 </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='עיר יעד'>
                         <Autocomplete
                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
@@ -84,15 +87,16 @@ const TrainEventForm : React.FC = () : JSX.Element => {
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
-                                    className={formClasses.autocomplete}
+                                    className={classes.mainTextField}
                                 />
                             }
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת ירידה'>
+                <Grid item xs={2} className={classes.secondaryTextItem}>
+                    <FormInput fieldName='תחנת ירידה' className={classes.secondaryTextLabel}>
                         <AlphanumericTextField
+                            className={classes.secondaryTextItem}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}

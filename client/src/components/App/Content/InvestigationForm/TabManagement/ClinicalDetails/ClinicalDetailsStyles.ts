@@ -33,6 +33,11 @@ export const useStyles = makeStyles({
         marginBottom: '0.5vw',
         alignItems: 'center',
     },
+    hospitalizationDates: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginLeft: '10vw',
+    },
     smallGrid: {
         width: '60vw'
     },
@@ -60,11 +65,8 @@ export const useStyles = makeStyles({
     verticalSpacing: {
         marginBottom: '1vh',
     },
-    hospitalizedDates: {
-        '@media screen and (min-width: 1870px)': {
-            width: '14vw',
-        },
-        width: '26vw',
+    hospitalInput: {
+      marginLeft: '6vw',
     },
     symptomsAndDiseasesCheckbox: {
         'media screen and (max-width: 1500px)': {
