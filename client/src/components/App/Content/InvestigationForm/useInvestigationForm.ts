@@ -69,7 +69,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
                 context.interactedContacts.push(
                     {
-                        id: contact.personByPersonInfo.id,
+                        id: contact.id,
                         firstName: contact.personByPersonInfo.firstName,
                         lastName: contact.personByPersonInfo.lastName,
                         phoneNumber: contact.personByPersonInfo.phoneNumber,

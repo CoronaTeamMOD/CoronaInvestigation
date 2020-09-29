@@ -5,7 +5,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
   allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
     nodes {
       personByPersonInfo {
-        id
         firstName
         lastName
         phoneNumber
@@ -18,6 +17,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       contactEventByContactEvent {
         startTime
       }
+      id
       doesNeedIsolation
       extraInfo
       relationship
@@ -32,6 +32,17 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesLiveWithConfirmed
       cantReachContact
       doesWorkWithCrowd
+    }
+  }
+}
+`;
+
+export const GET_ALL_FAMILY_RELATIONSHIPS = gql`
+query getAllFamilyRelationships {
+  allFamilyRelationships {
+    nodes {
+      id
+      displayName
     }
   }
 }

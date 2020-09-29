@@ -5,9 +5,10 @@ import { ExpandMore } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { differenceInYears, format } from 'date-fns';
 import { Accordion, AccordionDetails, AccordionSummary, Avatar, Checkbox, Divider, FormControl,
-         FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
+         FormControlLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
+import axios from 'Utils/axios';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
@@ -28,10 +29,21 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
 
     const { errors, setError, clearErrors } = useForm({});
 
+    React.useEffect(() => {
+        getAllRelationships();
+    },[]);
+
+    const getAllRelationships = () => {
+        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
+            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+        });
+    };
+
     const interactedContactsState = useContext(interactedContactsContext);
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
+    const [familyRelationships, setFamilyRelationships] = React.useState<{ id: string, displayName: string }[]>();
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
@@ -200,20 +212,32 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <Avatar className={classes.avatar}>2</Avatar>
                                                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                                                 </Grid>
-                                                <Grid item>
-                                                    <FormInput fieldName='קרבה מפחתית'>
-                                                        <AlphanumericTextField
-                                                            name={InteractedContactFields.FAMILY_RELATIONSHIP}
-                                                            placeholder='קרבה מפחתית'
-                                                            value={interactedContact.familyRelationship}
-                                                            onChange={(newValue: string) =>
-                                                                updateInteractedContact(interactedContact, InteractedContactFields.FAMILY_RELATIONSHIP, newValue as string
+                                                <Grid container direction='row' alignItems='center'>
+                                                    <Grid item xs={3}>
+                                                        <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
+                                                    </Grid>
+                                                    <Grid item xs={4}>
+                                                        <FormControl>
+                                                            <Select
+                                                                name={InteractedContactFields.FAMILY_RELATIONSHIP}
+                                                                placeholder='קרבה משפחתית'
+                                                                value={interactedContact.familyRelationship}
+                                                                onChange={(event) =>
+                                                                    updateInteractedContact(interactedContact, InteractedContactFields.FAMILY_RELATIONSHIP, event.target.value
                                                                 )}
-                                                            setError={setError}
-                                                            clearErrors={clearErrors}
-                                                            errors={errors}
-                                                        />
-                                                    </FormInput>
+                                                            >
+                                                                {
+                                                                    familyRelationships?.map((familyRelationship) => (
+                                                                        <MenuItem
+                                                                            key={familyRelationship.id}
+                                                                            value={familyRelationship.id}>
+                                                                            {familyRelationship.displayName}
+                                                                        </MenuItem>
+                                                                    ))
+                                                                }
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
                                                 </Grid>
                                                 <Grid item>
                                                     <FormInput fieldName='קשר'>
