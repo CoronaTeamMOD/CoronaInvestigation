@@ -80,16 +80,17 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         gender: contact.personByPersonInfo.gender,
                         contactDate: contact.contactEventByContactEvent.startTime,
                         contactType: contact.contactType,
-                        cantReachContact: contact.cantReachContact,
+                        cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
                         extraInfo: contact.extraInfo,
                         relationship: contact.relationship,
+                        familyRelationship: contact.familyRelationship,
                         contactedPersonCity: contact.contactedPersonCity,
-                        doesFeelGood: contact.doesFeelGood,
-                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases,
-                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed,
-                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation,
                         occupation: contact.occupation,
-                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed,
+                        doesFeelGood: contact.doesFeelGood ? contact.doesFeelGood : false,
+                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases ? contact.doesHaveBackgroundDiseases : false,
+                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed ? contact.doesLiveWithConfirmed : false,
+                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation ? contact.doesNeedHelpInIsolation : false,
+                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
                     }
                 )
             });

@@ -8,6 +8,7 @@ enum InteractedContactFields {
     EXTRA_INFO = 'extraInfo',
     CANT_REACH_CONTACT = 'cantReachContact',
     RELATIONSHIP = 'relationship',
+    FAMILY_RELATIONSHIP = 'familyRelationship',
     OCCUPATION = 'occupation',
     DOES_HAVE_BACKGROUND_DISEASES = 'doesHaveBackgroundDiseases',
     CONTACTED_PERSON_CITY = 'contactedPersonCity',

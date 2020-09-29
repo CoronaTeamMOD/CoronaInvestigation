@@ -34,7 +34,7 @@ const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
 const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
-const OCCUPATION_LABEL = 'תעסוקה:';
+export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {

@@ -15,12 +15,13 @@ import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
-import { ADDITIONAL_PHONE_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import { ADDITIONAL_PHONE_LABEL, OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
@@ -31,7 +32,6 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
@@ -43,6 +43,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: boolean) => {
         const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
+    };
+    
+    const saveContact = (interactedContact: InteractedContact) => {
+        console.log(interactedContact);
     };
 
     return (
@@ -134,7 +138,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                         <Grid item xs={3}>
                                                             <AlphanumericTextField
                                                                 required
-                                                                name={'identificationNumber'}
+                                                                name={InteractedContactFields.IDENTIFICATION_NUMBER}
                                                                 placeholder='מספר תעודה'
                                                                 className={classes.idTextField}
                                                                 value={interactedContact.identificationNumber}
@@ -175,7 +179,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid item>
                                                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
                                                         <AlphanumericTextField
-                                                            name={'additionalPhoneNumber'}
+                                                            name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                                                             placeholder='הכנס טלפון:'
                                                             value={interactedContact.additionalPhoneNumber}
                                                             onChange={(newValue: string) =>
@@ -197,19 +201,24 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <Grid container>
-                                                        <Grid item xs={6}>
-                                                            <Typography variant='body2' className={classes.text}><b>קרבה מפחתית:</b></Typography>
-                                                        </Grid>
-                                                        <Grid item xs={6}>
-                                                            <TextField className={classes.textField} />
-                                                        </Grid>
-                                                    </Grid>
+                                                    <FormInput fieldName='קרבה מפחתית'>
+                                                        <AlphanumericTextField
+                                                            name={InteractedContactFields.FAMILY_RELATIONSHIP}
+                                                            placeholder='קרבה מפחתית'
+                                                            value={interactedContact.familyRelationship}
+                                                            onChange={(newValue: string) =>
+                                                                updateInteractedContact(interactedContact, InteractedContactFields.FAMILY_RELATIONSHIP, newValue as string
+                                                                )}
+                                                            setError={setError}
+                                                            clearErrors={clearErrors}
+                                                            errors={errors}
+                                                        />
+                                                    </FormInput>
                                                 </Grid>
                                                 <Grid item>
                                                     <FormInput fieldName='קשר'>
                                                         <AlphanumericTextField
-                                                            name={'relationship'}
+                                                            name={InteractedContactFields.RELATIONSHIP}
                                                             placeholder='קשר'
                                                             value={interactedContact.relationship}
                                                             onChange={(newValue: string) =>
@@ -229,17 +238,18 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                         <Grid item xs={6}>
                                                             <Autocomplete
                                                                 className={classes.autocompleteTextField}
-                                                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                                                options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
                                                                 getOptionLabel={(option) => option.value.displayName}
-                                                                inputValue={isolationCityName}
-                                                                onChange={(event, selectedCity) => {}}
-                                                                onInputChange={(event, selectedCityName) => {
-                                                                    setIsolationCityName(selectedCityName);
+                                                                inputValue={interactedContact.contactedPersonCity?.displayName}
+                                                                onChange={(event, selectedCity) => {
+                                                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.value);
                                                                 }}
                                                                 renderInput={(params) =>
                                                                     <TextField
                                                                         {...params}
+                                                                        id={InteractedContactFields.CONTACTED_PERSON_CITY}
                                                                         placeholder='עיר'
+                                                                        value={interactedContact.contactedPersonCity}
                                                                     />
                                                                 }
                                                             />
@@ -249,7 +259,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.doesNeedHelpInIsolation}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
@@ -264,25 +277,37 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2' className={classes.text}><b>האם חש בטוב?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.doesFeelGood}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_FEEL_GOOD, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2' className={classes.text}><b>האם סובל ממחלות רקע?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.doesHaveBackgroundDiseases}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2' className={classes.text}><b>האם חי באותו הבית עם המאומת?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.doesLiveWithConfirmed}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2' className={classes.text}><b>מפגש חוזר עם המאומת?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.repeatingOccuranceWithConfirmed}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
@@ -298,7 +323,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                         </Grid>
                                                         <Grid item xs={5}>
                                                             <FormControl>
-                                                                <RadioGroup value={null}>
+                                                                <RadioGroup
+                                                                    aria-label={OCCUPATION_LABEL}
+                                                                    name={OCCUPATION_LABEL}
+                                                                    value={interactedContact.occupation}>
                                                                     {
                                                                         occupations.map((occupation) => {
                                                                             return <FormControlLabel
@@ -308,7 +336,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                                                     <Radio
                                                                                         color='primary'
                                                                                         onChange={(event) => {
-                                                                                            { }
+                                                                                            updateInteractedContact(interactedContact, InteractedContactFields.OCCUPATION, event.target.value)
                                                                                         }}
                                                                                     />
                                                                                 }
@@ -325,6 +353,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                         </Grid>
                                     </Grid>
                                 </AccordionDetails>
+                                <PrimaryButton style={{marginRight: '1.5vw'}} onClick={() => saveContact(interactedContact)}>שמור מגע</PrimaryButton>
                             </Accordion>
                         </div>
                 ))
