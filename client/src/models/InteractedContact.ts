@@ -1,19 +1,12 @@
-import PhoneNumberControl from './PhoneNumberControl';
-import IdentificationTypes from './enums/IdentificationTypes';
+import { Person } from './Person';
 
-interface InteractedContact {
+interface InteractedContact extends Person {
     id: number;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
     contactDate: Date;
     contactType: boolean;
     extraInfo: string;
-    identificationType: IdentificationTypes;
-    identificationNumber: string;
-    birthDate?: Date;
+    birthDate: Date;
     cantReachContact: boolean;
-    additionalPhoneNumber: PhoneNumberControl;
     relationship: string;
 }
 

@@ -37,10 +37,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
         interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
     };
 
-    const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: any) => {
+    const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: boolean) => {
         const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
         updateInteractedContact(interactedContact, 'identificationType', newIdentificationType);
-    }
+    };
 
     return (
         <>
@@ -167,19 +167,16 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 </Grid>
                                                 <Grid item>
                                                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
-                                                        <PhoneNumberTextField
+                                                        <AlphanumericTextField
                                                             name={'additionalPhoneNumber'}
                                                             placeholder='הכנס טלפון:'
-                                                            value={interactedContact.additionalPhoneNumber?.number}
-                                                            onChange={(event) =>
-                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber', { ...interactedContact.additionalPhoneNumber, number: event.target.value }
+                                                            value={interactedContact.additionalPhoneNumber}
+                                                            onChange={(newValue: string) =>
+                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber', newValue
                                                             )}
-                                                            isValid={interactedContact.additionalPhoneNumber?.isValid as boolean}
-                                                            setIsValid={(isValid) =>
-                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber',
-                                                                    { ...interactedContact.additionalPhoneNumber, isValid }
-                                                                )
-                                                            }
+                                                            setError={()=>{}}
+                                                            clearErrors={()=>{}}
+                                                            errors={()=>{}}
                                                         />
                                                     </FormInput>
                                                 </Grid>

@@ -78,10 +78,11 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
                         identificationNumber: contact.personByPersonInfo.identificationNumber,
                         birthDate: contact.personByPersonInfo.birthDate,
-                        additionalPhoneNumber: {number: contact.personByPersonInfo.additionalPhoneNumber, isValid: contact.personByPersonInfo.additionalPhoneNumber},
+                        additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
                         contactType: contact.doesNeedIsolation,
                         extraInfo: contact.extraInfo,
                         relationship: contact.relationship,
+                        gender: contact.personByPersonInfo.gender
                     }
                 )
             });
