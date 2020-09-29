@@ -179,7 +179,7 @@ stages:
     - task: Docker@2
       condition: eq(variables.isTest,true)
       continueOnError: 'false'
-      displayName: Build and push master client image to container registry
+      displayName: Build and push test client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
