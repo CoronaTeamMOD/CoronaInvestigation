@@ -29,14 +29,14 @@ import HospitalFields from './HospitalFields';
 const isInIsolationDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().required(),
+    then: yup.date().required('אנא מלא את שדה התאריך').typeError('שדה זה הוא חובה'),
     otherwise: yup.date().nullable()
 });
 
 const wasHospitilizedDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().required(),
+    then: yup.date().required('אנא מלא את שדה התאריך').typeError('אנא מלא את שדה התאריך'),
     otherwise: yup.date().nullable()
 });
 
@@ -89,10 +89,11 @@ const schema = yup.object().shape({
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const { control, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
-        mode: 'onBlur',
+        mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(schema)
     });
+    console.log(getValues())
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
 
@@ -218,8 +219,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     return (
         <div className={classes.form}>
-                                    <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e,{ name: "itay" })}>
-<IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} />
+                                                <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e,{ name: "itay" })}>
+<IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>

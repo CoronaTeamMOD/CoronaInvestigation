@@ -6,7 +6,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchIsInIsolation } = props;
+    const { classes, control, watchIsInIsolation, errors } = props;
 
     return (
         <>
@@ -51,6 +51,8 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                     }}
+                                    error={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? true : false}
+                                    errorText={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : null}
                                 />
                             </div>
                         )}
@@ -67,6 +69,8 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                 }}
+                                error={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? true : false}
+                                errorText={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : null}
                             />
                         )}
                     />
@@ -80,6 +84,7 @@ interface Props {
     classes: any;
     watchIsInIsolation: boolean;
     control: any;
+    errors: any;
 };
 
 export default IsolationDatesFields;
