@@ -16,10 +16,10 @@ const useNewInteractionEventDialog =  (input: useEditInteractionEventInput) :  u
         const newData = {
             ...interactionEventVariables,
             locationAddress,
-            contactPersonPhoneNumber: interactionEventVariables.contactPersonPhoneNumber?.number,
+            contactPersonPhoneNumber: interactionEventVariables.contactPersonPhoneNumber,
             contacts: interactionEventVariables.contacts.map(contact => ({
                 ...contact,
-                phoneNumber: contact.phoneNumber.number
+                phoneNumber: contact.phoneNumber
             }))
         };
         axios.post('/intersections/updateContactEvent', newData)
