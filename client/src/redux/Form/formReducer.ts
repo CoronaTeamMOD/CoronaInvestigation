@@ -1,11 +1,15 @@
 import * as Actions from './formActionTypes';
 
-const initialState: (boolean | null)[] = [null,null,null,null]
+const initialState : any = {}; //[null,null,null,null]
 
 const formReducer = (state = initialState, action: Actions.formAction) : (boolean | null)[] => {
     switch (action.type) {
         case Actions.SET_FORM_STATE : {
-            state[action.payload.id] = action.payload.isValid
+            if(state[action.payload.investigationId] === undefined) {
+                state[action.payload.investigationId] = [null,null,null,null];
+            }
+            state[action.payload.investigationId][action.payload.tabId] = action.payload.isValid;
+            //state[action.payload.tabId] = action.payload.isValid
         }
         default:  return state;
     }

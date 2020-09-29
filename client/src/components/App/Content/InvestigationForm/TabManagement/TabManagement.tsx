@@ -62,7 +62,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }),
     )(Tab);
 
-    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
 
     return (
         <Card className={classes.card}>
@@ -73,7 +74,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 >
                     {
                         tabs.map((tab) => {
-                            if (!formsValidations[tab.id] && formsValidations[tab.id] !== null) {
+                            if (formsValidations !== undefined && !formsValidations[tab.id] && formsValidations[tab.id] !== null) {
                                 return <StyledTab 
                                 // @ts-ignore
                                 type="submit"

@@ -109,7 +109,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const saveExposure = (e: any, exposuresAndFlightsData: any ) => {
     e.preventDefault();
     console.log("ExposureTab");
-    setFormState(id,true);
+    setFormState(investigationId, id, true);
     saveExposureAndFlightData().then(onSubmit);
     
     // saveExposuresAndFlightsData(exposuresAndFlightsData);
