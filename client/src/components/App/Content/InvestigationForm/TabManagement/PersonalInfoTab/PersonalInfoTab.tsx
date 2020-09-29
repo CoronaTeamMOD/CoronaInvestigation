@@ -49,10 +49,11 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר שהוזן אינו תקין'),
         [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required('שדה זה הינו שדה חובה'),
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+        [PersonalInfoDataContextFields.STREET]:  yup.string().nullable(),
         [PersonalInfoDataContextFields.STREET]:  yup.string().when(
             PersonalInfoDataContextFields.CITY, {
                 is: null,
-                else: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+                else: yup.string().required('שדה זה הינו שדה חובה'),
                 then: yup.string()
             }
         ),
@@ -62,7 +63,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
             PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
                 is: 'מערכת החינוך',
-                then: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+                then: yup.string().required('שדה זה הינו שדה חובה'),
                 else: yup.string()
             }
         ),
@@ -73,7 +74,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         }),
         [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
             return ['מערכת הבריאות', 'מערכת החינוך','כוחות הביטחון'].find(element => element === relevantOccupation)? 
-            schema :
+            schema.nullable() :
             schema.nullable().required('שדה זה הינו שדה חובה')  
         }),
     })
@@ -369,7 +370,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     }}
                                     getOptionSelected={(option) => option.value.id === props.value}
                                     inputValue={cityName}
-                                    value={props.value? props.value : ''}
                                     onInputChange={(event, newInputValue) => {
                                         setValue(PersonalInfoDataContextFields.STREET,'')
                                         setStreetName('')
@@ -383,6 +383,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         <TextField
                                             {...params}
                                             test-id='insertInstitutionName'
+                                            value={props.value? props.value : ''}
                                             //disabled={subOccupations.length === 0}
                                             label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'כתובת' }
                                             error={errors[PersonalInfoDataContextFields.CITY]}
@@ -409,7 +410,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         }}
                                         getOptionSelected={(option) => option.id === props.value}
                                         inputValue={streetName}
-                                        value={props.value? props.value : ''}
                                         onInputChange={(event, newInputValue) => {
                                             setStreetName(newInputValue);
                                             if (newInputValue === '') {
@@ -422,6 +422,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         renderInput={(params) => {
                                             return <TextField
                                                 test-id='personalDetailsStreet'
+                                                value={props.value? props.value : ''}
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.STREET]}
                                                 label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב' }
