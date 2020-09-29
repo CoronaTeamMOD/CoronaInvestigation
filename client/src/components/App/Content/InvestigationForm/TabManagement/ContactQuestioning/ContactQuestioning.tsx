@@ -14,6 +14,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
+import FamilyRelationship from 'models/enums/FamilyRelationship';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -43,7 +44,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const [familyRelationships, setFamilyRelationships] = React.useState<{ id: string, displayName: string }[]>();
+    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
