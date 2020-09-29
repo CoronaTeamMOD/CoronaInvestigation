@@ -20,12 +20,16 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     className,
     label,
     required,
-    testId
+    testId,
+    error,
+    helperText
   } = props;
 
   return (
     <Tooltip open={errors.hasOwnProperty(name)} title={errors[name]?.message}>
       <TextField
+        helperText={helperText}
+        error={error}
         test-id={testId}
         required={required}
         name={name}
