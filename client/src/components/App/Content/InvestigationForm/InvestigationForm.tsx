@@ -36,7 +36,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+
+    const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoFormData>(initialPersonalInfo);
 
@@ -95,8 +97,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const isInvestigationValid = () => {
         let isFormValid = true;
-        formsValidations.forEach((formValidation)=> {
-            if(!formValidation){
+        formsValidations.forEach((formValidation : any)=> {
+            if(formValidation !== true){
                 isFormValid = false;
             }
         })
