@@ -291,7 +291,6 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     setError={setError}
                     clearErrors={clearErrors}
                     errors={errors}
-                    context={context}
                     watchWasHospitalized={watchWasHospitalized}
                 />
                 {patientGender === Gender.FEMALE ?
