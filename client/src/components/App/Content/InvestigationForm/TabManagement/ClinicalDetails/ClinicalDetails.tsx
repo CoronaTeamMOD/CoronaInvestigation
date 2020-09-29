@@ -348,7 +348,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     setError={setError}
                     clearErrors={clearErrors}
                     errors={errors}
-                    context={context}
                     watchWasHospitalized={watchWasHospitalized}
                 />
                 {patientGender === Gender.FEMALE ?
