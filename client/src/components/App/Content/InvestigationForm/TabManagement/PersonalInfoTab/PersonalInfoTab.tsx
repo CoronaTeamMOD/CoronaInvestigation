@@ -19,6 +19,7 @@ import { personalInfoContext } from 'commons/Contexts/PersonalInfoStateContext';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -37,7 +38,7 @@ const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
 export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
-const PersonalInfoTab: React.FC = (): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const classes = useStyles({});
 
     const [subOccupationName, setSubOccupationName] = React.useState<string>('');
@@ -52,7 +53,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const { relevantOccupation, phoneNumber, address, contactInfo, insuranceCompany,
         otherOccupationExtraInfo, educationOccupationCity, additionalPhoneNumber, contactPhoneNumber } = personalInfoStateContext.personalInfoData;
     const { city, street, floor, houseNum } = address;
-
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const handleChangeField = (fieldName: PersonalInfoDataContextFields, fieldValue: any) => {
@@ -121,6 +122,23 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     const { setError, clearErrors, errors } = useForm();
 
+    const savePersonalData = (e: any, personalInfoData: any | personalInfoContextData) => {
+        e.preventDefault();
+        console.log("PersonalTab");
+        onSubmit();
+        return false;
+        // axios.post('/personalDetails/updatePersonalDetails', 
+        // {
+        //     id : investigatedPatientId, 
+        //     personalInfoData, 
+        // }).catch(() => {
+        //     Swal.fire({
+        //         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        //         icon: 'error'
+        //     });
+    }
+
+
     const subOccupationsPlaceHolderByOccupation = () => {
         if (relevantOccupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
         if (relevantOccupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
@@ -130,6 +148,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
 
     return (
         <div className={classes.tabInitialContainer}>
+             <form id={`form-${id}`} onSubmit={(e) => savePersonalData(e, { name: "itay" })}>
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
@@ -141,7 +160,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
                         id={PHONE_LABEL}
-                        required
                         placeholder={PHONE_LABEL}
                         value={phoneNumber.number}
                         isValid={phoneNumber.isValid}
@@ -236,7 +254,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2} className={classes.personalInfoItem}>
-                    <FormControl required fullWidth>
+                    <FormControl fullWidth>
                         <InputLabel>גורם מבטח</InputLabel>
                         <Select
                             test-id={'personalDetailsInsurer'}
@@ -281,7 +299,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         }}
                         renderInput={(params) =>
                             <TextField
-                                required
                                 {...params}
                                 test-id='personalDetailsCity'
                                 id={PersonalInfoDataContextFields.CITY}
@@ -309,7 +326,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                             }}
                             renderInput={(params) => {
                                 return <TextField
-                                    required
                                     test-id='personalDetailsStreet'
                                     {...params}
                                     id={PersonalInfoDataContextFields.STREET}
@@ -322,7 +338,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 }
                 <Grid item xs={1} className={classes.homeAddressItem}>
                     <AlphanumericTextField
-                        required
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
@@ -337,7 +352,6 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={1} className={classes.homeAddressItem}>
                     <AlphanumericTextField
-                        required
                         setError={setError}
                         clearErrors={clearErrors}
                         errors={errors}
@@ -441,8 +455,14 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                     </Collapse>
                 </Grid>
             </Grid>
+            </form>
         </div>
     );
 };
+
+interface Props {
+    id: number,
+    onSubmit: any
+}
 
 export default PersonalInfoTab;
