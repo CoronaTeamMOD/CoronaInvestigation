@@ -32,9 +32,9 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         })
     }
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null, investigationStartTime: Date | null) : Date[] => {
-        if(coronaTestDate !== null && investigationStartTime !== null) {
-            const endInvestigationDate = investigationStartTime;
+    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) : Date[] => {
+        if(coronaTestDate !== null) {
+            const endInvestigationDate = new Date();
             let startInvestigationDate : Date;
             if (doesHaveSymptoms) {
                 if(symptomsStartDate)

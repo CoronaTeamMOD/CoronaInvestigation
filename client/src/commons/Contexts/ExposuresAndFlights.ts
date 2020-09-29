@@ -2,7 +2,11 @@ import { createContext } from 'react';
 import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
 
-export type ExposureAndFlightsDetails = ExposureData & FlightData;
+export type Exposure = ExposureData & FlightData;
+
+export type ExposureAndFlightsDetails = {
+    exposures: Exposure[]
+}
 
 export interface ExposureAndFlightsDetailsAndSet {
     exposureAndFlightsData: ExposureAndFlightsDetails,
@@ -31,6 +35,10 @@ export const fieldsNames = {
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
+    exposures: []
+};
+
+export const initialExposureOrFlight: Exposure = {
     id: null,
     wasConfirmedExposure: false,
     exposureFirstName: null,
@@ -51,6 +59,16 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     airline: null,
     flightNum: null
 };
+
+export const isConfirmedExposureInvalid = (exposure: Exposure) =>
+    !(exposure.exposureFirstName && exposure.exposureLastName ) &&
+    (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
+
+export const isFlightInvalid = (exposure: Exposure) =>
+    !exposure.flightDestinationCity || 
+    !exposure.flightDestinationCountry || 
+    !exposure.flightOriginCity || 
+    !exposure.flightOriginCountry
 
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,

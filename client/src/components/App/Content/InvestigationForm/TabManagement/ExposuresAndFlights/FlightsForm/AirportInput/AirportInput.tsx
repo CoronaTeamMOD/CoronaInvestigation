@@ -72,7 +72,6 @@ const AirportInput = (props: any) => {
                     errors={errors}
                     setError={setError}
                     clearErrors={clearErrors}
-                    required
                     value={airport}
                     onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
                     placeholder='שדה תעופה'

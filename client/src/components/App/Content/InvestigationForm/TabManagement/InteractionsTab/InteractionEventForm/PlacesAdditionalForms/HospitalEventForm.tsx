@@ -1,12 +1,12 @@
 import React, {useContext} from 'react';
-import {Grid, TextField} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { useForm } from "react-hook-form";
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import AddressForm from '../AddressForm/AddressForm';
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
