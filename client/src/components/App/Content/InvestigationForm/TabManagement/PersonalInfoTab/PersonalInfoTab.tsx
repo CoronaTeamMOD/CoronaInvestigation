@@ -44,38 +44,10 @@ const CONTACT_INFO = 'תיאור איש קשר:';
 const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const schema = yup.object().shape({
         [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
-        [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
         [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
         [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required('שגיאה: שדה חובה'),
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required('שגיאה: שדה חובה'),
-        [PersonalInfoDataContextFields.STREET]:  yup.string().nullable(),
-        [PersonalInfoDataContextFields.STREET]:  yup.string().when(
-            PersonalInfoDataContextFields.CITY, {
-                is: null,
-                else: yup.string().required('שגיאה: שדה חובה'),
-                then: yup.string()
-            }
-        ),
-        [PersonalInfoDataContextFields.FLOOR]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר אינו תקין'),
-        [PersonalInfoDataContextFields.HOUSE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר אינו תקין'),
-        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required('שגיאה: שדה חובה'),
-        [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
-            PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
-                is: 'מערכת החינוך',
-                then: yup.string().required('שגיאה: שדה חובה'),
-                else: yup.string()
-            }
-        ),
-        [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
-            return ['מערכת הבריאות', 'מערכת החינוך','כוחות הביטחון'].find(element => element === relevantOccupation)? 
-            schema.nullable().required('שגיאה: שדה חובה') : 
-            schema
-        }),
-        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
-            return ['מערכת הבריאות', 'מערכת החינוך','כוחות הביטחון'].find(element => element === relevantOccupation)? 
-            schema.nullable() :
-            schema.nullable().required('שגיאה: שדה חובה')  
-        }),
+        [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable().required('שגיאה: שדה חובה'),
     })
     
     const classes = useStyles({});
@@ -255,7 +227,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 )}
                                 placeholder={PHONE_LABEL}
                                 error={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]}
-                                label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message: 'טלפון*' }
+                                label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message: 'טלפון' }
                                 onBlur={props.onBlur}
                             />
                         )}
@@ -379,6 +351,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                             setValue(PersonalInfoDataContextFields.STREET,'')
                                             setStreetName('')
                                             setCityName(newInputValue);
+                                            if(!newInputValue){
+                                                setValue(PersonalInfoDataContextFields.CITY,'')
+                                            }
                                         }
                                     }}
                                     onChange={(event, newValue) => {
@@ -391,7 +366,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                             test-id='insertInstitutionName'
                                             value={props.value? props.value : ''}
                                             //disabled={subOccupations.length === 0}
-                                            label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'כתובת*' }
+                                            label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'עיר*' }
                                             error={errors[PersonalInfoDataContextFields.CITY]}
                                             onBlur={props.onBlur}
                                             id={PersonalInfoDataContextFields.CITY}
@@ -433,7 +408,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 value={props.value? props.value : ''}
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.STREET]}
-                                                label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב*' }
+                                                label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב' }
                                                 onBlur={props.onBlur}
                                                 id={PersonalInfoDataContextFields.STREET}
                                                 placeholder={'רחוב'}
@@ -462,7 +437,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 clearErrors={clearErrors}
                                 errors={errors}
                                 placeholder={'קומה'}
-                                label={errors[PersonalInfoDataContextFields.FLOOR]? errors[PersonalInfoDataContextFields.FLOOR]?.message: 'קומה*' }
+                                label={errors[PersonalInfoDataContextFields.FLOOR]? errors[PersonalInfoDataContextFields.FLOOR]?.message: 'קומה' }
                             />
                         )}
                     />
@@ -485,7 +460,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 clearErrors={clearErrors}
                                 errors={errors}
                                 placeholder={'מספר בית'}
-                                label={errors[PersonalInfoDataContextFields.HOUSE_NUMBER]? errors[PersonalInfoDataContextFields.HOUSE_NUMBER]?.message: 'מספר בית*' }
+                                label={errors[PersonalInfoDataContextFields.HOUSE_NUMBER]? errors[PersonalInfoDataContextFields.HOUSE_NUMBER]?.message: 'מספר בית' }
                             />
                         )}
                     />
@@ -554,7 +529,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
                                                 label={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]? 
-                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד*' }
+                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד' }
                                                 onBlur={props.onBlur}
                                                 test-id='institutionCity'
                                                 id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
@@ -566,7 +541,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                     </Grid>
                 }
                 <Grid item xs={3}>
-                    <Collapse in={occupation !== Occupations.UNEMPLOYED}>
+                    <Collapse in={occupation !== Occupations.UNEMPLOYED }>
                         {
                             (subOccupations.length > 0 || occupation === Occupations.EDUCATION_SYSTEM) ?
                                 <Controller
@@ -591,7 +566,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                     {...params}
                                                     error={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
                                                     label={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]? 
-                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד*' }
+                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד' }
                                                     onBlur={props.onBlur}
                                                     test-id='insertInstitutionName'
                                                     disabled={subOccupations.length === 0}
@@ -619,7 +594,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         errors={errors}
                                         placeholder={subOccupationsPlaceHolderByOccupation()}      
                                         label={errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?
-                                             errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: 'שם המוסד*' }
+                                             errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: 'שם המוסד' }
  
                                         />
                                 )}

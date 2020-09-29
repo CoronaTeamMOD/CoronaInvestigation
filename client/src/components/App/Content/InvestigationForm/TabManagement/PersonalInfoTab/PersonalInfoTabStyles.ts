@@ -104,11 +104,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         minWidth: '15vw',
     },
     floorInput: {
-        minWidth: '8vw',
+        minWidth: '15vw',
     },
     houseNumInput: {
-        minWidth: '8vw',
-        marginLeft: '1vw'
+        minWidth: '15vw',
+        marginLeft: '8vw'
     }
 }));
 
