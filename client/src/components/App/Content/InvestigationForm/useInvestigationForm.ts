@@ -83,6 +83,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         cantReachContact: contact.cantReachContact,
                         extraInfo: contact.extraInfo,
                         relationship: contact.relationship,
+                        contactedPersonCity: contact.contactedPersonCity,
+                        doesFeelGood: contact.doesFeelGood,
+                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases,
+                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed,
+                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation,
+                        occupation: contact.occupation,
+                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed,
                     }
                 )
             });

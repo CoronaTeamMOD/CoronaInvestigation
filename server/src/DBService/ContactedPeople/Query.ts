@@ -21,8 +21,15 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesNeedIsolation
       extraInfo
       relationship
-      cantReachContact
+      occupation
+      doesHaveBackgroundDiseases
       contactType
+      contactedPersonCity
+      doesFeelGood
+      doesNeedHelpInIsolation
+      repeatingOccuranceWithConfirmed
+      doesLiveWithConfirmed
+      cantReachContact
     }
   }
 }
