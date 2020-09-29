@@ -223,6 +223,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
     const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
+    const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
 
     return (
         <div className={classes.form}>
@@ -336,9 +337,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 setError={setError}
                 clearErrors={clearErrors}
                 errors={errors}
-                context={context}
                 control={control}
-                updateClinicalDetails={updateClinicalDetails}
                 watchBackgroundDiseases={watchBackgroundDiseases}
                 watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
             />
@@ -350,7 +349,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     clearErrors={clearErrors}
                     errors={errors}
                     context={context}
-                    updateClinicalDetails={updateClinicalDetails}
+                    watchWasHospitalized={watchWasHospitalized}
                 />
                 {patientGender === Gender.FEMALE ?
                     <>
