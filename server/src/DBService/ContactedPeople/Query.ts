@@ -21,6 +21,8 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesNeedIsolation
       extraInfo
       relationship
+      cantReachContact
+      contactType
     }
   }
 }

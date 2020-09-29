@@ -3,7 +3,7 @@ import { Person } from './Person';
 interface InteractedContact extends Person {
     id: number;
     contactDate: Date;
-    contactType: boolean;
+    contactType: string;
     extraInfo: string;
     birthDate: Date;
     cantReachContact: boolean;

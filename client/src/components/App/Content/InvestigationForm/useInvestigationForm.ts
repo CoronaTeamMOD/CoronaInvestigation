@@ -73,16 +73,16 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                         firstName: contact.personByPersonInfo.firstName,
                         lastName: contact.personByPersonInfo.lastName,
                         phoneNumber: contact.personByPersonInfo.phoneNumber,
-                        contactDate: contact.contactEventByContactEvent.startTime,
-                        cantReachContact: false,
                         identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
                         identificationNumber: contact.personByPersonInfo.identificationNumber,
                         birthDate: contact.personByPersonInfo.birthDate,
                         additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
-                        contactType: contact.doesNeedIsolation,
+                        gender: contact.personByPersonInfo.gender,
+                        contactDate: contact.contactEventByContactEvent.startTime,
+                        contactType: contact.contactType,
+                        cantReachContact: contact.cantReachContact,
                         extraInfo: contact.extraInfo,
                         relationship: contact.relationship,
-                        gender: contact.personByPersonInfo.gender
                     }
                 )
             });

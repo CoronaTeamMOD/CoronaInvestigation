@@ -147,7 +147,13 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <FormInput fieldName='תאריך לידה'>
-                                                        <DatePick value={null} onChange={() => { }} />
+                                                        <DatePick
+                                                            value={new Date(interactedContact.birthDate)}
+                                                            onChange={(newDate: Date) =>
+                                                                updateInteractedContact(interactedContact, 'birthDate', newDate
+                                                                )
+                                                            }
+                                                        />
                                                     </FormInput>
                                                 </Grid>
                                                 <Grid item>
@@ -202,7 +208,6 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid item>
                                                     <FormInput fieldName='קשר'>
                                                         <AlphanumericTextField
-                                                            required
                                                             name={'relationship'}
                                                             placeholder='קשר'
                                                             value={interactedContact.relationship}
