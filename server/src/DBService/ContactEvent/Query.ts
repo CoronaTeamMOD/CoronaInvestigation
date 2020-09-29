@@ -125,7 +125,6 @@ query getEventByID($currEventId: Int!) {
           id
           contactType
           contactEvent
-          doesNeedIsolation
           extraInfo
           personByPersonInfo {
             firstName
