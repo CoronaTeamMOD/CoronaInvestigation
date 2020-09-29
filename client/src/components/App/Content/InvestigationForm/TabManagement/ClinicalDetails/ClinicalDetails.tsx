@@ -266,7 +266,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
             <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
-                <Grid item xs={5}>
+                <Grid item xs={7}>
                     <div className={classes.dates}>
                         {
                             !isUnkonwnDateChecked &&
@@ -303,7 +303,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     <Grid item container className={classes.smallGrid}>
                         {
                             symptoms.map((symptom: string) => (
-                                <Grid item xs={6} key={symptom} className={classes.symptomsAndDiseasesCheckbox}>
+                                <Grid item xs={5} key={symptom} className={classes.symptomsAndDiseasesCheckbox}>
                                     <CustomCheckbox
                                         key={symptom}
                                         checkboxElements={[{
@@ -362,7 +362,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 <Grid container className={classes.smallGrid}>
                     {
                         backgroundDiseases.map((backgroundIllness: string) => (
-                            <Grid item xs={6} key={backgroundIllness} className={classes.symptomsAndDiseasesCheckbox}>
+                            <Grid item xs={5} key={backgroundIllness} className={classes.symptomsAndDiseasesCheckbox}>
                                 <CustomCheckbox
                                     key={backgroundIllness}
                                     checkboxElements={[{
@@ -378,21 +378,23 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                     }
                     <Collapse
                         in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
-                        <AlphanumericTextField
-                            testId='otherBackgroundDisease'
-                            name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
-                            value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
-                            onChange={(newValue: string) =>
-                                updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
-                            }
-                            required
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
-                            label='מחלת רקע'
-                            placeholder='הזן מחלת רקע...'
-                            className={classes.otherTextField}
-                        />
+                        <Grid item xs={2}>
+                            <AlphanumericTextField
+                                testId='otherBackgroundDisease'
+                                name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
+                                value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
+                                onChange={(newValue: string) =>
+                                    updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
+                                }
+                                required
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                label='מחלת רקע'
+                                placeholder='הזן מחלת רקע...'
+                                className={classes.otherTextField}
+                            />
+                        </Grid>
                     </Collapse>
                 </Grid>
             </Collapse>
