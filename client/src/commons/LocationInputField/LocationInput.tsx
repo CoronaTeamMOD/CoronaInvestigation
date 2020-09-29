@@ -43,6 +43,7 @@ export interface GeocodeResponse {
     description?: string;
 }
 
+const renderOption = LocationOptionItem;
 const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 const  LocationInput = ({control, name, selectedAddress, constOptions = false }: LocationInputProps) => {
@@ -97,7 +98,7 @@ const  LocationInput = ({control, name, selectedAddress, constOptions = false }:
                     options={locationOptions} 
                     value={parsedSelected}
                     onInputChange={(event: React.ChangeEvent<{}>, newInputValue: string) => setInput(newInputValue as string)}
-                    onChange={(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => props.onChange(newValue)}
+                    onChange={(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null | GeocodeResponse) => props.onChange(newValue)}
                     noOptionsText={noOptionsMessage}
                     filterOptions={filterOptions}
                     getOptionLabel={(option: any) => typeof option === 'string' ? option : option.description}
@@ -108,9 +109,8 @@ const  LocationInput = ({control, name, selectedAddress, constOptions = false }:
                         />
                     }
                     className={classes.autcompleteField + classes.longAutoComplete}
-
                     {...config}
-                    {...(LocationOptionItem) ? { LocationOptionItem: LocationOptionItem } : {}}
+                    {...(renderOption) ? { renderOption: renderOption } : {}}
                 />
             )}
         />
