@@ -63,6 +63,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 </Button>
                 <PrimaryButton
                     form="interactionEventForm"
+                    type="submit"
                     disabled={shouldDisableSubmitButton()}
                     test-id='createContact'
                     // onClick={() => onConfirm()}
