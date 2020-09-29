@@ -1,11 +1,17 @@
-import * as yup from "yup";
+import * as yup from 'yup';
+import Swal from 'sweetalert2';
 
-import placeTypesCodesHierarchy from "Utils/placeTypesCodesHierarchy";
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import axios from 'Utils/axios';
+import useDBParser from "Utils/vendor/useDBParsing";
 
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-const useSchema = () => {        
+const useInteractionsForm = (props : Props): outCome => {  
+    const { loadInteractionById, closeNewDialog, closeEditDialog } = props;    
+    const { parseLocation } = useDBParser();
 
     const schema = yup.object().shape({
         [InteractionEventDialogFields.PLACE_TYPE]: yup.string().required('סוג אתר חובה'),
@@ -46,9 +52,57 @@ const useSchema = () => {
         })),
         });
 
+    const saveIntreactions = async (interactionsDataToSave: InteractionEventDialogData) => {
+      const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
+            await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
+
+      if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
+        axios.post('/intersections/updateContactEvent', {
+          ...interactionsDataToSave,
+            locationAddress,
+        })
+          .then(() => {
+              loadInteractionById(interactionsDataToSave[InteractionEventDialogFields.ID]);
+              closeEditDialog();
+          }).catch(() => {
+            handleFailedSave('לא ניתן היה לשמור את השינויים');
+          })
+      } else {
+        axios.post('/intersections/createContactEvent', interactionsDataToSave)
+          .then((response) => {
+              loadInteractionById(response.data.data.updateContactEventFunction.integer);
+              closeNewDialog();
+          })
+          .catch((error) => {
+              console.log(error);
+              closeNewDialog();
+              handleFailedSave('לא ניתן היה ליצור אירוע חדש');
+          })
+        }
+    }
+
+    const handleFailedSave = (message: string) => {
+      Swal.fire({
+        title: message,
+        icon: 'error',
+      })
+    }
+
     return {
-        schema
+        schema,
+        saveIntreactions
     }
 };
 
-export default useSchema; 
+interface Props {
+  loadInteractionById: (interactionId: any) => void;
+  closeNewDialog: () => void;
+  closeEditDialog: () => void;
+}
+
+interface outCome {
+  schema: any;
+  saveIntreactions: (interactionsData: InteractionEventDialogData) => void;
+}
+
+export default useInteractionsForm; 

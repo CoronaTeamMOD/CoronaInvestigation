@@ -1,7 +1,7 @@
-import React, {useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { startOfDay } from 'date-fns';
 
-import Interaction from 'models/Contexts/InteractionEventDialogData';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
@@ -11,20 +11,17 @@ import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Con
 
 const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
 
-    const onDateClick = (date: Date) => setNewInteractionEventDate(date);
-    const onNewEventDialogClose = () => setNewInteractionEventDate(undefined);
-    const onEditEventDialogClose = () => setInteractionToEdit(undefined);
-    const startEditInteraction = (interaction: Interaction) => setInteractionToEdit(interaction);
-
     const clinicalDetailsCtxt: ClinicalDetailsDataAndSet = useContext(clinicalDetailsDataContext);
-    const [newInteractionEventDate, setNewInteractionEventDate] = React.useState<Date>();
-    const [interactionToEdit, setInteractionToEdit] = React.useState<Interaction>();
-    const [interactionsMap, setInteractionsMap] = React.useState<Map<number, Interaction[]>>(new Map<number, Interaction[]>())
-    const [interactions, setInteractions] = React.useState<Interaction[]>([]);
-    const [coronaTestDate, setCoronaTestDate] = React.useState<Date | null>(null);
-    const [investigationStartTime, setInvestigationStartTime] = React.useState<Date | null>(null);
-    const { getDatesToInvestigate, loadInteractions, addNewInteraction, updateInteraction, 
-        getCoronaTestDate, handleDeleteContactEvent } =
+
+    const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
+    const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
+    const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
+    const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
+    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
+    const [investigationStartTime, setInvestigationStartTime] = useState<Date | null>(null);
+
+    const { getDatesToInvestigate, loadInteractions, loadInteractionById, 
+            getCoronaTestDate, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
@@ -112,11 +109,12 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             <form id={`form-${id}`} onSubmit={(e) => SaveInteraction(e)}>
                 {
                     getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
-                        coronaTestDate).map(date =>
-                        <ContactDateCard contactDate={date}
-                            onEditClick={startEditInteraction}
+                                          coronaTestDate).map(date =>
+                        <ContactDateCard 
+                            contactDate={date}
+                            onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                             onDeleteClick={handleDeleteContactEvent}
-                            createNewInteractionEvent={() => onDateClick(date)}
+                            createNewInteractionEvent={() => setNewInteractionEventDate(date)}
                             interactions={interactionsMap.get(date.getTime())}
                             key={date.getTime()}
                         />
@@ -124,18 +122,18 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 }
                 {
                     newInteractionEventDate && <NewInteractionEventDialog
-                        isOpen={newInteractionEventDate !== undefined}
-                        eventDate={newInteractionEventDate}
-                        closeDialog={onNewEventDialogClose}
-                        handleInteractionCreation={addNewInteraction}
+                        isOpen={Boolean(newInteractionEventDate)}
+                        interactionDate={newInteractionEventDate}
+                        closeNewDialog={() => setNewInteractionEventDate(undefined)}
+                        loadInteractionById={loadInteractionById}
                     />
                 }
                 {
                     interactionToEdit && <EditInteractionEventDialog
-                        isOpen={interactionToEdit !== undefined}
+                        isOpen={Boolean(interactionToEdit)}
                         eventToEdit={interactionToEdit}
-                        closeDialog={onEditEventDialogClose}
-                        updateInteraction={updateInteraction}
+                        closeEditDialog={() => setInteractionToEdit(undefined)}
+                        loadInteractionById={loadInteractionById}
                     />
                 }
             </form>

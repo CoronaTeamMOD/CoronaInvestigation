@@ -6,7 +6,6 @@ import { Collapse, Grid, Typography, Divider, IconButton} from '@material-ui/cor
 import _ from 'lodash'
 
 import Contact from 'models/Contact';
-import { initAddress } from 'models/Address';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Toggle from 'commons/Toggle/Toggle';
 import TimePick from 'commons/DatePick/TimePick';
@@ -24,7 +23,7 @@ import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
 import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
-import useSchema from './useSchema';
+import useInteractionsForm from './useInteractionsForm';
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 export const defaultContact: Contact = {
@@ -35,27 +34,18 @@ export const defaultContact: Contact = {
   contactType: "",
 };
 
-const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
-  placeType: '',
-  placeSubType: -1,
-  investigationId,
-  locationAddress: initAddress,
-  startTime,
-  endTime,
-  externalizationApproval: false,
-  contacts,
-  contactPersonPhoneNumber: "",
-})
-
 const addContactButton: string = "הוסף מגע";
-const { schema } = useSchema();
 
-const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.Element => {
-  const methods = useForm({
-    defaultValues: intractionData ? intractionData : initialDialogData( new Date(), new Date(), [], -1),
+const InteractionEventForm: React.FC<Props> = (
+  { intractionData, loadInteractionById, closeNewDialog, closeEditDialog } : Props): JSX.Element => {
+  const { schema, saveIntreactions } = useInteractionsForm({ loadInteractionById, closeNewDialog, closeEditDialog });
+
+  const methods = useForm<InteractionEventDialogData>({
+    defaultValues: intractionData,
     mode: "onBlur",
     resolver: yupResolver(schema)
   });
+
   console.log(methods.errors);
   console.log(methods.getValues());
 
@@ -90,8 +80,8 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.E
     }
   }
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (data: InteractionEventDialogData) => {
+    saveIntreactions(data)
   }
 
   return (
@@ -234,4 +224,7 @@ export default InteractionEventForm;
 
 interface Props {
   intractionData?: InteractionEventDialogData;
+  loadInteractionById: (interactionId: any) => void;
+  closeNewDialog?: () => void;
+  closeEditDialog?: () => void;
 }

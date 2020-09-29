@@ -9,8 +9,7 @@ export interface useInteractionsTabInput {
 export interface useInteractionsTabOutcome {
     loadInteractions: () => void;
     getCoronaTestDate: (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => void;
-    addNewInteraction: (addedInteraction: Interaction) => void;
-    updateInteraction: (updatedInteraction: Interaction) => void;
+    loadInteractionById: (id: number) => void;
     getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
     handleDeleteContactEvent: (contactEventId: number) => void;
 };
