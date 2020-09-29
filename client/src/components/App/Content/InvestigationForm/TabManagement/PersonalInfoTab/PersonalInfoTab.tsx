@@ -509,7 +509,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 <RadioGroup 
                                     aria-label={OCCUPATION_LABEL} 
                                     name={OCCUPATION_LABEL} 
-                                    value={props.value}
+                                    value={props.value ? props.value : Occupations.OTHER}
                                     className={classes.relevantOccupationselect}>
                                     <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                                     {

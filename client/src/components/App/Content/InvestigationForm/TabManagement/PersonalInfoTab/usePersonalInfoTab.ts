@@ -31,7 +31,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     street : investigatedPatient.addressByAddress.street,
                     floor : investigatedPatient.addressByAddress.floor,
                     houseNum : investigatedPatient.addressByAddress.houseNum,
-                    relevantOccupation: investigatedPatient.occupation ? investigatedPatient.occupation : Occupations.OTHER,
+                    relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: 
                     (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
                     ?
