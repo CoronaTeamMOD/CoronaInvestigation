@@ -1,3 +1,4 @@
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
@@ -13,6 +14,7 @@ import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
+import InteractedContactFields from 'models/enums/InteractedContact';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -23,6 +25,8 @@ import { ADDITIONAL_PHONE_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalIn
 const ContactQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
+    const { errors, setError, clearErrors } = useForm({});
+
     const interactedContactsState = useContext(interactedContactsContext);
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -30,7 +34,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
 
-    const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: any, value: any) => {
+    const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         let contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
         interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
@@ -38,7 +42,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
 
     const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: boolean) => {
         const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
-        updateInteractedContact(interactedContact, 'identificationType', newIdentificationType);
+        updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
     return (
@@ -51,7 +55,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                             <Accordion className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
-                                    onClick={() => updateInteractedContact(interactedContact, 'cantReachContact', false)}
+                                    onClick={() => updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false)}
                                     aria-controls='panel1a-content'
                                     id='panel1a-header'
                                     dir='ltr'
@@ -62,7 +66,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid container>
                                                     <FormControlLabel
                                                         onClick={(event) => event.stopPropagation()}
-                                                        onChange={((event: any, checked: boolean) => updateInteractedContact(interactedContact, 'cantReachContact', checked))}
+                                                        onChange={((event: any, checked: boolean) => updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked))}
                                                         control={
                                                             <Checkbox
                                                                 color='primary'
@@ -135,11 +139,11 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                                 className={classes.idTextField}
                                                                 value={interactedContact.identificationNumber}
                                                                 onChange={(newValue: string) =>
-                                                                    updateInteractedContact(interactedContact, 'identificationNumber', newValue as string
+                                                                    updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue as string
                                                                 )}
-                                                                setError={()=>{}}
-                                                                clearErrors={()=>{}}
-                                                                errors={()=>{}}
+                                                                setError={setError}
+                                                                clearErrors={clearErrors}
+                                                                errors={errors}
                                                             />
                                                         </Grid>
                                                     </Grid>
@@ -149,7 +153,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                         <DatePick
                                                             value={new Date(interactedContact.birthDate)}
                                                             onChange={(newDate: Date) =>
-                                                                updateInteractedContact(interactedContact, 'birthDate', newDate
+                                                                updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate
                                                                 )
                                                             }
                                                         />
@@ -161,12 +165,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             name={'age'}
                                                             placeholder='הכנס גיל:'
                                                             value={differenceInYears(new Date(), new Date(interactedContact.birthDate as Date))}
-                                                            onChange={(newValue: string) =>
-                                                                updateInteractedContact(interactedContact, '', newValue as string
-                                                            )}
-                                                            setError={()=>{}}
-                                                            clearErrors={()=>{}}
-                                                            errors={()=>{}}
+                                                            onChange={() =>{}}
+                                                            setError={setError}
+                                                            clearErrors={clearErrors}
+                                                            errors={errors}
                                                         />
                                                     </FormInput>
                                                 </Grid>
@@ -177,11 +179,11 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             placeholder='הכנס טלפון:'
                                                             value={interactedContact.additionalPhoneNumber}
                                                             onChange={(newValue: string) =>
-                                                                updateInteractedContact(interactedContact, 'additionalPhoneNumber', newValue
-                                                            )}
-                                                            setError={()=>{}}
-                                                            clearErrors={()=>{}}
-                                                            errors={()=>{}}
+                                                                updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue
+                                                                )}
+                                                            setError={setError}
+                                                            clearErrors={clearErrors}
+                                                            errors={errors}
                                                         />
                                                     </FormInput>
                                                 </Grid>
@@ -211,11 +213,11 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                             placeholder='קשר'
                                                             value={interactedContact.relationship}
                                                             onChange={(newValue: string) =>
-                                                                updateInteractedContact(interactedContact, 'relationship', newValue as string
+                                                                updateInteractedContact(interactedContact, InteractedContactFields.RELATIONSHIP, newValue as string
                                                             )}
-                                                            setError={()=>{}}
-                                                            clearErrors={()=>{}}
-                                                            errors={()=>{}}
+                                                            setError={setError}
+                                                            clearErrors={clearErrors}
+                                                            errors={errors}
                                                         />
                                                     </FormInput>
                                                 </Grid>
