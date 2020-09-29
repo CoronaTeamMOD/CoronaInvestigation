@@ -56,7 +56,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
         <>
             {
                 getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
-                    coronaTestDate, investigationStartTime).map(date =>
+                    coronaTestDate).map(date =>
                     <ContactDateCard contactDate={date}
                         onEditClick={startEditInteraction}
                         onDeleteClick={handleDeleteContactEvent}
