@@ -3,81 +3,98 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
+import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
-export const defaultTab: TabObj = {
-    id: 0,
-    name: TabNames.PERSONAL_INFO,
-    isDisabled: false,
-    displayComponent: <PersonalInfoTab />
-};
 
 export const tabs: TabObj[] = [
-    defaultTab,
+    {
+        id: 0,
+        name: TabNames.PERSONAL_INFO,
+    },
     {
         id: 1,
         name: TabNames.CLINICAL_DETAILS,
-        isDisabled: false,
-        displayComponent: <ClinicalDetails />
     },
     {
         id: 2,
         name: TabNames.EXPOSURES_AND_FLIGHTS,
-        isDisabled: false,
-        displayComponent: <ExposuresAndFlights/>,
     },
     {
         id: 3,
         name: TabNames.INTERACTIONS, 
-        isDisabled: false,
-        displayComponent: <InteractionsTab/>,
     },
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
+
+    const {
+        currentTab,
+        moveToNextTab,
+        setCurrentTab,
+        setNextTab
+    } = tabManagementProps;
+
     const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
             },
+            wrapper: {
+                flexDirection: "row-reverse",
+            }
         }),
     )(Tab);
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-    setCurrentTab({
-        id: selectedTab,
-        name: tabs[selectedTab].name, 
-        displayComponent: tabs[selectedTab].displayComponent,
-        isDisabled: false,
-    });
-  };
+    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
 
     return (
         <Card className={classes.card}>
                 <Tabs
-                    value={currentTab.id}
+                    value={currentTab}
                     indicatorColor='primary'
                     textColor='primary'
-                    onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
+                            if (!formsValidations[tab.id] && formsValidations[tab.id] !== null) {
+                                return <StyledTab 
+                                // @ts-ignore
+                                type="submit"
+                                form={`form-${currentTab}`}
+                                onClick={() => {setNextTab(tab.id)}}
+                                key={tab.id}
+                                label={tab.name}
+                                icon={<ErrorOutlineIcon/>}
+                                className={classes.errorIcon}
+                            />} else {
+                                    return <StyledTab 
+                                        // @ts-ignore
+                                        type="submit"
+                                        form={`form-${currentTab}`}
+                                        onClick={() => {setNextTab(tab.id)}}
+                                        key={tab.id}
+                                        label={tab.name}
+                                    />}
                         })
                     }
                 </Tabs>
-            {
-                <div key={currentTab.id} className={classes.displayedTab}>
-                    {currentTab.displayComponent }
+            
+                <div className={classes.displayedTab}>
+                {currentTab == 0 && <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>}
+                {currentTab == 1 && <ClinicalDetails id={1} onSubmit={moveToNextTab}/>}
+                {currentTab == 2 && <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>}
+                {currentTab == 3 && <InteractionsTab id={3} onSubmit={moveToNextTab}/>}
                 </div>
-            }
+            
         </Card>
     )
 };
@@ -85,8 +102,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    currentTab: TabObj;
-    setCurrentTab: (currentTab: TabObj) => void;
-    onTabClicked: () => void;
-    shouldDisableChangeTab: boolean;
+    currentTab?:any,
+    moveToNextTab?:any,
+    setCurrentTab?:any,
+    setNextTab?:any
 };

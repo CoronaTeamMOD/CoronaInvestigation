@@ -22,7 +22,7 @@ describe('investigatedPersonInfo tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: jest.fn().mockResolvedValue({})});
+                investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
             });
         })
@@ -59,7 +59,7 @@ describe('investigatedPersonInfo tests', () => {
 
             await act(async () => {
                 await testHooksFunction(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
@@ -85,7 +85,7 @@ describe('investigatedPersonInfo tests', () => {
 
             await act(async () => {
                 await testHooksFunctionWithRoute(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 await investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
@@ -107,7 +107,7 @@ describe('investigatedPersonInfo tests', () => {
 
             await act(async () => {
                 await testHooksFunction(() => {
-                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo({onExitInvestigation: () => new Promise<void>((res, rej) => res())});
+                    investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 await investigatedPersonInfoOutcome
                     .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);

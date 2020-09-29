@@ -1,4 +1,5 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -21,6 +22,7 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
 import TabManagement from './TabManagement/TabManagement';
+import useTabManagement from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
@@ -33,6 +35,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
@@ -81,35 +85,67 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const { confirmFinishInvestigation } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const {
+        currentTab,
+        moveToNextTab,
+        setCurrentTab,
+        setNextTab
+    } = useTabManagement();
 
-    const shouldDisableButton = isButtonDisabled(currentTab.name);
+    const isInvestigationValid = () => {
+        let isFormValid = true;
+        formsValidations.forEach((formValidation)=> {
+            if(!formValidation){
+                isFormValid = false;
+            }
+        })
+        return isFormValid;
+    }
+
+    const handleClick = () => {
+        if(currentTab === LAST_TAB_ID){
+            setNextTab(currentTab);
+            if(isInvestigationValid()){
+                confirmFinishInvestigation(epidemiologyNumber);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.'
+                });
+            }
+        } else {
+            setNextTab(currentTab+1);
+        }
+    }
+
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
-                <PersonalInfoContextProvider value={personalInfoValue}>
-                    <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
-                        <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                            <InvestigationInfoBar
-                                onExitInvestigation={saveCurrentTab}
-                            />
-                                <div className={classes.interactiveForm}>
-                                    <TabManagement
-                                        currentTab={currentTab}
-                                        setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
-                                        shouldDisableChangeTab={shouldDisableButton}
-                                    />
-                                    <div className={classes.buttonSection}>
-                                        <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={() => {
-                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
-                                            }}
-                                            disabled={shouldDisableButton}>
-                                           {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                                        </PrimaryButton>
+                    <PersonalInfoContextProvider value={personalInfoValue}>
+                        <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
+                            <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
+                                <InvestigationInfoBar
+                                    currentTab = {currentTab}
+                                />
+                                    <div className={classes.interactiveForm}>
+                                        <TabManagement
+                                            currentTab = {currentTab}
+                                            moveToNextTab = {moveToNextTab}
+                                            setCurrentTab = {setCurrentTab}
+                                            setNextTab = {setNextTab}
+                                        />
+                                        <div className={classes.buttonSection}>
+                                            <PrimaryButton 
+                                                type="submit"
+                                                form={`form-${currentTab}`}
+                                                test-id={currentTab === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                                onClick={handleClick}
+                                                disabled={false}>
+                                            {currentTab === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                            </PrimaryButton>
+                                        </div>
                                     </div>
-                                </div>
                             </StartInvestigationDateVariablesProvider>
                         </ClinicalDetailsDataContextProvider>
                     </PersonalInfoContextProvider>
