@@ -406,7 +406,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={3}>
                     <Collapse in={relevantOccupation !== Occupations.UNEMPLOYED}>
                         {
-                            (subOccupations.length > 0) ?
+                            (subOccupations.length > 0 || relevantOccupation === Occupations.EDUCATION_SYSTEM) ?
                                 <Autocomplete
                                     options={subOccupations}
                                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
@@ -423,7 +423,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                                             id={PersonalInfoDataContextFields.CITY}
                                             placeholder={INSERT_INSTITUTION_NAME}
                                         />}
-                                /> : relevantOccupation !== Occupations.EDUCATION_SYSTEM &&
+                                /> :
                                 <AlphanumericTextField
                                     setError={setError}
                                     clearErrors={clearErrors}

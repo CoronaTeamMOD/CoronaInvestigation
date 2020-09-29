@@ -31,11 +31,11 @@ export const useStyles = makeStyles({
         flexDirection: 'row',
         maxWidth: '100%',
         marginBottom: '0.5vw',
+        alignItems: 'center',
     },
     smallGrid: {
-        width: '40vw'
+        width: '60vw'
     },
-
     isolationProblemTextField: {
         marginLeft: '1vw',
         width: '15vw',

@@ -12,14 +12,15 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
+const { publicPark, zoo, stadium, amphitheater, beach, mall } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 
 const wideAreas = [
     publicPark,
     zoo,
     stadium,
     amphitheater,
-    beach
+    beach,
+    mall
 ]
 
 const OtherPublicLocationForm : React.FC = () : JSX.Element => {
