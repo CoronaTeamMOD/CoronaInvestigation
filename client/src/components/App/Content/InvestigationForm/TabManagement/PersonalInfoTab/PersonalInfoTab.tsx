@@ -82,7 +82,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
     });
 
-    const { control, setValue, getValues, handleSubmit, reset, errors, setError, clearErrors } = useForm({
+    const { control, setValue, getValues, reset, errors, setError, clearErrors } = useForm({
         mode: 'all',
         defaultValues: personalInfoState,
         resolver: yupResolver(schema),
@@ -113,7 +113,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     }, [])
 
     React.useEffect(()=>{
-        // console.log(personalInfoState)
         if(personalInfoState.city) {
             setCityId(personalInfoState.city)
         }
@@ -145,9 +144,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     }, [streets])
 
     const savePersonalData = (e: any, personalInfoData: any | personalInfoFormData) => {
-        // handleSubmit(e)
         e.preventDefault();
-        // const isFormValid = Object.keys(errors).length > 0 ? false : true
         axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
@@ -157,8 +154,10 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                 title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                 icon: 'error'
             });
+        }) 
+        schema.isValid(getValues()).then(valid=>{
+            setFormState(0,valid);
         })
-        // setFormState(0,isFormValid);
         onSubmit();
     }
 
@@ -172,7 +171,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 
     return (
         <div className={classes.tabInitialContainer}>
-             <form id={`form-${id}`} onSubmit={(e) => savePersonalData(e, convertToDBData(getValues()))}>
+             <form id={`form-${id}`} onSubmit={(event) => savePersonalData(event, convertToDBData(getValues()))}>
             <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
