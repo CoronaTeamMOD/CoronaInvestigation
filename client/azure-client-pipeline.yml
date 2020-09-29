@@ -85,20 +85,6 @@ stages:
         azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
-          client-dev 
-          
-    # pushing dev client without authentication image to MOH container registry
-    - task: Docker@2
-      condition: eq(variables.isDev,true)
-      continueOnError: 'false'
-      displayName: Build and push Dev client image to MOH container
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(MOHarcName)'
-        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
-        containerRegistry: '$(MOHContainerRegistry)'
-        tags: |
           client-dev
 
     # loading env variables to dev client with authentication
@@ -188,6 +174,20 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-load-test
+
+    # building & pushing test client to MOH client registry
+    - task: Docker@2
+      condition: eq(variables.isTest,true)
+      continueOnError: 'false'
+      displayName: Build and push test client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          client-test
 
     # building & pushing prod client to MOH client registry
     - task: Docker@2
