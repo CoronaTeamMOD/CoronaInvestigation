@@ -1,13 +1,13 @@
 import React from 'react';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { useForm } from 'react-hook-form';
+import { Grid, Typography } from '@material-ui/core';
 
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import DatePick from 'commons/DatePick/DatePick';
 import useFormStyles from 'styles/formStyles';
+import DatePick from 'commons/DatePick/DatePick';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import AirportInput from './AirportInput/AirportInput';
-import { useForm } from 'react-hook-form';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 const FlightsForm = (props: any) => {
   const {
@@ -59,7 +59,6 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
             testId='flightFromDate'
-            required
             labelText="מתאריך"
             value={exposureAndFlightsData[fieldsNames.flightStartDate]}
             onChange={(newDate: Date) =>
@@ -72,7 +71,6 @@ const FlightsForm = (props: any) => {
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
             testId='flightToDate'
-            required
             labelText="עד"
             value={exposureAndFlightsData[fieldsNames.flightEndDate]}
             onChange={(newDate: Date) =>
@@ -92,7 +90,6 @@ const FlightsForm = (props: any) => {
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}
-          required
           value={exposureAndFlightsData[fieldsNames.airline]}
           onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
@@ -108,7 +105,6 @@ const FlightsForm = (props: any) => {
         <AlphanumericTextField
           testId={'airlineNumber'}
           name={fieldsNames.flightNumber}
-          required
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}

@@ -9,7 +9,6 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import { TextField } from '@material-ui/core';
 
 const OfficeEventForm : React.FC = () : JSX.Element => {
     const formClasses = useFormStyles();

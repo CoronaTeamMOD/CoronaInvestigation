@@ -1,19 +1,17 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from "@hookform/resolvers";
-import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
-import StoreStateType from 'redux/storeStateType';
 import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
@@ -25,7 +23,7 @@ export const otherSymptomFieldName = 'אחר';
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
-    const { control, handleSubmit, errors, setError, clearErrors } = useForm({});
+    const { errors, setError, clearErrors } = useForm({});
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
 

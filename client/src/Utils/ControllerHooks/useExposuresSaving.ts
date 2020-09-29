@@ -1,32 +1,27 @@
-import {useSelector} from "react-redux";
-import StoreStateType from "redux/storeStateType";
-import axios from "../axios";
-import {useInvestigationFormParameters} from "components/App/Content/InvestigationForm/InvestigationFormInterfaces";
-import {ExposureAndFlightsDetails, fieldsNames} from "commons/Contexts/ExposuresAndFlights";
-import useDBParser from "../vendor/useDBParsing";
+import {useSelector} from 'react-redux';
 
-const useExposuresSaving = (exposuresAndFlightsVariables: useInvestigationFormParameters['exposuresAndFlightsVariables']) => {
+import StoreStateType from 'redux/storeStateType';
+import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/Contexts/ExposuresAndFlights';
+
+import axios from '../axios';
+import useDBParser from '../vendor/useDBParsing';
+
+const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const {parseLocation} = useDBParser();
 
     const saveExposureAndFlightData = async () : Promise<void> => {
-        const exposureData = await extractExposuresAndFlightData(exposuresAndFlightsVariables.exposureAndFlightsData);
-
-        if (exposuresAndFlightsVariables.exposureAndFlightsData.id) {
-            return axios.put('/exposure', {
-                exposureDetails:  exposureData
-            });
-        } else {
-            return axios.post('/exposure', {
-                exposureDetails: {
-                    ...exposureData,
-                    investigationId: epidemiologyNumber
-                }
-            });
-        }
+        let { exposures } = exposuresAndFlightsVariables.exposureAndFlightsData;
+        const exposuresPromises = exposures.map(async exposure => await extractExposureData(exposure));
+        exposures = await Promise.all(exposuresPromises);
+        
+        return axios.post('/exposure/updateExposures', {
+            exposures,
+            investigationId: epidemiologyNumber
+        });
     }
 
-    const extractExposuresAndFlightData = async (exposuresAndFlightsData : ExposureAndFlightsDetails ) => {
+    const extractExposureData = async (exposuresAndFlightsData : Exposure ) => {
         let exposureAndDataToReturn = exposuresAndFlightsData;
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
             exposureAndDataToReturn = {

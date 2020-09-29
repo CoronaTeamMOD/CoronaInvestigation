@@ -41,7 +41,8 @@ export interface GeocodeResponse {
     description?: string;
 }
 
-const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputProps) => {
+const  LocationInput = (props: LocationInputProps) => {
+    const { selectedAddress,  setSelectedAddress, required } = props;
     const classes = useStyles({});
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
@@ -69,13 +70,16 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
         };
     }, [selectedAddress,input]);
 
-    const onInputChange = (event: React.ChangeEvent<{}>,
-                           newInputValue: string,) => {
+    const onInputChange = (event: React.ChangeEvent<{}>, newInputValue: string) => {
+        if (newInputValue === '') {
+            setSelectedAddress(event, null);
+        }
         setInput(newInputValue);
     };
 
     return (
         <AutocompletedField
+            required
             value={parsedSelected}
             options={locationOptions}
             onChange={setSelectedAddress}
@@ -88,6 +92,7 @@ const  LocationInput = ({selectedAddress,  setSelectedAddress}: LocationInputPro
 };
 
 interface LocationInputProps {
+    required?: boolean;
     selectedAddress: GoogleApiPlace | null;
     setSelectedAddress:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
 }
