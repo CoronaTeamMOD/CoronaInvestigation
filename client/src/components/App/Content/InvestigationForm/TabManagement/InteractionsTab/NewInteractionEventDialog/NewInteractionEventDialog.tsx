@@ -1,11 +1,11 @@
-import { startOfDay } from 'date-fns';
-import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import { startOfDay } from 'date-fns';
 
-import StoreStateType from 'redux/storeStateType';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import useNewInteractionEventDialog from './useNewInteractionEventDialog';
@@ -50,11 +50,9 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
-            <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
+                    <InteractionEventForm />
                 </DialogContent>
-            </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>
                 <Button
                     test-id='cancelNewContactLocation'
@@ -64,9 +62,12 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                     בטל
                 </Button>
                 <PrimaryButton
+                    form="interactionEventForm"
+                    type="submit"
                     disabled={shouldDisableSubmitButton()}
                     test-id='createContact'
-                    onClick={() => onConfirm()}>
+                    // onClick={() => onConfirm()}
+                >
                     צור מקום/מגע
                 </PrimaryButton>
             </DialogActions>
