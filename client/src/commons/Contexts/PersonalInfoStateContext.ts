@@ -1,16 +1,16 @@
 import {createContext} from 'react';
 
-import { initialPhoneNumberControl } from 'models/PhoneNumberControl';
-import {personalInfoContextData} from 'models/Contexts/personalInfoContextData';
+import {personalInfoFormData} from 'models/Contexts/personalInfoContextData';
 
-import { initialAddress } from './ClinicalDetailsContext';
-
-export const initialPersonalInfo: personalInfoContextData = {
+export const initialPersonalInfo: personalInfoFormData = {
     phoneNumber: '',
     additionalPhoneNumber: '',
     contactPhoneNumber: '',
     insuranceCompany: '',
-    address: initialAddress,
+    city: "",
+    street: "",
+    floor: '',
+    houseNum: '',
     relevantOccupation: '',
     educationOccupationCity: '',
     institutionName: '',
@@ -24,8 +24,8 @@ const initialPersonalInfoContext: PersonalInfoDataAndSet = {
 };
 
 export interface PersonalInfoDataAndSet {
-    personalInfoData: personalInfoContextData,
-    setPersonalInfoData: React.Dispatch<React.SetStateAction<personalInfoContextData>>
+    personalInfoData: personalInfoFormData,
+    setPersonalInfoData: React.Dispatch<React.SetStateAction<personalInfoFormData>>
 }
 
 export const personalInfoContext = createContext<PersonalInfoDataAndSet>(initialPersonalInfoContext);

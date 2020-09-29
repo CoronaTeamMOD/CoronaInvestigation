@@ -1,6 +1,6 @@
 import {DBAddress} from '../Address';
 
-export interface personalInfoContextData {
+export interface personalInfoDbData {
     phoneNumber: string;
     additionalPhoneNumber: string;
     contactPhoneNumber: string;
@@ -12,3 +12,20 @@ export interface personalInfoContextData {
     institutionName: string;
     otherOccupationExtraInfo: string;
 }
+
+export interface personalInfoFormData {
+    phoneNumber: string;
+    additionalPhoneNumber: string;
+    contactPhoneNumber: string;
+    contactInfo: string;
+    insuranceCompany: string,
+    city: string,
+    street: string,
+    floor: string,
+    houseNum: string,
+    relevantOccupation: string;
+    educationOccupationCity: string;
+    institutionName: string;
+    otherOccupationExtraInfo: string;
+}
+
