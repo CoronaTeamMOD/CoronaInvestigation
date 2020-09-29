@@ -3,15 +3,17 @@ import { Grid } from '@material-ui/core';
 import { useForm } from "react-hook-form";
 
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from '../AddressForm/AddressForm';
-import BusinessContactForm from '../BusinessContactForm/BusinessContactForm';
+import AddressForm from '../../AddressForm/AddressForm';
+import BusinessContactForm from '../../BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
+import useStyles from './DefaultPlaceEventFormStyles';
+import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
+    const classes = useStyles();
     const ctxt = useContext(InteractionEventDialogContext);
 
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
@@ -24,6 +26,7 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
             <Grid item xs={2}>
                 <FormInput fieldName='שם המוסד'>
                     <AlphanumericTextField
+                        className={classes.placeNameField}
                         errors={errors}
                         setError={setError}
                         clearErrors={clearErrors}

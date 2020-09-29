@@ -26,9 +26,11 @@ const AddressForm: React.FC = (): JSX.Element => {
 
     return (
         <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
-            <Grid item xs={2}>
+            <Grid item xs={4}>
                 <FormInput fieldName='כתובת'>
-                    <LocationInput selectedAddress={locationAddress} setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                    <div className={additionalClasses.addressAutoCompleteField}>
+                        <LocationInput selectedAddress={locationAddress} setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                    </div>
                 </FormInput>
             </Grid>
         </Grid>

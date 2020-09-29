@@ -21,7 +21,7 @@ import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
 import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm';
+import DefaultPlaceEventForm from './PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
 import TransportationEventForm
     from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
