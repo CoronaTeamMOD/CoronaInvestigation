@@ -102,8 +102,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   }, [user.id, classes.errorAlertTitle]);
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
-    localStorage.setItem("selectedEpidemiologyNumber", JSON.stringify(epidemiologyNumberVal));
-    window.open(investigationURL);
+    window.open(investigationURL + '/' + epidemiologyNumberVal);
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
@@ -56,6 +56,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+    let { selectedEpidemiologyNumber } = useParams();
+
     const noInvestigationError = () => {
         Swal.fire({
             icon: 'warning',
@@ -71,12 +73,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
     }
 
     React.useEffect(() => {
-        if (localStorage.selectedEpidemiologyNumber) {
-            setEpidemiologyNum(parseInt(localStorage.selectedEpidemiologyNumber))
-            localStorage.removeItem("selectedEpidemiologyNumber");
-        } else {
+        selectedEpidemiologyNumber ?
+            setEpidemiologyNum(parseInt(selectedEpidemiologyNumber)) :
             noInvestigationError();
-        }
     }, []);
 
     React.useEffect(() => {
