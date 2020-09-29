@@ -90,7 +90,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </div>
                     {
                         watchDoesHaveSymptoms &&
-                        <Typography>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
+                        <Typography color={errors[ClinicalDetailsFields.SYMPTOMS]? 'error' : 'initial'}>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
                     }
                     <Grid item container className={classes.smallGrid}>
                         <Controller
