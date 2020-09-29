@@ -19,6 +19,7 @@ interface InteractedContact extends Person {
     doesNeedHelpInIsolation: boolean;
     repeatingOccuranceWithConfirmed: boolean;
     doesLiveWithConfirmed: boolean;
+    doesWorkWithCrowd: boolean;
 }
 
 export default InteractedContact;

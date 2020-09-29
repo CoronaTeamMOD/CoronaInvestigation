@@ -16,6 +16,7 @@ enum InteractedContactFields {
     DOES_NEED_HELP_IN_ISOLATION = 'doesNeedHelpInIsolation',
     REPEATING_OCCURANCE_WITH_CONFIRMED = 'repeatingOccuranceWithConfirmed',
     DOES_LIVE_WITH_CONFIRMED = 'doesLiveWithConfirmed',
+    DOES_WORK_WITH_CROWD = 'doesWorkWithCrowd',
 }
 
 export default InteractedContactFields;

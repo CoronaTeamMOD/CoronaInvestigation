@@ -31,6 +31,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       repeatingOccuranceWithConfirmed
       doesLiveWithConfirmed
       cantReachContact
+      doesWorkWithCrowd
     }
   }
 }

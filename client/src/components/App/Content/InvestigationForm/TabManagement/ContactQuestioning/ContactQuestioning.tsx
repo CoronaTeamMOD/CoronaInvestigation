@@ -313,7 +313,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid item>
                                                     <Grid container justify='space-between'>
                                                         <Typography variant='body2' className={classes.text}><b>עבודה עם קהל במסגרת העבודה?</b></Typography>
-                                                        <Toggle/>
+                                                        <Toggle
+                                                            value={interactedContact.doesWorkWithCrowd}
+                                                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_WORK_WITH_CROWD, booleanValue)}
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
