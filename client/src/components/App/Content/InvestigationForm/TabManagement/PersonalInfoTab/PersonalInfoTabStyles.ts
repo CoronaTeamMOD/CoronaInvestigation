@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         },
     },
     spacedOutAddress: {
-        marginRight: '4vw'
+        marginRight: '5vw'
     },
     homeAddressItem: {
         '@media screen and (max-width: 1700px)': {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         }
     },
     contactDescription: {
-        marginLeft: '-3vw',
+        marginLeft: '1%',
     },
     personalInfoFieldContainer: {
         display: 'flex',
@@ -99,6 +99,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         '@media screen and (max-width: 950px)': {
             marginLeft: '5vw',
         },
+    },
+    phoneInput: {
+        minWidth: '15vw',
+    },
+    floorInput: {
+        minWidth: '8vw',
+    },
+    houseNumInput: {
+        minWidth: '8vw',
+        marginLeft: '1vw'
     }
 }));
 
