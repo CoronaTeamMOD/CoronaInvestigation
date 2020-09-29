@@ -42,7 +42,7 @@ export interface GeocodeResponse {
 }
 
 const  LocationInput = (props: LocationInputProps) => {
-    const { selectedAddress,  setSelectedAddress, label, required } = props;
+    const { selectedAddress,  setSelectedAddress, required } = props;
     const classes = useStyles({});
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
@@ -93,7 +93,6 @@ const  LocationInput = (props: LocationInputProps) => {
 
 interface LocationInputProps {
     required?: boolean;
-    label?: string;
     selectedAddress: GoogleApiPlace | null;
     setSelectedAddress:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
 }
