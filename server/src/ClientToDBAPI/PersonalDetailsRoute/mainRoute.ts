@@ -40,7 +40,7 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
             otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo
             ? request.body.personalInfoData.otherOccupationExtraInfo : null,
             occupation: request.body.personalInfoData.relevantOccupation,
-            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber.number,
+            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
             patientContactInfo: request.body.personalInfoData.contactInfo ? request.body.personalInfoData.contactInfo : null,
             subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
             address,
@@ -49,8 +49,8 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
         graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,  response.locals,
             {
                 id: result.data.updateInvestigatedPatientById.personByPersonId.id,
-                phoneNumber: request.body.personalInfoData.phoneNumber.number,
-                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber.number
+                phoneNumber: request.body.personalInfoData.phoneNumber,
+                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
             }).then((result: any) => response.send(result)).catch(err => response.status(errorStatusCode).send(err));
         }).catch(err => response.status(errorStatusCode).send(err));
 }

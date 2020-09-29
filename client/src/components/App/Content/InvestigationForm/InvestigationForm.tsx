@@ -8,7 +8,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { personalInfoFormData } from 'models/Contexts/personalInfoContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import {
     initialPersonalInfo,
@@ -38,7 +38,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const formsValidations : (boolean | null)[] = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations);
 
-    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
+    const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoFormData>(initialPersonalInfo);
 
     const personalInfoValue: PersonalInfoDataAndSet = React.useMemo(
         () => ({
