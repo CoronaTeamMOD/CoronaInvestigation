@@ -50,6 +50,7 @@ const placeTypesCodesHierarchy = {
             stadium: 5,
             amphitheater: 6,
             beach: 33,
+            mall: 83
         }
     },
 }
