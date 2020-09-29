@@ -1,6 +1,7 @@
 import User from 'models/User';
 import City from 'models/City';
 import Country from 'models/Country';
+import ContactType from 'models/ContactType';
 import InvestigationRedux from 'models/InvestigationRedux';
 
 export default interface StoreStateType {
@@ -10,4 +11,5 @@ export default interface StoreStateType {
     gender: string;
     cities: Map<string, City>;
     countries: Map<string, Country>;
+    contactTypes: Map<number, ContactType>;
 }

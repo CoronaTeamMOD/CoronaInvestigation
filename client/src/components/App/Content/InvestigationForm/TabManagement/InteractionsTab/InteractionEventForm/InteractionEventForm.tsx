@@ -33,11 +33,10 @@ import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocation
 import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 
 export const defaultContact: Contact = {
-    firstName: '',
-    lastName: '',
-    phoneNumber: {number: '', isValid: true},
-    id: '',
-    contactType: '',
+  firstName: "",
+  lastName: "",
+  phoneNumber: { number: "", isValid: true },
+  id: "",
 };
 
 const addContactButton: string = 'הוסף מגע';

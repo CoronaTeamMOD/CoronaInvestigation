@@ -1,10 +1,12 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
+import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
-import ContactType from 'models/enums/ContactType';
+import ContactType from 'models/ContactType';
+import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -27,13 +29,15 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const formClasses = useFormStyles();
 
-    const {interactionEventDialogData, setInteractionEventDialogData} = useContext(InteractionEventDialogContext);
-    const {contacts} = interactionEventDialogData;
+    const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
+
+    const { interactionEventDialogData, setInteractionEventDialogData } = useContext(InteractionEventDialogContext);
+    const { contacts } = interactionEventDialogData;
     const contact = contacts[updatedContactIndex];
     const {extraInfo, contactType, lastName, firstName, phoneNumber, id} = contact;
 
     React.useEffect(() => {
-        onChange(ContactType.TIGHT, InteractionEventContactFields.CONTACT_TYPE);
+        !contactType && onChange(Array.from(contactTypes.keys())[0], InteractionEventContactFields.CONTACT_TYPE);
     }, [])
 
     const updateContacts = (updatedContact: Contact) => {
@@ -120,19 +124,19 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
                 <Grid item xs={4} className={classes.contactAdditionalDetails}>
                     <FormInput fieldName={contactTypeField}>
                         <FormControl fullWidth>
-                            <div className={classes.newContactField}>
-                                <Select
-                                    test-id={'contactType'}
-                                    value={contactType}
-                                    onChange={event => onChange(event.target.value as string, InteractionEventContactFields.CONTACT_TYPE)}>
-                                    {
-                                        Object.values(ContactType).map((currentContactType) => (
-                                            <MenuItem key={currentContactType}
-                                                      value={currentContactType}>{currentContactType}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </div>
+                            <InputLabel>סוג מגע</InputLabel>
+                            <Select
+                                test-id={'contactType'}
+                                label='סוג מגע'
+                                value={contactType}
+                                onChange={event => onChange(event.target.value as number, InteractionEventContactFields.CONTACT_TYPE)}
+                            >
+                                {
+                                    Array.from(contactTypes.values()).map((contactType) => (
+                                        <MenuItem key={contactType.id} value={contactType.id}>{contactType.displayName}</MenuItem>
+                                    ))
+                                }
+                            </Select>
                         </FormControl>
                     </FormInput>
                 </Grid>
