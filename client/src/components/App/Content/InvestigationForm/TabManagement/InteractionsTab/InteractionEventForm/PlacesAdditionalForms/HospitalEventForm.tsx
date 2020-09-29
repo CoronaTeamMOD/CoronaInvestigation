@@ -28,6 +28,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -46,6 +47,7 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}

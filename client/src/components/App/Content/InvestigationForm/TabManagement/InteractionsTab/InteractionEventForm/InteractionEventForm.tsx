@@ -3,6 +3,7 @@ import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-for
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Divider, IconButton} from '@material-ui/core';
+import _ from 'lodash'
 
 import Contact from 'models/Contact';
 import { initAddress } from 'models/Address';
@@ -55,8 +56,8 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.E
     mode: "onBlur",
     resolver: yupResolver(schema)
   });
-
-  console.log(methods.getValues());
+  console.log(methods.errors);
+  // console.log(methods.getValues());
 
   const formData = methods.getValues();
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
@@ -166,13 +167,14 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.E
                   control={methods.control}
                   render={(props) => (
                     <TimePick
+                      error={_.get(methods.errors, props.name)}
                       test-id="contactLocationEndTime"
                       value={props.value}
                       onChange={(newTime:Date) => handleTimeChange(newTime, 
                                                                    formData[InteractionEventDialogFields.END_TIME],
                                                                    InteractionEventDialogFields.END_TIME)}
                       required
-                      labelText="עד שעה"
+                      labelText={_.get(methods.errors, props.name) ? _.get(methods.errors, props.name).message : "עד שעה"}
                     />
                   )}
                 />
@@ -203,7 +205,7 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.E
         >
           <div className={classes.newContactFieldsContainer}>
             {contacts.map((contact, index: number) => (
-              <ContactForm updatedContactIndex={index}/>
+              <ContactForm key={index} updatedContactIndex={index}/>
             ))}
             <Grid item>
               <IconButton

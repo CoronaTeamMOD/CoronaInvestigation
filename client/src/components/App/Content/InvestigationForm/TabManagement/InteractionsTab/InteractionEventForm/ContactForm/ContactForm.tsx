@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import _ from 'lodash'
 
 import useFormStyles from 'styles/formStyles';
 import ContactType from 'models/enums/ContactType';
@@ -42,6 +43,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     key='contactedPersonFirstName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -62,6 +64,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     key='contactedPersonLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -79,6 +82,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <TextField 
+                                    error={_.get(errors, props.name)}
+                                    label={_.get(errors, props.name)?.message}
                                     value={props.value}
                                     onChange={event => props.onChange(event.target.value as string)}
                                 />
@@ -98,6 +103,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -146,6 +152,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={props.name}
                             value={props.value}
                             onChange={(newValue: string) => props.onChange(newValue as string)}
+                            onBlur={props.onBlur}
                             errors={errors}
                             setError={setError}
                             clearErrors={clearErrors}   

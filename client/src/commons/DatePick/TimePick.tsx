@@ -9,10 +9,11 @@ import { useStyles } from './DatePickStyles';
 const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange } = props;
+  const { error, labelText, value, onChange } = props;
 
   return (
     <KeyboardTimePicker
+      error={error}
       test-id={props.testId}
       className={classes.dateText}
       format="HH:mm"
@@ -34,6 +35,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
 export default TimePick;
 
 interface Props extends StandardTextFieldProps {
+  error?: any;
   labelText?: string;
   labelTextVariant?: Variant;
   value: ParsableDate;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, TextField, Typography } from '@material-ui/core';
+import _ from 'lodash';
 
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -33,6 +34,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                                     testId='businessContactFirstName'
                                     value={props.value ? props.value : null}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
@@ -52,6 +54,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                                     testId='businessContactLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}   
@@ -68,6 +71,8 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <TextField
+                                    error={_.get(errors, props.name)}
+                                    label={_.get(errors, props.name)?.message}
                                     value={props.value}
                                     onChange={event => props.onChange(event.target.value as string)}
                                 />
