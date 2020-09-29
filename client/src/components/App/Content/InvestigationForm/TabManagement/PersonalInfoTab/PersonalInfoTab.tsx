@@ -371,9 +371,11 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     getOptionSelected={(option) => option.value.id === props.value}
                                     inputValue={cityName}
                                     onInputChange={(event, newInputValue) => {
-                                        setValue(PersonalInfoDataContextFields.STREET,'')
-                                        setStreetName('')
-                                        setCityName(newInputValue);
+                                        if(event.type !== "blur"){
+                                            setValue(PersonalInfoDataContextFields.STREET,'')
+                                            setStreetName('')
+                                            setCityName(newInputValue);
+                                        }
                                     }}
                                     onChange={(event, newValue) => {
                                         setCityId(newValue ? newValue.cityId : '');
@@ -411,9 +413,11 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         getOptionSelected={(option) => option.id === props.value}
                                         inputValue={streetName}
                                         onInputChange={(event, newInputValue) => {
-                                            setStreetName(newInputValue);
-                                            if (newInputValue === '') {
-                                                setValue(PersonalInfoDataContextFields.STREET,'')
+                                            if(event.type !== "blur"){
+                                                setStreetName(newInputValue);
+                                                if (newInputValue === '') {
+                                                    setValue(PersonalInfoDataContextFields.STREET,'')
+                                                }
                                             }
                                         }}
                                         onChange={(event, newValue) => {
