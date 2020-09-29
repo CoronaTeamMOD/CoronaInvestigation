@@ -1,16 +1,21 @@
+import React from 'react';
+import { useFormContext } from 'react-hook-form'
 import { Grid } from '@material-ui/core';
-import React, { useContext } from 'react';
 
-import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {GeocodeResponse} from "commons/LocationInputField/LocationInput";
 import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 import Map from "commons/Map/Map";
+import useFormStyles from 'styles/formStyles';
 
+import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields'
 import useStyles from './AddressFormStyles';
 
-const AddressForm: React.FC = (): JSX.Element => {
+const AddressForm : React.FC = () : JSX.Element => {
+    const { getValues, control } = useFormContext();
+    const { locationAddress } = getValues();
+
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
 
@@ -34,7 +39,7 @@ const AddressForm: React.FC = (): JSX.Element => {
                     </div>
                 </FormInput>
             </Grid>
-        </Grid>
+        </>
     )};
 
 export default AddressForm;
