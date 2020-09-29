@@ -213,11 +213,11 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <Avatar className={classes.avatar}>2</Avatar>
                                                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                                                 </Grid>
-                                                <Grid container direction='row' alignItems='center'>
-                                                    <Grid item xs={3}>
+                                                <Grid container direction='row'>
+                                                    <Grid item xs={6}>
                                                         <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
                                                     </Grid>
-                                                    <Grid item xs={4}>
+                                                    <Grid item xs={6}>
                                                         <FormControl>
                                                             <Select
                                                                 name={InteractedContactFields.FAMILY_RELATIONSHIP}
