@@ -18,7 +18,7 @@ import ExposureForm from './ExposureForm/ExposureForm';
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
-const ExposuresAndFlights = () => {
+const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures } = exposureAndFlightsData;
 
@@ -88,8 +88,16 @@ const ExposuresAndFlights = () => {
     });
   }
 
+  const saveExposure = (e: any, exposuresAndFlightsData: any ) => {
+    e.preventDefault();
+    console.log("ExposureTab");
+    onSubmit();
+    // saveExposuresAndFlightsData(exposuresAndFlightsData);
+  }
+
   return (
     <>
+    <form id={`form-${id}`} onSubmit={(e) => saveExposure(e, { name: "itay" })}>
       <div className={classes.subForm}>
         <Typography variant='caption' className={fieldName}>
           חשיפה אפשרית
@@ -189,8 +197,15 @@ const ExposuresAndFlights = () => {
           </div>
         </Collapse>
       </div>
+      </form>
     </>
   );
+  //}
 };
+
+interface Props {
+  id: number,
+  onSubmit: any
+}
 
 export default ExposuresAndFlights;
