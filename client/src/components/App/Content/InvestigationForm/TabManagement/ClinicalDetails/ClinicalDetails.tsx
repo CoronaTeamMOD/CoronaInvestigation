@@ -411,9 +411,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
-                <Grid item xs={10}>
+                <Grid item xs={4}>
                     <Collapse in={context.clinicalDetailsData.wasHospitalized}>
                         <div className={classes.dates}>
                             <Typography>
@@ -422,6 +420,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </b>
                             </Typography>
                             <TextField
+                                className={classes.hospitalInput}
                                 required
                                 label='בית חולים'
                                 test-id='hospitalInput'
@@ -431,20 +430,22 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 )}
                             />
                         </div>
-                        <div className={classes.dates}>
-                            <DatePick
-                                required
-                                label='מתאריך'
-                                testId='wasHospitalizedFromDate'
-                                labelText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
-                                        newDate
-                                    )
-                                }
-                            />
+                        <div className={classes.hospitalizationDates}>
+                            <div className={classes.spacedDates}>
+                                <DatePick
+                                    required
+                                    label='מתאריך'
+                                    test-id='wasHospitalizedFromDate'
+                                    labelText='מתאריך'
+                                    value={context.clinicalDetailsData.hospitalizationStartDate}
+                                    onChange={(newDate: Date) =>
+                                        updateClinicalDetails(
+                                            ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
+                                            newDate
+                                        )
+                                    }
+                                />
+                            </div>
                             <DatePick
                                 required
                                 label='עד'

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Grid , FormControl, InputLabel, Select, MenuItem} from '@material-ui/core';
-    
+
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
@@ -8,7 +8,7 @@ import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element => {
-    
+
     const { placeSubType, placeType, onPlaceTypeChange, onPlaceSubTypeChange, required } = props;
 
     const formClasses = useFormStyles();
@@ -35,12 +35,11 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
         <Grid className={formClasses.formRow} container justify='flex-start'>
             <Grid item xs={4}>
                 <FormInput fieldName='סוג אתר'>
-                    <FormControl 
-                        disabled={Object.keys(placesSubTypesByTypes).length === 0}
-                        required={required} 
-                        fullWidth 
+                    <FormControl className={formClasses.formTypesSelect}
+                                 disabled={Object.keys(placesSubTypesByTypes).length === 0}
+                                 required={required} fullWidth
                     >
-                        <InputLabel>סוג אתר</InputLabel>
+                        <InputLabel className={formClasses.fieldName}>סוג אתר</InputLabel>
                         <Select
                             test-id={'placeType'}
                             label='סוג אתר'
@@ -57,34 +56,33 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                 </FormInput>
             </Grid>
             {
-                placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 && 
-                <Grid item xs={6}>
-                    <FormInput fieldName='תת סוג'>
-                        <FormControl 
-                            required={required} 
-                            fullWidth 
-                        >
-                            <InputLabel>תת סוג</InputLabel>
-                            <Select
-                                test-id={'placeSubType'}
-                                label='תת סוג'
-                                value={placeSubType? placeSubType : ''}
-                                onChange={(event) => onPlaceSubTypeChange(event.target.value as number, 
-                                    placesSubTypesByTypes[placeType].find(place => place.id === event.target.value as number)?.displayName)}
-                            >
-                                {
-                                    placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
-                                        <MenuItem 
-                                            key={currentPlaceSubType.id} 
-                                            value={currentPlaceSubType.id}
-                                        >
-                                            {currentPlaceSubType.displayName}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                    </FormInput>
+                placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 &&
+                <Grid item xs={4}>
+                    <div className={formClasses.additionalTextField}>
+                        <FormInput fieldName='תת סוג'>
+                            <FormControl required={required} fullWidth className={formClasses.additionalMarginTextField}>
+                                <InputLabel className={formClasses.fieldName}>תת סוג</InputLabel>
+                                <Select
+                                    test-id={'placeSubType'}
+                                    label='תת סוג'
+                                    value={placeSubType? placeSubType : ''}
+                                    onChange={(event) => onPlaceSubTypeChange(event.target.value as number,
+                                        placesSubTypesByTypes[placeType].find(place => place.id === event.target.value as number)?.displayName)}
+                                >
+                                    {
+                                        placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
+                                            <MenuItem
+                                                key={currentPlaceSubType.id}
+                                                value={currentPlaceSubType.id}
+                                            >
+                                                {currentPlaceSubType.displayName}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        </FormInput>
+                    </div>
                 </Grid>
             }
         </Grid>

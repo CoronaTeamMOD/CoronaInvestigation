@@ -40,7 +40,7 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
     const { placeSubType } = interactionEventDialogData;
 
     const [grades, setGrades] = useState<string[]>([]);
-    
+
     React.useEffect(() => {
         let gradesOptions : string[] = [];
         if (placeSubType === elementarySchool) gradesOptions = elementarySchoolGrades;
@@ -51,13 +51,13 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
 
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
-    
+
     const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                     <FormInput fieldName='שם המוסד'>
                         <AlphanumericTextField
                             errors={errors}
@@ -70,23 +70,23 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 {
                     grades.length > 0 &&
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <FormInput fieldName='כיתה'>
-                        <FormControl fullWidth>
-                            <InputLabel>כיתה</InputLabel>
-                            <Select
-                                test-id={'classGrade'}
-                                label='כיתה'
-                                value={interactionEventDialogData.grade}
-                                onChange={(event: React.ChangeEvent<any>) => onChange(event.target.value, InteractionEventDialogFields.GRADE)}
-                            >
-                                {
-                                    grades.map((currentGrade) => (
-                                        <MenuItem key={currentGrade} value={currentGrade}>{currentGrade}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
+                            <FormControl fullWidth>
+                                <InputLabel>כיתה</InputLabel>
+                                <Select
+                                    test-id={'classGrade'}
+                                    label='כיתה'
+                                    value={interactionEventDialogData.grade}
+                                    onChange={(event: React.ChangeEvent<any>) => onChange(event.target.value, InteractionEventDialogFields.GRADE)}
+                                >
+                                    {
+                                        grades.map((currentGrade) => (
+                                            <MenuItem key={currentGrade} value={currentGrade}>{currentGrade}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
                         </FormInput>
                     </Grid>
                 }
