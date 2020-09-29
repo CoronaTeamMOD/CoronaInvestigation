@@ -20,7 +20,7 @@ const addFlightButton: string = 'הוסף טיסה לחול';
 
 const ExposuresAndFlights = () => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
-  const { exposures } = exposureAndFlightsData;
+  const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -34,9 +34,6 @@ const ExposuresAndFlights = () => {
   const disableFlightAddition : boolean= React.useMemo(() => 
     exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
     , [exposures]);
-
-  const [wereConfirmedExposures, setWereConfirmedExposures] = useState<boolean>(false);
-  const [wereFlights, setWereFlights] = useState<boolean>(false);
 
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure)
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
@@ -56,9 +53,12 @@ const ExposuresAndFlights = () => {
         if (result && result.data && result.data.data) {
           const data : Exposure[] = result.data.data.allExposures.nodes;
           if (data) {
-            setWereConfirmedExposures(doesHaveConfirmedExposures(data))
-            setWereFlights(doesHaveFlights(data))
-            setExposureDataAndFlights({exposures: data});
+            setExposureDataAndFlights({
+              exposures: data, 
+              exposuresToDelete: [],
+              wereConfirmedExposures: doesHaveConfirmedExposures(data),
+              wereFlights: doesHaveFlights(data)
+            });
           }
         }
       })
@@ -80,6 +80,13 @@ const ExposuresAndFlights = () => {
     });
   };
 
+    const onExposuresStatusChange = (fieldName: any, value: any) => {
+    setExposureDataAndFlights({
+      ...exposureAndFlightsData,
+      [fieldName]: value
+    });
+  };
+
   const onExposureAdded = (wasConfirmedExposure: boolean, wasAbroad: boolean) => {
     const updatedExposures : Exposure[] = [...exposures, {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad}]
     setExposureDataAndFlights({
@@ -98,7 +105,7 @@ const ExposuresAndFlights = () => {
         <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
           <Toggle
             value={wereConfirmedExposures}
-            onChange={() => setWereConfirmedExposures(!wereConfirmedExposures)}
+            onChange={() => onExposuresStatusChange(fieldsNames.wereConfirmedExposures, !wereConfirmedExposures)}
           />
         </FormRowWithInput>
 
@@ -149,7 +156,7 @@ const ExposuresAndFlights = () => {
         <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
           <Toggle
             value={wereFlights}
-            onChange={() => setWereFlights(!wereFlights)}
+            onChange={() => onExposuresStatusChange(fieldsNames.wereFlights, !wereFlights)}
           />
         </FormRowWithInput>
 

@@ -5,7 +5,10 @@ import FlightData from 'models/FlightData';
 export type Exposure = ExposureData & FlightData;
 
 export type ExposureAndFlightsDetails = {
-    exposures: Exposure[]
+    exposures: Exposure[],
+    exposuresToDelete: (number | null)[],
+    wereConfirmedExposures: boolean,
+    wereFlights: boolean,
 }
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -32,10 +35,15 @@ export const fieldsNames = {
     flightEndDate: "flightEndDate",
     airline: "airline",
     flightNumber: "flightNum",
+    wereConfirmedExposures: "wereConfirmedExposures",
+    wereFlights: "wereFlights",
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
-    exposures: []
+    exposures: [],
+    exposuresToDelete: [],
+    wereConfirmedExposures: false,
+    wereFlights: false,
 };
 
 export const initialExposureOrFlight: Exposure = {
