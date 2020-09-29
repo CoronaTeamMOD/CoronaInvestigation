@@ -220,6 +220,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
       </form>
     </>
   );
+  //}
 };
 
 interface Props {
