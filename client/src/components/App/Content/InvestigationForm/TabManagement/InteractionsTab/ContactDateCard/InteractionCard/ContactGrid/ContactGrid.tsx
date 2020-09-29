@@ -43,7 +43,7 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                 <Grid item xs={3}>
                     <FormInput fieldName={contactedPersonPhone}>
                         <Typography variant='caption'>
-                            {contact.phoneNumber && contact.phoneNumber.number}
+                            {contact.phoneNumber && contact.phoneNumber}
                         </Typography>
                     </FormInput>
                 </Grid>

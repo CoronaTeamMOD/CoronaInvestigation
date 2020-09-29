@@ -2,7 +2,6 @@ import React, { createContext } from 'react';
 
 import Contact from 'models/Contact';
 import {initAddress} from 'models/Address';
-import { initialPhoneNumberControl } from 'models/PhoneNumberControl';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 export interface InteractionsEventDialogDataAndSet {
@@ -18,7 +17,7 @@ export const initialDialogData = (startTime: Date, endTime: Date, contacts: Cont
     endTime,
     externalizationApproval: false,
     contacts,
-    contactPersonPhoneNumber: initialPhoneNumberControl,
+    contactPersonPhoneNumber: "",
 })
 
 const initialInteractionEventDialogDataContext: InteractionsEventDialogDataAndSet = {
