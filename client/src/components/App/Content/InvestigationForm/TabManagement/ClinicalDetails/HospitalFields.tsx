@@ -17,7 +17,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
         clearErrors,
         errors,
         watchWasHospitalized,
-        context
      } = props;
 
     return (
