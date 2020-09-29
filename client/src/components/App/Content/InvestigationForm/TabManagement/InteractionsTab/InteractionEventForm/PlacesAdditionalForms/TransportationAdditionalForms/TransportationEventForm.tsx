@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Collapse } from '@material-ui/core';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
@@ -7,13 +7,10 @@ import BusEventForm from './BusEventForm';
 import TrainEventForm from './TrainEventForm';
 import FlightEventForm from './FlightEventForm';
 import OrganizedTransportEventForm from './OrganizedTransportEventForm';
-import { InteractionEventDialogContext } from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
 
-const TransportationEventForm : React.FC = () : JSX.Element => {
-
-    const { placeSubType } = useContext(InteractionEventDialogContext).interactionEventDialogData;
+const TransportationEventForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Element => {
 
     return (
         <>
@@ -44,5 +41,9 @@ const TransportationEventForm : React.FC = () : JSX.Element => {
         </>
     );
 };
+
+interface Props {
+    placeSubType: number;
+}
 
 export default TransportationEventForm;

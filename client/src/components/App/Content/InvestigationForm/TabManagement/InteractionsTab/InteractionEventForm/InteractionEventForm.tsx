@@ -1,21 +1,19 @@
-import React, {useState, useContext} from 'react';
-import {AddCircle as AddCircleIcon} from '@material-ui/icons';
-import {
-    Collapse,
-    Grid,
-    Typography,
-    Divider,
-    IconButton,
-} from '@material-ui/core';
+import React from 'react';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers';
+import { AddCircle as AddCircleIcon } from '@material-ui/icons';
+import { Collapse, Grid, Typography, Divider, IconButton} from '@material-ui/core';
+import _ from 'lodash'
 
 import Contact from 'models/Contact';
+import { initAddress } from 'models/Address';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Toggle from 'commons/Toggle/Toggle';
-import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import useFormStyles from 'styles/formStyles';
 
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
@@ -23,238 +21,218 @@ import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/Offic
 import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
 import DefaultPlaceEventForm from './PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
-import TransportationEventForm
-    from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
-import {
-    InteractionEventDialogContext,
-    initialDialogData,
-} from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
 import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
+import useSchema from './schema';
+import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 export const defaultContact: Contact = {
   firstName: "",
   lastName: "",
-  phoneNumber: { number: "", isValid: true },
+  phoneNumber: "",
   id: "",
-  contactType: -1
+  contactType: -1,
 };
 
-const addContactButton: string = 'הוסף מגע';
+const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
+  placeType: '',
+  placeSubType: -1,
+  investigationId,
+  locationAddress: initAddress,
+  startTime,
+  endTime,
+  externalizationApproval: false,
+  contacts,
+  contactPersonPhoneNumber: "",
+})
 
-const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
-    const {
-        interactionEventDialogData,
-        setInteractionEventDialogData,
-    } = useContext(InteractionEventDialogContext);
-    const {
-        placeType,
-        startTime,
-        endTime,
-        externalizationApproval,
-        contacts,
-        placeSubType,
-        id,
-        investigationId,
-    } = interactionEventDialogData;
+const addContactButton: string = "הוסף מגע";
+const { schema } = useSchema();
 
-    const classes = useStyles();
-    const formClasses = useFormStyles();
-    const { setDefaultPlaceName } = props;
-    const [canAddContact, setCanAddContact] = useState<boolean>(false);
+const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.Element => {
+  const methods = useForm({
+    defaultValues: intractionData ? intractionData : initialDialogData( new Date(), new Date(), [], -1),
+    mode: "onBlur",
+    resolver: yupResolver(schema)
+  });
+  console.log(methods.errors);
+  console.log(methods.getValues());
 
-    const {
-        geriatric,
-        school,
-        medical,
-        office,
-        otherPublicPlaces,
-        privateHouse,
-        religion,
-        transportation,
-    } = placeTypesCodesHierarchy;
+  const formData = methods.getValues();
+  const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
+  const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
+  const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
+  const contacts = fields;
 
-    React.useEffect(() => {
-        const hasInvalidContact: boolean = contacts.some(
-            (contact) =>
-                !contact.firstName || !contact.lastName || !contact.phoneNumber
-        );
-        setCanAddContact(!hasInvalidContact);
-    }, [contacts]);
+  const classes = useStyles();
+  const formClasses = useFormStyles();
+  
+  const {
+    geriatric,
+    school,
+    medical,
+    office,
+    otherPublicPlaces,
+    privateHouse,
+    religion,
+    transportation,
+  } = placeTypesCodesHierarchy;
 
-    const onContactAdd = () => {
-        const updatedContacts = [...contacts, {...defaultContact}];
-        setInteractionEventDialogData({
-            ...interactionEventDialogData,
-            contacts: updatedContacts,
-        });
-    };
-
-    const onPlaceTypeChange = (newPlaceType: string) => {
-        setInteractionEventDialogData({
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
-            id,
-            placeType: newPlaceType,
-            externalizationApproval,
-        });
-    };
-
-    const placeNameByPlaceType = (placeSubTypeDispalyName?: string) => {
-        if (placeType === transportation.code && placeSubTypeDispalyName) {
-            return `${placeType} ${placeSubTypeDispalyName}`
-        }
-        return undefined;
+  const handleTimeChange = (currentTime : Date, interactionDate : Date, fieldName: string) => {
+    if(currentTime) {
+      let newDate = new Date(interactionDate.getTime())
+      newDate.setHours(currentTime.getHours())
+      newDate.setMinutes(currentTime.getMinutes())
+      if(newDate.getTime()) {
+        methods.setValue(fieldName, newDate)
+      }
     }
 
-    const onPlaceSubTypeChange = (newPlaceSubType: number, placeSubTypeDispalyName?: string) => {
-        setDefaultPlaceName(`${placeType} ${placeSubTypeDispalyName}`)
-        setInteractionEventDialogData({
-            ...initialDialogData(startTime, endTime, contacts, investigationId),
-            id,
-            placeType,
-            placeSubType: newPlaceSubType,
-            externalizationApproval,
-        });
-    };
+  const onSubmit = (data: any) => {
+    console.log(data);
+  }
 
-    const onExternalizationApprovalChange = (
-        event: React.MouseEvent<HTMLElement, MouseEvent>,
-        val: boolean
-    ) =>
-        setInteractionEventDialogData({
-            ...(interactionEventDialogData as InteractionEventDialogData),
-            externalizationApproval: val,
-        });
-
-    const handleTimeChange = (currentTime: Date, currentDate: Date, fieldName: keyof typeof interactionEventDialogData) => {
-        if (currentTime) {
-            let newTime = new Date(currentDate.getTime())
-            newTime.setHours(currentTime.getHours())
-            newTime.setMinutes(currentTime.getMinutes())
-            if (newTime.getTime()) {
-                setInteractionEventDialogData({
-                    ...(interactionEventDialogData as InteractionEventDialogData),
-                    [fieldName]: newTime,
-                });
-            }
-        }
-    }
-
-    return (
-        <>
-            <Grid className={formClasses.form} container justify='flex-start'>
-                <PlacesTypesAndSubTypes
-                    placeType={placeType}
-                    placeSubType={placeSubType}
-                    onPlaceTypeChange={onPlaceTypeChange}
-                    onPlaceSubTypeChange={onPlaceSubTypeChange}/>
-                {
-                    placeType === privateHouse.code &&
-                    <Collapse in={placeType === privateHouse.code}>
-                        <PrivateHouseEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === office.code &&
-                    <Collapse in={placeType === office.code}>
-                        <OfficeEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === transportation.code &&
-                    <Collapse in={placeType === transportation.code}>
-                        <TransportationEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === school.code &&
-                    <Collapse in={placeType === school.code}>
-                        <SchoolEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === medical.code &&
-                    <Collapse in={placeType === medical.code}>
-                        <MedicalLocationForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === religion.code &&
-                    <Collapse in={placeType === religion.code}>
-                        <DefaultPlaceEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === geriatric.code &&
-                    <Collapse in={placeType === geriatric.code}>
-                        <DefaultPlaceEventForm/>
-                    </Collapse>
-                }
-                {
-                    placeType === otherPublicPlaces.code &&
-                    <Collapse in={placeType === otherPublicPlaces.code}>
-                        <OtherPublicLocationForm/>
-                    </Collapse>
-                }
-                <Grid className={formClasses.formRow} container justify='flex-start'>
-                    <Grid item xs={3}>
-                        <FormInput fieldName='משעה'>
-                            <div className={classes.contactDatePicker}>
-                                <TimePick
-                                    required
-                                    test-id='contactLocationStartTime'
-                                    labelText='משעה'
-                                    value={startTime}
-                                    onChange={(newTime: Date) => handleTimeChange(newTime, interactionEventDialogData.startTime, 'startTime')}
-                                />
-                            </div>
-                        </FormInput>
-                    </Grid>
-                    <Grid item xs={3} className={classes.contactDate}>
-                        <FormInput fieldName='עד שעה'>
-                            <div className={classes.contactDatePicker}>
-                                <TimePick
-                                    required
-                                    test-id='contactLocationEndTime'
-                                    labelText='עד שעה'
-                                    value={endTime}
-                                    onChange={(newTime: Date) => handleTimeChange(newTime, interactionEventDialogData.endTime, 'endTime')}
-                                />
-                            </div>
-                        </FormInput>
-                    </Grid>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='האם מותר להחצנה'>
-                        <Toggle
-                            test-id='allowExternalization'
-                            className={formClasses.formToggle}
-                            value={externalizationApproval}
-                            onChange={onExternalizationApprovalChange}/>
-                    </FormInput>
-                </Grid>
+  return (
+    <>
+      <FormProvider {...methods}>
+      <form id="interactionEventForm" onSubmit={methods.handleSubmit(onSubmit)}>
+        <Grid className={formClasses.form} container justify="flex-start">
+          <PlacesTypesAndSubTypes
+            control={methods.control}
+            placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
+            placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
+            placeType={placeType}
+            placeSubType={placeSubType}
+          />
+          {placeType === privateHouse.code && (
+            <Collapse in={placeType === privateHouse.code}>
+              <PrivateHouseEventForm />
+            </Collapse>
+          )}
+          {placeType === office.code && (
+            <Collapse in={placeType === office.code}>
+              <OfficeEventForm />
+            </Collapse>
+          )}
+          {placeType === transportation.code && (
+            <Collapse in={placeType === transportation.code}>
+              <TransportationEventForm placeSubType={placeSubType} />
+            </Collapse>
+          )}
+          {placeType === school.code && (
+            <Collapse in={placeType === school.code}>
+              <SchoolEventForm placeSubType={placeSubType} />
+            </Collapse>
+          )}
+          {placeType === medical.code && (
+            <Collapse in={placeType === medical.code}>
+              <MedicalLocationForm placeSubType={placeSubType} />
+            </Collapse>
+          )}
+          {(placeType === religion.code || placeType === geriatric.code) && (
+            <Collapse in={placeType === religion.code || placeType === geriatric.code}>
+              <DefaultPlaceEventForm />
+            </Collapse>
+          )}
+          {placeType === otherPublicPlaces.code && (
+            <Collapse in={placeType === otherPublicPlaces.code}>
+              <OtherPublicLocationForm placeSubType={placeSubType} />
+            </Collapse>
+          )}
+          <Grid className={formClasses.formRow} container justify="flex-start">
+            <Grid item xs={6}>
+              <FormInput fieldName="משעה">
+                <Controller 
+                  name={InteractionEventDialogFields.START_TIME}
+                  control={methods.control}
+                  render={(props) => (
+                    <TimePick
+                      test-id="contactLocationStartTime"
+                      value={props.value}
+                      onChange={(newTime: Date) => handleTimeChange(newTime, 
+                                                                    formData[InteractionEventDialogFields.START_TIME],
+                                                                    InteractionEventDialogFields.START_TIME)}
+                      required
+                      labelText="משעה"
+                    />
+                  )}
+                />
+              </FormInput>
             </Grid>
-            <Divider light={true}/>
-            <Grid container className={formClasses.form + ' ' + classes.spacedOutForm}>
-                <div className={classes.newContactFieldsContainer}>
-                    {
-                        contacts.map((contact: Contact, index: number) =>
-                            <ContactForm updatedContactIndex={index}/>)
-                    }
-                    <IconButton test-id='addContact' onClick={onContactAdd} disabled={!canAddContact}>
-                        <AddCircleIcon color={!canAddContact ? 'disabled' : 'primary'}/>
-                    </IconButton>
-                    <Typography variant='caption'
-                                className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}>{addContactButton}
-                    </Typography>
-                </div>
+            <Grid item xs={6}>
+              <FormInput fieldName="עד שעה">
+                <Controller 
+                  name={InteractionEventDialogFields.END_TIME}
+                  control={methods.control}
+                  render={(props) => (
+                    <TimePick
+                      error={_.get(methods.errors, props.name)}
+                      test-id="contactLocationEndTime"
+                      value={props.value}
+                      onChange={(newTime:Date) => handleTimeChange(newTime, 
+                                                                   formData[InteractionEventDialogFields.END_TIME],
+                                                                   InteractionEventDialogFields.END_TIME)}
+                      required
+                      labelText={_.get(methods.errors, props.name) ? _.get(methods.errors, props.name).message : "עד שעה"}
+                    />
+                  )}
+                />
+              </FormInput>
             </Grid>
-        </>
-    );
+          </Grid>
+          <Grid className={formClasses.formRow} container justify="flex-start">
+            <FormInput fieldName="האם מותר להחצנה">
+              <Controller 
+                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                control={methods.control}
+                render={(props) => (
+                  <Toggle
+                    test-id="allowExternalization"
+                    value={props.value}
+                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                    className={formClasses.formToggle}       
+                  />
+                )}
+              />
+            </FormInput>
+          </Grid>
+        </Grid>
+        <Divider light={true} />
+        <Grid
+          container
+          className={formClasses.form + " " + classes.spacedOutForm}
+        >
+          <div className={classes.newContactFieldsContainer}>
+            {contacts.map((contact, index: number) => (
+              <ContactForm key={index} updatedContactIndex={index}/>
+            ))}
+            <Grid item>
+              <IconButton
+                test-id="addContact"
+                onClick={() => append(defaultContact)}
+              >
+                <AddCircleIcon color="primary" />
+              </IconButton>
+              <Typography
+                variant="caption"
+                className={formClasses.fieldName + " " + classes.fieldNameNoWrap}
+              >
+                {addContactButton}
+              </Typography>
+            </Grid>
+          </div>
+        </Grid>
+        </form>
+    </FormProvider>
+    </>
+  );
+}
 };
 
-export default InteractionEventForm;
 
 interface Props {
-    setDefaultPlaceName: React.Dispatch<React.SetStateAction<string>>
+  intractionData?: InteractionEventDialogData;
 }
+export default InteractionEventForm;
+
