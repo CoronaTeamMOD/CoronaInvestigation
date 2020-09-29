@@ -212,31 +212,33 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <Avatar className={classes.avatar}>2</Avatar>
                                                     <Typography><b>פרטי מגע וכניסה לבידוד</b></Typography>
                                                 </Grid>
-                                                <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl>
-                                                            <Select
-                                                                name={InteractedContactFields.FAMILY_RELATIONSHIP}
-                                                                placeholder='קרבה משפחתית'
-                                                                value={interactedContact.familyRelationship}
-                                                                onChange={(event) =>
-                                                                    updateInteractedContact(interactedContact, InteractedContactFields.FAMILY_RELATIONSHIP, event.target.value
-                                                                )}
-                                                            >
-                                                                {
-                                                                    familyRelationships?.map((familyRelationship) => (
-                                                                        <MenuItem
-                                                                            key={familyRelationship.id}
-                                                                            value={familyRelationship.id}>
-                                                                            {familyRelationship.displayName}
-                                                                        </MenuItem>
-                                                                    ))
-                                                                }
-                                                            </Select>
-                                                        </FormControl>
+                                                <Grid item>
+                                                    <Grid container>
+                                                        <Grid item xs={6}>
+                                                            <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
+                                                        </Grid>
+                                                        <Grid item xs={6}>
+                                                            <FormControl>
+                                                                <Select
+                                                                    name={InteractedContactFields.FAMILY_RELATIONSHIP}
+                                                                    placeholder='קרבה משפחתית'
+                                                                    value={interactedContact.familyRelationship}
+                                                                    onChange={(event) =>
+                                                                        updateInteractedContact(interactedContact, InteractedContactFields.FAMILY_RELATIONSHIP, event.target.value
+                                                                    )}
+                                                                >
+                                                                    {
+                                                                        familyRelationships?.map((familyRelationship) => (
+                                                                            <MenuItem
+                                                                                key={familyRelationship.id}
+                                                                                value={familyRelationship.id}>
+                                                                                {familyRelationship.displayName}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Grid>
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item>
