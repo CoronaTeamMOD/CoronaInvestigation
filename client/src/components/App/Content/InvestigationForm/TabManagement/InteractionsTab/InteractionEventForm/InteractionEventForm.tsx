@@ -66,7 +66,6 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.E
 
   const classes = useStyles();
   const formClasses = useFormStyles();
-  
   const {
     geriatric,
     school,
