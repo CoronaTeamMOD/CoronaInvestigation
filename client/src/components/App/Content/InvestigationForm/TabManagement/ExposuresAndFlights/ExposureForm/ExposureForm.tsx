@@ -69,7 +69,7 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput testId='exposureAddress' fieldName="כתובת החשיפה:">
-          <Map required
+          <Map 
                setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
                selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
       </FormRowWithInput>
