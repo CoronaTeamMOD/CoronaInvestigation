@@ -1,4 +1,4 @@
-import { gql } from 'postgraphile';
+import {gql} from 'postgraphile';
 
 export const GET_CONTACTED_PEOPLE = gql`
 query ContactedPeopleByInvestigationId ($investigationId: Int!) {
