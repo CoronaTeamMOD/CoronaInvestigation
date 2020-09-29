@@ -11,10 +11,9 @@ import { interactedContactsContext } from 'commons/Contexts/InteractedContactsCo
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { LandingPageTimer } from '../InvestigationInfoBar';
 import { InvestigatedPersonInfoOutcome, InvestigatedPersonInfoIncome } from './InvestigatedPersonInfoInterfaces';
 
-const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
+const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     let history = useHistory();
     const classes = useStyles({});
@@ -53,7 +52,6 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
     };
 
     const handleInvestigationFinish = async () => {
-        onExitInvestigation().then(() => {
             Swal.fire({
                 icon: 'success',
                 title: 'בחרת לצאת מהחקירה לפני השלמתה! הפרטים נשמרו בהצלחה, הנך מועבר לעמוד הנחיתה',
@@ -63,11 +61,8 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(LandingPageTimer).then(() => {
-                history.push(landingPageRoute);
-                interactedContactsState.interactedContacts = [];
-            });
-        }).catch(() => handleUnfinishedInvestigationFailed());    
+            timeout(1900).then(()=> history.push(landingPageRoute))
+            .catch(() => handleUnfinishedInvestigationFailed());
     };
 
     const getPersonAge = (birthDate: Date) => {
