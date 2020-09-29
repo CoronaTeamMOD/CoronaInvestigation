@@ -1,40 +1,34 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
     
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './EditInteractionEventDialogStyles';
-import useEditInteractionEventDialog from './useEditInteractionEventDialog';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { closeDialog, eventToEdit, isOpen, updateInteraction } = props;
+    const { closeEditDialog, eventToEdit, isOpen, loadInteractionById } = props;
     
     const classes = useStyles();
     
-    const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
-
-    const canConfirm = React.useMemo<boolean>(() => true, []);
-
-    const { editInteractionEvent, shouldDisableSubmitButton } = useEditInteractionEventDialog({closeDialog, updateInteraction, canConfirm, interactionEventDialogData});
-
-    const onConfirm = () => editInteractionEvent(interactionEventDialogData)
-
-
     return (
         <Dialog classes={{paper: classes.dialogPaper}} open={isOpen} maxWidth={false}>
             <DialogTitle className={classes.dialogTitleWrapper}>
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm intractionData={eventToEdit} />
+                    <InteractionEventForm 
+                        intractionData={eventToEdit}
+                        loadInteractionById={loadInteractionById}
+                        closeEditDialog={closeEditDialog}
+                    />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
                 <Button 
-                    onClick={() => closeDialog()}
+                    onClick={() => closeEditDialog()}
                     color='default' 
                     className={classes.cancelButton}>
                     בטל
@@ -42,9 +36,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                 <PrimaryButton
                     form="interactionEventForm"
                     type="submit"
-                    disabled={shouldDisableSubmitButton()}
                     id='createContact'
-                    // onClick={() => onConfirm()}
                 >
                     שמור שינויים
                 </PrimaryButton>
@@ -58,6 +50,6 @@ export default EditInteractionEventDialog;
 export interface Props {
     isOpen: boolean,
     eventToEdit: InteractionEventDialogData
-    closeDialog: () => void,
-    updateInteraction: (updatedInteraction: InteractionEventDialogData) => void,
+    closeEditDialog: () => void,
+    loadInteractionById: (interactionId: any) => void,
 }
