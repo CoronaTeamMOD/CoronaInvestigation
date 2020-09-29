@@ -10,11 +10,7 @@ export interface ContactedPerson {
     relationship: string;
     familyRelationship: number,
     doesHaveBackgroundDiseases: boolean;
-    occupation: {
-        id: number,
-        displayName: string,
-    };
-
+    occupation: string,
     cantReachContact: boolean;
     contactedPersonCity: {
         id: number,
