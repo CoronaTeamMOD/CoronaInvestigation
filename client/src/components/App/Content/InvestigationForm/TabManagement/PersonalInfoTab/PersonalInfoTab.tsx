@@ -23,11 +23,10 @@ import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
-import { setFormState } from 'redux/Form/formActionCreators';
-
 
 const PHONE_LABEL = 'טלפון:';
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
@@ -44,38 +43,38 @@ const CONTACT_INFO = 'תיאור איש קשר:';
 
 const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const schema = yup.object().shape({
-        [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר שהוזן אינו תקין'),
-        [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר שהוזן אינו תקין'),
-        [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר שהוזן אינו תקין'),
-        [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required('שדה זה הינו שדה חובה'),
-        [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+        [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required('שגיאה: שדה חובה'),
+        [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required('שגיאה: שדה חובה'),
         [PersonalInfoDataContextFields.STREET]:  yup.string().nullable(),
         [PersonalInfoDataContextFields.STREET]:  yup.string().when(
             PersonalInfoDataContextFields.CITY, {
                 is: null,
-                else: yup.string().required('שדה זה הינו שדה חובה'),
+                else: yup.string().required('שגיאה: שדה חובה'),
                 then: yup.string()
             }
         ),
-        [PersonalInfoDataContextFields.FLOOR]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר שהוזן אינו תקין'),
-        [PersonalInfoDataContextFields.HOUSE_NUMBER]: yup.string().nullable().required('שדה זה הינו שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר שהוזן אינו תקין'),
-        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+        [PersonalInfoDataContextFields.FLOOR]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.HOUSE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^[0-9]*$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.RELEVANT_OCCUPATION]: yup.string().nullable().required('שגיאה: שדה חובה'),
         [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
             PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
                 is: 'מערכת החינוך',
-                then: yup.string().required('שדה זה הינו שדה חובה'),
+                then: yup.string().required('שגיאה: שדה חובה'),
                 else: yup.string()
             }
         ),
         [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
             return ['מערכת הבריאות', 'מערכת החינוך','כוחות הביטחון'].find(element => element === relevantOccupation)? 
-            schema.nullable().required('שדה זה הינו שדה חובה') : 
+            schema.nullable().required('שגיאה: שדה חובה') : 
             schema
         }),
         [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
             return ['מערכת הבריאות', 'מערכת החינוך','כוחות הביטחון'].find(element => element === relevantOccupation)? 
             schema.nullable() :
-            schema.nullable().required('שדה זה הינו שדה חובה')  
+            schema.nullable().required('שגיאה: שדה חובה')  
         }),
     })
     
@@ -218,13 +217,14 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         render={(props) => (
                             <TextField
                                 id={PHONE_LABEL}
+                                className={classes.phoneInput}
                                 value={props.value}
                                 onChange={(newValue) => (
                                     props.onChange(newValue.target.value)
                                 )}
                                 placeholder={PHONE_LABEL}
                                 error={errors[PersonalInfoDataContextFields.PHONE_NUMBER]}
-                                label={errors[PersonalInfoDataContextFields.PHONE_NUMBER]? errors[PersonalInfoDataContextFields.PHONE_NUMBER]?.message: 'טלפון' }
+                                label={errors[PersonalInfoDataContextFields.PHONE_NUMBER]? errors[PersonalInfoDataContextFields.PHONE_NUMBER]?.message: 'טלפון*' }
                                 onBlur={props.onBlur}
                             />
                         )}
@@ -247,13 +247,14 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         render={(props) => (
                             <TextField
                                 id={ADDITIONAL_PHONE_LABEL}
+                                className={classes.phoneInput}
                                 value={props.value}
                                 onChange={(newValue) => (
                                     props.onChange(newValue.target.value)
                                 )}
                                 placeholder={PHONE_LABEL}
                                 error={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]}
-                                label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message: 'טלפון' }
+                                label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message: 'טלפון*' }
                                 onBlur={props.onBlur}
                             />
                         )}
@@ -276,13 +277,14 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         render={(props) => (
                             <TextField
                                 id={CONTACT_PHONE_LABEL}
+                                className={classes.phoneInput}
                                 value={props.value}
                                 onChange={(newValue) => (
                                     props.onChange(newValue.target.value)
                                 )}
                                 placeholder={PHONE_LABEL}
                                 error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message: 'טלפון' }
+                                label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message: 'טלפון*' }
                                 onBlur={props.onBlur}
                             />
                         )}
@@ -303,6 +305,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 errors={errors}
                                 placeholder={CONTACT_INFO}
                                 onBlur={props.onBlur}
+                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO]? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message: 'פרטי איש קשר*' }
                                 className={classes.contactDescription}
                             />
                         )}
@@ -322,7 +325,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                             <InputLabel error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}>
                                 {errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] ? 
                                 errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message : 
-                                'גורם מבטח'}
+                                'גורם מבטח*'}
                             </InputLabel>
                             <Controller
                                 name={PersonalInfoDataContextFields.INSURANCE_COMPANY}
@@ -334,7 +337,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         onChange={(event) => (
                                             props.onChange(event.target.value)
                                         )}
-                                        label={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]? errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message: 'גורם מבטח' }
+                                        label={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]? errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message: 'גורם מבטח*' }
                                         error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}
                                         onBlur={props.onBlur}
                                     >
@@ -387,7 +390,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                             test-id='insertInstitutionName'
                                             value={props.value? props.value : ''}
                                             //disabled={subOccupations.length === 0}
-                                            label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'כתובת' }
+                                            label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'כתובת*' }
                                             error={errors[PersonalInfoDataContextFields.CITY]}
                                             onBlur={props.onBlur}
                                             id={PersonalInfoDataContextFields.CITY}
@@ -404,7 +407,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 name={PersonalInfoDataContextFields.STREET}
                                 control={control}
                                 render={(props) => (
-                                    <Autocomplete
+                                    <Autocomplete   
                                         size='small'
                                         options={streets}
                                         getOptionLabel={(option) => {
@@ -429,7 +432,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 value={props.value? props.value : ''}
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.STREET]}
-                                                label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב' }
+                                                label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב*' }
                                                 onBlur={props.onBlur}
                                                 id={PersonalInfoDataContextFields.STREET}
                                                 placeholder={'רחוב'}
@@ -447,6 +450,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         render={(props) => (
                             <AlphanumericTextField
                                 test-id='personalDetailsFloor'
+                                className={classes.floorInput}
                                 name={PersonalInfoDataContextFields.FLOOR}
                                 value={props.value}
                                 onBlur={props.onBlur}
@@ -457,6 +461,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 clearErrors={clearErrors}
                                 errors={errors}
                                 placeholder={'קומה'}
+                                label={errors[PersonalInfoDataContextFields.FLOOR]? errors[PersonalInfoDataContextFields.FLOOR]?.message: 'קומה*' }
                             />
                         )}
                     />
@@ -468,6 +473,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         render={(props) => (
                             <AlphanumericTextField
                                 test-id='personalDetailsHouseNumber'
+                                className={classes.houseNumInput}
                                 name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                                 value={props.value}
                                 onBlur={props.onBlur}
@@ -478,6 +484,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 clearErrors={clearErrors}
                                 errors={errors}
                                 placeholder={'מספר בית'}
+                                label={errors[PersonalInfoDataContextFields.HOUSE_NUMBER]? errors[PersonalInfoDataContextFields.HOUSE_NUMBER]?.message: 'מספר בית*' }
                             />
                         )}
                     />
@@ -546,7 +553,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
                                                 label={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]? 
-                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד' }
+                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד*' }
                                                 onBlur={props.onBlur}
                                                 test-id='institutionCity'
                                                 id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
@@ -583,7 +590,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                     {...params}
                                                     error={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
                                                     label={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]? 
-                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד' }
+                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד*' }
                                                     onBlur={props.onBlur}
                                                     test-id='insertInstitutionName'
                                                     disabled={subOccupations.length === 0}
@@ -609,7 +616,11 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         setError={setError}
                                         clearErrors={clearErrors}
                                         errors={errors}
-                                        placeholder={subOccupationsPlaceHolderByOccupation()}                                    />
+                                        placeholder={subOccupationsPlaceHolderByOccupation()}      
+                                        label={errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?
+                                             errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: 'שם המוסד*' }
+ 
+                                        />
                                 )}
                             />
                         }
