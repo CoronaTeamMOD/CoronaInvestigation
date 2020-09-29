@@ -26,17 +26,19 @@ import SymptomsFields from './SymptomsFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 import HospitalFields from './HospitalFields';
 
+const requiredText = 'שדה זה הוא חובה';
+
 const isInIsolationDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().required('אנא מלא את שדה התאריך').typeError('שדה זה הוא חובה'),
+    then: yup.date().required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
 
 const wasHospitilizedDateSchema = yup.date().when(
-    ClinicalDetailsFields.IS_IN_ISOLATION, {
+    ClinicalDetailsFields.WAS_HOPITALIZED, {
     is: true,
-    then: yup.date().required('אנא מלא את שדה התאריך').typeError('אנא מלא את שדה התאריך'),
+    then: yup.date().required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
 
@@ -59,7 +61,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
         is: true,
-        then: yup.date().required(),
+        then: yup.date().required(requiredText).typeError(requiredText),
         otherwise: yup.date().nullable()
     }
     ),
@@ -93,7 +95,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(schema)
     });
-    console.log(getValues())
     const context = React.useContext(clinicalDetailsDataContext);
     const { city, street } = context.clinicalDetailsData.isolationAddress;
 
