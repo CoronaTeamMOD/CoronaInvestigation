@@ -13,6 +13,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
         identificationNumber
         birthDate
         additionalPhoneNumber
+        gender
       }
       contactEventByContactEvent {
         startTime
