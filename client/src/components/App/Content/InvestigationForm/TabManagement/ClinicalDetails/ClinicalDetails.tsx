@@ -69,10 +69,14 @@ const schema = yup.object().shape({
         is: true,
         then: yup.array().of(yup.string()).min(1).required(),
         otherwise: yup.array().of(yup.string())
-    }
-    ),
-    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean(),
-    [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.string(),
+    }),
+    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().required(),
+    [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.array().of(yup.string()).when(
+        ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, {
+        is: true,
+        then: yup.array().of(yup.string()).min(1).required(),
+        otherwise: yup.array().of(yup.string())
+    }),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string().when(
         ClinicalDetailsFields.WAS_HOPITALIZED, {
@@ -145,22 +149,24 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
         }
     };
 
-    const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
-        let selectedBackgroundDiseases = context.clinicalDetailsData.backgroundDeseases;
-
-        if (selectedBackgroundDiseases.includes(backgroundIllness)) {
-            selectedBackgroundDiseases = selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness);
+    const handleBackgroundIllnessCheck = (
+        checkedBackgroundIllness: string,
+        onChange: (newBackgroundDiseases: string[]) => void,
+        selectedBackgroundDiseases: string[]
+        ) => {
+        if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
+            onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
         } else {
-            selectedBackgroundDiseases.push(backgroundIllness);
+            onChange([...selectedBackgroundDiseases, checkedBackgroundIllness]);
         };
-
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
 
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
     const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
     const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
+    const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
+    const watchBackgroundDiseases = watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
 
     return (
         <div className={classes.form}>
@@ -274,7 +280,10 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                 clearErrors={clearErrors}
                 errors={errors}
                 context={context}
+                control={control}
                 updateClinicalDetails={updateClinicalDetails}
+                watchBackgroundDiseases={watchBackgroundDiseases}
+                watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
             />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <HospitalFields
