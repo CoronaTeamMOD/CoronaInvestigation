@@ -9,6 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
+import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
@@ -55,7 +56,31 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    React.useEffect(() => { 
+    const noInvestigationError = () => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
+            customClass: {
+                title: classes.swalTitle
+            },
+            timer: 1750,
+            showConfirmButton: false
+        });
+
+        timeout(1900).then(() => history.push(landingPageRoute));
+    }
+
+    React.useEffect(() => {
+        if (localStorage.selectedEpidemiologyNumber) {
+            setEpidemiologyNum(parseInt(localStorage.selectedEpidemiologyNumber))
+            localStorage.removeItem("selectedEpidemiologyNumber");
+        } else {
+            noInvestigationError();
+        }
+    }, []);
+
+    React.useEffect(() => {
+        epidemiologyNumber !== -1 &&
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
@@ -64,19 +89,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
                 setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
             }
             else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
-                    customClass: {
-                        title: classes.swalTitle
-                    },
-                    timer: 1750,
-                    showConfirmButton: false
-                });
-
-                timeout(1900).then(() => history.push(landingPageRoute));
+                noInvestigationError();
             }
-        })
+        }) 
     }, [epidemiologyNumber]);
 
     return (

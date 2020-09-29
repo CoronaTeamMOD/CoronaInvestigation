@@ -47,6 +47,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streetName, setStreetName] = React.useState<string>('');
     const [streets, setStreets] = React.useState<Street[]>([]);
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
     const personalInfoStateContext = React.useContext(personalInfoContext);
     const { relevantOccupation, phoneNumber, address, contactInfo, insuranceCompany,
         otherOccupationExtraInfo, educationOccupationCity, additionalPhoneNumber, contactPhoneNumber } = personalInfoStateContext.personalInfoData;
@@ -96,8 +98,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     });
 
     React.useEffect(() => {
-        fetchPersonalInfo();
-    }, [])
+        fetchPersonalInfo(epidemiologyNumber);
+    }, [epidemiologyNumber])
 
     React.useEffect(() => {
         if (relevantOccupation === Occupations.DEFENSE_FORCES ||

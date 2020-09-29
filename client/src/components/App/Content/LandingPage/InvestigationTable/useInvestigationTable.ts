@@ -17,6 +17,8 @@ import { setCantReachInvestigated } from 'redux/Investigation/investigationActio
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
 
+const investigationURL = '/investigation';
+
 export const createRowData = (
   epidemiologyNumber: number,
   status: string,
@@ -100,8 +102,8 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   }, [user.id, classes.errorAlertTitle]);
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
-    setEpidemiologyNum(epidemiologyNumberVal);
-    history.push('/investigation');
+    localStorage.setItem("selectedEpidemiologyNumber", JSON.stringify(epidemiologyNumberVal))
+    window.open(investigationURL);
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {

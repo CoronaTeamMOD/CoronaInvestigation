@@ -14,7 +14,7 @@ export interface usePersoanlInfoTabParameters {
 }
 
 export interface usePersonalInfoTabOutcome {
-    fetchPersonalInfo: () => void;
+    fetchPersonalInfo: (epidemiologyNumber: number) => void;
     getSubOccupations: (parentOccupation: string) => void;
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;
