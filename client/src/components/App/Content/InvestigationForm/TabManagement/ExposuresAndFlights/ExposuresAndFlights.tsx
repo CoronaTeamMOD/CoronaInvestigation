@@ -19,8 +19,7 @@ const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 const ExposuresAndFlights = () => {
-  const context = useContext(exposureAndFlightsContext);
-  const { exposureAndFlightsData, setExposureDataAndFlights } = context;
+  const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures } = exposureAndFlightsData;
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -29,12 +28,12 @@ const ExposuresAndFlights = () => {
   const classes = useStyles();
 
   const disableConfirmedExposureAddition : boolean= React.useMemo(() => 
-  exposures.some(exposure => exposure.wasConfirmedExposure && isConfirmedExposureInvalid(exposure))
-  , [exposures]);
+    exposures.some(exposure => exposure.wasConfirmedExposure && isConfirmedExposureInvalid(exposure))
+    , [exposures]);
   
   const disableFlightAddition : boolean= React.useMemo(() => 
-  exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
-  , [exposures]);
+    exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
+    , [exposures]);
 
   const [wereConfirmedExposures, setWereConfirmedExposures] = useState<boolean>(false);
   const [wereFlights, setWereFlights] = useState<boolean>(false);

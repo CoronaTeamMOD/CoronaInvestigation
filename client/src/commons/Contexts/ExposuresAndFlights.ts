@@ -4,7 +4,7 @@ import FlightData from 'models/FlightData';
 
 export type Exposure = ExposureData & FlightData;
 
-export interface ExposureAndFlightsDetails {
+export type ExposureAndFlightsDetails = {
     exposures: Exposure[]
 }
 
@@ -61,9 +61,8 @@ export const initialExposureOrFlight: Exposure = {
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
-    !exposure.exposureFirstName || 
-    !exposure.exposureLastName || 
-    !exposure.exposureAddress
+    !(exposure.exposureFirstName && exposure.exposureLastName ) &&
+    (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
 
 export const isFlightInvalid = (exposure: Exposure) =>
     !exposure.flightDestinationCity || 

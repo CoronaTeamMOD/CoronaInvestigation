@@ -13,7 +13,6 @@ exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
 );
 
 exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
-    console.log(JSON.stringify(request.body));
     return graphqlRequest(UPDATE_EXPOSURES, response.locals, {
         inputExposure: JSON.stringify(request.body)
     })
