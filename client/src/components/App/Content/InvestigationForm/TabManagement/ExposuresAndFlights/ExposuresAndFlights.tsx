@@ -14,6 +14,8 @@ import useFormStyles from 'styles/formStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
+import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
@@ -21,6 +23,7 @@ const addFlightButton: string = 'הוסף טיסה לחול';
 const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures } = exposureAndFlightsData;
+  const {saveExposureAndFlightData} = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -91,7 +94,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const saveExposure = (e: any, exposuresAndFlightsData: any ) => {
     e.preventDefault();
     console.log("ExposureTab");
-    onSubmit();
+    saveExposureAndFlightData().then(onSubmit);
+    
     // saveExposuresAndFlightsData(exposuresAndFlightsData);
   }
 
@@ -200,7 +204,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
       </form>
     </>
   );
-  //}
 };
 
 interface Props {

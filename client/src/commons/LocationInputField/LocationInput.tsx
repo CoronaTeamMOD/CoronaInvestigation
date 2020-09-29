@@ -79,7 +79,6 @@ const  LocationInput = (props: LocationInputProps) => {
 
     return (
         <AutocompletedField
-            required
             value={parsedSelected}
             options={locationOptions}
             onChange={setSelectedAddress}
