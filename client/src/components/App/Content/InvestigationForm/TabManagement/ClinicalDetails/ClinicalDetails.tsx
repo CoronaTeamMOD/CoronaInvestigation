@@ -70,6 +70,7 @@ const schema = yup.object().shape({
         then: yup.array().of(yup.string()).min(1).required(),
         otherwise: yup.array().of(yup.string())
     }),
+    [ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO]: yup.string(),
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().required(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, {
@@ -93,7 +94,7 @@ const schema = yup.object().shape({
 
 const ClinicalDetails: React.FC = (): JSX.Element => {
     const classes = useStyles();
-    const { control, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
+    const { control, setValue, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(schema)
@@ -168,6 +169,43 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
+
+    
+    React.useEffect(() => {
+        if (watchIsInIsolation === false) {
+            setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
+            setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
+        }
+    }, [watchIsInIsolation]);
+    
+    React.useEffect(() => {
+        if (watchIsIsolationProblem === false) {
+            setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
+        }
+    }, [watchIsIsolationProblem]);
+
+    React.useEffect(() => {
+        if (watchDoesHaveSymptoms === false) {
+            setValue(ClinicalDetailsFields.SYMPTOMS, []);
+            setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+            setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+        }
+    }, [watchDoesHaveSymptoms]);
+
+    React.useEffect(() => {
+        if (watchDoesHaveBackgroundDiseases === false) {
+            setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
+            setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+        }
+    }, [watchDoesHaveBackgroundDiseases]);
+
+    React.useEffect(() => {
+        if (watchWasHospitalized === false) {
+            setValue(ClinicalDetailsFields.HOSPITAL, '');
+            setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);
+            setValue(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, null);
+        }
+    }, [watchWasHospitalized]);
 
     return (
         <div className={classes.form}>
