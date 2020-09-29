@@ -51,7 +51,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
+                    <InteractionEventForm />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
                 <Button

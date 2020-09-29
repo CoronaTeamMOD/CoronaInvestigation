@@ -49,7 +49,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const addContactButton: string = "הוסף מגע";
 const { schema } = useSchema();
 
-const InteractionEventForm: React.FC<Props> = ({ intractionData, setDefaultPlaceName }: Props): JSX.Element => {
+const InteractionEventForm: React.FC<Props> = ({ intractionData }: Props): JSX.Element => {
   const methods = useForm({
     defaultValues: intractionData ? intractionData : initialDialogData( new Date(), new Date(), [], -1),
     mode: "onBlur",
@@ -64,12 +64,8 @@ const InteractionEventForm: React.FC<Props> = ({ intractionData, setDefaultPlace
   const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
   const contacts = fields;
 
-  const { setDefaultPlaceName } = props;
-
   const classes = useStyles();
   const formClasses = useFormStyles();
-
-  const [canAddContact, setCanAddContact] = useState<boolean>(false);
   
   const {
     geriatric,
@@ -239,6 +235,3 @@ interface Props {
 
 export default InteractionEventForm;
 
-interface Props {
-  setDefaultPlaceName: React.Dispatch<React.SetStateAction<string>>
-}

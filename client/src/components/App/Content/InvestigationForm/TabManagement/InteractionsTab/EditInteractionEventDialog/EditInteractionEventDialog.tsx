@@ -15,7 +15,6 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
     
     const classes = useStyles();
     
-    const [defaultPlaceName, setDefaultPlaceName] = useState<string>('');
     const [interactionEventDialogData, setInteractionEventDialogData] = useState<InteractionEventDialogData>(eventToEdit);
 
     const canConfirm = React.useMemo<boolean>(() => true, []);
@@ -30,7 +29,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm intractionData={eventToEdit} setDefaultPlaceName={setDefaultPlaceName}/>
+                    <InteractionEventForm intractionData={eventToEdit}/>
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
                 <Button 
