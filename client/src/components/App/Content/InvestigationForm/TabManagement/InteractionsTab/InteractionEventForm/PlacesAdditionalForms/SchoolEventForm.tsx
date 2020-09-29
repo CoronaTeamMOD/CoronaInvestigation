@@ -31,13 +31,16 @@ export const highSchoolGrades = [
     'יב',
 ]
 
+const numbersRegex = /(\d+)/;
+const hebrewLettersRegex = /([א-ת]+)/;
+
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
 const SchoolEventForm : React.FC = () : JSX.Element => {
 
     const formClasses = useFormStyles();
     const { setInteractionEventDialogData, interactionEventDialogData } = useContext(InteractionEventDialogContext);
-    const { placeSubType } = interactionEventDialogData;
+    const { placeSubType, grade } = interactionEventDialogData;
 
     const [grades, setGrades] = useState<string[]>([]);
 
@@ -45,19 +48,26 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
         let gradesOptions : string[] = [];
         if (placeSubType === elementarySchool) gradesOptions = elementarySchoolGrades;
         else if (placeSubType === highSchool) gradesOptions = highSchoolGrades;
-        if (placeSubType > 0) setInteractionEventDialogData({...interactionEventDialogData, grade: gradesOptions[0]});
+        if (placeSubType !== -1 && !grade) onChange(gradesOptions[0], InteractionEventDialogFields.GRADE);
         setGrades(gradesOptions);
     }, [placeSubType])
 
     const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
         setInteractionEventDialogData({...interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
-
+    
+    const onGradeNumberChange = (number: string) => {
+        if (grade) {
+            const newGrade = grade.search(numbersRegex) === -1 ? grade + number :  grade.replace(numbersRegex, number);
+            onChange(newGrade, InteractionEventDialogFields.GRADE);
+        }
+    }
+    
     const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <FormInput fieldName='שם המוסד'>
                         <AlphanumericTextField
                             errors={errors}
@@ -70,25 +80,40 @@ const SchoolEventForm : React.FC = () : JSX.Element => {
                 </Grid>
                 {
                     grades.length > 0 &&
-                    <Grid item xs={2}>
+                    <>
+                    <Grid item xs={1}/>
+                    <Grid item xs={3}>
                         <FormInput fieldName='כיתה'>
                             <FormControl fullWidth>
                                 <InputLabel>כיתה</InputLabel>
                                 <Select
                                     test-id={'classGrade'}
                                     label='כיתה'
-                                    value={interactionEventDialogData.grade}
-                                    onChange={(event: React.ChangeEvent<any>) => onChange(event.target.value, InteractionEventDialogFields.GRADE)}
+                                    value={grade?.split(numbersRegex)[0]}
+                                    onChange={(event: React.ChangeEvent<any>) => grade && onChange(grade.replace((hebrewLettersRegex), event.target.value), InteractionEventDialogFields.GRADE)}
                                 >
-                                    {
-                                        grades.map((currentGrade) => (
-                                            <MenuItem key={currentGrade} value={currentGrade}>{currentGrade}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </FormControl>
+                                {
+                                    grades.map((currentGrade) => (
+                                        <MenuItem key={currentGrade} value={currentGrade}>{currentGrade}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
                         </FormInput>
                     </Grid>
+                    <Grid item xs={1}/>
+                    <Grid item xs={3}>
+                        <FormInput fieldName='מספר כיתה'>
+                            <AlphanumericTextField
+                                errors={errors}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                name={InteractionEventDialogFields.GRADE}
+                                value={grade?.split(numbersRegex)[1] || ''}
+                                onChange={newValue => onGradeNumberChange(newValue)}/>
+                        </FormInput>
+                    </Grid>
+                    </>
                 }
             </div>
             <AddressForm />
