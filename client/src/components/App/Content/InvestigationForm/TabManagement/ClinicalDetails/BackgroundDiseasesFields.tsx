@@ -16,11 +16,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
         watchDoesHaveBackgroundDiseases,
         backgroundDiseases,
         handleBackgroundIllnessCheck,
-        updateClinicalDetails,
         setError,
         clearErrors,
         errors,
-        context
     } = props;
 
     return (
@@ -114,11 +112,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 interface Props {
     classes: any;
     control?: any;
-    updateClinicalDetails: any;
     setError: any;
     clearErrors: any;
     errors: any;
-    context: any;
     hasBackgroundDeseasesToggle: any;
     backgroundDiseases: any;
     handleBackgroundIllnessCheck: any;

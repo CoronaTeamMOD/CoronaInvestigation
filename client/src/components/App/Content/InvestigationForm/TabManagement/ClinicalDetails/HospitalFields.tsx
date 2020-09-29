@@ -13,10 +13,10 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { 
         classes,
         control,
-        updateClinicalDetails,
         setError,
         clearErrors,
         errors,
+        watchWasHospitalized,
         context
      } = props;
 
@@ -47,21 +47,32 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                     />  
                 </Grid>
                 <Grid item xs={4}>
-                    <Collapse in={context.clinicalDetailsData.wasHospitalized}>
+                    <Collapse in={watchWasHospitalized}>
                         <div className={classes.dates}>
                             <Typography>
                                 <b>
                                     בית חולים:
                                 </b>
                             </Typography>
-                            <TextField
-                                className={classes.hospitalInput}
-                                required
-                                label='בית חולים'
-                                test-id='hospitalInput'
-                                value={context.clinicalDetailsData.hospital}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
+                            <Controller
+                                name={ClinicalDetailsFields.HOSPITAL}
+                                control={control}
+                                render={(props) => (
+                                    <AlphanumericTextField
+                                        className={classes.hospitalInput}
+                                        test-id='hospitalInput'
+                                        name={ClinicalDetailsFields.HOSPITAL}
+                                        value={props.value}
+                                        onChange={(newValue: string) =>
+                                            props.onChange(newValue)
+                                        }
+                                        required
+                                        setError={setError}
+                                        clearErrors={clearErrors}
+                                        errors={errors}
+                                        label='בית חולים'
+                                        placeholder='הזן בית חולים...'
+                                    />
                                 )}
                             />
                         </div>
@@ -116,11 +127,10 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     classes: any;
     control: any;
-    updateClinicalDetails: any;
     setError: any;
     clearErrors: any;
     errors: any;
-    context: any;
+    watchWasHospitalized: boolean;
 };
 
 export default HospitalFields;
