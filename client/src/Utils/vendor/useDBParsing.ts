@@ -8,7 +8,7 @@ const useDBParser = () => {
 
     const parseLocation = async (address: GoogleApiPlace | GeocodeResponse | null) => {
         if (address) {
-            const gerPlaceDetailsObject = async (placeId: string) => {
+            const getPlaceDetailsObject = async (placeId: string) => {
                 const placeDetails = await requestDetailsFromPlaceId(placeId);
                 const placeDetailsObject = Array.isArray(placeDetails) ? placeDetails[0] : placeDetails;
                 return placeDetailsObject;
@@ -18,7 +18,7 @@ const useDBParser = () => {
             const isGeocodedLocation = !!((parsedAddress as GeocodeResponse).geometry);
             const placeData = (isGeocodedLocation || !(parsedAddress.place_id))
                 ? (parsedAddress as GeocodeResponse)
-                : await gerPlaceDetailsObject(parsedAddress.place_id);
+                : await getPlaceDetailsObject(parsedAddress.place_id);
             const description = parsedAddress?.description;
 
             return {...placeData, description};

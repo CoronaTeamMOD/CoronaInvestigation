@@ -9,7 +9,7 @@ interface APIRequestParams {
 }
 
 const useGoogleApiAutocomplete = () => {
-    const [autocompleteService, setAutoCompleteService] = React.useState<google.maps.places.AutocompleteService>();
+    const [autoCompleteService, setAutoCompleteService] = React.useState<google.maps.places.AutocompleteService>();
 
     React.useEffect(() => {
         injectScript()
@@ -18,12 +18,12 @@ const useGoogleApiAutocomplete = () => {
     }, []);
 
     const callGoogleApi = (request: APIRequestParams, callback: (results?: GoogleApiPlace[]) => void) => {
-        if (autocompleteService) {
-            (autocompleteService as any).getPlacePredictions(request, callback);
+        if (autoCompleteService) {
+            (autoCompleteService as any).getPlacePredictions(request, callback);
         }
     };
 
-    const autoCompleteFetch = React.useMemo(() => throttle(callGoogleApi, 200), [autocompleteService]);
+    const autoCompleteFetch = React.useMemo(() => throttle(callGoogleApi, 200), [autoCompleteService]);
 
     const autoCompletePlacesFromApi = (input: string, callback: (data?: GoogleApiPlace[]) => any) => {
         const componentRestrictions = {country: 'IL'};
