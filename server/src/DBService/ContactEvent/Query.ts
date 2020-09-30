@@ -21,6 +21,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
     nodes {
       id
+      hospitalDepartment
       airline
       allowsHamagenData
       boardingStation
@@ -70,4 +71,60 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
     }
   }
 }
+`;
+
+export const GET_FULL_CONTACT_EVENT_BY_ID = gql`
+query getEventByID($currEventId: Int!) {
+  contactEventById(id: $currEventId) {
+      id
+      hospitalDepartment
+      airline
+      allowsHamagenData
+      boardingStation
+      busCompany
+      cityDestination
+      cityOrigin
+      busLine
+      contactPersonFirstName
+      contactPersonLastName
+      contactPersonPhoneNumber
+      contactPhoneNumber
+      endStation
+      endTime
+      externalizationApproval
+      flightDestinationAirport
+      flightDestinationCity
+      flightDestinationCountry
+      flightNum
+      flightOriginAirport
+      flightOriginCity
+      flightOriginCountry
+      grade
+      investigationId
+      isolationStartDate
+      locationAddress
+      numberOfContacted
+      placeName
+      placeSubType
+      placeType
+      startTime
+      trainLine
+      contactedPeopleByContactEvent {
+        nodes {
+          id
+          contactEvent
+          doesNeedIsolation
+          extraInfo
+          personByPersonInfo {
+            firstName
+            identificationNumber
+            lastName
+            gender
+            phoneNumber
+          }
+        }
+      }
+  }
+}
+
 `;

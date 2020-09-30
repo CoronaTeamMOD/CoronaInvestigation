@@ -34,7 +34,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row) => (
+                            {tableRows.reverse().map((row) => (
                                 <TableRow
                                     key={row.epidemiologyNumber}
                                     className={classes.investigationRow}

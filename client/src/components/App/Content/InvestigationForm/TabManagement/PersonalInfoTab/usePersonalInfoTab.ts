@@ -1,10 +1,11 @@
-import axios from 'Utils/axios';
 import { useSelector } from 'react-redux';
+
+import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
+import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
-import SubOccupationsSelectOccupations from 'models/enums/SubOccupationsSelectOccupations';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
@@ -18,24 +19,31 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
-                let investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
+                const patientAddress = investigatedPatient.addressByAddress;
                 personalInfoStateContext.setPersonalInfoData({
                     phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
                     additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.personByPersonId.patientContactPhoneNumber},
+                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
                     insuranceCompany: investigatedPatient.hmo,
                     address: {...investigatedPatient.addressByAddress},
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: (investigatedPatient.occupation === SubOccupationsSelectOccupations.EDUCATION_SYSTEM)
+                    educationOccupationCity: 
+                    (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
                     ?
                     investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
-                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo
+                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
+                    contactInfo: investigatedPatient.patientContactInfo
                 });
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
-                setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);
-                setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                if (patientAddress.cityByCity !== null) {
+                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
+                }
+                if (patientAddress.streetByStreet !== null) {
+                    setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                }
             }
         })
     }

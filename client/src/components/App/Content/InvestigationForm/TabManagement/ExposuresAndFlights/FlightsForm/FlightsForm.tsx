@@ -1,12 +1,11 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { Grid, Typography } from '@material-ui/core';
-import { format } from 'date-fns';
 
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import DatePick from 'commons/DatePick/DatePick';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
 import useFormStyles from 'styles/formStyles';
-import { dateFormatForDatePicker } from 'Utils/displayUtils';
+import DatePick from 'commons/DatePick/DatePick';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import AirportInput from './AirportInput/AirportInput';
 
@@ -16,13 +15,16 @@ const FlightsForm = (props: any) => {
     fieldsNames,
     handleChangeExposureDataAndFlightsField,
   } = props;
-
   const classes = useFormStyles();
+  const { errors, setError, clearErrors } = useForm();
 
   return (
     <Grid className={classes.form} container justify="flex-start">
-      <FormRowWithInput fieldName="יעד:">
+      <FormRowWithInput testId='flightDestination' fieldName="יעד:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.destinationCountry]}
           countryFieldName={fieldsNames.destinationCountry}
           city={exposureAndFlightsData[fieldsNames.destinationCity]}
@@ -35,8 +37,11 @@ const FlightsForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="מוצא:">
+      <FormRowWithInput testId='flightStartingPoint' fieldName="מוצא:">
         <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           country={exposureAndFlightsData[fieldsNames.originCountry]}
           countryFieldName={fieldsNames.originCountry}
           city={exposureAndFlightsData[fieldsNames.originCity]}
@@ -53,30 +58,43 @@ const FlightsForm = (props: any) => {
         <div className={classes.formRow}>
           <Typography variant="caption">מתאריך</Typography>
           <DatePick
-            type="date"
-            value={exposureAndFlightsData[fieldsNames.flightStartDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightStartDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, new Date(e.target.value))
+            testId='flightFromDate'
+            labelText="מתאריך"
+            value={exposureAndFlightsData[fieldsNames.flightStartDate]}
+            onChange={(newDate: Date) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightStartDate,
+                newDate
+              )
             }
           />
           <Typography variant="caption">עד תאריך</Typography>
           <DatePick
-            type="date"
-            value={exposureAndFlightsData[fieldsNames.flightEndDate] ? format(new Date(exposureAndFlightsData[fieldsNames.flightEndDate]), dateFormatForDatePicker) : dateFormatForDatePicker}
-            onChange={(e) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, new Date(e.target.value))
+            testId='flightToDate'
+            labelText="עד"
+            value={exposureAndFlightsData[fieldsNames.flightEndDate]}
+            onChange={(newDate: Date) =>
+              handleChangeExposureDataAndFlightsField(
+                fieldsNames.flightEndDate,
+                newDate
+              )
             }
           />
         </div>
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="חברת תעופה:">
-        <CircleTextField
+        <AlphanumericTextField
+          testId={'airlineCompany'}
+          name={fieldsNames.airline}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           value={exposureAndFlightsData[fieldsNames.airline]}
-          onChange={(e) =>
+          onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
               fieldsNames.airline,
-              e.target.value
+              value
             )
           }
           placeholder="הזן חברת תעופה"
@@ -84,12 +102,17 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName="מספר טיסה:">
-        <CircleTextField
+        <AlphanumericTextField
+          testId={'airlineNumber'}
+          name={fieldsNames.flightNumber}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
-          onChange={(e) =>
+          onChange={(value) =>
             handleChangeExposureDataAndFlightsField(
               fieldsNames.flightNumber,
-              e.target.value
+              value
             )
           }
           placeholder="הזן מספר טיסה"

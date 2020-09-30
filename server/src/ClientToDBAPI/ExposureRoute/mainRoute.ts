@@ -1,35 +1,26 @@
 import { Router, Request, Response } from 'express';
+
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_EXPOSURE_INFO } from '../../DBService/Exposure/Query';
-import { UPDATE_EXPOSURE, CREATE_EXPOSURE } from '../../DBService/Exposure/Mutation';
-import ExposureDetails from '../../Models/Exposure/Exposure';
+import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 
 const exposureRoute = Router();
 
-exposureRoute.get('/:investigationId', (request: Request, response: Response) => {
-    graphqlRequest(GET_EXPOSURE_INFO, response.locals,{investigationId : parseInt(request.params.investigationId)})
-    .then((result: any) => response.send(result));
-})
+exposureRoute.get('/:investigationId', (request: Request, response: Response) =>
+    graphqlRequest(GET_EXPOSURE_INFO, response.locals, {investigationId: parseInt(request.params.investigationId)})
+        .then((result: any) => response.send(result))
+        .catch(error => response.status(500).json({error: 'failed to fetch exposures'}))
+);
 
-exposureRoute.post('/', (request: Request, response: Response) => {
-        graphqlRequest(CREATE_EXPOSURE,
-                        response.locals,
-                       {data : removeExposureDetailsIdForMutation(request.body.exposureDetails)})
-        .then((result: any) => response.send(result));
-})
-
-exposureRoute.put('/', (request: Request, response: Response) => {
-        graphqlRequest(UPDATE_EXPOSURE,
-                       response.locals,
-                       {exposureId : parseInt(request.body.exposureDetails.id),
-                        data: removeExposureDetailsIdForMutation(request.body.exposureDetails)})
-        .then((result: any) => response.send(result));
-})
-
-const removeExposureDetailsIdForMutation = (data: ExposureDetails) => {
-    const clinicalDetails: ExposureDetails = {...data};
-    delete clinicalDetails.id;
-    return clinicalDetails;
-}
+exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
+    return graphqlRequest(UPDATE_EXPOSURES, response.locals, {
+        inputExposure: JSON.stringify(request.body)
+    })
+        .then((result: any) => response.send(result))
+        .catch(error => {
+            console.log(error);
+            response.status(500).json({error: 'failed to save exposures'});
+        })
+});
 
 export default exposureRoute;

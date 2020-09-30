@@ -15,3 +15,11 @@ mutation createContactEvent ($contactEvent: JSON!) {
   }
 }   
 `;
+
+export const DELETE_CONTACT_EVENT = gql`
+mutation deleteContactEvent ($contactEventId: Int!) {
+  deleteContactEventFunction(input: {contactEventId: $contactEventId}) {
+    clientMutationId
+  }
+}   
+`;

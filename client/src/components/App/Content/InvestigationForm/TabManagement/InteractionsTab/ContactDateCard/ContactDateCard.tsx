@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 
+import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
@@ -11,7 +12,7 @@ import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
-    const { contactDate, interactions, createNewInteractionEvent, onEditClick } = props;
+    const { contactDate, interactions, createNewInteractionEvent, onEditClick, onDeleteClick } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -21,10 +22,18 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
             <div className={classes.dateInfo}>
                 <div className={classes.dateSection}>
-                    <IconButton onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
-                        {interactions !== undefined && (areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />)}
-                    </IconButton>
-                    <Typography variant='body1'>{format(contactDate, 'dd/MM/yyyy')}</Typography>
+                    <div className={classes.arrowWrapper}>
+                        {
+                            interactions !== undefined && 
+                            <IconButton test-id={'collpaseContactLocationDate'} onClick={() => setAreInteractionsOpen(!areInteractionsOpen)}>
+                                {areInteractionsOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}
+                            </IconButton>
+                        }
+                    </div>
+                    <Typography variant='body1'>
+                        יום {DayOfWeek[contactDate.getUTCDay()] + ' '}
+                        {format(contactDate, 'dd/MM/yyyy')}
+                    </Typography>
                 </div>
                 {
                     interactions !== undefined &&
@@ -42,6 +51,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                 {interactions?.map(interaction =>
                     <InteractionCard
                         onEditClick={() => onEditClick(interaction)}
+                        onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
                 )}
             </Collapse>
@@ -54,6 +64,7 @@ interface Props {
     interactions: Interaction[] | undefined;
     createNewInteractionEvent: () => void;
     onEditClick: (interaction: Interaction) => void
+    onDeleteClick: (contactEventId: number) => void
 }
 
 export default ContactDateCard;

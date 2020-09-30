@@ -8,6 +8,7 @@ import {
 } from '@material-ui/lab';
 
 export interface AutocompletedFieldProps<T> {
+    required?: boolean;
     value: T | null;
     options: T[];
     onChange: (event: React.ChangeEvent<{}>,

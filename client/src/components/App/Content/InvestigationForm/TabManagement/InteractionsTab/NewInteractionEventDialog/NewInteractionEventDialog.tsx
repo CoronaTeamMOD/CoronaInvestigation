@@ -1,10 +1,9 @@
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
-import Validator from 'Utils/Validations/Validator';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
@@ -12,7 +11,7 @@ import useStyles from './NewInteractionEventDialogStyles';
 import useNewInteractionEventDialog from './useNewInteractionEventDialog';
 import InteractionEventForm, { defaultContact } from '../InteractionEventForm/InteractionEventForm';
 import {
-    InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet, InteractionEventDialogContext
+    InteractionEventDialogProvider, initialDialogData, InteractionsEventDialogDataAndSet
 } from '../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
@@ -24,6 +23,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+    const [defaultPlaceName, setDefaultPlaceName] = useState<string>('');
     const [interactionEventDialogData, setInteractionEventDialogData] =
     useState<InteractionEventDialogData>(
         initialDialogData(defaultDate, defaultDate, [defaultContact], epidemiologyNumber));
@@ -35,12 +35,15 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
     }),
         [interactionEventDialogData, setInteractionEventDialogData]);       
         
-        const classes = useStyles();            
+    const classes = useStyles();            
 
-        const { createNewInteractionEvent, shouldDisableSubmitButton } = useNewInteractionEventDialog({ closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData});
+    const { createNewInteractionEvent, shouldDisableSubmitButton } = useNewInteractionEventDialog({ closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData});
 
-
-    const onConfirm = () => createNewInteractionEvent(interactionEventDialogData);
+    const onConfirm = () => createNewInteractionEvent(
+        {...interactionEventDialogData, 
+            placeName: interactionEventDialogData.placeName || defaultPlaceName
+        }
+    );
 
     return (
         <Dialog classes={{ paper: classes.dialogPaper }} open={isOpen} maxWidth={false}>
@@ -49,7 +52,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             </DialogTitle>
             <InteractionEventDialogProvider value={interactionEventDialogDataVariables}>
                 <DialogContent>
-                    <InteractionEventForm />
+                    <InteractionEventForm setDefaultPlaceName={setDefaultPlaceName} />
                 </DialogContent>
             </InteractionEventDialogProvider>
             <DialogActions className={classes.dialogFooter}>

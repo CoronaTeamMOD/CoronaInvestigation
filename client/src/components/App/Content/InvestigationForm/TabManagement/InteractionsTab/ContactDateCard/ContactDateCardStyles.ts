@@ -24,6 +24,9 @@ const useStyles = makeStyles({
     },
     createContactButton: {
         marginRight: 'auto'
+    },
+    arrowWrapper: {
+        width: '5vw'
     }
 });
 

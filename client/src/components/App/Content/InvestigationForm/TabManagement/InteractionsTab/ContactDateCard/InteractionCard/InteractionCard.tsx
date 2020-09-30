@@ -1,26 +1,30 @@
 import React from 'react';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
+import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete} from '@material-ui/icons';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
-import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 
-import { initAddress } from 'models/Address';
 import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+
+import ContactGrid from './ContactGrid/ContactGrid';
+import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
+import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
+import MedicalLocationGrid from './PlacesAdditionalGrids/MedicalLocationGrid';
+import DefaultPlaceEventGrid from './PlacesAdditionalGrids/DefaultPlaceEventGrid';
+import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
+import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
+import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
 import useStyle from './InteractionCardStyles';
 
+const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
+
 const InteractionCard: React.FC<Props> = (props: Props) => {
-
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
-
-    const { interaction, onEditClick } = props;
-
+    const { interaction, onEditClick, onDeleteClick } = props;
     const classes = useStyle();
-    // Im making this check because somehow interaction.locationAddress sometimes gets saved as a string and sometimes
-    // as an object, for now this is a quickfix for the problem that allows the user to save contact events
-    const parsedLocation = interaction.locationAddress instanceof String ?
-        interaction.locationAddress !== null ? JSON.parse(interaction.locationAddress as unknown as string) : initAddress
-    : interaction.locationAddress;
+
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
@@ -35,52 +39,51 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Typography>
                 </div>
                 <div>
-                    <IconButton onClick={onEditClick}>
+                    <IconButton test-id={'editContactLocation'} onClick={onEditClick}>
                         <Edit />
                     </IconButton>
-                    <IconButton>
+                    <IconButton test-id={'deleteContactLocation'} onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
                 </div>
             </div>
             <Collapse in={areDetailsOpen}>
-                <Grid container className={classes.gridContainer}>
-                    {/* location name row */}
+                <Grid container justify='flex-start'>
+                {
+                    interaction.placeType === privateHouse.code &&
+                    <PrivateHouseEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === office.code &&
+                    <OfficeEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === transportation.code &&
+                    <TransportationEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === school.code &&
+                    <SchoolEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === medical.code &&
+                    <MedicalLocationGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === religion.code &&
+                    <DefaultPlaceEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === geriatric.code &&
+                    <DefaultPlaceEventGrid interaction={interaction}/>
+                }
+                {
+                    interaction.placeType === otherPublicPlaces.code &&
+                    <OtherPublicLocationGrid interaction={interaction}/>
+                }
+                <Grid container justify='flex-start'>
                     <Grid item xs={2}>
-                        <Typography>
-                            <b>שם המקום: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {interaction.placeName}
-                        </Typography>
-                    </Grid>
-                    {/* location address row */}
-                    <Grid item xs={2}>
-                        <Typography>
-                            <b> כתובת: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {parsedLocation ? parsedLocation.address?.description : 'לא הוזן מיקום'}
-                        </Typography>
-                    </Grid>
-                    {/* location number row */}
-                    <Grid item xs={2}>
-                        <Typography>
-                            <b>טלפון המקום: </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography>
-                            {interaction.contactPersonPhoneNumber}
-                        </Typography>
-                    </Grid>
-                    {/* time row */}
-                    <Grid item xs={2}>
-                        <Typography>
+                        <Typography variant='caption'>
                             <b>שעה: </b>
                         </Typography>
                     </Grid>
@@ -91,40 +94,15 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
                 <Divider className={classes.divider} />
-                {/* Contacted persons section */}
-                <Grid container className={classes.gridContainer}>
+                <Grid container>
                     <Grid item xs={12}>
                         <Typography>
                             <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
                     </Grid>
-                    {interaction.contacts.map(person => (
-                        <>
-                            <Grid item xs={2}>
-                                <Typography>
-                                    <b>שם: </b>
-                                    {`${person.firstName} ${person.lastName}`}
-                                </Typography>
-                            </Grid>
-                            {
-                                person.id &&
-                                <Grid item xs={2}>
-                                    <Typography>
-                                        <b>ת.ז: </b>
-                                        {person.id}
-                                    </Typography>
-                                </Grid>
-                            }
-                            <Grid item xs={2}>
-                                <Typography>
-                                    <b>טלפון: </b>
-                                    {person.phoneNumber}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6} />
-                        </>
-                    ))}
+                    {interaction.contacts.map(person => <ContactGrid contact={person}/>)}
                 </Grid>
+            </Grid>
             </Collapse>
         </Card>
     );
@@ -132,7 +110,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
 interface Props {
     interaction: Interaction,
-    onEditClick: () => void
+    onEditClick: () => void,
+    onDeleteClick: () => void
 }
 
 export default InteractionCard;

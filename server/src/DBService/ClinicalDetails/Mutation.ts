@@ -9,8 +9,8 @@ mutation createAddress ($input: InsertAndGetAddressIdInput!) {
 `;
 
 export const UPDATE_INVESTIGATION = gql`
-mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String, $hospitalizationEndTime: Datetime, $hospitalizationStartTime: Datetime, $isIsolationProblem: Boolean, $isIsolationProblemMoreInfo: String, $isolationEndTime: Datetime, $isolationStartTime: Datetime, $symptomsStartTime: Datetime, $isolationAddress: Int, $isInIsolation: Boolean, $doesHaveSymptoms: Boolean, $wasHospitalized: Boolean) {
-        updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {hospital: $hospital, hospitalizationEndTime: $hospitalizationEndTime, hospitalizationStartTime: $hospitalizationStartTime, isIsolationProblem: $isIsolationProblem, isIsolationProblemMoreInfo: $isIsolationProblemMoreInfo, isolationEndTime: $isolationEndTime, isolationStartTime: $isolationStartTime, symptomsStartTime: $symptomsStartTime, isolationAddress: $isolationAddress, isInIsolation: $isInIsolation, doesHaveSymptoms: $doesHaveSymptoms, wasHospitalized: $wasHospitalized}, epidemiologyNumber: $epidemiologyNumber}) {
+mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String, $hospitalizationEndTime: Datetime, $hospitalizationStartTime: Datetime, $isIsolationProblem: Boolean, $isIsolationProblemMoreInfo: String, $isolationEndTime: Datetime, $isolationStartTime: Datetime, $symptomsStartTime: Datetime, $isolationAddress: Int, $isInIsolation: Boolean, $doesHaveSymptoms: Boolean, $wasHospitalized: Boolean, $otherSymptomsMoreInfo: String) {
+        updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {hospital: $hospital, hospitalizationEndTime: $hospitalizationEndTime, hospitalizationStartTime: $hospitalizationStartTime, isIsolationProblem: $isIsolationProblem, isIsolationProblemMoreInfo: $isIsolationProblemMoreInfo, isolationEndTime: $isolationEndTime, isolationStartTime: $isolationStartTime, symptomsStartTime: $symptomsStartTime, isolationAddress: $isolationAddress, isInIsolation: $isInIsolation, doesHaveSymptoms: $doesHaveSymptoms, wasHospitalized: $wasHospitalized, otherSymptomsMoreInfo: $otherSymptomsMoreInfo}, epidemiologyNumber: $epidemiologyNumber}) {
       clientMutationId
     }
 }
@@ -33,8 +33,8 @@ mutation addSymptoms ($investigationIdValue: Int!, $symptomNames: [String!]) {
 `;
 
 export const UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS = gql`
-mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!, , $doesHaveBackgroundDiseases: Boolean) {
-    updateInvestigatedPatientById(input: {investigatedPatientPatch: {isPregnant: $isPregnant, doesHaveBackgroundDiseases: $doesHaveBackgroundDiseases}, id: $id}) {
+mutation updateInvestigatedPatientById ($isPregnant: Boolean!, $id: Int!, $doesHaveBackgroundDiseases: Boolean, $otherBackgroundDiseasesMoreInfo: String) {
+    updateInvestigatedPatientById(input: {investigatedPatientPatch: {isPregnant: $isPregnant, doesHaveBackgroundDiseases: $doesHaveBackgroundDiseases, otherBackgroundDiseasesMoreInfo: $otherBackgroundDiseasesMoreInfo}, id: $id}) {
       clientMutationId
     }
 }

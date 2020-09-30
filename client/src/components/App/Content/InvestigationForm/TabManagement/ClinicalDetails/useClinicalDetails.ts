@@ -3,13 +3,16 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
+import { initDBAddress } from 'models/Address';
 import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
+import { otherBackgroundDiseaseFieldName, otherSymptomFieldName } from './ClinicalDetails';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
-import { initAddress } from 'models/Address';
+
+export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
@@ -47,21 +50,21 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const getSymptoms = () => {
-        axios.post('/clinicalDetails/symptoms').then(
+        axios.post('/clinicalDetails/symptoms', {}).then(
             result => (result && result.data && result.data.data) &&
                 setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
         );
     };
 
     const getBackgroundDiseases = () => {
-        axios.post('/clinicalDetails/backgroundDiseases').then(
+        axios.post('/clinicalDetails/backgroundDiseases', {}).then(
             result => (result?.data && result.data.data) &&
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
         );
     };
 
     const getStreetByCity = (cityId: string) => {
-        cityId !== '' && axios.get('/addressDetails/city/' + cityId + '/streets').then(
+        axios.get('/addressDetails/city/' + cityId + '/streets').then(
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
@@ -70,7 +73,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientBackgroundDiseases = clinicalDetailsByEpidemiologyNumber.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
                     if (patientAddress !== null && patientAddress.cityByCity !== null) {
@@ -87,13 +89,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             houseNum: patientAddress.houseNum
                         }
                     } else {
-                        patientAddress = initAddress;
+                        patientAddress = initDBAddress;
                     }
-                    
+
                     context.setClinicalDetailsData({
                         ...context.clinicalDetailsData,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
-                        backgroundDeseases: patientBackgroundDiseases,
+                        backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
                         doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
@@ -103,18 +105,30 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
-                        symptoms: patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName),
+                        symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
                         wasHospitalized: patientInvestigation.wasHospitalized,
-                        isolationAddress: patientAddress
+                        isolationAddress: patientAddress,
+                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
+                        otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
                     })
                 }
             }
         );
     };
 
-    const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate); 
+    const getSymptomsList = (patientInvestigation: any) => {
+        const symptoms: string[] = patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName);
+        if (patientInvestigation.otherSymptomsMoreInfo) symptoms.push(otherSymptomFieldName);
+        return symptoms;
+    }
+
+    const getBackgroundDiseasesList = (clinicalDetails: any) => {
+        const backgroundDiseases: string[] = clinicalDetails.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
+        if (clinicalDetails.otherBackgroundDiseasesMoreInfo) backgroundDiseases.push(otherBackgroundDiseaseFieldName);
+        return backgroundDiseases;
+    }
 
     React.useEffect(() => {
         getSymptoms();

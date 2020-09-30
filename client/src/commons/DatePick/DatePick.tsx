@@ -1,39 +1,46 @@
 import React from 'react';
-import { Variant } from '@material-ui/core/styles/createTypography';
-import { Typography, StandardTextFieldProps  } from '@material-ui/core';
 
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
+import { Variant } from '@material-ui/core/styles/createTypography';
+import { StandardTextFieldProps } from '@material-ui/core';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import { ParsableDate } from '@material-ui/pickers/constants/prop-types';
 
 import { useStyles } from './DatePickStyles';
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
-    const classes = useStyles({});
+  const classes = useStyles({});
 
-    const { lableText, lableTextVariant, type, ...rest } = props;
+  const { labelText, value, onChange } = props;
 
-    return (
-        <div className={classes.dateField}>
-            {
-                lableText && <Typography className={classes.dateText}>
-                    <b>{lableText + ':'}</b>
-                </Typography>
-            }
-            <div className={classes.dateText}>
-                <CircleTextField
-                    id={type}
-                    type={type}
-                    className={classes.textField}
-                    size='small'
-                    {...rest}
-                />
-            </div>
-        </div>
-    );
+  return (
+    <KeyboardDatePicker
+      test-id={props.testId}
+      autoOk
+      className={classes.dateText}
+      disableToolbar
+      variant="inline"
+      format="dd/MM/yyyy"
+      placeholder="dd/MM/yyyy"
+      margin="normal"
+      label={labelText}
+      value={value}
+      onChange={onChange}
+      KeyboardButtonProps={{
+        "aria-label": "change date",
+      }}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  );
 };
 
 export default DatePick;
 
 interface Props extends StandardTextFieldProps {
-    lableText?: string;
-    lableTextVariant?: Variant
-};
+  labelText?: string;
+  labelTextVariant?: Variant;
+  value: ParsableDate;
+  onChange: any;
+  testId?: string;
+}

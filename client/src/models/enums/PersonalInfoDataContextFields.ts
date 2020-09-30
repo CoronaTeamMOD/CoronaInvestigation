@@ -2,6 +2,7 @@ enum PersonalInfoDataContextFields {
     PHONE_NUMBER = 'phoneNumber',
     ADDITIONAL_PHONE_NUMBER = 'additionalPhoneNumber',
     CONTACT_PHONE_NUMBER = 'contactPhoneNumber',
+    CONTACT_INFO = 'contactInfo',
     INSURANCE_COMPANY = 'insuranceCompany',
     ADDRESS = 'address',
     CITY = 'city',

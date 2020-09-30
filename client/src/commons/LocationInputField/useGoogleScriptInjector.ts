@@ -27,7 +27,7 @@ const injectScript = (apiKey: string): Promise<void> => {
                 const script = document.createElement('script');
 
                 script.type = 'text/javascript';
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&language=iw&libraries=places`;
                 script.async = true;
                 script.defer = true;
 

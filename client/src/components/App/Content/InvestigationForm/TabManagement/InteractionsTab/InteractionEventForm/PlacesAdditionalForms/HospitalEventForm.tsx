@@ -1,43 +1,54 @@
 import React, {useContext} from 'react';
-import {Grid} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { useForm } from "react-hook-form";
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import CircleTextField from 'commons/CircleTextField/CircleTextField';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import AddressForm from '../AddressForm/AddressForm';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
 
     const formClasses = useFormStyles();
     const ctxt = useContext(InteractionEventDialogContext);
 
-    const onChange = (event: React.ChangeEvent<{ value: unknown }>, updatedField: InteractionEventDialogFields) =>
-        ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: event.target.value});
+    const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
+        ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
+
+    const { errors, setError, clearErrors } = useForm();
 
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                     <FormInput fieldName='שם בית חולים'>
-                        <CircleTextField
+                        <AlphanumericTextField
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.PLACE_NAME}
                             value={ctxt.interactionEventDialogData.placeName}
-                            onChange={(event) => onChange(event, InteractionEventDialogFields.PLACE_NAME)}/>
+                            onChange={(newValue) => onChange(newValue, InteractionEventDialogFields.PLACE_NAME)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <FormInput fieldName='מחלקה'>
-                        <CircleTextField
+                        <AlphanumericTextField
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.HOSPITAL_DEPARTMENT}
                             value={ctxt.interactionEventDialogData.hospitalDepartment}
-                            onChange={(event) => onChange(event, InteractionEventDialogFields.HOSPITAL_DEPARTMENT)}/>
+                            onChange={(newValue) => onChange(newValue, InteractionEventDialogFields.HOSPITAL_DEPARTMENT)}/>
                     </FormInput>
                 </Grid>
             </div>
-            <AddressForm removeEntrance removeFloor/>
+            <AddressForm />
             <BusinessContactForm/>
         </>
     );

@@ -28,8 +28,7 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     React.useEffect(() => {
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || 
-            (process.env.REACT_APP_IS_AUTH === 'true' && process.env.REACT_APP_ENVIRONMENT === Environment.DEV)) {
+        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH) {
                 axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
                 .then((response) => {
                     const { data } = response;
@@ -41,7 +40,7 @@ const App: React.FC = (): JSX.Element => {
                 })
         } else {
             setUser({
-                id: 'pkra004@bynetace.com',
+                id: 'pkra004',
                 name: 'stubuser',
                 token: 'fake token!'
             });

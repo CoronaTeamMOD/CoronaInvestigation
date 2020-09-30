@@ -39,6 +39,7 @@ query getInvestigationByEpidemiologyNumber($id: Int!) {
         }
         personId
         patientContactPhoneNumber
+        patientContactInfo
         subOccupation
         occupation
         otherOccupationExtraInfo

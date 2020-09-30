@@ -12,6 +12,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
@@ -69,18 +70,19 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   const user = useSelector<StoreStateType, User>(state => state.user);
 
   useEffect(() => {
-    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations')
+    user.name !== initialUserState.name && axios.post<InvestigationsReturnType>('/landingPage/investigations', {})
       .then(response => {
         const { data } = response;
         if (data && data.data && data.data.userById) {
           const investigationRows: InvestigationTableRow[] = data.data.userById.investigationsByLastUpdator.nodes.map(investigation => {
             const patient = investigation.investigatedPatientByInvestigatedPatientId;
+            const patientCity = patient.addressByAddress.cityByCity;
             return createRowData(investigation.epidemiologyNumber,
               investigation.investigationStatusByInvestigationStatus.displayName,
               patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
               patient.personByPersonId.phoneNumber,
               Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-              patient.addressByAddress.cityByCity.displayName)
+              patientCity ? patientCity.displayName : '')
           });
           setRows(investigationRows)
         }
@@ -125,6 +127,7 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
         }).catch(() => failToUpdateInvestigationData());
       }).catch(() => failToUpdateInvestigationData())
     } else {
+      setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
       moveToTheInvestigationForm(epidemiologyNumberVal);
     }
   }

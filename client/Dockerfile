@@ -15,5 +15,3 @@ EXPOSE 8080
 
 # Run the specified command within the container.
 CMD [ "node", "server/server.js" ]
-
-##

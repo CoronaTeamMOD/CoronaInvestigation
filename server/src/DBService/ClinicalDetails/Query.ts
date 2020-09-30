@@ -49,7 +49,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
           hospital
           hospitalizationStartTime
           hospitalizationEndTime
-          symptomsStartTime
+          otherSymptomsMoreInfo
           investigatedPatientSymptomsByInvestigationId {
             nodes {
               symptomName
@@ -64,6 +64,18 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
           backgroundDeseasName
         }
       }
+      otherBackgroundDiseasesMoreInfo
+    }
+  }
+}
+`;
+
+export const GET_CORONA_TEST_DATE_OF_PATIENT = gql`
+query getCoronaTestDateOfInvestigation($currInvestigation: Int!) {
+  allInvestigations(condition: {epidemiologyNumber: $currInvestigation}) {
+    nodes {
+      coronaTestDate
+      startTime
     }
   }
 }

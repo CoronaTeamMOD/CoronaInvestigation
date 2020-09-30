@@ -4,7 +4,11 @@ import { store } from 'redux/store';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 const instance = axios.create({
-    baseURL: process.env.REACT_APP_DB_API,
+    baseURL: '/db',
+    headers: {
+        'content-type': 'text/plain',
+        'Access-Control-Allow-Origin': '*'
+    }
 });
 
 instance.interceptors.request.use(

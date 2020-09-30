@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 
 import Address from '../../Models/Address';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
+import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import {
-    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER
+    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT
 } from '../../DBService/ClinicalDetails/Query';
 import {
     CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
@@ -48,6 +49,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         symptomsStartTime: clinicalDetails.symptomsStartDate,
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
         wasHospitalized: clinicalDetails.wasHospitalized,
+        otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
         isolationAddress
     }
 
@@ -60,15 +62,16 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
                 investigationIdValue: clinicalDetails.epidemiologyNumber,
                 symptomNames: clinicalDetails.symptoms
             }).then(() => {
-                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS,response.locals, {
+                graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, {
                     isPregnant: clinicalDetails.isPregnant,
                     doesHaveBackgroundDiseases: clinicalDetails.doesHaveBackgroundDiseases,
-                    id: clinicalDetails.investigatedPatientId
-                })
-            }).then(() => {
-                response.send('Added clinical details');
-            });
-        });
+                    id: clinicalDetails.investigatedPatientId,
+                    otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
+                }).then(() => {
+                    response.send('Added clinical details');
+                }).catch(err => response.send(err));
+            }).catch(err => response.send(err));
+        }).catch(err => response.send(err));;
     });
 }
 
@@ -91,6 +94,13 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     } else {
         saveClinicalDetails(request, response, null);
     }
+});
+
+clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(response.locals.epidemiologynumber)})
+        .then((result: CoronaTestDateQueryResult) => {
+            response.send(result.data.allInvestigations.nodes[0]);
+        })
 });
 
 export default clinicalDetailsRoute;
