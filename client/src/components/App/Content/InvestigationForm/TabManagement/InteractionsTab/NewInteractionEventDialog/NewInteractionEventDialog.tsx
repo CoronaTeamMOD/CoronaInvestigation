@@ -43,6 +43,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                         intractionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
                         loadInteractionById={loadInteractionById}
                         closeNewDialog={closeNewDialog}
+                        closeEditDialog={()=>{}}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>

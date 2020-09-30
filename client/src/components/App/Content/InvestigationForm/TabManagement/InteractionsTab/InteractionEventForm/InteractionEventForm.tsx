@@ -224,8 +224,8 @@ const InteractionEventForm: React.FC<Props> = (
 interface Props {
   intractionData?: InteractionEventDialogData;
   loadInteractionById: (interactionId: any) => void;
-  closeNewDialog?: () => void;
-  closeEditDialog?: () => void;
+  closeNewDialog: () => void;
+  closeEditDialog: () => void;
 }
 export default InteractionEventForm;
 
