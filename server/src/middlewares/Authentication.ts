@@ -1,6 +1,9 @@
 // @ts-ignore
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 import {NextFunction, Request, Response} from 'express';
+
+import { graphqlRequest } from '../GraphqlHTTPRequest';
+import { GET_USER_BY_ID } from '../DBService/Users/Query';
 
 const stubUsers = {
     'fake token!': {
@@ -55,6 +58,21 @@ const authMiddleware = (
             return next();
         }
     }
+};
+
+export const adminMiddleWare = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
+    graphqlRequest(GET_USER_BY_ID, response.locals, { id: response.locals.user.id })
+        .then((result: any) => {
+            if (result.data.userById.isAdmin) {
+                return next();
+            } else {
+                response.status(401).json({error: "unauthorized non admin user" })
+            }
+        });
 };
 
 export default authMiddleware;

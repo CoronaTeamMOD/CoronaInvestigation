@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import {GET_USER_INVESTIGATIONS} from '../../DBService/LandingPage/Query';
+import {GET_USER_INVESTIGATIONS, GET_USER_BY_ID, GET_GROUP_INVESTIGATIONS} from '../../DBService/LandingPage/Query';
 const landingPageRoute = Router();
 
 landingPageRoute.get('/', (request: Request, response: Response) => {
@@ -15,5 +15,14 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
     })
     .catch(err => response.status(500).send('error in fetching data: ' + err));
 })
+
+landingPageRoute.get('/groupInvestigations', (request: Request, response: Response) => {
+    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, { investigationGroup: +request.query.investigationGroup })
+    .then((result: any) => {
+        response.send(result)
+    })
+    .catch(err => response.status(500).send('error in fetching data: ' + err));
+})
+
 
 export default landingPageRoute;
