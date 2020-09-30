@@ -116,6 +116,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                     epidemiologyNumber,
                     investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
+                    if (interactedContacts.length > 0) {
+                        saveContactQuestioning();
+                    }
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
                         epidemiologyNumber
