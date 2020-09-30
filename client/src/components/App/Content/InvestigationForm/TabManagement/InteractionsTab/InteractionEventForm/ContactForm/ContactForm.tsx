@@ -12,6 +12,7 @@ import PhoneNumberTextField from 'commons/PhoneNumberTextField/PhoneNumberTextFi
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactFormStyles';
+import { defaultContact } from '../InteractionEventForm';
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 import InteractionEventContactFields from '../../InteractionsEventDialogContext/InteractionEventContactFields';
 
@@ -37,7 +38,7 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
     const {extraInfo, contactType, lastName, firstName, phoneNumber, id} = contact;
 
     React.useEffect(() => {
-        contactType === -1 && onChange(Array.from(contactTypes.keys())[0], InteractionEventContactFields.CONTACT_TYPE);
+        contactType === defaultContact.contactType && onChange(Array.from(contactTypes.keys())[0], InteractionEventContactFields.CONTACT_TYPE);
     }, [])
 
     const updateContacts = (updatedContact: Contact) => {
