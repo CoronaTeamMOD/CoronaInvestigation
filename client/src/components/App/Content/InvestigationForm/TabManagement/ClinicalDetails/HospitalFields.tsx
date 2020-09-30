@@ -65,7 +65,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         onChange={(newValue: string) =>
                                             props.onChange(newValue)
                                         }
-                                        required
                                         setError={setError}
                                         clearErrors={clearErrors}
                                         errors={errors}
