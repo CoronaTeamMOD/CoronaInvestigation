@@ -244,7 +244,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 renderInput={(params) =>
                                     <TextField
                                         error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]? true : false}
-                                        helperText={
+                                        label={
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY] &&
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY].message
@@ -277,7 +277,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     <TextField
                                         test-id='currentQuarantineStreet'
                                         error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]? true : false}
-                                        helperText={
+                                        label={
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] && 
                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
@@ -297,7 +297,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         render={(props) => (
                             <AlphanumericTextField
                                 error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]? true : false}
-                                helperText={
+                                label={
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] && 
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
@@ -323,7 +323,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                         render={(props) => (
                             <AlphanumericTextField
                                 error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]? true : false}
-                                helperText={
+                                label={
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] && 
                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message

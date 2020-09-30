@@ -83,7 +83,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     render={(props) => (
                                         <DatePick
                                             required
-                                            label='מתאריך'
+                                            label={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : 'מתאריך'}
                                             test-id='wasHospitalizedFromDate'
                                             labelText='מתאריך'
                                             value={props.value}
@@ -92,7 +92,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 props.onChange(newDate)
                                             }
                                             error={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? true : false}
-                                            errorText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : null}
                                         />
                                     )}
                                 />
@@ -105,14 +104,13 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         required
                                         label='עד'
                                         test-id='wasHospitalizedUntilDate'
-                                        labelText='עד'
+                                        labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : 'עד'}
                                         value={props.value}
                                         onBlur={props.onBlur}
                                         onChange={(newDate: Date) =>
                                             props.onChange(newDate)
                                         }
                                         error={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? true : false}
-                                        errorText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : null}
                                     />
                                 )}
                             />
