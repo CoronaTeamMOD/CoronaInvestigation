@@ -6,6 +6,7 @@ import StoreStateType from './storeStateType';
 import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
+import groupUsersReducer from './GroupUsers/groupUsersReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import investigationReducer from './Investigation/investigationReducer';
 
@@ -17,4 +18,5 @@ export default combineReducers<StoreStateType>({
      cities: cityReducer,
      countries: countryReducer,
      contactTypes: contactTypeReducer,
+     groupUsers: groupUsersReducer
 })

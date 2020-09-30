@@ -3,8 +3,13 @@ import * as Actions from './userActionTypes';
 
 export const initialUserState: User = {
     id: '1',
-    name: 'XXXXXX',
-    token: 'demo token'
+    userName: 'XXXXXX',
+    token: 'demo token',
+    isAdmin: false,
+    investigationGroup: -1,
+    isActive: false,
+    phoneNumber: '',
+    serialNumber: -1
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction) : User => {
