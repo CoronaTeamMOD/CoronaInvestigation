@@ -32,8 +32,7 @@ const InteractionsTab: React.FC = (): JSX.Element => {
 
     useEffect(() => {
         loadInteractions();
-        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
-
+        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime)
     }, []);
 
     useEffect(() => {

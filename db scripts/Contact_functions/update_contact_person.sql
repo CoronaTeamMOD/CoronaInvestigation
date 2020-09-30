@@ -9,11 +9,11 @@ firstName varchar;
 lastName varchar;
 phoneNumber varchar;
 identificationNumber varchar;
-doesNeedIsolation boolean;
 extraInfo varchar;
 igender varchar;
 contacted_person_id int4;
 person_id int4;
+contactType int4;
 
 begin 
 	if contact_event_id is null then
@@ -35,15 +35,15 @@ begin
 		select trim(nullif((person->'extraInfo')::text,'null'),'"') into extraInfo;
 		select trim(nullif((person->'id')::text,'null'),'"')  into identificationNumber;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
-		select trim(nullif((person->'doesNeedIsolation')::text,'null'),'"')::boolean into doesNeedIsolation;
 	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;  
+	   	select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;  
  
 	    if contacted_person_id is not null then
 	    	
 			/*update person and contacted person */
 	    update contacted_person 
-	    set does_need_isolation = doesNeedIsolation,
-		extra_info = extraInfo
+	    set extra_info = extraInfo,
+		contact_type = contactType
 	    where id = contacted_person_id ;
 	    
 	    update person 
@@ -59,8 +59,8 @@ begin
 			VALUES(firstName,lastName, phoneNumber, 'ת"ז', identificationNumber);
 			person_id := currval('person_id_seq');
 			INSERT INTO public.contacted_person
-			(person_info, contact_event,does_need_isolation,extra_info)
-			VALUES(person_id, contact_event_id,doesNeedIsolation,extraInfo);
+			(person_info, contact_event,extra_info, contact_type)
+			VALUES(person_id, contact_event_id,extraInfo,contactType);
 	    end if;
 	end loop;
 end;
