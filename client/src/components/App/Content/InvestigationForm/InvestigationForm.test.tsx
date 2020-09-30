@@ -13,6 +13,7 @@ import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/Clin
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { ExposureAndFlightsDetailsAndSet, initialExposuresAndFlightsData } from 'commons/Contexts/ExposuresAndFlights';
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
@@ -60,9 +61,9 @@ describe('investigationForm tests', () => {
     };
 
     const initialPersonalInfo: personalInfoContextData = {
-        phoneNumber: '',
-        additionalPhoneNumber: '',
-        contactPhoneNumber: '',
+        phoneNumber: {number: '', isValid: true},
+        additionalPhoneNumber: {number: '', isValid: true},
+        contactPhoneNumber: {number: '', isValid: true},
         insuranceCompany: '',
         address: {
             city: '',
@@ -73,7 +74,8 @@ describe('investigationForm tests', () => {
         relevantOccupation: '',
         educationOccupationCity: '',
         institutionName: '',
-        otherOccupationExtraInfo: ''
+        otherOccupationExtraInfo: '',
+        contactInfo: ''
     };
 
     const initialSetPersonalInfoData : React.Dispatch<React.SetStateAction<personalInfoContextData>> = () => {};
@@ -101,7 +103,7 @@ describe('investigationForm tests', () => {
 
         it('isLastTab should be false when hook is initialized', async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, interactedContacts: [], exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}} });
             });
             expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
         });
@@ -110,7 +112,7 @@ describe('investigationForm tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
+                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, interactedContacts: [], exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}} });
             });
         })
 
