@@ -225,6 +225,6 @@ export default InteractionEventForm;
 interface Props {
   intractionData?: InteractionEventDialogData;
   loadInteractionById: (interactionId: any) => void;
-  closeNewDialog?: () => void;
-  closeEditDialog?: () => void;
+  closeNewDialog: () => void;
+  closeEditDialog: () => void;
 }
