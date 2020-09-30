@@ -112,7 +112,7 @@ const Map = ({selectedAddress, setSelectedAddress, required = false, ...props}: 
 
     const height = props.height || DEFAULT_MAP_HEIGHT;
     const width = props.width || DEFAULT_MAP_WIDTH;
-    return <div style={{height, width, marginBottom: '3vh'}}>
+    return <div style={{height, width, marginBottom: '5vh'}}>
         <LocationInput selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
                        required={required}/>
