@@ -114,6 +114,7 @@ interface Props {
     required?: boolean;
     placeType: string;
     placeSubType: number;
+    setValue?: any; 
     onPlaceTypeChange?: (newPlaceType: string) => void;
     onPlaceSubTypeChange?: (newPlaceSubType: number, placeSubTypeDispalyName?: string) => void;
 }

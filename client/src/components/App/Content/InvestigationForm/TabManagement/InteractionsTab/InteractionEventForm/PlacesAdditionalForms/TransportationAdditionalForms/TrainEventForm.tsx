@@ -9,6 +9,7 @@ import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import StoreStateType from 'redux/storeStateType';
 import useFormStyles from 'styles/formStyles';
+import useStyles from './TransportationFormsStyles';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 

@@ -9,6 +9,7 @@ import City from 'models/City';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import useFormStyles from 'styles/formStyles';
+import useStyles from './TransportationFormsStyles';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -16,7 +17,7 @@ const BusEventForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
 
     const formClasses = useFormStyles();
-
+    const classes = useStyles();
     const cities : Map<string, City> = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     return (
