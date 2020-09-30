@@ -4,7 +4,7 @@ import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
 import AutocompletedField from '../AutoCompletedField/AutocompletedField';
 import useStyles from './LocationInputFieldStyles';
-import useGoogleGeocoder from "./useGoogleGeocoder";
+import useDBParser from 'Utils/vendor/useDBParsing';
 
 export interface GoogleApiPlace {
     description: string;
@@ -28,7 +28,7 @@ export interface GeocodeResponse extends google.maps.GeocoderResult {
 const  LocationInput = (props: LocationInputProps) => {
     const { selectedAddress,  setSelectedAddress, required} = props;
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
-    const {requestDetailsFromPlaceId} = useGoogleGeocoder();
+    const {parseLocation} = useDBParser();
 
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
     const [input, setInput] = React.useState<string>('');
@@ -71,11 +71,7 @@ const  LocationInput = (props: LocationInputProps) => {
     };
 
     const onChange = async (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
-        const detailsResult = newValue ? await requestDetailsFromPlaceId(newValue.place_id) : null;
-        const description = newValue?.description;
-        const detailsObject = Array.isArray(detailsResult) ? detailsResult[0] : detailsResult;
-
-        const geoCodedAddress =  detailsObject ? ({...detailsObject, description}) : null;
+        const geoCodedAddress = await parseLocation(newValue);
         _isMounted && setSelectedAddress(event,geoCodedAddress as GoogleApiPlace);
     };
 
