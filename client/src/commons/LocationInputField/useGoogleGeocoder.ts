@@ -15,18 +15,17 @@ const useGoogleGeocoder = () => {
         new Promise((resolve, reject) => {
             if (geocoder) {
                 geocoder.geocode({placeId},
-                    (data, status) => (status === 'OK') ? resolve(data) : resolve(data)
+                    (data, status) => (status === 'OK') ? resolve(data) : reject({error:{status}})
                 );
             } else {
                 if((window as any).google.maps) {
                     const tempGeocoder = new (window as any).google.maps.Geocoder() as google.maps.Geocoder;
                     tempGeocoder.geocode({placeId},
-                        (data, status) => (status === 'OK') ? resolve(data) : resolve(data)
+                        (data, status) => (status === 'OK') ? resolve(data) : reject({error:{status}})
                     );
                     return;
-                } else {
-
                 }
+
                 reject({error: 'geocoder undefined'})
             }
         });
@@ -35,7 +34,7 @@ const useGoogleGeocoder = () => {
         new Promise((resolve, reject) => {
             if (geocoder) {
                 geocoder.geocode({location},
-                    (data, status) => (status === 'OK') ? resolve(data) : resolve(data)
+                    (data, status) => (status === 'OK') ? resolve(data) : reject({error:{status}})
                 );
             } else {
                 reject({error: 'geocoder undefined'})
