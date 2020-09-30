@@ -81,7 +81,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     control={control}
                                     render={(props) => (
                                         <DatePick
-                                            required
                                             label={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : 'מתאריך'}
                                             test-id='wasHospitalizedFromDate'
                                             labelText='מתאריך'
@@ -100,7 +99,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 control={control}
                                 render={(props) => (
                                     <DatePick
-                                        required
                                         label='עד'
                                         test-id='wasHospitalizedUntilDate'
                                         labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : 'עד'}
