@@ -10,12 +10,11 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange, onBlur, error, errorText, useBigCalender,  ...rest } = props;
+  const { labelText, value, onChange, onBlur, error, useBigCalender } = props;
 
   return (
     <KeyboardDatePicker
       error={error}
-      helperText={errorText? errorText : null}
       test-id={props.testId}
       autoOk
       className={classes.dateText}
@@ -49,5 +48,4 @@ interface Props extends StandardTextFieldProps {
   testId?: string;
   onBlur?: any;
   error?: boolean;
-  errorText?: string
 }
