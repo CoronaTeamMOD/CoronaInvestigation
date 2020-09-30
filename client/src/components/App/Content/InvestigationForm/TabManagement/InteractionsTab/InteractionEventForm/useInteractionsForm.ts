@@ -1,9 +1,11 @@
+import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import axios from 'Utils/axios';
 import useDBParser from "Utils/vendor/useDBParsing";
+import StoreStateType from 'redux/storeStateType';
 
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
@@ -12,6 +14,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 const useInteractionsForm = (props : Props): outCome => {  
     const { loadInteractionById, closeNewDialog, closeEditDialog } = props;    
     const { parseLocation } = useDBParser();
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const schema = yup.object().shape({
         [InteractionEventDialogFields.PLACE_TYPE]: yup.string().required('סוג אתר חובה'),
@@ -59,7 +62,8 @@ const useInteractionsForm = (props : Props): outCome => {
       if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
-            locationAddress,
+          locationAddress,
+          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then(() => {
               loadInteractionById(interactionsDataToSave[InteractionEventDialogFields.ID]);
@@ -68,7 +72,11 @@ const useInteractionsForm = (props : Props): outCome => {
             handleFailedSave('לא ניתן היה לשמור את השינויים');
           })
       } else {
-        axios.post('/intersections/createContactEvent', interactionsDataToSave)
+        axios.post('/intersections/createContactEvent', {
+          ...interactionsDataToSave,
+          locationAddress,
+          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
+        })
           .then((response) => {
               loadInteractionById(response.data.data.updateContactEventFunction.integer);
               closeNewDialog();
