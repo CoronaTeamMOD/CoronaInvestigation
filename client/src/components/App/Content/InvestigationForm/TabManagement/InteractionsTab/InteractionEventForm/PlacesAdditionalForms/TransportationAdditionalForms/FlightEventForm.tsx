@@ -40,7 +40,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
 
     return (
         <>
-            <div className={formClasses.formRow}>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='מספר טיסה'>
                         <AlphanumericTextField
@@ -64,8 +64,8 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.AIR_LINE)}/>
                     </FormInput>
                 </Grid>
-            </div>
-            <div className={formClasses.formRow}>
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='ארץ מוצא'>
                         <Autocomplete
@@ -89,7 +89,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={2} className={classes.secondaryTextItem}>
+                <Grid item xs={3} className={classes.secondaryTextItem}>
                     <FormInput fieldName='עיר מוצא' className={classes.secondaryTextLabel}>
                         <AlphanumericTextField
                             className={classes.secondaryTextField}
@@ -101,8 +101,19 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_ORIGIN_CITY)}/>
                     </FormInput>
                 </Grid>
-            </div>
-            <div className={formClasses.formRow}>
+                <Grid item xs={3}>
+                    <FormInput fieldName='שדה תעופה מוצא'>
+                        <AlphanumericTextField
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            name={InteractionEventDialogFields.FLIGHT_ORIGIN_AIRPORT}
+                            value={flightOriginAirport}
+                            onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_ORIGIN_AIRPORT)}/>
+                    </FormInput>
+                </Grid>
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='ארץ יעד'>
                         <Autocomplete
@@ -126,7 +137,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                     <FormInput fieldName='עיר יעד'>
                         <AlphanumericTextField
                             className={classes.secondaryTextField}
@@ -138,7 +149,6 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_DESTINATION_CITY)}/>
                     </FormInput>
                 </Grid>
-                <Grid item xs={1}/>
                 <Grid item xs={3}>
                     <FormInput fieldName='שדה תעופה יעד'>
                         <AlphanumericTextField
@@ -150,7 +160,7 @@ const FlightEventForm : React.FC = () : JSX.Element => {
                             onChange={newValue => onChange(newValue, InteractionEventDialogFields.FLIGHT_DESTINATION_AIRPORT)}/>
                     </FormInput>
                 </Grid>
-            </div>
+            </Grid>
         </>
     );
 };
