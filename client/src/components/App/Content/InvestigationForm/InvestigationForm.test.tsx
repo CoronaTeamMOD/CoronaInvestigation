@@ -8,12 +8,12 @@ import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { initialExposuresAndFlightsData } from 'commons/Contexts/ExposuresAndFlights';
 import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
 import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import { ExposureAndFlightsDetailsAndSet, initialExposuresAndFlightsData } from 'commons/Contexts/ExposuresAndFlights';
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
@@ -29,9 +29,9 @@ describe('investigationForm tests', () => {
     });
 
     beforeEach(() => {
-      mockAdapter.onGet("/addressDetails/cities").reply(200);
-      mockAdapter.onGet("/personalDetails/updatePersonalDetails").reply(200);
-      mockAdapter.onGet("/addressDetails/countries").reply(200);
+      mockAdapter.onGet('/addressDetails/cities').reply(200);
+      mockAdapter.onGet('/personalDetails/updatePersonalDetails').reply(200);
+      mockAdapter.onGet('/addressDetails/countries').reply(200);
     });
 
     const initialClinicalDetails: ClinicalDetailsData = {
@@ -61,9 +61,9 @@ describe('investigationForm tests', () => {
     };
 
     const initialPersonalInfo: personalInfoContextData = {
-        phoneNumber: {number: '', isValid: true},
-        additionalPhoneNumber: {number: '', isValid: true},
-        contactPhoneNumber: {number: '', isValid: true},
+        phoneNumber: {number: '', isValid: false},
+        additionalPhoneNumber: {number: '', isValid: false},
+        contactPhoneNumber: {number: '', isValid: false},
         insuranceCompany: '',
         address: {
             city: '',
@@ -77,8 +77,6 @@ describe('investigationForm tests', () => {
         otherOccupationExtraInfo: '',
         contactInfo: ''
     };
-
-    const initialSetPersonalInfoData : React.Dispatch<React.SetStateAction<personalInfoContextData>> = () => {};
 
     describe('tabs tests', () => {
 
@@ -103,7 +101,14 @@ describe('investigationForm tests', () => {
 
         it('isLastTab should be false when hook is initialized', async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, interactedContacts: [], exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}} });
+                investigationFormOutcome = useInvestigationForm(
+                    { 
+                        clinicalDetailsVariables: clinicalDetailsVariables,
+                        personalInfoData: initialPersonalInfo,
+                        exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}},
+                        interactedContacts: [],
+                    }
+                );
             });
             expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
         });
@@ -112,7 +117,14 @@ describe('investigationForm tests', () => {
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, interactedContacts: [], exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}} });
+                investigationFormOutcome = useInvestigationForm(
+                    { 
+                        clinicalDetailsVariables: clinicalDetailsVariables,
+                        personalInfoData: initialPersonalInfo,
+                        exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}},
+                        interactedContacts: [],
+                    }
+                );
             });
         })
 
