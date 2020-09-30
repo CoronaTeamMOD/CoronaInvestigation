@@ -1,20 +1,18 @@
 import Swal from 'sweetalert2';
 
 import axios from 'Utils/axios';
-import useDBParser from "Utils/vendor/useDBParsing";
 import Validator from 'Utils/Validations/Validator';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 import { useInteractionsTabOutcome, useInteractionsTabInput } from './NewInteractionEventDialogInterfaces';
 
 const useNewInteractionEventDialog = (input: useInteractionsTabInput) :  useInteractionsTabOutcome => {
-    const {parseLocation} = useDBParser();
-    useGoogleApiAutocomplete();
-    const { closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData } = input;
+   const { closeDialog, handleInteractionCreation, canConfirm, interactionEventDialogData } = input;
 
     const createNewInteractionEvent = async(interactionEventVariables: InteractionEventDialogData) : Promise<any> => {
-        const locationAddress = await parseLocation(interactionEventVariables.locationAddress);
+        const locationAddress = interactionEventVariables.locationAddress
+            ? JSON.stringify(interactionEventVariables.locationAddress)
+            : null;
 
         const newData =  {
             ...interactionEventVariables,

@@ -8,11 +8,12 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import { useEditInteractionEventInput, useEditInteractionEventOutcome } from './EditInteractionEventDialogInterfaces';
 
 const useNewInteractionEventDialog =  (input: useEditInteractionEventInput) :  useEditInteractionEventOutcome => {
-    const {parseLocation} = useDBParser();
     const { closeDialog, updateInteraction, canConfirm, interactionEventDialogData } = input;
 
     const editInteractionEvent = async (interactionEventVariables: InteractionEventDialogData) : Promise<any> => {
-        const locationAddress = await parseLocation(interactionEventVariables.locationAddress);
+        const locationAddress = interactionEventVariables.locationAddress
+            ? JSON.stringify(interactionEventVariables.locationAddress)
+            : null;
         const newData = {
             ...interactionEventVariables,
             locationAddress,

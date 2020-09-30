@@ -18,7 +18,6 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         filterSelectedOptions: true,
         includeInputInList: true,
         clearOnBlur: false,
-        disableClearable: true,
         filterOptions
     };
 
