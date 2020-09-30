@@ -10,7 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './TopToolbarStyles';
 import useTopToolbar from './useTopToolbar';
-import IsActiveToggle from "./IsActiveToggle/IsActiveToggle";
+import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
 
 const toggleMessage ='מה הסטטוס שלך?';
 
@@ -42,7 +42,7 @@ const TopToolbar: React.FC = (): JSX.Element => {
                 <Tooltip title={toggleMessage} arrow>
                     <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive/>
                 </Tooltip>
-                <Typography>שלום, {user.name}</Typography>
+                <Typography>שלום, {user.userName}</Typography>
             </div>
         </Toolbar>
     )
