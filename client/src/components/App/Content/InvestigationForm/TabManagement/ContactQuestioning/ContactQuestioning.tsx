@@ -62,10 +62,13 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                 interactedContactsState.interactedContacts.sort((firstInteractedContact, secondInteractedContact) =>
                     firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (
                         <div key={interactedContact.id} className={classes.form}>
-                            <Accordion className={classes.accordion} style={{ borderRadius: '3vw'}}>
+                            <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
-                                    onClick={() => updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false)}
+                                    onClick={() => {
+                                        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false);
+                                        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
+                                    }}
                                     aria-controls='panel1a-content'
                                     id='panel1a-header'
                                     dir='ltr'
@@ -76,7 +79,10 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                 <Grid container>
                                                     <FormControlLabel
                                                         onClick={(event) => event.stopPropagation()}
-                                                        onChange={((event: any, checked: boolean) => updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked))}
+                                                        onChange={((event: any, checked: boolean) => {
+                                                            updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
+                                                            updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
+                                                        })}
                                                         control={
                                                             <Checkbox
                                                                 color='primary'
@@ -376,7 +382,15 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                         </Grid>
                                     </Grid>
                                 </AccordionDetails>
-                                <PrimaryButton style={{marginRight: '1.5vw'}} onClick={() => saveContact(interactedContact)}>שמור מגע</PrimaryButton>
+                                <PrimaryButton
+                                    style={{ marginRight: '1.5vw' }}
+                                    onClick={() => {
+                                        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
+                                        saveContact(interactedContact);
+                                    }}
+                                >
+                                    שמור מגע
+                                </PrimaryButton>
                             </Accordion>
                         </div>
                 ))
