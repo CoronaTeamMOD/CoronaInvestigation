@@ -164,10 +164,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         schema.isValid(values).then(valid=>{
             setFormState(investigationId, id, valid);
         })
-
-        schema.validate(values).catch(err=>{
-            debugger
-        })
         onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
