@@ -101,7 +101,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         resolver: yupResolver(schema)
     });
     const context = React.useContext(clinicalDetailsDataContext);
-    const { city, street } = context.clinicalDetailsData.isolationAddress;
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
@@ -119,13 +118,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
-
-    React.useEffect(() => {
-        if (streetsInCity.length > 0 && street === '') {
-            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, streetsInCity[0].id);
-            setIsolationStreetName(streetsInCity[0].displayName);
-        }
-    }, [streetsInCity])
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
@@ -274,15 +266,19 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option? option.value.displayName : option}
                                 inputValue={isolationCityName}
-                                onChange={(event, selectedCity) => props.onChange(selectedCity? selectedCity.id : '')}
+                                onChange={(event, selectedCity) => {
+                                    props.onChange(selectedCity? selectedCity.id : '')
+                                    if(selectedCity?.id && selectedCity.id  !== props.value) {
+                                        setIsolationStreetName('');
+                                        getStreetByCity(selectedCity.id);
+                                    }
+                                }}
                                 onInputChange={(event, selectedCityName) => {
                                     setIsolationCityName(selectedCityName);
                                     if (selectedCityName === '') {
                                         setStreetsInCity([])
                                         setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, '');
                                         setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                    } else {
-                                        getStreetByCity(selectedCityName);
                                     }
                                 }}
                                 renderInput={(params) =>
