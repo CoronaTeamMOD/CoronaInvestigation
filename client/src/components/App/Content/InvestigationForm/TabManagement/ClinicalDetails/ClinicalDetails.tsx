@@ -121,12 +121,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     });
 
     React.useEffect(() => {
-        if (context.clinicalDetailsData.symptoms.length > 0) {
-            setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
-        }
-    }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
-
-    React.useEffect(() => {
         if (streetsInCity.length > 0 && street === '') {
             updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, streetsInCity[0].id);
             setIsolationStreetName(streetsInCity[0].displayName);
@@ -135,7 +129,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const handleUnkonwnDateCheck = () => {
         setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
     };
 
     const handleSymptomCheck = (
