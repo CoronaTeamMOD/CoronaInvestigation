@@ -6,7 +6,7 @@ import _ from 'lodash';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import useFormStyles from 'styles/formStyles';
-
+import useStyles from './BusinessContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const businessContactFirstNameField = 'שם פרטי';
@@ -18,6 +18,7 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
 
     const formClasses = useFormStyles();
+    const classes = useStyles();
 
     return (
         <div>

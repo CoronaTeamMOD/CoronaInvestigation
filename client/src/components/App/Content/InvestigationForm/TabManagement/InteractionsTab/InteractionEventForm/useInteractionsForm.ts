@@ -106,6 +106,7 @@ interface Props {
   loadInteractionById: (interactionId: any) => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
+  interactionId?: any;
 }
 
 interface outCome {
