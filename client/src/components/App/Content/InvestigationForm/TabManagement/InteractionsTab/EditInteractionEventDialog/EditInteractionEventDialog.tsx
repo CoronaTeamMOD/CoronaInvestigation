@@ -10,7 +10,7 @@ import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
-    const { closeEditDialog, eventToEdit, isOpen, loadInteractionById } = props;
+    const { closeEditDialog, eventToEdit, isOpen, loadInteractions } = props;
     
     const classes = useStyles();
     
@@ -22,7 +22,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                 <DialogContent>
                     <InteractionEventForm 
                         intractionData={eventToEdit}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                         closeEditDialog={closeEditDialog}
                         closeNewDialog={()=>{}}
                         interactionId={eventToEdit?.id}
@@ -53,5 +53,5 @@ export interface Props {
     isOpen: boolean,
     eventToEdit: InteractionEventDialogData
     closeEditDialog: () => void,
-    loadInteractionById: (interactionId: any) => void,
+    loadInteractions: () => void;
 }

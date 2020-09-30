@@ -21,8 +21,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [investigationStartTime, setInvestigationStartTime] = useState<Date | null>(null);
 
-    const { getDatesToInvestigate, loadInteractions, loadInteractionById, 
-            getCoronaTestDate, handleDeleteContactEvent } =
+    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
@@ -31,7 +30,6 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     useEffect(() => {
         loadInteractions();
         getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
-
     }, []);
 
     useEffect(() => {
@@ -54,56 +52,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         e.preventDefault();
         console.log("Interaction");
         onSubmit();
-        // Swal.fire({
-        //     icon: 'warning',
-        //     title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
-        //     showCancelButton: true,
-        //     cancelButtonText: 'בטל',
-        //     cancelButtonColor: theme.palette.error.main,
-        //     confirmButtonColor: theme.palette.primary.main,
-        //     confirmButtonText: 'כן, המשך',
-        //     customClass: {
-        //         title: classes.swalTitle
-        //     }
-        // }).then((result) => {
-        //     if (result.value) {
-        //         axios.post('/investigationInfo/updateInvestigationStatus', {
-        //             epidemiologyNumber,
-        //             investigationStatus: InvestigationStatus.DONE,
-        //         }).then(() => {
-        //             axios.post('/investigationInfo/updateInvestigationEndTime', {
-        //                 investigationEndTime: new Date(),
-        //                 epidemiologyNumber
-        //             }).then(() => handleInvestigationFinish()).catch(() => handleInvestigationFinishFailed())
-        //         }).catch(() => {
-        //             handleInvestigationFinishFailed();
-        //         })
-        //     };
-        // });
     }
-
-    // const handleInvestigationFinish = () => {
-    //     Swal.fire({
-    //         icon: 'success',
-    //         title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
-    //         customClass: {
-    //             title: classes.swalTitle
-    //         },
-    //         timer: 1750,
-    //         showConfirmButton: false
-    //     }
-    //     );
-    //     timeout(1900).then(() => {
-    //         history.push(landingPageRoute);
-    //     });
-    // };
-
-    // const handleInvestigationFinishFailed = () => {
-    //     Swal.fire({
-    //         title: 'לא ניתן היה לסיים את החקירה',
-    //         icon: 'error',
-    //     })
-    // };
     
     return (
         <>
@@ -126,7 +75,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         isOpen={Boolean(newInteractionEventDate)}
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                     />
                 }
                 {
@@ -134,7 +83,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         isOpen={Boolean(interactionToEdit)}
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                     />
                 }
             </form>

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
-import { startOfDay } from 'date-fns';
 
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import { initAddress } from 'models/Address';
@@ -27,7 +26,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { interactionDate, closeNewDialog, isOpen, loadInteractionById } = props;
+    const { interactionDate, closeNewDialog, isOpen, loadInteractions } = props;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
@@ -41,7 +40,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 <DialogContent>
                     <InteractionEventForm 
                         intractionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
                         closeEditDialog={()=>{}}
                     />
@@ -73,5 +72,5 @@ export interface Props {
     isOpen: boolean,
     interactionDate: Date,
     closeNewDialog: () => void,
-    loadInteractionById: (interacionId: any) => void,
+    loadInteractions: () => void;
 }
