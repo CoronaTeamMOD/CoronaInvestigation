@@ -17,6 +17,8 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { setFormState } from 'redux/Form/formActionCreators';
+import axios from 'Utils/axios';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -25,6 +27,7 @@ import IsolationProblemFields from './IsolationProblemFields'
 import SymptomsFields from './SymptomsFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 import HospitalFields from './HospitalFields';
+import Swal from 'sweetalert2';
 
 const requiredText = 'שדה זה הוא חובה';
 
@@ -46,16 +49,12 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText)
+        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.mixed().required(requiredText),
+        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.mixed().required(requiredText)
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationDateSchema,
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationDateSchema,
-    [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(),
-    [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(),
-    [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.number().required(),
-    [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.number().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
@@ -90,12 +89,12 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
-    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string().required(requiredText),
+    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string(),
 })
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
-    const { control, setValue, getValues, handleSubmit, watch, errors, setError, clearErrors } = useForm({
+    const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors } = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(schema)
@@ -114,6 +113,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     
     const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
@@ -147,57 +147,28 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         };
     };
 
-    const saveClinicalDetails = (e: any, clinicalDetailsData : any | ClinicalDetailsData) => {
+    React.useEffect(() => {
+        reset(context.clinicalDetailsData);
+    }, [context.clinicalDetailsData])
+
+    const saveClinicalDetails = (e: any) => {
         e.preventDefault();
-        console.log("ClinicalTab");
+        const values = getValues();
+        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...values, epidemiologyNumber, investigatedPatientId}})).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+
+        schema.isValid(values).then(valid=>{
+            setFormState(investigationId, id, valid);
+        })
+
+        schema.validate(values).catch(err=>{
+            debugger
+        })
         onSubmit();
-        return true;
-        // const clinicalDetails = ({
-        //     ...clinicalDetailsData,
-        //     isolationAddress: clinicalDetailsData.isolationAddress.city === '' ? 
-        //                       null : clinicalDetailsData.isolationAddress,
-        //     investigatedPatientId,
-        //     epidemiologyNumber
-        // });
-
-        // if (clinicalDetails.symptoms.includes(otherSymptomFieldName)) {
-        //     clinicalDetails.symptoms = clinicalDetails.symptoms.filter(symptom => symptom !== otherSymptomFieldName)
-        // } else {
-        //     clinicalDetails.otherSymptomsMoreInfo = '';
-        // }
-
-        // if (clinicalDetails.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
-        //     clinicalDetails.backgroundDeseases = clinicalDetails.backgroundDeseases.filter(symptom => symptom !== otherBackgroundDiseaseFieldName)
-        // } else {
-        //     clinicalDetails.otherBackgroundDiseasesMoreInfo = '';
-        // }
-
-        // if (!clinicalDetails.wasHospitalized) {
-        //     clinicalDetails.hospital = '';
-        //     clinicalDetails.hospitalizationStartDate = null;
-        //     clinicalDetails.hospitalizationEndDate = null;
-        // }
-
-        // if (!clinicalDetails.isInIsolation) {
-        //     clinicalDetails.isolationStartDate = null;
-        //     clinicalDetails.isolationEndDate = null;
-        // }
-
-        // if (!clinicalDetails.doesHaveSymptoms) {
-        //     clinicalDetails.symptoms = [];
-        //     clinicalDetails.symptomsStartDate = null;
-        // }
-
-        // if (!clinicalDetails.doesHaveBackgroundDiseases) {
-        //     clinicalDetails.backgroundDeseases = [];
-        // }
-
-        // axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails })).catch(() => {
-        //     Swal.fire({
-        //         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-        //         icon: 'error'
-        //     });
-        // })
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
@@ -246,8 +217,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     return (
         <div className={classes.form}>
-                                                <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e,{ name: "itay" })}>
-<IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} />
+            <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e)}>
+            <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
