@@ -6,18 +6,36 @@ import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/C
 import axios from '../axios';
 import useDBParser from '../vendor/useDBParsing';
 
+const exposureDeleteCondition = 
+    (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
+    if (!wereConfirmedExposures) return (exposure: Exposure) => exposure.wasConfirmedExposure;
+    if (!wereFlights) return (exposure: Exposure) => exposure.wasAbroad;
+    return (exposure: Exposure) => false;
+}
+
+
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const {parseLocation} = useDBParser();
 
     const saveExposureAndFlightData = async () : Promise<void> => {
-        let { exposures } = exposuresAndFlightsVariables.exposureAndFlightsData;
-        const exposuresPromises = exposures.map(async exposure => await extractExposureData(exposure));
-        exposures = await Promise.all(exposuresPromises);
+        const { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
+        let filteredExposures : Exposure[] = [];
+        const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
+        exposures.forEach(exposure => {
+            if (filterCondition(exposure)) {
+                exposuresToDelete.push(exposure.id);
+            } else {
+                filteredExposures.push(exposure);
+            }
+        })
+        const exposuresPromises = filteredExposures.map(async exposure => await extractExposureData(exposure));
+        filteredExposures = await Promise.all(exposuresPromises);
         
         return axios.post('/exposure/updateExposures', {
-            exposures,
-            investigationId: epidemiologyNumber
+            exposures: filteredExposures,
+            investigationId: epidemiologyNumber,
+            exposuresToDelete
         });
     }
 
