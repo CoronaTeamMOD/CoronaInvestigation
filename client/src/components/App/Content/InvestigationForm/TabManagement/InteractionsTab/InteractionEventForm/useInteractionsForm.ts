@@ -12,7 +12,7 @@ import InteractionEventContactFields from '../InteractionsEventDialogContext/Int
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 const useInteractionsForm = (props : Props): outCome => {  
-    const { loadInteractionById, closeNewDialog, closeEditDialog } = props;    
+    const { loadInteractionById, closeNewDialog, closeEditDialog, interactionId } = props;    
     const { parseLocation } = useDBParser();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -59,16 +59,17 @@ const useInteractionsForm = (props : Props): outCome => {
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
-      if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
+      if (interactionId) {
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
           locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then(() => {
-              loadInteractionById(interactionsDataToSave[InteractionEventDialogFields.ID]);
+              loadInteractionById(interactionId);
               closeEditDialog();
           }).catch(() => {
+            closeEditDialog();
             handleFailedSave('לא ניתן היה לשמור את השינויים');
           })
       } else {
@@ -106,6 +107,7 @@ interface Props {
   loadInteractionById: (interactionId: any) => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
+  interactionId?: number;
 }
 
 interface outCome {

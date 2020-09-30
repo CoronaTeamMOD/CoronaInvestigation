@@ -25,6 +25,7 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                         loadInteractionById={loadInteractionById}
                         closeEditDialog={closeEditDialog}
                         closeNewDialog={()=>{}}
+                        interactionId={eventToEdit?.id}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
