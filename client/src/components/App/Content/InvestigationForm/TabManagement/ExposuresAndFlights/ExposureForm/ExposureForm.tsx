@@ -92,6 +92,7 @@ const ExposureForm = (props: any) => {
             value
           )
         }
+        setValue={()=>{}}
       />
     </Grid>
   );

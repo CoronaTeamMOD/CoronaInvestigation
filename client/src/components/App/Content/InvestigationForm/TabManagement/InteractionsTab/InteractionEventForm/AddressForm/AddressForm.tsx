@@ -25,6 +25,7 @@ const AddressForm : React.FC = () : JSX.Element => {
                             control={control} 
                             name={InteractionEventDialogFields.LOCATION_ADDRESS}
                             selectedAddress={locationAddress}
+                            setSelectedAddress={()=>{}}
                         />
                     </FormInput>
                 </Grid>

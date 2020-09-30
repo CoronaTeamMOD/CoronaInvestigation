@@ -89,8 +89,9 @@ const  LocationInput = ({control, name, selectedAddress, constOptions = false }:
         };
     }, [selectedAddress,input]);    
 
-    return (
-        <Controller
+    return ( 
+        control ?
+         <Controller
             name={name}
             control={control}
             render={(props) => (
@@ -114,6 +115,26 @@ const  LocationInput = ({control, name, selectedAddress, constOptions = false }:
                 />
             )}
         />
+            :
+        <Autocomplete
+            options={locationOptions} 
+            value={parsedSelected}
+            onInputChange={(event: React.ChangeEvent<{}>, newInputValue: string) => setInput(newInputValue as string)}
+            onChange={(e) => selectedAddress}
+            noOptionsText={noOptionsMessage}
+            filterOptions={filterOptions}
+            getOptionLabel={(option: any) => typeof option === 'string' ? option : option.description}
+            renderInput={(params: AutocompleteRenderInputParams) =>
+                <TextField  
+                    {...params} 
+                    fullWidth 
+                />
+            }
+            className={classes.autcompleteField + classes.longAutoComplete}
+            {...config}
+            {...(renderOption) ? { renderOption: renderOption } : {}}
+        />
+
     );
 };
 
