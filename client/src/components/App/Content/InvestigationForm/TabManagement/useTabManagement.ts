@@ -6,7 +6,9 @@ const useTabManagement = () => {
     let nextTab: any;
 
     const moveToNextTab = () => {
-            setCurrentTab(nextTab);
+            if(nextTab) {
+                setCurrentTab(nextTab);
+            }
     }
 
     const setNextTab = (num: number) => {
