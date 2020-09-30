@@ -59,7 +59,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
         is: true,
-        then: yup.string().required(),
+        then: yup.string().required(requiredText),
         otherwise: yup.string()
     }),
     [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(),
