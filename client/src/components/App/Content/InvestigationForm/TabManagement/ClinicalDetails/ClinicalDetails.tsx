@@ -85,13 +85,7 @@ const schema = yup.object().shape({
         otherwise: yup.array().of(yup.string())
     }),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
-    [ClinicalDetailsFields.HOSPITAL]: yup.string().when(
-        ClinicalDetailsFields.WAS_HOPITALIZED, {
-        is: true,
-        then: yup.string().required(),
-        else: yup.string()
-    }
-    ),
+    [ClinicalDetailsFields.HOSPITAL]: yup.string(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
