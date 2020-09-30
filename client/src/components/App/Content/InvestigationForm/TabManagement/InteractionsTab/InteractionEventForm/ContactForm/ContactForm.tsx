@@ -37,7 +37,7 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
     const {extraInfo, contactType, lastName, firstName, phoneNumber, id} = contact;
 
     React.useEffect(() => {
-        !contactType && onChange(Array.from(contactTypes.keys())[0], InteractionEventContactFields.CONTACT_TYPE);
+        contactType === -1 && onChange(Array.from(contactTypes.keys())[0], InteractionEventContactFields.CONTACT_TYPE);
     }, [])
 
     const updateContacts = (updatedContact: Contact) => {
@@ -124,19 +124,21 @@ const ContactForm: React.FC<Props> = (props: Props): JSX.Element => {
                 <Grid item xs={4} className={classes.contactAdditionalDetails}>
                     <FormInput fieldName={contactTypeField}>
                         <FormControl fullWidth>
+                            <div className={classes.newContactField}>
                             <InputLabel>סוג מגע</InputLabel>
-                            <Select
-                                test-id={'contactType'}
-                                label='סוג מגע'
-                                value={contactType}
-                                onChange={event => onChange(event.target.value as number, InteractionEventContactFields.CONTACT_TYPE)}
-                            >
+                                <Select
+                                    test-id={'contactType'}
+                                    label='סוג מגע'
+                                    value={contactType}
+                                    onChange={event => onChange(event.target.value as number, InteractionEventContactFields.CONTACT_TYPE)}
+                                >
                                 {
                                     Array.from(contactTypes.values()).map((contactType) => (
                                         <MenuItem key={contactType.id} value={contactType.id}>{contactType.displayName}</MenuItem>
                                     ))
                                 }
-                            </Select>
+                                </Select>
+                            </div>
                         </FormControl>
                     </FormInput>
                 </Grid>

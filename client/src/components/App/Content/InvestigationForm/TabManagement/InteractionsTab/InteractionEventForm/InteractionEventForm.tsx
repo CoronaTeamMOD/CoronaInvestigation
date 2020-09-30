@@ -37,6 +37,7 @@ export const defaultContact: Contact = {
   lastName: "",
   phoneNumber: { number: "", isValid: true },
   id: "",
+  contactType: -1
 };
 
 const addContactButton: string = 'הוסף מגע';

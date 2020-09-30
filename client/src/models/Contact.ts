@@ -6,7 +6,7 @@ interface Contact {
     lastName: string;
     phoneNumber: PhoneNumberControl;
     id?: string;
-    contactType?: number;
+    contactType: number;
     extraInfo?: string;
 }
 
