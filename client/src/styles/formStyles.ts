@@ -1,5 +1,4 @@
-  
-import { makeStyles } from '@material-ui/styles'
+import {makeStyles} from '@material-ui/styles'
 
 const useStyles = makeStyles({
     form: {
@@ -28,7 +27,27 @@ const useStyles = makeStyles({
     },
     autocomplete: {
         width: '20vw'
-    }
+    },
+    additionalTextField: {
+        '@media screen and (min-width: 1400px)': {
+            marginLeft: '-3vw',
+            paddingRight: '14vw',
+        },
+    },
+    additionalMarginTextField: {
+        marginLeft: '-1vw',
+    },
+    selectPlaceType: {
+        width: '10vw',
+        marginLeft: '2vw',
+
+    },
+    formTypesSelect: {
+        '@media screen and (max-width: 1400px)': {
+            marginLeft: '-3vw',
+        },
+        marginLeft: '-4vw',
+    },
 });
 
 export default useStyles;

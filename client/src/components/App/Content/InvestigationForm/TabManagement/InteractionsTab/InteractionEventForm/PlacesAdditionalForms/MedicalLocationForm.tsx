@@ -3,7 +3,7 @@ import React, {useContext} from 'react';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import HospitalEventForm from './HospitalEventForm';
-import DefaultPlaceEventForm from './DefaultPlaceEventForm';
+import DefaultPlaceEventForm from './DefaultPlaceEventForm/DefaultPlaceEventForm';
 import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const MedicalLocationForm : React.FC = () : JSX.Element => {

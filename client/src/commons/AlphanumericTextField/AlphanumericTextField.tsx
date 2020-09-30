@@ -9,9 +9,9 @@ const stringAlphanum = yup
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
+  const value =  (props.value == null || props.value === undefined) ? "" : props.value;
   const {
     name,
-    value,
     onChange,
     setError,
     clearErrors,
@@ -22,6 +22,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     required,
     testId
   } = props;
+
   return (
     <Tooltip open={errors.hasOwnProperty(name)} title={errors[name]?.message}>
       <TextField
