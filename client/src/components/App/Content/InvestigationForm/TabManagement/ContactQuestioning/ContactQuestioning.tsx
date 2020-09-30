@@ -9,6 +9,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Checkbox, Divide
 
 import City from 'models/City';
 import Toggle from 'commons/Toggle/Toggle';
+import ContactType from 'models/ContactType';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
@@ -32,6 +33,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const interactedContactsState = useContext(interactedContactsContext);
     const { occupations } = useContext(occupationsContext);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
@@ -104,7 +106,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                         {
                                             interactedContact.contactType &&
                                             <Typography variant='body2'>
-                                                <b>סוג מגע:</b> {interactedContact.contactType}
+                                                <b>סוג מגע:</b> {contactTypes.get(+interactedContact.contactType)?.displayName}
                                             </Typography>
                                         }
                                         {
