@@ -128,7 +128,6 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             onChange={(newValue: string) =>
                                                 props.onChange(newValue)
                                             }
-                                            required
                                             label='סימפטום'
                                             setError={setError}
                                             clearErrors={clearErrors}
