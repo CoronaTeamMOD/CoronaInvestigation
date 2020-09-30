@@ -10,6 +10,7 @@ import { Tab } from 'models/Tab';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
+import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
 import Validator from 'Utils/Validations/Validator';
 import {landingPageRoute} from 'Utils/Routes/Routes';
@@ -18,6 +19,7 @@ import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
+import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './InvestigationFormStyles';
@@ -38,7 +40,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     const classes = useStyles({});
 
-    useEffect(() => {
+    const fetchCities = () => {
         axios.get('/addressDetails/cities')
             .then((result: any) => {
                 const cities: Map<string, City> = new Map();
@@ -48,18 +50,36 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                 setCities(cities);
             })
             .catch(err => console.log(err));
-    }, []);
+    };
 
-    useEffect(()=> {
+    const fetchContactTypes = () => {
+        axios.get('/intersections/contactTypes')
+            .then((result: any) => {
+                const contactTypes: Map<number, ContactType> = new Map();
+                result && result.data && result.data.forEach((contactType: ContactType) => {
+                    contactTypes.set(contactType.id, contactType)
+                });
+                setContactType(contactTypes);
+            })
+            .catch(err => console.log(err));
+    }
+
+    const fetchCountries = () => {
         axios.get('/addressDetails/countries')
-        .then((result: any) => {
-            const countries: Map<string, Country> = new Map();
-            result && result.data && result.data.forEach((country: Country) => {
-                countries.set(country.id, country)
-            });
-            setCountries(countries);
-        })
-        .catch(err=> console.log(err));
+            .then((result: any) => {
+                const countries: Map<string, Country> = new Map();
+                result && result.data && result.data.forEach((country: Country) => {
+                    countries.set(country.id, country)
+                });
+                setCountries(countries);
+            })
+            .catch(err=> console.log(err));
+    };
+
+    useEffect(() => {
+        fetchCities();
+        fetchCountries();
+        fetchContactTypes();
     }, []);
 
     useEffect(() => {

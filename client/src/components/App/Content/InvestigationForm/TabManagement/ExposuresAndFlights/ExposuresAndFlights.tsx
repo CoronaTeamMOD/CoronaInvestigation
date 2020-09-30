@@ -14,13 +14,15 @@ import useFormStyles from 'styles/formStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 const ExposuresAndFlights = () => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
-  const { exposures } = exposureAndFlightsData;
+  const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
+    const { parseAddress } = useGoogleApiAutocomplete();
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -35,9 +37,6 @@ const ExposuresAndFlights = () => {
     exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
     , [exposures]);
 
-  const [wereConfirmedExposures, setWereConfirmedExposures] = useState<boolean>(false);
-  const [wereFlights, setWereFlights] = useState<boolean>(false);
-
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure)
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
 
@@ -49,18 +48,27 @@ const ExposuresAndFlights = () => {
     (wereFlights && !doesHaveFlights(exposures)) && onExposureAdded(false, true);
   }, [wereFlights])
 
+  const parseDbExposure = (exposure:Exposure) => {
+    const {exposureAddress, ...restOfData} = exposure;
+    return ({exposureAddress: parseAddress(exposureAddress), ...restOfData});
+  };
+
   useEffect(() => {
     axios
       .get('/exposure/' + investigationId)
-      .then((result: any) => {
-        if (result && result.data && result.data.data) {
-          const data : Exposure[] = result.data.data.allExposures.nodes;
-          if (data) {
-            setWereConfirmedExposures(doesHaveConfirmedExposures(data))
-            setWereFlights(doesHaveFlights(data))
-            setExposureDataAndFlights({exposures: data});
+        .then(result => {
+          const data: Exposure[] = result?.data?.data?.allExposures?.nodes;
+          return data && data.map(parseDbExposure);
+        })
+      .then((exposures?: Exposure[]) => {
+          if (exposures) {
+              setExposureDataAndFlights({
+                  exposures,
+                  exposuresToDelete: [],
+                  wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+                  wereFlights: doesHaveFlights(exposures)
+              });
           }
-        }
       })
       .catch((err) => {
         Swal.fire({
@@ -77,6 +85,13 @@ const ExposuresAndFlights = () => {
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
       exposures: updatedExpousres,
+    });
+  };
+
+    const onExposuresStatusChange = (fieldName: any, value: any) => {
+    setExposureDataAndFlights({
+      ...exposureAndFlightsData,
+      [fieldName]: value
     });
   };
 
@@ -98,7 +113,7 @@ const ExposuresAndFlights = () => {
         <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
           <Toggle
             value={wereConfirmedExposures}
-            onChange={() => setWereConfirmedExposures(!wereConfirmedExposures)}
+            onChange={() => onExposuresStatusChange(fieldsNames.wereConfirmedExposures, !wereConfirmedExposures)}
           />
         </FormRowWithInput>
 
@@ -149,7 +164,7 @@ const ExposuresAndFlights = () => {
         <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
           <Toggle
             value={wereFlights}
-            onChange={() => setWereFlights(!wereFlights)}
+            onChange={() => onExposuresStatusChange(fieldsNames.wereFlights, !wereFlights)}
           />
         </FormRowWithInput>
 

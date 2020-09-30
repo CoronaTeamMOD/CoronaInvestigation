@@ -82,7 +82,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
-            locationAddress: parseAddress(dbInteraction.locationAddress) || '',
+            locationAddress: parseAddress(dbInteraction.locationAddress),
             contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
             contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
             startTime: new Date(dbInteraction.startTime),

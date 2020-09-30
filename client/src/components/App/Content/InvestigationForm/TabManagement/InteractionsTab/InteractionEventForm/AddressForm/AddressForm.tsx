@@ -4,20 +4,21 @@ import React, { useContext } from 'react';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import LocationInput, {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import {GeocodeResponse} from "commons/LocationInputField/LocationInput";
 import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
+import Map from "commons/Map/Map";
 
 import useStyles from './AddressFormStyles';
 
-const AddressForm : React.FC = () : JSX.Element => {
+const AddressForm: React.FC = (): JSX.Element => {
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
 
     const ctxt = useContext(InteractionEventDialogContext);
-    const { interactionEventDialogData, setInteractionEventDialogData } = ctxt;
+    const {interactionEventDialogData, setInteractionEventDialogData} = ctxt;
     const {locationAddress} = interactionEventDialogData;
 
-    const onGoogleApiLocationTextFieldChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
+    const onGoogleApiLocationTextFieldChange = (newValue: GeocodeResponse | null) => {
         setInteractionEventDialogData({
             ...ctxt.interactionEventDialogData as InteractionEventDialogData,
             locationAddress: newValue
@@ -25,18 +26,15 @@ const AddressForm : React.FC = () : JSX.Element => {
     };
 
     return (
-        <>
-            <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='כתובת'>
-                        <LocationInput selectedAddress={locationAddress}
-                                        setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}/>
+        <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
+            <Grid item xs={4}>
+                <FormInput fieldName='כתובת'>
+                    <div className={additionalClasses.addressAutoCompleteField}>
+                        <Map selectedAddress={locationAddress} setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                    </div>
+                </FormInput>
             </Grid>
-        </>
-    );
-};
+        </Grid>
+    )};
 
 export default AddressForm;
