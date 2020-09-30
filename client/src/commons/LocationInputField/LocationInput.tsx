@@ -4,6 +4,7 @@ import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
 import AutocompletedField from '../AutoCompletedField/AutocompletedField';
 import useStyles from './LocationInputFieldStyles';
+import useDBParser from 'Utils/vendor/useDBParsing';
 
 export interface GoogleApiPlace {
     description: string;
@@ -20,35 +21,28 @@ export interface GoogleApiPlace {
     place_id: string;
 };
 
-interface GeocodeAddressComponent {
-    types: string[];
-    long_name: string;
-}
-
-interface LocationObject {
-lon: () => number | number;
-lat: () => number | number;
-}
-
-export interface GeocodeResponse {
-    address_components: GeocodeAddressComponent[];
-    formatted_address: string;
-    geometry: {
-        location: LocationObject;
-    };
-    types: string[],
-    place_id: string;
+export interface GeocodeResponse extends google.maps.GeocoderResult {
     description?: string;
 }
 
 const  LocationInput = (props: LocationInputProps) => {
-    const { selectedAddress,  setSelectedAddress, required } = props;
-    const classes = useStyles({});
+    const { selectedAddress,  setSelectedAddress, required} = props;
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
+    const {parseLocation} = useDBParser();
+
     const [locationOptions, setLocationOptions] = React.useState<GoogleApiPlace[]>([]);
     const [input, setInput] = React.useState<string>('');
-
     const parsedSelected = React.useMemo(() => parseAddress(selectedAddress), [selectedAddress]);
+    const _isMounted = React.useRef(true);
+
+    const classes = useStyles({});
+
+    // cleanup
+    React.useEffect(() => {
+        return () => {
+            _isMounted.current = false
+        }
+    }, []);
 
     React.useEffect(() => {
         let active = true;
@@ -64,7 +58,6 @@ const  LocationInput = (props: LocationInputProps) => {
             }
         });
 
-
         return () => {
             active = false;
         };
@@ -77,12 +70,17 @@ const  LocationInput = (props: LocationInputProps) => {
         setInput(newInputValue);
     };
 
+    const onChange = async (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
+        const geoCodedAddress = await parseLocation(newValue);
+        _isMounted && setSelectedAddress(event,geoCodedAddress as GoogleApiPlace);
+    };
+
     return (
         <AutocompletedField
-            required
+            required={required}
             value={parsedSelected}
             options={locationOptions}
-            onChange={setSelectedAddress}
+            onChange={onChange}
             onInputChange={onInputChange}
             getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
             renderOption={LocationOptionItem}

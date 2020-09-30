@@ -1,6 +1,6 @@
-import {GoogleApiPlace} from "../commons/LocationInputField/LocationInput";
+import {GeocodeResponse} from "../commons/LocationInputField/LocationInput";
 
-export type Address = GoogleApiPlace | null;
+export type Address = GeocodeResponse | null;
 
 export interface DBAddress {
     city: string;
