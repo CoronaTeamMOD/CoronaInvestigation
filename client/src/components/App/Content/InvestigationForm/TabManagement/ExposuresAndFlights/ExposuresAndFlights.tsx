@@ -63,10 +63,10 @@ const ExposuresAndFlights = () => {
       .then((exposures?: Exposure[]) => {
           if (exposures) {
               setExposureDataAndFlights({
-                  exposures: data,
+                  exposures,
                   exposuresToDelete: [],
-                  wereConfirmedExposures: doesHaveConfirmedExposures(data),
-                  wereFlights: doesHaveFlights(data)
+                  wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+                  wereFlights: doesHaveFlights(exposures)
               });
           }
       })

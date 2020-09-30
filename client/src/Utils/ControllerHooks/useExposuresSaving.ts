@@ -24,7 +24,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
 
     const saveExposureAndFlightData = async () : Promise<void> => {
         const { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
-        let filteredExposures : Exposure[] = [];
+        let filteredExposures : (Exposure | DBExposure)[] = [];
         const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
         exposures.forEach(exposure => {
             if (filterCondition(exposure)) {
@@ -32,9 +32,9 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
             } else {
                 filteredExposures.push(exposure);
             }
-        })
+        });
 
-        filteredExposures = filteredExposures.map(extractExposureData);
+        filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
