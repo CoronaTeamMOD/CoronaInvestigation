@@ -26,7 +26,7 @@ import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './
 import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
-    const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContacts } = parameters;
 
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -144,15 +144,18 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     };
 
     const saveCurrentTab = () => {
-        switch(currentTab.name) {
-            case(TabNames.PERSONAL_INFO): {
+        switch (currentTab.name) {
+            case (TabNames.PERSONAL_INFO): {
                 return savePersonalInfoData();
             }
-            case(TabNames.CLINICAL_DETAILS): {
+            case (TabNames.CLINICAL_DETAILS): {
                 return saveClinicalDetails();
             }
-            case(TabNames.EXPOSURES_AND_FLIGHTS): {
+            case (TabNames.EXPOSURES_AND_FLIGHTS): {
                 return saveExposureAndFlightData();
+            }
+            case (TabNames.CONTACT_QUESTIONING): {
+                return saveContactQuestioning();
             }
             default: {
                 return new Promise<void>((resolve, reject) => resolve());
@@ -178,6 +181,16 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             personalInfoData, 
         })
     }
+    
+    const saveContactQuestioning = (): Promise<void> => {
+        const contacts = interactedContacts;
+
+        return axios.post('/contactedPeople/saveAllContacts',
+            {
+                unSavedContacts: { contacts }
+            }
+        );
+    };
 
     const handleInvestigationFinishFailed = () => {
         Swal.fire({

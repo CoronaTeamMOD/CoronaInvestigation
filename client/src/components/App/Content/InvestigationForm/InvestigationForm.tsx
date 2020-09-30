@@ -32,7 +32,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const context = useContext(interactedContactsContext);
+    const { interactedContacts } = useContext(interactedContactsContext);
 
     const [personalInfoData, setPersonalInfoData] = React.useState<personalInfoContextData>(initialPersonalInfo);
 
@@ -81,9 +81,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContacts });
 
-    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && context.interactedContacts.length === 0));
+    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && interactedContacts.length === 0));
     const shouldDisableButton = isButtonDisabled(currentTab.name);
     return (
         <div className={classes.content}>

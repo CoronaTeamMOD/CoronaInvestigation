@@ -8,12 +8,12 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Checkbox, Divide
          FormControlLabel, Grid, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
-import axios from 'Utils/axios';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
+import useContactQuestioning from './useContactQuestioning';
 import FamilyRelationship from 'models/enums/FamilyRelationship';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -27,18 +27,7 @@ import { ADDITIONAL_PHONE_LABEL, OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } f
 
 const ContactQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
-
     const { errors, setError, clearErrors } = useForm({});
-
-    React.useEffect(() => {
-        getAllRelationships();
-    },[]);
-
-    const getAllRelationships = () => {
-        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
-            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
-        });
-    };
 
     const interactedContactsState = useContext(interactedContactsContext);
     const { occupations } = useContext(occupationsContext);
@@ -57,9 +46,12 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
         const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
-    
-    const saveContact = (interactedContact: InteractedContact) => {
-    };
+
+    const { getAllRelationships, saveContact } = useContactQuestioning({ setFamilyRelationships });
+
+    React.useEffect(() => {
+        getAllRelationships();
+    },[]);
 
     return (
         <>
