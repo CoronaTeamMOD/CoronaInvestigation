@@ -1,17 +1,27 @@
 import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-import {GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import {GeocodeResponse, GoogleApiPlace} from "commons/LocationInputField/LocationInput";
+import useGoogleGeocoder from "../../commons/LocationInputField/useGoogleGeocoder";
 
 const useDBParser = () => {
-    const {parseAddress, requestDetailsFromPlaceId} = useGoogleApiAutocomplete();
+    const {parseAddress} = useGoogleApiAutocomplete();
+    const {requestDetailsFromPlaceId} = useGoogleGeocoder();
 
-    const parseLocation = async (address: GoogleApiPlace | null) => {
+    const parseLocation = async (address: GoogleApiPlace | GeocodeResponse | null) => {
         if (address) {
-            const parsedAddress = parseAddress(address);
-            const details = await requestDetailsFromPlaceId(parsedAddress?.place_id);
-            const description = parsedAddress?.description;
-            const detailsDBPayload = Array.isArray(details) ? details[0] : details;
+            const getPlaceDetailsObject = async (placeId: string) => {
+                const placeDetails = await requestDetailsFromPlaceId(placeId);
+                const placeDetailsObject = Array.isArray(placeDetails) ? placeDetails[0] : placeDetails;
+                return placeDetailsObject;
+            }
 
-            return JSON.stringify({...detailsDBPayload, description})
+            const parsedAddress = parseAddress(address);
+            const isGeocodedLocation = !!((parsedAddress as GeocodeResponse).geometry);
+            const placeData = (isGeocodedLocation || !(parsedAddress.place_id))
+                ? (parsedAddress as GeocodeResponse)
+                : await getPlaceDetailsObject(parsedAddress.place_id);
+            const description = parsedAddress?.description;
+
+            return {...placeData, description};
         }
 
         return address;
