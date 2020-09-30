@@ -16,10 +16,10 @@ ContactedPeopleRoute.post('/familyRelationships', (request: Request, response: R
     graphqlRequest(GET_ALL_FAMILY_RELATIONSHIPS, response.locals).then((result: any) => response.send(result))
 );
 
-ContactedPeopleRoute.post('/saveAllContacts', (request: Request, response: Response) =>
-    graphqlRequest(SAVE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: request.body})
+ContactedPeopleRoute.post('/saveAllContacts', (request: Request, response: Response) => {
+    graphqlRequest(SAVE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => response.send(result))
         .catch(error => response.status(500).json({error: 'failed to save all the contacts'}))
-);
+});
 
 export default ContactedPeopleRoute;
