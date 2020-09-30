@@ -19,7 +19,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
         .catch(error => response.status(500).send('Error while trying to fetch isActive user status'))
 })
 
-usersRoute.post('/updateIsUserActive', adminMiddleWare, (request: Request, response: Response) => {
+usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
     graphqlRequest(UPDATE_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id, isActive: request.body.isActive })
         .then((result: any) => {
             if (result.data.updateUserById)
