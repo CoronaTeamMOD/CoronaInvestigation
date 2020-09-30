@@ -50,7 +50,7 @@ const App: React.FC = (): JSX.Element => {
             return user;
 
         }).then((user: any) => {
-            user && user.isAdmin && axios.get(`/users/group?investigationGroup=${user.investigationGroup}`)
+            user && user.isAdmin && axios.get(`/users/group`)
                 .then((result: any) => {
                     const groupUsers: Map<string, User> = new Map();
                     result && result.data && result.data.forEach((user: User) => {

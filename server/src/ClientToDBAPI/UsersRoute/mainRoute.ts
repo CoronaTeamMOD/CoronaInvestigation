@@ -42,7 +42,7 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
 });
 
 usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +request.query.investigationGroup })
+    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.group })
         .then((result: any) => {
             let users: User[] = [];
             if (result && result.data && result.data.allUsers) {

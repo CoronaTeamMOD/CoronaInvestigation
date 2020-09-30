@@ -68,6 +68,7 @@ export const adminMiddleWare = (
     graphqlRequest(GET_USER_BY_ID, response.locals, { id: response.locals.user.id })
         .then((result: any) => {
             if (result.data.userById.isAdmin) {
+                response.locals.user.group = result.data.userById.investigationGroup
                 return next();
             } else {
                 response.status(401).json({error: "unauthorized non admin user" })
