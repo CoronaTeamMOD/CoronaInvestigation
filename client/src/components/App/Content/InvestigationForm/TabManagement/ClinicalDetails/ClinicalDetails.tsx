@@ -419,14 +419,18 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                     בית חולים:
                                 </b>
                             </Typography>
-                            <TextField
+                            <AlphanumericTextField
                                 className={classes.hospitalInput}
+                                name={ClinicalDetailsFields.HOSPITAL}
                                 required
                                 label='בית חולים'
                                 test-id='hospitalInput'
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
                                 value={context.clinicalDetailsData.hospital}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
+                                onChange={(newValue: string) => (
+                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, newValue as string)
                                 )}
                             />
                         </div>
