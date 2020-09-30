@@ -3,7 +3,7 @@ import { useState } from 'react';
 const useTabManagement = () => {
 
     const [currentTab, setCurrentTab] = useState<number>(0);
-    let nextTab=0;
+    let nextTab: any;
 
     const moveToNextTab = () => {
             setCurrentTab(nextTab);
