@@ -95,7 +95,8 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                         setError={setError}
                                         clearErrors={clearErrors}
                                         errors={errors}
-                                        label='מחלת רקע'
+                                        error={errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]? true : false}
+                                        label={errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]? errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO].message : 'מחלת רקע'}
                                         placeholder='הזן מחלת רקע...'
                                         className={classes.otherTextField}
                                     />
