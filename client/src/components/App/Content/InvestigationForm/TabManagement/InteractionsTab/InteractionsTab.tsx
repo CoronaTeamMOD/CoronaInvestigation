@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { startOfDay } from 'date-fns';
 
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';

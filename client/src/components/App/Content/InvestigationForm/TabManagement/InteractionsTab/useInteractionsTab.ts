@@ -150,6 +150,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         getDatesToInvestigate,
         loadInteractions,
         addNewInteraction,
+        loadInteractionById,
         updateInteraction,
         handleDeleteContactEvent,
     }
