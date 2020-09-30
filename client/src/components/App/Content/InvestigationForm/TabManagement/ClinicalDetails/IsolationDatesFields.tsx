@@ -46,13 +46,12 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 <DatePick
                                     onBlur={props.onBlur}
                                     test-id='quarantinedFromDate'
-                                    labelText='מתאריך'
+                                    labelText={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : 'מתאריך'}
                                     value={props.value}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                     }}
                                     error={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? true : false}
-                                    errorText={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : null}
                                 />
                             </div>
                         )}
@@ -64,13 +63,12 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                             <DatePick
                                 onBlur={props.onBlur}
                                 test-id='quarantinedUntilDate'
-                                labelText='עד'
+                                labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message :'עד'}
                                 value={props.value}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                 }}
                                 error={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? true : false}
-                                errorText={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : null}
                             />
                         )}
                     />
