@@ -14,13 +14,17 @@ const exposureDeleteCondition =
 }
 
 
+interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
+    exposureAddress: string|null;
+}
+
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const {parseLocation} = useDBParser();
 
     const saveExposureAndFlightData = async () : Promise<void> => {
         const { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
-        let filteredExposures : Exposure[] = [];
+        let filteredExposures : (Exposure | DBExposure)[] = [];
         const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
         exposures.forEach(exposure => {
             if (filterCondition(exposure)) {
@@ -28,9 +32,9 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
             } else {
                 filteredExposures.push(exposure);
             }
-        })
-        const exposuresPromises = filteredExposures.map(async exposure => await extractExposureData(exposure));
-        filteredExposures = await Promise.all(exposuresPromises);
+        });
+
+        filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
@@ -39,8 +43,8 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         });
     }
 
-    const extractExposureData = async (exposuresAndFlightsData : Exposure ) => {
-        let exposureAndDataToReturn = exposuresAndFlightsData;
+    const extractExposureData =  (exposuresAndFlightsData : Exposure ) => {
+        let exposureAndDataToReturn: (Exposure | DBExposure) = exposuresAndFlightsData;
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
@@ -54,8 +58,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         } else {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
-                // @ts-ignore
-                exposureAddress: await parseLocation(exposuresAndFlightsData.exposureAddress)
+                exposureAddress: exposuresAndFlightsData.exposureAddress ||  null
             }
         }
         if (!exposuresAndFlightsData.wasAbroad) {
@@ -73,7 +76,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
                 [fieldsNames.flightNumber]: ''
             }
         }
-        return exposureAndDataToReturn;
+        return (exposureAndDataToReturn as DBExposure);
     }
 
     return {

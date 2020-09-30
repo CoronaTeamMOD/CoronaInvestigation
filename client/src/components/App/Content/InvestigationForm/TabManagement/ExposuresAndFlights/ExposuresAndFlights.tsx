@@ -14,6 +14,7 @@ import useFormStyles from 'styles/formStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
@@ -21,6 +22,7 @@ const addFlightButton: string = 'הוסף טיסה לחול';
 const ExposuresAndFlights = () => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
+    const { parseAddress } = useGoogleApiAutocomplete();
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -46,21 +48,27 @@ const ExposuresAndFlights = () => {
     (wereFlights && !doesHaveFlights(exposures)) && onExposureAdded(false, true);
   }, [wereFlights])
 
+  const parseDbExposure = (exposure:Exposure) => {
+    const {exposureAddress, ...restOfData} = exposure;
+    return ({exposureAddress: parseAddress(exposureAddress), ...restOfData});
+  };
+
   useEffect(() => {
     axios
       .get('/exposure/' + investigationId)
-      .then((result: any) => {
-        if (result && result.data && result.data.data) {
-          const data : Exposure[] = result.data.data.allExposures.nodes;
-          if (data) {
-            setExposureDataAndFlights({
-              exposures: data, 
-              exposuresToDelete: [],
-              wereConfirmedExposures: doesHaveConfirmedExposures(data),
-              wereFlights: doesHaveFlights(data)
-            });
+        .then(result => {
+          const data: Exposure[] = result?.data?.data?.allExposures?.nodes;
+          return data && data.map(parseDbExposure);
+        })
+      .then((exposures?: Exposure[]) => {
+          if (exposures) {
+              setExposureDataAndFlights({
+                  exposures,
+                  exposuresToDelete: [],
+                  wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+                  wereFlights: doesHaveFlights(exposures)
+              });
           }
-        }
       })
       .catch((err) => {
         Swal.fire({

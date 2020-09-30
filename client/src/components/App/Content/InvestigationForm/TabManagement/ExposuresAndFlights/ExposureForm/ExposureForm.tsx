@@ -3,12 +3,12 @@ import { Grid } from '@material-ui/core';
 
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import LocationInput from 'commons/LocationInputField/LocationInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useFormStyles from 'styles/formStyles';
 import { useForm } from 'react-hook-form';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import Map from "commons/Map/Map";
 
 const ExposureForm = (props: any) => {
   const {
@@ -69,16 +69,9 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput testId='exposureAddress' fieldName="כתובת החשיפה:">
-        <LocationInput
-          required
-          selectedAddress={exposureAndFlightsData[fieldsNames.address]}
-          setSelectedAddress={(e, newValue) =>
-            handleChangeExposureDataAndFlightsField(
-              fieldsNames.address,
-              newValue
-            )
-          }
-        />
+          <Map required
+               setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
+               selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
