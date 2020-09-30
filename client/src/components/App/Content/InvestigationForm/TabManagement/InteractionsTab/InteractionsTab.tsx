@@ -1,9 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { startOfDay } from 'date-fns';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
+import { setFormState } from 'redux/Form/formActionCreators';
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
@@ -13,6 +16,7 @@ import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Con
 const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
 
     const clinicalDetailsCtxt: ClinicalDetailsDataAndSet = useContext(clinicalDetailsDataContext);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
@@ -51,58 +55,9 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const SaveInteraction = (e : any) => {
         e.preventDefault();
-        console.log("Interaction");
+        setFormState(investigationId, id, true);
         onSubmit();
-        // Swal.fire({
-        //     icon: 'warning',
-        //     title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
-        //     showCancelButton: true,
-        //     cancelButtonText: 'בטל',
-        //     cancelButtonColor: theme.palette.error.main,
-        //     confirmButtonColor: theme.palette.primary.main,
-        //     confirmButtonText: 'כן, המשך',
-        //     customClass: {
-        //         title: classes.swalTitle
-        //     }
-        // }).then((result) => {
-        //     if (result.value) {
-        //         axios.post('/investigationInfo/updateInvestigationStatus', {
-        //             epidemiologyNumber,
-        //             investigationStatus: InvestigationStatus.DONE,
-        //         }).then(() => {
-        //             axios.post('/investigationInfo/updateInvestigationEndTime', {
-        //                 investigationEndTime: new Date(),
-        //                 epidemiologyNumber
-        //             }).then(() => handleInvestigationFinish()).catch(() => handleInvestigationFinishFailed())
-        //         }).catch(() => {
-        //             handleInvestigationFinishFailed();
-        //         })
-        //     };
-        // });
     }
-
-    // const handleInvestigationFinish = () => {
-    //     Swal.fire({
-    //         icon: 'success',
-    //         title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
-    //         customClass: {
-    //             title: classes.swalTitle
-    //         },
-    //         timer: 1750,
-    //         showConfirmButton: false
-    //     }
-    //     );
-    //     timeout(1900).then(() => {
-    //         history.push(landingPageRoute);
-    //     });
-    // };
-
-    // const handleInvestigationFinishFailed = () => {
-    //     Swal.fire({
-    //         title: 'לא ניתן היה לסיים את החקירה',
-    //         icon: 'error',
-    //     })
-    // };
     
     return (
         <>
