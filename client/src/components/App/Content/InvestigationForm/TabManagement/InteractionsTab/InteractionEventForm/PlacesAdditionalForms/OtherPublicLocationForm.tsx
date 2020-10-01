@@ -9,7 +9,6 @@ import BusinessContactForm from 'components/App/Content/InvestigationForm/TabMan
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import { InteractionEventDialogContext } from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 

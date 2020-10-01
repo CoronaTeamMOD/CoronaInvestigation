@@ -9,7 +9,6 @@ import useFormStyles from 'styles/formStyles';
 
 import AddressForm from '../AddressForm/AddressForm';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();

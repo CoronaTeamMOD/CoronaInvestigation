@@ -7,7 +7,6 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import useFormStyles from 'styles/formStyles';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext'
 
 const OfficeEventForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
