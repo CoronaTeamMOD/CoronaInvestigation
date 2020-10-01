@@ -21,34 +21,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, value);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
-    };
-
-    const updateIsolationAddressOnCityChange = (city: string) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress,
-                city,
-                street: ''
-            }
-        })
-    };
-
-    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData as ClinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress as DBAddress,
-                [fieldToUpdate]: updatedValue
-            }
-        })
-    };
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms', {}).then(
@@ -138,11 +111,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }, []);
 
     return {
-        hasBackgroundDeseasesToggle,
         getStreetByCity,
-        updateClinicalDetails,
-        updateIsolationAddress,
-        updateIsolationAddressOnCityChange
     };
 };
 

@@ -14,9 +14,5 @@ export interface useClinicalDetailsIncome {
 };
 
 export interface useClinicalDetailsOutcome {
-    hasBackgroundDeseasesToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
     getStreetByCity: (cityId: string) => void;
-    updateClinicalDetails: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
-    updateIsolationAddress: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
-    updateIsolationAddressOnCityChange: (cityId: string) => void;
 };

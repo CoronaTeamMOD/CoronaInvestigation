@@ -4,19 +4,16 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers";
 import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
 import Toggle from 'commons/Toggle/Toggle';
-import DatePick from 'commons/DatePick/DatePick';
 import StoreStateType from 'redux/storeStateType';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { clinicalDetailsDataContext, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { setFormState } from 'redux/Form/formActionCreators';
 import axios from 'Utils/axios';
 
@@ -115,7 +112,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     
-    const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
+    const { getStreetByCity } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
     });
 
@@ -373,7 +370,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             />
             <BackgroundDiseasesFields
                 classes={classes}
-                hasBackgroundDeseasesToggle={hasBackgroundDeseasesToggle}
                 backgroundDiseases={backgroundDiseases}
                 handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
                 setError={setError}

@@ -115,7 +115,6 @@ interface Props {
     setError: any;
     clearErrors: any;
     errors: any;
-    hasBackgroundDeseasesToggle: any;
     backgroundDiseases: any;
     handleBackgroundIllnessCheck: any;
     watchBackgroundDiseases: any;
