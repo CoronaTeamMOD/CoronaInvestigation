@@ -28,18 +28,38 @@ import Swal from 'sweetalert2';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 const requiredText = 'שדה זה הוא חובה';
+const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
+const minText = 'תאריך הסיום צריך להיות מוקדם יותר מתאריך ההתחלה';
 
-const isInIsolationDateSchema = yup.date().when(
+const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().required(requiredText).typeError(requiredText),
+    then: yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
+    .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
 
-const wasHospitilizedDateSchema = yup.date().when(
+const isInIsolationEndDateSchema = yup.date().when(
+    ClinicalDetailsFields.IS_IN_ISOLATION, {
+    is: true,
+    then: yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
+    .required(requiredText).typeError(requiredText),
+    otherwise: yup.date().nullable()
+});
+
+const wasHospitilizedStartDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
     is: true,
-    then: yup.date().required(requiredText).typeError(requiredText),
+    then: yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), maxText)
+    .required(requiredText).typeError(requiredText),
+    otherwise: yup.date().nullable()
+});
+
+const wasHospitilizedEndDateSchema = yup.date().when(
+    ClinicalDetailsFields.WAS_HOPITALIZED, {
+    is: true,
+    then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), minText)
+    .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
 
@@ -51,8 +71,8 @@ const schema = yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.mixed().required(requiredText)
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
-    [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationDateSchema,
-    [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationDateSchema,
+    [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
+    [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema,
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
@@ -84,8 +104,8 @@ const schema = yup.object().shape({
     }),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string(),
-    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
-    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
+    [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
+    [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
     [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string().nullable(),
 })
