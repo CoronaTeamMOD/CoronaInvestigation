@@ -40,9 +40,10 @@ const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
 export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
-const OFFICE_NAME_LABEL = 'שם משרד/ רשות';
-const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה';
-const INDUSTRY_NAME_LABEL = 'שם התעשייה';
+const OFFICE_NAME_LABEL = 'שם משרד/ רשות*';
+const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
+const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
+const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 
 const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const schema = yup.object().shape({
@@ -176,7 +177,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         if (occupation ===  Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
         if (occupation === Occupations.TRANSPORTATION) return TRANSPORTATION_COMPANY_NAME_LABEL;
         if (occupation === Occupations.INDUSTRY) return INDUSTRY_NAME_LABEL;
-        return INSERT_INSTITUTION_NAME;
+        return INSTITUTION_NAME_LABEL;
     }
 
     const savePersonalData = (e: any, personalInfoData: any | personalInfoFormData) => {
@@ -555,7 +556,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
                                                 label={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]? 
-                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד' }
+                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד*' }
                                                 onBlur={props.onBlur}
                                                 test-id='institutionCity'
                                                 id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
@@ -592,7 +593,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                     {...params}
                                                     error={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
                                                     label={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]? 
-                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד' }
+                                                        errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד*' }
                                                     onBlur={props.onBlur}
                                                     test-id='insertInstitutionName'
                                                     disabled={subOccupations.length === 0}
