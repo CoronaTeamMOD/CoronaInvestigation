@@ -63,6 +63,20 @@ const wasHospitilizedEndDateSchema = yup.date().when(
     otherwise: yup.date().nullable()
 });
 
+const symptomsMoreInfoSchema = yup.string().when(
+    ClinicalDetailsFields.SYMPTOMS,
+    (symptoms: string[], schema: any) => {
+        return symptoms.includes('אחר')? schema.required(requiredText) : schema;
+    }
+);
+
+const backgroundDiseasesMoreInfoSchema = yup.string().when(
+    ClinicalDetailsFields.BACKGROUND_DESEASSES,
+    (backgroundDiseases: string[], schema: any) => {
+        return backgroundDiseases.includes('אחר')? schema.required(requiredText) : schema;
+    }
+);
+
 const schema = yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
@@ -94,7 +108,7 @@ const schema = yup.object().shape({
         then: yup.array().of(yup.string()).min(1).required(),
         otherwise: yup.array().of(yup.string())
     }),
-    [ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO]: yup.string(),
+    [ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO]: symptomsMoreInfoSchema,
     [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().required(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, {
@@ -107,7 +121,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
-    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string().nullable(),
+    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
 })
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
