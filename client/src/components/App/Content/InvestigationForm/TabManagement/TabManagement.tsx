@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
+import axios from 'Utils/axios';
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -50,7 +52,16 @@ export const tabs: TabObj[] = [
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
     const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
-    const context = useContext(interactedContactsContext);
+
+    const [areThereContacts, setAreThereContacts] = React.useState<boolean>(false);
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    React.useEffect(() => {
+        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
+            setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
+        });
+    },[]);
     
     const StyledTab = withStyles((theme) =>
         createStyles({
@@ -79,7 +90,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab) => (
-                        !(tab.name === TabNames.CONTACT_QUESTIONING && context.interactedContacts.length === 0) &&
+                        !(tab.name === TabNames.CONTACT_QUESTIONING && !areThereContacts) &&
                             <StyledTab
                                 onClick={onTabClicked}
                                 key={tab.id}
