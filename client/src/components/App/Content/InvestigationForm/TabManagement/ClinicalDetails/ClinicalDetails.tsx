@@ -424,7 +424,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 name={ClinicalDetailsFields.HOSPITAL}
                                 required
                                 label='בית חולים'
-                                test-id='hospitalInput'
+                                testId='hospitalInput'
                                 setError={setError}
                                 clearErrors={clearErrors}
                                 errors={errors}
@@ -439,7 +439,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 <DatePick
                                     required
                                     label='מתאריך'
-                                    test-id='wasHospitalizedFromDate'
+                                    testId='wasHospitalizedFromDate'
                                     labelText='מתאריך'
                                     value={context.clinicalDetailsData.hospitalizationStartDate}
                                     onChange={(newDate: Date) =>
