@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import { Grid } from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import {GeocodeResponse} from "commons/LocationInputField/LocationInput";
+import { GeocodeResponse } from "commons/LocationInputField/LocationInput";
 import Map from "commons/Map/Map";
 import useFormStyles from 'styles/formStyles';
 
@@ -26,7 +26,11 @@ const AddressForm : React.FC = () : JSX.Element => {
             <Grid item xs={4}>
                 <FormInput fieldName='כתובת'>
                     <div className={additionalClasses.addressAutoCompleteField}>
-                        <Map selectedAddress={locationAddress} setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                        <Map
+                            selectedAddress={locationAddress}
+                            setSelectedAddress={onGoogleApiLocationTextFieldChange}
+                            control={control}
+                        />
                     </div>
                 </FormInput>
             </Grid>

@@ -16,17 +16,19 @@ interface MapProps {
     width?: number | string;
     required?: boolean;
     selectedAddress: GeocodeResponse | null;
-    setSelectedAddress:(newValue: GeocodeResponse | null) =>void;
+    setSelectedAddress: (newValue: GeocodeResponse | null) => void;
+    control?: any;
 }
-const defaultMapPosition = {lng: 35.217018, lat: 31.771959};
+
+const defaultMapPosition = { lng: 35.217018, lat: 31.771959 };
 const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
 const DEFAULT_MAP_HEIGHT = '40vh';
 const DEFAULT_MAP_WIDTH = '55vw';
-const Map = ({selectedAddress, setSelectedAddress, required = false, ...props}: MapProps) => {
-    const {parseAddress} = useGoogleApiAutocomplete();
-    const {requestDetailsFromLocation} = useGoogleGeocoder();
-    const {parseLocation} = useDBParser();
+const Map = ({ selectedAddress, setSelectedAddress, control, required = false, ...props }: MapProps) => {
+    const { parseAddress } = useGoogleApiAutocomplete();
+    const { requestDetailsFromLocation } = useGoogleGeocoder();
+    const { parseLocation } = useDBParser();
     const [mapPosition, setMapPosition] = React.useState<google.maps.LatLngLiteral | google.maps.LatLngBounds>(defaultMapPosition);
     const [markerPosition, setMarkerPosition] = React.useState<google.maps.LatLngLiteral| null>(null);
     const [marker, setMarker] = React.useState<google.maps.Marker | null>(null);
@@ -106,7 +108,7 @@ const Map = ({selectedAddress, setSelectedAddress, required = false, ...props}: 
         setMap(loadObject.map)
     };
 
-    const handleAddressSelected = (event:React.ChangeEvent<{}>, placeData: GoogleApiPlace | null) => {
+    const handleAddressSelected = (placeData: GoogleApiPlace | null) => {
         setSelectedAddress(placeData as GeocodeResponse);
     };
 
@@ -115,12 +117,15 @@ const Map = ({selectedAddress, setSelectedAddress, required = false, ...props}: 
     return <div style={{height, width, paddingBottom: '5vh'}}>
         <LocationInput selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
-                       required={required}/>
+                       required={required}
+                       control={control}
+        />
         <GoogleMap googleMapLoader={injectScript}
                    zoom={zoom} center={mapPosition}
                    yesIWantToUseGoogleMapApiInternals
                    onGoogleApiLoaded={handleApiLoaded}
-                   onClick={onMarkerDragEnd}/>
+                   onClick={onMarkerDragEnd}
+        />
     </div>;
 };
 
