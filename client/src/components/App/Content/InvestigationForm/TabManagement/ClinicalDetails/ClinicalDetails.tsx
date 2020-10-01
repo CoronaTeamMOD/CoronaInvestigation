@@ -268,7 +268,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     setIsolationCityName(selectedCityName);
                                     if (selectedCityName === '') {
                                         setStreetsInCity([])
-                                        setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`, '');
+                                        props.onChange('');
                                         setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                     }
                                 }}
@@ -303,6 +303,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 onInputChange={(event, selectedStreetName) => {
                                     setIsolationStreetName(selectedStreetName);
                                     if (selectedStreetName === '') {
+                                        props.onChange('');
                                         setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                     }
                                 }}
