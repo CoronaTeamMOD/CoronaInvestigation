@@ -29,7 +29,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             {
                 unSavedContacts: { contacts }
             }
-        ).then((result) => console.log(result));
+        );
     };
 
     const loadInteractedContacts = () => {
