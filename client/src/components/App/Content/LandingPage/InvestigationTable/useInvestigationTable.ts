@@ -112,7 +112,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             patientCity ? patientCity.displayName : '',
             user
           )
-        });
+        })
         setRows(investigationRows)
       })
       .catch((err: any) => {

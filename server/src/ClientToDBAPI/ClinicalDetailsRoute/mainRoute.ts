@@ -83,8 +83,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
         const requestAddress: Address = {
             cityValue: isolationAddress?.city,
             streetValue: isolationAddress?.street === '' ? null : isolationAddress?.street,
-            floorValue: +isolationAddress?.floor,
-            houseNumValue: +isolationAddress?.houseNum,
+            floorValue: isolationAddress?.floor,
+            houseNumValue: isolationAddress?.houseNum,
         }
         graphqlRequest(CREATE_ISOLATION_ADDRESS,  response.locals, {
             input: { ...requestAddress }
