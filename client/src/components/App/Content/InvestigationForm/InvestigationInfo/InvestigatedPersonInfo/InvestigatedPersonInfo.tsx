@@ -27,6 +27,17 @@ const InvestigatedPersonInfo = (props: Props) => {
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
 
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
+    
+    const handleLeaveInvestigationClick = (e: any) => {
+        e.preventDefault();
+        if(isEventTrigeredByMouseClicking(e)) {
+            confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+        }
+    };
+
+    const isEventTrigeredByMouseClicking = (e: any) => {
+        return !(e.clientX==0 && e.clientY==0);
+    };
 
     return (
         <Paper className={classes.paper}>
@@ -50,7 +61,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     </Tooltip>
                 </div>
                 <PrimaryButton
-                    onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}
+                    onClick={(e) => {handleLeaveInvestigationClick(e)}}
                     type="submit"
                     form={`form-${currentTab}`}
                 >
