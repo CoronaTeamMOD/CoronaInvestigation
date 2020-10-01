@@ -21,6 +21,11 @@ const contactedPersonID: string = 'ת.ז';
 const contactTypeField: string = 'סוג מגע';
 const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
 
+const FIRST_NAME_LABEL='שם פרטי*';
+const LAST_NAME_LABEL='שם משפחה*';
+const PHONE_NUMBER_LABEL='מספר טלפון*';
+
+
 const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
     const { control, errors, setError, clearErrors, setValue} = useFormContext();
 
@@ -47,6 +52,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     key='contactedPersonFirstName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    label={FIRST_NAME_LABEL}
                                     onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
@@ -68,6 +74,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     key='contactedPersonLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    label={LAST_NAME_LABEL}
                                     onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
@@ -88,7 +95,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     value={props.value}
                                     onChange={event => props.onChange(event.target.value as string)}
                                     error={get(errors, props.name)}
-                                    label={get(errors, props.name)?.message}
+                                    label={get(errors, props.name)? get(errors, props.name).message: PHONE_NUMBER_LABEL}
                                 />
                             )}
                         />
