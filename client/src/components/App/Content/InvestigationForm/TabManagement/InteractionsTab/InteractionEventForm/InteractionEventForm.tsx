@@ -94,9 +94,8 @@ const InteractionEventForm: React.FC<Props> = (
             placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
             placeType={placeType}
             placeSubType={placeSubType}
-            onPlaceTypeChange={()=>{}}
-            onPlaceSubTypeChange={()=>{}}
-            setValue={methods.setValue}
+            onPlaceTypeChange={(newValue)=> methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
+            onPlaceSubTypeChange={(newValue)=> methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue)}
           />
           {placeType === privateHouse.code && (
             <Collapse in={placeType === privateHouse.code}>

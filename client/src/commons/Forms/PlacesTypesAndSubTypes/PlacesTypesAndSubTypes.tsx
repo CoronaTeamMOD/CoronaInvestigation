@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { Grid , FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
     
 import useFormStyles from 'styles/formStyles';
@@ -10,15 +10,15 @@ import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element => {
     
-    const { control, placeTypeName, placeSubTypeName, placeSubType, placeType, onPlaceTypeChange, onPlaceSubTypeChange, required } = props;
-    const { setValue } = useFormContext();
+    const { control, placeTypeName, placeSubTypeName, placeType, placeSubType, 
+            onPlaceTypeChange, onPlaceSubTypeChange, required } = props;
 
     const formClasses = useFormStyles();
     const [placesSubTypesByTypes, setPlacesSubTypesByTypes] = useState<PlacesSubTypesByTypes>({});
 
     React.useEffect(()=> {
         if (Object.keys(placesSubTypesByTypes).length > 0 && placeType === '') {
-            setValue(placeTypeName, Object.keys(placesSubTypesByTypes)[0]);
+            onPlaceTypeChange(Object.keys(placesSubTypesByTypes)[0]);
         }
     }, [placesSubTypesByTypes]);
 
@@ -26,7 +26,7 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
         if (placesSubTypesByTypes[placeType]) {
             const defaultPlaceSubType = placesSubTypesByTypes[placeType][0];
             if (defaultPlaceSubType && !placesSubTypesByTypes[placeType].map(type => type.id).includes(placeSubType)) {
-                setValue(placeSubTypeName, defaultPlaceSubType.id);
+                onPlaceSubTypeChange(defaultPlaceSubType.id);
             }
         }
     }, [placeType]);
@@ -42,26 +42,43 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                                  required={required} fullWidth
                     >
                         <InputLabel>סוג אתר</InputLabel>
-                        <Controller 
-                            name={placeTypeName}
-                            control={control}
-                            render={(props) => (
-                                <Select
-                                    test-id='placeType'
-                                    label='סוג אתר'
-                                    value={props.value? props.value : ''}
-                                    onChange={(event) => props.onChange(event.target.value as string)}
-                                >       
-                                    {
-                                        Object.keys(placesSubTypesByTypes).map((currentPlaceType) => (
-                                            <MenuItem key={currentPlaceType} value={currentPlaceType}>
-                                                {currentPlaceType}
-                                            </MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            )}
-                        />
+                        {control ?
+                            <Controller 
+                                name={placeTypeName}
+                                control={control}
+                                render={(props) => (
+                                    <Select
+                                        test-id='placeType'
+                                        label='סוג אתר'
+                                        value={props.value? props.value : ''}
+                                        onChange={(event) => props.onChange(event.target.value as string)}
+                                    >       
+                                        {
+                                            Object.keys(placesSubTypesByTypes).map((currentPlaceType) => (
+                                                <MenuItem key={currentPlaceType} value={currentPlaceType}>
+                                                    {currentPlaceType}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            />
+                        :
+                            <Select
+                                test-id='placeType'
+                                label='סוג אתר'
+                                value={placeType? placeType : ''}
+                                onChange={(event) => onPlaceTypeChange(event.target.value as string)}
+                            >       
+                                {
+                                    Object.keys(placesSubTypesByTypes).map((currentPlaceType) => (
+                                        <MenuItem key={currentPlaceType} value={currentPlaceType}>
+                                            {currentPlaceType}
+                                        </MenuItem>
+                                    ))
+                                }
+                            </Select>      
+                        }
                     </FormControl>
                 </FormInput>
             </Grid>
@@ -74,29 +91,49 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
                             fullWidth 
                         >
                             <InputLabel>תת סוג</InputLabel>
-                            <Controller 
-                                name={placeSubTypeName}
-                                control={control}
-                                render={(props) => (
-                                    <Select
-                                        test-id={'placeSubType'}
-                                        label='תת סוג'
-                                        value={props.value? props.value : ''}
-                                        onChange={(event) => props.onChange(event.target.value as number)}
-                                    >
+                            {control ?
+                                <Controller 
+                                    name={placeSubTypeName}
+                                    control={control}
+                                    render={(props) => (
+                                        <Select
+                                            test-id='placeSubType'
+                                            label='תת סוג'
+                                            value={props.value? props.value : ''}
+                                            onChange={(event) => props.onChange(event.target.value as number)}
+                                        >
+                                        {
+                                            placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
+                                                <MenuItem 
+                                                    key={currentPlaceSubType.id} 
+                                                    value={currentPlaceSubType.id}
+                                                >
+                                                    {currentPlaceSubType.displayName}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                        </Select>
+                                    )}  
+                                />
+                            :
+                                <Select
+                                    test-id='placeSubType'
+                                    label='תת סוג'
+                                    value={placeSubType? placeSubType : ''}
+                                    onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
+                                >
                                     {
                                         placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
-                                            <MenuItem 
-                                                key={currentPlaceSubType.id} 
+                                            <MenuItem
+                                                key={currentPlaceSubType.id}
                                                 value={currentPlaceSubType.id}
                                             >
                                                 {currentPlaceSubType.displayName}
                                             </MenuItem>
                                         ))
                                     }
-                                </Select>
-                                )}  
-                            />
+                                </Select>    
+                                }
                         </FormControl>
                     </FormInput>
                 </Grid>
@@ -108,13 +145,12 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
 export default PlacesTypesAndSubTypes;
 
 interface Props {
-    control?: any;
     placeTypeName?: any;
     placeSubTypeName?: any;
     required?: boolean;
     placeType: string;
     placeSubType: number;
-    setValue?: any; 
-    onPlaceTypeChange?: (newPlaceType: string) => void;
-    onPlaceSubTypeChange?: (newPlaceSubType: number, placeSubTypeDispalyName?: string) => void;
+    onPlaceTypeChange: (newPlaceType: string) => void;
+    onPlaceSubTypeChange: (newPlaceSubType: number, placeSubTypeDispalyName?: string) => void;
+    control?: any;
 }
