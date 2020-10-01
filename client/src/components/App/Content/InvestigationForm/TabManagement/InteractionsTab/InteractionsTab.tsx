@@ -25,8 +25,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
-    const { getClinicalDetails, getDatesToInvestigate, loadInteractions, loadInteractionById, 
-            getCoronaTestDate, handleDeleteContactEvent } =
+    const { getDatesToInvestigate, getClinicalDetails, loadInteractions, getCoronaTestDate, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
@@ -82,7 +81,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         isOpen={Boolean(newInteractionEventDate)}
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                     />
                 }
                 {
@@ -90,7 +89,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         isOpen={Boolean(interactionToEdit)}
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
-                        loadInteractionById={loadInteractionById}
+                        loadInteractions={loadInteractions}
                     />
                 }
             </form>

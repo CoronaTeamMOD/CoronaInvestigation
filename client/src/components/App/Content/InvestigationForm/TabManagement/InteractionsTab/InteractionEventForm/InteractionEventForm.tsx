@@ -37,9 +37,15 @@ export const defaultContact: Contact = {
 const addContactButton: string = "הוסף מגע";
 
 const InteractionEventForm: React.FC<Props> = (
-  { intractionData, loadInteractionById, closeNewDialog, closeEditDialog, interactionId } : Props): JSX.Element => {
-  const { schema, saveIntreactions } = useInteractionsForm({ loadInteractionById, closeNewDialog, closeEditDialog, interactionId });
-  const methods = useForm<InteractionEventDialogData>({
+  { intractionData,
+    loadInteractions,
+    closeNewDialog,
+    closeEditDialog,
+    interactionId 
+  } : Props): JSX.Element => {
+
+    const { schema, saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
+    const methods = useForm<InteractionEventDialogData>({
     defaultValues: intractionData,
     mode: "onBlur",
     resolver: yupResolver(schema)
@@ -225,7 +231,7 @@ export default InteractionEventForm;
 
 interface Props {
   intractionData?: InteractionEventDialogData;
-  loadInteractionById: (interactionId: any) => void;
+  loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
   interactionId?: number;

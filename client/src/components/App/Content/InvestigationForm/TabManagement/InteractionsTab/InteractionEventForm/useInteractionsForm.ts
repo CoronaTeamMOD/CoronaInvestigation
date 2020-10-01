@@ -12,15 +12,15 @@ import InteractionEventContactFields from '../InteractionsEventDialogContext/Int
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 const useInteractionsForm = (props : Props): outCome => {  
-    const { loadInteractionById, closeNewDialog, closeEditDialog } = props;    
-    const { parseLocation } = useDBParser();
+  const { interactionId, loadInteractions, closeNewDialog, closeEditDialog } = props;    
+  const { parseLocation } = useDBParser();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const schema = yup.object().shape({
         [InteractionEventDialogFields.PLACE_TYPE]: yup.string().required('סוג אתר חובה'),
         [InteractionEventDialogFields.PLACE_SUB_TYPE]: yup.number().when(
           InteractionEventDialogFields.PLACE_TYPE, {
-            is: placeType => placeType !== placeTypesCodesHierarchy.geriatric.code ||
+            is: placeType => placeType !== placeTypesCodesHierarchy.geriatric.code &&
                              placeType !== placeTypesCodesHierarchy.office.code,
             then: yup.number().required('תת סוג אתר חובה'),
             otherwise: yup.number().nullable()
@@ -30,7 +30,7 @@ const useInteractionsForm = (props : Props): outCome => {
           .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
         [InteractionEventDialogFields.START_TIME]: yup.date().required(),
         [InteractionEventDialogFields.END_TIME]: yup.date().required().when(
-          [InteractionEventDialogFields.START_TIME], (startTime: Date) => {
+          InteractionEventDialogFields.START_TIME, (startTime: Date) => {
             return yup.date().min(startTime, 'שעה עד לא יכולה להיות קטנה משעה מ');
         }),
         [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().required('שדה חובה'),
@@ -39,19 +39,6 @@ const useInteractionsForm = (props : Props): outCome => {
             [InteractionEventContactFields.LAST_NAME]: yup.string().required('שם משפחה חובה'),
             [InteractionEventContactFields.PHONE_NUMBER]: yup.string().required('מספר טלפון חובה')
               .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
-            [InteractionEventContactFields.ID]: yup.string().matches(/^\d+$/, 'תעודת זהות חייבת להכיל מספרים בלבד')
-              .length(9, 'תעודת זהות חייבת להכיל 9 מספרים')
-              .test('isValid', "תעודת זהות לא תקינה", (id: any) => {
-                let sum = 0;
-                for (let i=0; i<9; i++) {
-                let digitMul = parseInt(id[i]) * ((i % 2) + 1);
-                if (digitMul > 9) {
-                  digitMul -= 9;
-                }
-                sum += digitMul;
-              }
-              return sum % 10 === 0 ? true : false;
-            })
         })),
         });
 
@@ -59,15 +46,16 @@ const useInteractionsForm = (props : Props): outCome => {
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
-      if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
+      if (interactionId) {
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
           locationAddress,
+          interactionId,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then(() => {
-              loadInteractionById(interactionsDataToSave[InteractionEventDialogFields.ID]);
-              closeEditDialog();
+            loadInteractions();
+            closeEditDialog();
           }).catch(() => {
             handleFailedSave('לא ניתן היה לשמור את השינויים');
           })
@@ -78,8 +66,8 @@ const useInteractionsForm = (props : Props): outCome => {
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then((response) => {
-              loadInteractionById(response.data.data.updateContactEventFunction.integer);
-              closeNewDialog();
+            loadInteractions()
+            closeNewDialog();
           })
           .catch((error) => {
               console.log(error);
@@ -103,10 +91,10 @@ const useInteractionsForm = (props : Props): outCome => {
 };
 
 interface Props {
-  loadInteractionById: (interactionId: any) => void;
+  interactionId?: number;
+  loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
-  interactionId?: any;
 }
 
 interface outCome {
