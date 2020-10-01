@@ -1,18 +1,12 @@
 import axios from 'Utils/axios';
 import InteractedContact from 'models/InteractedContact';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import { useContactQuestioningOutcome, useContactQuestioningParameters } from './ContactQuestioningInterfaces';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { setFamilyRelationships, setCurrentInteractedContact, interactedContactsState } = parameters;
-
-    const getAllRelationships = () => {
-        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
-            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
-        });
-    };
+    const { setCurrentInteractedContact, interactedContactsState } = parameters;
 
     const saveContact = (interactedContact: InteractedContact) => {
         updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
@@ -45,7 +39,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     return {
-        getAllRelationships,
         saveContact,
         updateInteractedContact,
         changeIdentificationType,

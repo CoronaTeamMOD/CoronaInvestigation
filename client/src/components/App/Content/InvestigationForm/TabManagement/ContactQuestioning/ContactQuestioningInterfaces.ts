@@ -6,13 +6,11 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 export interface useContactQuestioningParameters {
-    setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[] | undefined>>;
     setCurrentInteractedContact: Dispatch<SetStateAction<InteractedContact | undefined>>;
     interactedContactsState: interactedContactsContext;
 };
 
 export interface useContactQuestioningOutcome {
-    getAllRelationships: () => void;
     saveContact: (interactedContact: InteractedContact) => void;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     changeIdentificationType: (interactedContact: InteractedContact, booleanValue: boolean) => void;
