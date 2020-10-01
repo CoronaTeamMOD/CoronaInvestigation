@@ -61,12 +61,8 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
         street: address.street ? address.street : null,
         floor: address.floor,
         houseNum: address.houseNum
-    }).then((result) => {
-        console.log(result);
-        savePersonalDetails(request, response, result.data.createAddress.address.id);
-    })
+    }).then((result) => savePersonalDetails(request, response, result.data.createAddress.address.id))
     .catch(err => {
-        console.log(err);
         response.status(errorStatusCode).send(err);
     });
 });
