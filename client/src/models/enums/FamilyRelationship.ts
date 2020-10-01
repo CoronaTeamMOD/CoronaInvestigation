@@ -1,5 +1,5 @@
 interface FamilyRelationship {
-    id: string;
+    id: number;
     displayName: string;
 }
 

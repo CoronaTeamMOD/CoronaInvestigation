@@ -10,7 +10,7 @@ interface InteractedContact extends Person {
     birthDate: Date;
     cantReachContact: boolean;
     relationship: string;
-    familyRelationship: string;
+    familyRelationship: number;
     occupation: string;
     doesHaveBackgroundDiseases: boolean;
     contactedPersonCity: City;
