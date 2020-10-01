@@ -1,8 +1,10 @@
 import React from 'react';
 import { TextField, Tooltip } from '@material-ui/core';
-import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 import * as yup from 'yup';
-import _ from 'lodash'
+
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+
+import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 
 const stringAlphanum = yup
   .string()
@@ -25,12 +27,13 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     label,
     required,
     testId,
-    error,
     helperText
   } = props;
 
+
+
   return (
-    <Tooltip open={_.get(errors, name)} title={_.get(errors, name)? errMessage : ""}>
+    <Tooltip open={get(errors, name)} title={get(errors, name)? errMessage : ""}>
       <TextField
         helperText={helperText}
         test-id={testId}
@@ -51,8 +54,8 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
           }
         }}
         onBlur={onBlur}
-        error={_.get(errors, name)}
-        label={_.get(errors, name) ? _.get(errors, name).message : label}
+        error={get(errors, name)}
+        label={get(errors, name) ? get(errors, name).message : label}
         placeholder={placeholder}
         className={className}
       />

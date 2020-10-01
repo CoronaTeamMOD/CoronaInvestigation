@@ -1,11 +1,12 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, TextField, Typography } from '@material-ui/core';
-import _ from 'lodash';
 
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import useFormStyles from 'styles/formStyles';
+
 import useStyles from './BusinessContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -73,8 +74,8 @@ const BusinessContactForm : React.FC = () : JSX.Element => {
                                 <TextField
                                     value={props.value}
                                     onChange={event => props.onChange(event.target.value as string)}
-                                    error={_.get(errors, props.name)}
-                                    label={_.get(errors, props.name)?.message}
+                                    error={get(errors, props.name)}
+                                    label={get(errors, props.name)?.message}
                                 />
                             )}
                         />
