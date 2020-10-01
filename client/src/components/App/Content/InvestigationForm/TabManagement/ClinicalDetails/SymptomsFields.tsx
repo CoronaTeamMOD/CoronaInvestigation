@@ -129,7 +129,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 props.onChange(newValue)
                                             }
                                             onBlur={props.onBlur}
-                                            label='סימפטום'
+                                            label='* סימפטום'
                                             setError={setError}
                                             clearErrors={clearErrors}
                                             errors={errors}
