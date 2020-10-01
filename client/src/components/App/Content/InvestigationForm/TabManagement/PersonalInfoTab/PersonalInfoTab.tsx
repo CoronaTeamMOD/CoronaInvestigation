@@ -40,14 +40,35 @@ const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
 export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
+const OFFICE_NAME_LABEL = 'שם משרד/ רשות';
+const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה';
+const INDUSTRY_NAME_LABEL = 'שם התעשייה';
 
 const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {
     const schema = yup.object().shape({
         [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
+        [PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]: yup.string().nullable().matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/,'שגיאה: מספר אינו תקין'),
         [PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]: yup.string().nullable().required('שגיאה: שדה חובה').matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/,'שגיאה: מספר אינו תקין'),
         [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required('שגיאה: שדה חובה'),
         [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required('שגיאה: שדה חובה'),
         [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable().required('שגיאה: שדה חובה'),
+        [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
+            PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
+                is: "מערכת החינוך",
+                then: yup.string().nullable().required('שדה זה הינו שדה חובה'),
+                else: yup.string().nullable()
+            }
+        ),
+        [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when("relevantOccupation", (relevantOccupation:any, schema:any) => {
+            return ["מערכת הבריאות", "מערכת החינוך","כוחות הביטחון"].find(element => element === relevantOccupation)? 
+            schema.nullable().required('שדה זה הינו שדה חובה') : 
+            schema.nullable()
+        }),
+        [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when("relevantOccupation", (relevantOccupation:any, schema:any) => {
+            return ["מערכת הבריאות", "מערכת החינוך","כוחות הביטחון","לא עובד"].find(element => element === relevantOccupation)? 
+            schema.nullable() :
+            schema.nullable().required('שדה זה הינו שדה חובה')  
+        }),
     })
     
     const classes = useStyles({});
@@ -68,13 +89,13 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value
-        setOccupation(newOccupation)
-        setSubOccupationName('')
-        setValue(PersonalInfoDataContextFields.INSTITUTION_NAME,'')
-        setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO,'')
-        setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation)
+        setOccupation(newOccupation);
+        setSubOccupationName('');
+        setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
+        setValue(PersonalInfoDataContextFields.INSTITUTION_NAME,'');
+        setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO,'');
         if(newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity){
-            getEducationSubOccupations(personalInfoState.educationOccupationCity)
+            getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }
 
@@ -144,6 +165,19 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         }
     }, [streets])
 
+    const subOccupationsPlaceHolderByOccupation = () => {
+        if (occupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
+        if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
+        if (occupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
+        return INSERT_INSTITUTION_NAME;
+    }
+
+    const subOccupationsLabelByOccupation = () => {
+        if (occupation ===  Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
+        if (occupation === Occupations.TRANSPORTATION) return TRANSPORTATION_COMPANY_NAME_LABEL;
+        if (occupation === Occupations.INDUSTRY) return INDUSTRY_NAME_LABEL;
+        return INSERT_INSTITUTION_NAME;
+    }
 
     const savePersonalData = (e: any, personalInfoData: any | personalInfoFormData) => {
         e.preventDefault();
@@ -161,13 +195,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
             setFormState(investigationId, id, valid);
         })
         onSubmit();
-    }
-
-    const subOccupationsPlaceHolderByOccupation = () => {
-        if (occupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
-        if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
-        if (occupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
-        return INSERT_INSTITUTION_NAME;
     }
 
     return (
@@ -552,7 +579,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                             getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                                             inputValue={subOccupationName}
                                             onInputChange={(event, newValue) => {
-                                                if(event){
+                                                if(event && event.type !== " blur"){
                                                     setSubOccupationName(newValue)
                                                 }
                                             }}
@@ -593,7 +620,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         errors={errors}
                                         placeholder={subOccupationsPlaceHolderByOccupation()}      
                                         label={errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?
-                                             errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: 'שם המוסד' }
+                                             errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: subOccupationsLabelByOccupation() }
  
                                         />
                                 )}
