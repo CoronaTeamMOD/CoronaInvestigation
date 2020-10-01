@@ -26,8 +26,7 @@ const useInteractionsForm = (props : Props): outCome => {
             otherwise: yup.number().nullable()
           }
         ),
-        [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string()
-          .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
+        [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/, 'מספר טלפון לא תקין'),
         [InteractionEventDialogFields.START_TIME]: yup.date().required(),
         [InteractionEventDialogFields.END_TIME]: yup.date().required().when(
           InteractionEventDialogFields.START_TIME, (startTime: Date) => {
@@ -39,6 +38,21 @@ const useInteractionsForm = (props : Props): outCome => {
             [InteractionEventContactFields.LAST_NAME]: yup.string().required('שם משפחה חובה'),
             [InteractionEventContactFields.PHONE_NUMBER]: yup.string().required('מספר טלפון חובה')
               .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
+              [InteractionEventContactFields.ID]: yup.string().matches(/^\d+$/, 'ת.ז חייבת להכיל מספרים בלבד')
+              .length(9, 'ת.ז מכילה 9 מספרים בלבד')
+              .test('isValid', "ת.ז לא תקינה", (id: any) => {
+                let sum = 0;
+                if (id?.length === 9) {
+                  for (let i=0; i<9; i++) {
+                    let digitMul = parseInt(id[i]) * ((i % 2) + 1);
+                    if (digitMul > 9) {
+                      digitMul -= 9;
+                    }
+                    sum += digitMul;
+                }
+              }
+              return sum % 10 === 0 ? true : false;
+            })
         })),
         });
 

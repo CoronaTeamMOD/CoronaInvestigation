@@ -30,6 +30,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             setInteractions: setInteractions,
             interactions: interactions
         });
+        
     useEffect(() => {
         getClinicalDetails(setSymptomsStartDate, setDoesHaveSymptoms);
     }, []);
