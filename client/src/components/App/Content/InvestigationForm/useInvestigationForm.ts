@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreStateType from 'redux/storeStateType';
-import { useState, useEffect, useContext } from 'react';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -17,10 +17,8 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
@@ -33,7 +31,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-    const context = useContext(interactedContactsContext);
 
     let history = useHistory();
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
@@ -81,43 +78,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         fetchCountries();
         fetchContactTypes();
     }, []);
-
-    useEffect(() => {
-        context.interactedContacts = [];
-
-        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
-            result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
-                context.interactedContacts.push(
-                    {
-                        id: contact.id,
-                        firstName: contact.personByPersonInfo.firstName,
-                        lastName: contact.personByPersonInfo.lastName,
-                        phoneNumber: contact.personByPersonInfo.phoneNumber,
-                        identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
-                        identificationNumber: contact.personByPersonInfo.identificationNumber,
-                        birthDate: contact.personByPersonInfo.birthDate,
-                        additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
-                        gender: contact.personByPersonInfo.gender,
-                        contactDate: contact.contactEventByContactEvent.startTime,
-                        contactType: contact.contactType,
-                        cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
-                        extraInfo: contact.extraInfo,
-                        relationship: contact.relationship,
-                        familyRelationship: contact.familyRelationship,
-                        contactedPersonCity: contact.contactedPersonCity,
-                        occupation: contact.occupation,
-                        doesFeelGood: contact.doesFeelGood ? contact.doesFeelGood : false,
-                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases ? contact.doesHaveBackgroundDiseases : false,
-                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed ? contact.doesLiveWithConfirmed : false,
-                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation ? contact.doesNeedHelpInIsolation : false,
-                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
-                        doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
-                        expand: false
-                    }
-                )
-            });
-        })
-    },[]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
