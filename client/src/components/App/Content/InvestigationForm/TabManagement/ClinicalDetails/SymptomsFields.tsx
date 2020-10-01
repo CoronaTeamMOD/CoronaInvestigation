@@ -65,7 +65,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         onBlur={props.onBlur}
                                         test-id='symptomsStartDate'
                                         value={props.value}
-                                        labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : 'תאריך התחלת סימפטומים'}
+                                        labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : 'תאריך התחלת סימפטומים *'}
                                         onChange={(newDate: Date) =>
                                             props.onChange(newDate)
                                         }

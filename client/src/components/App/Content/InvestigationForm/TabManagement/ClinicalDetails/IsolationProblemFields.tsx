@@ -47,6 +47,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     onChange={(newValue: string) => (
                                         props.onChange(newValue)
                                     )}
+                                    label='סיבה *'
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     errors={errors}
