@@ -11,11 +11,9 @@ import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
-import {ClinicalDetailsDataAndSet, clinicalDetailsDataContext} from 'commons/Contexts/ClinicalDetailsContext';
 
 const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
 
-    const clinicalDetailsCtxt: ClinicalDetailsDataAndSet = useContext(clinicalDetailsDataContext);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const [interactionToEdit, setInteractionToEdit] = useState<InteractionEventDialogData>();
@@ -24,13 +22,18 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [investigationStartTime, setInvestigationStartTime] = useState<Date | null>(null);
+    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
+    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
-    const { getDatesToInvestigate, loadInteractions, loadInteractionById, 
+    const { getClinicalDetails, getDatesToInvestigate, loadInteractions, loadInteractionById, 
             getCoronaTestDate, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
         });
+    useEffect(() => {
+        getClinicalDetails(setSymptomsStartDate, setDoesHaveSymptoms);
+    }, []);
 
     useEffect(() => {
         loadInteractions();
@@ -63,8 +66,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         <>
             <form id={`form-${id}`} onSubmit={(e) => SaveInteraction(e)}>
                 {
-                    getDatesToInvestigate(clinicalDetailsCtxt.clinicalDetailsData.doesHaveSymptoms, clinicalDetailsCtxt.clinicalDetailsData.symptomsStartDate,
-                                          coronaTestDate).map(date =>
+                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
                         <ContactDateCard 
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}

@@ -49,6 +49,18 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         return [];
     }
 
+    const getClinicalDetails = (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean>>) => {
+        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
+            result => {
+                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
+                    setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
+                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms? true : false);
+                }
+            });
+    }
+
     const loadInteractions = () => {
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
@@ -146,6 +158,7 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     return {
+        getClinicalDetails,
         getCoronaTestDate,
         getDatesToInvestigate,
         loadInteractions,

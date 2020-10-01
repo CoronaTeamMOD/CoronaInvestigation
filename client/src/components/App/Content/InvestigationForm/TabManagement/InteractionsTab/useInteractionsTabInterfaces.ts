@@ -14,4 +14,5 @@ export interface useInteractionsTabOutcome {
     handleDeleteContactEvent: (contactEventId: number) => void;
     addNewInteraction: any;
     updateInteraction: any;
+    getClinicalDetails: (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean | any>>) => void;
 };
