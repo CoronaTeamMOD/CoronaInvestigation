@@ -57,7 +57,6 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                     form="interactionEventForm"
                     type="submit"
                     test-id='createContact'
-                    // onClick={() => onConfirm()}
                 >
                     צור מקום/מגע
                 </PrimaryButton>
