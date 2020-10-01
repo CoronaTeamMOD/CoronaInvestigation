@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
 import { initDBAddress } from 'models/Address';
-import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { otherSymptomFieldName } from './SymptomsFields';
@@ -18,7 +15,7 @@ export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, setInitialDBClinicalDetails
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -66,8 +63,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         patientAddress = initDBAddress;
                     }
 
-                    context.setClinicalDetailsData({
-                        ...context.clinicalDetailsData,
+                    setInitialDBClinicalDetails({
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
                         doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,

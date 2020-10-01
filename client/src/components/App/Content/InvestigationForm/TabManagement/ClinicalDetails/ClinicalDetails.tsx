@@ -25,6 +25,7 @@ import SymptomsFields from './SymptomsFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 import HospitalFields from './HospitalFields';
 import Swal from 'sweetalert2';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 const requiredText = 'שדה זה הוא חובה';
 
@@ -91,12 +92,12 @@ const schema = yup.object().shape({
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
+    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
     const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors } = useForm({
         mode: 'all',
-        defaultValues: initialClinicalDetails,
+        defaultValues: initialDBClinicalDetails,
         resolver: yupResolver(schema)
     });
-    const context = React.useContext(clinicalDetailsDataContext);
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
@@ -113,7 +114,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     
     const { getStreetByCity } = useClinicalDetails({
-        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms,
+        setBackgroundDiseases, 
+        setIsolationCityName, 
+        setIsolationStreetName, 
+        setStreetsInCity, 
+        setInitialDBClinicalDetails
     });
 
     const handleUnkonwnDateCheck = () => {
@@ -145,8 +151,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     };
 
     React.useEffect(() => {
-        reset(context.clinicalDetailsData);
-    }, [context.clinicalDetailsData])
+        reset(initialDBClinicalDetails);
+    }, [initialDBClinicalDetails])
 
     const saveClinicalDetails = (e: any) => {
         e.preventDefault();
