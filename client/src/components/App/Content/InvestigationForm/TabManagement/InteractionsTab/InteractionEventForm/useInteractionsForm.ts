@@ -65,7 +65,7 @@ const useInteractionsForm = (props : Props): outCome => {
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
           locationAddress,
-          interactionId,
+          id: interactionId,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then(() => {
