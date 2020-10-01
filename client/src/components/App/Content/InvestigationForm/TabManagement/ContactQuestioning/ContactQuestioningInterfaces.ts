@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import InteractedContact from 'models/InteractedContact';
-import FamilyRelationship from 'models/enums/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
@@ -16,4 +15,6 @@ export interface useContactQuestioningOutcome {
     changeIdentificationType: (interactedContact: InteractedContact, booleanValue: boolean) => void;
     openAccordion: (interactedContact: InteractedContact) => void;
     updateNoResponse: (interactedContact: InteractedContact, checked: boolean) => void;
+    loadInteractedContacts: () => void;
+    saveContactQuestioning: () => Promise<void>;
 };

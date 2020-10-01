@@ -22,13 +22,15 @@ import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
+import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
 import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
-    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContacts } = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState } = parameters;
 
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
+    const { saveContactQuestioning } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact: () => {} });
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
@@ -97,7 +99,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                     epidemiologyNumber,
                     investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
-                    if (interactedContacts.length > 0) {
+                    if (interactedContactsState.interactedContacts.length > 0) {
                         saveContactQuestioning();
                     }
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
@@ -165,16 +167,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             personalInfoData, 
         })
     }
-    
-    const saveContactQuestioning = (): Promise<void> => {
-        const contacts = interactedContacts;
-
-        return axios.post('/contactedPeople/saveAllContacts',
-            {
-                unSavedContacts: { contacts }
-            }
-        );
-    };
 
     const handleInvestigationFinishFailed = () => {
         Swal.fire({

@@ -2,8 +2,8 @@ import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsConte
 import { ExposureAndFlightsDetailsAndSet } from 'commons/Contexts/ExposuresAndFlights';
 
 import { Tab } from 'models/Tab';
-import InteractedContact from 'models/InteractedContact';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 export interface useInvestigationFormOutcome {
     currentTab: Tab;
@@ -19,5 +19,5 @@ export interface useInvestigationFormParameters {
     clinicalDetailsVariables: ClinicalDetailsDataAndSet;
     personalInfoData: personalInfoContextData;
     exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet;
-    interactedContacts: InteractedContact[];
+    interactedContactsState: interactedContactsContext;
 };

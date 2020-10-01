@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
@@ -6,8 +6,6 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 import axios from 'Utils/axios';
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -55,50 +53,19 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
     const classes = useStyles({});
 
-    const interactedContactsState = useContext(interactedContactsContext);
-
     const [areThereContacts, setAreThereContacts] = React.useState<boolean>(false);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     React.useEffect(() => {
-        interactedContactsState.interactedContacts = [];
+        initializeTabShow();
+    }, []);
 
+    const initializeTabShow = () => {
         axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
             setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
-
-            result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
-                interactedContactsState.interactedContacts.push(
-                    {
-                        id: contact.id,
-                        firstName: contact.personByPersonInfo.firstName,
-                        lastName: contact.personByPersonInfo.lastName,
-                        phoneNumber: contact.personByPersonInfo.phoneNumber,
-                        identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
-                        identificationNumber: contact.personByPersonInfo.identificationNumber,
-                        birthDate: contact.personByPersonInfo.birthDate,
-                        additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
-                        gender: contact.personByPersonInfo.gender,
-                        contactDate: contact.contactEventByContactEvent.startTime,
-                        contactType: contact.contactType,
-                        cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
-                        extraInfo: contact.extraInfo,
-                        relationship: contact.relationship,
-                        familyRelationship: contact.familyRelationship,
-                        contactedPersonCity: contact.contactedPersonCity,
-                        occupation: contact.occupation,
-                        doesFeelGood: contact.doesFeelGood ? contact.doesFeelGood : false,
-                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases ? contact.doesHaveBackgroundDiseases : false,
-                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed ? contact.doesLiveWithConfirmed : false,
-                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation ? contact.doesNeedHelpInIsolation : false,
-                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
-                        doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
-                        expand: false
-                    }
-                )
-            });
         });
-    }, []);
+    };
     
     const StyledTab = withStyles((theme) =>
         createStyles({

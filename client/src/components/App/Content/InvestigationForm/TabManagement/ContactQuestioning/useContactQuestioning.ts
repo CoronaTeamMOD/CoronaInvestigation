@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+
 import axios from 'Utils/axios';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
@@ -6,7 +9,9 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import { useContactQuestioningOutcome, useContactQuestioningParameters } from './ContactQuestioningInterfaces';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { setCurrentInteractedContact, interactedContactsState } = parameters;
+    const { interactedContactsState, setCurrentInteractedContact } = parameters;
+
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const saveContact = (interactedContact: InteractedContact) => {
         updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
@@ -14,6 +19,53 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         axios.post('/contactedPeople/saveAllContacts',
         {
             unSavedContacts: { contacts }
+        });
+    };
+
+    const saveContactQuestioning = (): Promise<void> => {
+        const contacts = interactedContactsState.interactedContacts;
+
+        return axios.post('/contactedPeople/saveAllContacts',
+            {
+                unSavedContacts: { contacts }
+            }
+        ).then((result) => console.log(result));
+    };
+
+    const loadInteractedContacts = () => {
+        interactedContactsState.interactedContacts = [];
+
+        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
+            result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
+                interactedContactsState.interactedContacts.push(
+                    {
+                        id: contact.id,
+                        firstName: contact.personByPersonInfo.firstName,
+                        lastName: contact.personByPersonInfo.lastName,
+                        phoneNumber: contact.personByPersonInfo.phoneNumber,
+                        identificationType: contact.personByPersonInfo.identificationType ? contact.personByPersonInfo.identificationType : IdentificationTypes.ID,
+                        identificationNumber: contact.personByPersonInfo.identificationNumber,
+                        birthDate: contact.personByPersonInfo.birthDate,
+                        additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
+                        gender: contact.personByPersonInfo.gender,
+                        contactDate: contact.contactEventByContactEvent.startTime,
+                        contactType: contact.contactType,
+                        cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
+                        extraInfo: contact.extraInfo,
+                        relationship: contact.relationship,
+                        familyRelationship: contact.familyRelationship,
+                        contactedPersonCity: contact.contactedPersonCity,
+                        occupation: contact.occupation,
+                        doesFeelGood: contact.doesFeelGood ? contact.doesFeelGood : false,
+                        doesHaveBackgroundDiseases: contact.doesHaveBackgroundDiseases ? contact.doesHaveBackgroundDiseases : false,
+                        doesLiveWithConfirmed: contact.doesLiveWithConfirmed ? contact.doesLiveWithConfirmed : false,
+                        doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation ? contact.doesNeedHelpInIsolation : false,
+                        repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
+                        doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
+                        expand: false
+                    }
+                )
+            });
         });
     };
 
@@ -44,6 +96,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         changeIdentificationType,
         openAccordion,
         updateNoResponse,
+        loadInteractedContacts,
+        saveContactQuestioning,
     };
 };
 
