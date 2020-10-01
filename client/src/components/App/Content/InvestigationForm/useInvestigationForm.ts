@@ -11,7 +11,6 @@ import Country from 'models/Country';
 import TabNames from 'models/enums/TabNames';
 import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
-import Validator from 'Utils/Validations/Validator';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
@@ -28,7 +27,7 @@ import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails
 import { otherSymptomFieldName } from './TabManagement/ClinicalDetails/SymptomsFields';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
-    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState } = parameters;
+    const {clinicalDetailsVariables, exposuresAndFlightsVariables} = parameters;
 
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
     const { saveContactQuestioning } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact: () => {} });
@@ -139,14 +138,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         });
     };
 
-    const savePersonalInfoData = (): Promise<void> => {
-        return axios.post('/personalDetails/updatePersonalDetails', 
-        {
-            id : investigatedPatientId, 
-            personalInfoData, 
-        })
-    }
-
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
@@ -204,17 +195,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
         return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
     };
-
-    const isButtonDisabled = (tabName: string): boolean => {
-        switch (tabName) {
-            case(TabNames.PERSONAL_INFO): {
-                return Validator.formValidation(personalInfoData);
-            }
-            default: {
-                return false;
-            }
-        }
-    }
 
     return {
         confirmFinishInvestigation,

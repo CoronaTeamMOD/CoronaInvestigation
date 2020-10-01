@@ -17,15 +17,3 @@ export const initialPersonalInfo: personalInfoFormData = {
     contactInfo: '',
 } 
 
-const initialPersonalInfoContext: PersonalInfoDataAndSet = {
-    personalInfoData: initialPersonalInfo,
-    setPersonalInfoData: () => {}
-};
-
-export interface PersonalInfoDataAndSet {
-    personalInfoData: personalInfoFormData,
-    setPersonalInfoData: React.Dispatch<React.SetStateAction<personalInfoFormData>>
-}
-
-export const personalInfoContext = createContext<PersonalInfoDataAndSet>(initialPersonalInfoContext);
-export const PersonalInfoContextProvider = personalInfoContext.Provider;
