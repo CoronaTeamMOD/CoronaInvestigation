@@ -33,7 +33,6 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     <Tooltip open={_.get(errors, name)} title={_.get(errors, name)? errMessage : ""}>
       <TextField
         helperText={helperText}
-        error={error}
         test-id={testId}
         required={required}
         name={name}

@@ -117,7 +117,7 @@ interface LocationInputProps {
     control?: any;
     required?: boolean;
     selectedAddress: GoogleApiPlace | null;
-    setSelectedAddress?:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
+    setSelectedAddress:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
     constOptions?: boolean;
 }
 
