@@ -38,18 +38,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
 
-    const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
-        setCurrentInteractedContact(interactedContact);
-        let contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
-        interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
-    };
-
-    const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: boolean) => {
-        const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
-        updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
-    };
-
-    const { getAllRelationships, saveContact } = useContactQuestioning({ setFamilyRelationships });
+    const { getAllRelationships, saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse } = useContactQuestioning({ setFamilyRelationships, setCurrentInteractedContact, interactedContactsState });
 
     React.useEffect(() => {
         getAllRelationships();
@@ -66,8 +55,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                 <AccordionSummary
                                     expandIcon={<ExpandMore />}
                                     onClick={() => {
-                                        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false);
-                                        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
+                                        openAccordion(interactedContact);
                                     }}
                                     aria-controls='panel1a-content'
                                     id='panel1a-header'
@@ -80,8 +68,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                                     <FormControlLabel
                                                         onClick={(event) => event.stopPropagation()}
                                                         onChange={((event: any, checked: boolean) => {
-                                                            updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
-                                                            updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
+                                                            updateNoResponse(interactedContact, checked);
                                                         })}
                                                         control={
                                                             <Checkbox
@@ -385,7 +372,6 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                 <PrimaryButton
                                     style={{ marginRight: '1.5vw' }}
                                     onClick={() => {
-                                        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
                                         saveContact(interactedContact);
                                     }}
                                 >
