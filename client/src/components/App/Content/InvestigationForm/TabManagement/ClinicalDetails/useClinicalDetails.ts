@@ -15,7 +15,7 @@ export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, setInitialDBClinicalDetails
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails, setInitialDBClinicalDetails
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -64,21 +64,22 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
 
                     setInitialDBClinicalDetails({
+                        ...initialDBClinicalDetails,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
+                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases? true : false,
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isInIsolation: patientInvestigation.isInIsolation? true : false,
+                        isIsolationProblem: patientInvestigation.isIsolationProblem? true : false,
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
-                        wasHospitalized: patientInvestigation.wasHospitalized,
+                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms? true : false,
+                        wasHospitalized: patientInvestigation.wasHospitalized? true : false,
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,

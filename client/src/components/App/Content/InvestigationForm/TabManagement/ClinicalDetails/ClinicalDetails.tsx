@@ -87,7 +87,7 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
-    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string(),
+    [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: yup.string().nullable(),
 })
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
@@ -119,6 +119,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         setIsolationCityName, 
         setIsolationStreetName, 
         setStreetsInCity, 
+        initialDBClinicalDetails,
         setInitialDBClinicalDetails
     });
 
