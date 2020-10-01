@@ -27,6 +27,7 @@ const AddressForm : React.FC = () : JSX.Element => {
                 <FormInput fieldName='כתובת'>
                     <div className={additionalClasses.addressAutoCompleteField}>
                         <Map
+                            name={InteractionEventDialogFields.LOCATION_ADDRESS}
                             selectedAddress={locationAddress}
                             setSelectedAddress={onGoogleApiLocationTextFieldChange}
                             control={control}
