@@ -3,9 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import { Grid } from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {GeocodeResponse} from "commons/LocationInputField/LocationInput";
-import { InteractionEventDialogContext } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionsEventDialogContext';
 import Map from "commons/Map/Map";
 import useFormStyles from 'styles/formStyles';
 
@@ -13,21 +11,14 @@ import InteractionEventDialogFields from '../../InteractionsEventDialogContext/I
 import useStyles from './AddressFormStyles';
 
 const AddressForm : React.FC = () : JSX.Element => {
-    const { getValues, control } = useFormContext();
+    const { setValue, getValues, control } = useFormContext();
     const { locationAddress } = getValues();
 
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
 
-    const ctxt = useContext(InteractionEventDialogContext);
-    const {interactionEventDialogData, setInteractionEventDialogData} = ctxt;
-    const {locationAddress} = interactionEventDialogData;
-
     const onGoogleApiLocationTextFieldChange = (newValue: GeocodeResponse | null) => {
-        setInteractionEventDialogData({
-            ...ctxt.interactionEventDialogData as InteractionEventDialogData,
-            locationAddress: newValue
-        });
+        setValue(InteractionEventDialogFields.LOCATION_ADDRESS, newValue);
     };
 
     return (
@@ -39,7 +30,7 @@ const AddressForm : React.FC = () : JSX.Element => {
                     </div>
                 </FormInput>
             </Grid>
-        </>
+        </Grid>
     )};
 
 export default AddressForm;

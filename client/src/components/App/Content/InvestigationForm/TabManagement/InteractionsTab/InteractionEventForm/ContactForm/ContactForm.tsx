@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import _ from 'lodash'
@@ -126,7 +127,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                         render={(props) => (
                                             <Select
                                                 test-id='contactType'
-                                                defaultValue={ContactType.TIGHT}
+                                                defaultValue={Array.from(contactTypes.keys())[0]}
                                                 value={props.value}
                                                 onChange={event => props.onChange(event.target.value as number)}
                                                 label='סוג מגע'  
