@@ -54,7 +54,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
           }
         }}
         onBlur={onBlur}
-        error={get(errors, name)}
+        error={get(errors, name)? true : false}
         label={get(errors, name) ? get(errors, name).message : label}
         placeholder={placeholder}
         className={className}

@@ -67,8 +67,8 @@ const schema = yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.mixed().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.mixed().required(requiredText)
+        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText),
+        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText)
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
@@ -341,11 +341,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     'מספר הבית *'
                                 }
                                 testId='currentQuarantineHomeNumber'
-                                name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
+                                name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
                                 value={props.value}
                                 onChange={(newValue: string) => (
                                     props.onChange(newValue)
                                 )}
+                                onBlur={props.onBlur}
                                 setError={setError}
                                 clearErrors={clearErrors}
                                 errors={errors}
@@ -369,11 +370,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     'קומה *'
                                 }
                                 testId='currentQuarantineFloor'
-                                name={ClinicalDetailsFields.ISOLATION_FLOOR}
+                                name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
                                 value={props.value}
                                 onChange={(newValue: string) => (
                                     props.onChange(newValue)
                                 )}
+                                onBlur={props.onBlur}
                                 setError={setError}
                                 clearErrors={clearErrors}
                                 errors={errors}
