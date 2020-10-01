@@ -31,7 +31,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const { saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse } = useContactQuestioning({ setCurrentInteractedContact, interactedContactsState });
 
     React.useEffect(() => {
-        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
+        axios.get('/contactedPeople/familyRelationships').then((result: any) => {
             setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
         });
     },[]);
