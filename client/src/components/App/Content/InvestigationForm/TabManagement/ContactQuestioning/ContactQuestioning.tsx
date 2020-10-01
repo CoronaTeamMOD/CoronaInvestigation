@@ -4,10 +4,12 @@ import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
+import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import InteractedContact from 'models/InteractedContact';
 import useContactQuestioning from './useContactQuestioning';
+import FamilyRelationship from 'models/enums/FamilyRelationship';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
@@ -24,8 +26,15 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
+    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
 
     const { saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse } = useContactQuestioning({ setCurrentInteractedContact, interactedContactsState });
+
+    React.useEffect(() => {
+        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
+            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+        });
+    },[]);
 
     return (
         <>
@@ -98,6 +107,7 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
                                         />
                                         <Divider orientation='vertical' variant='middle' light={true}/>
                                         <ContactQuestioningClinical
+                                            familyRelationships={familyRelationships as FamilyRelationship[]}
                                             interactedContact={interactedContact}
                                             updateInteractedContact={updateInteractedContact}
                                         />

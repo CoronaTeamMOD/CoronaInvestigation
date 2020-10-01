@@ -4,17 +4,16 @@ import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
-import axios from 'Utils/axios';
 import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
-import FamilyRelationship from 'models/enums/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import FamilyRelationship from 'models/enums/FamilyRelationship';
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
@@ -22,15 +21,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
-
-    React.useEffect(() => {
-        axios.post('/contactedPeople/familyRelationships', {}).then((result: any) => {
-            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
-        });
-    },[]);
-
-    const { interactedContact, updateInteractedContact } = props;
+    const { familyRelationships, interactedContact, updateInteractedContact } = props;
 
     return (
         <Grid item xs={3}>
@@ -126,6 +117,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 export default ContactQuestioningClinical;
 
 interface Props {
+    familyRelationships: FamilyRelationship[];
     interactedContact: InteractedContact;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
 };
