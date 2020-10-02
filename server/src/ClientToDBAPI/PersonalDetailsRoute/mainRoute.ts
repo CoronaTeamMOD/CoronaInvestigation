@@ -2,7 +2,7 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, UPDATE_ADRESS, CREATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
+import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO, CREATE_ADRESS } from '../../DBService/PersonalDetails/Mutation';
 import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, 
     GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY } from '../../DBService/PersonalDetails/Query';
 
@@ -59,8 +59,8 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
     graphqlRequest(CREATE_ADRESS, response.locals, {
         city: address.city ? address.city : null,
         street: address.street ? address.street : null,
-        floor: +address.floor,
-        houseNum: +address.houseNum
+        floor: address.floor,
+        houseNum: address.houseNum
     }).then((result) => savePersonalDetails(request, response, result.data.createAddress.address.id))
     .catch(err => {
         response.status(errorStatusCode).send(err);
