@@ -40,7 +40,7 @@ export const tabs: TabObj[] = [
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
+    const { currentTab, onTabClicked } = tabManagementProps;
     const classes = useStyles({});
     const StyledTab = withStyles((theme) =>
         createStyles({
@@ -50,26 +50,17 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }),
     )(Tab);
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-    setCurrentTab({
-        id: selectedTab,
-        name: tabs[selectedTab].name, 
-        displayComponent: tabs[selectedTab].displayComponent,
-        isDisabled: false,
-    });
-  };
-
     return (
         <Card className={classes.card}>
                 <Tabs
                     value={currentTab.id}
                     indicatorColor='primary'
                     textColor='primary'
-                    onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
+                    onChange={(event, selectedTab) => onTabClicked(selectedTab)}
                 >
                     {
                         tabs.map((tab) => {
-                            return <StyledTab onClick={onTabClicked} key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
+                            return <StyledTab key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
                         })
                     }
                 </Tabs>
@@ -86,7 +77,5 @@ export default TabManagement;
 
 interface Props {
     currentTab: TabObj;
-    setCurrentTab: (currentTab: TabObj) => void;
-    onTabClicked: () => void;
-    shouldDisableChangeTab: boolean;
+    onTabClicked: (selectedTab: number) => void;
 };

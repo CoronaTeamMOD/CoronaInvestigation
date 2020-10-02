@@ -81,7 +81,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
+    const { currentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables });
 
     const shouldDisableButton = isButtonDisabled(currentTab.name);
     return (
@@ -96,14 +96,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 <div className={classes.interactiveForm}>
                                     <TabManagement
                                         currentTab={currentTab}
-                                        setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
-                                        shouldDisableChangeTab={shouldDisableButton}
+                                        onTabClicked={(selectedTab: number) => shouldDisableButton ? setShowSnackbar(true) : handleSwitchTab(selectedTab)}
                                     />
                                     <div className={classes.buttonSection}>
                                         <PrimaryButton test-id={currentTab.id === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
-                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                                currentTab.id === LAST_TAB_ID ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab(currentTab.id + 1);
                                             }}
                                             disabled={shouldDisableButton}>
                                            {currentTab.id === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
