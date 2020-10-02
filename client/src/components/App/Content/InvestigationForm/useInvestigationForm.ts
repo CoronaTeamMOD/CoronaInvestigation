@@ -141,9 +141,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         }
     }
 
-    const handleSwitchTab = () => {
+    const handleSwitchTab = (newTabId: number) => {
         saveCurrentTab().then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
+            setCurrentTab(tabs[newTabId]);
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
@@ -224,7 +224,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     return {
         currentTab,
-        setCurrentTab,
         confirmFinishInvestigation,
         handleInvestigationFinish,
         handleSwitchTab,
