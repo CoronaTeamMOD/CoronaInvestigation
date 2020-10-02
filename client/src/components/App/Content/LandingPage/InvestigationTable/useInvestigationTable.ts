@@ -100,6 +100,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (data && data.data && data.data.userById) {
           allInvestigationsRawData = data.data.userById.investigationsByLastUpdator.nodes;
         }
+        
         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
           const patient = investigation.investigatedPatientByInvestigatedPatientId;
           const patientCity = patient.addressByAddress.cityByCity;
@@ -113,6 +114,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user
           )
         })
+        .sort((firstInvestigation: InvestigationTableRow, secondInvestigation: InvestigationTableRow) => 
+          secondInvestigation.epidemiologyNumber - firstInvestigation.epidemiologyNumber);
+          
         setRows(investigationRows)
       })
       .catch((err: any) => {
