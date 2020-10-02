@@ -73,12 +73,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
-        let contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
+        const contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
         interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
     };
 
-    const changeIdentificationType = (interactedContact: InteractedContact, booleanValue: boolean) => {
-        const newIdentificationType = booleanValue ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
+    const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {
+        const newIdentificationType = value ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 

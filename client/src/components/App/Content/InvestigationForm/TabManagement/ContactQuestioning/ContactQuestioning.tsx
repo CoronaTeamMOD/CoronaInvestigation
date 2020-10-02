@@ -22,19 +22,16 @@ const ContactQuestioning: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const interactedContactsState = useContext(interactedContactsContext);
-    
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
-    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>();
+    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
 
     const { saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse, loadInteractedContacts } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact });
 
     React.useEffect(() => {
         loadInteractedContacts();
-    }, []);
 
-    React.useEffect(() => {
         axios.get('/contactedPeople/familyRelationships').then((result: any) => {
             setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
         });

@@ -1,19 +1,19 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
-import { useSelector } from 'react-redux';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
+import FamilyRelationship from 'models/enums/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
-import FamilyRelationship from 'models/enums/FamilyRelationship';
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
@@ -46,7 +46,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         )}
                                 >
                                     {
-                                        familyRelationships?.map((familyRelationship) => (
+                                        familyRelationships.map((familyRelationship) => (
                                             <MenuItem
                                                 key={familyRelationship.id}
                                                 value={familyRelationship.id}>

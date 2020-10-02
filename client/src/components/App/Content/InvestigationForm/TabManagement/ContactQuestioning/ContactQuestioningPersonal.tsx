@@ -36,7 +36,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             firstOption={'ת.ז'}
                             secondOption={'דרכון'}
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
-                            onChange={(event, booleanValue) => changeIdentificationType(interactedContact, booleanValue)}
+                            onChange={(event, value) => changeIdentificationType(interactedContact, value)}
                         />
                     </Grid>
                     <Grid item xs={3}>
