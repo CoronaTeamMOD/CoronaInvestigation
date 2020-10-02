@@ -70,7 +70,7 @@ const symptomsMoreInfoSchema = yup.string().when(
     }
 );
 
-const backgroundDiseasesMoreInfoSchema = yup.string().when(
+const backgroundDiseasesMoreInfoSchema = yup.string().nullable().when(
     ClinicalDetailsFields.BACKGROUND_DESEASSES,
     (backgroundDiseases: string[], schema: any) => {
         return backgroundDiseases.includes('אחר')? schema.required(requiredText) : schema;
