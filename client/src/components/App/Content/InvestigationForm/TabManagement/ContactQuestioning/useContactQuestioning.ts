@@ -33,11 +33,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const loadInteractedContacts = () => {
-        interactedContactsState.interactedContacts = [];
+        let interactedContacts: InteractedContact[] = [];
 
         axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
-                interactedContactsState.interactedContacts.push(
+                interactedContacts.push(
                     {
                         id: contact.id,
                         firstName: contact.personByPersonInfo.firstName,
@@ -66,7 +66,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     }
                 )
             });
-        });
+        }).then(() =>
+            interactedContactsState.interactedContacts = interactedContacts).catch((err) =>
+                console.log(err));
     };
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
