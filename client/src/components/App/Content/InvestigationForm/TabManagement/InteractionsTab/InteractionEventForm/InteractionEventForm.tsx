@@ -201,8 +201,7 @@ const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
                         <FormInput fieldName='משעה'>
                             <div className={classes.contactDatePicker}>
                                 <TimePick
-                                    required
-                                    test-id='contactLocationStartTime'
+                                    testId='contactLocationStartTime'
                                     labelText='משעה'
                                     value={startTime}
                                     onChange={(newTime: Date) => handleTimeChange(newTime, interactionEventDialogData.startTime, 'startTime')}
@@ -215,7 +214,7 @@ const InteractionEventForm: React.FC<Props> = (props: Props) : JSX.Element => {
                             <div className={classes.contactDatePicker}>
                                 <TimePick
                                     required
-                                    test-id='contactLocationEndTime'
+                                    testId='contactLocationEndTime'
                                     labelText='עד שעה'
                                     value={endTime}
                                     onChange={(newTime: Date) => handleTimeChange(newTime, interactionEventDialogData.endTime, 'endTime')}
