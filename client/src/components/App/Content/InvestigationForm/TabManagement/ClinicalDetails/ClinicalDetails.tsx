@@ -42,7 +42,7 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     });
 
     React.useEffect(() => {
-        if (context.clinicalDetailsData.symptoms.length > 0) {
+        if (context.clinicalDetailsData.doesHaveSymptoms) {
             setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
         }
     }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
