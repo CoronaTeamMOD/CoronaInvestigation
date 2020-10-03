@@ -6,11 +6,14 @@ import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
+
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
+import useStyles from './DefaultPlaceEventFormStyles';
 
 const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
-
+    
+    const classes = useStyles();
     return (
         <>
             <Grid item xs={2}>
@@ -27,6 +30,7 @@ const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
                                 errors={errors}
                                 setError={setError}
                                 clearErrors={clearErrors}
+                                className={classes.placeNameField}
                             />
                         )}
                     />   
