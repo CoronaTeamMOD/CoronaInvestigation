@@ -34,10 +34,21 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
-    let history = useHistory();
-    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
-
     const classes = useStyles({});
+    let history = useHistory();
+
+    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
+    const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
+
+    useEffect(() => {
+        initializeTabShow();
+    }, []);
+
+    const initializeTabShow = () => {
+        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
+            setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
+        });
+    };
 
     const fetchCities = () => {
         axios.get('/addressDetails/cities')
@@ -149,9 +160,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         }
     }
 
-    const handleSwitchTab = () => {
+    const handleSwitchTab = (newTabId: number) => {
         saveCurrentTab().then(() => {
-            setCurrentTab(tabs[currentTab.id + 1]);
+            setCurrentTab(tabs[newTabId]);
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
@@ -232,12 +243,12 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
 
     return {
         currentTab,
-        setCurrentTab,
         confirmFinishInvestigation,
         handleInvestigationFinish,
         handleSwitchTab,
         isButtonDisabled,
-        saveCurrentTab
+        saveCurrentTab,
+        areThereContacts,
     };
 };
 

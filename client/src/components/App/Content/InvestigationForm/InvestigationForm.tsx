@@ -81,10 +81,11 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { currentTab, setCurrentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState });
-
-    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && interactedContactsState.interactedContacts.length === 0));
+    const { currentTab, confirmFinishInvestigation, handleSwitchTab, saveCurrentTab, isButtonDisabled, areThereContacts } = useInvestigationForm({ clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState });
+    
     const shouldDisableButton = isButtonDisabled(currentTab.name);
+    const isLastTab = (currentTab.id === LAST_TAB_ID || (currentTab.id === LAST_TAB_ID - 1 && !areThereContacts));
+    
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -97,14 +98,13 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 <div className={classes.interactiveForm}>
                                     <TabManagement
                                         currentTab={currentTab}
-                                        setCurrentTab={setCurrentTab}
-                                        onTabClicked={() => shouldDisableButton ? setShowSnackbar(true) : saveCurrentTab()}
-                                        shouldDisableChangeTab={shouldDisableButton}
+                                        onTabClicked={(selectedTab: number) => shouldDisableButton ? setShowSnackbar(true) : handleSwitchTab(selectedTab)}
+                                        areThereContacts={areThereContacts}
                                     />
                                     <div className={classes.buttonSection}>
                                         <PrimaryButton test-id={isLastTab ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={() => {
-                                                isLastTab ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab();
+                                                isLastTab ? confirmFinishInvestigation(epidemiologyNumber) : handleSwitchTab(currentTab.id + 1);
                                             }}
                                             disabled={shouldDisableButton}>
                                            {isLastTab ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}

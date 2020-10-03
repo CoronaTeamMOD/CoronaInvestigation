@@ -1,9 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
 
@@ -50,22 +47,8 @@ export const tabs: TabObj[] = [
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, setCurrentTab, onTabClicked, shouldDisableChangeTab } = tabManagementProps;
+    const { currentTab, onTabClicked, areThereContacts } = tabManagementProps;
     const classes = useStyles({});
-
-    const [areThereContacts, setAreThereContacts] = React.useState<boolean>(false);
-
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    React.useEffect(() => {
-        initializeTabShow();
-    }, []);
-
-    const initializeTabShow = () => {
-        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
-            setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
-        });
-    };
     
     const StyledTab = withStyles((theme) =>
         createStyles({
@@ -75,35 +58,25 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }),
     )(Tab);
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, selectedTab: number) => {
-    setCurrentTab({
-        id: selectedTab,
-        name: tabs[selectedTab].name, 
-        displayComponent: tabs[selectedTab].displayComponent,
-        isDisabled: false,
-    });
-  };
-
     return (
         <Card className={classes.card}>
-            <Tabs
-                value={currentTab.id}
-                indicatorColor='primary'
-                textColor='primary'
-                onChange={(event, selectedTab) => !shouldDisableChangeTab && handleTabChange(event, selectedTab)}
-            >
+                <Tabs
+                    value={currentTab.id}
+                    indicatorColor='primary'
+                    textColor='primary'
+                    onChange={(event, selectedTab) => onTabClicked(selectedTab)}
+                >
                 {
                     tabs.map((tab) => (
                         !(tab.name === TabNames.CONTACT_QUESTIONING && !areThereContacts) &&
-                            <StyledTab
-                                onClick={onTabClicked}
-                                key={tab.id}
-                                label={tab.name}
-                                disabled={tab.isDisabled}
-                            />
+                        <StyledTab
+                            key={tab.id}
+                            label={tab.name}
+                            disabled={tab.isDisabled}
+                        />
                     ))
                 }
-            </Tabs>
+                </Tabs>
             {
                 <div key={currentTab.id} className={classes.displayedTab}>
                     {currentTab.displayComponent}
@@ -117,7 +90,6 @@ export default TabManagement;
 
 interface Props {
     currentTab: TabObj;
-    setCurrentTab: (currentTab: TabObj) => void;
-    onTabClicked: () => void;
-    shouldDisableChangeTab: boolean;
+    onTabClicked: (selectedTab: number) => void;
+    areThereContacts: boolean;
 };
