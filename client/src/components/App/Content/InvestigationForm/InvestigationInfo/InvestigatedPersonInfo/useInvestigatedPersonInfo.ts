@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
@@ -6,6 +7,7 @@ import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
@@ -15,6 +17,8 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
 
     let history = useHistory();
     const classes = useStyles({});
+
+    const interactedContactsState = useContext(interactedContactsContext);
 
     const getInvestigationStatus = (cantReachInvestigated: boolean) => {
         if (cantReachInvestigated) return InvestigationStatus.CANT_REACH;
@@ -58,7 +62,10 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(1900).then(()=> history.push(landingPageRoute));
+            timeout(1900).then(() => {
+                history.push(landingPageRoute);
+                interactedContactsState.interactedContacts = [];
+            });
         }).catch(() => handleUnfinishedInvestigationFailed());    
     };
 
