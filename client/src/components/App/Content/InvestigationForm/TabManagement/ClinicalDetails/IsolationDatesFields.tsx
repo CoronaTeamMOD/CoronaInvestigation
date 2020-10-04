@@ -1,9 +1,11 @@
+import React from 'react';
 import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Controller, Control } from 'react-hook-form';
+
 import DatePick from 'commons/DatePick/DatePick';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import React from 'react';
-import { Controller, Control } from 'react-hook-form';
+
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {

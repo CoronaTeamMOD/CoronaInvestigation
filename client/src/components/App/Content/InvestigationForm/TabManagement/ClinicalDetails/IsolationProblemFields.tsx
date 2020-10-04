@@ -1,9 +1,11 @@
+import React from 'react';
 import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Control, Controller } from 'react-hook-form';
+
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
