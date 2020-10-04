@@ -18,7 +18,7 @@ interface MapProps {
     selectedAddress: GeocodeResponse | null;
     setSelectedAddress: (newValue: GeocodeResponse | null) => void;
     control?: any;
-    name?: string;
+    name: string;
 }
 
 const defaultMapPosition = { lng: 35.217018, lat: 31.771959 };

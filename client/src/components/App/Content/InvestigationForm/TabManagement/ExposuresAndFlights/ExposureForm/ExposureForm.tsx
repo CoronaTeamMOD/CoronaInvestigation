@@ -70,6 +70,7 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput testId='exposureAddress' fieldName="כתובת החשיפה:">
           <Map 
+              name={fieldsNames.address}
                setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
                selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
       </FormRowWithInput>
