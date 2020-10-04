@@ -18,7 +18,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
         startTime
       }
       id
-      doesNeedIsolation
       extraInfo
       relationship
       familyRelationship
