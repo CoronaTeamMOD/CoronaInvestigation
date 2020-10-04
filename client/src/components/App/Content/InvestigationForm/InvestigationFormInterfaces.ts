@@ -5,6 +5,7 @@ import { interactedContactsContext } from 'commons/Contexts/InteractedContactsCo
 export interface useInvestigationFormOutcome {
     confirmFinishInvestigation: (epidemiologyNumber: number) => void;
     handleInvestigationFinish: () => void;
+    areThereContacts: boolean;
 };
 
 export interface useInvestigationFormParameters {

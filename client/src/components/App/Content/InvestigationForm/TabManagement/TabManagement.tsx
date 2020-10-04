@@ -21,7 +21,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const {
         currentTab,
         moveToNextTab,
-        setNextTab
+        setNextTab,
+        areThereContacts
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -44,13 +45,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             id: 3,
             name: TabNames.INTERACTIONS,
             displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab}/>
-        },
-        {
-            id: 4,
-            name: TabNames.CONTACT_QUESTIONING,
-            displayComponent: <ContactQuestioning/>
         }
     ];
+
+   const last = {
+        id: 4,
+            name: TabNames.CONTACT_QUESTIONING,
+            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+    };
 
     const classes = useStyles({});
     
@@ -92,10 +94,20 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                                 className={isTabInValid(tab.id) ? classes.errorIcon : undefined}
                             />
                     )}
-
+                    {areThereContacts && <StyledTab 
+                                // @ts-ignore
+                                type="submit"
+                                form={`form-${currentTab}`}
+                                onClick={() => {setNextTab(last.id)}}
+                                key={last.id}
+                                label={last.name}
+                                icon={isTabInValid(last.id) ? <ErrorOutlineIcon/> : undefined}
+                                className={isTabInValid(last.id) ? classes.errorIcon : undefined}
+                            />
+                    }
                 </Tabs>
                 <div className={classes.displayedTab}>
-                    {tabs[currentTab].displayComponent}
+                    {currentTab == 4 ? last.displayComponent:tabs[currentTab].displayComponent}
                 </div>
         </Card>
     )
@@ -104,6 +116,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
+    areThereContacts: boolean,
     currentTab: number,
     moveToNextTab: () => void,
     setNextTab: (nextTabId: number) => void

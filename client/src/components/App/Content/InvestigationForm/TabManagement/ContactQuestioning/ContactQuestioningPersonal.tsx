@@ -46,7 +46,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                     <Grid item xs={3}>
                         <AlphanumericTextField
-                            required
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             placeholder='מספר תעודה'
                             className={classes.idTextField}

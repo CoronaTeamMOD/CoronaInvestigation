@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { useContext } from 'react';
 
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
@@ -11,8 +12,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {setOccupations, setInsuranceCompanies, setPersonalInfoData, 
-        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
+    const { setInsuranceCompanies, setPersonalInfoData, 
+        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext} = parameters;
 
     const fetchPersonalInfo = () => {
         axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));

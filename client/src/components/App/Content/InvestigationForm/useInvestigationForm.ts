@@ -8,29 +8,20 @@ import City from 'models/City';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import Country from 'models/Country';
-import TabNames from 'models/enums/TabNames';
 import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
-import { tabs } from './TabManagement/TabManagement';
 import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
 import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
-import { otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/BackgroundDiseasesFields';
-import { otherSymptomFieldName } from './TabManagement/ClinicalDetails/SymptomsFields';
 
-const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
-    const {clinicalDetailsVariables, exposuresAndFlightsVariables} = parameters;
-
-    const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
-    const { saveContactQuestioning } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact: () => {} });
+const useInvestigationForm = (): useInvestigationFormOutcome => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
@@ -107,9 +98,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                     epidemiologyNumber,
                     investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
-                    if (interactedContactsState.interactedContacts.length > 0) {
-                        saveContactQuestioning();
-                    }
+                    // if (interactedContactsState.interactedContacts.length > 0) {
+                    //     saveContactQuestioning();
+                    // }
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
                         epidemiologyNumber
@@ -134,7 +125,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         );
         timeout(LandingPageTimer).then(() => {
             history.push(landingPageRoute);
-            interactedContactsState.interactedContacts = [];
+            //interactedContactsState.interactedContacts = [];
         });
     };
 
@@ -152,53 +143,10 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         })
     };
 
-    const saveClinicalDetails = (): Promise<void> => {
-        const clinicalDetails = ({
-            ...clinicalDetailsVariables.clinicalDetailsData,
-            isolationAddress: clinicalDetailsVariables.clinicalDetailsData.isolationAddress.city === '' ? 
-                null : clinicalDetailsVariables.clinicalDetailsData.isolationAddress,
-            investigatedPatientId,
-            epidemiologyNumber
-        });
-
-        if (clinicalDetails.symptoms.includes(otherSymptomFieldName)) {
-            clinicalDetails.symptoms = clinicalDetails.symptoms.filter(symptom => symptom !== otherSymptomFieldName)
-        } else {
-            clinicalDetails.otherSymptomsMoreInfo = '';
-        }
-
-        if (clinicalDetails.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)) {
-            clinicalDetails.backgroundDeseases = clinicalDetails.backgroundDeseases.filter(symptom => symptom !== otherBackgroundDiseaseFieldName)
-        } else {
-            clinicalDetails.otherBackgroundDiseasesMoreInfo = '';
-        }
-
-        if (!clinicalDetails.wasHospitalized) {
-            clinicalDetails.hospital = '';
-            clinicalDetails.hospitalizationStartDate = null;
-            clinicalDetails.hospitalizationEndDate = null;
-        }
-
-        if (!clinicalDetails.isInIsolation) {
-            clinicalDetails.isolationStartDate = null;
-            clinicalDetails.isolationEndDate = null;
-        }
-
-        if (!clinicalDetails.doesHaveSymptoms) {
-            clinicalDetails.symptoms = [];
-            clinicalDetails.symptomsStartDate = null;
-        }
-
-        if (!clinicalDetails.doesHaveBackgroundDiseases) {
-            clinicalDetails.backgroundDeseases = [];
-        }
-
-        return axios.post('/clinicalDetails/saveClinicalDetails', ({clinicalDetails}));
-    };
-
     return {
         confirmFinishInvestigation,
         handleInvestigationFinish,
+        areThereContacts
     };
 };
 

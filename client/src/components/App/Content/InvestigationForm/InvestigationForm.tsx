@@ -68,7 +68,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { confirmFinishInvestigation } = useInvestigationForm({ clinicalDetailsVariables, exposuresAndFlightsVariables });
+    const { confirmFinishInvestigation, areThereContacts } = useInvestigationForm();
     const {
         currentTab,
         moveToNextTab,
@@ -94,6 +94,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         }
     }
 
+    const getLastTabId = () => {
+        return areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;   
+    }
+
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -104,6 +108,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             />
                                 <div className={classes.interactiveForm}>
                                     <TabManagement
+                                        areThereContacts = {areThereContacts}
                                         currentTab = {currentTab}
                                         moveToNextTab = {moveToNextTab}
                                         setNextTab = {setNextTab}
@@ -112,9 +117,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         <PrimaryButton 
                                             type="submit"
                                             form={`form-${currentTab}`}
-                                            test-id={currentTab === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
+                                            test-id={currentTab === getLastTabId() ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={handleClick}>
-                                        {currentTab === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                        {currentTab === getLastTabId() ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>

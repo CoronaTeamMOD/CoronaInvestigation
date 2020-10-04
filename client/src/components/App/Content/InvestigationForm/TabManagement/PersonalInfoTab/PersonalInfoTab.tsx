@@ -23,6 +23,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import { setFormState } from 'redux/Form/formActionCreators';
+import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -47,6 +48,7 @@ const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 
 const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {  
     const classes = useStyles({});
+    const occupationsStateContext = useContext(occupationsContext);
 
     const [subOccupationName, setSubOccupationName] = React.useState<string>('');
     const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
@@ -61,9 +63,8 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
-        setOccupations, setInsuranceCompanies,
-        setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setInsuranceCompanies,
+        setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext
     });
 
     const { control, setValue, getValues, reset, errors, setError, clearErrors } = useForm({
@@ -487,7 +488,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         className={classes.relevantOccupationselect}>
                                         <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                                         {
-                                            occupations.map((occupation) => {
+                                            occupationsStateContext.occupations.map((occupation) => {
                                                 return <FormControlLabel
                                                     value={occupation}
                                                     key={occupation}
