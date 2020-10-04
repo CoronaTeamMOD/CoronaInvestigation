@@ -4,6 +4,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import React from 'react';
 import { Controller, Control } from 'react-hook-form';
+import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, control, watchIsInIsolation, errors } = props;
@@ -79,7 +80,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
 };
 
 interface Props {
-    classes: any;
+    classes: ClinicalDetailsClasses;
     watchIsInIsolation: boolean;
     control: Control;
     errors: Record<string, any>;

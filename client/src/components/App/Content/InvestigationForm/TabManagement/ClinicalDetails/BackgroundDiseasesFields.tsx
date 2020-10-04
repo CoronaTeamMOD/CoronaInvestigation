@@ -6,6 +6,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
@@ -112,7 +113,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 };
 
 interface Props {
-    classes: any;
+    classes: ClinicalDetailsClasses;
     control?: Control;
     setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
     clearErrors: (name?: string | string[]) => void;

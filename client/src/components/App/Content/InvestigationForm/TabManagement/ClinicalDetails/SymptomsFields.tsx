@@ -6,6 +6,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import React from 'react';
 import { Control, Controller } from 'react-hook-form';
+import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 export const otherSymptomFieldName = 'אחר';
 
@@ -148,7 +149,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 };
 
 interface Props {
-    classes: any;
+    classes: ClinicalDetailsClasses;
     control: Control;
     watchDoesHaveSymptoms: boolean;
     watchSymptoms: string[];
