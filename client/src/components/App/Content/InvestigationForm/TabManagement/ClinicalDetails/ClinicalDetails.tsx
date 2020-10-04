@@ -472,7 +472,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number,
-    onSubmit: any,
+    onSubmit: () => void,
 }
 
 export default ClinicalDetails;

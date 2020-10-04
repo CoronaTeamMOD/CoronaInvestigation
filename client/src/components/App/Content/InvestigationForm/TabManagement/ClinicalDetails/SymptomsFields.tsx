@@ -5,7 +5,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import React from 'react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 
 export const otherSymptomFieldName = 'אחר';
 
@@ -149,16 +149,20 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     classes: any;
-    control: any;
-    watchDoesHaveSymptoms: any;
-    watchSymptoms: any;
-    isUnkonwnDateChecked: any;
-    handleUnkonwnDateCheck: any;
-    handleSymptomCheck: any;
-    symptoms: any;
-    setError: any;
-    clearErrors: any;
-    errors: any;
+    control: Control;
+    watchDoesHaveSymptoms: boolean;
+    watchSymptoms: string[];
+    isUnkonwnDateChecked: boolean;
+    handleUnkonwnDateCheck: () => void;
+    handleSymptomCheck: (
+        checkedSymptom: string,
+        onChange: (newSymptoms: string[]) => void,
+        selectedSymptoms: string[]
+    ) => void;
+    symptoms: string[];
+    setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
+    clearErrors: (name?: string | string[]) => void;
+    errors: Record<string, any>;
 };
 
 export default SymptomsFields;
