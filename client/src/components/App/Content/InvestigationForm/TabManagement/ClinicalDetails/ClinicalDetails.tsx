@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers";
 import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
+import Swal from 'sweetalert2';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
@@ -16,6 +17,7 @@ import { clinicalDetailsDataContext, initialClinicalDetails } from 'commons/Cont
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { setFormState } from 'redux/Form/formActionCreators';
 import axios from 'Utils/axios';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
@@ -24,8 +26,6 @@ import IsolationProblemFields from './IsolationProblemFields'
 import SymptomsFields from './SymptomsFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 import HospitalFields from './HospitalFields';
-import Swal from 'sweetalert2';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 const requiredText = 'שדה זה הוא חובה';
 const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
