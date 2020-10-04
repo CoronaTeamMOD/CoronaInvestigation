@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         }
     },
     contactDescription: {
-        marginLeft: '1%',
+        marginLeft: '1vw',
     },
     personalInfoFieldContainer: {
         display: 'flex',

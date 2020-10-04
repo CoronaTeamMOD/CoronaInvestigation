@@ -1,13 +1,12 @@
-import {createContext} from 'react';
-import {personalInfoFormData} from 'models/Contexts/personalInfoContextData';
+import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
-export const initialPersonalInfo: personalInfoFormData = {
+export const initialPersonalInfo: PersonalInfoFormData = {
     phoneNumber: '',
     additionalPhoneNumber: '',
     contactPhoneNumber: '',
     insuranceCompany: '',
-    city: "",
-    street: "",
+    city: '',
+    street: '',
     floor: '',
     houseNum: '',
     relevantOccupation: '',
