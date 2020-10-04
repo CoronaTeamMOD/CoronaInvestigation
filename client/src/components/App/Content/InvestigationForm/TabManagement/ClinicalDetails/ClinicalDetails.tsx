@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers";
 import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
@@ -440,33 +440,30 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     errors={errors}
                     watchWasHospitalized={watchWasHospitalized}
                 />
-                {patientGender === Gender.FEMALE ?
-                    <>
-                        <Grid item xs={2}>
-                            <Typography>
-                                <b>
-                                    האם בהריון:
-                                </b>
-                            </Typography>
-                        </Grid>
-                        <Controller
-                            name={ClinicalDetailsFields.IS_PREGNANT}
-                            control={control}
-                            render={(props) => (
-                                <Toggle
-                                    test-id='isPregnant'
-                                    value={props.value}
-                                    onChange={(e, value) => {
-                                        if (value !== null) {
-                                            props.onChange(value)
-                                        }
-                                    }}
-                                />
-                            )}
-                        />
-                    </>
-                    : <></>
-                }
+                <Collapse in={patientGender === Gender.FEMALE}>
+                    <Grid item xs={2}>
+                        <Typography>
+                            <b>
+                                האם בהריון:
+                            </b>
+                        </Typography>
+                    </Grid>
+                    <Controller
+                        name={ClinicalDetailsFields.IS_PREGNANT}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='isPregnant'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if (value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />
+                        )}
+                    />
+                </Collapse>
             </Grid>
             </form>
         </div>
