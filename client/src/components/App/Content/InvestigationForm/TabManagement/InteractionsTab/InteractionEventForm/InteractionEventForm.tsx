@@ -48,7 +48,7 @@ const InteractionEventForm: React.FC<Props> = (
     const { schema, saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
     const methods = useForm<InteractionEventDialogData>({
     defaultValues: intractionData,
-    mode: "onBlur",
+    mode: 'all',
     resolver: yupResolver(schema)
   });
 
@@ -143,8 +143,8 @@ const InteractionEventForm: React.FC<Props> = (
                       onChange={(newTime: Date) => handleTimeChange(newTime, 
                                                                     formData[InteractionEventDialogFields.START_TIME],
                                                                     InteractionEventDialogFields.START_TIME)}
-                      required
-                      labelText="משעה"
+                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "משעה*"}
+                      error={get(methods.errors, props.name)}
                     />
                   )}
                 />
@@ -157,14 +157,13 @@ const InteractionEventForm: React.FC<Props> = (
                   control={methods.control}
                   render={(props) => (
                     <TimePick
-                      error={get(methods.errors, props.name)}
                       test-id="contactLocationEndTime"
                       value={props.value}
                       onChange={(newTime:Date) => handleTimeChange(newTime, 
                                                                    formData[InteractionEventDialogFields.END_TIME],
                                                                    InteractionEventDialogFields.END_TIME)}
-                      required
-                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "עד שעה"}
+                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "עד שעה*"}
+                      error={get(methods.errors, props.name)}
                     />
                   )}
                 />

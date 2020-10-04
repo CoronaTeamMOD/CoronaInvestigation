@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
 
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import axios from 'Utils/axios';
 import useDBParser from "Utils/vendor/useDBParsing";
@@ -9,7 +10,8 @@ import StoreStateType from 'redux/storeStateType';
 
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+
+const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/;
 
 const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFormOutcome => {  
   const { interactionId, loadInteractions, closeNewDialog, closeEditDialog } = props;    
@@ -26,35 +28,36 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
             otherwise: yup.number().nullable()
           }
         ),
-        [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().nullable().
-          matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/, 'מספר טלפון לא תקין'),
-        [InteractionEventDialogFields.START_TIME]: yup.date().required(),
-        [InteractionEventDialogFields.END_TIME]: yup.date().required().when(
-          InteractionEventDialogFields.START_TIME, (startTime: Date) => {
-            return yup.date().min(startTime, 'שעה עד לא יכולה להיות קטנה משעה מ');
-        }),
+        [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().nullable()
+          .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+        [InteractionEventDialogFields.START_TIME]: yup.date().required()
+          .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעה מ לא יכולה להיות גדולה משעה עד'),
+        [InteractionEventDialogFields.END_TIME]: yup.date().required()
+          .min(yup.ref(InteractionEventDialogFields.START_TIME), 
+          'שעה עד לא יכולה להיות קטנה משעה מ'),
         [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().required('שדה חובה'),
         [InteractionEventDialogFields.CONTACTS]: yup.array().of(yup.object().shape({
             [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),
             [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
             [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable().required('מספר טלפון חובה')
-              .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
-              [InteractionEventContactFields.ID]: yup.string().nullable().matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
-              .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-              .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
-                let sum = 0;
-                if (id?.length === 9) {
-                  for (let i = 0; i < 9; i++) {
-                    let digitMul = parseInt(id[i]) * ((i % 2) + 1);
-                    if (digitMul > 9) {
-                      digitMul -= 9;
+              .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+              [InteractionEventContactFields.ID]: yup.string().nullable()
+                .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
+                .length(9, 'ת.ז מכילה 9 מספרים בלבד')
+                .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
+                  let sum = 0;
+                  if (id?.length === 9) {
+                    for (let i = 0; i < 9; i++) {
+                      let digitMul = parseInt(id[i]) * ((i % 2) + 1);
+                      if (digitMul > 9) {
+                        digitMul -= 9;
+                      }
+                      sum += digitMul;
                     }
-                    sum += digitMul;
-                }
-              }
-              return sum % 10 === 0;
-            })
-        })),
+                  }
+                  return sum % 10 === 0;
+              })
+          })),
         });
 
     const saveIntreactions = async (interactionsDataToSave: InteractionEventDialogData) => {
