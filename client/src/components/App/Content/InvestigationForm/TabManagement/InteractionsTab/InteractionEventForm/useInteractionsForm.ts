@@ -41,10 +41,10 @@ const useInteractionsForm = (props : Props): outCome => {
               .matches(/^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/, 'מספר טלפון לא תקין'),
               [InteractionEventContactFields.ID]: yup.string().nullable().matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
               .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-              .test('isValid', "ת.ז לא תקינה", (id: any) => {
+              .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
                 let sum = 0;
                 if (id?.length === 9) {
-                  for (let i=0; i<9; i++) {
+                  for (let i = 0; i < 9; i++) {
                     let digitMul = parseInt(id[i]) * ((i % 2) + 1);
                     if (digitMul > 9) {
                       digitMul -= 9;
@@ -52,7 +52,7 @@ const useInteractionsForm = (props : Props): outCome => {
                     sum += digitMul;
                 }
               }
-              return sum % 10 === 0 ? true : false;
+              return sum % 10 === 0;
             })
         })),
         });

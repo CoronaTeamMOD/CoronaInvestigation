@@ -58,7 +58,7 @@ const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTa
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
-                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms? true : false);
+                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms);
                 }
             });
     }
