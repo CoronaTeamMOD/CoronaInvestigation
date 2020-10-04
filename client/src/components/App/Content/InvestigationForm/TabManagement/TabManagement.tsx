@@ -112,8 +112,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    currentTab?:any,
-    moveToNextTab?:any,
-    setCurrentTab?:any,
-    setNextTab?:any
+    currentTab: number,
+    moveToNextTab: () => void,
+    setCurrentTab: (TabId: number) => void,
+    setNextTab: (nextTabId: number) => void
 };

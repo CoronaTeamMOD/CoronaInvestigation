@@ -106,18 +106,16 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
     });
   }
 
-  const saveExposure = (e: any, exposuresAndFlightsData: any ) => {
+  const saveExposure = (e: React.ChangeEvent<{}>) => {
     e.preventDefault();
     console.log("ExposureTab");
     setFormState(investigationId, id, true);
     saveExposureAndFlightData().then(onSubmit);
-    
-    // saveExposuresAndFlightsData(exposuresAndFlightsData);
   }
 
   return (
     <>
-    <form id={`form-${id}`} onSubmit={(e) => saveExposure(e, { name: "itay" })}>
+    <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
       <div className={classes.subForm}>
         <Typography variant='caption' className={fieldName}>
           חשיפה אפשרית
@@ -225,7 +223,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
 interface Props {
   id: number,
-  onSubmit: any
+  onSubmit: () => void
 }
 
 export default ExposuresAndFlights;

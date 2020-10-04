@@ -11,8 +11,8 @@ const useTabManagement = () => {
             }
     }
 
-    const setNextTab = (num: number) => {
-        nextTab = num;
+    const setNextTab = (nextTabId: number) => {
+        nextTab = nextTabId;
     }
 
     return {

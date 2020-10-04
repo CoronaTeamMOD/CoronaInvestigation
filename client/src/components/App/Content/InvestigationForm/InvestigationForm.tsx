@@ -30,7 +30,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
+    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
     const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
     const [exposureDate, setExposureDate] = React.useState<Date>();
@@ -77,19 +77,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     } = useTabManagement();
 
     const isInvestigationValid = () => {
-        let isFormValid = true;
-        formsValidations.forEach((formValidation : any)=> {
-            if(formValidation !== true){
-                isFormValid = false;
-            }
-        })
-        return isFormValid;
+        return !(formsValidations.some((formValidation) => !formValidation));
     }
 
     const handleClick = () => {
-        if(currentTab === LAST_TAB_ID){
-            setNextTab(currentTab);
-            if(isInvestigationValid()){
+        if(currentTab === LAST_TAB_ID) { 
+            if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
                 Swal.fire({
@@ -98,7 +91,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                 });
             }
         } else {
-            setNextTab(currentTab+1);
+            setNextTab(currentTab + 1);
         }
     }
 
@@ -122,8 +115,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                             type="submit"
                                             form={`form-${currentTab}`}
                                             test-id={currentTab === LAST_TAB_ID ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={handleClick}
-                                            disabled={false}>
+                                            onClick={handleClick}>
                                         {currentTab === LAST_TAB_ID ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
