@@ -11,10 +11,10 @@ const stringAlphanum = yup
   .required()
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
 
-const errMessage = "השדה יכול להכיל רק אותיות ומספרים";
+const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
-  const value =  (props.value == null || props.value === undefined) ? "" : props.value;
+  const value = (props.value == null || props.value === undefined) ? "" : props.value;
   const {
     name,
     onChange,
@@ -30,32 +30,34 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     helperText
   } = props;
 
+  const conditionalyTriggerOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    const isValid = stringAlphanum.isValidSync(newValue);
+    if (isValid || newValue === "") {
+      clearErrors(name);
+      onChange(newValue);
+    } else {
+      setError(name, {
+        type: "manual",
+        message: errorMessage,
+      });
+    }
+  };
 
+  const errorObject = get(errors, name);
 
   return (
-    <Tooltip open={get(errors, name)} title={get(errors, name)? errMessage : ""}>
+    <Tooltip open={errorObject? true : false} title={errorObject ? errorMessage : ""}>
       <TextField
         helperText={helperText}
         test-id={testId}
         required={required}
         name={name}
         value={value}
-        onChange={(e) => {
-          const newValue = e.target.value;
-          const isValid = stringAlphanum.isValidSync(newValue);
-          if (isValid || newValue === "") {
-            clearErrors(name);
-            onChange(newValue);
-          } else {
-            setError(name, {
-              type: "manual",
-              message: errMessage,
-            });
-          }
-        }}
+        onChange={conditionalyTriggerOnChange}
         onBlur={onBlur}
-        error={get(errors, name)? true : false}
-        label={get(errors, name) ? get(errors, name).message : label}
+        error={errorObject ? true : false}
+        label={errorObject ? errorObject.message : label}
         placeholder={placeholder}
         className={className}
       />
