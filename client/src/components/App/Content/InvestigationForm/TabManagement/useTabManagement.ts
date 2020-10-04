@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef, RefObject } from 'react';
 
 const useTabManagement = () => {
 
     const [currentTab, setCurrentTab] = useState<number>(0);
-    let nextTab: any;
+    const nextTab: RefObject<number> = useRef<number>(0);
 
     const moveToNextTab = () => {
-            if(nextTab !== undefined) {
-                setCurrentTab(nextTab);
-            }
+        setCurrentTab(nextTab.current as number);
     }
 
     const setNextTab = (nextTabId: number) => {
-        nextTab = nextTabId;
+        //@ts-ignore
+        nextTab.current = nextTabId;
     }
 
     return {
