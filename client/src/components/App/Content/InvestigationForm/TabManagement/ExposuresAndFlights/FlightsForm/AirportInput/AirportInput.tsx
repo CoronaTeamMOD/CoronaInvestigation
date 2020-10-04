@@ -44,40 +44,38 @@ const AirportInput = (props: any) => {
 
     return (
         <div className={classes.airportDetails}>
-            <div className={classes.airportCountryTextField}>
-                <AutocompletedField
-                    required
-                    value={country}
-                    options={options}
-                    onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
-                    getOptionLabel={(option) => getLabel(option)}
-                    filterOptions={filterOptions}
-                />
-            </div>
-            <div className={classes.additionalAirportDetails}>
-                <AlphanumericTextField
-                    name={cityFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    required
-                    value={city}
-                    placeholder='עיר'
-                    label='עיר'
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
-                />
-                <AlphanumericTextField
-                    className={classes.airportTextField}
-                    name={airportFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    value={airport}
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
-                    placeholder='שדה תעופה'
-                    label='שדה תעופה'
-                />
-            </div>
+            <AutocompletedField
+                className={classes.airportInput}
+                required
+                value={country}
+                options={options}
+                onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+                getOptionLabel={(option) => getLabel(option)}
+                filterOptions={filterOptions}
+            />
+            <AlphanumericTextField
+                className={classes.airportInput}
+                name={cityFieldName}
+                errors={errors}
+                setError={setError}
+                clearErrors={clearErrors}
+                required
+                value={city}
+                placeholder='עיר'
+                label='עיר'
+                onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
+            />
+            <AlphanumericTextField
+                className={classes.airportInput}
+                name={airportFieldName}
+                errors={errors}
+                setError={setError}
+                clearErrors={clearErrors}
+                value={airport}
+                onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
+                placeholder='שדה תעופה'
+                label='שדה תעופה'
+            />
         </div>
     );
 };
