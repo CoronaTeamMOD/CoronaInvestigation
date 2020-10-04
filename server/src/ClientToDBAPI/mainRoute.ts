@@ -20,7 +20,7 @@ clientToDBRouter.use('/investigationInfo', investigationInfo);
 clientToDBRouter.use('/personalDetails', personalDetailsRoute);
 clientToDBRouter.use('/clinicalDetails', clinicalDetailsRoute);
 clientToDBRouter.use('/addressDetails', addressRoute);
-clientToDBRouter.use('/ContactedPeople', contactedPeopleRoute);
+clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/users', usersRoute);
 
 export default clientToDBRouter;
