@@ -86,14 +86,22 @@ const resetEmptyFields = (object: any) => {
 }
 
 const convertEventToDBType = (event: any) => {
-    const updatedContacts = event.contacts.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
+    const deletedContacts : number[] = [];
+    const updatedContacts = event.contacts.filter((contact: any) => { 
+        if (contact.firstName && contact.lastName && contact.phoneNumber) {
+            return true;
+        } else {
+            contact.serialId && deletedContacts.push(contact.serialId);
+            return false;
+        }
+    });
     updatedContacts.forEach((contact: any) => {
         contact.id = contact.id ? contact.id : null;
     })
     event.contacts = updatedContacts;
     resetEmptyFields(event);
     (event.locationAddress) && resetEmptyFields(event.locationAddress);
-    return event;
+    return {...event, deletedContacts};
 }
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
