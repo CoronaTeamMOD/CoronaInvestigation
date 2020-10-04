@@ -1,7 +1,23 @@
 types {
-    application/x-font-ttf           ttc;
-    application/x-font-otf           otf;
-    application/font-woff2           woff2;
-    font/ttf                         ttf;
-    application/font-woff            woff;
+  text/html                             html htm shtml;
+  text/css                              css;
+  image/jpeg                            jpeg jpg;
+  application/x-javascript              js;
+  text/plain                            txt;
+  image/png                             png;
+  image/x-icon                          ico;
+  application/pdf                       pdf;
+  application/x-rar-compressed          rar;
+  application/zip                       zip;
+  application/octet-stream              bin exe dll;
+  application/octet-stream              iso img;
+  application/octet-stream              msi msp msm;
+  audio/mpeg                            mp3;
+  video/mpeg                            mpeg mpg;
+  video/quicktime                       mov;
+  video/x-flv                           flv;
+  video/x-msvideo                       avi;
+  video/x-ms-wmv                        wmv;
+  video/x-ms-asf                        asx asf;
+  video/x-mng                           mng;
 }
