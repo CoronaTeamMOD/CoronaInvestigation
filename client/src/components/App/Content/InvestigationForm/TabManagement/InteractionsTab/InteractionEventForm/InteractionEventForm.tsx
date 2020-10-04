@@ -14,6 +14,7 @@ import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import useFormStyles from 'styles/formStyles';
 
+import InteractionEventSchema from './InteractionEventSchema'
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
@@ -45,11 +46,11 @@ const InteractionEventForm: React.FC<Props> = (
     interactionId 
   } : Props): JSX.Element => {
 
-    const { schema, saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
+    const { saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
     const methods = useForm<InteractionEventDialogData>({
     defaultValues: intractionData,
     mode: 'all',
-    resolver: yupResolver(schema)
+    resolver: yupResolver(InteractionEventSchema)
   });
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
