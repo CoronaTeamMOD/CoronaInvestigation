@@ -61,7 +61,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item xs={10}>
                     <FormInput fieldName='תאריך לידה'>
                         <DatePick
-                            value={new Date(interactedContact.birthDate)}
+                            value={interactedContact.birthDate}
                             onChange={(newDate: Date) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate
                                 )
@@ -73,9 +73,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName='גיל'>
                         <AlphanumericTextField
                             name={'age'}
-                            placeholder='הכנס גיל:'
-                            value={differenceInYears(new Date(), new Date(interactedContact.birthDate as Date))}
-                            onChange={() => { }}
+                            value={differenceInYears(new Date(), new Date(interactedContact.birthDate))}
+                            onChange={() => {}}
                             setError={setError}
                             clearErrors={clearErrors}
                             errors={errors}
