@@ -54,15 +54,14 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const handleInvestigationFinish = async () => {
             Swal.fire({
                 icon: 'success',
-                title: 'בחרת לצאת מהחקירה לפני השלמתה! הפרטים נשמרו בהצלחה, הנך מועבר לעמוד הנחיתה',
+                title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
                 customClass: {
                     title: classes.swalTitle,
                 },
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(1900).then(()=> history.push(landingPageRoute))
-            .catch(() => handleUnfinishedInvestigationFailed());
+            timeout(1900).then(()=> history.push(landingPageRoute));
     };
 
     const getPersonAge = (birthDate: Date) => {
