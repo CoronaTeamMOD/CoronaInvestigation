@@ -6,7 +6,7 @@ import exposureRoute from './ExposureRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
-import contactedPeopleRoute from './contactedPeople/mainRoute';
+import contactedPeopleRoute from './ContactedPeople/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
