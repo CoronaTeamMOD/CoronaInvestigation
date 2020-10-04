@@ -51,8 +51,8 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
 export default EditInteractionEventDialog;
 
 export interface Props {
-    isOpen: boolean,
-    eventToEdit: InteractionEventDialogData
-    closeEditDialog: () => void,
+    isOpen: boolean;
+    eventToEdit: InteractionEventDialogData;
+    closeEditDialog: () => void;
     loadInteractions: () => void;
 }

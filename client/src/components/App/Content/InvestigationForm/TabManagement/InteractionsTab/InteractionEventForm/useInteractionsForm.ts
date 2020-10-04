@@ -11,7 +11,7 @@ import InteractionEventDialogFields from '../InteractionsEventDialogContext/Inte
 import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-const useInteractionsForm = (props : Props): outCome => {  
+const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFormOutcome => {  
   const { interactionId, loadInteractions, closeNewDialog, closeEditDialog } = props;    
   const { parseLocation } = useDBParser();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -105,15 +105,15 @@ const useInteractionsForm = (props : Props): outCome => {
     }
 };
 
-interface Props {
+interface useInteractionFormIncome {
   interactionId?: number;
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
 }
 
-interface outCome {
-  schema: any;
+interface useInteractionFormOutcome {
+  schema: yup.ObjectSchema<object | undefined, object> | yup.Lazy;
   saveIntreactions: (interactionsData: InteractionEventDialogData) => void;
 }
 

@@ -68,8 +68,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
 export default NewInteractionEventDialog;
 
 export interface Props {
-    isOpen: boolean,
-    interactionDate: Date,
-    closeNewDialog: () => void,
+    isOpen: boolean;
+    interactionDate: Date;
+    closeNewDialog: () => void;
     loadInteractions: () => void;
 }

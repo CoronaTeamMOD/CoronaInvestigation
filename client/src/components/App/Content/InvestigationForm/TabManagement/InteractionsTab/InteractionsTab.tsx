@@ -25,19 +25,16 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
-    const { getDatesToInvestigate, getClinicalDetails, loadInteractions, getCoronaTestDate, handleDeleteContactEvent } =
+    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, getClinicalDetailsSymptoms, handleDeleteContactEvent } =
         useInteractionsTab({
             setInteractions: setInteractions,
             interactions: interactions
         });
-        
-    useEffect(() => {
-        getClinicalDetails(setSymptomsStartDate, setDoesHaveSymptoms);
-    }, []);
 
     useEffect(() => {
         loadInteractions();
-        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime)
+        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
+        getClinicalDetailsSymptoms(setSymptomsStartDate, setDoesHaveSymptoms);
     }, []);
 
     useEffect(() => {
@@ -56,7 +53,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         setInteractionsMap(mappedInteractionsArray);
     }, [interactions]);
 
-    const SaveInteraction = (e : any) => {
+    const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormState(investigationId, id, true);
         onSubmit();
@@ -64,7 +61,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     
     return (
         <>
-            <form id={`form-${id}`} onSubmit={(e) => SaveInteraction(e)}>
+            <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
                     getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
                         <ContactDateCard 
@@ -100,7 +97,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number,
-    onSubmit: any
+    onSubmit: () => void;
 }
 
 export default InteractionsTab;

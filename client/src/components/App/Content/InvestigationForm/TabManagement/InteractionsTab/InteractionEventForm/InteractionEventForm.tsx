@@ -37,7 +37,8 @@ export const defaultContact: Contact = {
 const addContactButton: string = "הוסף מגע";
 
 const InteractionEventForm: React.FC<Props> = (
-  { intractionData,
+  { 
+    intractionData,
     loadInteractions,
     closeNewDialog,
     closeEditDialog,
@@ -50,9 +51,6 @@ const InteractionEventForm: React.FC<Props> = (
     mode: "onBlur",
     resolver: yupResolver(schema)
   });
-
-  console.log(methods.errors);
-  console.log(methods.getValues());
 
   const formData = methods.getValues();
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
@@ -103,41 +101,35 @@ const InteractionEventForm: React.FC<Props> = (
             onPlaceTypeChange={(newValue)=> methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
             onPlaceSubTypeChange={(newValue)=> methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue)}
           />
-          {placeType === privateHouse.code && (
-            <Collapse in={placeType === privateHouse.code}>
-              <PrivateHouseEventForm />
-            </Collapse>
-          )}
-          {placeType === office.code && (
-            <Collapse in={placeType === office.code}>
-              <OfficeEventForm />
-            </Collapse>
-          )}
-          {placeType === transportation.code && (
-            <Collapse in={placeType === transportation.code}>
-              <TransportationEventForm placeSubType={placeSubType} />
-            </Collapse>
-          )}
-          {placeType === school.code && (
-            <Collapse in={placeType === school.code}>
-              <SchoolEventForm placeSubType={placeSubType} />
-            </Collapse>
-          )}
-          {placeType === medical.code && (
-            <Collapse in={placeType === medical.code}>
-              <MedicalLocationForm placeSubType={placeSubType} />
-            </Collapse>
-          )}
-          {(placeType === religion.code || placeType === geriatric.code) && (
-            <Collapse in={placeType === religion.code || placeType === geriatric.code}>
-              <DefaultPlaceEventForm />
-            </Collapse>
-          )}
-          {placeType === otherPublicPlaces.code && (
-            <Collapse in={placeType === otherPublicPlaces.code}>
-              <OtherPublicLocationForm placeSubType={placeSubType} />
-            </Collapse>
-          )}
+          
+          <Collapse in={placeType === privateHouse.code}>
+            <PrivateHouseEventForm />
+          </Collapse>
+
+          <Collapse in={placeType === office.code}>
+            <OfficeEventForm />
+          </Collapse>
+          
+          <Collapse in={placeType === transportation.code}>
+            <TransportationEventForm placeSubType={placeSubType} />
+          </Collapse>
+
+          <Collapse in={placeType === school.code}>
+            <SchoolEventForm placeSubType={placeSubType} />
+          </Collapse>
+
+          <Collapse in={placeType === medical.code}>
+            <MedicalLocationForm placeSubType={placeSubType} />
+          </Collapse>
+
+          <Collapse in={placeType === religion.code || placeType === geriatric.code}>
+            <DefaultPlaceEventForm />
+          </Collapse>
+
+          <Collapse in={placeType === otherPublicPlaces.code}>
+            <OtherPublicLocationForm placeSubType={placeSubType} />
+          </Collapse>
+
           <Grid className={formClasses.formRow} container justify="flex-start">
             <Grid item xs={6}>
               <FormInput fieldName="משעה">

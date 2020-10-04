@@ -30,7 +30,7 @@ const BusinessContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     <Grid item xs={6}>
                         <FormInput fieldName={businessContactNumField}>
                             <Typography variant='caption'>
-                            {interaction.contactPersonPhoneNumber}
+                                {interaction.contactPersonPhoneNumber}
                             </Typography>
                         </FormInput>
                     </Grid>
