@@ -42,8 +42,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const initializeTabShow = () => {
-        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
-            setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
+        axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
+            setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
         });
     };
 

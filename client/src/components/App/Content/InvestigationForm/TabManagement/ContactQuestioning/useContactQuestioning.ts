@@ -35,7 +35,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const loadInteractedContacts = () => {
         let interactedContacts: InteractedContact[] = [];
 
-        axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
+        axios.get('/contactedPeople/allContacts/' + epidemiologyNumber).then((result: any) => {
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
                 interactedContacts.push(
                     {

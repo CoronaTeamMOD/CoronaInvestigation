@@ -1,5 +1,13 @@
 import { gql } from 'postgraphile';
 
+export const GET_AMOUNT_OF_CONTACTED_PEOPLE = gql`
+query ContactedPeopleAmountByInvestigationId ($investigationId: Int!) {
+  allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
+    totalCount
+  }
+}
+`;
+
 export const GET_CONTACTED_PEOPLE = gql`
 query ContactedPeopleByInvestigationId ($investigationId: Int!) {
   allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
