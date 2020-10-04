@@ -67,6 +67,10 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
+    
+    const isTabInValid = (tabId: number) => {
+        return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId]  
+    }
 
     return (
         <Card className={classes.card}>
@@ -75,29 +79,20 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     indicatorColor='primary'
                     textColor='primary'
                 >
-                    {
-                        tabs.map((tab) => {
-                            if (formsValidations !== undefined && !formsValidations[tab.id] && formsValidations[tab.id] !== null) {
-                                return <StyledTab 
+                     {
+                        tabs.map((tab: TabObj) => 
+                            <StyledTab 
                                 // @ts-ignore
                                 type="submit"
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(tab.id)}}
                                 key={tab.id}
                                 label={tab.name}
-                                icon={<ErrorOutlineIcon/>}
-                                className={classes.errorIcon}
-                            />} else {
-                                    return <StyledTab 
-                                        // @ts-ignore
-                                        type="submit"
-                                        form={`form-${currentTab}`}
-                                        onClick={() => {setNextTab(tab.id)}}
-                                        key={tab.id}
-                                        label={tab.name}
-                                    />}
-                        })
-                    }
+                                icon={isTabInValid(tab.id) ? <ErrorOutlineIcon/> : undefined}
+                                className={isTabInValid(tab.id) ? classes.errorIcon : undefined}
+                            />
+                    )}
+
                 </Tabs>
                 <div className={classes.displayedTab}>
                     {tabs[currentTab].displayComponent}
