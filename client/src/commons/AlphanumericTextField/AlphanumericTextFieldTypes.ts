@@ -14,7 +14,6 @@ export interface AlphanumericTextFieldProps<T> {
     className?: string,
     testId?: string,
     error? : boolean,
-    helperText? :string
 }
 
 type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;

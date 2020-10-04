@@ -27,7 +27,6 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
     label,
     required,
     testId,
-    helperText
   } = props;
 
   const conditionalyTriggerOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +48,6 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   return (
     <Tooltip open={errorObject? true : false} title={errorObject ? errorMessage : ""}>
       <TextField
-        helperText={helperText}
         test-id={testId}
         required={required}
         name={name}
