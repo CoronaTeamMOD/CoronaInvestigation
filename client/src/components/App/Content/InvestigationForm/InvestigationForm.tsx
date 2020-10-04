@@ -72,7 +72,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const {
         currentTab,
         moveToNextTab,
-        setCurrentTab,
         setNextTab
     } = useTabManagement();
 
@@ -107,7 +106,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     <TabManagement
                                         currentTab = {currentTab}
                                         moveToNextTab = {moveToNextTab}
-                                        setCurrentTab = {setCurrentTab}
                                         setNextTab = {setNextTab}
                                     />
                                     <div className={classes.buttonSection}>

@@ -15,39 +15,42 @@ import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
 
-export const tabs: TabObj[] = [
-    {
-        id: 0,
-        name: TabNames.PERSONAL_INFO,
-    },
-    {
-        id: 1,
-        name: TabNames.CLINICAL_DETAILS,
-    },
-    {
-        id: 2,
-        name: TabNames.EXPOSURES_AND_FLIGHTS,
-    },
-    {
-        id: 3,
-        name: TabNames.INTERACTIONS, 
-    },
-    {
-        id: 4,
-        name: TabNames.CONTACT_QUESTIONING,
-        //isDisabled: false,
-        //displayComponent: <ContactQuestioning/>
-    },
-];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
     const {
         currentTab,
         moveToNextTab,
-        setCurrentTab,
         setNextTab
     } = tabManagementProps;
+
+    const tabs: TabObj[] = [
+        {
+            id: 0,
+            name: TabNames.PERSONAL_INFO,
+            displayComponent: <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>
+        },
+        {
+            id: 1,
+            name: TabNames.CLINICAL_DETAILS,
+            displayComponent: <ClinicalDetails id={1} onSubmit={moveToNextTab}/>
+        },
+        {
+            id: 2,
+            name: TabNames.EXPOSURES_AND_FLIGHTS,
+            displayComponent: <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>
+        },
+        {
+            id: 3,
+            name: TabNames.INTERACTIONS,
+            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab}/>
+        },
+        {
+            id: 4,
+            name: TabNames.CONTACT_QUESTIONING,
+            displayComponent: <ContactQuestioning/>
+        }
+    ];
 
     const classes = useStyles({});
     
@@ -96,15 +99,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         })
                     }
                 </Tabs>
-            
                 <div className={classes.displayedTab}>
-                {currentTab == 0 && <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>}
-                {currentTab == 1 && <ClinicalDetails id={1} onSubmit={moveToNextTab}/>}
-                {currentTab == 2 && <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>}
-                {currentTab == 3 && <InteractionsTab id={3} onSubmit={moveToNextTab}/>}
-                {currentTab == 4 && <ContactQuestioning id={4} onSubmit={moveToNextTab}/>}
+                    {tabs[currentTab].displayComponent}
                 </div>
-            
         </Card>
     )
 };
@@ -114,6 +111,5 @@ export default TabManagement;
 interface Props {
     currentTab: number,
     moveToNextTab: () => void,
-    setCurrentTab: (TabId: number) => void,
     setNextTab: (nextTabId: number) => void
 };
