@@ -47,13 +47,13 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
                 .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
                   let sum = 0;
                   if (id?.length === 9) {
-                    for (let i = 0; i < 9; i++) {
-                      let digitMul = parseInt(id[i]) * ((i % 2) + 1);
+                    Array.from(id)?.map((digit: string, index: number) => {
+                      let digitMul = parseInt(digit) * ((index % 2) + 1);
                       if (digitMul > 9) {
                         digitMul -= 9;
                       }
                       sum += digitMul;
-                    }
+                    })
                   }
                   return sum % 10 === 0;
               })
