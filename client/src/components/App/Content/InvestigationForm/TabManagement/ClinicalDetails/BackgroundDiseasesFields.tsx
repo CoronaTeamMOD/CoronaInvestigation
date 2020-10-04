@@ -1,10 +1,11 @@
+import React from 'react';
 import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Control, Controller } from 'react-hook-form';
+
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import React from 'react';
-import { Control, Controller } from 'react-hook-form';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
