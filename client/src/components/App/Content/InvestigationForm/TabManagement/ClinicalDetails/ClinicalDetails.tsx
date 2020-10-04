@@ -51,7 +51,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     
-    const { getStreetByCity } = useClinicalDetails({
+    const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
         setBackgroundDiseases, 
         setIsolationCityName, 
@@ -93,15 +93,10 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         reset(initialDBClinicalDetails);
     }, [initialDBClinicalDetails])
 
-    const saveClinicalDetails = (e: any) => {
+    const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
-        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...values, epidemiologyNumber, investigatedPatientId}})).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
-        });
+        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
 
         ClinicalDetailsSchema.isValid(values).then(valid=>{
             setFormState(investigationId, id, valid);
@@ -155,7 +150,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     return (
         <div className={classes.form}>
-            <form id={`form-${id}`} onSubmit={(e) => saveClinicalDetails(e)}>
+            <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
             <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
@@ -9,6 +10,7 @@ import StoreStateType from 'redux/storeStateType';
 import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { otherSymptomFieldName } from './SymptomsFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
@@ -101,6 +103,15 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         return backgroundDiseases;
     }
 
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => {
+        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}})).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+    }
+
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
@@ -109,6 +120,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     return {
         getStreetByCity,
+        saveClinicalDetails
     };
 };
 
