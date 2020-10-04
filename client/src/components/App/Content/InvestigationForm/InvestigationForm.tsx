@@ -86,7 +86,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.'
+                    title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.',
+                    customClass: {
+                        title:classes.swalTitle
+                    },
                 });
             }
         } else {
