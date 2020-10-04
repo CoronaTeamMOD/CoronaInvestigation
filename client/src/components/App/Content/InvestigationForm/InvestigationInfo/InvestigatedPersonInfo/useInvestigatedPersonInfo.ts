@@ -11,6 +11,7 @@ import { interactedContactsContext } from 'commons/Contexts/InteractedContactsCo
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
+import { LandingPageTimer } from '../InvestigationInfoBar';
 import { InvestigatedPersonInfoOutcome, InvestigatedPersonInfoIncome } from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonInfoIncome): InvestigatedPersonInfoOutcome => {
@@ -62,7 +63,7 @@ const useInvestigatedPersonInfo = ({ onExitInvestigation }: InvestigatedPersonIn
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(1900).then(() => {
+            timeout(LandingPageTimer).then(() => {
                 history.push(landingPageRoute);
                 interactedContactsState.interactedContacts = [];
             });

@@ -22,6 +22,7 @@ import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
+import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
 import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
 import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
@@ -123,8 +124,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             };
         });
     };
-
-    const LandingPageTimer = 1900;
 
     const handleInvestigationFinish = () => {
         Swal.fire({
