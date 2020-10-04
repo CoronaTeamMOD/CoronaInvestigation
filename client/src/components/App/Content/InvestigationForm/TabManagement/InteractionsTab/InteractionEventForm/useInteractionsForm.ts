@@ -47,7 +47,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
                 .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
                   let sum = 0;
                   if (id?.length === 9) {
-                    Array.from(id)?.map((digit: string, index: number) => {
+                    Array.from(id)?.forEach((digit: string, index: number) => {
                       let digitMul = parseInt(digit) * ((index % 2) + 1);
                       if (digitMul > 9) {
                         digitMul -= 9;
