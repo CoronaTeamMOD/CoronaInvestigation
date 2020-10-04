@@ -1,5 +1,6 @@
-import Person from '../Person/Person';
-import ContactType from '../ContactEvent/Enums/ContactType';
+import Person from './Person';
+import ContactType from './enums/ContactType';
+import Occupations from './enums/Occupations';
 
 interface InteractedContact extends Person {
     id: number;
@@ -10,7 +11,7 @@ interface InteractedContact extends Person {
     cantReachContact: boolean;
     relationship: string;
     familyRelationship: number;
-    occupation: string;
+    occupation: Occupations;
     doesHaveBackgroundDiseases: boolean;
     contactedPersonCity: string;
     doesFeelGood: boolean;
@@ -18,6 +19,7 @@ interface InteractedContact extends Person {
     repeatingOccuranceWithConfirmed: boolean;
     doesLiveWithConfirmed: boolean;
     doesWorkWithCrowd: boolean;
+    expand?: boolean;
 };
 
 export default InteractedContact;

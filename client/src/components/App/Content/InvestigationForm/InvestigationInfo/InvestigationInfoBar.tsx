@@ -46,6 +46,8 @@ const defaultInvestigationStaticInfo = {
     userByLastUpdator: defaultUser
 }
 
+export const LandingPageTimer = 1900;
+
 const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) => {
 
     let history = useHistory();
@@ -74,7 +76,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
                     showConfirmButton: false
                 });
 
-                timeout(1900).then(() => history.push(landingPageRoute));
+                timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
             }
         })
     }, [epidemiologyNumber]);

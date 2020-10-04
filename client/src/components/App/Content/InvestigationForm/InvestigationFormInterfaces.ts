@@ -2,8 +2,8 @@ import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsConte
 import { ExposureAndFlightsDetailsAndSet } from 'commons/Contexts/ExposuresAndFlights';
 
 import { Tab } from 'models/Tab';
-import TabNames from 'models/enums/TabNames';
 import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
+import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 export interface useInvestigationFormOutcome {
     currentTab: Tab;
@@ -12,10 +12,12 @@ export interface useInvestigationFormOutcome {
     handleSwitchTab: (newTabId: number) => void;
     isButtonDisabled: (tabName: string) => boolean;
     saveCurrentTab: () => Promise<void>;
+    areThereContacts: boolean;
 };
 
 export interface useInvestigationFormParameters {
     clinicalDetailsVariables: ClinicalDetailsDataAndSet;
     personalInfoData: personalInfoContextData;
     exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet;
-}
+    interactedContactsState: interactedContactsContext;
+};

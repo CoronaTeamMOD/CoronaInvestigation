@@ -11,11 +11,11 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
+    const {setInsuranceCompanies, personalInfoStateContext, occupationsStateContext,
         setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
 
     const fetchPersonalInfo = () => {
-        axios.get('/personalDetails/occupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
+        axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {

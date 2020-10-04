@@ -17,25 +17,37 @@ import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { defaultTab, tabs } from './TabManagement/TabManagement';
+import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
+import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
 import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
 import { otherSymptomFieldName, otherBackgroundDiseaseFieldName } from './TabManagement/ClinicalDetails/ClinicalDetails';
 
 const useInvestigationForm = (parameters: useInvestigationFormParameters): useInvestigationFormOutcome => {
-    const {clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables} = parameters;
+    const { clinicalDetailsVariables, personalInfoData, exposuresAndFlightsVariables, interactedContactsState } = parameters;
 
     const {saveExposureAndFlightData} = useExposuresSaving(exposuresAndFlightsVariables);
+    const { saveContactQuestioning } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact: () => {} });
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-   
-    let history = useHistory();
-    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
 
     const classes = useStyles({});
+    let history = useHistory();
+
+    const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
+    const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
+
+    const initializeTabShow = () => {
+        axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
+            setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
+        }).catch(() => {
+            handleContactsQueryFail();
+        });
+    };
 
     const fetchCities = () => {
         axios.get('/addressDetails/cities')
@@ -74,6 +86,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     };
 
     useEffect(() => {
+        initializeTabShow();
         fetchCities();
         fetchCountries();
         fetchContactTypes();
@@ -97,6 +110,9 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
                     epidemiologyNumber,
                     investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
+                    if (interactedContactsState.interactedContacts.length > 0) {
+                        saveContactQuestioning();
+                    }
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
                         epidemiologyNumber
@@ -119,21 +135,25 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             showConfirmButton: false
         }
         );
-        timeout(1900).then(() => {
+        timeout(LandingPageTimer).then(() => {
             history.push(landingPageRoute);
+            interactedContactsState.interactedContacts = [];
         });
     };
 
     const saveCurrentTab = () => {
-        switch(currentTab.name) {
-            case(TabNames.PERSONAL_INFO): {
+        switch (currentTab.name) {
+            case (TabNames.PERSONAL_INFO): {
                 return savePersonalInfoData();
             }
-            case(TabNames.CLINICAL_DETAILS): {
+            case (TabNames.CLINICAL_DETAILS): {
                 return saveClinicalDetails();
             }
-            case(TabNames.EXPOSURES_AND_FLIGHTS): {
+            case (TabNames.EXPOSURES_AND_FLIGHTS): {
                 return saveExposureAndFlightData();
+            }
+            case (TabNames.CONTACT_QUESTIONING): {
+                return saveContactQuestioning();
             }
             default: {
                 return new Promise<void>((resolve, reject) => resolve());
@@ -163,6 +183,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
+            icon: 'error',
+        })
+    };
+
+    const handleContactsQueryFail = () => {
+        Swal.fire({
+            title: 'לא היה ניתן לשלוף את מספר המגעים',
             icon: 'error',
         })
     };
@@ -228,7 +255,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         handleInvestigationFinish,
         handleSwitchTab,
         isButtonDisabled,
-        saveCurrentTab
+        saveCurrentTab,
+        areThereContacts,
     };
 };
 

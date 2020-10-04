@@ -8,6 +8,7 @@ import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
+import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
 export const defaultTab: TabObj = {
@@ -37,11 +38,18 @@ export const tabs: TabObj[] = [
         isDisabled: false,
         displayComponent: <InteractionsTab/>,
     },
+    {
+        id: 4,
+        name: TabNames.CONTACT_QUESTIONING,
+        isDisabled: false,
+        displayComponent: <ContactQuestioning/>
+    },
 ];
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
-    const { currentTab, onTabClicked } = tabManagementProps;
+    const { currentTab, onTabClicked, areThereContacts } = tabManagementProps;
     const classes = useStyles({});
+    
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
@@ -58,15 +66,20 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     textColor='primary'
                     onChange={(event, selectedTab) => onTabClicked(selectedTab)}
                 >
-                    {
-                        tabs.map((tab) => {
-                            return <StyledTab key={tab.id} label={tab.name} disabled={tab.isDisabled}/>
-                        })
-                    }
+                {
+                    tabs.map((tab) => (
+                        !(tab.name === TabNames.CONTACT_QUESTIONING && !areThereContacts) &&
+                        <StyledTab
+                            key={tab.id}
+                            label={tab.name}
+                            disabled={tab.isDisabled}
+                        />
+                    ))
+                }
                 </Tabs>
             {
                 <div key={currentTab.id} className={classes.displayedTab}>
-                    {currentTab.displayComponent }
+                    {currentTab.displayComponent}
                 </div>
             }
         </Card>
@@ -78,4 +91,5 @@ export default TabManagement;
 interface Props {
     currentTab: TabObj;
     onTabClicked: (selectedTab: number) => void;
+    areThereContacts: boolean;
 };

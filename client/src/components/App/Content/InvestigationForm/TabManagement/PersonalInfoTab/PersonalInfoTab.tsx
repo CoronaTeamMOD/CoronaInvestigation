@@ -1,7 +1,7 @@
-import React from 'react';
+import { useForm } from 'react-hook-form';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
-import { useForm } from "react-hook-form";
 import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -22,24 +22,24 @@ import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextF
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
+import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 
 const PHONE_LABEL = 'טלפון:';
-const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף:';
+export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
-const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
+export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
 const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
 const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
-const OCCUPATION_LABEL = 'תעסוקה:';
+export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 
 const PersonalInfoTab: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
-    const [occupations, setOccupations] = React.useState<string[]>(['']);
     const [subOccupationName, setSubOccupationName] = React.useState<string>('');
     const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
     const [subOccupations, setSubOccupations] = React.useState<SubOccupationAndStreet[]>([]);
@@ -47,7 +47,8 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     const [streetName, setStreetName] = React.useState<string>('');
     const [streets, setStreets] = React.useState<Street[]>([]);
 
-    const personalInfoStateContext = React.useContext(personalInfoContext);
+    const personalInfoStateContext = useContext(personalInfoContext);
+    const occupationsStateContext = useContext(occupationsContext);
     const { relevantOccupation, phoneNumber, address, contactInfo, insuranceCompany,
         otherOccupationExtraInfo, educationOccupationCity, additionalPhoneNumber, contactPhoneNumber } = personalInfoStateContext.personalInfoData;
     const { city, street, floor, houseNum } = address;
@@ -91,8 +92,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
     }
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
-        setOccupations, setInsuranceCompanies,
-        personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
+        occupationsStateContext, setInsuranceCompanies, personalInfoStateContext, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets
     });
 
     React.useEffect(() => {
@@ -163,13 +163,13 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                 <Grid item xs={2} className={classes.personalInfoFieldContainer}>
                     <Typography className={classes.fontSize15}>
                         <b>
-                            {ADDITIONAL_PHONE_LABEL}
+                            {ADDITIONAL_PHONE_LABEL + ':'}
                         </b>
                     </Typography>
                 </Grid>
                 <Grid item xs={2} className={classes.personalInfoItem}>
                     <PhoneNumberTextField
-                        id={ADDITIONAL_PHONE_LABEL}
+                        id={ADDITIONAL_PHONE_LABEL + ':'}
                         placeholder={PHONE_LABEL}
                         value={additionalPhoneNumber.number}
                         isValid={additionalPhoneNumber.isValid}
@@ -365,7 +365,7 @@ const PersonalInfoTab: React.FC = (): JSX.Element => {
                         <RadioGroup aria-label={OCCUPATION_LABEL} name={OCCUPATION_LABEL} value={relevantOccupation} className={classes.relevantOccupationselect}>
                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                             {
-                                occupations.map((occupation) => {
+                                occupationsStateContext.occupations.map((occupation) => {
                                     return <FormControlLabel
                                         value={occupation}
                                         key={occupation}
