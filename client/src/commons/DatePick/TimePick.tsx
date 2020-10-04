@@ -13,6 +13,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
 
   return (
     <KeyboardTimePicker
+      ampm={false}
       test-id={props.testId}
       error={error}
       className={classes.dateText}
@@ -35,7 +36,7 @@ const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
 export default TimePick;
 
 interface Props extends StandardTextFieldProps {
-  error?: any;
+  error?: boolean;
   labelText?: string;
   labelTextVariant?: Variant;
   value: ParsableDate;
