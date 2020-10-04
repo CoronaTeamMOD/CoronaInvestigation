@@ -44,6 +44,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const initializeTabShow = () => {
         axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
             setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
+        }).catch(() => {
+            handleContactsQueryFail();
         });
     };
 
@@ -181,6 +183,13 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
+            icon: 'error',
+        })
+    };
+
+    const handleContactsQueryFail = () => {
+        Swal.fire({
+            title: 'לא היה ניתן לשלוף את מספר המגעים',
             icon: 'error',
         })
     };
