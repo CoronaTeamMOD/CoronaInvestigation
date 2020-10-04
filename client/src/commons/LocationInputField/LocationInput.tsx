@@ -42,7 +42,6 @@ const LocationInput = (props: LocationInputProps) => {
     const _isMounted = React.useRef(true);
     const classes = useStyles({});
 
-    // cleanup
     React.useEffect(() => {
         return () => {
             _isMounted.current = false
