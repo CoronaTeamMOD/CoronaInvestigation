@@ -6,6 +6,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';

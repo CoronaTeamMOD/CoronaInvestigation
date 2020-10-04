@@ -1,11 +1,12 @@
-import { Collapse, Grid, TextField, Typography } from '@material-ui/core';
+import React from 'react';
+import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Control, Controller } from 'react-hook-form';
+
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import DatePick from 'commons/DatePick/DatePick';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
