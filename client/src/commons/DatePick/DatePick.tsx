@@ -44,8 +44,8 @@ interface Props extends StandardTextFieldProps {
   labelTextVariant?: Variant;
   useBigCalender?: boolean;
   value: ParsableDate;
-  onChange: any;
+  onChange: React.EventHandler<any>;
   testId?: string;
-  onBlur?: any;
+  onBlur?: React.EventHandler<any>;
   error?: boolean;
 }
