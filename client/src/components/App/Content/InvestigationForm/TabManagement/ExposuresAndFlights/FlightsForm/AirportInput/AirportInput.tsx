@@ -1,15 +1,13 @@
-import {useSelector} from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import {createFilterOptions} from '@material-ui/lab';
-import React, {Dispatch, SetStateAction} from 'react';
+import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
-import useFormStyle from 'styles/formStyles';
-import useStyles from './AirportInputStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-
-import {Airport} from '../FlightFormTypes';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
+import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
     const {
@@ -34,7 +32,6 @@ const AirportInput = (props: any) => {
         } else if (option !== '')
             return countries.get(option)?.displayName
         else return ''
-
     }
 
     const filterOptions = createFilterOptions({
@@ -44,40 +41,36 @@ const AirportInput = (props: any) => {
 
     return (
         <div className={classes.airportDetails}>
-            <div className={classes.airportCountryTextField}>
-                <AutocompletedField
-                    required
-                    value={country}
-                    options={options}
-                    onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
-                    getOptionLabel={(option) => getLabel(option)}
-                    filterOptions={filterOptions}
-                />
-            </div>
-            <div className={classes.additionalAirportDetails}>
-                <AlphanumericTextField
-                    name={cityFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    required
-                    value={city}
-                    placeholder='עיר'
-                    label='עיר'
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
-                />
-                <AlphanumericTextField
-                    className={classes.airportTextField}
-                    name={airportFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    value={airport}
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
-                    placeholder='שדה תעופה'
-                    label='שדה תעופה'
-                />
-            </div>
+            <AutocompletedField
+                required
+                value={country}
+                options={options}
+                onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+                getOptionLabel={(option) => getLabel(option)}
+                filterOptions={filterOptions}
+            />
+            <AlphanumericTextField
+                name={cityFieldName}
+                errors={errors}
+                setError={setError}
+                clearErrors={clearErrors}
+                required
+                value={city}
+                placeholder='עיר'
+                label='עיר'
+                onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
+            />
+            <AlphanumericTextField
+                className={classes.airportTextField}
+                name={airportFieldName}
+                errors={errors}
+                setError={setError}
+                clearErrors={clearErrors}
+                value={airport}
+                onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
+                placeholder='שדה תעופה'
+                label='שדה תעופה'
+            />
         </div>
     );
 };
