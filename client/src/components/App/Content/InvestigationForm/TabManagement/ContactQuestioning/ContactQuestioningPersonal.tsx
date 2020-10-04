@@ -63,6 +63,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item xs={10}>
                     <FormInput fieldName='תאריך לידה'>
                         <DatePick
+                            useBigCalender={false}
                             value={interactedContact.birthDate}
                             onChange={(newDate: Date) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate
