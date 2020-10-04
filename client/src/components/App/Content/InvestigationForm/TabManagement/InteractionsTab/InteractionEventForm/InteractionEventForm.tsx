@@ -52,9 +52,10 @@ const InteractionEventForm: React.FC<Props> = (
     resolver: yupResolver(schema)
   });
 
-  const formData = methods.getValues();
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
+  const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
+  const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
   const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
   const contacts = fields;
 
@@ -141,7 +142,7 @@ const InteractionEventForm: React.FC<Props> = (
                       test-id="contactLocationStartTime"
                       value={props.value}
                       onChange={(newTime: Date) => handleTimeChange(newTime, 
-                                                                    formData[InteractionEventDialogFields.START_TIME],
+                                                                    interactionStartTime,
                                                                     InteractionEventDialogFields.START_TIME)}
                       labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "משעה*"}
                       error={get(methods.errors, props.name)}
@@ -160,7 +161,7 @@ const InteractionEventForm: React.FC<Props> = (
                       test-id="contactLocationEndTime"
                       value={props.value}
                       onChange={(newTime:Date) => handleTimeChange(newTime, 
-                                                                   formData[InteractionEventDialogFields.END_TIME],
+                                                                   interationEndTime,
                                                                    InteractionEventDialogFields.END_TIME)}
                       labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "עד שעה*"}
                       error={get(methods.errors, props.name)}
