@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Controller } from 'react-hook-form'
+import { Control, Controller } from 'react-hook-form'
 import { Grid , FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
     
 import useFormStyles from 'styles/formStyles';
@@ -152,5 +152,5 @@ interface Props {
     placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (newPlaceSubType: number, placeSubTypeDispalyName?: string) => void;
-    control?: any;
+    control?: Control;
 }
