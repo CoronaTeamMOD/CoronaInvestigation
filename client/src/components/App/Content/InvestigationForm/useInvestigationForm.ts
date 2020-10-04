@@ -124,6 +124,8 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
         });
     };
 
+    const LandingPageTimer = 1900;
+
     const handleInvestigationFinish = () => {
         Swal.fire({
             icon: 'success',
@@ -135,7 +137,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
             showConfirmButton: false
         }
         );
-        timeout(1900).then(() => {
+        timeout(LandingPageTimer).then(() => {
             history.push(landingPageRoute);
             interactedContactsState.interactedContacts = [];
         });

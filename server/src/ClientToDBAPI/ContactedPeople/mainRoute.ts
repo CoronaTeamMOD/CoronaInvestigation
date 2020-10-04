@@ -16,7 +16,7 @@ ContactedPeopleRoute.get('/:investigationId', (request: Request, response: Respo
         .catch(error => response.status(500).json({error: 'failed to fetch contacted people'}))
 );
 
-ContactedPeopleRoute.post('/saveAllContacts', (request: Request, response: Response) => {
+ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Response) => {
     graphqlRequest(SAVE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => response.send(result))
         .catch(error => response.status(500).json({error: 'failed to save all the contacts'}))

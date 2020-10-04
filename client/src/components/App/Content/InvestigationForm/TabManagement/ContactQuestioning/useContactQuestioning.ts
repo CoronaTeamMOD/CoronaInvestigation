@@ -16,7 +16,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContact = (interactedContact: InteractedContact) => {
         updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
         const contacts = [interactedContact];
-        axios.post('/contactedPeople/saveAllContacts',
+        axios.post('/contactedPeople/interactedContacts',
         {
             unSavedContacts: { contacts }
         });
@@ -25,7 +25,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContactQuestioning = (): Promise<void> => {
         const contacts = interactedContactsState.interactedContacts;
 
-        return axios.post('/contactedPeople/saveAllContacts',
+        return axios.post('/contactedPeople/interactedContacts',
             {
                 unSavedContacts: { contacts }
             }
