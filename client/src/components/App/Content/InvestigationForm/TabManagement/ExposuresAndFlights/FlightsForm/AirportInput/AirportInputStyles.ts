@@ -7,14 +7,6 @@ const useStyles = makeStyles({
     },
     airportCountryTextField: {
         width: '10vw',
-        '@media screen and (min-width: 1450px)': {
-            marginRight: '-6vw',
-        },
-    },
-    additionalAirportDetails: {
-        '@media screen and (min-width: 1800px)': {
-            marginRight: '7vw',
-        },
     },
     airportTextField: {
         marginLeft: '1vw',

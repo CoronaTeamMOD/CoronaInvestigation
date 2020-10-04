@@ -51,7 +51,7 @@ const AirportInput = (props: any) => {
                     filterOptions={filterOptions}
                 />
             </div>
-            <div className={classes.additionalAirportDetails}>
+            <div>
                 <AlphanumericTextField
                     name={cityFieldName}
                     errors={errors}
