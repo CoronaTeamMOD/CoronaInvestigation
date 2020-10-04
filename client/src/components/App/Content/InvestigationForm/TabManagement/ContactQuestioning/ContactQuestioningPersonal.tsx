@@ -73,7 +73,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName='גיל'>
                         <AlphanumericTextField
                             name={'age'}
-                            value={differenceInYears(new Date(), new Date(interactedContact.birthDate))}
+                            placeholder={'בחר תאריך לידה'}
+                            value={interactedContact.birthDate && !isNaN(differenceInYears(new Date(), new Date(interactedContact.birthDate)) as number) ? differenceInYears(new Date(), new Date(interactedContact.birthDate)) : null}
                             onChange={() => {}}
                             setError={setError}
                             clearErrors={clearErrors}
