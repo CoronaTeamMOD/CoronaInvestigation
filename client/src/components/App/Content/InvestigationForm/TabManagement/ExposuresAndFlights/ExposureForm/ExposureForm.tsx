@@ -76,6 +76,8 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
+        placeTypeName={fieldsNames.placeType}
+        placeSubTypeName={fieldsNames.placeSubType}
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
         placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
         onPlaceTypeChange={(value) =>

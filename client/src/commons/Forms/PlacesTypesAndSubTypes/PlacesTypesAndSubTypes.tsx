@@ -145,8 +145,8 @@ const PlacesTypesAndSubTypes : React.FC<Props> = (props: Props) : JSX.Element =>
 export default PlacesTypesAndSubTypes;
 
 interface Props {
-    placeTypeName?: any;
-    placeSubTypeName?: any;
+    placeTypeName: string;
+    placeSubTypeName: string;
     required?: boolean;
     placeType: string;
     placeSubType: number;
