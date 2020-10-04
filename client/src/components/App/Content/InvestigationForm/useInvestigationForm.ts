@@ -41,10 +41,6 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     const [currentTab, setCurrentTab] = useState<Tab>(defaultTab);
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
-    useEffect(() => {
-        initializeTabShow();
-    }, []);
-
     const initializeTabShow = () => {
         axios.get('/contactedPeople/' + epidemiologyNumber).then((result: any) => {
             setAreThereContacts(result?.data?.data?.allContactedPeople?.nodes?.length > 0);
@@ -88,6 +84,7 @@ const useInvestigationForm = (parameters: useInvestigationFormParameters): useIn
     };
 
     useEffect(() => {
+        initializeTabShow();
         fetchCities();
         fetchCountries();
         fetchContactTypes();
