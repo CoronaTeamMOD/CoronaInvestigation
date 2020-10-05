@@ -25,9 +25,13 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
 
-    const [needsHelpIsolating, setNeedsHelpIsolating] = useState<boolean>(false);
+    const [needsHelpIsolating, setNeedsHelpIsolating] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
 
-    const helpIsolating = (interactedContact: InteractedContact, value: boolean) => {
+    React.useEffect(() => {
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, needsHelpIsolating);
+    },[needsHelpIsolating])
+
+    const helpIsolating = (value: boolean) => {
         value ?
             Swal.fire({
                 icon: 'warning',
@@ -39,12 +43,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 confirmButtonText: 'כן, המשך',
             }).then((result) => {
                 if (result.value) {
-                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, value);
                     setNeedsHelpIsolating(true);
                 }
             })
         :
-            updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, value);
             setNeedsHelpIsolating(false);
     };
 
@@ -130,7 +132,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
                         <Toggle
                             value={interactedContact.doesNeedHelpInIsolation ? interactedContact.doesNeedHelpInIsolation : needsHelpIsolating}
-                            onChange={(event, booleanValue) => booleanValue !== null && helpIsolating(interactedContact, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && helpIsolating(booleanValue)}
                         />
                     </Grid>
                 </Grid>
