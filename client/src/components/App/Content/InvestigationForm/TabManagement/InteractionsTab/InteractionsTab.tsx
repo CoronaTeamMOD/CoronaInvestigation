@@ -12,7 +12,9 @@ import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 
-const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
+
+    const { id, onSubmit, setAreThereContacts } = props;
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -27,8 +29,9 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, getClinicalDetailsSymptoms, handleDeleteContactEvent } =
         useInteractionsTab({
-            setInteractions: setInteractions,
-            interactions: interactions
+            setInteractions,
+            interactions,
+            setAreThereContacts
         });
 
     useEffect(() => {
@@ -98,6 +101,7 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 interface Props {
     id: number;
     onSubmit: () => void;
-};
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default InteractionsTab;

@@ -21,6 +21,7 @@ import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const classes = useStyles({});
@@ -140,7 +141,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     return {
         confirmFinishInvestigation,
         handleInvestigationFinish,
-        areThereContacts
+        areThereContacts,
+        setAreThereContacts
     };
 };
 
