@@ -41,6 +41,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 cancelButtonColor: theme.palette.error.main,
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'כן, המשך',
+                customClass: {
+                    title: classes.swalTitle
+                }
             }).then((result) => {
                 if (result.value) {
                     setNeedsToIsolate(true);
