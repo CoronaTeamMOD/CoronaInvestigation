@@ -1,4 +1,6 @@
-export default interface Investigator {
-    id: string,
-    userName: string
-}
+interface Investigator {
+    id: string;
+    userName: string;
+};
+
+export default Investigator;

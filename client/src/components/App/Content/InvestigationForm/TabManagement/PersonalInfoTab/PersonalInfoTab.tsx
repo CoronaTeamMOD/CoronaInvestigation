@@ -18,7 +18,7 @@ import axios from 'Utils/axios';
 import Street from 'models/Street';
 import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
-import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
+import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
