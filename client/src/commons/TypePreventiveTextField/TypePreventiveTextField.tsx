@@ -6,7 +6,7 @@ import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import TypePreventiveTextFieldType from './TypePreventiveTextFieldTypes';
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
-  const value = (props.value == null || props.value === undefined) ? "" : props.value;
+  const value = !props.value ? "" : props.value;
   const {
     name,
     onChange,
