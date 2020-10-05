@@ -10,9 +10,14 @@ const futureText = 'שגיאה: לא ניתן להכניס תאריך עתידי
 const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date()
-    .max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
-    .required(requiredText).typeError(requiredText),
+    then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (startDate: Date) => {
+        const today = new Date();
+        return startDate < today ?
+        yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
+        .required(requiredText).typeError(requiredText) :
+        yup.date().max(today, futureText)
+        .required(requiredText).typeError(requiredText)
+    }),
     otherwise: yup.date().nullable()
 });
 
@@ -21,6 +26,7 @@ const isInIsolationEndDateSchema = yup.date().when(
     is: true,
     then: yup.date()
     .min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
+    .max(new Date(), futureText)
     .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });

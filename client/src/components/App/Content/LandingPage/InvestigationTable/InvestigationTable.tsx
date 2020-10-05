@@ -1,8 +1,7 @@
 import React from 'react';
 import {
     Paper, Table, TableRow, TableBody,
-    TableCell, Typography, TableHead, TableContainer, Button,
-    TextField
+    TableCell, Typography, TableHead, TableContainer, TextField
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -10,7 +9,6 @@ import { Autocomplete } from '@material-ui/lab';
 import User from 'models/User';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
-import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
