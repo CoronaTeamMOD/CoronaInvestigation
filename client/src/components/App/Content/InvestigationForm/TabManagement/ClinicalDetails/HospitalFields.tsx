@@ -19,7 +19,15 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
         clearErrors,
         errors,
         watchWasHospitalized,
+        trigger,
+        watchHospitalizedStartDate,
+        watchHospitalizedEndDate
      } = props;
+
+    React.useEffect(()=>{
+        trigger(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
+        trigger(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
+    },[watchHospitalizedStartDate,watchHospitalizedEndDate])
 
     return (
         <>
@@ -126,6 +134,9 @@ interface Props {
     clearErrors: (name?: string | string[]) => void;
     errors: Record<string, any>;
     watchWasHospitalized: boolean;
+    trigger: any;
+    watchHospitalizedStartDate: any;
+    watchHospitalizedEndDate: any;
 };
 
 export default HospitalFields;

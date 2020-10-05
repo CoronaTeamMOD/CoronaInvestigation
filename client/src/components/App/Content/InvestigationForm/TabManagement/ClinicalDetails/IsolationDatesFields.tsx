@@ -7,10 +7,16 @@ import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import { AnyTxtRecord } from 'dns';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchIsInIsolation, errors } = props;
-
+    const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
+    
+    React.useEffect(()=>{
+        trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
+        trigger(ClinicalDetailsFields.ISOLATION_END_DATE);
+    },[watchIsolationStartDate,watchIsolationEndDate])
+    
     return (
         <>
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -86,6 +92,9 @@ interface Props {
     watchIsInIsolation: boolean;
     control: Control;
     errors: Record<string, any>;
+    trigger: any;
+    watchIsolationStartDate: any;
+    watchIsolationEndDate: any;
 };
 
 export default IsolationDatesFields;

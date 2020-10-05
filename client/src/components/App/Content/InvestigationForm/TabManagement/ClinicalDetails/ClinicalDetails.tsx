@@ -31,7 +31,7 @@ import ClinicalDetailsSchema from './ClinicalDetailsSchema'
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors } = useForm({
+    const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
         defaultValues: initialDBClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
@@ -104,12 +104,16 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
+    const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
+    const watchIsolationEndDate = watch(ClinicalDetailsFields.ISOLATION_END_DATE);
     const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
     const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
     const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
     const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
+    const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
+    const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
     
     React.useEffect(() => {
@@ -151,7 +155,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     return (
         <div className={classes.form}>
             <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
-            <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} />
+            <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} trigger={trigger}
+            watchIsolationStartDate={watchIsolationStartDate} watchIsolationEndDate={watchIsolationEndDate} />
             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
@@ -337,7 +342,10 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     setError={setError}
                     clearErrors={clearErrors}
                     errors={errors}
+                    trigger={trigger}
                     watchWasHospitalized={watchWasHospitalized}
+                    watchHospitalizedStartDate={watchHospitalizedStartDate}
+                    watchHospitalizedEndDate={watcHospitalizedEndDate}
                 />
                 <Collapse in={patientGender === Gender.FEMALE}>
                     <Grid item xs={2}>
