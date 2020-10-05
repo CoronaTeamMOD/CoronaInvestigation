@@ -5,11 +5,14 @@ import ClinicalDetailsFields from "models/enums/ClinicalDetailsFields";
 const requiredText = 'שדה זה הוא חובה';
 const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const minText = 'תאריך הסיום צריך להיות מוקדם יותר מתאריך ההתחלה';
+const futureText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
+const today = new Date();
 
 const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
+    then: yup.date()
+    .max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
     .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
@@ -17,7 +20,8 @@ const isInIsolationStartDateSchema = yup.date().when(
 const isInIsolationEndDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
     is: true,
-    then: yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
+    then: yup.date()
+    .min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
     .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
@@ -25,15 +29,21 @@ const isInIsolationEndDateSchema = yup.date().when(
 const wasHospitilizedStartDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
     is: true,
-    then: yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), maxText)
-    .required(requiredText).typeError(requiredText),
+    then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (startDate: Date) => 
+    startDate < today?
+    yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), maxText)
+    .required(requiredText).typeError(requiredText) :
+    yup.date().max(today, futureText)
+    .required(requiredText).typeError(requiredText)),
     otherwise: yup.date().nullable()
 });
 
 const wasHospitilizedEndDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
     is: true,
-    then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), minText)
+    then: yup.date()
+    .min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), minText)
+    .max(today, futureText)
     .required(requiredText).typeError(requiredText),
     otherwise: yup.date().nullable()
 });
