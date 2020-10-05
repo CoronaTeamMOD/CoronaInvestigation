@@ -7,6 +7,9 @@ const useStyles = makeStyles({
     displayedTab: {
         height: '61vh',
         overflow: 'auto'
+    },
+    errorIcon:{
+        color: '#ffcc00'
     }
 });
 

@@ -69,12 +69,15 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput testId='exposureAddress' fieldName="כתובת החשיפה:">
-          <Map required
+          <Map 
+              name={fieldsNames.address}
                setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
                selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
+        placeTypeName={fieldsNames.placeType}
+        placeSubTypeName={fieldsNames.placeSubType}
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
         placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
         onPlaceTypeChange={(value) =>

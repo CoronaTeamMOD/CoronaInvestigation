@@ -1,38 +1,39 @@
-import React, {useContext} from 'react';
-import { Grid } from '@material-ui/core';
-import { useForm } from "react-hook-form";
+import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import {Grid} from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from '../../AddressForm/AddressForm';
-import BusinessContactForm from '../../BusinessContactForm/BusinessContactForm';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
+import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
-import useStyles from './DefaultPlaceEventFormStyles';
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import {InteractionEventDialogContext} from '../../../InteractionsEventDialogContext/InteractionsEventDialogContext'
+import useStyles from './DefaultPlaceEventFormStyles';
 
 const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
+    const { control, errors, setError, clearErrors} = useFormContext();
+    
     const classes = useStyles();
-    const ctxt = useContext(InteractionEventDialogContext);
-
-    const onChange = (newValue: string, updatedField: InteractionEventDialogFields) =>
-        ctxt.setInteractionEventDialogData({...ctxt.interactionEventDialogData as InteractionEventDialogData, [updatedField]: newValue});
-
-    const { errors, setError, clearErrors } = useForm();
-
     return (
         <>
             <Grid item xs={2}>
                 <FormInput fieldName='שם המוסד'>
-                    <AlphanumericTextField
-                        className={classes.placeNameField}
-                        errors={errors}
-                        setError={setError}
-                        clearErrors={clearErrors}
+                    <Controller 
                         name={InteractionEventDialogFields.PLACE_NAME}
-                        value={ctxt.interactionEventDialogData.placeName}
-                        onChange={newValue => onChange(newValue, InteractionEventDialogFields.PLACE_NAME)}/>
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                                errors={errors}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                className={classes.placeNameField}
+                            />
+                        )}
+                    />   
                 </FormInput>
             </Grid>
             <AddressForm />
