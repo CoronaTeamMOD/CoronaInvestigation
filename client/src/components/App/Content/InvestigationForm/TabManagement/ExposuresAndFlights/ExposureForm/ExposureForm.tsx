@@ -6,8 +6,8 @@ import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
 const ExposureForm = (props: any) => {
   const {
@@ -23,7 +23,7 @@ const ExposureForm = (props: any) => {
     <Grid className={classes.form} container justify='flex-start'>
       <FormRowWithInput fieldName='שם החולה:'>
         <>
-          <AlphanumericTextField
+          <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(value : string) =>
@@ -38,7 +38,7 @@ const ExposureForm = (props: any) => {
             placeholder='שם פרטי'
             label='שם פרטי'
           />
-          <AlphanumericTextField
+          <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(value : string) =>

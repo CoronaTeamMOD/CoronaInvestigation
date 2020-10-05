@@ -4,8 +4,8 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import useStyles from './BusinessContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -31,7 +31,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AlphabetTextField
                                     name={props.name}
                                     testId='businessContactFirstName'
                                     value={props.value ? props.value : null}
@@ -51,7 +51,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AlphabetTextField
                                     name={props.name}
                                     testId='businessContactLastName'
                                     value={props.value}
