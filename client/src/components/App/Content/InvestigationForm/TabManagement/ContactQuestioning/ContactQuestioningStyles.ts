@@ -32,6 +32,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '13vw',
         marginTop: '-1vh',
     },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    },
+    extraInfo: {
+        direction: 'rtl',
+        flip: false,
+    },
 }));
 
 export default useStyles;

@@ -1,10 +1,12 @@
-import React from 'react';
+import Swal from 'sweetalert2';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
+import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
@@ -22,6 +24,34 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+
+    const [needsToIsolate, setNeedsToIsolate] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
+
+    React.useEffect(() => {
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, needsToIsolate);
+    },[needsToIsolate]);
+
+    const handleIsolation = (value: boolean) => {
+        value ?
+            Swal.fire({
+                icon: 'warning',
+                title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+                customClass: {
+                    title: classes.swalTitle
+                }
+            }).then((result) => {
+                if (result.value) {
+                    setNeedsToIsolate(true);
+                }
+            })
+        :
+            setNeedsToIsolate(false);
+    };
 
     return (
         <Grid item xs={3}>
@@ -106,6 +136,15 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Toggle
                             value={interactedContact.doesNeedHelpInIsolation}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item>
+                    <Grid container justify='space-between'>
+                        <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
+                        <Toggle
+                            value={interactedContact.doesNeedIsolation ? interactedContact.doesNeedIsolation : needsToIsolate}
+                            onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>
                 </Grid>
