@@ -32,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '13vw',
         marginTop: '-1vh',
     },
+    extraInfo: {
+        direction: 'rtl',
+        flip: false,
+    },
 }));
 
 export default useStyles;
