@@ -25,17 +25,17 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
 
-    const [needsHelpIsolating, setNeedsHelpIsolating] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
+    const [needsToIsolate, setNeedsToIsolate] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
 
     React.useEffect(() => {
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, needsHelpIsolating);
-    },[needsHelpIsolating])
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, needsToIsolate);
+    },[needsToIsolate]);
 
-    const handleHelpIsolating = (value: boolean) => {
+    const handleIsolation = (value: boolean) => {
         value ?
             Swal.fire({
                 icon: 'warning',
-                title: 'האם אתה בטוח שתרצה להקים בידוד?',
+                title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
                 cancelButtonColor: theme.palette.error.main,
@@ -43,11 +43,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 confirmButtonText: 'כן, המשך',
             }).then((result) => {
                 if (result.value) {
-                    setNeedsHelpIsolating(true);
+                    setNeedsToIsolate(true);
                 }
             })
         :
-            setNeedsHelpIsolating(false);
+            setNeedsToIsolate(false);
     };
 
     return (
@@ -131,8 +131,17 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
                         <Toggle
-                            value={interactedContact.doesNeedHelpInIsolation ? interactedContact.doesNeedHelpInIsolation : needsHelpIsolating}
-                            onChange={(event, booleanValue) => booleanValue !== null && handleHelpIsolating(booleanValue)}
+                            value={interactedContact.doesNeedHelpInIsolation}
+                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item>
+                    <Grid container justify='space-between'>
+                        <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
+                        <Toggle
+                            value={interactedContact.doesNeedIsolation ? interactedContact.doesNeedIsolation : needsToIsolate}
+                            onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>
                 </Grid>
