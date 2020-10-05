@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
-import { Collapse, Grid, Typography, Divider, IconButton } from '@material-ui/core';
+import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -10,22 +10,15 @@ import Toggle from 'commons/Toggle/Toggle';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import useFormStyles from 'styles/formStyles';
 
 import InteractionEventSchema from './InteractionEventSchema'
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
-import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
-import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
-import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
-import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
-import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
-import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 import useInteractionsForm from './useInteractionsForm';
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
+import PlaceTypeForm from './PlaceTypeForm';
 
 export const defaultContact: Contact = {
   firstName: "",
@@ -63,17 +56,6 @@ const InteractionEventForm: React.FC<Props> = (
   const classes = useStyles();
   const formClasses = useFormStyles();
 
-  const {
-    geriatric,
-    school,
-    medical,
-    office,
-    otherPublicPlaces,
-    privateHouse,
-    religion,
-    transportation,
-  } = placeTypesCodesHierarchy;
-
   const handleTimeChange = (currentTime: Date, interactionDate: Date, fieldName: string) => {
     if (currentTime) {
       let newDate = new Date(interactionDate.getTime())
@@ -104,34 +86,7 @@ const InteractionEventForm: React.FC<Props> = (
               onPlaceSubTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue)}
             />
 
-            <Collapse in={placeType === privateHouse.code}>
-              <PrivateHouseEventForm />
-            </Collapse>
-
-            <Collapse in={placeType === office.code}>
-              <OfficeEventForm />
-            </Collapse>
-
-            <Collapse in={placeType === transportation.code}>
-              <TransportationEventForm placeSubType={placeSubType} />
-            </Collapse>
-
-            <Collapse in={placeType === school.code}>
-              <SchoolEventForm placeSubType={placeSubType} />
-            </Collapse>
-
-            <Collapse in={placeType === medical.code}>
-              <MedicalLocationForm placeSubType={placeSubType} />
-            </Collapse>
-
-            <Collapse in={placeType === religion.code || placeType === geriatric.code}>
-              <DefaultPlaceEventForm />
-            </Collapse>
-
-            <Collapse in={placeType === otherPublicPlaces.code}>
-              <OtherPublicLocationForm placeSubType={placeSubType} />
-            </Collapse>
-
+            <PlaceTypeForm placeType={placeType} placeSubType={placeSubType}/>
             <Grid className={formClasses.formRow} container justify="flex-start">
               <Grid item xs={6}>
                 <FormInput fieldName="משעה">
