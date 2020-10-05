@@ -1,6 +1,7 @@
 import React from 'react';
+import * as yup from 'yup';
 
-export interface AlphanumericTextFieldProps<T> {
+export interface TypePreventiveTextFieldProps<T> {
     name: string,
     value: T | null,
     onChange: (value: string) => void,
@@ -14,8 +15,9 @@ export interface AlphanumericTextFieldProps<T> {
     className?: string,
     testId?: string,
     error? : boolean,
+    errorMessage: string,
+    validationSchema: yup.StringSchema<string, object>
 }
 
-type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;
-
-export default AlphanumericTextFieldType;
+type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;
+export default TypePreventiveTextFieldType;

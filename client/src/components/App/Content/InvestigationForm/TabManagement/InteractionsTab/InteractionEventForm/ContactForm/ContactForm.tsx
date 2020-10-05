@@ -7,8 +7,9 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import useStyles from './ContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -47,7 +48,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AlphabetTextField
                                     name={props.name}
                                     key='contactedPersonFirstName'
                                     value={props.value}
@@ -69,7 +70,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <AlphabetTextField
                                     name={props.name}
                                     key='contactedPersonLastName'
                                     value={props.value}
