@@ -96,8 +96,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(response.locals.epidemiologynumber)})
+clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, response: Response) => {
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(request.params.investigationId)})
         .then((result: CoronaTestDateQueryResult) => {
             response.send(result.data.allInvestigations.nodes[0]);
         })
