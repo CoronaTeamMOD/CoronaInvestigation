@@ -1,3 +1,4 @@
+import { initDBAddress } from 'models/Address';
 import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 export const initialPersonalInfo: PersonalInfoFormData = {
@@ -5,10 +6,7 @@ export const initialPersonalInfo: PersonalInfoFormData = {
     additionalPhoneNumber: '',
     contactPhoneNumber: '',
     insuranceCompany: '',
-    city: '',
-    street: '',
-    floor: '',
-    houseNum: '',
+    ...initDBAddress,
     relevantOccupation: '',
     educationOccupationCity: '',
     institutionName: '',
