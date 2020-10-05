@@ -21,7 +21,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         currentTab,
         moveToNextTab,
         setNextTab,
-        areThereContacts
+        areThereContacts,
+        setAreThereContacts
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -43,7 +44,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         {
             id: 3,
             name: TabNames.INTERACTIONS,
-            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab}/>
+            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
         }
     ];
 
@@ -119,8 +120,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    areThereContacts: boolean;
-    currentTab: number;
-    moveToNextTab: () => void;
-    setNextTab: (nextTabId: number) => void;
+    areThereContacts: boolean,
+    currentTab: number,
+    moveToNextTab: () => void,
+    setNextTab: (nextTabId: number) => void
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };

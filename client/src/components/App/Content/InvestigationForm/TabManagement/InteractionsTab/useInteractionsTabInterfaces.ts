@@ -2,9 +2,10 @@ import React from 'react';
 
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
-export interface useInteractionsTabInput {
+export interface useInteractionsTabParameters {
     interactions: Interaction[];
     setInteractions: (updatedInteractions: Interaction[]) => void;
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface useInteractionsTabOutcome {

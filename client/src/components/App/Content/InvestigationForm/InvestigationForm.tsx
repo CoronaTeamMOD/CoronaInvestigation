@@ -65,8 +65,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate, setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { confirmFinishInvestigation, areThereContacts } = useInvestigationForm();
-    const { currentTab, moveToNextTab, setNextTab } = useTabManagement();
+    const { confirmFinishInvestigation, areThereContacts, setAreThereContacts } = useInvestigationForm();
+    const {
+        currentTab,
+        moveToNextTab,
+        setNextTab
+    } = useTabManagement();
 
     const isInvestigationValid = () => {
         return !(formsValidations.some((formValidation) => !formValidation));
@@ -103,6 +107,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 <div className={classes.interactiveForm}>
                                     <TabManagement
                                         areThereContacts = {areThereContacts}
+                                        setAreThereContacts = {setAreThereContacts}
                                         currentTab = {currentTab}
                                         moveToNextTab = {moveToNextTab}
                                         setNextTab = {setNextTab}
