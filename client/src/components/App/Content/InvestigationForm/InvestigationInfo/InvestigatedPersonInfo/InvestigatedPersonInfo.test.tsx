@@ -45,7 +45,7 @@ describe('investigatedPersonInfo tests', () => {
 
         const expectedSecondSwal = {
             icon: 'success',
-            title: 'בחרת לצאת מהחקירה לפני השלמתה! הפרטים נשמרו בהצלחה, הנך מועבר לעמוד הנחיתה',
+            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
             customClass: {
                 title: 'makeStyles-swalTitle-9'
             },

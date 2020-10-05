@@ -7,7 +7,6 @@ import { testHooksFunction } from 'TestHooks';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
 import { initialExposuresAndFlightsData } from 'commons/Contexts/ExposuresAndFlights';
 import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
@@ -60,24 +59,6 @@ describe('investigationForm tests', () => {
         setClinicalDetailsData: () => {}
     };
 
-    const initialPersonalInfo: personalInfoContextData = {
-        phoneNumber: {number: '', isValid: false},
-        additionalPhoneNumber: {number: '', isValid: false},
-        contactPhoneNumber: {number: '', isValid: false},
-        insuranceCompany: '',
-        address: {
-            city: '',
-            street: '',
-            floor: '',
-            houseNum: ''
-        },
-        relevantOccupation: '',
-        educationOccupationCity: '',
-        institutionName: '',
-        otherOccupationExtraInfo: '',
-        contactInfo: ''
-    };
-
     describe('tabs tests', () => {
 
         beforeEach(() => {
@@ -97,34 +78,12 @@ describe('investigationForm tests', () => {
                 };
             });
         });
-
-
-        it('isLastTab should be false when hook is initialized', async () => {
-            await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm(
-                    { 
-                        clinicalDetailsVariables: clinicalDetailsVariables,
-                        personalInfoData: initialPersonalInfo,
-                        exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}},
-                        interactedContacts: [],
-                    }
-                );
-            });
-            expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
-        });
     })
 
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm(
-                    { 
-                        clinicalDetailsVariables: clinicalDetailsVariables,
-                        personalInfoData: initialPersonalInfo,
-                        exposuresAndFlightsVariables: {exposureAndFlightsData: initialExposuresAndFlightsData, setExposureDataAndFlights: () => {}},
-                        interactedContacts: [],
-                    }
-                );
+                investigationFormOutcome = useInvestigationForm();
             });
         })
 

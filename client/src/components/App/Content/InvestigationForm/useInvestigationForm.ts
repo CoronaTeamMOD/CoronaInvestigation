@@ -98,9 +98,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     epidemiologyNumber,
                     investigationStatus: InvestigationStatus.DONE,
                 }).then(() => {
-                    // if (interactedContactsState.interactedContacts.length > 0) {
-                    //     saveContactQuestioning();
-                    // }
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
                         epidemiologyNumber
@@ -125,7 +122,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         );
         timeout(LandingPageTimer).then(() => {
             history.push(landingPageRoute);
-            //interactedContactsState.interactedContacts = [];
         });
     };
 
