@@ -6,7 +6,7 @@ import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
-import { setUser } from 'redux/User/userActionCreatores';
+import { setUser } from 'redux/User/userActionCreators';
 import { setGroupUsers } from 'redux/GroupUsers/groupUsersActionCreators';
 
 import Content from './Content/Content';
