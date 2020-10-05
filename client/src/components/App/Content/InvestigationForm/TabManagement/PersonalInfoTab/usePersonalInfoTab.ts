@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { useContext } from 'react';
 
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
@@ -11,8 +12,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {setInsuranceCompanies, personalInfoStateContext, occupationsStateContext,
-        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
+    const { setInsuranceCompanies, setPersonalInfoData, 
+        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext} = parameters;
 
     const fetchPersonalInfo = () => {
         axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
@@ -22,12 +23,15 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
-                personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
-                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
+                setPersonalInfoData({
+                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                    additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    address: {...investigatedPatient.addressByAddress},
+                    city : investigatedPatient.addressByAddress.city,
+                    street : investigatedPatient.addressByAddress.street,
+                    floor : investigatedPatient.addressByAddress.floor,
+                    houseNum : investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: 
                     (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)

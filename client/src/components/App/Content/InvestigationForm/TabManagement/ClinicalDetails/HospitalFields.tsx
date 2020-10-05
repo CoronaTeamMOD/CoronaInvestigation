@@ -1,0 +1,132 @@
+import React from 'react';
+import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Control, Controller } from 'react-hook-form';
+
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import DatePick from 'commons/DatePick/DatePick';
+import Toggle from 'commons/Toggle/Toggle';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+
+import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+
+export const otherBackgroundDiseaseFieldName = 'אחר';
+
+const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
+    const { 
+        classes,
+        control,
+        setError,
+        clearErrors,
+        errors,
+        watchWasHospitalized,
+     } = props;
+
+    return (
+        <>
+            <Grid item xs={2} className={classes.fieldLabel}>
+                    <Typography>
+                        <b>
+                            האם אושפז:
+                        </b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={10}>
+                    <Controller
+                        name={ClinicalDetailsFields.WAS_HOPITALIZED}
+                        control={control}
+                        render={(props) => (
+                            <Toggle
+                                test-id='wasHospitalized'
+                                value={props.value}
+                                onChange={(e, value) => {
+                                    if (value !== null) {
+                                        props.onChange(value)
+                                    }
+                                }}
+                            />
+                        )}
+                    />  
+                </Grid>
+                <Grid item xs={4}>
+                    <Collapse in={watchWasHospitalized}>
+                        <div className={classes.dates}>
+                            <Typography>
+                                <b>
+                                    בית חולים:
+                                </b>
+                            </Typography>
+                            <Controller
+                                name={ClinicalDetailsFields.HOSPITAL}
+                                control={control}
+                                render={(props) => (
+                                    <AlphanumericTextField
+                                        className={classes.hospitalInput}
+                                        test-id='hospitalInput'
+                                        name={ClinicalDetailsFields.HOSPITAL}
+                                        value={props.value}
+                                        onChange={(newValue: string) =>
+                                            props.onChange(newValue)
+                                        }
+                                        onBlur={props.onBlur}
+                                        setError={setError}
+                                        clearErrors={clearErrors}
+                                        errors={errors}
+                                        label='בית חולים'
+                                        placeholder='הזן בית חולים...'
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div className={classes.hospitalizationDates}>
+                            <div className={classes.spacedDates}>
+                                <Controller
+                                    name={ClinicalDetailsFields.HOSPITALIZATION_START_DATE}
+                                    control={control}
+                                    render={(props) => (
+                                        <DatePick
+                                            labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : '* מתאריך'}
+                                            test-id='wasHospitalizedFromDate'
+                                            value={props.value}
+                                            onBlur={props.onBlur}
+                                            onChange={(newDate: Date) =>
+                                                props.onChange(newDate)
+                                            }
+                                            error={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? true : false}
+                                        />
+                                    )}
+                                />
+                            </div>
+                            <Controller
+                                name={ClinicalDetailsFields.HOSPITALIZATION_END_DATE}
+                                control={control}
+                                render={(props) => (
+                                    <DatePick
+                                        test-id='wasHospitalizedUntilDate'
+                                        labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : '* עד'}
+                                        value={props.value}
+                                        onBlur={props.onBlur}
+                                        onChange={(newDate: Date) =>
+                                            props.onChange(newDate)
+                                        }
+                                        error={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? true : false}
+                                    />
+                                )}
+                            />
+                        </div>
+                    </Collapse>
+                </Grid>
+        </>
+    );
+};
+
+interface Props {
+    classes: ClinicalDetailsClasses;
+    control: Control;
+    setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
+    clearErrors: (name?: string | string[]) => void;
+    errors: Record<string, any>;
+    watchWasHospitalized: boolean;
+};
+
+export default HospitalFields;
+

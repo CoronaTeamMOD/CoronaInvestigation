@@ -1,53 +1,26 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
 import { initDBAddress } from 'models/Address';
-import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-import { otherBackgroundDiseaseFieldName, otherSymptomFieldName } from './ClinicalDetails';
+import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import { otherSymptomFieldName } from './SymptomsFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails, setInitialDBClinicalDetails
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES, value);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
-    };
-
-    const updateIsolationAddressOnCityChange = (city: string) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress,
-                city,
-                street: ''
-            }
-        })
-    };
-
-    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData as ClinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress as DBAddress,
-                [fieldToUpdate]: updatedValue
-            }
-        })
-    };
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms', {}).then(
@@ -92,23 +65,23 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         patientAddress = initDBAddress;
                     }
 
-                    context.setClinicalDetailsData({
-                        ...context.clinicalDetailsData,
+                    setInitialDBClinicalDetails({
+                        ...initialDBClinicalDetails,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
+                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases? true : false,
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isInIsolation: patientInvestigation.isInIsolation? true : false,
+                        isIsolationProblem: patientInvestigation.isIsolationProblem? true : false,
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
-                        wasHospitalized: patientInvestigation.wasHospitalized,
+                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms? true : false,
+                        wasHospitalized: patientInvestigation.wasHospitalized? true : false,
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
@@ -130,6 +103,15 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         return backgroundDiseases;
     }
 
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => {
+        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}})).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+    }
+
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
@@ -137,11 +119,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }, []);
 
     return {
-        hasBackgroundDeseasesToggle,
         getStreetByCity,
-        updateClinicalDetails,
-        updateIsolationAddress,
-        updateIsolationAddressOnCityChange
+        saveClinicalDetails
     };
 };
 

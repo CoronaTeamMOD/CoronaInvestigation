@@ -1,8 +1,10 @@
 import React from 'react';
+import { Controller, Control } from 'react-hook-form'
+import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
+import { TextField } from '@material-ui/core';
 
 import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
-import AutocompletedField from '../AutoCompletedField/AutocompletedField';
 import useStyles from './LocationInputFieldStyles';
 import useDBParser from 'Utils/vendor/useDBParsing';
 
@@ -25,8 +27,12 @@ export interface GeocodeResponse extends google.maps.GeocoderResult {
     description?: string;
 }
 
-const  LocationInput = (props: LocationInputProps) => {
-    const { selectedAddress,  setSelectedAddress, required} = props;
+const renderOption = LocationOptionItem;
+const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
+
+
+const LocationInput = (props: LocationInputProps) => {
+    const { control, name, selectedAddress,  setSelectedAddress, required} = props;
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const {parseLocation} = useDBParser();
 
@@ -34,16 +40,14 @@ const  LocationInput = (props: LocationInputProps) => {
     const [input, setInput] = React.useState<string>('');
     const parsedSelected = React.useMemo(() => parseAddress(selectedAddress), [selectedAddress]);
     const _isMounted = React.useRef(true);
-
     const classes = useStyles({});
 
-    // cleanup
     React.useEffect(() => {
         return () => {
             _isMounted.current = false
         }
     }, []);
-
+    
     React.useEffect(() => {
         let active = true;
 
@@ -61,38 +65,64 @@ const  LocationInput = (props: LocationInputProps) => {
         return () => {
             active = false;
         };
-    }, [selectedAddress,input]);
+    }, [selectedAddress, input]);    
 
-    const onInputChange = (event: React.ChangeEvent<{}>, newInputValue: string) => {
-        if (newInputValue === '') {
-            setSelectedAddress(event, null);
-        }
-        setInput(newInputValue);
-    };
-
-    const onChange = async (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
+    const onChange = async (newValue: GoogleApiPlace | null) => {
         const geoCodedAddress = await parseLocation(newValue);
-        _isMounted && setSelectedAddress(event,geoCodedAddress as GoogleApiPlace);
+        _isMounted && setSelectedAddress(geoCodedAddress as GoogleApiPlace);
     };
 
     return (
-        <AutocompletedField
-            required={required}
-            value={parsedSelected}
-            options={locationOptions}
-            onChange={onChange}
-            onInputChange={onInputChange}
-            getOptionLabel={(option) => (typeof option === 'string' ? option : option.description)}
-            renderOption={LocationOptionItem}
-            className={classes.longAutoComplete}
-        />
+        control ? 
+            <Controller
+                name={name}
+                control={control}
+                render={(props) => (
+                    <Autocomplete
+                        options={locationOptions} 
+                        value={parsedSelected}
+                        onInputChange={(event: React.ChangeEvent<{}>, newInputValue: string) => 
+                                        setInput(newInputValue as string)}
+                        onChange={(event: React.ChangeEvent<{}>, newValue) => onChange(newValue as GoogleApiPlace | null)}
+                        noOptionsText={noOptionsMessage}
+                        getOptionLabel={(option: any) => typeof option === 'string' ? option : option.description}
+                        renderInput={(params: AutocompleteRenderInputParams) =>
+                            <TextField  
+                                {...params} 
+                                fullWidth 
+                            />
+                        }
+                        className={classes.autcompleteField + classes.longAutoComplete}
+                        {...(renderOption) ? { renderOption: renderOption } : {}}
+                    />
+                )}
+            />
+        :
+            <Autocomplete
+                options={locationOptions} 
+                value={parsedSelected}
+                onInputChange={(event: React.ChangeEvent<{}>, newInputValue: string) => setInput(newInputValue as string)}
+                onChange={(event: React.ChangeEvent<{}>, newValue: any) => onChange(newValue as GoogleApiPlace | null)}
+                noOptionsText={noOptionsMessage}
+                getOptionLabel={(option: any) => typeof option === 'string' ? option : option.description}
+                renderInput={(params: AutocompleteRenderInputParams) =>
+                    <TextField  
+                        {...params} 
+                        fullWidth 
+                    />
+                }
+                className={classes.autcompleteField + classes.longAutoComplete}
+                {...(renderOption) ? { renderOption: renderOption } : {}}
+            />
     );
 };
 
 interface LocationInputProps {
+    name: string;
     required?: boolean;
     selectedAddress: GoogleApiPlace | null;
-    setSelectedAddress:(event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) =>void;
+    setSelectedAddress: (newValue: GoogleApiPlace | null ) => void;
+    control?: Control<Record<string, any>>;
 }
 
 export default LocationInput;
