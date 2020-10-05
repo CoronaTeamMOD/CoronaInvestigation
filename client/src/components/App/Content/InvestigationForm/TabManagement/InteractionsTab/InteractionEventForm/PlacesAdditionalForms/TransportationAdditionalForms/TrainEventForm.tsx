@@ -24,7 +24,7 @@ const TrainEventForm: React.FC = (): JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
+                <Grid item xs={4} className={classes.mainTextItem}>
                     <FormInput fieldName='עיר מוצא'>
                         <Controller 
                             name={InteractionEventDialogFields.CITY_ORIGIN}
@@ -51,7 +51,7 @@ const TrainEventForm: React.FC = (): JSX.Element => {
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='תחנת עליה'>
                         <Controller 
                             name={InteractionEventDialogFields.BOARDING_STATION}
@@ -72,7 +72,7 @@ const TrainEventForm: React.FC = (): JSX.Element => {
                 </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
+                <Grid item xs={4} className={classes.mainTextItem}>
                     <FormInput fieldName='עיר יעד'>
                         <Controller 
                             name={InteractionEventDialogFields.CITY_DESTINATION}
@@ -99,7 +99,7 @@ const TrainEventForm: React.FC = (): JSX.Element => {
                         />
                     </FormInput>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <FormInput fieldName='תחנת ירידה'>
                         <Controller 
                             name={InteractionEventDialogFields.END_STATION}
