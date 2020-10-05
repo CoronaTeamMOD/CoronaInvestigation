@@ -1,11 +1,11 @@
 import React from 'react';
-import { Collapse, Grid, Typography } from '@material-ui/core';
 import { Control, Controller } from 'react-hook-form';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import DatePick from 'commons/DatePick/DatePick';
 import Toggle from 'commons/Toggle/Toggle';
+import DatePick from 'commons/DatePick/DatePick';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -129,4 +129,3 @@ interface Props {
 };
 
 export default HospitalFields;
-

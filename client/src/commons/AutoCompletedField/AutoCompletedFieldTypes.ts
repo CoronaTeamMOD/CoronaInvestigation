@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-    AutocompleteChangeDetails,
-    AutocompleteChangeReason,
-    AutocompleteInputChangeReason,
-    AutocompleteRenderOptionState,
-    FilterOptionsState
-} from '@material-ui/lab';
+import { AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteInputChangeReason,
+        AutocompleteRenderOptionState, FilterOptionsState } from '@material-ui/lab';
 
 export interface AutocompletedFieldProps<T> {
     required?: boolean;

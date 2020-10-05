@@ -1,21 +1,22 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AddCircle } from '@material-ui/icons';
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import Toggle from 'commons/Toggle/Toggle';
-import StoreStateType from 'redux/storeStateType';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
-import { setFormState } from 'redux/Form/formActionCreators';
 import useFormStyles from 'styles/formStyles';
+import StoreStateType from 'redux/storeStateType';
+import { setFormState } from 'redux/Form/formActionCreators';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
+
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
 
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
@@ -108,7 +109,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
   const saveExposure = (e: React.ChangeEvent<{}>) => {
     e.preventDefault();
-    console.log("ExposureTab");
     setFormState(investigationId, id, true);
     saveExposureAndFlightData().then(onSubmit);
   }
@@ -222,8 +222,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 };
 
 interface Props {
-  id: number,
-  onSubmit: () => void
+  id: number;
+  onSubmit: () => void;
 }
 
 export default ExposuresAndFlights;

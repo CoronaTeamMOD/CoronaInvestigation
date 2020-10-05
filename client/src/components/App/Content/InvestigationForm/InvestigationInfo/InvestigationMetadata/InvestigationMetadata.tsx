@@ -33,7 +33,7 @@ const InvestigationMetadata = (props: Props) => {
 };
 
 interface Props {
-    investigationMetaData: InvestigationMetaData
+    investigationMetaData: InvestigationMetaData;
 }
 
 export default InvestigationMetadata;

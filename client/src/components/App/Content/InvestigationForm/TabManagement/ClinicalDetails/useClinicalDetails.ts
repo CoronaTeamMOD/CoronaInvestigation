@@ -1,16 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/enums/Street';
 import { initDBAddress } from 'models/Address';
 import StoreStateType from 'redux/storeStateType';
-
-import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
-import { otherSymptomFieldName } from './SymptomsFields';
-import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+
+import { otherSymptomFieldName } from './SymptomsFields';
+import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
+import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 

@@ -1,32 +1,29 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from "@hookform/resolvers";
-import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
+import { yupResolver } from '@hookform/resolvers';
+import { useForm, Controller } from 'react-hook-form';
 import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
-import Swal from 'sweetalert2';
 
 import City from 'models/City';
 import Gender from 'models/enums/Gender';
 import Street from 'models/enums/Street';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import { clinicalDetailsDataContext, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { setFormState } from 'redux/Form/formActionCreators';
-import axios from 'Utils/axios';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
+import HospitalFields from './HospitalFields';
+import SymptomsFields from './SymptomsFields';
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
-import IsolationProblemFields from './IsolationProblemFields'
-import SymptomsFields from './SymptomsFields';
+import ClinicalDetailsSchema from './ClinicalDetailsSchema';
+import IsolationProblemFields from './IsolationProblemFields';
 import BackgroundDiseasesFields from './BackgroundDiseasesFields';
-import HospitalFields from './HospitalFields';
-import ClinicalDetailsSchema from './ClinicalDetailsSchema'
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
@@ -370,8 +367,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 };
 
 interface Props {
-    id: number,
-    onSubmit: () => void,
+    id: number;
+    onSubmit: () => void;
 }
 
 export default ClinicalDetails;

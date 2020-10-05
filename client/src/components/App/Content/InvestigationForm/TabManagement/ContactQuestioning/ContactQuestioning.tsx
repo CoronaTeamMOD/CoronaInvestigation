@@ -145,8 +145,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 };
 
 interface Props {
-    id: number,
-    onSubmit: () => void
-  }
+    id: number;
+    onSubmit: () => void;
+}
 
 export default ContactQuestioning;

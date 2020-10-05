@@ -3,7 +3,6 @@ import {useSelector} from 'react-redux';
 import {Toolbar} from '@material-ui/core';
 import {Typography} from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 import User from 'models/User';
 import StoreStateType from 'redux/storeStateType';

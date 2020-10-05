@@ -1,6 +1,7 @@
-import React from "react";
-import {GeocodeResponse} from "./LocationInput";
-import injectScript from "./useGoogleScriptInjector";
+import React from 'react';
+
+import {GeocodeResponse} from './LocationInput';
+import injectScript from './useGoogleScriptInjector';
 
 const useGoogleGeocoder = () => {
     const [geocoder, setGeocoder] = React.useState<google.maps.Geocoder>();
