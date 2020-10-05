@@ -31,7 +31,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, needsHelpIsolating);
     },[needsHelpIsolating])
 
-    const helpIsolating = (value: boolean) => {
+    const handleHelpIsolating = (value: boolean) => {
         value ?
             Swal.fire({
                 icon: 'warning',
@@ -132,7 +132,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
                         <Toggle
                             value={interactedContact.doesNeedHelpInIsolation ? interactedContact.doesNeedHelpInIsolation : needsHelpIsolating}
-                            onChange={(event, booleanValue) => booleanValue !== null && helpIsolating(booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && handleHelpIsolating(booleanValue)}
                         />
                     </Grid>
                 </Grid>
