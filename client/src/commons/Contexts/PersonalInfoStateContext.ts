@@ -13,4 +13,3 @@ export const initialPersonalInfo: PersonalInfoFormData = {
     otherOccupationExtraInfo: '',
     contactInfo: '',
 } 
-

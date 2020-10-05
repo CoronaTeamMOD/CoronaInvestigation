@@ -1,9 +1,11 @@
 import * as yup from 'yup';
+
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-const occupationsWithInstitution = ["מערכת הבריאות", "מערכת החינוך","כוחות הביטחון"]
-const occupationsWithoutExtraInfo = ["מערכת הבריאות", "מערכת החינוך","כוחות הביטחון","לא עובד"]
-const requiredText = 'שגיאה: שדה חובה'
-const numberValidationText = 'שגיאה: מספר אינו תקין'
+
+const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
+const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
+const requiredText = 'שגיאה: שדה חובה';
+const numberValidationText = 'שגיאה: מספר אינו תקין';
 const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/
 const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/
 
@@ -16,21 +18,21 @@ const schema = yup.object().shape({
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
         PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
-            is: "מערכת החינוך",
+            is: 'מערכת החינוך',
             then: yup.string().nullable().required(requiredText),
             else: yup.string().nullable()
         }
     ),
-    [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when("relevantOccupation", (relevantOccupation:any, schema:any) => {
+    [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
         return occupationsWithInstitution.find(element => element === relevantOccupation)? 
         schema.nullable().required(requiredText) : 
         schema.nullable()
     }),
-    [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when("relevantOccupation", (relevantOccupation:any, schema:any) => {
+    [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
         return occupationsWithoutExtraInfo.find(element => element === relevantOccupation)? 
         schema.nullable() :
         schema.nullable().required(requiredText)  
     }),
 });
 
-export default schema
+export default schema;

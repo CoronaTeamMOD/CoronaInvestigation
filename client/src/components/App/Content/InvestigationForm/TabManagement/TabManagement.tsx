@@ -49,8 +49,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
    const last = {
         id: 4,
-            name: TabNames.CONTACT_QUESTIONING,
-            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+        name: TabNames.CONTACT_QUESTIONING,
+        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
     };
 
     const classes = useStyles({});
@@ -88,7 +88,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         tabs.map((tab: TabObj) => 
                             <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(tab.id)}}
                                 key={tab.id}
@@ -99,7 +99,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     )}
                     {areThereContacts && <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(last.id)}}
                                 key={last.id}
@@ -119,8 +119,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    areThereContacts: boolean,
-    currentTab: number,
-    moveToNextTab: () => void,
-    setNextTab: (nextTabId: number) => void
+    areThereContacts: boolean;
+    currentTab: number;
+    moveToNextTab: () => void;
+    setNextTab: (nextTabId: number) => void;
 };

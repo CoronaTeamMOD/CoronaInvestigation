@@ -11,7 +11,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
-import FamilyRelationship from 'models/enums/FamilyRelationship';
+import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 

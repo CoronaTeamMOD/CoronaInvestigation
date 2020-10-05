@@ -1,12 +1,10 @@
 import React from 'react';
-import ToggleButtonGroup, {ToggleButtonGroupProps} from "@material-ui/lab/ToggleButtonGroup";
-import {ToggleButton} from "@material-ui/lab";
+import {ToggleButton} from '@material-ui/lab';
+import ToggleButtonGroup, {ToggleButtonGroupProps} from '@material-ui/lab/ToggleButtonGroup';
 
 import useStyles from './IsActiveToggleStyles';
 
-
 const IsActiveToggle: React.FC<Props> = (props: Props): JSX.Element => {
-
     const classes = useStyles({});
     const {value, setUserActivityStatus, ...rest} = props;
 
@@ -38,7 +36,7 @@ const IsActiveToggle: React.FC<Props> = (props: Props): JSX.Element => {
     )
 };
 
-interface Props extends ToggleButtonGroupProps{
+interface Props extends ToggleButtonGroupProps {
     setUserActivityStatus: (isActive: boolean) => void;
 }
 export default IsActiveToggle;

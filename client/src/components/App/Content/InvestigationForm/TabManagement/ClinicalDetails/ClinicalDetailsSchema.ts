@@ -1,6 +1,6 @@
-import * as yup from "yup";
+import * as yup from 'yup';
 
-import ClinicalDetailsFields from "models/enums/ClinicalDetailsFields";
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
 const requiredText = 'שדה זה הוא חובה';
 const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';

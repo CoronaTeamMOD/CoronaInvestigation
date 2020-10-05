@@ -4,11 +4,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
-import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import StoreStateType from 'redux/storeStateType';
 import useFormStyles from 'styles/formStyles';
+import StoreStateType from 'redux/storeStateType';
+import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -180,4 +180,4 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
-}
+};

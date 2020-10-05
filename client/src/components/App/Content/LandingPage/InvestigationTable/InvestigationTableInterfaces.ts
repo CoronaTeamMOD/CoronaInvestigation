@@ -5,8 +5,8 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 
 export interface useInvestigationTableParameters {
-    selectedInvestigator: Investigator
-    setSelectedRow: React.Dispatch<React.SetStateAction<number>>
+    selectedInvestigator: Investigator;
+    setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface useInvestigationTableOutcome {

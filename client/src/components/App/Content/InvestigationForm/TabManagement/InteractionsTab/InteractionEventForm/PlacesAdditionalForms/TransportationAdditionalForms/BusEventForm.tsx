@@ -1,19 +1,19 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import { Grid, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import City from 'models/City';
+import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
-import useFormStyles from 'styles/formStyles';
-import useStyles from './TransportationFormsStyles';
 
+import useStyles from './TransportationFormsStyles';
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const BusEventForm : React.FC = () : JSX.Element => {
+const BusEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
 
     const formClasses = useFormStyles();
@@ -162,4 +162,4 @@ const BusEventForm : React.FC = () : JSX.Element => {
     );
 };
 
-export default BusEventForm;    
+export default BusEventForm;

@@ -1,5 +1,5 @@
-import { Street } from 'models/Street';
-import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
+import Street from 'models/Street';
+import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
 import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
@@ -20,4 +20,3 @@ export interface usePersonalInfoTabOutcome {
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;
 }
-

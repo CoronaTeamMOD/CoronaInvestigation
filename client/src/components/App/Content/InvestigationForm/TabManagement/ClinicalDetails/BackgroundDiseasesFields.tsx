@@ -1,11 +1,11 @@
 import React from 'react';
-import { Collapse, Grid, Typography } from '@material-ui/core';
 import { Control, Controller } from 'react-hook-form';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import Toggle from 'commons/Toggle/Toggle';
+import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -130,4 +130,3 @@ interface Props {
 };
 
 export default BackgroundDiseasesFields;
-

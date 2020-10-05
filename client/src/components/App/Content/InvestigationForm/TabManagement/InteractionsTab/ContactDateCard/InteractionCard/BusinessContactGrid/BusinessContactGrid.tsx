@@ -43,5 +43,5 @@ const BusinessContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
 export default BusinessContactGrid;
 
 interface Props {
-    interaction: InteractionEventDialogData
+    interaction: InteractionEventDialogData;
 }

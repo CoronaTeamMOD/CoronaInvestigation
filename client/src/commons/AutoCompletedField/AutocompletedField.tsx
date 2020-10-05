@@ -6,8 +6,9 @@ import useStyles from './AutoCompletedFieldStyles';
 import AutocompletedFieldType from './AutoCompletedFieldTypes';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x:any) => x} = props;
+    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x: any) => x} = props;
     const classes = useStyles();
+
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>

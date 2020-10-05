@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 export interface useInteractionsTabInput {

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import Interaction from 'models/Contexts/InteractionEventDialogData';
+import React, { useState, useEffect } from 'react';
 
 import { setFormState } from 'redux/Form/formActionCreators';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
@@ -96,8 +96,8 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 };
 
 interface Props {
-    id: number,
+    id: number;
     onSubmit: () => void;
-}
+};
 
 export default InteractionsTab;

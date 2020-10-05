@@ -1,7 +1,7 @@
 import Contact from 'models/Contact';
 import Address from 'models/Address';
 
-export default interface InteractionEventDialogData {
+interface InteractionEventDialogData {
     id?: number;
     placeType: string;
     startTime: Date;
@@ -11,7 +11,7 @@ export default interface InteractionEventDialogData {
     placeName?: string;
     locationAddress: Address;
     placeSubType: number;
-    busLine?: string,
+    busLine?: string;
     airline?: string;
     flightNum?: string;
     busCompany?: string;
@@ -32,3 +32,5 @@ export default interface InteractionEventDialogData {
     flightOriginCity?: string;
     flightOriginCountry?: string;
 }
+
+export default InteractionEventDialogData;

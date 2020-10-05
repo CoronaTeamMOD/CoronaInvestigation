@@ -1,10 +1,10 @@
 import React from 'react';
-import { Collapse, Grid, Typography } from '@material-ui/core';
 import { Control, Controller } from 'react-hook-form';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -76,4 +76,3 @@ interface Props {
 };
 
 export default IsolationProblemFields;
-

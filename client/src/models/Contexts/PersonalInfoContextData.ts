@@ -1,4 +1,4 @@
-import {DBAddress} from '../Address';
+import { DBAddress } from 'models/Address';
 
 export interface PersonalInfoDbData {
     phoneNumber: string | null;
@@ -18,11 +18,11 @@ export interface PersonalInfoFormData {
     additionalPhoneNumber: string;
     contactPhoneNumber: string;
     contactInfo: string;
-    insuranceCompany: string,
-    city: string,
-    street: string,
-    floor: string,
-    houseNum: string,
+    insuranceCompany: string;
+    city: string;
+    street: string;
+    floor: string;
+    houseNum: string;
     relevantOccupation: string;
     educationOccupationCity: string;
     institutionName: string;

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import FormInput from 'commons/FormInput/FormInput';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import useFormStyles from 'styles/formStyles';
+import FormInput from 'commons/FormInput/FormInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const OfficeEventForm : React.FC = () : JSX.Element => {
+const OfficeEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
 
     const formClasses = useFormStyles();

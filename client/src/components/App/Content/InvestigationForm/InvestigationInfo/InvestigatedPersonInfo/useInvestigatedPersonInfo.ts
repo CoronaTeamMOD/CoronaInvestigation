@@ -11,7 +11,7 @@ import { interactedContactsContext } from 'commons/Contexts/InteractedContactsCo
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { InvestigatedPersonInfoOutcome, InvestigatedPersonInfoIncome } from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
