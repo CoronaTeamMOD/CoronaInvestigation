@@ -96,7 +96,7 @@ const convertEventToDBType = (event: any) => {
             return false;
         }
     });
-    updatedContacts.forEach((contact: any) => {
+    updatedContacts.forEach((contact: Contact) => {
         contact.id = contact.id ? contact.id : null;
     })
     event.contacts = updatedContacts;
