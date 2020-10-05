@@ -17,13 +17,3 @@ mutation updatePersonPersonalInfo($id: Int!, $phoneNumber: String, $additionalPh
     }
 }
 `;
-
-export const CREATE_ADRESS = gql`
-mutation createAddress($city: String, $street: String, $houseNum: String, $floor: String) {
-    createAddress(input: {address: {city: $city, street: $street, houseNum: $houseNum, floor: $floor}}) {
-      address {
-        id
-      }
-    }
-  }
-`;
