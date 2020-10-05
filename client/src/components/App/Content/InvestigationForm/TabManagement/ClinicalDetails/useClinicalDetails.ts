@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
-import Street from 'models/enums/Street';
+import Street from 'models/Street';
 import { initDBAddress } from 'models/Address';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';

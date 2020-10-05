@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
 import { config } from 'dotenv';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
-import { Environment } from 'models/enums/Environments';
+import StoreStateType from 'redux/storeStateType';
+import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreatores';
 import { setGroupUsers } from 'redux/GroupUsers/groupUsersActionCreators';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
-import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
 
 config();
 

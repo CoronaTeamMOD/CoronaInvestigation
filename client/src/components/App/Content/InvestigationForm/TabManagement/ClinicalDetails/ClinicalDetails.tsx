@@ -6,8 +6,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
+import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
-import Street from 'models/enums/Street';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';

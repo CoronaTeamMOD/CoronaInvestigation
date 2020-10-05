@@ -1,6 +1,6 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const useStyles = makeStyles({
     tabInitialContainer: {
         padding: '2vh',
         height: '64vh'
@@ -110,6 +110,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         minWidth: '15vw',
         marginLeft: '8vw'
     }
-}));
+});
 
 export default useStyles;

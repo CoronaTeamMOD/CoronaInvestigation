@@ -7,7 +7,7 @@ import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
-import useStyle from './ContactDateCardStyles'
+import useStyles from './ContactDateCardStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
@@ -16,7 +16,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
-    const classes = useStyle();
+    const classes = useStyles();
 
     return (
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
@@ -63,8 +63,8 @@ interface Props {
     contactDate: Date;
     interactions: Interaction[] | undefined;
     createNewInteractionEvent: () => void;
-    onEditClick: (interaction: Interaction) => void
-    onDeleteClick: (contactEventId: number) => void
-}
+    onEditClick: (interaction: Interaction) => void;
+    onDeleteClick: (contactEventId: number) => void;
+};
 
 export default ContactDateCard;

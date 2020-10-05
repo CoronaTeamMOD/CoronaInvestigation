@@ -1,13 +1,7 @@
-import {GeocodeResponse} from "../commons/LocationInputField/LocationInput";
+import DBAddress from './DBAddress';
+import {GeocodeResponse} from '../commons/LocationInputField/LocationInput';
 
 export type Address = GeocodeResponse | null;
-
-export interface DBAddress {
-    city: string | null;
-    street: string | null;
-    floor: string | null;
-    houseNum: string | null;
-}
 
 export const initDBAddress: DBAddress  = {
     city: '',

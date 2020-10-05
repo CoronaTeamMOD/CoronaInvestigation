@@ -1,20 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
+import StoreStateType from 'redux/storeStateType';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
-import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-
-
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -50,8 +48,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
    const last = {
         id: 4,
-            name: TabNames.CONTACT_QUESTIONING,
-            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+        name: TabNames.CONTACT_QUESTIONING,
+        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
     };
 
     const classes = useStyles({});
@@ -85,7 +83,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         tabs.map((tab: TabObj) => 
                             <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(tab.id)}}
                                 key={tab.id}
@@ -96,7 +94,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     )}
                     {areThereContacts && <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(last.id)}}
                                 key={last.id}
@@ -116,8 +114,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    areThereContacts: boolean,
-    currentTab: number,
-    moveToNextTab: () => void,
-    setNextTab: (nextTabId: number) => void
+    areThereContacts: boolean;
+    currentTab: number;
+    moveToNextTab: () => void;
+    setNextTab: (nextTabId: number) => void;
 };

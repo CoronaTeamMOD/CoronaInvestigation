@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form'
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 
+import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import useFormStyles from 'styles/formStyles';
 
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -31,7 +31,7 @@ export const highSchoolGrades = [
 
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
-const SchoolEventForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Element => {
+const SchoolEventForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element => {
     const { control, errors, setError, clearErrors, setValue} = useFormContext();    
 
     const formClasses = useFormStyles();
@@ -107,6 +107,6 @@ const SchoolEventForm : React.FC<Props> = ({ placeSubType }: Props) : JSX.Elemen
 
 interface Props {
     placeSubType: number;
-}
+};
 
 export default SchoolEventForm;

@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import axios from 'Utils/axios';
-import useDBParser from "Utils/vendor/useDBParsing";
 import StoreStateType from 'redux/storeStateType';
+import useDBParser from 'Utils/vendor/useDBParsing';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -72,4 +72,4 @@ interface useInteractionFormOutcome {
   saveIntreactions: (interactionsData: InteractionEventDialogData) => void;
 }
 
-export default useInteractionsForm; 
+export default useInteractionsForm;

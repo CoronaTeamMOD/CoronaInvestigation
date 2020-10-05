@@ -1,16 +1,16 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form'
 import { Grid } from '@material-ui/core';
+import { useFormContext } from 'react-hook-form';
 
-import FormInput from 'commons/FormInput/FormInput';
-import { GeocodeResponse } from "commons/LocationInputField/LocationInput";
-import Map from "commons/Map/Map";
+import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
+import FormInput from 'commons/FormInput/FormInput';
+import { GeocodeResponse } from 'commons/LocationInputField/LocationInput';
 
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields'
 import useStyles from './AddressFormStyles';
+import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const AddressForm : React.FC = () : JSX.Element => {
+const AddressForm: React.FC = (): JSX.Element => {
     const { setValue, getValues, control } = useFormContext();
     const { locationAddress } = getValues();
 
