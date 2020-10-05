@@ -101,7 +101,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                             }
                                             {
                                                 interactedContact.extraInfo &&
-                                                <Typography variant='body2' className={classes.extraInfo}>
+                                                <Typography variant='body2'>
                                                     <b>פירוט אופי המגע:</b> {interactedContact.extraInfo}
                                                 </Typography>
                                             }
