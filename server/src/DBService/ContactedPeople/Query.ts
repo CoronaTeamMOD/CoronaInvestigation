@@ -39,6 +39,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesLiveWithConfirmed
       cantReachContact
       doesWorkWithCrowd
+      doesNeedIsolation
     }
   }
 }

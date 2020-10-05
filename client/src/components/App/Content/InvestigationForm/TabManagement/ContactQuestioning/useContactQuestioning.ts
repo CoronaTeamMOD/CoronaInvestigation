@@ -62,7 +62,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         doesNeedHelpInIsolation: contact.doesNeedHelpInIsolation ? contact.doesNeedHelpInIsolation : false,
                         repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
                         doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
-                        expand: false
+                        doesNeedIsolation: contact.doesNeedIsolation ? contact.doesNeedIsolation : false,
+                        expand: false,
                     }
                 )
             });

@@ -1,12 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
-import {useSelector} from 'react-redux';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
-import { convertDate } from '../ClinicalDetails/useClinicalDetails';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
@@ -17,14 +16,17 @@ const symptomsWithKnownStartDate: number = 4;
 const nonSymptomaticPatient: number = 7;
 const symptomsWithUnknownStartDate: number = 10;
 
-const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTabOutcome => {
+const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+
+const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTabInput) :  useInteractionsTabOutcome => {
     const { parseAddress } = useGoogleApiAutocomplete();
-    const { interactions, setInteractions } = props;
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
     const classes = useStyles({});
 
     const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
-        axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
+        axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if(res.data !== null) {
                 setTestDate(convertDate(res.data.coronaTestDate));
                 setInvestigationStartTime(convertDate(res.data.startTime));
@@ -49,6 +51,18 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         return [];
     }
 
+    const getClinicalDetailsSymptoms = (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean>>) => {
+        axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
+            result => {
+                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
+                    setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
+                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms);
+                }
+            });
+    }
+
     const loadInteractions = () => {
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
@@ -59,32 +73,10 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
         });
     }
 
-    const loadInteractionById = (eventId: number) => {
-        axios.get(`/intersections/contactEventById/${eventId}`)
-            .then((result) => {
-                if(result.data) {
-                    let changedInteraction = result.data;
-                    const allInteractions: InteractionEventDialogData[] = [...interactions];
-                    let indexOfInteraction = allInteractions.findIndex((interaction) => interaction.id === eventId);
-                    const currEvent = convertDBInteractionToInteraction(changedInteraction);
-                    if (indexOfInteraction === -1) {
-                        allInteractions.push(currEvent);
-                    } else {
-                        allInteractions.splice(indexOfInteraction, 1, currEvent);
-                    }
-                    setInteractions(allInteractions);
-                }
-            }).catch(() => {
-                handleLoadInteractionsError();
-        });
-    }
-
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
-            locationAddress: parseAddress(dbInteraction.locationAddress),
-            contactPersonPhoneNumber: {number: dbInteraction.contactPersonPhoneNumber === null ? '' : dbInteraction.contactPersonPhoneNumber, isValid: true},
-            contacts: dbInteraction.contacts.map((contact: any) => ({...contact, phoneNumber: {number: contact.phoneNumber, isValid: true}})),
+            locationAddress: parseAddress(dbInteraction.locationAddress) || '',
             startTime: new Date(dbInteraction.startTime),
             endTime: new Date(dbInteraction.endTime),
         })
@@ -98,14 +90,6 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
                 title: classes.swalTitle
             }
         });
-    }
-
-    const updateInteraction = (updatedInteraction: InteractionEventDialogData) => {
-        loadInteractionById(updatedInteraction.id as number);
-    }
-
-    const addNewInteraction = (addedInteraction: InteractionEventDialogData) => {
-        loadInteractionById(addedInteraction.id as number);
     }
 
     const handleDeleteContactEvent = (contactEventId: number) => {
@@ -146,12 +130,11 @@ const useInteractionsTab = (props: useInteractionsTabInput) :  useInteractionsTa
     }
 
     return {
-        getCoronaTestDate,
         getDatesToInvestigate,
         loadInteractions,
-        addNewInteraction,
-        updateInteraction,
-        handleDeleteContactEvent,
+        getCoronaTestDate,
+        getClinicalDetailsSymptoms,
+        handleDeleteContactEvent
     }
 };
 

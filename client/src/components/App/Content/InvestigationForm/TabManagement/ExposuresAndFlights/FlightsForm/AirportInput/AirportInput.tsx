@@ -43,7 +43,6 @@ const AirportInput = (props: any) => {
         <div className={classes.airportDetails}>
             <div className={classes.airportCountryTextField}>
                 <AutocompletedField
-                    required
                     value={country}
                     options={options}
                     onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
@@ -57,7 +56,6 @@ const AirportInput = (props: any) => {
                     errors={errors}
                     setError={setError}
                     clearErrors={clearErrors}
-                    required
                     value={city}
                     placeholder='עיר'
                     label='עיר'

@@ -17,6 +17,7 @@ enum InteractedContactFields {
     REPEATING_OCCURANCE_WITH_CONFIRMED = 'repeatingOccuranceWithConfirmed',
     DOES_LIVE_WITH_CONFIRMED = 'doesLiveWithConfirmed',
     DOES_WORK_WITH_CROWD = 'doesWorkWithCrowd',
+    DOES_NEED_ISOLATION = 'doesNeedIsolation',
     EXPAND = 'expand',
 }
 
