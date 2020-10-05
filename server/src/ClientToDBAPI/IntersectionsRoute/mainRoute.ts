@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 
+import Contact from '../../Models/ContactEvent/Contact';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
@@ -86,14 +87,22 @@ const resetEmptyFields = (object: any) => {
 }
 
 const convertEventToDBType = (event: any) => {
-    const updatedContacts = event.contacts?.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
-    updatedContacts?.forEach((contact: any) => {
+    const deletedContacts : number[] = [];
+    const updatedContacts = event.contacts.filter((contact: Contact) => { 
+        if (contact.firstName && contact.lastName && contact.phoneNumber) {
+            return true;
+        } else {
+            contact.serialId && deletedContacts.push(+contact.serialId);
+            return false;
+        }
+    });
+    updatedContacts.forEach((contact: Contact) => {
         contact.id = contact.id ? contact.id : null;
     })
     event.contacts = updatedContacts;
     resetEmptyFields(event);
     (event.locationAddress) && resetEmptyFields(event.locationAddress);
-    return event;
+    return {...event, deletedContacts};
 }
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
