@@ -10,7 +10,7 @@ import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalFor
 import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
 import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 
-const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType } : Props) : JSX.Element => {
+const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType, grade } : Props) : JSX.Element => {
     const {
         geriatric,
         school,
@@ -40,7 +40,7 @@ const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType } : Props) : J
         }
         case school.code: {
             return (
-                <SchoolEventForm placeSubType={placeSubType} />
+                <SchoolEventForm grade={grade} placeSubType={placeSubType} />
             )
         }
         case medical.code: {
@@ -71,4 +71,5 @@ export default PlaceTypeForm;
 interface Props {
     placeType: string
     placeSubType: number
+    grade: string
 }
