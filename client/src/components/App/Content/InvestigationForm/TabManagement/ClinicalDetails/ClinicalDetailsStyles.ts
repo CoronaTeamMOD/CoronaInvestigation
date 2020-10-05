@@ -77,3 +77,23 @@ export const useStyles = makeStyles({
         },
     },
 });
+
+export interface ClinicalDetailsClasses {
+    form: string;
+    rowGridItem: string;
+    containerGrid: string;
+    fieldLabel: string;
+    hospitalLabel: string;
+    backgroundDiseasesLabel: string;
+    dates: string;
+    hospitalizationDates: string;
+    smallGrid: string;
+    isolationProblemTextField: string;
+    cancelWhiteSpace: string;
+    otherTextField: string;
+    symptomsDateCheckBox: string;
+    spacedDates: string;
+    verticalSpacing: string;
+    hospitalInput: string;
+    symptomsAndDiseasesCheckbox: string;
+}

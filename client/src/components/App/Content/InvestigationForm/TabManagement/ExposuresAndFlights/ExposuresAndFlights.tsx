@@ -9,20 +9,23 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
-
+import { setFormState } from 'redux/Form/formActionCreators';
 import useFormStyles from 'styles/formStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
 import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
-const ExposuresAndFlights = () => {
+const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
-    const { parseAddress } = useGoogleApiAutocomplete();
+  const { parseAddress } = useGoogleApiAutocomplete();
+  const {saveExposureAndFlightData} = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -103,8 +106,16 @@ const ExposuresAndFlights = () => {
     });
   }
 
+  const saveExposure = (e: React.ChangeEvent<{}>) => {
+    e.preventDefault();
+    console.log("ExposureTab");
+    setFormState(investigationId, id, true);
+    saveExposureAndFlightData().then(onSubmit);
+  }
+
   return (
     <>
+    <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
       <div className={classes.subForm}>
         <Typography variant='caption' className={fieldName}>
           חשיפה אפשרית
@@ -204,8 +215,15 @@ const ExposuresAndFlights = () => {
           </div>
         </Collapse>
       </div>
+      </form>
     </>
   );
+  //}
 };
+
+interface Props {
+  id: number,
+  onSubmit: () => void
+}
 
 export default ExposuresAndFlights;
