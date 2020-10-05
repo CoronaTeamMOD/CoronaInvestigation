@@ -10,7 +10,7 @@ import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms
 import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
 
-const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType }: Props): JSX.Element => {
+const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType, grade }: Props): JSX.Element => {
     const {
         geriatric,
         school,
@@ -40,7 +40,7 @@ const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType }: Props): JSX
         }
         case school.code: {
             return (
-                <SchoolEventForm placeSubType={placeSubType} />
+                <SchoolEventForm grade={grade} placeSubType={placeSubType} />
             )
         }
         case medical.code: {
@@ -71,4 +71,5 @@ export default PlaceTypeForm;
 interface Props {
     placeType: string;
     placeSubType: number;
-};
+    grade: string;
+}

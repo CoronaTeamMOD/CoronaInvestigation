@@ -48,6 +48,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
+  const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
@@ -86,7 +87,7 @@ const InteractionEventForm: React.FC<Props> = (
               onPlaceSubTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue)}
             />
 
-            <PlaceTypeForm placeType={placeType} placeSubType={placeSubType}/>
+            <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType}/>
             <Grid className={formClasses.formRow} container justify='flex-start'>
               <Grid item xs={6}>
                 <FormInput fieldName='משעה'>

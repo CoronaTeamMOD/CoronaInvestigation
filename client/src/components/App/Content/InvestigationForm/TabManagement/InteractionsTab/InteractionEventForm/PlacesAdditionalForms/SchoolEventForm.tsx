@@ -31,7 +31,7 @@ export const highSchoolGrades = [
 
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
-const SchoolEventForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element => {
+const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.Element => {
     const { control, errors, setError, clearErrors, setValue} = useFormContext();    
 
     const formClasses = useFormStyles();
@@ -42,7 +42,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element 
         let gradesOptions : string[] = [];
         if (placeSubType === elementarySchool) gradesOptions = elementarySchoolGrades;
         else if (placeSubType === highSchool) gradesOptions = highSchoolGrades;
-        if (placeSubType > 0) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
+        if (placeSubType !== -1 && !grade) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
         setGrades(gradesOptions);
     }, [placeSubType])
 
@@ -72,29 +72,29 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element 
                     grades.length > 0 &&
                     <Grid item xs={2}>
                         <FormInput fieldName='כיתה'>
-                        <FormControl fullWidth>
-                            <InputLabel>כיתה</InputLabel>
-                            <Controller 
-                                name={InteractionEventDialogFields.GRADE}
-                                control={control}
-                                render={(props) => (
-                                    <Select
-                                        test-id='classGrade'
-                                        value={props.value}
-                                        onChange={(event: React.ChangeEvent<any>) => props.onChange(event.target.value as string)}
-                                        label='כיתה'
-                                    >
-                                        {
-                                            grades.map((currentGrade) => (
-                                                <MenuItem key={currentGrade} value={currentGrade}>
-                                                    {currentGrade}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                )}
-                            /> 
-                        </FormControl>
+                            <FormControl fullWidth>
+                                <InputLabel>כיתה</InputLabel>
+                                <Controller 
+                                    name={InteractionEventDialogFields.GRADE}
+                                    control={control}
+                                    render={(props) => (
+                                        <Select
+                                            test-id='classGrade'
+                                            value={props.value}
+                                            onChange={(event: React.ChangeEvent<any>) => props.onChange(event.target.value as string)}
+                                            label='כיתה'
+                                        >
+                                            {
+                                                grades.map((currentGrade) => (
+                                                    <MenuItem key={currentGrade} value={currentGrade}>
+                                                        {currentGrade}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    )}
+                                /> 
+                            </FormControl>
                         </FormInput>
                     </Grid>
                 }
@@ -107,6 +107,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element 
 
 interface Props {
     placeSubType: number;
-};
+    grade: string;
+}
 
 export default SchoolEventForm;
