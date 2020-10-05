@@ -92,9 +92,9 @@ interface Props {
     watchIsInIsolation: boolean;
     control: Control;
     errors: Record<string, any>;
-    trigger: any;
-    watchIsolationStartDate: any;
-    watchIsolationEndDate: any;
+    trigger: (payload?: string | string[]) => Promise<boolean>;
+    watchIsolationStartDate: Date;
+    watchIsolationEndDate: Date;
 };
 
 export default IsolationDatesFields;

@@ -134,9 +134,9 @@ interface Props {
     clearErrors: (name?: string | string[]) => void;
     errors: Record<string, any>;
     watchWasHospitalized: boolean;
-    trigger: any;
-    watchHospitalizedStartDate: any;
-    watchHospitalizedEndDate: any;
+    trigger: (payload?: string | string[]) => Promise<boolean>;
+    watchHospitalizedStartDate: Date;
+    watchHospitalizedEndDate: Date;
 };
 
 export default HospitalFields;
