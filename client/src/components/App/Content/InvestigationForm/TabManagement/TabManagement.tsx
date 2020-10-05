@@ -5,10 +5,10 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
-
 import StoreStateType from 'redux/storeStateType';
-import useStyles from './TabManagementStyles';
 import { setFormState } from 'redux/Form/formActionCreators';
+
+import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
