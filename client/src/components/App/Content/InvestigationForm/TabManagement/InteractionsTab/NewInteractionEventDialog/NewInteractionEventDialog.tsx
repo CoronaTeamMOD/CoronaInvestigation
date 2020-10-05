@@ -39,7 +39,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             </DialogTitle>
                 <DialogContent>
                     <InteractionEventForm 
-                        intractionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
+                        interactionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
                         loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
                         closeEditDialog={()=>{}}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
@@ -32,7 +33,7 @@ const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
   {
-    intractionData,
+    interactionData,
     loadInteractions,
     closeNewDialog,
     closeEditDialog,
@@ -41,7 +42,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const { saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
   const methods = useForm<InteractionEventDialogData>({
-    defaultValues: intractionData,
+    defaultValues: interactionData,
     mode: 'all',
     resolver: yupResolver(InteractionEventSchema)
   });
@@ -58,18 +59,20 @@ const InteractionEventForm: React.FC<Props> = (
   const formClasses = useFormStyles();
 
   const handleTimeChange = (currentTime: Date, interactionDate: Date, fieldName: string) => {
-    if (currentTime) {
-      let newDate = new Date(interactionDate.getTime())
-      newDate.setHours(currentTime.getHours())
-      newDate.setMinutes(currentTime.getMinutes())
+    if (isValid(currentTime)) {
+      let newDate = new Date(interactionDate.getTime());
+
+      newDate.setHours(currentTime.getHours());
+      newDate.setMinutes(currentTime.getMinutes());
+
       if (newDate.getTime()) {
-        methods.setValue(fieldName, newDate)
+        methods.setValue(fieldName, newDate);
       }
     }
   }
 
   const onSubmit = (data: InteractionEventDialogData) => {
-    saveIntreactions(data)
+    saveIntreactions(data);
   }
 
   return (
@@ -179,7 +182,7 @@ const InteractionEventForm: React.FC<Props> = (
 export default InteractionEventForm;
 
 interface Props {
-  intractionData?: InteractionEventDialogData;
+  interactionData?: InteractionEventDialogData;
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;

@@ -22,7 +22,7 @@ const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element 
             </DialogTitle>
                 <DialogContent>
                     <InteractionEventForm 
-                        intractionData={eventToEdit}
+                        interactionData={eventToEdit}
                         loadInteractions={loadInteractions}
                         closeEditDialog={closeEditDialog}
                         interactionId={eventToEdit[InteractionEventDialogFields.ID]}
