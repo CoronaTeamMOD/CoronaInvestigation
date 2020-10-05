@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 
+import Contact from '../../Models/ContactEvent/Contact';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
@@ -87,11 +88,11 @@ const resetEmptyFields = (object: any) => {
 
 const convertEventToDBType = (event: any) => {
     const deletedContacts : number[] = [];
-    const updatedContacts = event.contacts.filter((contact: any) => { 
+    const updatedContacts = event.contacts.filter((contact: Contact) => { 
         if (contact.firstName && contact.lastName && contact.phoneNumber) {
             return true;
         } else {
-            contact.serialId && deletedContacts.push(contact.serialId);
+            contact.serialId && deletedContacts.push(+contact.serialId);
             return false;
         }
     });
