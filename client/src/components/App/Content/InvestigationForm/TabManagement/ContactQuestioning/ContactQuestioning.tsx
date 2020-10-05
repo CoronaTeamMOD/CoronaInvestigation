@@ -8,9 +8,9 @@ import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import InteractedContact from 'models/InteractedContact';
+import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
-import FamilyRelationship from 'models/enums/FamilyRelationship';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
@@ -145,8 +145,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 };
 
 interface Props {
-    id: number,
-    onSubmit: () => void
-  }
+    id: number;
+    onSubmit: () => void;
+}
 
 export default ContactQuestioning;

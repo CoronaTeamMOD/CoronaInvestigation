@@ -10,18 +10,12 @@ import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
 const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 
-const wideAreas = [
-    publicPark,
-    zoo,
-    stadium,
-    amphitheater,
-    beach,
-]
+const wideAreas = [publicPark, zoo, stadium, amphitheater, beach];
 
-const OtherPublicLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
+const OtherPublicLocationGrid: React.FC<Props> = (props: Props): JSX.Element => {
     
     const { interaction } = props;
-    const isWideArea : boolean = wideAreas.includes(interaction.placeSubType);
+    const isWideArea: boolean = wideAreas.includes(interaction.placeSubType);
 
     return (
         <>
@@ -44,4 +38,4 @@ export default OtherPublicLocationGrid;
 
 interface Props {
     interaction: InteractionEventDialogData;
-}
+};

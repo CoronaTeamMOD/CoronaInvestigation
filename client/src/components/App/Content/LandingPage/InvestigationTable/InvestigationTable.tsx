@@ -1,10 +1,7 @@
 import React from 'react';
-import {
-    Paper, Table, TableRow, TableBody,
-    TableCell, Typography, TableHead, TableContainer, TextField
-} from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField } from '@material-ui/core';
 
 import User from 'models/User';
 import Investigator from 'models/Investigator';
@@ -42,12 +39,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <Typography color="textPrimary" className={classes.welcomeMessage}>
+            <Typography color='textPrimary' className={classes.welcomeMessage}>
                 {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
             </Typography>
             <div className={classes.content}>
                 <TableContainer component={Paper} className={classes.tableContainer}>
-                    <Table aria-label="simple table" stickyHeader id='LandingPageTable'>
+                    <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
                             <TableRow>
                                 {

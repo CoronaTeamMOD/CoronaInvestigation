@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
 
@@ -80,7 +81,7 @@ export const isFlightInvalid = (exposure: Exposure) =>
 
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,
-    setExposureDataAndFlights: () => { }
+    setExposureDataAndFlights: () => {}
 };
 
 export const exposureAndFlightsContext = createContext<ExposureAndFlightsDetailsAndSet>(initialContextValues);

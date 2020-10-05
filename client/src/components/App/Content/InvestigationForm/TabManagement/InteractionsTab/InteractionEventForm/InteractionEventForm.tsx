@@ -1,34 +1,34 @@
 import React from 'react';
-import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 
 import Contact from 'models/Contact';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
-import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import useFormStyles from 'styles/formStyles';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
-import InteractionEventSchema from './InteractionEventSchema'
+import PlaceTypeForm from './PlaceTypeForm';
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
+import InteractionEventSchema from './InteractionEventSchema';
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
-import PlaceTypeForm from './PlaceTypeForm';
 
 export const defaultContact: Contact = {
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  id: "",
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  id: '',
   contactType: -1,
 };
 
-const addContactButton: string = "הוסף מגע";
+const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
   {
@@ -75,8 +75,8 @@ const InteractionEventForm: React.FC<Props> = (
   return (
     <>
       <FormProvider {...methods}>
-        <form id="interactionEventForm" onSubmit={methods.handleSubmit(onSubmit)}>
-          <Grid className={formClasses.form} container justify="flex-start">
+        <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
+          <Grid className={formClasses.form} container justify='flex-start'>
             <PlacesTypesAndSubTypes
               control={methods.control}
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
@@ -88,20 +88,20 @@ const InteractionEventForm: React.FC<Props> = (
             />
 
             <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType}/>
-            <Grid className={formClasses.formRow} container justify="flex-start">
+            <Grid className={formClasses.formRow} container justify='flex-start'>
               <Grid item xs={6}>
-                <FormInput fieldName="משעה">
+                <FormInput fieldName='משעה'>
                   <Controller
                     name={InteractionEventDialogFields.START_TIME}
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id="contactLocationStartTime"
+                        test-id='contactLocationStartTime'
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
                           interactionStartTime,
                           InteractionEventDialogFields.START_TIME)}
-                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "משעה*"}
+                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
                         error={get(methods.errors, props.name)}
                       />
                     )}
@@ -109,18 +109,18 @@ const InteractionEventForm: React.FC<Props> = (
                 </FormInput>
               </Grid>
               <Grid item xs={6}>
-                <FormInput fieldName="עד שעה">
+                <FormInput fieldName='עד שעה'>
                   <Controller
                     name={InteractionEventDialogFields.END_TIME}
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id="contactLocationEndTime"
+                        test-id='contactLocationEndTime'
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
                           interationEndTime,
                           InteractionEventDialogFields.END_TIME)}
-                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : "עד שעה*"}
+                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                         error={get(methods.errors, props.name)}
                       />
                     )}
@@ -128,14 +128,14 @@ const InteractionEventForm: React.FC<Props> = (
                 </FormInput>
               </Grid>
             </Grid>
-            <Grid className={formClasses.formRow} container justify="flex-start">
-              <FormInput fieldName="האם מותר להחצנה">
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+              <FormInput fieldName='האם מותר להחצנה'>
                 <Controller
                   name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
                   control={methods.control}
                   render={(props) => (
                     <Toggle
-                      test-id="allowExternalization"
+                      test-id='allowExternalization'
                       value={props.value}
                       onChange={(event, value: boolean) => props.onChange(value as boolean)}
                       className={formClasses.formToggle}
@@ -148,7 +148,7 @@ const InteractionEventForm: React.FC<Props> = (
           <Divider light={true} />
           <Grid
             container
-            className={formClasses.form + " " + classes.spacedOutForm}
+            className={formClasses.form + ' ' + classes.spacedOutForm}
           >
             <div className={classes.newContactFieldsContainer}>
               {contacts.map((contact, index: number) => (
@@ -156,14 +156,14 @@ const InteractionEventForm: React.FC<Props> = (
               ))}
               <Grid item>
                 <IconButton
-                  test-id="addContact"
+                  test-id='addContact'
                   onClick={() => append(defaultContact)}
                 >
-                  <AddCircleIcon color="primary" />
+                  <AddCircleIcon color='primary' />
                 </IconButton>
                 <Typography
-                  variant="caption"
-                  className={formClasses.fieldName + " " + classes.fieldNameNoWrap}
+                  variant='caption'
+                  className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}
                 >
                   {addContactButton}
                 </Typography>
@@ -184,4 +184,4 @@ interface Props {
   closeNewDialog: () => void;
   closeEditDialog: () => void;
   interactionId?: number;
-}
+};

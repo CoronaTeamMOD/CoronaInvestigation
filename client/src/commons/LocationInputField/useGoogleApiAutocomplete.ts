@@ -1,7 +1,9 @@
-import React from "react";
-import {GoogleApiPlace, GeocodeResponse} from "./LocationInput";
-import injectScript from "./useGoogleScriptInjector";
-import {throttle} from "Utils/vendor/underscoreReplacement";
+import React from 'react';
+
+import {throttle} from 'Utils/vendor/underscoreReplacement';
+
+import injectScript from './useGoogleScriptInjector';
+import {GoogleApiPlace, GeocodeResponse} from './LocationInput';
 
 interface APIRequestParams {
     input: string;

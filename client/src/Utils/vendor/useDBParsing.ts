@@ -1,6 +1,7 @@
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-import {GeocodeResponse, GoogleApiPlace} from "commons/LocationInputField/LocationInput";
-import useGoogleGeocoder from "../../commons/LocationInputField/useGoogleGeocoder";
+import {GeocodeResponse, GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+
+import useGoogleGeocoder from '../../commons/LocationInputField/useGoogleGeocoder';
 
 const useDBParser = () => {
     const {parseAddress} = useGoogleApiAutocomplete();

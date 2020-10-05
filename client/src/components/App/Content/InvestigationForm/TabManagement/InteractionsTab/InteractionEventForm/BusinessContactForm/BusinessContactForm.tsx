@@ -2,10 +2,10 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, TextField, Typography } from '@material-ui/core';
 
-import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import useFormStyles from 'styles/formStyles';
+import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './BusinessContactFormStyles';
 import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -14,7 +14,7 @@ const businessContactFirstNameField = 'שם פרטי';
 const businessContactLastNameField = 'שם משפחה';
 const businessContactNumField = 'טלפון';
 
-const BusinessContactForm : React.FC = () : JSX.Element => {
+const BusinessContactForm: React.FC = (): JSX.Element => {
         
     const { control, errors, setError, clearErrors} = useFormContext();
 

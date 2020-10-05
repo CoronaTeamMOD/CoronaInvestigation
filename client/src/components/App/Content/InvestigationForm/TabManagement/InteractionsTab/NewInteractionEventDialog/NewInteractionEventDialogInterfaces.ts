@@ -1,10 +1,10 @@
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 export interface useInteractionsTabInput {
-    closeDialog: () => void,
-    handleInteractionCreation: (addedInteraction: InteractionEventDialogData) => void,
-    canConfirm: boolean,
-    interactionEventDialogData: InteractionEventDialogData
+    closeDialog: () => void;
+    handleInteractionCreation: (addedInteraction: InteractionEventDialogData) => void;
+    canConfirm: boolean;
+    interactionEventDialogData: InteractionEventDialogData;
 };
 
 export interface useInteractionsTabOutcome {

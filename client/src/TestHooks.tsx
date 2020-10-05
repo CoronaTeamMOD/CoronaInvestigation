@@ -1,5 +1,5 @@
-import { History } from 'history';
 import { mount } from 'enzyme';
+import { History } from 'history';
 import React, { PropsWithChildren } from 'react';
 import { Router, BrowserRouter} from 'react-router-dom';
 

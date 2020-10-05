@@ -7,7 +7,7 @@ import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
-import { InvestigationInfo } from 'models/InvestigationInfo';
+import InvestigationInfo from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 

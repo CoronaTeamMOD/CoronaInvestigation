@@ -1,5 +1,4 @@
-
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     flightDetails: {

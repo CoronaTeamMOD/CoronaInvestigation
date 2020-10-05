@@ -6,11 +6,7 @@ import { testHooksFunction } from 'TestHooks';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { initialExposuresAndFlightsData } from 'commons/Contexts/ExposuresAndFlights';
-import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
-import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
@@ -32,32 +28,6 @@ describe('investigationForm tests', () => {
       mockAdapter.onGet('/personalDetails/updatePersonalDetails').reply(200);
       mockAdapter.onGet('/addressDetails/countries').reply(200);
     });
-
-    const initialClinicalDetails: ClinicalDetailsData = {
-        isolationStartDate: null,
-        isolationEndDate: null,
-        isolationAddress: initialAddress,
-        isInIsolation: false,
-        isIsolationProblem: false,
-        isIsolationProblemMoreInfo: '',
-        symptomsStartDate: null,
-        symptoms: [''],
-        backgroundDeseases: [''],
-        hospital: '',
-        hospitalizationStartDate: null,
-        hospitalizationEndDate: null,
-        doesHaveSymptoms: false,
-        wasHospitalized: false,
-        isPregnant: false,
-        doesHaveBackgroundDiseases: false,
-        otherSymptomsMoreInfo: '',
-        otherBackgroundDiseasesMoreInfo: ''
-    };
-    
-    const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {
-        clinicalDetailsData: initialClinicalDetails,
-        setClinicalDetailsData: () => {}
-    };
 
     describe('tabs tests', () => {
 

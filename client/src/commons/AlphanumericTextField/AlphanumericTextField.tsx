@@ -1,8 +1,8 @@
 import React from 'react';
-import { TextField, Tooltip } from '@material-ui/core';
 import * as yup from 'yup';
+import { TextField, Tooltip } from '@material-ui/core';
 
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 
@@ -14,7 +14,7 @@ const stringAlphanum = yup
 const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
-  const value = (props.value == null || props.value === undefined) ? "" : props.value;
+  const value = (props.value == null || props.value === undefined) ? '' : props.value;
   const {
     name,
     onChange,
@@ -32,7 +32,7 @@ const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
   const conditionalyTriggerOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     const isValid = stringAlphanum.isValidSync(newValue);
-    if (isValid || newValue === "") {
+    if (isValid || newValue === '') {
       clearErrors(name);
       onChange(newValue);
     } else {

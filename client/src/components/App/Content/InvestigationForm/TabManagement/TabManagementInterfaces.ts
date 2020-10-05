@@ -1,3 +1,3 @@
 export interface useTabManagementOutcome {
-    handleTabChange: () => void
+    handleTabChange: () => void;
 }

@@ -10,7 +10,7 @@ import InteractionEventDialogFields from '../InteractionsEventDialogContext/Inte
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 
-const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Element => {
+const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
     const { closeEditDialog, eventToEdit, isOpen, loadInteractions } = props;
     
     const classes = useStyles();
@@ -37,8 +37,8 @@ const EditInteractionEventDialog : React.FC<Props> = (props: Props) : JSX.Elemen
                     בטל
                 </Button>
                 <PrimaryButton
-                    form="interactionEventForm"
-                    type="submit"
+                    form='interactionEventForm'
+                    type='submit'
                     id='createContact'
                 >
                     שמור שינויים
@@ -55,4 +55,4 @@ export interface Props {
     eventToEdit: InteractionEventDialogData;
     closeEditDialog: () => void;
     loadInteractions: () => void;
-}
+};

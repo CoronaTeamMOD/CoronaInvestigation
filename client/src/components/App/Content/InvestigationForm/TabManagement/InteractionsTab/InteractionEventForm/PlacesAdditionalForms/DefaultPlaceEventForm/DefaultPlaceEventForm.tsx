@@ -1,16 +1,16 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import {Grid} from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
-import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 import useStyles from './DefaultPlaceEventFormStyles';
+import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const DefaultPlaceEventForm : React.FC = () : JSX.Element => {
+const DefaultPlaceEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
     
     const classes = useStyles();

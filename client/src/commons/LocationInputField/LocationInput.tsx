@@ -1,12 +1,13 @@
 import React from 'react';
-import { Controller, Control } from 'react-hook-form'
-import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
+import { Controller, Control } from 'react-hook-form';
+import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
-import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
-import LocationOptionItem from './OptionItem/LocationOptionItem';
-import useStyles from './LocationInputFieldStyles';
 import useDBParser from 'Utils/vendor/useDBParsing';
+
+import useStyles from './LocationInputFieldStyles';
+import LocationOptionItem from './OptionItem/LocationOptionItem';
+import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
 
 export interface GoogleApiPlace {
     description: string;
@@ -32,7 +33,7 @@ const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 
 const LocationInput = (props: LocationInputProps) => {
-    const { control, name, selectedAddress,  setSelectedAddress, required} = props;
+    const { control, name, selectedAddress,  setSelectedAddress } = props;
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const {parseLocation} = useDBParser();
 
@@ -123,6 +124,6 @@ interface LocationInputProps {
     selectedAddress: GoogleApiPlace | null;
     setSelectedAddress: (newValue: GoogleApiPlace | null ) => void;
     control?: Control<Record<string, any>>;
-}
+};
 
 export default LocationInput;
