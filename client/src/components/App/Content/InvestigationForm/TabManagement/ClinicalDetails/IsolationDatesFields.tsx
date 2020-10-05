@@ -7,7 +7,6 @@ import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
-import { AnyTxtRecord } from 'dns';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
