@@ -2,15 +2,15 @@ import React from 'react';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
+import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
+import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
 import OfficeEventForm from '../InteractionEventForm/PlacesAdditionalForms/OfficeEventForm';
 import SchoolEventForm from '../InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
-import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
 import PrivateHouseEventForm from '../InteractionEventForm/PlacesAdditionalForms/PrivateHouseEventForm';
+import DefaultPlaceEventForm from '../InteractionEventForm/PlacesAdditionalForms/DefaultPlaceEventForm/DefaultPlaceEventForm';
 import TransportationEventForm from '../InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TransportationEventForm';
-import OtherPublicLocationForm from './PlacesAdditionalForms/OtherPublicLocationForm';
-import MedicalLocationForm from './PlacesAdditionalForms/MedicalLocationForm';
 
-const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType } : Props) : JSX.Element => {
+const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType }: Props): JSX.Element => {
     const {
         geriatric,
         school,
@@ -69,6 +69,6 @@ const PlaceTypeForm: React.FC<Props> = ({ placeType, placeSubType } : Props) : J
 export default PlaceTypeForm;
 
 interface Props {
-    placeType: string
-    placeSubType: number
-}
+    placeType: string;
+    placeSubType: number;
+};
