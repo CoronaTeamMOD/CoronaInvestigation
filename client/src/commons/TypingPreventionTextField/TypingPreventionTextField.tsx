@@ -3,7 +3,7 @@ import { TextField, Tooltip } from '@material-ui/core';
 
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
-import TypePreventiveTextFieldType from './TypePreventiveTextFieldTypes';
+import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
   const value = !props.value ? "" : props.value;

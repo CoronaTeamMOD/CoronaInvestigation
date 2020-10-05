@@ -2,7 +2,7 @@ import React from 'react';
 import * as yup from 'yup';
 
 import AlphbetTextFieldType from './AlphabetTextFieldTypes';
-import TypePreventiveTextField from '../TypePreventiveTextField/TypePreventiveTextField';
+import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
 const stringAlphabet = yup
   .string()
