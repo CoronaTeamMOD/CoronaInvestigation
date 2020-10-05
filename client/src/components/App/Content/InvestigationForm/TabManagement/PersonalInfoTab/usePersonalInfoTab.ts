@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { useContext } from 'react';
 
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';

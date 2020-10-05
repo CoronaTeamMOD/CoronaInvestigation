@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Street from 'models/enums/Street';
+import Street from 'models/Street';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export interface useClinicalDetailsIncome {

@@ -1,5 +1,5 @@
 interface FlightData {
-   wasAbroad: boolean,
+   wasAbroad: boolean;
    flightDestinationCountry: string | null;
    flightDestinationCity: string | null;
    flightDestinationAirport: string | null;

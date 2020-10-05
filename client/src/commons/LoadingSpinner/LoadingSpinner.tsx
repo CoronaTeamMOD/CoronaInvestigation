@@ -4,17 +4,17 @@ import { CircularProgress, Backdrop } from '@material-ui/core';
 
 import StoreStateType from 'redux/storeStateType';
 
-import useStyle from './LoadingSpinnerStyles';
+import useStyles from './LoadingSpinnerStyles';
 
 const LoadingSpinner: React.FC = () => {
 
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
 
-    const classes = useStyle();
+    const classes = useStyles();
 
     return (
       <Backdrop open={isLoading} className={classes.container}>
-        <CircularProgress size="20vh" />
+        <CircularProgress size='20vh' />
       </Backdrop>
     );
 }

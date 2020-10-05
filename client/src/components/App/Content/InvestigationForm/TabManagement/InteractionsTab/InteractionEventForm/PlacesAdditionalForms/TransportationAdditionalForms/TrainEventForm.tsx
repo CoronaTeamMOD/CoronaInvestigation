@@ -1,25 +1,25 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { Grid, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import { Grid, TextField } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import City from 'models/City';
+import useFormStyles from 'styles/formStyles';
+import StoreStateType from 'redux/storeStateType';
+import useStyles from './TransportationFormsStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
-import StoreStateType from 'redux/storeStateType';
-import useFormStyles from 'styles/formStyles';
-import useStyles from './TransportationFormsStyles';
 
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
-const TrainEventForm : React.FC = () : JSX.Element => {
+const TrainEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
 
     const formClasses = useFormStyles();
     const classes = useStyles();
 
-    const cities : Map<string, City> = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const cities: Map<string, City> = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     return (
         <>

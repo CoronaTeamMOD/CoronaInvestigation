@@ -1,4 +1,4 @@
-import {GeocodeResponse} from "../commons/LocationInputField/LocationInput";
+import {GeocodeResponse} from '../commons/LocationInputField/LocationInput';
 
 export type Address = GeocodeResponse | null;
 

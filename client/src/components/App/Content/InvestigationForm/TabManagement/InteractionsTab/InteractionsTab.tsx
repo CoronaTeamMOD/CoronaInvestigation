@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import Interaction from 'models/Contexts/InteractionEventDialogData';
+import React, { useState, useEffect } from 'react';
 
 import { setFormState } from 'redux/Form/formActionCreators';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 
-const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
+
+    const { id, onSubmit, setAreThereContacts } = props;
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -27,8 +29,9 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, getClinicalDetailsSymptoms, handleDeleteContactEvent } =
         useInteractionsTab({
-            setInteractions: setInteractions,
-            interactions: interactions
+            setInteractions,
+            interactions,
+            setAreThereContacts
         });
 
     useEffect(() => {
@@ -96,8 +99,9 @@ const InteractionsTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 };
 
 interface Props {
-    id: number,
+    id: number;
     onSubmit: () => void;
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default InteractionsTab;

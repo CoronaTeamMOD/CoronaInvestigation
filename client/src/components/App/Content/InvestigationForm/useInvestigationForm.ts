@@ -2,7 +2,6 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import StoreStateType from 'redux/storeStateType';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -10,6 +9,7 @@ import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
+import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
@@ -18,12 +18,11 @@ import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
-import useContactQuestioning from './TabManagement/ContactQuestioning/useContactQuestioning';
-import { useInvestigationFormOutcome, useInvestigationFormParameters  } from './InvestigationFormInterfaces';
+import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
+
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const classes = useStyles({});
     let history = useHistory();
@@ -142,7 +141,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     return {
         confirmFinishInvestigation,
         handleInvestigationFinish,
-        areThereContacts
+        areThereContacts,
+        setAreThereContacts
     };
 };
 

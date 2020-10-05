@@ -1,4 +1,4 @@
-import DBAddress from 'models/enums/DBAddress';
+import { DBAddress } from 'models/Address';
 
 interface ClinicalDetailsData {
     isolationStartDate: Date | null;

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Collapse, Grid, Typography } from '@material-ui/core';
 import { Control, Controller } from 'react-hook-form';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import DatePick from 'commons/DatePick/DatePick';
 import Toggle from 'commons/Toggle/Toggle';
+import DatePick from 'commons/DatePick/DatePick';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -19,7 +19,15 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
         clearErrors,
         errors,
         watchWasHospitalized,
+        trigger,
+        watchHospitalizedStartDate,
+        watchHospitalizedEndDate
      } = props;
+
+    React.useEffect(()=>{
+        trigger(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
+        trigger(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
+    },[watchHospitalizedStartDate,watchHospitalizedEndDate])
 
     return (
         <>
@@ -126,7 +134,9 @@ interface Props {
     clearErrors: (name?: string | string[]) => void;
     errors: Record<string, any>;
     watchWasHospitalized: boolean;
+    trigger: (payload?: string | string[]) => Promise<boolean>;
+    watchHospitalizedStartDate: Date;
+    watchHospitalizedEndDate: Date;
 };
 
 export default HospitalFields;
-

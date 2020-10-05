@@ -1,14 +1,13 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 
+import Map from 'commons/Map/Map';
+import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-
-import useFormStyles from 'styles/formStyles';
-import { useForm } from 'react-hook-form';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import Map from "commons/Map/Map";
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
 const ExposureForm = (props: any) => {
   const {
@@ -21,10 +20,10 @@ const ExposureForm = (props: any) => {
   const { errors, setError, clearErrors } = useForm();
 
   return (
-    <Grid className={classes.form} container justify="flex-start">
-      <FormRowWithInput fieldName="שם החולה:">
+    <Grid className={classes.form} container justify='flex-start'>
+      <FormRowWithInput fieldName='שם החולה:'>
         <>
-          <AlphanumericTextField
+          <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
             onChange={(value : string) =>
@@ -36,10 +35,10 @@ const ExposureForm = (props: any) => {
             setError={setError}
             clearErrors={clearErrors}
             name={fieldsNames.firstName}
-            placeholder="שם פרטי"
-            label="שם פרטי"
+            placeholder='שם פרטי'
+            label='שם פרטי'
           />
-          <AlphanumericTextField
+          <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
             onChange={(value : string) =>
@@ -51,16 +50,16 @@ const ExposureForm = (props: any) => {
             name={fieldsNames.lastName}
             setError={setError}
             clearErrors={clearErrors}
-            placeholder="שם משפחה"
-            label="שם משפחה"
+            placeholder='שם משפחה'
+            label='שם משפחה'
           />
         </>
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="תאריך החשיפה:">
+      <FormRowWithInput fieldName='תאריך החשיפה:'>
         <DatePick
           testId='exposureDate'
-          labelText="תאריך"
+          labelText='תאריך'
           value={exposureAndFlightsData[fieldsNames.date]}
           onChange={(newDate: Date) =>
             handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
@@ -68,7 +67,7 @@ const ExposureForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <FormRowWithInput testId='exposureAddress' fieldName="כתובת החשיפה:">
+      <FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
           <Map 
               name={fieldsNames.address}
                setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}

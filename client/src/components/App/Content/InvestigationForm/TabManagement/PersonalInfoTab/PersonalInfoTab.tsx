@@ -1,33 +1,33 @@
+import Swal from 'sweetalert2';
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import StoreStateType from 'redux/storeStateType';
 import Collapse from '@material-ui/core/Collapse';
+import { yupResolver } from '@hookform/resolvers';
 import FormLabel from '@material-ui/core/FormLabel';
 import Typography from '@material-ui/core/Typography';
+import { Controller, useForm } from 'react-hook-form';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers';
-import Swal from 'sweetalert2';
 
-import axios from 'Utils/axios';
 import City from 'models/City';
-import { Street } from 'models/Street';
+import axios from 'Utils/axios';
+import Street from 'models/Street';
 import Occupations from 'models/enums/Occupations';
-import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
-import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
-import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import { setFormState } from 'redux/Form/formActionCreators';
+import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
+import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
+import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
-import personalInfoValidationSchema from './PersonalInfoValidationSchema'
+import personalInfoValidationSchema from './PersonalInfoValidationSchema';
 
 const PHONE_LABEL = 'טלפון:';
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
@@ -608,8 +608,8 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 };
 
 interface Props {
-    id: number,
-    onSubmit: any
-}
+    id: number;
+    onSubmit: any;
+};
 
 export default PersonalInfoTab;

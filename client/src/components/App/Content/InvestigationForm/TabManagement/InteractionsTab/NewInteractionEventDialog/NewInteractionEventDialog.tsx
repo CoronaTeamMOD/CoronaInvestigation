@@ -2,11 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import { initAddress } from 'models/Address';
 import Contact from 'models/Contact';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import { initAddress } from 'models/Address';
 import StoreStateType from 'redux/storeStateType';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
@@ -20,7 +20,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
     endTime,
     externalizationApproval: false,
     contacts,
-    contactPersonPhoneNumber: "",
+    contactPersonPhoneNumber: '',
 });
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
@@ -39,7 +39,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
             </DialogTitle>
                 <DialogContent>
                     <InteractionEventForm 
-                        intractionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
+                        interactionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
                         loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
                         closeEditDialog={()=>{}}
@@ -54,8 +54,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                     בטל
                 </Button>
                 <PrimaryButton
-                    form="interactionEventForm"
-                    type="submit"
+                    form='interactionEventForm'
+                    type='submit'
                     test-id='createContact'
                 >
                     צור מקום/מגע

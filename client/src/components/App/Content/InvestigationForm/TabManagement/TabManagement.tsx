@@ -21,7 +21,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         currentTab,
         moveToNextTab,
         setNextTab,
-        areThereContacts
+        areThereContacts,
+        setAreThereContacts
     } = tabManagementProps;
 
     const tabs: TabObj[] = [
@@ -43,14 +44,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         {
             id: 3,
             name: TabNames.INTERACTIONS,
-            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab}/>
+            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
         }
     ];
 
    const last = {
         id: 4,
-            name: TabNames.CONTACT_QUESTIONING,
-            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+        name: TabNames.CONTACT_QUESTIONING,
+        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
     };
 
     const classes = useStyles({});
@@ -88,7 +89,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         tabs.map((tab: TabObj) => 
                             <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(tab.id)}}
                                 key={tab.id}
@@ -99,7 +100,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                     )}
                     {areThereContacts && <StyledTab 
                                 // @ts-ignore
-                                type="submit"
+                                type='submit'
                                 form={`form-${currentTab}`}
                                 onClick={() => {setNextTab(last.id)}}
                                 key={last.id}
@@ -123,4 +124,5 @@ interface Props {
     currentTab: number,
     moveToNextTab: () => void,
     setNextTab: (nextTabId: number) => void
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };

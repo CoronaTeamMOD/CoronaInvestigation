@@ -6,6 +6,7 @@ import { wait } from '@testing-library/react';
 import { testHooksFunction, testHooksFunctionWithRoute } from 'TestHooks';
 
 import axios from 'Utils/axios';
+
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -27,9 +27,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-
     const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
     const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
@@ -64,11 +62,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setHasSymptoms,
         setEndInvestigationDate,
     }),
-        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate,
-            setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
+        [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate, setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { confirmFinishInvestigation, areThereContacts } = useInvestigationForm();
+    const { confirmFinishInvestigation, areThereContacts, setAreThereContacts } = useInvestigationForm();
     const {
         currentTab,
         moveToNextTab,
@@ -79,8 +76,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         return !(formsValidations.some((formValidation) => !formValidation));
     }
 
+    const lastTabId = areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;
+
     const handleNextPageClick = () => {
-        if(currentTab === getLastTabId()) { 
+        if(currentTab === lastTabId) { 
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
@@ -97,10 +96,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         }
     }
 
-    const getLastTabId = () => {
-        return areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;   
-    }
-
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
@@ -112,6 +107,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                 <div className={classes.interactiveForm}>
                                     <TabManagement
                                         areThereContacts = {areThereContacts}
+                                        setAreThereContacts = {setAreThereContacts}
                                         currentTab = {currentTab}
                                         moveToNextTab = {moveToNextTab}
                                         setNextTab = {setNextTab}
@@ -120,9 +116,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         <PrimaryButton 
                                             type="submit"
                                             form={`form-${currentTab}`}
-                                            test-id={currentTab === getLastTabId() ? 'endInvestigation' : 'continueToNextStage'}
+                                            test-id={currentTab === lastTabId ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={handleNextPageClick}>
-                                        {currentTab === getLastTabId() ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                        {currentTab === lastTabId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>

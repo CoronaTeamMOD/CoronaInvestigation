@@ -1,6 +1,6 @@
 import React from 'react';
 
-export interface AlphanumericTextFieldProps<T> {
+export interface AlphabetTextFieldProps<T> {
     name: string,
     value: T | null,
     onChange: (value: string) => void,
@@ -16,6 +16,5 @@ export interface AlphanumericTextFieldProps<T> {
     error? : boolean,
 }
 
-type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;
-
-export default AlphanumericTextFieldType;
+type AlphabetTextFieldType = <T>(props: AlphabetTextFieldProps<T>) => JSX.Element;
+export default AlphabetTextFieldType;

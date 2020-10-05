@@ -1,16 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
-import { useInteractionsTabOutcome, useInteractionsTabInput } from './useInteractionsTabInterfaces';
 import useStyles from './InteractionsTabStyles';
+import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
 
 const symptomsWithKnownStartDate: number = 4;
 const nonSymptomaticPatient: number = 7;
@@ -18,7 +18,10 @@ const symptomsWithUnknownStartDate: number = 10;
 
 const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
-const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTabInput) :  useInteractionsTabOutcome => {
+const useInteractionsTab = (parameters: useInteractionsTabParameters) :  useInteractionsTabOutcome => {
+    
+    const { interactions, setInteractions, setAreThereContacts } = parameters;
+
     const { parseAddress } = useGoogleApiAutocomplete();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -37,7 +40,7 @@ const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTa
     const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) : Date[] => {
         if(coronaTestDate !== null) {
             const endInvestigationDate = new Date();
-            let startInvestigationDate : Date;
+            let startInvestigationDate: Date;
             if (doesHaveSymptoms) {
                 if(symptomsStartDate)
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
@@ -67,6 +70,10 @@ const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTa
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
                 const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
+                const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => { 
+                    return currentValue + interaction.contacts.length
+                }, 0);
+                setAreThereContacts(numberOfContactedPeople > 0);
                 setInteractions(allInteractions);
             }).catch(() => {
                 handleLoadInteractionsError();
@@ -111,7 +118,7 @@ const useInteractionsTab = ({ interactions, setInteractions }: useInteractionsTa
                 axios.delete('/intersections/deleteContactEvent', {
                     params: {contactEventId}
                 }).then(() => {
-                    setInteractions(interactions.filter(interaction => interaction.id !== contactEventId));
+                    setInteractions(interactions.filter((interaction:InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch(() => {
                     handleDeleteEventFailed();
                 })
