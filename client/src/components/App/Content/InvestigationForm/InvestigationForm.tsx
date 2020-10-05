@@ -79,7 +79,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         return !(formsValidations.some((formValidation) => !formValidation));
     }
 
-    const handleClick = () => {
+    const handleNextPageClick = () => {
         if(currentTab === getLastTabId()) { 
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
@@ -121,7 +121,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                             type="submit"
                                             form={`form-${currentTab}`}
                                             test-id={currentTab === getLastTabId() ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={handleClick}>
+                                            onClick={handleNextPageClick}>
                                         {currentTab === getLastTabId() ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
