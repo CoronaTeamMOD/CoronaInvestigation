@@ -20,6 +20,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
 
+    const contactAge = interactedContact.birthDate && !isNaN(differenceInYears(new Date(), new Date(interactedContact.birthDate)) as number) ? differenceInYears(new Date(), new Date(interactedContact.birthDate)) : null;
+
     return (
         <Grid item xs={4}>
             <Grid container direction='column' spacing={4}>
@@ -61,7 +63,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item xs={10}>
                     <FormInput fieldName='תאריך לידה'>
                         <DatePick
-                            value={new Date(interactedContact.birthDate)}
+                            useBigCalender={false}
+                            value={interactedContact.birthDate}
                             onChange={(newDate: Date) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate
                                 )
@@ -73,9 +76,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName='גיל'>
                         <AlphanumericTextField
                             name={'age'}
-                            placeholder='הכנס גיל:'
-                            value={differenceInYears(new Date(), new Date(interactedContact.birthDate as Date))}
-                            onChange={() => { }}
+                            placeholder={'בחר תאריך לידה'}
+                            value={contactAge}
+                            onChange={() => {}}
                             setError={setError}
                             clearErrors={clearErrors}
                             errors={errors}

@@ -10,14 +10,14 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange } = props;
+  const { labelText, value, onChange, useBigCalender } = props;
 
   return (
     <KeyboardDatePicker
       test-id={props.testId}
       autoOk
       className={classes.dateText}
-      disableToolbar
+      disableToolbar={useBigCalender !== undefined ? useBigCalender : true}
       variant="inline"
       format="dd/MM/yyyy"
       placeholder="dd/MM/yyyy"
@@ -40,6 +40,7 @@ export default DatePick;
 interface Props extends StandardTextFieldProps {
   labelText?: string;
   labelTextVariant?: Variant;
+  useBigCalender?: boolean;
   value: ParsableDate;
   onChange: any;
   testId?: string;

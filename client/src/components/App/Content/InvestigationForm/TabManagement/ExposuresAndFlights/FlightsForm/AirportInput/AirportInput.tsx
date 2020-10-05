@@ -1,15 +1,13 @@
-import {useSelector} from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import {createFilterOptions} from '@material-ui/lab';
-import React, {Dispatch, SetStateAction} from 'react';
+import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
-import useFormStyle from 'styles/formStyles';
-import useStyles from './AirportInputStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-
-import {Airport} from '../FlightFormTypes';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
+import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
     const {
@@ -34,7 +32,6 @@ const AirportInput = (props: any) => {
         } else if (option !== '')
             return countries.get(option)?.displayName
         else return ''
-
     }
 
     const filterOptions = createFilterOptions({
@@ -54,7 +51,7 @@ const AirportInput = (props: any) => {
                     filterOptions={filterOptions}
                 />
             </div>
-            <div className={classes.additionalAirportDetails}>
+            <div>
                 <AlphanumericTextField
                     name={cityFieldName}
                     errors={errors}
