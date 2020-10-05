@@ -4,7 +4,6 @@ import StoreStateType from 'redux/storeStateType';
 import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/Contexts/ExposuresAndFlights';
 
 import axios from '../axios';
-import useDBParser from '../vendor/useDBParsing';
 
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
@@ -20,21 +19,24 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const {parseLocation} = useDBParser();
 
     const saveExposureAndFlightData = async () : Promise<void> => {
-        const { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
+        let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
         let filteredExposures : (Exposure | DBExposure)[] = [];
-        const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
-        exposures.forEach(exposure => {
-            if (filterCondition(exposure)) {
-                exposuresToDelete.push(exposure.id);
-            } else {
-                filteredExposures.push(exposure);
-            }
-        });
-
-        filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
+        if (!wereFlights && !wereConfirmedExposures) {
+            exposuresToDelete = exposures.map(exposure => exposure.id).filter(id => id);
+        } else {
+            const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
+            exposures.forEach(exposure => {
+                if (filterCondition(exposure)) {
+                    exposure.id && exposuresToDelete.push(exposure.id);
+                } else {
+                    filteredExposures.push(exposure);
+                }
+            });
+    
+            filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
+        }
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
