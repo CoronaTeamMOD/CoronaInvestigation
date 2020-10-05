@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
 import useStyles from './TabManagementStyles';
+import { setFormState } from 'redux/Form/formActionCreators';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
 import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-
-
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -55,7 +54,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     };
 
     const classes = useStyles({});
-    
+
     const StyledTab = withStyles((theme) =>
         createStyles({
             root: {
@@ -69,10 +68,14 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
-    
+
     const isTabInValid = (tabId: number) => {
         return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId]  
     }
+    
+    useEffect(() => {
+        !areThereContacts && setFormState(investigationId, last.id, true);
+    }, [areThereContacts]);
 
     return (
         <Card className={classes.card}>
