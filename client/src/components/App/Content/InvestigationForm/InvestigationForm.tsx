@@ -80,7 +80,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     }
 
     const handleClick = () => {
-        if(currentTab === LAST_TAB_ID) { 
+        if(currentTab === getLastTabId()) { 
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
