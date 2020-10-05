@@ -4,7 +4,7 @@ import ClinicalDetailsFields from "models/enums/ClinicalDetailsFields";
 
 const requiredText = 'שדה זה הוא חובה';
 const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
-const minText = 'תאריך הסיום צריך להיות מוקדם יותר מתאריך ההתחלה';
+const minText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
 const futureText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
 const today = new Date();
 
