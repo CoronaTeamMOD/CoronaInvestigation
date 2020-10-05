@@ -1,4 +1,5 @@
 import React from 'react';
+import * as yup from 'yup';
 
 export interface TypePreventiveTextFieldProps<T> {
     name: string,
@@ -15,7 +16,7 @@ export interface TypePreventiveTextFieldProps<T> {
     testId?: string,
     error? : boolean,
     errorMessage: string,
-    validationSchema: any
+    validationSchema: yup.StringSchema<string, object>
 }
 
 type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;
