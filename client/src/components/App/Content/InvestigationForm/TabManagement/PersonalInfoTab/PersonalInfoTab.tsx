@@ -10,8 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { RadioGroup, Radio, TextField } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -48,7 +48,7 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 
-const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Element => {  
+const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
     const occupationsStateContext = useContext(occupationsContext);
 
@@ -83,19 +83,19 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         setOccupation(newOccupation);
         setSubOccupationName('');
         setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
-        setValue(PersonalInfoDataContextFields.INSTITUTION_NAME,'');
-        setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO,'');
-        if(newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity){
+        setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
+        setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
+        if (newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity) {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }
 
-    const convertToDBData = () : PersonalInfoDbData => {
+    const convertToDBData = (): PersonalInfoDbData => {
         const data = getValues();
         return {
             phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
             additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
-            contactPhoneNumber: data.contactPhoneNumber !== '' ? data.contactPhoneNumber : null, 
+            contactPhoneNumber: data.contactPhoneNumber !== '' ? data.contactPhoneNumber : null,
             contactInfo: data.contactInfo !== '' ? data.contactInfo : null,
             insuranceCompany: data.insuranceCompany !== '' ? data.insuranceCompany : null,
             address: {
@@ -115,17 +115,17 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         fetchPersonalInfo();
     }, [])
 
-    React.useEffect(()=>{
-        if(personalInfoState.city) {
+    React.useEffect(() => {
+        if (personalInfoState.city) {
             setCityId(personalInfoState.city)
         }
         setOccupation(personalInfoState.relevantOccupation)
-        if(personalInfoState.educationOccupationCity){
+        if (personalInfoState.educationOccupationCity) {
             getEducationSubOccupations(personalInfoState.educationOccupationCity)
         }
         reset(personalInfoState)
-    },[personalInfoState])
-    
+    }, [personalInfoState])
+
     React.useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
@@ -141,20 +141,20 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 
     React.useEffect(() => {
         if (streets.length > 0 && streetName === '') {
-            setValue('street',streets[0].id);
+            setValue('street', streets[0].id);
             setStreetName(streets[0].displayName);
         }
     }, [streets])
 
     const subOccupationsPlaceHolderByOccupation = () => {
-        if (occupation ===  Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
+        if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
         if (occupation === Occupations.TRANSPORTATION) return INSERT_TRANSPORTATION_COMPANY_NAME;
         if (occupation === Occupations.INDUSTRY) return INSERT_INDUSTRY_NAME;
         return INSERT_INSTITUTION_NAME;
     }
 
     const subOccupationsLabelByOccupation = () => {
-        if (occupation ===  Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
+        if (occupation === Occupations.GOVERNMENT_OFFICE) return OFFICE_NAME_LABEL;
         if (occupation === Occupations.TRANSPORTATION) return TRANSPORTATION_COMPANY_NAME_LABEL;
         if (occupation === Occupations.INDUSTRY) return INDUSTRY_NAME_LABEL;
         return INSTITUTION_NAME_LABEL;
@@ -162,17 +162,17 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
         event.preventDefault();
-        axios.post('/personalDetails/updatePersonalDetails', 
-        {
-            id : investigatedPatientId, 
-            personalInfoData, 
-        }).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
-        }) 
-        personalInfoValidationSchema.isValid(getValues()).then(valid=>{
+        axios.post('/personalDetails/updatePersonalDetails',
+            {
+                id: investigatedPatientId,
+                personalInfoData,
+            }).catch(() => {
+                Swal.fire({
+                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                    icon: 'error'
+                });
+            })
+        personalInfoValidationSchema.isValid(getValues()).then(valid => {
             setFormState(investigationId, id, valid);
         })
         onSubmit();
@@ -190,9 +190,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         </Typography>
                     </Grid>
                     <Grid item xs={2} className={classes.personalInfoItem}>
-                    <Controller 
-                            control={control} 
-                            name={PersonalInfoDataContextFields.PHONE_NUMBER} 
+                        <Controller
+                            control={control}
+                            name={PersonalInfoDataContextFields.PHONE_NUMBER}
                             test-id='personalDetailsPhone'
                             render={(props) => (
                                 <TextField
@@ -204,7 +204,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.PHONE_NUMBER]? errors[PersonalInfoDataContextFields.PHONE_NUMBER]?.message: 'טלפון*' }
+                                    label={errors[PersonalInfoDataContextFields.PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.PHONE_NUMBER]?.message : 'טלפון*'}
                                     onBlur={props.onBlur}
                                 />
                             )}
@@ -220,9 +220,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         </Typography>
                     </Grid>
                     <Grid item xs={2} className={classes.personalInfoItem}>
-                    <Controller 
-                            control={control} 
-                            name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER} 
+                        <Controller
+                            control={control}
+                            name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
                             test-id='personalDetailsAdditionalPhone'
                             render={(props) => (
                                 <TextField
@@ -234,7 +234,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message: 'טלפון' }
+                                    label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
                                 />
                             )}
@@ -250,9 +250,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         </Typography>
                     </Grid>
                     <Grid item xs={2} className={classes.personalInfoItem}>
-                    <Controller 
-                            control={control} 
-                            name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER} 
+                        <Controller
+                            control={control}
+                            name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
                             test-id='personalDetailsContactPhone'
                             render={(props) => (
                                 <TextField
@@ -264,32 +264,32 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message: 'טלפון*' }
+                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון*'}
                                     onBlur={props.onBlur}
                                 />
                             )}
                         />
                     </Grid>
                     <Controller
-                            name={PersonalInfoDataContextFields.CONTACT_INFO}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    name={PersonalInfoDataContextFields.CONTACT_INFO}
-                                    value={props.value}
-                                    onChange={(newValue: string) => (
-                                        props.onChange(newValue)
-                                    )}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
-                                    placeholder={CONTACT_INFO}
-                                    onBlur={props.onBlur}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_INFO]? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message: 'פרטי איש קשר*' }
-                                    className={classes.contactDescription}
-                                />
-                            )}
-                        />
+                        name={PersonalInfoDataContextFields.CONTACT_INFO}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                name={PersonalInfoDataContextFields.CONTACT_INFO}
+                                value={props.value}
+                                onChange={(newValue: string) => (
+                                    props.onChange(newValue)
+                                )}
+                                setError={setError}
+                                clearErrors={clearErrors}
+                                errors={errors}
+                                placeholder={CONTACT_INFO}
+                                onBlur={props.onBlur}
+                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר*'}
+                                className={classes.contactDescription}
+                            />
+                        )}
+                    />
                 </Grid>
                 <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
                     <Grid item xs={2} className={classes.personalInfoFieldContainer}>
@@ -451,7 +451,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     clearErrors={clearErrors}
                                     errors={errors}
                                     placeholder={'קומה'}
-                                    label={errors[PersonalInfoDataContextFields.FLOOR]? errors[PersonalInfoDataContextFields.FLOOR]?.message: 'קומה' }
+                                    label={errors[PersonalInfoDataContextFields.FLOOR] ? errors[PersonalInfoDataContextFields.FLOOR]?.message : 'קומה'}
                                 />
                             )}
                         />
@@ -474,7 +474,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     clearErrors={clearErrors}
                                     errors={errors}
                                     placeholder={'מספר בית'}
-                                    label={errors[PersonalInfoDataContextFields.HOUSE_NUMBER]? errors[PersonalInfoDataContextFields.HOUSE_NUMBER]?.message: 'מספר בית' }
+                                    label={errors[PersonalInfoDataContextFields.HOUSE_NUMBER] ? errors[PersonalInfoDataContextFields.HOUSE_NUMBER]?.message : 'מספר בית'}
                                 />
                             )}
                         />
@@ -495,9 +495,9 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 name={PersonalInfoDataContextFields.RELEVANT_OCCUPATION}
                                 control={control}
                                 render={(props) => (
-                                    <RadioGroup 
-                                        aria-label={OCCUPATION_LABEL} 
-                                        name={OCCUPATION_LABEL} 
+                                    <RadioGroup
+                                        aria-label={OCCUPATION_LABEL}
+                                        name={OCCUPATION_LABEL}
                                         value={props.value ? props.value : Occupations.OTHER}
                                         className={classes.relevantOccupationselect}>
                                         <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
@@ -509,7 +509,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                     control={<Radio
                                                         color='primary'
                                                         onChange={handleChangeOccupation}
-                                                        />}
+                                                    />}
                                                     label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
                                                 />
                                             })
@@ -523,39 +523,39 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                         occupation === Occupations.EDUCATION_SYSTEM &&
                         <Grid item xs={2}>
                             <Controller
-                                    name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                    control={control}
-                                    render={(props) => (
-                                        <Autocomplete
-                                            options={Array.from(cities, ([name, value]) => ({ name, value }))}
-                                            getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
-                                            getOptionSelected={(option) =>{ 
-                                                return option.value?.displayName === props.value
-                                            }}
-                                            value={props.value}
-                                            onChange={(event, newValue) => {
-                                                newValue && getEducationSubOccupations(newValue.value.displayName);
-                                                setSubOccupationName('');
-                                                props.onChange(newValue ? newValue.value.displayName : '')
-                                            }}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    error={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
-                                                    label={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]? 
-                                                        errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message:'עיר המצאות המוסד*' }
-                                                    onBlur={props.onBlur}
-                                                    test-id='institutionCity'
-                                                    id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                    placeholder={'עיר המצאות המוסד'}
-                                                />}
-                                        />
-                                    )}
-                                />
+                                name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                control={control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        options={Array.from(cities, ([name, value]) => ({ name, value }))}
+                                        getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
+                                        getOptionSelected={(option) => {
+                                            return option.value?.displayName === props.value
+                                        }}
+                                        value={props.value}
+                                        onChange={(event, newValue) => {
+                                            newValue && getEducationSubOccupations(newValue.value.displayName);
+                                            setSubOccupationName('');
+                                            props.onChange(newValue ? newValue.value.displayName : '')
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                error={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
+                                                label={errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY] ?
+                                                    errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message : 'עיר המצאות המוסד*'}
+                                                onBlur={props.onBlur}
+                                                test-id='institutionCity'
+                                                id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                placeholder={'עיר המצאות המוסד'}
+                                            />}
+                                    />
+                                )}
+                            />
                         </Grid>
                     }
                     <Grid item xs={3}>
-                        <Collapse in={occupation !== Occupations.UNEMPLOYED }>
+                        <Collapse in={occupation !== Occupations.UNEMPLOYED}>
                             {
                                 (subOccupations.length > 0 || occupation === Occupations.EDUCATION_SYSTEM) ?
                                     <Controller
@@ -567,7 +567,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                                                 inputValue={subOccupationName}
                                                 onInputChange={(event, newValue) => {
-                                                    if(event && event.type !== 'blur') {
+                                                    if (event && event.type !== 'blur') {
                                                         setSubOccupationName(newValue)
                                                     }
                                                 }}
@@ -579,8 +579,8 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                     <TextField
                                                         {...params}
                                                         error={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
-                                                        label={errors[PersonalInfoDataContextFields.INSTITUTION_NAME]? 
-                                                            errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message: 'שם מוסד*' }
+                                                        label={errors[PersonalInfoDataContextFields.INSTITUTION_NAME] ?
+                                                            errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message : 'שם מוסד*'}
                                                         onBlur={props.onBlur}
                                                         test-id='insertInstitutionName'
                                                         disabled={subOccupations.length === 0}
@@ -592,27 +592,27 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     />
                                     :
                                     <Controller
-                                    name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                    control={control}
-                                    render={(props) => (
-                                        <AlphanumericTextField
-                                            test-id='institutionName'
-                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                            value={props.value}
-                                            onBlur={props.onBlur}
-                                            onChange={(newValue: string) => (
-                                                props.onChange(newValue)
-                                        )}
-                                        setError={setError}
-                                        clearErrors={clearErrors}
-                                        errors={errors}
-                                        placeholder={subOccupationsPlaceHolderByOccupation()}      
-                                        label={errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?
-                                            errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message: subOccupationsLabelByOccupation() }
+                                        name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                        control={control}
+                                        render={(props) => (
+                                            <AlphanumericTextField
+                                                test-id='institutionName'
+                                                name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                value={props.value}
+                                                onBlur={props.onBlur}
+                                                onChange={(newValue: string) => (
+                                                    props.onChange(newValue)
+                                                )}
+                                                setError={setError}
+                                                clearErrors={clearErrors}
+                                                errors={errors}
+                                                placeholder={subOccupationsPlaceHolderByOccupation()}
+                                                label={errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO] ?
+                                                    errors[PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]?.message : subOccupationsLabelByOccupation()}
 
-                                        />
-                                )}
-                            />}
+                                            />
+                                        )}
+                                    />}
                         </Collapse>
                     </Grid>
                 </Grid>

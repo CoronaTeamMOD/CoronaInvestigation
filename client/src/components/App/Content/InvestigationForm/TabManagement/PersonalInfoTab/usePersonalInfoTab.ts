@@ -5,14 +5,14 @@ import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
-import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
+import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName,
-            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
+        setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
     } = parameters;
 
     const fetchPersonalInfo = () => {
@@ -23,28 +23,28 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
-                
+
                 setPersonalInfoData({
                     phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
-                    additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    additionalPhoneNumber: investigatedPatient.personByPersonId.additionalPhoneNumber,
                     contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    city : investigatedPatient.addressByAddress.city,
-                    street : investigatedPatient.addressByAddress.street,
-                    floor : investigatedPatient.addressByAddress.floor,
-                    houseNum : investigatedPatient.addressByAddress.houseNum,
+                    city: investigatedPatient.addressByAddress.city,
+                    street: investigatedPatient.addressByAddress.street,
+                    floor: investigatedPatient.addressByAddress.floor,
+                    houseNum: investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: 
-                    (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
-                    ?
-                    investigatedPatient.subOccupationBySubOccupation.city : '',
+                    educationOccupationCity:
+                        (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
+                            ?
+                            investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
                     contactInfo: investigatedPatient.patientContactInfo
                 });
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
                 if (patientAddress.cityByCity !== null) {
-                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
+                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);
                 }
                 if (patientAddress.streetByStreet !== null) {
                     setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
@@ -60,7 +60,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
         axios.get('/personalDetails/subOccupations?parentOccupation=' + parentOccupation).then((res: any) => {
             setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => {
                 return {
-                    id: node.id, 
+                    id: node.id,
                     subOccupation: node.displayName
                 }
             }));
@@ -69,10 +69,10 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const getEducationSubOccupations = (city: string) => {
         axios.get('/personalDetails/educationSubOccupations?city=' + city).then((res: any) => {
-            setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => { 
+            setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => {
                 return {
-                    id: node.id, 
-                    subOccupation: node.displayName, 
+                    id: node.id,
+                    subOccupation: node.displayName,
                     street: node.street
                 }
             }));
