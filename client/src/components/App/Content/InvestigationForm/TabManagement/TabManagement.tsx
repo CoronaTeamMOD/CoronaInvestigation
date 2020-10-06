@@ -48,7 +48,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         }
     ];
 
-   const last = {
+   const lastTab = {
         id: 4,
         name: TabNames.CONTACT_QUESTIONING,
         displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
@@ -75,44 +75,47 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     }
     
     useEffect(() => {
-        !areThereContacts && setFormState(investigationId, last.id, true);
+        !areThereContacts && setFormState(investigationId, lastTab.id, true);
     }, [areThereContacts]);
 
     return (
         <Card className={classes.card}>
-                <Tabs
-                    value={currentTab}
-                    indicatorColor='primary'
-                    textColor='primary'
-                >
-                     {
-                        tabs.map((tab: TabObj) => 
-                            <StyledTab 
-                                // @ts-ignore
-                                type='submit'
-                                form={`form-${currentTab}`}
-                                onClick={() => {setNextTab(tab.id)}}
-                                key={tab.id}
-                                label={tab.name}
-                                icon={isTabInValid(tab.id) ? <ErrorOutlineIcon/> : undefined}
-                                className={isTabInValid(tab.id) ? classes.errorIcon : undefined}
-                            />
-                    )}
-                    {areThereContacts && <StyledTab 
-                                // @ts-ignore
-                                type='submit'
-                                form={`form-${currentTab}`}
-                                onClick={() => {setNextTab(last.id)}}
-                                key={last.id}
-                                label={last.name}
-                                icon={isTabInValid(last.id) ? <ErrorOutlineIcon/> : undefined}
-                                className={isTabInValid(last.id) ? classes.errorIcon : undefined}
-                            />
-                    }
-                </Tabs>
-                <div className={classes.displayedTab}>
-                    {currentTab == 4 ? last.displayComponent:tabs[currentTab].displayComponent}
-                </div>
+            <Tabs
+                value={currentTab}
+                indicatorColor='primary'
+                textColor='primary'
+            >
+                {
+                    tabs.map((tab: TabObj) =>
+                        <StyledTab
+                            // @ts-ignore
+                            type='submit'
+                            form={`form-${currentTab}`}
+                            onClick={() => { setNextTab(tab.id) }}
+                            key={tab.id}
+                            label={tab.name}
+                            icon={isTabInValid(tab.id) ? <ErrorOutlineIcon /> : undefined}
+                            className={isTabInValid(tab.id) ? classes.errorIcon : undefined}
+                        />
+                    )
+                }
+                {
+                    areThereContacts &&
+                    <StyledTab
+                        // @ts-ignore
+                        type='submit'
+                        form={`form-${currentTab}`}
+                        onClick={() => { setNextTab(lastTab.id) }}
+                        key={lastTab.id}
+                        label={lastTab.name}
+                        icon={isTabInValid(lastTab.id) ? <ErrorOutlineIcon /> : undefined}
+                        className={isTabInValid(lastTab.id) ? classes.errorIcon : undefined}
+                    />
+                }
+            </Tabs>
+            <div className={classes.displayedTab}>
+                {currentTab == 4 ? lastTab.displayComponent : tabs[currentTab].displayComponent}
+            </div>
         </Card>
     )
 };
