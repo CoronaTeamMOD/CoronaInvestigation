@@ -36,7 +36,6 @@ export const useStyles = makeStyles({
     hospitalizationDates: {
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: '10vw',
     },
     smallGrid: {
         width: '60vw'
@@ -66,7 +65,7 @@ export const useStyles = makeStyles({
         marginBottom: '1vh',
     },
     hospitalInput: {
-      marginLeft: '6vw',
+      marginLeft: '5vw',
     },
     symptomsAndDiseasesCheckbox: {
         'media screen and (max-width: 1500px)': {
