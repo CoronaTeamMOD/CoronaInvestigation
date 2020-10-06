@@ -134,7 +134,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     }, [occupation]);
 
     React.useEffect(() => {
-        if(formsValidations && formsValidations[id] !== null){
+        if (formsValidations && formsValidations[id] !== null) {
             trigger();
         }
     }, [touched])

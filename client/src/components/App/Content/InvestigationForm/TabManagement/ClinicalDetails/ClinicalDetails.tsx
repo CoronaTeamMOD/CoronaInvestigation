@@ -89,7 +89,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [initialDBClinicalDetails])
 
     React.useEffect(() => {
-        if(formsValidations && formsValidations[id] !== null){
+        if (formsValidations && formsValidations[id] !== null) {
             trigger();
         }
     }, [touched])

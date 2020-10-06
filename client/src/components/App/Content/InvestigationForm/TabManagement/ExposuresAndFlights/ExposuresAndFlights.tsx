@@ -51,7 +51,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
 
   React.useEffect(() => {
-    if(formsValidations && formsValidations[id] !== null){
+    if (formsValidations && formsValidations[id] !== null) {
         trigger();
     }
   }, [touched])
