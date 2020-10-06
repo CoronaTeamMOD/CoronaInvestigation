@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { startOfTomorrow } from 'date-fns';
 
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
@@ -11,7 +12,7 @@ const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
         then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (startDate: Date) => {
-            const today = new Date();
+            const today = startOfTomorrow();
             return startDate < today ?
                 yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
                     .required(requiredText).typeError(requiredText) :
@@ -26,7 +27,7 @@ const isInIsolationEndDateSchema = yup.date().when(
         is: true,
         then: yup.date()
             .min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
-            .max(new Date(), futureText)
+            .max(startOfTomorrow(), futureText)
             .required(requiredText).typeError(requiredText),
         otherwise: yup.date().nullable()
     });
@@ -35,7 +36,7 @@ const wasHospitilizedStartDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
         is: true,
         then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (startDate: Date) => {
-            const today = new Date();
+            const today = startOfTomorrow();
             return startDate < today ?
                 yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), maxText)
                     .required(requiredText).typeError(requiredText) :
@@ -50,7 +51,7 @@ const wasHospitilizedEndDateSchema = yup.date().when(
         is: true,
         then: yup.date()
             .min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), minText)
-            .max(new Date(), futureText)
+            .max(startOfTomorrow(), futureText)
             .required(requiredText).typeError(requiredText),
         otherwise: yup.date().nullable()
     });
