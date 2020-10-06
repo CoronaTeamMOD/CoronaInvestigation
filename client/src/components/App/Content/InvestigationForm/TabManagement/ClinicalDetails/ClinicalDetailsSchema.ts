@@ -94,12 +94,12 @@ const ClinicalDetailsSchema = yup.object().shape({
     }),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when([ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN],
         (doesHaveSymptoms: boolean, isSymptomsDateUnknown: boolean, schema: any) => {
-            // if(doesHaveSymptoms && isSymptomsDateUnknown) {
-            //     return schema.nullable();
-            // } else if(!doesHaveSymptoms) {
-            //     return schema.nullable();
-            // }
-            // return schema.required(requiredText).typeError(requiredText);
+            if(doesHaveSymptoms && isSymptomsDateUnknown) {
+                return schema.nullable();
+            } else if(!doesHaveSymptoms) {
+                return schema.nullable();
+            }
+            return schema.required(requiredText).typeError(requiredText);
         }),
     [ClinicalDetailsFields.SYMPTOMS]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
