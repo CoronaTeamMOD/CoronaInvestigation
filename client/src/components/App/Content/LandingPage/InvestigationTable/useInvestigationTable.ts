@@ -8,11 +8,12 @@ import User from 'models/User';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
+import InvestigationRedux from 'models/InvestigationRedux';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
+import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { useInvestigationTableOutcome } from './InvestigationTableInterfaces';
@@ -65,7 +66,6 @@ type InvestigationsReturnType = {
 
 const useInvestigationTable = (): useInvestigationTableOutcome => {
 
-  const history = useHistory();
   const classes = useStyle();
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
@@ -102,7 +102,8 @@ const useInvestigationTable = (): useInvestigationTableOutcome => {
   }, [user.id, classes.errorAlertTitle]);
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
-    window.open(investigationURL + '/' + epidemiologyNumberVal);
+    setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
+    epidemiologyNumberVal !== -1 && window.open(investigationURL);
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {

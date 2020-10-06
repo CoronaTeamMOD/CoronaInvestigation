@@ -1,15 +1,16 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
+import { store } from 'redux/store';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import { InvestigationInfo } from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
@@ -56,8 +57,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    let { selectedEpidemiologyNumber } = useParams();
-
     const noInvestigationError = () => {
         Swal.fire({
             icon: 'warning',
@@ -73,9 +72,15 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
     }
 
     React.useEffect(() => {
-        selectedEpidemiologyNumber ?
-            setEpidemiologyNum(parseInt(selectedEpidemiologyNumber)) :
-            noInvestigationError();
+        timeout(2000).then(() => {
+            let openedEpidemiologyNumber = store.getState().investigation.lastOpenedEpidemiologyNumber;
+            if (openedEpidemiologyNumber !== -1) {
+                setEpidemiologyNum(openedEpidemiologyNumber);
+                setLastOpenedEpidemiologyNum(-1);
+            } else {
+                noInvestigationError();
+            }
+          });
     }, []);
 
     React.useEffect(() => {

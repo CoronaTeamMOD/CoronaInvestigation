@@ -9,8 +9,6 @@ import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './Perso
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
     const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
         setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
 

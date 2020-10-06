@@ -21,3 +21,10 @@ export const setInvestigatedPatientId = (investigatedPatientId: number) => {
         payload: {investigatedPatientId}
     })
 };
+
+export const setLastOpenedEpidemiologyNum = (lastOpenedEpidemiologyNumber : number): void => {
+    store.dispatch({
+        type: actionTypes.SET_LAST_OPENED_EPIDEMIOLOGY_NUM,
+        payload: {lastOpenedEpidemiologyNumber}
+    })
+};
