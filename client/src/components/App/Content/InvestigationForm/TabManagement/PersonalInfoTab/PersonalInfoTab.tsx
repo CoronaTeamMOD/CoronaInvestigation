@@ -63,16 +63,19 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setInsuranceCompanies,
         setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext
     });
 
-    const { control, setValue, getValues, reset, errors, setError, clearErrors } = useForm({
+    const { control, setValue, getValues, reset, errors, setError, clearErrors, trigger, formState } = useForm({
         mode: 'all',
         defaultValues: personalInfoState,
         resolver: yupResolver(personalInfoValidationSchema),
     });
+
+    const { touched } = formState;
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value
@@ -124,7 +127,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         }
         reset(personalInfoState)
     },[personalInfoState])
-    
+
     React.useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
@@ -133,6 +136,12 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
             setSubOccupations([]);
         }
     }, [occupation]);
+
+    React.useEffect(() => {
+        if (formsValidations && formsValidations[id] !== null) {
+            trigger();
+        }
+    }, [touched])
 
     React.useEffect(() => {
         cityId && getStreetsByCity(cityId);
