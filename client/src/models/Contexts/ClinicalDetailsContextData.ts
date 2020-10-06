@@ -7,6 +7,7 @@ interface ClinicalDetailsData {
     isInIsolation: boolean;
     isIsolationProblem: boolean;
     isIsolationProblemMoreInfo: string;
+    isSymptomsStartDateUnknown: boolean;
     symptomsStartDate: Date | null;
     symptoms: string[];
     doesHaveBackgroundDiseases: boolean;

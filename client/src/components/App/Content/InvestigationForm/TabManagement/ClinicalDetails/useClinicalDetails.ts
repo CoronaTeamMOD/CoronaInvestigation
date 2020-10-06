@@ -64,7 +64,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     } else {
                         patientAddress = initDBAddress;
                     }
-
                     setInitialDBClinicalDetails({
                         ...initialDBClinicalDetails,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
@@ -80,6 +79,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
+                        isSymptomsStartDateUnknown: patientInvestigation.symptomsStartTime === null,
                         doesHaveSymptoms: patientInvestigation.doesHaveSymptoms? true : false,
                         wasHospitalized: patientInvestigation.wasHospitalized? true : false,
                         isolationAddress: patientAddress,
