@@ -14,7 +14,7 @@ import useStyles from './TransportationFormsStyles';
 import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const FlightEventForm: React.FC = (): JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control, errors, setError, clearErrors } = useFormContext();
 
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -26,7 +26,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
             <Grid container justify='flex-start' className={formClasses.formRow}>
                 <Grid item xs={2} className={classes.mainTextItem}>
                     <FormInput fieldName='מספר טיסה'>
-                        <Controller 
+                        <Controller
                             name={InteractionEventDialogFields.FLIGHT_NUM}
                             control={control}
                             render={(props) => (
@@ -45,7 +45,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                 </Grid>
                 <Grid item xs={2}>
                     <FormInput fieldName='חברת תעופה'>
-                        <Controller 
+                        <Controller
                             name={InteractionEventDialogFields.AIR_LINE}
                             control={control}
                             render={(props) => (
@@ -64,20 +64,20 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
+                <Grid item xs={3} className={classes.mainTextItem}>
                     <FormInput fieldName='ארץ מוצא'>
-                        <Controller 
+                        <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY}
                             control={control}
                             render={(props) => (
                                 <Autocomplete
                                     options={Array.from(countries, ([id, value]) => ({ id, value }))}
                                     getOptionLabel={(option) => option.value?.displayName || ''}
-                                    defaultValue={{ id: props.value as string, value: countries.get(props.value as string)}}
+                                    defaultValue={{ id: props.value as string, value: countries.get(props.value as string) }}
                                     onChange={(event, selectedCountry) => props.onChange(selectedCountry?.id as string)}
                                     onInputChange={(event, newInputValue) => {
                                         if (newInputValue === '') {
-                                            props.onChange('', );
+                                            props.onChange('');
                                         }
                                     }}
                                     renderInput={(params) =>
@@ -90,10 +90,10 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>                       
+                </Grid>
                 <Grid item xs={3} className={classes.secondaryTextItem}>
                     <FormInput fieldName='עיר מוצא' className={classes.secondaryTextLabel}>
-                        <Controller 
+                        <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_CITY}
                             control={control}
                             render={(props) => (
@@ -107,13 +107,12 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                                     clearErrors={clearErrors}
                                 />
                             )}
-                        />      
+                        />
                     </FormInput>
                 </Grid>
-                <Grid item xs={1}/>
                 <Grid item xs={3}>
                     <FormInput fieldName='שדה תעופה מוצא'>
-                        <Controller 
+                        <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_AIRPORT}
                             control={control}
                             render={(props) => (
@@ -130,72 +129,73 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                         />
                     </FormInput>
                 </Grid>
-                <Grid container justify='flex-start' className={formClasses.formRow}>
-                    <Grid item xs={4}>
-                        <FormInput fieldName='ארץ יעד'>
-                            <Controller 
-                                name={InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY}
-                                control={control}
-                                render={(props) => (
-                                    <Autocomplete
-                                        options={Array.from(countries, ([id, value]) => ({ id, value }))}
-                                        getOptionLabel={(option) => option.value?.displayName || ''}
-                                        defaultValue={{ id: props.value as string, value: countries.get(props.value as string)}}
-                                        onChange={(event, selectedCountry) => props.onChange(selectedCountry?.id as string)}
-                                        onInputChange={(event, newInputValue) => {
-                                            if (newInputValue === '') {
-                                                props.onChange('');
-                                            }
-                                        }}
-                                        renderInput={(params) =>
-                                            <TextField
-                                                {...params}
-                                                className={formClasses.autocomplete}
-                                            />
+
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
+                <Grid item xs={3} className={classes.mainTextItem}>
+                    <FormInput fieldName='ארץ יעד'>
+                        <Controller
+                            name={InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY}
+                            control={control}
+                            render={(props) => (
+                                <Autocomplete
+                                    options={Array.from(countries, ([id, value]) => ({ id, value }))}
+                                    getOptionLabel={(option) => option.value?.displayName || ''}
+                                    defaultValue={{ id: props.value as string, value: countries.get(props.value as string) }}
+                                    onChange={(event, selectedCountry) => props.onChange(selectedCountry?.id as string)}
+                                    onInputChange={(event, newInputValue) => {
+                                        if (newInputValue === '') {
+                                            props.onChange('');
                                         }
-                                    />
-                                )}
-                            />
-                        </FormInput>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormInput fieldName='עיר יעד'>
-                            <Controller 
-                                name={InteractionEventDialogFields.FLIGHT_DESTINATION_CITY}
-                                control={control}
-                                render={(props) => (
-                                    <AlphanumericTextField
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue as string)}
-                                        onBlur={props.onBlur}
-                                        errors={errors}
-                                        setError={setError}
-                                        clearErrors={clearErrors}
-                                    />
-                                )}
-                            />
-                        </FormInput>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormInput fieldName='שדה תעופה יעד'>
-                            <Controller 
-                                name={InteractionEventDialogFields.FLIGHT_DESTINATION_AIRPORT}
-                                control={control}
-                                render={(props) => (
-                                    <AlphanumericTextField
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue as string)}
-                                        onBlur={props.onBlur}
-                                        errors={errors}
-                                        setError={setError}
-                                        clearErrors={clearErrors}
-                                    />
-                                )}
-                            />
-                        </FormInput>
-                    </Grid>
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                            className={formClasses.autocomplete}
+                                        />
+                                    }
+                                />
+                            )}
+                        />
+                    </FormInput>
+                </Grid>
+                <Grid item xs={3} className={classes.secondaryTextItem}>
+                    <FormInput fieldName='עיר יעד'>
+                        <Controller
+                            name={InteractionEventDialogFields.FLIGHT_DESTINATION_CITY}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    name={props.name}
+                                    value={props.value}
+                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                />
+                            )}
+                        />
+                    </FormInput>
+                </Grid>
+                <Grid item xs={3}>
+                    <FormInput fieldName='שדה תעופה יעד'>
+                        <Controller
+                            name={InteractionEventDialogFields.FLIGHT_DESTINATION_AIRPORT}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    name={props.name}
+                                    value={props.value}
+                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onBlur={props.onBlur}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                />
+                            )}
+                        />
+                    </FormInput>
                 </Grid>
             </Grid>
         </>
