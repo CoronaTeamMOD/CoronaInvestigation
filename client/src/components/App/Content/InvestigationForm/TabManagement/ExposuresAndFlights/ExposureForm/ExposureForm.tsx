@@ -1,4 +1,5 @@
 import React from 'react';
+import { isFuture } from 'date-fns';
 import { Grid } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 
@@ -6,8 +7,8 @@ import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 const ExposureForm = (props: any) => {
   const {
@@ -62,7 +63,7 @@ const ExposureForm = (props: any) => {
           labelText='תאריך'
           value={exposureAndFlightsData[fieldsNames.date]}
           onChange={(newDate: Date) =>
-            handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
+            !isFuture(newDate) && handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
           }
         />
       </FormRowWithInput>
