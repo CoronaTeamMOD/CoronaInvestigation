@@ -62,7 +62,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 fontWeight: theme.typography.fontWeightRegular,
             },
             wrapper: {
-                flexDirection: "row-reverse",
+                flexDirection: 'row-reverse',
             }
         }),
     )(Tab);
@@ -70,8 +70,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
 
-    const isTabInValid = (tabId: number) => {
-        return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId]  
+    const isTabValid = (tabId: number) => {
+        return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId];
     }
     
     useEffect(() => {
@@ -94,8 +94,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                             onClick={() => { setNextTab(tab.id) }}
                             key={tab.id}
                             label={tab.name}
-                            icon={isTabInValid(tab.id) ? <ErrorOutlineIcon /> : undefined}
-                            className={isTabInValid(tab.id) ? classes.errorIcon : undefined}
+                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon /> : undefined}
+                            className={isTabValid(tab.id) ? classes.errorIcon : undefined}
                         />
                     )
                 }
@@ -108,13 +108,13 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                         onClick={() => { setNextTab(lastTab.id) }}
                         key={lastTab.id}
                         label={lastTab.name}
-                        icon={isTabInValid(lastTab.id) ? <ErrorOutlineIcon /> : undefined}
-                        className={isTabInValid(lastTab.id) ? classes.errorIcon : undefined}
+                        icon={isTabValid(lastTab.id) ? <ErrorOutlineIcon /> : undefined}
+                        className={isTabValid(lastTab.id) ? classes.errorIcon : undefined}
                     />
                 }
             </Tabs>
             <div className={classes.displayedTab}>
-                {currentTab == 4 ? lastTab.displayComponent : tabs[currentTab].displayComponent}
+                {currentTab === lastTab.id ? lastTab.displayComponent : tabs[currentTab].displayComponent}
             </div>
         </Card>
     )
@@ -123,9 +123,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 export default TabManagement;
 
 interface Props {
-    areThereContacts: boolean,
-    currentTab: number,
-    moveToNextTab: () => void,
-    setNextTab: (nextTabId: number) => void
+    areThereContacts: boolean;
+    currentTab: number;
+    moveToNextTab: () => void;
+    setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };
