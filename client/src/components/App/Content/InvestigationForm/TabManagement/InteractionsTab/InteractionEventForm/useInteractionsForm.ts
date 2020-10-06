@@ -10,7 +10,7 @@ import InteractionEventDialogFields from '../InteractionsEventDialogContext/Inte
 
 
 const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFormOutcome => {  
-  const { interactionId, loadInteractions, closeNewDialog, closeEditDialog } = props;    
+  const { loadInteractions, closeNewDialog, closeEditDialog } = props;    
   const { parseLocation } = useDBParser();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -18,12 +18,11 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
-      if (interactionId) {
+      if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
-          locationAddress,
-          id: interactionId,
-          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
+          [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
+          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
         })
           .then(() => {
             loadInteractions();
@@ -34,10 +33,10 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
       } else {
         axios.post('/intersections/createContactEvent', {
           ...interactionsDataToSave,
-          locationAddress,
+          [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
-          .then((response) => {
+          .then(() => {
             loadInteractions()
             closeNewDialog();
           })
@@ -62,7 +61,6 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
 };
 
 interface useInteractionFormIncome {
-  interactionId?: number;
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
