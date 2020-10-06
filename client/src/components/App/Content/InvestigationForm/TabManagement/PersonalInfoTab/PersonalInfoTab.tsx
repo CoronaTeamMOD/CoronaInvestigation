@@ -386,7 +386,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     renderInput={(params) =>
                                         <TextField
                                             {...params}
-                                            test-id='insertInstitutionName'
+                                            test-id='insertCityName'
                                             value={props.value ? props.value : ''}
                                             label={errors[PersonalInfoDataContextFields.CITY] ? errors[PersonalInfoDataContextFields.CITY]?.message : 'עיר*'}
                                             error={errors[PersonalInfoDataContextFields.CITY]}

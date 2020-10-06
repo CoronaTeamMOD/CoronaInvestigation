@@ -24,7 +24,7 @@ const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המג
 
 const FIRST_NAME_LABEL='שם פרטי*';
 const LAST_NAME_LABEL='שם משפחה*';
-const PHONE_NUMBER_LABEL='מספר טלפון*';
+const PHONE_NUMBER_LABEL='מספר טלפון';
 
 
 const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
@@ -40,7 +40,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
     }, [])
 
     return (
-        <div className={classes.addContactFields} key='addContactFields'>
+        <div test-id='contactFormContainer' className={classes.addContactFields} key='addContactFields'>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonFirstName}>

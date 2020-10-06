@@ -11,6 +11,7 @@ import InteractionEventDialogFields from 'components/App/Content/InvestigationFo
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const placeTypeDisplayName = 'סוג אתר';
+const placeSubTypeDisplayName = 'תת סוג';
 
 const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -103,7 +104,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
             {
                 placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 &&
                 <Grid item xs={6}>
-                    <FormInput fieldName='תת סוג'>
+                    <FormInput fieldName={placeSubTypeDisplayName}>
                         <FormControl
                             required={required}
                             fullWidth
@@ -116,7 +117,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                     render={(props) => (
                                         <Select
                                             test-id='placeSubType'
-                                            label='תת סוג'
+                                            label={placeSubTypeDisplayName}
                                             value={props.value ? props.value : ''}
                                             onChange={(event) => props.onChange(event.target.value as number)}
                                         >
@@ -136,7 +137,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                 :
                                 <Select
                                     test-id='placeSubType'
-                                    label='תת סוג'
+                                    label={placeSubTypeDisplayName}
                                     value={placeSubType ? placeSubType : ''}
                                     onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
                                 >
