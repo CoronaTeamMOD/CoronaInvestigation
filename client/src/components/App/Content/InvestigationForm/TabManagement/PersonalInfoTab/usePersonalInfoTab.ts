@@ -9,23 +9,28 @@ import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './Perso
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
-    const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
-        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const fetchPersonalInfo = (epidemiologyNumber: number) => {
-        axios.get('/personalDetails/occupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
+    const { setInsuranceCompanies, setPersonalInfoData, 
+        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext} = parameters;
+
+    const fetchPersonalInfo = () => {
+        axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
-                personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
-                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
+                setPersonalInfoData({
+                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                    additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    address: {...investigatedPatient.addressByAddress},
+                    city : investigatedPatient.addressByAddress.city,
+                    street : investigatedPatient.addressByAddress.street,
+                    floor : investigatedPatient.addressByAddress.floor,
+                    houseNum : investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: 
                     (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)

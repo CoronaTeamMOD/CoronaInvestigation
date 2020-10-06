@@ -1,16 +1,17 @@
-import { Street } from 'models/Street';
-import { SubOccupationAndStreet } from 'models/SubOccupationAndStreet';
-import { PersonalInfoDataAndSet } from "commons/Contexts/PersonalInfoStateContext";
+import Street from 'models/Street';
+import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
+import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
+import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 export interface usePersoanlInfoTabParameters {
-    setOccupations: React.Dispatch<React.SetStateAction<string[]>>;
+    occupationsStateContext: OccupationsContext;
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
-    personalInfoStateContext: PersonalInfoDataAndSet;
+    setPersonalInfoData: React.Dispatch<React.SetStateAction<PersonalInfoFormData>>;
     setSubOccupations: React.Dispatch<React.SetStateAction<SubOccupationAndStreet[]>>;
     setSubOccupationName: React.Dispatch<React.SetStateAction<string>>;
     setCityName: React.Dispatch<React.SetStateAction<string>>;
     setStreetName: React.Dispatch<React.SetStateAction<string>>;
-    setStreets: React.Dispatch<React.SetStateAction<Street[]>>
+    setStreets: React.Dispatch<React.SetStateAction<Street[]>>;
 }
 
 export interface usePersonalInfoTabOutcome {
@@ -19,4 +20,3 @@ export interface usePersonalInfoTabOutcome {
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;
 }
-

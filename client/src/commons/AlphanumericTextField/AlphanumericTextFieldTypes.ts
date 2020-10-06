@@ -9,11 +9,13 @@ export interface AlphanumericTextFieldProps<T> {
     label?: string,
     setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void,
     clearErrors: (name?: string | string[]) => void,
-    errors: any,
+    errors: Record<string, Object>,
     placeholder?: string,
     className?: string,
-    testId?: string
+    testId?: string,
+    error? : boolean,
 }
 
 type AlphanumericTextFieldType = <T>(props: AlphanumericTextFieldProps<T>) => JSX.Element;
+
 export default AlphanumericTextFieldType;

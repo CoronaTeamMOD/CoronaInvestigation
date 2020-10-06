@@ -1,5 +1,6 @@
-import * as Actions from './investigationActionTypes';
 import InvestigationRedux from 'models/InvestigationRedux';
+
+import * as Actions from './investigationActionTypes';
 
 const initialState: InvestigationRedux = {
     epidemiologyNumber: -1,

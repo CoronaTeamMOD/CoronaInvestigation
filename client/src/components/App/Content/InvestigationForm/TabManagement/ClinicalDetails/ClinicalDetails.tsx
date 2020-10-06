@@ -1,37 +1,41 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from "@hookform/resolvers";
-import * as yup from "yup";
 import { Autocomplete } from '@material-ui/lab';
-import StoreStateType from 'redux/storeStateType';
-import { Grid, Typography, Collapse, TextField } from '@material-ui/core';
+import { yupResolver } from '@hookform/resolvers';
+import { useForm, Controller } from 'react-hook-form';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
+import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
-import Street from 'models/enums/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import Toggle from 'commons/Toggle/Toggle';
-import DatePick from 'commons/DatePick/DatePick';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import { clinicalDetailsDataContext } from 'commons/Contexts/ClinicalDetailsContext';
+import StoreStateType from 'redux/storeStateType';
+import { setFormState } from 'redux/Form/formActionCreators';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
+import SymptomsFields from './SymptomsFields';
+import HospitalFields from './HospitalFields';
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
+import IsolationDatesFields from './IsolationDatesFields';
+import ClinicalDetailsSchema from './ClinicalDetailsSchema';
+import IsolationProblemFields from './IsolationProblemFields';
+import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 
-export const otherBackgroundDiseaseFieldName = 'אחר';
-export const otherSymptomFieldName = 'אחר';
-
-const ClinicalDetails: React.FC = (): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
-    const { control, handleSubmit, errors, setError, clearErrors } = useForm({});
-    const context = React.useContext(clinicalDetailsDataContext);
-    const { city, street } = context.clinicalDetailsData.isolationAddress;
+    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
+    const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors, trigger } = useForm({
+        mode: 'all',
+        defaultValues: initialDBClinicalDetails,
+        resolver: yupResolver(ClinicalDetailsSchema)
+    });
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
-    const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
@@ -39,432 +43,308 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { hasBackgroundDeseasesToggle, getStreetByCity, updateClinicalDetails, updateIsolationAddress, updateIsolationAddressOnCityChange } = useClinicalDetails({
-        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    
+    const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
+        setSymptoms,
+        setBackgroundDiseases, 
+        setIsolationCityName, 
+        setIsolationStreetName, 
+        setStreetsInCity, 
+        initialDBClinicalDetails,
+        setInitialDBClinicalDetails
     });
 
-    React.useEffect(() => {
-        if (context.clinicalDetailsData.symptoms.length > 0) {
-            setIsUnkonwnDateChecked(context.clinicalDetailsData.symptomsStartDate === null)
-        }
-    }, [context.clinicalDetailsData.symptomsStartDate, context.clinicalDetailsData.symptoms])
-
-    React.useEffect(() => {
-        city !== '' ? getStreetByCity(city) : setStreetsInCity([]);
-    }, [city])
-
-    React.useEffect(() => {
-        if (streetsInCity.length > 0 && street === '') {
-            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, streetsInCity[0].id);
-            setIsolationStreetName(streetsInCity[0].displayName);
-        }
-    }, [streetsInCity])
-
-    const handleUnkonwnDateCheck = () => {
-        setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
-    };
-
-    const handleSymptomCheck = (checkedSymptom: string) => {
-        let selectedSymptoms = context.clinicalDetailsData.symptoms;
-
+    const handleSymptomCheck = (
+        checkedSymptom: string,
+        onChange: (newSymptoms: string[]) => void,
+        selectedSymptoms: string[]
+    ) => {
         if (selectedSymptoms.includes(checkedSymptom)) {
-            selectedSymptoms = selectedSymptoms.filter((symptom) => symptom !== checkedSymptom);
+            onChange(selectedSymptoms.filter((symptom) => symptom !== checkedSymptom));
         } else {
-            selectedSymptoms.push(checkedSymptom);
+            onChange([...selectedSymptoms, checkedSymptom]);
         }
-
-        updateClinicalDetails(ClinicalDetailsFields.SYMPTOMS, selectedSymptoms);
     };
 
-    const handleBackgroundIllnessCheck = (backgroundIllness: string) => {
-        let selectedBackgroundDiseases = context.clinicalDetailsData.backgroundDeseases;
-
-        if (selectedBackgroundDiseases.includes(backgroundIllness)) {
-            selectedBackgroundDiseases = selectedBackgroundDiseases.filter((checkedBackgroundIllness) => checkedBackgroundIllness !== backgroundIllness);
+    const handleBackgroundIllnessCheck = (
+        checkedBackgroundIllness: string,
+        onChange: (newBackgroundDiseases: string[]) => void,
+        selectedBackgroundDiseases: string[]
+        ) => {
+        if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
+            onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
         } else {
-            selectedBackgroundDiseases.push(backgroundIllness);
+            onChange([...selectedBackgroundDiseases, checkedBackgroundIllness]);
         };
-
-        updateClinicalDetails(ClinicalDetailsFields.BACKGROUND_DESEASSES, selectedBackgroundDiseases);
     };
+
+    React.useEffect(() => {
+        reset(initialDBClinicalDetails);
+    }, [initialDBClinicalDetails])
+
+    const saveForm = (e: any) => {
+        e.preventDefault();
+        const values = getValues();
+        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
+        ClinicalDetailsSchema.isValid(values).then(valid=>{
+            setFormState(investigationId, id, valid);
+        })
+        onSubmit();
+    }
+    const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
+    const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
+    const watchIsolationEndDate = watch(ClinicalDetailsFields.ISOLATION_END_DATE);
+    const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
+    const watchIsSymptomsDateUnknown = watch(ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN);
+    const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
+    const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
+    const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
+    const watchBackgroundDiseases = watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
+    const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
+    const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
+    const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
+
+    
+    React.useEffect(() => {
+        if (watchIsInIsolation === false) {
+            setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
+            setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
+        }
+    }, [watchIsInIsolation]);
+    
+    React.useEffect(() => {
+        if (watchIsIsolationProblem === false) {
+            setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
+        }
+    }, [watchIsIsolationProblem]);
+
+    React.useEffect(() => {
+        if (watchDoesHaveSymptoms === false) {
+            setValue(ClinicalDetailsFields.SYMPTOMS, []);
+            setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+            setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+        }
+    }, [watchDoesHaveSymptoms]);
+
+    React.useEffect(() => {
+        if(watchIsSymptomsDateUnknown) {
+            setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+        }
+    }, [watchIsSymptomsDateUnknown])
+
+    React.useEffect(() => {
+        if (watchDoesHaveBackgroundDiseases === false) {
+            setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
+            setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+        }
+    }, [watchDoesHaveBackgroundDiseases]);
+
+    React.useEffect(() => {
+        if (watchWasHospitalized === false) {
+            setValue(ClinicalDetailsFields.HOSPITAL, '');
+            setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);
+            setValue(ClinicalDetailsFields.HOSPITALIZATION_END_DATE, null);
+        }
+    }, [watchWasHospitalized]);
 
     return (
         <div className={classes.form}>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם שהית בבידוד:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Toggle
-                        test-id='isInQuarantine'
-                        value={context.clinicalDetailsData.isInIsolation}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_IN_ISOLATION, !context.clinicalDetailsData.isInIsolation)}
-                    />
-                </Grid>
-            </Grid>
-            <Collapse in={context.clinicalDetailsData.isInIsolation}>
-                <Grid item xs={2} className={classes.dates}>
-                    <div className={classes.spacedDates}>
-                        <DatePick
-                            required
-                            testId='quarantinedFromDate'
-                            labelText='מתאריך'
-                            value={context.clinicalDetailsData.isolationStartDate}
-                            onChange={(newDate: Date) =>
-                                updateClinicalDetails(
-                                    ClinicalDetailsFields.ISOLATION_START_DATE,
-                                    newDate
-                                )
-                            }
-                        />
-                    </div>
-                    <DatePick
-                        required
-                        testId='quarantinedUntilDate'
-                        labelText='עד'
-                        value={context.clinicalDetailsData.isolationEndDate}
-                        onChange={(newDate: Date) =>
-                            updateClinicalDetails(
-                                ClinicalDetailsFields.ISOLATION_END_DATE,
-                                newDate
-                            )
-                        }
-                    />
-                </Grid>
-            </Collapse>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            כתובת לאשפוז ביתי:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        test-id='currentQuarantineCity'
-                        options={Array.from(cities, ([id, value]) => ({id, value}))}
-                        getOptionLabel={(option) => option.value.displayName}
-                        inputValue={isolationCityName}
-                        onChange={(event, selectedCity) => updateIsolationAddressOnCityChange(selectedCity ? selectedCity.id : '')}
-                        onInputChange={(event, selectedCityName) => {
-                            setIsolationCityName(selectedCityName);
-                            if (selectedCityName === '') {
-                                updateIsolationAddressOnCityChange('');
-                                setIsolationStreetName('');
-                            }
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                placeholder='עיר'
-                            />
-                        }
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Autocomplete
-                        options={streetsInCity}
-                        getOptionLabel={(option) => option.displayName}
-                        inputValue={isolationStreetName}
-                        onChange={(event, selectedStreet) => updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, selectedStreet === null ? '' : selectedStreet.id)}
-                        onInputChange={(event, selectedStreetName) => {
-                            setIsolationStreetName(selectedStreetName);
-                            if (selectedStreetName === '') {
-                                updateIsolationAddress(ClinicalDetailsFields.ISOLATION_STREET, '');
-                            }
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                test-id='currentQuarantineStreet'
-                                {...params}
-                                placeholder='רחוב'
-                            />
-                        }
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <AlphanumericTextField
-                        testId='currentQuarantineHomeNumber'
-                        name={ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}
-                        value={context.clinicalDetailsData.isolationAddress.houseNum}
-                        onChange={(newValue: string) => (
-                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER, newValue)
-                        )}
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        placeholder='מספר הבית'
-                    />
-                </Grid>
-                <Grid item xs={2} className={classes.cancelWhiteSpace}>
-                    <AlphanumericTextField
-                        testId='currentQuarantineFloor'
-                        name={ClinicalDetailsFields.ISOLATION_FLOOR}
-                        value={context.clinicalDetailsData.isolationAddress.floor}
-                        onChange={(newValue: string) => (
-                            updateIsolationAddress(ClinicalDetailsFields.ISOLATION_FLOOR, newValue)
-                        )}
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        placeholder='קומה'/>
-                </Grid>
-            </Grid>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם בעייתי לקיים בידוד:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Toggle
-                        test-id='isQuarantineProblematic'
-                        value={context.clinicalDetailsData.isIsolationProblem}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM, !context.clinicalDetailsData.isIsolationProblem)}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <Collapse in={context.clinicalDetailsData.isIsolationProblem}>
-                        <AlphanumericTextField
-                            testId='problematicQuarantineReason'
-                            name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
-                            value={context.clinicalDetailsData.isIsolationProblemMoreInfo}
-                            onChange={(newValue: string) => (
-                                updateClinicalDetails(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, newValue)
-                            )}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
-                            placeholder='הכנס סיבה:'
-                            className={classes.isolationProblemTextField}
-                        />
-                    </Collapse>
-                </Grid>
-            </Grid>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם יש סימפטומים:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Toggle
-                        test-id='areThereSymptoms'
-                        value={context.clinicalDetailsData.doesHaveSymptoms}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, !context.clinicalDetailsData.doesHaveSymptoms)}
-                    />
-                </Grid>
-            </Grid>
-            <Collapse in={context.clinicalDetailsData.doesHaveSymptoms}>
-                <Grid item xs={7}>
-                    <div className={classes.dates}>
-                        {
-                            !isUnkonwnDateChecked &&
-                            <DatePick
-                                required={!isUnkonwnDateChecked}
-                                label={'תאריך התחלת סימפטומים'}
-                                testId='symptomsStartDate'
-                                value={context.clinicalDetailsData.symptomsStartDate}
-                                labelText='תאריך התחלת סימפטומים'
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.SYMPTOMS_START_DATE,
-                                        newDate
-                                    )
-                                }
-                            />
-                        }
-                        <div className={classes.symptomsDateCheckBox}>
-                            <CustomCheckbox
-                                testId='unkownSymptomsDate'
-                                checkboxElements={[{
-                                    value: isUnkonwnDateChecked,
-                                    labelText: 'תאריך התחלת סימפטומים לא ידוע',
-                                    checked: isUnkonwnDateChecked,
-                                    onChange: () => (handleUnkonwnDateCheck())
-                                }]}
-                            />
-                        </div>
-                    </div>
-                    {
-                        context.clinicalDetailsData.doesHaveSymptoms &&
-                        <Typography>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
-                    }
-                    <Grid item container className={classes.smallGrid}>
-                        {
-                            symptoms.map((symptom: string) => (
-                                <Grid item xs={5} key={symptom} className={classes.symptomsAndDiseasesCheckbox}>
-                                    <CustomCheckbox
-                                        key={symptom}
-                                        checkboxElements={[{
-                                            key: symptom,
-                                            value: symptom,
-                                            labelText: symptom,
-                                            checked: context.clinicalDetailsData.symptoms.includes(symptom),
-                                            onChange: () => handleSymptomCheck(symptom)
-                                        }]}
-                                    />
-                                </Grid>
-                            ))
-                        }
-                        <Collapse in={context.clinicalDetailsData.symptoms.includes(otherSymptomFieldName)}>
-                            <Grid item xs={2}>
-                                <AlphanumericTextField
-                                    testId='symptomInput'
-                                    name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
-                                    value={context.clinicalDetailsData.otherSymptomsMoreInfo}
-                                    onChange={(newValue : string) =>
-                                        updateClinicalDetails(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, newValue as string)
+            <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
+                <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} trigger={trigger}
+                                    watchIsolationStartDate={watchIsolationStartDate} watchIsolationEndDate={watchIsolationEndDate} />
+                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                    <Grid item xs={2} className={classes.fieldLabel}>
+                        <Typography>
+                            <b>
+                                כתובת לאשפוז ביתי:
+                            </b>
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Controller
+                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
+                            control={control}
+                            render={(props) => (
+                                <Autocomplete
+                                    test-id='currentQuarantineCity'
+                                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                    getOptionLabel={(option) => option? option.value.displayName : option}
+                                    inputValue={isolationCityName}
+                                    onChange={(event, selectedCity) => {
+                                        props.onChange(selectedCity? selectedCity.id : '')
+                                        if(selectedCity?.id && selectedCity.id  !== props.value) {
+                                            setIsolationStreetName('');
+                                            getStreetByCity(selectedCity.id);
+                                        }
+                                    }}
+                                    onInputChange={(event, selectedCityName) => {
+                                        setIsolationCityName(selectedCityName);
+                                        if (selectedCityName === '') {
+                                            setStreetsInCity([])
+                                            props.onChange('');
+                                            setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                        }
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]? true : false}
+                                            label={
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]?
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY].message
+                                                :
+                                                'עיר *'
+                                            }
+                                            {...params}
+                                            placeholder='עיר'
+                                        />
                                     }
-                                    required
-                                    label='סימפטום'
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Controller
+                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`}
+                            control={control}
+                            render={(props) => (
+                                <Autocomplete
+                                    options={streetsInCity}
+                                    getOptionLabel={(option) => option? option.displayName : option}
+                                    inputValue={isolationStreetName}
+                                    onChange={(event, selectedStreet) => props.onChange(selectedStreet? selectedStreet.id : '')}
+                                    onInputChange={(event, selectedStreetName) => {
+                                        setIsolationStreetName(selectedStreetName);
+                                        if (selectedStreetName === '') {
+                                            props.onChange('');
+                                            setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                        }
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            test-id='currentQuarantineStreet'
+                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]? true : false}
+                                            label={
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]?
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
+                                                :
+                                                'רחוב *'
+                                            }
+                                            {...params}
+                                            placeholder='רחוב'
+                                        />
+                                    }
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Controller
+                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]? true : false}
+                                    label={
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]?
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
+                                        :
+                                        'מספר הבית *'
+                                    }
+                                    testId='currentQuarantineHomeNumber'
+                                    name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
+                                    value={props.value}
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
+                                    )}
+                                    onBlur={props.onBlur}
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     errors={errors}
-                                    className={classes.otherTextField}
-                                    placeholder='הזן סימפטום...'
-
+                                    placeholder='מספר הבית'
                                 />
-                            </Grid>
-                        </Collapse>
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={2} className={classes.cancelWhiteSpace}>
+                        <Controller
+                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
+                            control={control}
+                            render={(props) => (
+                                <AlphanumericTextField
+                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]? true : false}
+                                    label={
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]?
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
+                                        :
+                                        'קומה *'
+                                    }
+                                    testId='currentQuarantineFloor'
+                                    name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
+                                    value={props.value}
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
+                                    )}
+                                    onBlur={props.onBlur}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    errors={errors}
+                                    placeholder='קומה'
+                                />
+                            )}
+                        />
                     </Grid>
                 </Grid>
-            </Collapse>
-            <Grid spacing={5} container className={classes.containerGrid + ' ' + classes.verticalSpacing} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם יש לך מחלות רקע:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Toggle
-                        test-id='areThereBackgroundDiseases'
-                        value={context.clinicalDetailsData.doesHaveBackgroundDiseases}
-                        onChange={hasBackgroundDeseasesToggle}
+                <IsolationProblemFields
+                    classes={classes}
+                    watchIsIsolationProblem={watchIsIsolationProblem}
+                    control={control}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                />
+                <SymptomsFields
+                    classes={classes}
+                    control={control}
+                    watchDoesHaveSymptoms={watchDoesHaveSymptoms}
+                    watchSymptoms={watchSymptoms}
+                    watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
+                    handleSymptomCheck={handleSymptomCheck}
+                    symptoms={symptoms}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                />
+                <BackgroundDiseasesFields
+                    classes={classes}
+                    backgroundDiseases={backgroundDiseases}
+                    handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                    control={control}
+                    watchBackgroundDiseases={watchBackgroundDiseases}
+                    watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
+                />
+                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                    <HospitalFields
+                        classes={classes}
+                        control={control}
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        errors={errors}
+                        trigger={trigger}
+                        watchWasHospitalized={watchWasHospitalized}
+                        watchHospitalizedStartDate={watchHospitalizedStartDate}
+                        watchHospitalizedEndDate={watcHospitalizedEndDate}
                     />
-                </Grid>
-            </Grid>
-            <Collapse in={context.clinicalDetailsData.doesHaveBackgroundDiseases}>
-                <Typography className={classes.backgroundDiseasesLabel}>מחלות רקע: (יש לבחור לפחות מחלת רקע
-                    אחת)</Typography>
-                <Grid container className={classes.smallGrid}>
-                    {
-                        backgroundDiseases.map((backgroundIllness: string) => (
-                            <Grid item xs={5} key={backgroundIllness} className={classes.symptomsAndDiseasesCheckbox}>
-                                <CustomCheckbox
-                                    key={backgroundIllness}
-                                    checkboxElements={[{
-                                        key: backgroundIllness,
-                                        value: backgroundIllness,
-                                        labelText: backgroundIllness,
-                                        checked: context.clinicalDetailsData.backgroundDeseases.includes(backgroundIllness),
-                                        onChange: () => handleBackgroundIllnessCheck(backgroundIllness)
-                                    }]}
-                                />
-                            </Grid>
-                        ))
-                    }
-                    <Collapse
-                        in={context.clinicalDetailsData.backgroundDeseases.includes(otherBackgroundDiseaseFieldName)}>
-                        <Grid item xs={2}>
-                            <AlphanumericTextField
-                                testId='otherBackgroundDisease'
-                                name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
-                                value={context.clinicalDetailsData.otherBackgroundDiseasesMoreInfo}
-                                onChange={(newValue: string) =>
-                                    updateClinicalDetails(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, newValue as string)
-                                }
-                                required
-                                setError={setError}
-                                clearErrors={clearErrors}
-                                errors={errors}
-                                label='מחלת רקע'
-                                placeholder='הזן מחלת רקע...'
-                                className={classes.otherTextField}
-                            />
-                        </Grid>
-                    </Collapse>
-                </Grid>
-            </Collapse>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם אושפז:
-                        </b>
-                    </Typography>
-                </Grid>
-                <Grid item xs={10}>
-                    <Toggle
-                        test-id='wasHospitalized'
-                        value={context.clinicalDetailsData.wasHospitalized}
-                        onChange={() => updateClinicalDetails(ClinicalDetailsFields.WAS_HOPITALIZED, !context.clinicalDetailsData.wasHospitalized)}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                </Grid>
-                <Grid item xs={10}>
-                    <Collapse in={context.clinicalDetailsData.wasHospitalized}>
-                        <div className={classes.dates}>
-                            <Typography>
-                                <b>
-                                    בית חולים:
-                                </b>
-                            </Typography>
-                            <TextField
-                                required
-                                label='בית חולים'
-                                test-id='hospitalInput'
-                                value={context.clinicalDetailsData.hospital}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => (
-                                    updateClinicalDetails(ClinicalDetailsFields.HOSPITAL, event.target.value)
-                                )}
-                            />
-                        </div>
-                        <div className={classes.dates}>
-                            <DatePick
-                                required
-                                label='מתאריך'
-                                testId='wasHospitalizedFromDate'
-                                labelText='מתאריך'
-                                value={context.clinicalDetailsData.hospitalizationStartDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_START_DATE,
-                                        newDate
-                                    )
-                                }
-                            />
-                            <DatePick
-                                required
-                                label='עד'
-                                testId='wasHospitalizedUntilDate'
-                                labelText='עד'
-                                value={context.clinicalDetailsData.hospitalizationEndDate}
-                                onChange={(newDate: Date) =>
-                                    updateClinicalDetails(
-                                        ClinicalDetailsFields.HOSPITALIZATION_END_DATE,
-                                        newDate
-                                    )
-                                }
-                            />
-                        </div>
-                    </Collapse>
-                </Grid>
-                {patientGender === Gender.FEMALE ?
-                    <>
+                    <Collapse in={patientGender === Gender.FEMALE}>
                         <Grid item xs={2}>
                             <Typography>
                                 <b>
@@ -472,17 +352,31 @@ const ClinicalDetails: React.FC = (): JSX.Element => {
                                 </b>
                             </Typography>
                         </Grid>
-                        <Toggle
-                            test-id='isPregnant'
-                            value={context.clinicalDetailsData.isPregnant}
-                            onChange={() => updateClinicalDetails(ClinicalDetailsFields.IS_PREGNANT, !context.clinicalDetailsData.isPregnant)}
+                        <Controller
+                            name={ClinicalDetailsFields.IS_PREGNANT}
+                            control={control}
+                            render={(props) => (
+                                <Toggle
+                                    test-id='isPregnant'
+                                    value={props.value}
+                                    onChange={(e, value) => {
+                                        if (value !== null) {
+                                            props.onChange(value)
+                                        }
+                                    }}
+                                />
+                            )}
                         />
-                    </>
-                    : <></>
-                }
-            </Grid>
+                    </Collapse>
+                </Grid>
+            </form>
         </div>
     );
 };
+
+interface Props {
+    id: number;
+    onSubmit: () => void;
+}
 
 export default ClinicalDetails;

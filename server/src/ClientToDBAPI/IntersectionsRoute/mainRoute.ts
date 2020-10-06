@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
 
+import Contact from '../../Models/ContactEvent/Contact';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import ContactType from '../../Models/ContactEvent/Enums/ContactType';
+import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
 import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID } from '../../DBService/ContactEvent/Query'
+import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query'
 
 const errorStatusCode = 500;
 
@@ -46,6 +47,16 @@ const convertDBEvent = (event: ContactEvent) => {
     };
 }
 
+intersectionsRoute.get('/contactTypes', (request: Request, response: Response) => {
+    graphqlRequest(GET_ALL_CONTACT_TYPES, response.locals)
+        .then((result: GetContactTypeResponse) => {
+            response.send(result.data.allContactTypes.nodes);
+    }).catch((err) => {
+        console.log(err);
+        response.status(errorStatusCode).send('error in fetching data: ' + err);
+    });
+});
+
 intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, response: Response) => {
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals,{ currInvestigation: Number(request.params.investigationId)})
         .then((result: GetContactEventResponse) => {
@@ -76,16 +87,22 @@ const resetEmptyFields = (object: any) => {
 }
 
 const convertEventToDBType = (event: any) => {
-    const updatedContacts = event.contacts.filter((contact: any) => contact.firstName && contact.lastName && contact.phoneNumber);
-    updatedContacts.forEach((contact: any) => {
-        contact.doesNeedIsolation = contact.contactType === ContactType.TIGHT;
+    const deletedContacts : number[] = [];
+    const updatedContacts = event.contacts.filter((contact: Contact) => { 
+        if (contact.firstName && contact.lastName && contact.phoneNumber) {
+            return true;
+        } else {
+            contact.serialId && deletedContacts.push(+contact.serialId);
+            return false;
+        }
+    });
+    updatedContacts.forEach((contact: Contact) => {
         contact.id = contact.id ? contact.id : null;
-        delete contact.contactType;
     })
     event.contacts = updatedContacts;
     resetEmptyFields(event);
     (event.locationAddress) && resetEmptyFields(event.locationAddress);
-    return event;
+    return {...event, deletedContacts};
 }
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {

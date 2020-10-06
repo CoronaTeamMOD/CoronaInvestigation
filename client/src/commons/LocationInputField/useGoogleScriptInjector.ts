@@ -8,10 +8,14 @@ let injectionError: Error | null = null;
 let onScriptLoadCallbacks: (() => void)[] = [];
 let onScriptLoadErrorCallbacks: ((error: Error | null) => void)[] = [];
 
-const injectScript = (apiKey: string): Promise<void> => {
+const injectScript = (): Promise<any> => {
+    if ((window as any).google) return Promise.resolve((window as any).google.maps);
+    if (!process.env.REACT_APP_GOOGLE_API_KEY) return Promise.reject({error: 'no google api key provided'});
+
+    const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
     switch (injectionState) {
         case INJECTION_STATE_DONE:
-            return injectionError ? Promise.reject(injectionError) : Promise.resolve();
+            return injectionError ? Promise.reject(injectionError) : Promise.resolve((window as any).google.map);
 
         case INJECTION_STATE_IN_PROGRESS:
             return new Promise((resolve, reject) => {
@@ -33,7 +37,7 @@ const injectScript = (apiKey: string): Promise<void> => {
 
                 const onScriptLoad = () => {
                     // Resolve current promise
-                    resolve();
+                    resolve((window as any).google.map);
                     // Resolve the pending promises in their respective order
                     onScriptLoadCallbacks.forEach((cb) => cb());
 

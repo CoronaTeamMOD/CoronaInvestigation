@@ -1,13 +1,5 @@
 import { gql } from 'postgraphile';
 
-export const CREATE_ISOLATION_ADDRESS = gql`
-mutation createAddress ($input: InsertAndGetAddressIdInput!) {
-    insertAndGetAddressId(input: $input) {
-        integer
-    }
-}
-`;
-
 export const UPDATE_INVESTIGATION = gql`
 mutation updateInvestigationByEpidemiologyNumber ($epidemiologyNumber: Int!, $hospital: String, $hospitalizationEndTime: Datetime, $hospitalizationStartTime: Datetime, $isIsolationProblem: Boolean, $isIsolationProblemMoreInfo: String, $isolationEndTime: Datetime, $isolationStartTime: Datetime, $symptomsStartTime: Datetime, $isolationAddress: Int, $isInIsolation: Boolean, $doesHaveSymptoms: Boolean, $wasHospitalized: Boolean, $otherSymptomsMoreInfo: String) {
         updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {hospital: $hospital, hospitalizationEndTime: $hospitalizationEndTime, hospitalizationStartTime: $hospitalizationStartTime, isIsolationProblem: $isIsolationProblem, isIsolationProblemMoreInfo: $isIsolationProblemMoreInfo, isolationEndTime: $isolationEndTime, isolationStartTime: $isolationStartTime, symptomsStartTime: $symptomsStartTime, isolationAddress: $isolationAddress, isInIsolation: $isInIsolation, doesHaveSymptoms: $doesHaveSymptoms, wasHospitalized: $wasHospitalized, otherSymptomsMoreInfo: $otherSymptomsMoreInfo}, epidemiologyNumber: $epidemiologyNumber}) {

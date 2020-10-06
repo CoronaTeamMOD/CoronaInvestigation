@@ -29,5 +29,5 @@ const AddressGrid : React.FC<Props> = (props: Props) : JSX.Element => {
 export default AddressGrid;
 
 interface Props {
-    interaction: InteractionEventDialogData
+    interaction: InteractionEventDialogData;
 }

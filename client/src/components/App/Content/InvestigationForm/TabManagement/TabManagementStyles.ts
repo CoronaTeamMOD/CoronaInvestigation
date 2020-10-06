@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     card: {
@@ -7,6 +7,9 @@ const useStyles = makeStyles({
     displayedTab: {
         height: '61vh',
         overflow: 'auto'
+    },
+    errorIcon:{
+        color: '#ffcc00'
     }
 });
 

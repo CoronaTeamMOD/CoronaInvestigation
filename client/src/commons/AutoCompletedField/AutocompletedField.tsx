@@ -1,13 +1,14 @@
 import React from 'react';
+import { TextField } from '@material-ui/core';
 import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
 import useStyles from './AutoCompletedFieldStyles';
 import AutocompletedFieldType from './AutoCompletedFieldTypes';
-import { TextField } from '@material-ui/core';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x:any) => x} = props;
+    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x: any) => x} = props;
     const classes = useStyles();
+
     const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
@@ -18,7 +19,6 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         filterSelectedOptions: true,
         includeInputInList: true,
         clearOnBlur: false,
-        disableClearable: true,
         filterOptions
     };
 

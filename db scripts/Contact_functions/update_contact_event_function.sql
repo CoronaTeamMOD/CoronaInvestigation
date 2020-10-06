@@ -40,6 +40,9 @@ flightOriginCountry varchar;
 contactPhoneNumber varchar;
 person_arr json[];
 person json;
+deletedContacts json;
+deletedContactsArr int4[];
+deletedContactsId int4;
 
 areContactsEmpty boolean;
 
@@ -48,6 +51,14 @@ begin
 	-- General event details:
 	curr_event :=(select value::text::int4 from json_each(input_data) where key='id');
 
+	select (input_data->'deletedContacts') into deletedContacts;
+	if deletedContacts is not null and deletedContacts::TEXT != '[]' then
+		deletedContactsArr :=(select  array_agg(e_data.value) from json_array_elements(deletedContacts) e_data);
+		foreach deletedContactsId in array deletedContactsArr 
+		loop
+			DELETE from public.contacted_person where id=deletedContactsId;
+		end loop;
+	end if;
 	select nullif((input_data->'placeType')::text,'null') as val into placeType;
 	select nullif((input_data->'placeName')::text,'null') as val into placeName;
 	investigationId :=(select value::text::int4 from json_each(input_data) where key='investigationId') ;

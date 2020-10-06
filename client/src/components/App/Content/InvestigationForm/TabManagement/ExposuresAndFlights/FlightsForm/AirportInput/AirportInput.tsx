@@ -1,15 +1,13 @@
-import {useSelector} from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import {createFilterOptions} from '@material-ui/lab';
-import React, {Dispatch, SetStateAction} from 'react';
+import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
-import useFormStyle from 'styles/formStyles';
-import useStyles from './AirportInputStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
-
-import {Airport} from '../FlightFormTypes';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+
+import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
     const {
@@ -34,7 +32,6 @@ const AirportInput = (props: any) => {
         } else if (option !== '')
             return countries.get(option)?.displayName
         else return ''
-
     }
 
     const filterOptions = createFilterOptions({
@@ -46,7 +43,6 @@ const AirportInput = (props: any) => {
         <div className={classes.airportDetails}>
             <div className={classes.airportCountryTextField}>
                 <AutocompletedField
-                    required
                     value={country}
                     options={options}
                     onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
@@ -54,13 +50,12 @@ const AirportInput = (props: any) => {
                     filterOptions={filterOptions}
                 />
             </div>
-            <div className={classes.additionalAirportDetails}>
+            <div>
                 <AlphanumericTextField
                     name={cityFieldName}
                     errors={errors}
                     setError={setError}
                     clearErrors={clearErrors}
-                    required
                     value={city}
                     placeholder='עיר'
                     label='עיר'
@@ -72,7 +67,6 @@ const AirportInput = (props: any) => {
                     errors={errors}
                     setError={setError}
                     clearErrors={clearErrors}
-                    required
                     value={airport}
                     onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
                     placeholder='שדה תעופה'

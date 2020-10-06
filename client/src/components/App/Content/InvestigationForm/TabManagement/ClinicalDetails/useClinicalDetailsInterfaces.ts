@@ -1,22 +1,19 @@
 import React from 'react';
 
-import Street from 'models/enums/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
+import Street from 'models/Street';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export interface useClinicalDetailsIncome {
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
-    context: ClinicalDetailsDataAndSet;
     setIsolationCityName: React.Dispatch<React.SetStateAction<string>>;
     setIsolationStreetName: React.Dispatch<React.SetStateAction<string>>;
     setStreetsInCity: React.Dispatch<React.SetStateAction<Street[]>>;
+    initialDBClinicalDetails: ClinicalDetailsData;
+    setInitialDBClinicalDetails: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>;
 };
 
 export interface useClinicalDetailsOutcome {
-    hasBackgroundDeseasesToggle: (event: React.ChangeEvent<{}>, value: boolean) => void;
     getStreetByCity: (cityId: string) => void;
-    updateClinicalDetails: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
-    updateIsolationAddress: (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => void;
-    updateIsolationAddressOnCityChange: (cityId: string) => void;
+    saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => void;
 };

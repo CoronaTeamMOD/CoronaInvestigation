@@ -1,8 +1,16 @@
 import { createContext } from 'react';
+
 import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
 
-export type ExposureAndFlightsDetails = ExposureData & FlightData;
+export type Exposure = ExposureData & FlightData;
+
+export type ExposureAndFlightsDetails = {
+    exposures: Exposure[],
+    exposuresToDelete: (number | null)[],
+    wereConfirmedExposures: boolean,
+    wereFlights: boolean,
+}
 
 export interface ExposureAndFlightsDetailsAndSet {
     exposureAndFlightsData: ExposureAndFlightsDetails,
@@ -10,27 +18,36 @@ export interface ExposureAndFlightsDetailsAndSet {
 };
 
 export const fieldsNames = {
-    wasConfirmedExposure: "wasConfirmedExposure",
-    firstName: "exposureFirstName",
-    lastName: "exposureLastName",
-    date: "exposureDate",
-    address: "exposureAddress",
-    placeType: "exposurePlaceType",
-    placeSubType: "exposurePlaceSubType",
-    wasAbroad: "wasAbroad",
-    destinationCountry: "flightDestinationCountry",
-    destinationCity: "flightDestinationCity",
-    destinationAirport: "flightDestinationAirport",
-    originCountry: "flightOriginCountry",
-    originCity: "flightOriginCity",
-    originAirport: "flightOriginAirport",
-    flightStartDate: "flightStartDate",
-    flightEndDate: "flightEndDate",
-    airline: "airline",
-    flightNumber: "flightNum",
+    wasConfirmedExposure: 'wasConfirmedExposure',
+    firstName: 'exposureFirstName',
+    lastName: 'exposureLastName',
+    date: 'exposureDate',
+    address: 'exposureAddress',
+    placeType: 'exposurePlaceType',
+    placeSubType: 'exposurePlaceSubType',
+    wasAbroad: 'wasAbroad',
+    destinationCountry: 'flightDestinationCountry',
+    destinationCity: 'flightDestinationCity',
+    destinationAirport: 'flightDestinationAirport',
+    originCountry: 'flightOriginCountry',
+    originCity: 'flightOriginCity',
+    originAirport: 'flightOriginAirport',
+    flightStartDate: 'flightStartDate',
+    flightEndDate: 'flightEndDate',
+    airline: 'airline',
+    flightNumber: 'flightNum',
+    wereConfirmedExposures: 'wereConfirmedExposures',
+    wereFlights: 'wereFlights',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
+    exposures: [],
+    exposuresToDelete: [],
+    wereConfirmedExposures: false,
+    wereFlights: false,
+};
+
+export const initialExposureOrFlight: Exposure = {
     id: null,
     wasConfirmedExposure: false,
     exposureFirstName: null,
@@ -52,9 +69,19 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     flightNum: null
 };
 
+export const isConfirmedExposureInvalid = (exposure: Exposure) =>
+    !(exposure.exposureFirstName && exposure.exposureLastName ) &&
+    (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
+
+export const isFlightInvalid = (exposure: Exposure) =>
+    !exposure.flightDestinationCity || 
+    !exposure.flightDestinationCountry || 
+    !exposure.flightOriginCity || 
+    !exposure.flightOriginCountry
+
 const initialContextValues: ExposureAndFlightsDetailsAndSet = {
     exposureAndFlightsData: initialExposuresAndFlightsData,
-    setExposureDataAndFlights: () => { }
+    setExposureDataAndFlights: () => {}
 };
 
 export const exposureAndFlightsContext = createContext<ExposureAndFlightsDetailsAndSet>(initialContextValues);
