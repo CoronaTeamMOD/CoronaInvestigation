@@ -88,15 +88,15 @@ const resetEmptyFields = (object: any) => {
 
 const convertEventToDBType = (event: any) => {
     const deletedContacts : number[] = [];
-    const updatedContacts = event.contacts.filter((contact: Contact) => { 
-        if (contact.firstName && contact.lastName && contact.phoneNumber) {
+    const updatedContacts = event.contacts?.filter((contact: Contact) => { 
+        if (contact.firstName && contact.lastName) {
             return true;
         } else {
             contact.serialId && deletedContacts.push(+contact.serialId);
             return false;
         }
     });
-    updatedContacts.forEach((contact: Contact) => {
+    updatedContacts?.forEach((contact: Contact) => {
         contact.id = contact.id ? contact.id : null;
     })
     event.contacts = updatedContacts;
