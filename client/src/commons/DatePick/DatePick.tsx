@@ -9,7 +9,7 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange, onBlur, error, useBigCalender } = props;
+  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate } = props;
 
   return (
     <KeyboardDatePicker
@@ -17,6 +17,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
       test-id={props.testId}
       autoOk
       className={classes.dateText}
+      maxDate={maxDate}
       disableToolbar={useBigCalender !== undefined ? useBigCalender : true}
       variant='inline'
       format='dd/MM/yyyy'
@@ -42,6 +43,7 @@ interface Props extends StandardTextFieldProps {
   labelText?: string;
   labelTextVariant?: Variant;
   useBigCalender?: boolean;
+  maxDate?: Date,
   value: ParsableDate;
   onChange: React.EventHandler<any>;
   testId?: string;
