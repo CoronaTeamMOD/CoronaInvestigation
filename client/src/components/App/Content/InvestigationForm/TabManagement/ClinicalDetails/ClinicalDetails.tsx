@@ -16,8 +16,8 @@ import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import HospitalFields from './HospitalFields';
 import SymptomsFields from './SymptomsFields';
+import HospitalFields from './HospitalFields';
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
@@ -36,7 +36,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
-    const [isUnkonwnDateChecked, setIsUnkonwnDateChecked] = React.useState<boolean>(false);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
@@ -57,10 +56,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         initialDBClinicalDetails,
         setInitialDBClinicalDetails
     });
-
-    const handleUnkonwnDateCheck = () => {
-        setIsUnkonwnDateChecked(!isUnkonwnDateChecked);
-    };
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -94,7 +89,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         e.preventDefault();
         const values = getValues();
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
-
         ClinicalDetailsSchema.isValid(values).then(valid=>{
             setFormState(investigationId, id, valid);
         })
@@ -104,6 +98,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
     const watchIsolationEndDate = watch(ClinicalDetailsFields.ISOLATION_END_DATE);
     const watchIsIsolationProblem = watch(ClinicalDetailsFields.IS_ISOLATION_PROBLEM);
+    const watchIsSymptomsDateUnknown = watch(ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN);
     const watchDoesHaveSymptoms = watch(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS);
     const watchSymptoms = watch(ClinicalDetailsFields.SYMPTOMS);
     const watchDoesHaveBackgroundDiseases = watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
@@ -133,6 +128,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
         }
     }, [watchDoesHaveSymptoms]);
+
+    React.useEffect(() => {
+        if(watchIsSymptomsDateUnknown) {
+            setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
+        }
+    }, [watchIsSymptomsDateUnknown])
 
     React.useEffect(() => {
         if (watchDoesHaveBackgroundDiseases === false) {
@@ -227,7 +228,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             test-id='currentQuarantineStreet'
                                             error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]? true : false}
                                             label={
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
                                                 errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]?
                                                 errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
                                                 :
@@ -249,7 +250,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 <AlphanumericTextField
                                     error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]? true : false}
                                     label={
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
                                         errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]?
                                         errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
                                         :
@@ -278,7 +279,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 <AlphanumericTextField
                                     error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]? true : false}
                                     label={
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
+                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
                                         errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]?
                                         errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
                                         :
@@ -313,8 +314,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     control={control}
                     watchDoesHaveSymptoms={watchDoesHaveSymptoms}
                     watchSymptoms={watchSymptoms}
-                    isUnkonwnDateChecked={isUnkonwnDateChecked}
-                    handleUnkonwnDateCheck={handleUnkonwnDateCheck}
+                    watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
                     handleSymptomCheck={handleSymptomCheck}
                     symptoms={symptoms}
                     setError={setError}

@@ -16,6 +16,7 @@ enum ClinicalDetailsFields {
     HOSPITAL = 'hospital',
     HOSPITALIZATION_START_DATE = 'hospitalizationStartDate',
     HOSPITALIZATION_END_DATE = 'hospitalizationEndDate',
+    IS_SYMPTOMS_DATE_UNKNOWN = 'isSymptomsStartDateUnknown',
     DOES_HAVE_SYMPTOMS = 'doesHaveSymptoms',
     WAS_HOPITALIZED = 'wasHospitalized',
     IS_PREGNANT = 'isPregnant',

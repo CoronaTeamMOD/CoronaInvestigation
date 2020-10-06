@@ -1,6 +1,6 @@
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import {Control, Controller} from 'react-hook-form';
+import {Collapse, Grid, Typography} from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
@@ -18,8 +18,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
         control,
         watchDoesHaveSymptoms,
         watchSymptoms,
-        isUnkonwnDateChecked,
-        handleUnkonwnDateCheck,
+        watchIsSymptomsDateUnknown,
         handleSymptomCheck,
         symptoms,
         setError,
@@ -57,41 +56,51 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <Collapse in={watchDoesHaveSymptoms}>
                 <Grid item xs={7}>
-                    <div className={classes.dates}>
-                        {
-                            !isUnkonwnDateChecked &&
-                            <Controller
-                                name={ClinicalDetailsFields.SYMPTOMS_START_DATE}
-                                control={control}
-                                render={(props) => (
-                                    <DatePick
-                                        onBlur={props.onBlur}
-                                        test-id='symptomsStartDate'
-                                        value={props.value}
-                                        labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת סימפטומים'}
-                                        onChange={(newDate: Date) =>
-                                            props.onChange(newDate)
+                    <div className={classes.symptomsDateCheckBox}>
+                        <Controller
+                            name={ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN}
+                            control={control}
+                            render={(props) => (
+                                <CustomCheckbox
+                                    testId='unkownSymptomsDate'
+                                    checkboxElements={[{
+                                        value: props.value,
+                                        labelText: 'תאריך התחלת סימפטומים לא ידוע',
+                                        checked: props.value,
+                                        onChange: (e, value) => {
+                                            props.onChange(value);
                                         }
-                                        error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]? true : false}
-                                    />
-                                )}
-                            />
-                        }
-                        <div className={classes.symptomsDateCheckBox}>
-                            <CustomCheckbox
-                                testId='unkownSymptomsDate'
-                                checkboxElements={[{
-                                    value: isUnkonwnDateChecked,
-                                    labelText: 'תאריך התחלת סימפטומים לא ידוע',
-                                    checked: isUnkonwnDateChecked,
-                                    onChange: () => (handleUnkonwnDateCheck())
-                                }]}
-                            />
-                        </div>
+                                    }]}
+                                />
+                            )}
+                        />
                     </div>
+                    <Collapse in={!watchIsSymptomsDateUnknown}>
+                        <div className={classes.dates}>
+                            {
+                                <Controller
+                                    name={ClinicalDetailsFields.SYMPTOMS_START_DATE}
+                                    control={control}
+                                    render={(props) => (
+                                        <DatePick
+                                            onBlur={props.onBlur}
+                                            test-id='symptomsStartDate'
+                                            value={props.value}
+                                            labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת סימפטומים'}
+                                            onChange={(newDate: Date) =>
+                                                props.onChange(newDate)
+                                            }
+                                            error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? true : false}
+                                        />
+                                    )}
+                                />
+                            }
+                        </div>
+                    </Collapse>
                     {
                         watchDoesHaveSymptoms &&
-                        <Typography color={errors[ClinicalDetailsFields.SYMPTOMS]? 'error' : 'initial'}>סימפטומים: (יש לבחור לפחות סימפטום אחד)</Typography>
+                        <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>סימפטומים: (יש
+                            לבחור לפחות סימפטום אחד)</Typography>
                     }
                     <Grid item container className={classes.smallGrid}>
                         <Controller
@@ -155,8 +164,7 @@ interface Props {
     control: Control;
     watchDoesHaveSymptoms: boolean;
     watchSymptoms: string[];
-    isUnkonwnDateChecked: boolean;
-    handleUnkonwnDateCheck: () => void;
+    watchIsSymptomsDateUnknown: boolean;
     handleSymptomCheck: (
         checkedSymptom: string,
         onChange: (newSymptoms: string[]) => void,
