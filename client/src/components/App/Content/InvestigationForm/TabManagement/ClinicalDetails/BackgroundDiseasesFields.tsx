@@ -26,7 +26,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 
     return (
         <>
-            <Grid spacing={5} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
                         <b>

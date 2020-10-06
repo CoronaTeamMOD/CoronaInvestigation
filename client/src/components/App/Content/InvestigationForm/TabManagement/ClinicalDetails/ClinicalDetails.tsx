@@ -52,10 +52,10 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
-        setBackgroundDiseases, 
-        setIsolationCityName, 
-        setIsolationStreetName, 
-        setStreetsInCity, 
+        setBackgroundDiseases,
+        setIsolationCityName,
+        setIsolationStreetName,
+        setStreetsInCity,
         initialDBClinicalDetails,
         setInitialDBClinicalDetails
     });
@@ -76,7 +76,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         checkedBackgroundIllness: string,
         onChange: (newBackgroundDiseases: string[]) => void,
         selectedBackgroundDiseases: string[]
-        ) => {
+    ) => {
         if (selectedBackgroundDiseases.includes(checkedBackgroundIllness)) {
             onChange(selectedBackgroundDiseases.filter((symptom) => symptom !== checkedBackgroundIllness));
         } else {
@@ -98,7 +98,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         e.preventDefault();
         const values = getValues();
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
-        ClinicalDetailsSchema.isValid(values).then(valid=>{
+
+        ClinicalDetailsSchema.isValid(values).then(valid => {
             setFormState(investigationId, id, valid);
         })
         onSubmit();
@@ -116,14 +117,14 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
-    
+
     React.useEffect(() => {
         if (watchIsInIsolation === false) {
             setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
             setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
         }
     }, [watchIsInIsolation]);
-    
+
     React.useEffect(() => {
         if (watchIsIsolationProblem === false) {
             setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
@@ -139,7 +140,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [watchDoesHaveSymptoms]);
 
     React.useEffect(() => {
-        if(watchIsSymptomsDateUnknown) {
+        if (watchIsSymptomsDateUnknown) {
             setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
         }
     }, [watchIsSymptomsDateUnknown])
@@ -162,221 +163,237 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     return (
         <div className={classes.form}>
             <form id={`form-${id}`} onSubmit={(e) => saveForm(e)}>
-                <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} trigger={trigger}
-                                    watchIsolationStartDate={watchIsolationStartDate} watchIsolationEndDate={watchIsolationEndDate} />
-                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                    <Grid item xs={2} className={classes.fieldLabel}>
-                        <Typography>
-                            <b>
-                                כתובת לאשפוז ביתי:
+                <Grid spacing={2} container>
+                    <Grid item xs={12}>
+                        <IsolationDatesFields classes={classes} watchIsInIsolation={watchIsInIsolation} control={control} errors={errors} trigger={trigger}
+                            watchIsolationStartDate={watchIsolationStartDate} watchIsolationEndDate={watchIsolationEndDate} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <Grid item xs={2} className={classes.fieldLabel}>
+                                <Typography>
+                                    <b>
+                                        כתובת לאשפוז ביתי:
                             </b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Controller
-                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
-                            control={control}
-                            render={(props) => (
-                                <Autocomplete
-                                    test-id='currentQuarantineCity'
-                                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                    getOptionLabel={(option) => option? option.value.displayName : option}
-                                    inputValue={isolationCityName}
-                                    onChange={(event, selectedCity) => {
-                                        props.onChange(selectedCity? selectedCity.id : '')
-                                        if(selectedCity?.id && selectedCity.id  !== props.value) {
-                                            setIsolationStreetName('');
-                                            getStreetByCity(selectedCity.id);
-                                        }
-                                    }}
-                                    onInputChange={(event, selectedCityName) => {
-                                        setIsolationCityName(selectedCityName);
-                                        if (selectedCityName === '') {
-                                            setStreetsInCity([])
-                                            props.onChange('');
-                                            setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                        }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]? true : false}
-                                            label={
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]?
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY].message
-                                                :
-                                                'עיר *'
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Controller
+                                    name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
+                                    control={control}
+                                    render={(props) => (
+                                        <Autocomplete
+                                            test-id='currentQuarantineCity'
+                                            options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                            getOptionLabel={(option) => option ? option.value.displayName : option}
+                                            inputValue={isolationCityName}
+                                            onChange={(event, selectedCity) => {
+                                                props.onChange(selectedCity ? selectedCity.id : '')
+                                                if (selectedCity?.id && selectedCity.id !== props.value) {
+                                                    setIsolationStreetName('');
+                                                    getStreetByCity(selectedCity.id);
+                                                }
+                                            }}
+                                            onInputChange={(event, selectedCityName) => {
+                                                setIsolationCityName(selectedCityName);
+                                                if (selectedCityName === '') {
+                                                    setStreetsInCity([])
+                                                    props.onChange('');
+                                                    setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY] ? true : false}
+                                                    label={
+                                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY] ?
+                                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY].message
+                                                            :
+                                                            'עיר *'
+                                                    }
+                                                    {...params}
+                                                    placeholder='עיר'
+                                                />
                                             }
-                                            {...params}
-                                            placeholder='עיר'
                                         />
-                                    }
+                                    )}
                                 />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Controller
-                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`}
-                            control={control}
-                            render={(props) => (
-                                <Autocomplete
-                                    options={streetsInCity}
-                                    getOptionLabel={(option) => option? option.displayName : option}
-                                    inputValue={isolationStreetName}
-                                    onChange={(event, selectedStreet) => props.onChange(selectedStreet? selectedStreet.id : '')}
-                                    onInputChange={(event, selectedStreetName) => {
-                                        setIsolationStreetName(selectedStreetName);
-                                        if (selectedStreetName === '') {
-                                            props.onChange('');
-                                            setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                        }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            test-id='currentQuarantineStreet'
-                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]? true : false}
-                                            label={
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET]?
-                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
-                                                :
-                                                'רחוב *'
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Controller
+                                    name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`}
+                                    control={control}
+                                    render={(props) => (
+                                        <Autocomplete
+                                            options={streetsInCity}
+                                            getOptionLabel={(option) => option ? option.displayName : option}
+                                            inputValue={isolationStreetName}
+                                            onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
+                                            onInputChange={(event, selectedStreetName) => {
+                                                setIsolationStreetName(selectedStreetName);
+                                                if (selectedStreetName === '') {
+                                                    props.onChange('');
+                                                    setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    test-id='currentQuarantineStreet'
+                                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ? true : false}
+                                                    label={
+                                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ?
+                                                            errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
+                                                            :
+                                                            'רחוב *'
+                                                    }
+                                                    {...params}
+                                                    placeholder='רחוב'
+                                                />
                                             }
-                                            {...params}
-                                            placeholder='רחוב'
                                         />
-                                    }
+                                    )}
                                 />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Controller
-                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]? true : false}
-                                    label={
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]?
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
-                                        :
-                                        'מספר הבית *'
-                                    }
-                                    testId='currentQuarantineHomeNumber'
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Controller
                                     name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
-                                    value={props.value}
-                                    onChange={(newValue: string) => (
-                                        props.onChange(newValue)
+                                    control={control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] ? true : false}
+                                            label={
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] ?
+                                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
+                                                    :
+                                                    'מספר הבית *'
+                                            }
+                                            testId='currentQuarantineHomeNumber'
+                                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
+                                            value={props.value}
+                                            onChange={(newValue: string) => (
+                                                props.onChange(newValue)
+                                            )}
+                                            onBlur={props.onBlur}
+                                            setError={setError}
+                                            clearErrors={clearErrors}
+                                            errors={errors}
+                                            placeholder='מספר הבית'
+                                        />
                                     )}
-                                    onBlur={props.onBlur}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
-                                    placeholder='מספר הבית'
                                 />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={2} className={classes.cancelWhiteSpace}>
-                        <Controller
-                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]? true : false}
-                                    label={
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR]?
-                                        errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
-                                        :
-                                        'קומה *'
-                                    }
-                                    testId='currentQuarantineFloor'
+                            </Grid>
+                            <Grid item xs={2} className={classes.cancelWhiteSpace}>
+                                <Controller
                                     name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
-                                    value={props.value}
-                                    onChange={(newValue: string) => (
-                                        props.onChange(newValue)
+                                    control={control}
+                                    render={(props) => (
+                                        <AlphanumericTextField
+                                            error={errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] ? true : false}
+                                            label={
+                                                errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
+                                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] ?
+                                                    errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
+                                                    :
+                                                    'קומה *'
+                                            }
+                                            testId='currentQuarantineFloor'
+                                            name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
+                                            value={props.value}
+                                            onChange={(newValue: string) => (
+                                                props.onChange(newValue)
+                                            )}
+                                            onBlur={props.onBlur}
+                                            setError={setError}
+                                            clearErrors={clearErrors}
+                                            errors={errors}
+                                            placeholder='קומה'
+                                        />
                                     )}
-                                    onBlur={props.onBlur}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
-                                    errors={errors}
-                                    placeholder='קומה'
                                 />
-                            )}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <IsolationProblemFields
+                            classes={classes}
+                            watchIsIsolationProblem={watchIsIsolationProblem}
+                            control={control}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            errors={errors}
                         />
                     </Grid>
-                </Grid>
-                <IsolationProblemFields
-                    classes={classes}
-                    watchIsIsolationProblem={watchIsIsolationProblem}
-                    control={control}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    errors={errors}
-                />
-                <SymptomsFields
-                    classes={classes}
-                    control={control}
-                    watchDoesHaveSymptoms={watchDoesHaveSymptoms}
-                    watchSymptoms={watchSymptoms}
-                    watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
-                    handleSymptomCheck={handleSymptomCheck}
-                    symptoms={symptoms}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    errors={errors}
-                />
-                <BackgroundDiseasesFields
-                    classes={classes}
-                    backgroundDiseases={backgroundDiseases}
-                    handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    errors={errors}
-                    control={control}
-                    watchBackgroundDiseases={watchBackgroundDiseases}
-                    watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
-                />
-                <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                    <HospitalFields
-                        classes={classes}
-                        control={control}
-                        setError={setError}
-                        clearErrors={clearErrors}
-                        errors={errors}
-                        trigger={trigger}
-                        watchWasHospitalized={watchWasHospitalized}
-                        watchHospitalizedStartDate={watchHospitalizedStartDate}
-                        watchHospitalizedEndDate={watcHospitalizedEndDate}
-                    />
-                    <Collapse in={patientGender === Gender.FEMALE}>
-                        <Grid item xs={2}>
-                            <Typography>
-                                <b>
-                                    האם בהריון:
-                                </b>
-                            </Typography>
-                        </Grid>
-                        <Controller
-                            name={ClinicalDetailsFields.IS_PREGNANT}
+                    <Grid item xs={12}>
+                        <SymptomsFields
+                            classes={classes}
                             control={control}
-                            render={(props) => (
-                                <Toggle
-                                    test-id='isPregnant'
-                                    value={props.value}
-                                    onChange={(e, value) => {
-                                        if (value !== null) {
-                                            props.onChange(value)
-                                        }
-                                    }}
-                                />
-                            )}
+                            watchDoesHaveSymptoms={watchDoesHaveSymptoms}
+                            watchSymptoms={watchSymptoms}
+                            watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
+                            handleSymptomCheck={handleSymptomCheck}
+                            symptoms={symptoms}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            errors={errors}
                         />
-                    </Collapse>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <BackgroundDiseasesFields
+                            classes={classes}
+                            backgroundDiseases={backgroundDiseases}
+                            handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            errors={errors}
+                            control={control}
+                            watchBackgroundDiseases={watchBackgroundDiseases}
+                            watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <HospitalFields
+                            classes={classes}
+                            control={control}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                            errors={errors}
+                            trigger={trigger}
+                            watchWasHospitalized={watchWasHospitalized}
+                            watchHospitalizedStartDate={watchHospitalizedStartDate}
+                            watchHospitalizedEndDate={watcHospitalizedEndDate}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <Grid item xs={2} className={classes.fieldLabel}>
+                                <Typography>
+                                    <b>
+                                        האם בהריון:
+                                </b>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Controller
+                                    name={ClinicalDetailsFields.IS_PREGNANT}
+                                    control={control}
+                                    render={(props) => (
+                                        <Toggle
+                                            test-id='isPregnant'
+                                            value={props.value}
+                                            onChange={(e, value) => {
+                                                if (value !== null) {
+                                                    props.onChange(value)
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </form>
         </div>
