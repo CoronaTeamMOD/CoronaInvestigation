@@ -12,6 +12,7 @@ export interface usePersoanlInfoTabParameters {
     setCityName: React.Dispatch<React.SetStateAction<string>>;
     setStreetName: React.Dispatch<React.SetStateAction<string>>;
     setStreets: React.Dispatch<React.SetStateAction<Street[]>>;
+    setInsuranceCompany: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface usePersonalInfoTabOutcome {

@@ -11,7 +11,7 @@ import { Controller, useForm } from 'react-hook-form';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { RadioGroup, Radio, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -29,17 +29,19 @@ import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
 
-const PHONE_LABEL = 'טלפון:';
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
+export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
+export const OCCUPATION_LABEL = 'תעסוקה:';
+
+const PHONE_LABEL = 'טלפון:';
 const CONTACT_PHONE_LABEL = 'טלפון איש קשר:';
 const INSURANCE_LABEL = 'גורם מבטח:';
 const ADDRESS_LABEL = 'כתובת:';
-export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
 const INSERT_INSTITUTION_NAME = 'הזן שם מוסד:';
+const INSERT_INSURANCE_COMPANY = 'הזן גורם מבטח:';
 const INSERT_OFFICE_NAME = 'הזן שם משרד/ רשות:';
 const INSERT_TRANSPORTATION_COMPANY_NAME = 'הזן שם חברה:';
 const INSERT_INDUSTRY_NAME = 'הזן שם תעשייה:';
-export const OCCUPATION_LABEL = 'תעסוקה:';
 const CONTACT_INFO = 'תיאור איש קשר:';
 const OFFICE_NAME_LABEL = 'שם משרד/ רשות*';
 const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
@@ -58,13 +60,16 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     const [streets, setStreets] = React.useState<Street[]>([]);
     const [cityId, setCityId] = React.useState<string>('');
     const [occupation, setOccupation] = React.useState<string>('');
-    const [personalInfoState,setPersonalInfoData] = React.useState<PersonalInfoFormData>(initialPersonalInfo);
+    const [personalInfoState, setPersonalInfoData] = React.useState<PersonalInfoFormData>(initialPersonalInfo);
+    const [insuranceCompany, setInsuranceCompany] = React.useState<string>('');
+
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setInsuranceCompanies,
-        setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
+        setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
+        setStreets, occupationsStateContext, setInsuranceCompany,
     });
 
     const { control, setValue, getValues, reset, errors, setError, clearErrors } = useForm({
@@ -296,31 +301,39 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                     </Grid>
                     <Grid item xs={2} className={classes.personalInfoItem}>
                         <FormControl fullWidth>
-                            <InputLabel error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}>
-                                {errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] ? 
-                                errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message : 
-                                'גורם מבטח*'}
-                            </InputLabel>
                             <Controller
                                 name={PersonalInfoDataContextFields.INSURANCE_COMPANY}
                                 control={control}
                                 render={(props) => (
-                                    <Select
-                                        test-id={'personalDetailsInsurer'}
-                                        value={props.value}
-                                        onChange={(event) => (
-                                            props.onChange(event.target.value)
-                                        )}
-                                        label={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]? errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message: 'גורם מבטח*' }
-                                        error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}
-                                        onBlur={props.onBlur}
-                                    >
-                                        {
-                                            insuranceCompanies.map((insuranceCompany) => (
-                                                <MenuItem key={insuranceCompany} value={insuranceCompany}>{insuranceCompany}</MenuItem>
-                                            ))
+                                    <Autocomplete
+                                        options={insuranceCompanies}
+                                        getOptionLabel={(option) => option}
+                                        inputValue={insuranceCompany}
+                                        getOptionSelected={(option) => option === props.value}
+                                        onChange={(event, selectedInsuranceCompany) => {
+                                            setInsuranceCompany(selectedInsuranceCompany ? selectedInsuranceCompany : '')
+                                            props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
+                                        }}
+                                        onInputChange={(event, selectedInsuranceCompany) => {
+                                            setInsuranceCompany(selectedInsuranceCompany);
+                                            if (selectedInsuranceCompany === '') {
+                                                props.onChange('');
+                                                setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                            }
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                test-id={'personalDetailsInsurer'}
+                                                value={props.value ? props.value : ''}
+                                                label={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] ? errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message : 'גורם מבטח*'}
+                                                error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}
+                                                onBlur={props.onBlur}
+                                                id={PersonalInfoDataContextFields.INSURANCE_COMPANY}
+                                                placeholder={INSERT_INSURANCE_COMPANY}
+                                            />
                                         }
-                                    </Select>
+                                    />
                                 )}
                             />
                         </FormControl>
@@ -343,17 +356,17 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                     className={classes.spacedOutAddress}
                                     options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
                                     getOptionLabel={(option) => {
-                                        return option?.value?.displayName ? option.value.displayName : cityName 
+                                        return option?.value?.displayName ? option.value.displayName : cityName
                                     }}
                                     getOptionSelected={(option) => option.value.id === props.value}
                                     inputValue={cityName}
                                     onInputChange={(event, newInputValue) => {
-                                        if(event.type !== "blur"){
-                                            setValue(PersonalInfoDataContextFields.STREET,'')
+                                        if (event.type !== 'blur') {
+                                            setValue(PersonalInfoDataContextFields.STREET, '')
                                             setStreetName('')
                                             setCityName(newInputValue);
-                                            if(!newInputValue){
-                                                setValue(PersonalInfoDataContextFields.CITY,'')
+                                            if (!newInputValue) {
+                                                setValue(PersonalInfoDataContextFields.CITY, '')
                                             }
                                         }
                                     }}
@@ -365,13 +378,14 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         <TextField
                                             {...params}
                                             test-id='insertInstitutionName'
-                                            value={props.value? props.value : ''}
-                                            label={errors[PersonalInfoDataContextFields.CITY]? errors[PersonalInfoDataContextFields.CITY]?.message: 'עיר*' }
+                                            value={props.value ? props.value : ''}
+                                            label={errors[PersonalInfoDataContextFields.CITY] ? errors[PersonalInfoDataContextFields.CITY]?.message : 'עיר*'}
                                             error={errors[PersonalInfoDataContextFields.CITY]}
                                             onBlur={props.onBlur}
                                             id={PersonalInfoDataContextFields.CITY}
                                             placeholder={INSERT_INSTITUTION_NAME}
-                                        />}
+                                        />
+                                    }
                                 />
                             )}
                         />
@@ -383,7 +397,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                 name={PersonalInfoDataContextFields.STREET}
                                 control={control}
                                 render={(props) => (
-                                    <Autocomplete   
+                                    <Autocomplete
                                         size='small'
                                         options={streets}
                                         getOptionLabel={(option) => {
@@ -392,10 +406,10 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         getOptionSelected={(option) => option.id === props.value}
                                         inputValue={streetName}
                                         onInputChange={(event, newInputValue) => {
-                                            if(event.type !== "blur"){
+                                            if (event.type !== 'blur') {
                                                 setStreetName(newInputValue);
                                                 if (newInputValue === '') {
-                                                    setValue(PersonalInfoDataContextFields.STREET,'')
+                                                    setValue(PersonalInfoDataContextFields.STREET, '')
                                                 }
                                             }
                                         }}
@@ -405,16 +419,16 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                         renderInput={(params) => {
                                             return <TextField
                                                 test-id='personalDetailsStreet'
-                                                value={props.value? props.value : ''}
+                                                value={props.value ? props.value : ''}
                                                 {...params}
                                                 error={errors[PersonalInfoDataContextFields.STREET]}
-                                                label={errors[PersonalInfoDataContextFields.STREET]? errors[PersonalInfoDataContextFields.STREET]?.message: 'רחוב' }
+                                                label={errors[PersonalInfoDataContextFields.STREET] ? errors[PersonalInfoDataContextFields.STREET]?.message : 'רחוב'}
                                                 onBlur={props.onBlur}
                                                 id={PersonalInfoDataContextFields.STREET}
                                                 placeholder={'רחוב'}
                                             />
                                         }}
-                                />
+                                    />
                                 )}
                             />
                         </Grid>
@@ -553,7 +567,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
                                                 getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                                                 inputValue={subOccupationName}
                                                 onInputChange={(event, newValue) => {
-                                                    if(event && event.type !== " blur"){
+                                                    if(event && event.type !== 'blur') {
                                                         setSubOccupationName(newValue)
                                                     }
                                                 }}

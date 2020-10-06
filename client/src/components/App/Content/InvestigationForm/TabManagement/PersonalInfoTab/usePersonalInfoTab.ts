@@ -11,8 +11,9 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const { setInsuranceCompanies, setPersonalInfoData, 
-        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext} = parameters;
+    const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName,
+            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
+    } = parameters;
 
     const fetchPersonalInfo = () => {
         axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
@@ -22,6 +23,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
+                
                 setPersonalInfoData({
                     phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
                     additionalPhoneNumber:  investigatedPatient.personByPersonId.additionalPhoneNumber,
@@ -46,6 +48,9 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 }
                 if (patientAddress.streetByStreet !== null) {
                     setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                }
+                if (investigatedPatient.hmo !== null) {
+                    setInsuranceCompany(investigatedPatient.hmo);
                 }
             }
         })
