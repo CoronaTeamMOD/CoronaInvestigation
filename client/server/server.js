@@ -23,4 +23,4 @@ app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
 });
-app.listen(9090, () => console.log('client access server started on port 8080'));
+app.listen(8080, () => console.log('client access server started on port 8080'));
