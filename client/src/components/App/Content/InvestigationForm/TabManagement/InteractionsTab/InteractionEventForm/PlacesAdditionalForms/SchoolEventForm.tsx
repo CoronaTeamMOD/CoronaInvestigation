@@ -29,6 +29,9 @@ export const highSchoolGrades = [
     'יב',
 ]
 
+const numbersRegex = /(\d+)/;
+const hebrewLettersRegex = /([א-ת]+)/;
+
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
 const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.Element => {
@@ -46,10 +49,17 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
         setGrades(gradesOptions);
     }, [placeSubType])
 
+    const onGradeNumberChange = (number: string) => {
+        if (grade) {
+            const newGrade = grade.search(numbersRegex) === -1 ? grade + number :  grade.replace(numbersRegex, number);
+            setValue(newGrade, InteractionEventDialogFields.GRADE);
+        }
+    }
+
     return (
         <>
-            <div className={formClasses.formRow}>
-                <Grid item xs={2}>
+            <Grid container spacing={3} className={formClasses.formRow}>
+                <Grid item xs={3}>
                     <FormInput fieldName='שם המוסד'>
                         <Controller 
                             name={InteractionEventDialogFields.PLACE_NAME}
@@ -58,7 +68,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                                 <AlphanumericTextField
                                     name={props.name}
                                     value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onChange={(newValue: string) => setValue(InteractionEventDialogFields.GRADE, grade.replace((hebrewLettersRegex), newValue))}
                                     onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
@@ -70,7 +80,8 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                 </Grid>
                 {
                     grades.length > 0 &&
-                    <Grid item xs={2}>
+                    <>
+                    <Grid item xs={3}>
                         <FormInput fieldName='כיתה'>
                             <FormControl fullWidth>
                                 <InputLabel>כיתה</InputLabel>
@@ -80,8 +91,8 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                                     render={(props) => (
                                         <Select
                                             test-id='classGrade'
-                                            value={props.value}
-                                            onChange={(event: React.ChangeEvent<any>) => props.onChange(event.target.value as string)}
+                                            value={props.value?.split(numbersRegex)[0]}
+                                            onChange={(event: React.ChangeEvent<any>) => props.value && props.onChange(event.target.value as string)}
                                             label='כיתה'
                                         >
                                             {
@@ -97,8 +108,27 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                             </FormControl>
                         </FormInput>
                     </Grid>
+                    <Grid item xs={3}>
+                        <FormInput fieldName='מספר כיתה'>
+                            <Controller 
+                                name={InteractionEventDialogFields.GRADE}
+                                control={control}
+                                render={(props) => (
+                                    <AlphanumericTextField
+                                        name={props.name}
+                                        errors={errors}
+                                        setError={setError}
+                                        clearErrors={clearErrors}
+                                        test-id='מספר כיתה'
+                                        value={props.value?.split(numbersRegex)[1] || ''}
+                                        onChange={newValue => onGradeNumberChange(newValue)}/>
+                                )}
+                            /> 
+                        </FormInput>
+                    </Grid>
+                    </>
                 }
-            </div>
+            </Grid>
             <AddressForm />
             <BusinessContactForm/>
         </>
