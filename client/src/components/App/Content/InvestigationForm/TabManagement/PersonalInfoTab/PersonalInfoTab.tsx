@@ -120,11 +120,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     React.useEffect(() => {
         if (personalInfoState.city) {
-            setCityId(personalInfoState.city)
+            setCityId(personalInfoState.city);
         }
         setOccupation(personalInfoState.relevantOccupation)
         if (personalInfoState.educationOccupationCity) {
-            getEducationSubOccupations(personalInfoState.educationOccupationCity)
+            getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
         reset(personalInfoState)
     }, [personalInfoState])
@@ -333,7 +333,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         renderInput={(params) =>
                                             <TextField
                                                 {...params}
-                                                test-id={'personalDetailsInsurer'}
+                                                test-id='personalDetailsInsurer'
                                                 value={props.value ? props.value : ''}
                                                 label={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY] ? errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]?.message : 'גורם מבטח*'}
                                                 error={errors[PersonalInfoDataContextFields.INSURANCE_COMPANY]}

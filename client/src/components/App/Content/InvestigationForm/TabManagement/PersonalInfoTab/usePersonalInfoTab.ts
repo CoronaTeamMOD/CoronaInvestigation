@@ -34,10 +34,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     floor: investigatedPatient.addressByAddress.floor,
                     houseNum: investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity:
-                        (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
-                            ?
-                            investigatedPatient.subOccupationBySubOccupation.city : '',
+                    educationOccupationCity: investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation ?
+                        investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
                     contactInfo: investigatedPatient.patientContactInfo
