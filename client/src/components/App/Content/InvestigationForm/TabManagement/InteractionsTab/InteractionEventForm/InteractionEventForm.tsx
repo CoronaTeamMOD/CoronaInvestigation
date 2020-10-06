@@ -69,8 +69,11 @@ const InteractionEventForm: React.FC<Props> = (
       newDate.setMinutes(currentTime.getMinutes());
 
       if (newDate.getTime()) {
+        methods.clearErrors(fieldName);
         methods.setValue(fieldName, newDate);
       }
+    } else {
+      methods.setError(fieldName, { type: 'manual', message: 'שעה לא תקינה'});
     }
   }
 
@@ -125,8 +128,8 @@ const InteractionEventForm: React.FC<Props> = (
                         test-id='contactLocationStartTime'
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
-                          interactionStartTime,
-                          InteractionEventDialogFields.START_TIME)}
+                                                     interactionStartTime,
+                                                     InteractionEventDialogFields.START_TIME)}
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
                         error={get(methods.errors, props.name)}
                       />
@@ -144,8 +147,8 @@ const InteractionEventForm: React.FC<Props> = (
                         test-id='contactLocationEndTime'
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
-                          interationEndTime,
-                          InteractionEventDialogFields.END_TIME)}
+                                                     interationEndTime,
+                                                     InteractionEventDialogFields.END_TIME)}
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                         error={get(methods.errors, props.name)}
                       />
