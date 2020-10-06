@@ -12,7 +12,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName,
-        setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
+            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
     } = parameters;
 
     const fetchPersonalInfo = () => {
