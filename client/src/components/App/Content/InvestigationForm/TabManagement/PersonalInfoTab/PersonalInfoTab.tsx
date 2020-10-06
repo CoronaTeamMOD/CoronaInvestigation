@@ -22,6 +22,7 @@ import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
@@ -107,7 +108,10 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     }
 
     React.useEffect(() => {
-        fetchPersonalInfo(investigationId);
+        if(investigationId !== -1) {
+            fetchPersonalInfo(investigationId);
+            setIsCurrentlyLoading(false);
+        }
     }, [investigationId])
 
     React.useEffect(()=>{

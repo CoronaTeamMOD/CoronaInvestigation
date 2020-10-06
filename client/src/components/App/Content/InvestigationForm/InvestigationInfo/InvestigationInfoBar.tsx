@@ -82,7 +82,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             } else {
                 noInvestigationError();
             }
-          });
+        });
     }, []);
 
     React.useEffect(() => {

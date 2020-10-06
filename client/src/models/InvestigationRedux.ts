@@ -5,6 +5,7 @@ interface InvestigationRedux {
     creator: string;
     lastUpdator: string;
     lastOpenedEpidemiologyNumber: number;
+    isCurrentlyLoading: boolean;
 }
 
 export default InvestigationRedux;

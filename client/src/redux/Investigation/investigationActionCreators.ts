@@ -28,3 +28,10 @@ export const setLastOpenedEpidemiologyNum = (lastOpenedEpidemiologyNumber : numb
         payload: {lastOpenedEpidemiologyNumber}
     })
 };
+
+export const setIsCurrentlyLoading = (isCurrentlyLoading : boolean): void => {
+    store.dispatch({
+        type: actionTypes.SET_IS_CURRENTLY_LOADING,
+        payload: {isCurrentlyLoading}
+    })
+};

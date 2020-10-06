@@ -2,7 +2,6 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { differenceInYears } from 'date-fns';
-import { useHistory } from 'react-router-dom';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -11,11 +10,10 @@ import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { initialUserState } from 'redux/User/userReducer';
-import InvestigationRedux from 'models/InvestigationRedux';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
+import { setCantReachInvestigated, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -80,6 +78,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
   const user = useSelector<StoreStateType, User>(state => state.user);
+  const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
 
   const getInvestigationsAxiosRequest = (): any => {
     if (user.isAdmin)
@@ -133,9 +132,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       });
   }, [user.id, classes.errorAlertTitle, user]);
 
+  useEffect(() => {
+    setIsLoading(isCurrentlyLoadingInvestigation);
+  }, [isCurrentlyLoadingInvestigation])
+
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
     setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
     epidemiologyNumberVal !== -1 && window.open(investigationURL);
+    setIsCurrentlyLoading(true);
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {
