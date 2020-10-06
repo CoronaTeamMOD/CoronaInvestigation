@@ -1,15 +1,13 @@
-FROM nginx:1.14.2-alpine
-
-RUN  mkdir -p /run/nginx && \
-     apk add nginx-mod-http-lua
-     
+# Use the official image as a parent image.
+FROM node:current-slim
+# Set the working directory.
 WORKDIR /usr/src/app
-
+# Copy the files from your host to the container.
 COPY build /usr/src/app/build
-COPY mime.types /usr/src/app
-
-COPY nginx.conf /usr/src/app
-
+COPY server /usr/src/app/server
+RUN cd ./server && npm install
+# Add metadata to the image to describe which port the container is listening on at runtime.
 EXPOSE 8080
 
-CMD [ "nginx", "-c", "/usr/src/app/nginx.conf", "-g", "daemon off;" ]
+# Run the specified command within the container.
+CMD [ "node", "server/server.js" ]
