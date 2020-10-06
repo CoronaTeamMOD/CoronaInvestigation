@@ -76,7 +76,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         )}
                                 >
                                     {
-                                        familyRelationships.map((familyRelationship) => (
+                                        familyRelationships?.map((familyRelationship) => (
                                             <MenuItem
                                                 key={familyRelationship.id}
                                                 value={familyRelationship.id}>
