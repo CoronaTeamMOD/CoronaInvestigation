@@ -52,7 +52,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
     const onGradeNumberChange = (number: string) => {
         if (grade) {
             const newGrade = grade.search(numbersRegex) === -1 ? grade + number :  grade.replace(numbersRegex, number);
-            setValue(newGrade, InteractionEventDialogFields.GRADE);
+            setValue(InteractionEventDialogFields.GRADE, newGrade);
         }
     }
 
