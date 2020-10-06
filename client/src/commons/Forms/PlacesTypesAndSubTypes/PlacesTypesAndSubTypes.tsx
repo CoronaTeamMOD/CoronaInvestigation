@@ -31,6 +31,8 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     }, [placesSubTypesByTypes]);
 
     React.useEffect(() => {
+        placeType && setSelectedPlaceType(placeType);
+        
         if (placesSubTypesByTypes[placeType]) {
             const defaultPlaceSubType = placesSubTypesByTypes[placeType][0];
             if (defaultPlaceSubType && !placesSubTypesByTypes[placeType].map(type => type.id).includes(placeSubType)) {
