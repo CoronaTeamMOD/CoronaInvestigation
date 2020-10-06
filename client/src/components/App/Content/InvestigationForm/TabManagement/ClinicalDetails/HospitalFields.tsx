@@ -12,7 +12,7 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { 
+    const {
         classes,
         control,
         setError,
@@ -22,23 +22,24 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
         trigger,
         watchHospitalizedStartDate,
         watchHospitalizedEndDate
-     } = props;
+    } = props;
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         trigger(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
         trigger(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
-    },[watchHospitalizedStartDate,watchHospitalizedEndDate])
+    }, [watchHospitalizedStartDate, watchHospitalizedEndDate])
 
     return (
         <>
-            <Grid item xs={2} className={classes.fieldLabel}>
+            <Grid id="1" spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
                         <b>
                             האם אושפז:
                         </b>
                     </Typography>
                 </Grid>
-                <Grid item xs={10}>
+                <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.WAS_HOPITALIZED}
                         control={control}
@@ -53,76 +54,82 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 }}
                             />
                         )}
-                    />  
+                    />
                 </Grid>
-                <Grid item xs={4}>
-                    <Collapse in={watchWasHospitalized}>
-                        <div className={classes.dates}>
-                            <Typography>
-                                <b>
-                                    בית חולים:
+            </Grid>
+            <Collapse in={watchWasHospitalized}>
+                <Grid container className={classes.smallGrid}>
+                    <Grid item xs={12}>
+                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <Grid item xs={2} className={classes.fieldLabel}>
+                                <Typography>
+                                    <b>
+                                        בית חולים:
                                 </b>
-                            </Typography>
-                            <Controller
-                                name={ClinicalDetailsFields.HOSPITAL}
-                                control={control}
-                                render={(props) => (
-                                    <AlphanumericTextField
-                                        className={classes.hospitalInput}
-                                        test-id='hospitalInput'
-                                        name={ClinicalDetailsFields.HOSPITAL}
-                                        value={props.value}
-                                        onChange={(newValue: string) =>
-                                            props.onChange(newValue)
-                                        }
-                                        onBlur={props.onBlur}
-                                        setError={setError}
-                                        clearErrors={clearErrors}
-                                        errors={errors}
-                                        label='בית חולים'
-                                        placeholder='הזן בית חולים...'
-                                    />
-                                )}
-                            />
-                        </div>
-                        <div className={classes.hospitalizationDates}>
-                            <div className={classes.spacedDates}>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={10}>
                                 <Controller
-                                    name={ClinicalDetailsFields.HOSPITALIZATION_START_DATE}
+                                    name={ClinicalDetailsFields.HOSPITAL}
                                     control={control}
                                     render={(props) => (
-                                        <DatePick
-                                            labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : '* מתאריך'}
-                                            test-id='wasHospitalizedFromDate'
+                                        <AlphanumericTextField
+                                            className={classes.hospitalInput}
+                                            test-id='hospitalInput'
+                                            name={ClinicalDetailsFields.HOSPITAL}
                                             value={props.value}
-                                            onBlur={props.onBlur}
-                                            onChange={(newDate: Date) =>
-                                                props.onChange(newDate)
+                                            onChange={(newValue: string) =>
+                                                props.onChange(newValue)
                                             }
-                                            error={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE]? true : false}
+                                            onBlur={props.onBlur}
+                                            setError={setError}
+                                            clearErrors={clearErrors}
+                                            errors={errors}
+                                            label='בית חולים'
+                                            placeholder='הזן בית חולים...'
                                         />
                                     )}
                                 />
-                            </div>
-                            <Controller
-                                name={ClinicalDetailsFields.HOSPITALIZATION_END_DATE}
-                                control={control}
-                                render={(props) => (
-                                    <DatePick
-                                        test-id='wasHospitalizedUntilDate'
-                                        labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : '* עד'}
-                                        value={props.value}
-                                        onBlur={props.onBlur}
-                                        onChange={(newDate: Date) =>
-                                            props.onChange(newDate)
-                                        }
-                                        error={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE]? true : false}
-                                    />
-                                )}
-                            />
-                        </div>
-                    </Collapse>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Controller
+                            name={ClinicalDetailsFields.HOSPITALIZATION_START_DATE}
+                            control={control}
+                            render={(props) => (
+                                <DatePick
+                                    labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : '* מתאריך'}
+                                    test-id='wasHospitalizedFromDate'
+                                    value={props.value}
+                                    onBlur={props.onBlur}
+                                    onChange={(newDate: Date) =>
+                                        props.onChange(newDate)
+                                    }
+                                    error={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE] ? true : false}
+                                />
+                            )}
+                        />
+                        <Controller
+                            name={ClinicalDetailsFields.HOSPITALIZATION_END_DATE}
+                            control={control}
+                            render={(props) => (
+                                <DatePick
+                                    test-id='wasHospitalizedUntilDate'
+                                    labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : '* עד'}
+                                    value={props.value}
+                                    onBlur={props.onBlur}
+                                    onChange={(newDate: Date) =>
+                                        props.onChange(newDate)
+                                    }
+                                    error={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE] ? true : false}
+                                />
+                            )}
+                        />
+                    </Grid>
                 </Grid>
+            </Collapse>
+
         </>
     );
 };
