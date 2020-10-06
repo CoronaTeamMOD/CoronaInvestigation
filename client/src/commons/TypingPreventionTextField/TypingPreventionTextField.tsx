@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Tooltip } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
@@ -40,7 +40,6 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
   const errorObject = get(errors, name);
 
   return (
-    <Tooltip open={errorObject? true : false} title={errorObject ? errorMessage : ""}>
       <TextField
         test-id={testId}
         required={required}
@@ -53,7 +52,6 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
         placeholder={placeholder}
         className={className}
       />
-    </Tooltip>
   );
 };
 

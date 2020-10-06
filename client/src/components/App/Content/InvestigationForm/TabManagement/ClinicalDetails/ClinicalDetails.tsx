@@ -28,7 +28,7 @@ import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const { control, setValue, getValues, handleSubmit, reset, watch, errors, setError, clearErrors, trigger } = useForm({
+    const { control, setValue, getValues, formState, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
         defaultValues: initialDBClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
@@ -46,7 +46,10 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    
+    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
+
+    const { touched } = formState;
+
     const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
         setBackgroundDiseases, 
@@ -84,6 +87,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     React.useEffect(() => {
         reset(initialDBClinicalDetails);
     }, [initialDBClinicalDetails])
+
+    React.useEffect(() => {
+        if (formsValidations && formsValidations[id] !== null) {
+            trigger();
+        }
+    }, [touched])
 
     const saveForm = (e: any) => {
         e.preventDefault();
