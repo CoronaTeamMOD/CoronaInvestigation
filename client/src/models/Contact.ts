@@ -1,5 +1,5 @@
 interface Contact {
-    serialId?: string;
+    serialId?: number;
     firstName: string;
     lastName: string;
     phoneNumber: string;

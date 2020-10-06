@@ -20,6 +20,7 @@ import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
 import InteractionEventSchema from './InteractionEventSchema';
 import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
 
 export const defaultContact: Contact = {
   firstName: '',
@@ -37,10 +38,10 @@ const InteractionEventForm: React.FC<Props> = (
     loadInteractions,
     closeNewDialog,
     closeEditDialog,
-    interactionId
-  }: Props): JSX.Element => {
+  } : Props): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm({ interactionId, loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveIntreactions } = useInteractionsForm( { loadInteractions, closeNewDialog, closeEditDialog });
+
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
     mode: 'all',
@@ -52,7 +53,8 @@ const InteractionEventForm: React.FC<Props> = (
   const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
-  const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
+  
+  const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
   const contacts = fields;
 
   const classes = useStyles();
@@ -72,7 +74,27 @@ const InteractionEventForm: React.FC<Props> = (
   }
 
   const onSubmit = (data: InteractionEventDialogData) => {
-    saveIntreactions(data);
+    const interactionDataToSave = convertData(data);
+    saveIntreactions(interactionDataToSave);    
+  }
+
+  const convertData = (data: InteractionEventDialogData) => {
+    return  {
+      ...data,
+      [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
+      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
+        ?.map((contact: Contact, index: number) => {
+          const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
+          if (serialId) {
+            return {
+              ...contact,
+              [InteractionEventContactFields.SERIAL_ID]: serialId
+            } 
+          } else {
+            return contact
+          }
+      })
+    }
   }
 
   return (
@@ -186,5 +208,4 @@ interface Props {
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
-  interactionId?: number;
-};
+}

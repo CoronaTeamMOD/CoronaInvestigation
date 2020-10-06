@@ -6,7 +6,6 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import useStyles from './EditInteractionEventDialogStyles';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 
@@ -25,7 +24,6 @@ const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element 
                         interactionData={eventToEdit}
                         loadInteractions={loadInteractions}
                         closeEditDialog={closeEditDialog}
-                        interactionId={eventToEdit[InteractionEventDialogFields.ID]}
                         closeNewDialog={()=>{}}
                     />
                 </DialogContent>
