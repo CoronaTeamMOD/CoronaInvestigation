@@ -113,7 +113,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                 <AlphanumericTextField
                                     name={props.name}
                                     value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onChange={(newValue: string) => props.onChange(newValue === "" ? null : newValue as string)}
                                     onBlur={props.onBlur}
                                     errors={errors}
                                     setError={setError}
