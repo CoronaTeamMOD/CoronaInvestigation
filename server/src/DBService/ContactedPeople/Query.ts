@@ -24,6 +24,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       }
       contactEventByContactEvent {
         startTime
+        id
       }
       id
       extraInfo
