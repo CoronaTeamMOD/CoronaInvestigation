@@ -74,8 +74,8 @@ const ClinicalDetailsSchema = yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
         [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText)
+        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText).nullable(),
+        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText).nullable()
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
