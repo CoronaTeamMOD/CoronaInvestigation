@@ -14,6 +14,7 @@ export interface useClinicalDetailsIncome {
 };
 
 export interface useClinicalDetailsOutcome {
+    fetchClinicalDetails: (reset: any, trigger: any) => void;
     getStreetByCity: (cityId: string) => void;
     saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => void;
 };
