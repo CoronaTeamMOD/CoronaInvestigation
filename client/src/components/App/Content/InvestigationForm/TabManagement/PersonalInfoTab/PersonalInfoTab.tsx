@@ -62,7 +62,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({setInsuranceCompanies,
         setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext
