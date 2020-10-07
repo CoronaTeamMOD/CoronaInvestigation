@@ -25,11 +25,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setAreThereContacts
     } = tabManagementProps;
 
-    const lastTab = {
-        id: 4,
-        name: TabNames.CONTACT_QUESTIONING,
-        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
-    };
+    const lastTabId = 4;
 
     const tabs: TabObj[] = [
         {
@@ -52,7 +48,11 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             name: TabNames.INTERACTIONS,
             displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
         },
-        lastTab
+        {
+            id: lastTabId,
+            name: TabNames.CONTACT_QUESTIONING,
+            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+        }
     ];
 
     const classes = useStyles({});
@@ -76,7 +76,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     }
     
     useEffect(() => {
-        !areThereContacts && setFormState(investigationId, lastTab.id, true);
+        !areThereContacts && setFormState(investigationId, lastTabId, true);
     }, [areThereContacts]);
 
     return (
@@ -88,7 +88,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab: TabObj) =>
-                        !(tab.id === lastTab.id && !areThereContacts) &&
+                        !(tab.id === lastTabId && !areThereContacts) &&
                         <StyledTab
                             // @ts-ignore
                             type='submit'
@@ -103,7 +103,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                 }
             </Tabs>
             <div className={classes.displayedTab}>
-                {currentTab === lastTab.id ? lastTab.displayComponent : tabs[currentTab].displayComponent}
+                {tabs[currentTab].displayComponent}
             </div>
         </Card>
     )
