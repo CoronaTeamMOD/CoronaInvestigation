@@ -17,7 +17,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     contactDate: 'תאריך חשיפה',
     contactType: 'סוג מגע',
     extraInfo: 'פירוט נוסף על אופי המגע',
-    cantReachContact: 'סטטוס תשאול מגע',
+    cantReachContact: 'אין מענה',
     relationship: 'קשר',
     familyRelationship: 'קרבה משפחתית',
     occupation: 'האם עוסק באחד מן התחומים הבאים',

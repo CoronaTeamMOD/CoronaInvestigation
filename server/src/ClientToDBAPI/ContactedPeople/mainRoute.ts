@@ -39,9 +39,9 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     const getIdFromResult = (result: any) => result?.nodes.length > 0 ? parseInt(result.nodes[0].id) : null;
     const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedContact) => {
         const parsingVariables = {
-            city: contactedPerson.contactedPersonCity,
-            contactType: contactedPerson.contactType,
-            familyRelationship: contactedPerson.familyRelationship,
+            city: contactedPerson.contactedPersonCity || '',
+            contactType: contactedPerson.contactType || '',
+            familyRelationship: contactedPerson.familyRelationship || '',
         };
 
         try {
