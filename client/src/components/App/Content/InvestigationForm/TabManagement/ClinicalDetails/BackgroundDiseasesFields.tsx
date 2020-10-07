@@ -20,9 +20,16 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
         backgroundDiseases,
         handleBackgroundIllnessCheck,
         setError,
+        setValue,
         clearErrors,
         errors,
     } = props;
+
+    React.useEffect(() => {
+        if(!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
+            setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, "");
+        }
+    }, [watchBackgroundDiseases])
 
     return (
         <>
@@ -117,6 +124,7 @@ interface Props {
     classes: ClinicalDetailsClasses;
     control?: Control;
     setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
+    setValue: (name: string, value: any) => void;
     clearErrors: (name?: string | string[]) => void;
     errors: Record<string, any>;
     backgroundDiseases: string[];

@@ -334,6 +334,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             backgroundDiseases={backgroundDiseases}
                             handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
                             setError={setError}
+                            setValue={setValue}
                             clearErrors={clearErrors}
                             errors={errors}
                             control={control}
