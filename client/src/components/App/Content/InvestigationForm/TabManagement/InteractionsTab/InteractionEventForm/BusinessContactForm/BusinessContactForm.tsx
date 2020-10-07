@@ -26,7 +26,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
             <Grid container className={formClasses.formRow}>
                 <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactFirstNameField}>
+                    <FormInput className={classes.detailsTextField} fieldName={businessContactFirstNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             control={control}
@@ -46,7 +46,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactLastNameField}>
+                    <FormInput className={classes.detailsTextField} fieldName={businessContactLastNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             control={control}
@@ -66,7 +66,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactNumField}>
+                    <FormInput className={classes.detailsTextField} fieldName={businessContactNumField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER}
                             control={control}

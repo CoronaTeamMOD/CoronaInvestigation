@@ -9,7 +9,7 @@ const useStyles = makeStyles({
     },
     detailsTextField: {
         '@media screen and (min-width: 1870px)': {
-            marginLeft: '-2.5vw',
+            marginLeft: '2vw',
         }
     },
 });
