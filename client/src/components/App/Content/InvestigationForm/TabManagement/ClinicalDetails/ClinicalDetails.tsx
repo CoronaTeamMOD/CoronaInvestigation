@@ -1,20 +1,19 @@
 import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import { Grid, Typography, TextField } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
-import { useForm, Controller } from 'react-hook-form';
-import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
-import Gender from 'models/enums/Gender';
-import Toggle from 'commons/Toggle/Toggle';
-import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import Toggle from 'commons/Toggle/Toggle';
 import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import StoreStateType from 'redux/storeStateType';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -28,9 +27,9 @@ import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const { control, setValue, getValues, formState, reset, watch, errors, setError, clearErrors, trigger } = useForm({
+    const { control, setValue, getValues, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
-        defaultValues: initialDBClinicalDetails,
+        defaultValues: initialClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
     });
 
@@ -40,17 +39,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
 
-    const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
-    const { touched } = formState;
-
-    const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
         setBackgroundDiseases,
         setIsolationCityName,
@@ -84,21 +79,11 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         };
     };
 
-    React.useEffect(() => {
-        reset(initialDBClinicalDetails);
-    }, [initialDBClinicalDetails])
-
-    React.useEffect(() => {
-        if (formsValidations && formsValidations[id] !== null) {
-            trigger();
-        }
-    }, [touched])
 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
-
         ClinicalDetailsSchema.isValid(values).then(valid => {
             setFormState(investigationId, id, valid);
         })
@@ -117,6 +102,9 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
+    React.useEffect(() => {
+        fetchClinicalDetails(reset, trigger)
+    }, []);
 
     React.useEffect(() => {
         if (watchIsInIsolation === false) {

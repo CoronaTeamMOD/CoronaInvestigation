@@ -41,7 +41,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
-    const getClinicalDetailsByEpidemiologyNumber = () => {
+    const fetchClinicalDetails = (reset: any, trigger: any) => {
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
@@ -64,7 +64,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     } else {
                         patientAddress = initDBAddress;
                     }
-                    setInitialDBClinicalDetails({
+                    const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,
                         isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
@@ -85,7 +85,10 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
-                    })
+                    }
+                    setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
+                    reset(initialDBClinicalDetailsToSet);
+                    trigger();
                 }
             }
         );
@@ -115,12 +118,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
-        getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
     return {
         getStreetByCity,
-        saveClinicalDetails
+        saveClinicalDetails,
+        fetchClinicalDetails
     };
 };
 
