@@ -12,7 +12,6 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
