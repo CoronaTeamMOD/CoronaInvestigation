@@ -41,7 +41,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
-    const fetchClinicalDetails = (reset: any, trigger: any) => {
+    const fetchClinicalDetails = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                                  trigger: (payload?: string | string[]) => Promise<boolean>
+                                 ) => {
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
