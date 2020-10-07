@@ -12,11 +12,11 @@ import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAut
 import useStyles from './InteractionsTabStyles';
 import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
 
-const symptomsWithKnownStartDate: number = 4;
-const nonSymptomaticPatient: number = 7;
-const symptomsWithUnknownStartDate: number = 10;
+export const symptomsWithKnownStartDate: number = 4;
+export const nonSymptomaticPatient: number = 7;
+export const symptomsWithUnknownStartDate: number = 10;
 
-const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
 
