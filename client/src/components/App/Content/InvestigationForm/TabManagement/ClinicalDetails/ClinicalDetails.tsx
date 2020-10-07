@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 
 import City from 'models/City';
@@ -356,34 +356,36 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    {patientGender === 'נקבה' && <Grid item xs={12}>
-                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Grid item xs={2} className={classes.fieldLabel}>
-                                <Typography>
-                                    <b>
-                                        האם בהריון:
+                    <Collapse in={patientGender === 'נקבה'}>
+                        <Grid item xs={12}>
+                            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                                <Grid item xs={2} className={classes.fieldLabel}>
+                                    <Typography>
+                                        <b>
+                                            האם בהריון:
                                 </b>
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Controller
-                                    name={ClinicalDetailsFields.IS_PREGNANT}
-                                    control={control}
-                                    render={(props) => (
-                                        <Toggle
-                                            test-id='isPregnant'
-                                            value={props.value}
-                                            onChange={(e, value) => {
-                                                if (value !== null) {
-                                                    props.onChange(value)
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                />
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Controller
+                                        name={ClinicalDetailsFields.IS_PREGNANT}
+                                        control={control}
+                                        render={(props) => (
+                                            <Toggle
+                                                test-id='isPregnant'
+                                                value={props.value}
+                                                onChange={(e, value) => {
+                                                    if (value !== null) {
+                                                        props.onChange(value)
+                                                    }
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>}
+                    </Collapse>
                 </Grid>
             </form>
         </div>

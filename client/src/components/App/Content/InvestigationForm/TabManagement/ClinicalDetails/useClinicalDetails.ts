@@ -68,7 +68,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,
-                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
+                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant? true : false,
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
                         doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases? true : false,
                         hospital: patientInvestigation.hospital,
