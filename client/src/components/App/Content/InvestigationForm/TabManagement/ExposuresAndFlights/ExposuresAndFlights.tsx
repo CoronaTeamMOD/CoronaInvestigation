@@ -17,8 +17,6 @@ import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlig
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
-import { useForm } from 'react-hook-form';
-
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
@@ -30,12 +28,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const {saveExposureAndFlightData} = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-  const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
-  const { control, setValue, getValues, reset, errors, setError, clearErrors, trigger, formState } = useForm({
-  });
-
-  const { touched } = formState;
   const { fieldName } = useFormStyles();
   const classes = useStyles();
 
@@ -49,12 +42,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure)
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
-
-  React.useEffect(() => {
-    if (formsValidations && formsValidations[id] !== null) {
-        trigger();
-    }
-  }, [touched])
 
   React.useEffect(() => {
     (wereConfirmedExposures && !doesHaveConfirmedExposures(exposures)) && onExposureAdded(true, false);
