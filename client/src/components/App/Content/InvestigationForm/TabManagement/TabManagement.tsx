@@ -25,6 +25,12 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setAreThereContacts
     } = tabManagementProps;
 
+    const lastTab = {
+        id: 4,
+        name: TabNames.CONTACT_QUESTIONING,
+        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+    };
+
     const tabs: TabObj[] = [
         {
             id: 0,
@@ -45,14 +51,9 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             id: 3,
             name: TabNames.INTERACTIONS,
             displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
-        }
+        },
+        lastTab
     ];
-
-   const lastTab = {
-        id: 4,
-        name: TabNames.CONTACT_QUESTIONING,
-        displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
-    };
 
     const classes = useStyles({});
 
@@ -87,6 +88,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab: TabObj) =>
+                        !(tab.id === lastTab.id && !areThereContacts) &&
                         <StyledTab
                             // @ts-ignore
                             type='submit'
@@ -98,19 +100,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                             className={isTabValid(tab.id) ? classes.errorIcon : undefined}
                         />
                     )
-                }
-                {
-                    areThereContacts &&
-                    <StyledTab
-                        // @ts-ignore
-                        type='submit'
-                        form={`form-${currentTab}`}
-                        onClick={() => { setNextTab(lastTab.id) }}
-                        key={lastTab.id}
-                        label={lastTab.name}
-                        icon={isTabValid(lastTab.id) ? <ErrorOutlineIcon /> : undefined}
-                        className={isTabValid(lastTab.id) ? classes.errorIcon : undefined}
-                    />
                 }
             </Tabs>
             <div className={classes.displayedTab}>
