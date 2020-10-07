@@ -1,25 +1,26 @@
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
+import { subDays } from 'date-fns';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
-import { useContactQuestioningOutcome, useContactQuestioningParameters } from './ContactQuestioningInterfaces';
+import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
+import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { interactedContactsState, setCurrentInteractedContact } = parameters;
-
+    const {interactedContactsState, setCurrentInteractedContact} = parameters;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const saveContact = (interactedContact: InteractedContact) => {
         updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
         const contacts = [interactedContact];
         axios.post('/contactedPeople/interactedContacts',
-        {
-            unSavedContacts: { contacts }
-        });
+            {
+                unSavedContacts: {contacts}
+            });
     };
 
     const saveContactQuestioning = (): Promise<void> => {
@@ -27,14 +28,41 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
         return axios.post('/contactedPeople/interactedContacts',
             {
-                unSavedContacts: { contacts }
+                unSavedContacts: {contacts}
             }
         );
     };
 
-    const loadInteractedContacts = () => {
-        let interactedContacts: InteractedContact[] = [];
+    const calculateEarliestDateToInvestigate = (coronaTestDate: Date | null, symptomsStartTime: Date | null, doesHaveSymptoms: boolean): Date => {
+        let earliestDate: Date = new Date();
+        if (coronaTestDate !== null) {
+            if (doesHaveSymptoms !== null && doesHaveSymptoms) {
+                if (symptomsStartTime) {
+                    earliestDate = subDays(symptomsStartTime, symptomsWithKnownStartDate);
+                } else {
+                    earliestDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
+                }
+            } else {
+                earliestDate = subDays(coronaTestDate, nonSymptomaticPatient)
+            }
+        }
+        return earliestDate;
+    }
 
+    const loadInteractedContacts = () => {
+        axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
+            if (res.data !== null) {
+                setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(
+                    convertDate(res.data.coronaTestDate),
+                    convertDate(res.data.symptomsStartTime),
+                    res.data.doesHaveSymptoms
+                ));
+            }
+        })
+    }
+
+    const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
+        let interactedContacts: InteractedContact[] = [];
         axios.get('/contactedPeople/allContacts/' + epidemiologyNumber).then((result: any) => {
             result?.data?.data?.allContactedPeople?.nodes?.forEach((contact: any) => {
                 interactedContacts.push(
@@ -67,15 +95,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     }
                 )
             });
-        }).then(() =>
-            interactedContactsState.interactedContacts = interactedContacts).catch((err) =>
-                console.log(err));
+        }).then(() => {
+            interactedContactsState.interactedContacts = interactedContacts.filter((contactedPerson: InteractedContact) =>
+                new Date(contactedPerson.contactDate) > new Date(minimalDateToFilter));
+        }).catch((err) =>
+            console.log(err));
     };
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
-        interactedContactsState.interactedContacts[contactIndex] = { ...interactedContactsState.interactedContacts[contactIndex], [fieldToUpdate]: value };
+        interactedContactsState.interactedContacts[contactIndex] = {
+            ...interactedContactsState.interactedContacts[contactIndex],
+            [fieldToUpdate]: value
+        };
     };
 
     const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {
