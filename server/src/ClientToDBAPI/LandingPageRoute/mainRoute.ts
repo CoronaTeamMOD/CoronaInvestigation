@@ -17,7 +17,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
 })
 
 landingPageRoute.get('/groupInvestigations', (request: Request, response: Response) => {
-    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, { investigationGroup: +request.query.investigationGroup })
+    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, { investigationGroupId:  +request.query.investigationGroup })
     .then((result: any) => {
         response.send(result)
     })

@@ -24,6 +24,7 @@ import { useInvestigationTableOutcome, useInvestigationTableParameters } from '.
 export const createRowData = (
   epidemiologyNumber: number,
   coronaTestDate: string,
+  priority: number,
   status: string,
   fullName: string,
   phoneNumber: string,
@@ -33,6 +34,7 @@ export const createRowData = (
 ): InvestigationTableRow => ({
   epidemiologyNumber,
   coronaTestDate,
+  priority,
   status,
   fullName,
   phoneNumber,
@@ -90,23 +92,31 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   useEffect(() => {
     user.userName !== initialUserState.userName && getInvestigationsAxiosRequest()
       .then((response: any) => {
+
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
-        if (data && data.data && data.data.allInvestigations) {
-          allInvestigationsRawData = data.data.allInvestigations.nodes;
+        if (user.investigationGroup !== -1 ) {
+        console.log("RES: ", data)
+        if (data && data.data && data.data.groupInvestigationsByDateAndPriority &&
+          data.data.groupInvestigationsByDateAndPriority.json) {
+            
+          allInvestigationsRawData = JSON.parse(
+            data.data.groupInvestigationsByDateAndPriority.json
+          ).allInvestigations;
         }
 
         if (data && data.data && data.data.userById) {
           allInvestigationsRawData = data.data.userById.investigationsByLastUpdator.nodes;
         }
-        
+
         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
           const patient = investigation.investigatedPatientByInvestigatedPatientId;
           const patientCity = patient.addressByAddress.cityByCity;
           const user = investigation.userByCreator;
           return createRowData(investigation.epidemiologyNumber,
             investigation.coronaTestDate,
+            investigation.priority,
             investigation.investigationStatusByInvestigationStatus.displayName,
             patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
             patient.personByPersonId.phoneNumber,
@@ -116,6 +126,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
           )
         });
         setRows(investigationRows)
+      }
       })
       .catch((err: any) => {
         Swal.fire({
@@ -176,6 +187,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
       [TableHeadersNames.coronaTestDate]: format(new Date(row.coronaTestDate), 'dd/MM'),
+      [TableHeadersNames.priority]: row.priority,
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
       [TableHeadersNames.age]: row.age,
@@ -206,23 +218,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       }).then((result) => {
         if (result.isConfirmed) {
           axios.post('/users/changeInvestigator', {
-              epidemiologyNumber: indexedRow.epidemiologyNumber,
-              user: newSelectedInvestigator.id
-            }
+            epidemiologyNumber: indexedRow.epidemiologyNumber,
+            user: newSelectedInvestigator.id
+          }
           ).then(() => timeout(1900).then(() => {
-              setSelectedRow(UNDEFINED_ROW)
-              setRows(rows.map((investigation: InvestigationTableRow) => (
-                investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
-                  {
-                    ...investigation,
-                    investigator: {
-                      id: newSelectedInvestigator.id,
-                      userName: newSelectedInvestigator.value.userName
-                    }
+            setSelectedRow(UNDEFINED_ROW)
+            setRows(rows.map((investigation: InvestigationTableRow) => (
+              investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                {
+                  ...investigation,
+                  investigator: {
+                    id: newSelectedInvestigator.id,
+                    userName: newSelectedInvestigator.value.userName
                   }
-                  : investigation
-              )))
-            }))
+                }
+                : investigation
+            )))
+          }))
         } else if (result.isDismissed) {
           setSelectedRow(UNDEFINED_ROW)
         }

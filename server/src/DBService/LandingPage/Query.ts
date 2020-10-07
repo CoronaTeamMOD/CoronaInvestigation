@@ -7,6 +7,7 @@ query InvestigationsInfoByUser($userName: String!) {
       nodes {
         epidemiologyNumber
         coronaTestDate
+        priority
         investigatedPatientByInvestigatedPatientId {
           addressByAddress {
             cityByCity {
@@ -34,35 +35,13 @@ query InvestigationsInfoByUser($userName: String!) {
 `;
 
 export const GET_GROUP_INVESTIGATIONS = gql`
-query InvestigationsInfoByInvestigationGroup($investigationGroup: Int!) {
-  allInvestigations(filter: {userByLastUpdator: {investigationGroup: {equalTo: $investigationGroup}}}, orderBy: CORONA_TEST_DATE_DESC) {
-    nodes {
-      epidemiologyNumber
-      coronaTestDate
-      investigatedPatientByInvestigatedPatientId {
-        addressByAddress {
-          cityByCity {
-            displayName
-          }
-        }
-        personByPersonId {
-          birthDate
-          firstName
-          lastName
-          phoneNumber
-        }
-      }
-      investigationStatusByInvestigationStatus {
-        displayName
-      }
-      userByCreator {
-        id
-        userName
-      }
-    }
+mutation MyMutation($investigationGroupId: Int!) {
+  groupInvestigationsByDateAndPriority(input: {investigationGroupId: $investigationGroupId}) {
+    json
   }
 }
 `;
+
 
 export const GET_USER_BY_ID = gql`
 query GetUserById($userId: String!) {
