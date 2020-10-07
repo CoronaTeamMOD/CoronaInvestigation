@@ -15,7 +15,9 @@ export interface usePersoanlInfoTabParameters {
 }
 
 export interface usePersonalInfoTabOutcome {
-    fetchPersonalInfo: (reset: any, trigger: any) => void;
+    fetchPersonalInfo: (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                        trigger: (payload?: string | string[]) => Promise<boolean>
+                        ) => void;
     getSubOccupations: (parentOccupation: string) => void;
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;
