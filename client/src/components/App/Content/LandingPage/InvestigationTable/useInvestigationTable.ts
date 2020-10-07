@@ -93,10 +93,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
-        if (data && data.data && data.data.allUsers) {
-          data.data.allUsers.nodes.forEach((element: any) => {
-            allInvestigationsRawData.push(...element.investigationsByLastUpdator.nodes)
-          });
+        if (data && data.data && data.data.allInvestigations) {
+          allInvestigationsRawData = data.data.allInvestigations.nodes;
         }
 
         if (data && data.data && data.data.userById) {
@@ -116,10 +114,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             patientCity ? patientCity.displayName : '',
             user
           )
-        })
-        .sort((firstInvestigation: InvestigationTableRow, secondInvestigation: InvestigationTableRow) => 
-          new Date(secondInvestigation.coronaTestDate).getTime() - new Date(firstInvestigation.coronaTestDate).getTime());
-          
+        });
         setRows(investigationRows)
       })
       .catch((err: any) => {

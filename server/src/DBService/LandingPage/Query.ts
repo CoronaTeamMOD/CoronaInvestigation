@@ -3,7 +3,7 @@ import { gql } from "postgraphile";
 export const GET_USER_INVESTIGATIONS = gql`
 query InvestigationsInfoByUser($userName: String!) {
   userById(id: $userName) {
-    investigationsByLastUpdator(filter: {investigationStatus: {notEqualTo: "טופלה"}}) {
+    investigationsByLastUpdator(filter: {investigationStatus: {notEqualTo: "טופלה"}}, orderBy: CORONA_TEST_DATE_DESC) {
       nodes {
         epidemiologyNumber
         coronaTestDate
@@ -35,33 +35,29 @@ query InvestigationsInfoByUser($userName: String!) {
 
 export const GET_GROUP_INVESTIGATIONS = gql`
 query InvestigationsInfoByInvestigationGroup($investigationGroup: Int!) {
-  allUsers(filter: {investigationGroup: {equalTo: $investigationGroup}}) {
+  allInvestigations(filter: {userByLastUpdator: {investigationGroup: {equalTo: $investigationGroup}}}, orderBy: CORONA_TEST_DATE_DESC) {
     nodes {
-      investigationsByLastUpdator {
-        nodes {
-          epidemiologyNumber
-          coronaTestDate
-          investigatedPatientByInvestigatedPatientId {
-            addressByAddress {
-              cityByCity {
-                displayName
-              }
-            }
-            personByPersonId {
-              birthDate
-              firstName
-              lastName
-              phoneNumber
-            }
-          }
-          investigationStatusByInvestigationStatus {
+      epidemiologyNumber
+      coronaTestDate
+      investigatedPatientByInvestigatedPatientId {
+        addressByAddress {
+          cityByCity {
             displayName
           }
-          userByCreator {
-            id
-            userName
-          }
         }
+        personByPersonId {
+          birthDate
+          firstName
+          lastName
+          phoneNumber
+        }
+      }
+      investigationStatusByInvestigationStatus {
+        displayName
+      }
+      userByCreator {
+        id
+        userName
       }
     }
   }
