@@ -11,7 +11,7 @@ import {useContactQuestioningOutcome, useContactQuestioningParameters} from './C
 import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {interactedContactsState, setCurrentInteractedContact} = parameters;
+    const {setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact} = parameters;
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const saveContact = (interactedContact: InteractedContact) => {
@@ -24,7 +24,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const saveContactQuestioning = (): Promise<void> => {
-        const contacts = interactedContactsState.interactedContacts;
+        const contacts = allContactedInteractions;
 
         return axios.post('/contactedPeople/interactedContacts',
             {
@@ -96,17 +96,17 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 )
             });
         }).then(() => {
-            interactedContactsState.interactedContacts = interactedContacts.filter((contactedPerson: InteractedContact) =>
-                new Date(contactedPerson.contactDate) > new Date(minimalDateToFilter));
+            setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
+                new Date(contactedPerson.contactDate) > new Date(minimalDateToFilter)));
         }).catch((err) =>
             console.log(err));
     };
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
-        const contactIndex = interactedContactsState.interactedContacts.findIndex(contact => contact.id === interactedContact.id)
-        interactedContactsState.interactedContacts[contactIndex] = {
-            ...interactedContactsState.interactedContacts[contactIndex],
+        const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
+        allContactedInteractions[contactIndex] = {
+            ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
     };
