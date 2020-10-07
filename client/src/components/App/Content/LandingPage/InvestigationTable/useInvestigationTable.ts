@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { differenceInYears } from 'date-fns';
 import { useHistory } from 'react-router-dom';
+import { differenceInYears, format } from 'date-fns';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -23,6 +23,7 @@ import { useInvestigationTableOutcome, useInvestigationTableParameters } from '.
 
 export const createRowData = (
   epidemiologyNumber: number,
+  coronaTestDate: string,
   status: string,
   fullName: string,
   phoneNumber: string,
@@ -31,6 +32,7 @@ export const createRowData = (
   investigator: Investigator
 ): InvestigationTableRow => ({
   epidemiologyNumber,
+  coronaTestDate,
   status,
   fullName,
   phoneNumber,
@@ -106,6 +108,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
           const patientCity = patient.addressByAddress.cityByCity;
           const user = investigation.userByCreator;
           return createRowData(investigation.epidemiologyNumber,
+            investigation.coronaTestDate,
             investigation.investigationStatusByInvestigationStatus.displayName,
             patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
             patient.personByPersonId.phoneNumber,
@@ -115,7 +118,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
           )
         })
         .sort((firstInvestigation: InvestigationTableRow, secondInvestigation: InvestigationTableRow) => 
-          secondInvestigation.epidemiologyNumber - firstInvestigation.epidemiologyNumber);
+          new Date(secondInvestigation.coronaTestDate).getTime() - new Date(firstInvestigation.coronaTestDate).getTime());
           
         setRows(investigationRows)
       })
@@ -177,6 +180,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
+      [TableHeadersNames.coronaTestDate]: format(new Date(row.coronaTestDate), 'dd/MM'),
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
       [TableHeadersNames.age]: row.age,

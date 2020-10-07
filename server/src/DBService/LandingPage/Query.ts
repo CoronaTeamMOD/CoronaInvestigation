@@ -6,6 +6,7 @@ query InvestigationsInfoByUser($userName: String!) {
     investigationsByLastUpdator(filter: {investigationStatus: {notEqualTo: "טופלה"}}) {
       nodes {
         epidemiologyNumber
+        coronaTestDate
         investigatedPatientByInvestigatedPatientId {
           addressByAddress {
             cityByCity {
@@ -39,6 +40,7 @@ query InvestigationsInfoByInvestigationGroup($investigationGroup: Int!) {
       investigationsByLastUpdator {
         nodes {
           epidemiologyNumber
+          coronaTestDate
           investigatedPatientByInvestigatedPatientId {
             addressByAddress {
               cityByCity {
