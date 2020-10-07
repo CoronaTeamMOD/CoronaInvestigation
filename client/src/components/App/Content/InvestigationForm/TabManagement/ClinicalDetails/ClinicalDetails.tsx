@@ -334,6 +334,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             backgroundDiseases={backgroundDiseases}
                             handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
                             setError={setError}
+                            setValue={setValue}
                             clearErrors={clearErrors}
                             errors={errors}
                             control={control}
@@ -354,7 +355,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    {patientGender === 'נקבה' && <Grid item xs={12}>
                         <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <Grid item xs={2} className={classes.fieldLabel}>
                                 <Typography>
@@ -381,7 +382,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 />
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </Grid>}
                 </Grid>
             </form>
         </div>
