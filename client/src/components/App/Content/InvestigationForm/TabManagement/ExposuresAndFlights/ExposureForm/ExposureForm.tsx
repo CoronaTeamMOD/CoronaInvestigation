@@ -59,11 +59,12 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput fieldName='תאריך החשיפה:'>
         <DatePick
+          maxDate={new Date()}
           testId='exposureDate'
           labelText='תאריך'
           value={exposureAndFlightsData[fieldsNames.date]}
           onChange={(newDate: Date) =>
-            !isFuture(newDate) && handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
+            handleChangeExposureDataAndFlightsField(fieldsNames.date, newDate)
           }
         />
       </FormRowWithInput>
