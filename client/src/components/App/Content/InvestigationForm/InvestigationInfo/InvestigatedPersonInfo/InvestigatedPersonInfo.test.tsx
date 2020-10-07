@@ -10,6 +10,8 @@ import axios from 'Utils/axios';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
+jest.mock('redux/store', () => {middlewares: []});
+
 const mockAdapter = new MockAdapter(axios);
 
 let investigatedPersonInfoOutcome: InvestigatedPersonInfoOutcome;
