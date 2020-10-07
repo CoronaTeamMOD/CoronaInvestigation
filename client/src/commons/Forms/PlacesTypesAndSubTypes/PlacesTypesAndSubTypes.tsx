@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
+import { Grid, FormControl, TextField } from '@material-ui/core';
 import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
-import { Grid, FormControl, InputLabel, Select, MenuItem, TextField } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
 import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -23,6 +24,8 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
     const [placesSubTypesByTypes, setPlacesSubTypesByTypes] = useState<PlacesSubTypesByTypes>({});
     const [selectedPlaceType, setSelectedPlaceType] = useState<string>('');
+    const [selectedPlaceSubType, setSelectedPlaceSubType] = useState<PlaceSubType>();
+    const [selectedPlaceSubTypeInput, setSelectedPlaceSubTypeInput] = useState<string>('');
 
     React.useEffect(() => {
         if (Object.keys(placesSubTypesByTypes).length > 0 && placeType === '') {
@@ -40,6 +43,24 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
             }
         }
     }, [placeType]);
+
+    React.useEffect(() => {
+        if (typeof placeSubType === 'number') {
+            setSelectedPlaceSubType(placeSubTypeById(placeSubType));
+        } else {
+            if (placeSubType) {
+                setSelectedPlaceSubType(placeSubType);
+            }
+        }
+    },[placesSubTypesByTypes]);
+
+    React.useEffect(() => {
+        setSelectedPlaceSubTypeInput(selectedPlaceSubType?.displayName as string);
+    },[selectedPlaceSubType]);
+
+    const placeSubTypeById = (placeSubTypeId: number): PlaceSubType => {
+        return placesSubTypesByTypes[placeType]?.filter((placeSubType: PlaceSubType) => placeSubType.id === placeSubTypeId)[0];
+    };
 
     usePlacesTypesAndSubTypes({ setPlacesSubTypesByTypes });
 
@@ -88,6 +109,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                             />
                             :
                             <Autocomplete
+                                test-id='placeType'
                                 options={Object.keys(placesSubTypesByTypes)}
                                 value={placeType ? placeType : ''}
                                 onChange={(event, chosenPlaceType) => onPlaceTypeChange(chosenPlaceType as string)}
@@ -111,49 +133,55 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                             required={required}
                             fullWidth
                         >
-                            <InputLabel>תת סוג</InputLabel>
                             {control ?
                                 <Controller
                                     name={placeSubTypeName}
                                     control={control}
                                     render={(props) => (
-                                        <Select
-                                            test-id='placeSubType'
-                                            label={placeSubTypeDisplayName}
-                                            value={props.value ? props.value : ''}
-                                            onChange={(event) => props.onChange(event.target.value as number)}
-                                        >
-                                            {
-                                                placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
-                                                    <MenuItem
-                                                        key={currentPlaceSubType.id}
-                                                        value={currentPlaceSubType.id}
-                                                    >
-                                                        {currentPlaceSubType.displayName}
-                                                    </MenuItem>
-                                                ))
+                                        <Autocomplete
+                                            options={placesSubTypesByTypes[placeType]}
+                                            getOptionLabel={(option) => option ? option.displayName : option}
+                                            inputValue={selectedPlaceSubTypeInput ? selectedPlaceSubTypeInput : ''}
+                                            getOptionSelected={(option) => option.id === props.value}
+                                            onChange={(event, chosenPlaceSubType) => {
+                                                setSelectedPlaceSubType(chosenPlaceSubType ? chosenPlaceSubType : undefined)
+                                                props.onChange(chosenPlaceSubType ? chosenPlaceSubType.id : '')
+                                            }}
+                                            onInputChange={(event, chosenPlaceSubType) => {
+                                                setSelectedPlaceSubTypeInput(chosenPlaceSubType);
+                                                if (chosenPlaceSubType === '') {
+                                                    props.onChange('');
+                                                }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    {...params}
+                                                    test-id='placeType'
+                                                    value={props.value ? props.value : ''}
+                                                    label={placeTypeDisplayName}
+                                                    onBlur={props.onBlur}
+                                                    id={InteractionEventDialogFields.PLACE_TYPE}
+                                                    placeholder={placeTypeDisplayName}
+                                                />
                                             }
-                                        </Select>
+                                        />
                                     )}
                                 />
                                 :
-                                <Select
+                                <Autocomplete
                                     test-id='placeSubType'
-                                    label={placeSubTypeDisplayName}
-                                    value={placeSubType ? placeSubType : ''}
-                                    onChange={(event) => onPlaceSubTypeChange(event.target.value as number)}
-                                >
-                                    {
-                                        placesSubTypesByTypes[placeType].map((currentPlaceSubType) => (
-                                            <MenuItem
-                                                key={currentPlaceSubType.id}
-                                                value={currentPlaceSubType.id}
-                                            >
-                                                {currentPlaceSubType.displayName}
-                                            </MenuItem>
-                                        ))
+                                    options={placesSubTypesByTypes[placeType]}
+                                    getOptionLabel={(option) => option ? option.displayName : option}
+                                    value={placeSubTypeById(placeSubType) ? placeSubTypeById(placeSubType) : undefined}
+                                    onChange={(event, chosenPlaceSubType) => onPlaceSubTypeChange(chosenPlaceSubType?.id as number)}
+                                    renderInput={(params: AutocompleteRenderInputParams) =>
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            label={placeSubTypeDisplayName}
+                                        />
                                     }
-                                </Select>
+                                />
                             }
                         </FormControl>
                     </FormInput>
