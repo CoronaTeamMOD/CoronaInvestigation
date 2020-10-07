@@ -68,13 +68,11 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets, occupationsStateContext
     });
 
-    const { control, setValue, getValues, reset, errors, setError, clearErrors, trigger, formState } = useForm({
+    const { control, setValue, getValues, reset, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
-        defaultValues: personalInfoState,
+        defaultValues: initialPersonalInfo,
         resolver: yupResolver(personalInfoValidationSchema),
     });
-
-    const { touched } = formState;
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOccupation = event.target.value
@@ -110,7 +108,7 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
     }
 
     React.useEffect(() => {
-        fetchPersonalInfo();
+        fetchPersonalInfo(reset, trigger);
     }, [])
 
     React.useEffect(()=>{
@@ -121,7 +119,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
         if(personalInfoState.educationOccupationCity){
             getEducationSubOccupations(personalInfoState.educationOccupationCity)
         }
-        reset(personalInfoState)
     },[personalInfoState])
 
     React.useEffect(() => {
@@ -132,12 +129,6 @@ const PersonalInfoTab: React.FC<Props> = ( { id, onSubmit } : Props ): JSX.Eleme
             setSubOccupations([]);
         }
     }, [occupation]);
-
-    React.useEffect(() => {
-        if (formsValidations && formsValidations[id] !== null) {
-            trigger();
-        }
-    }, [touched])
 
     React.useEffect(() => {
         cityId && getStreetsByCity(cityId);
