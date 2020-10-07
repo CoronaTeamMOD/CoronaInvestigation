@@ -14,6 +14,7 @@ import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext'
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
+import Gender from 'models/enums/Gender';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -356,7 +357,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    <Collapse in={patientGender === 'נקבה'}>
+                    <Collapse in={patientGender === Gender.FEMALE}>
                         <Grid item xs={12}>
                             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                                 <Grid item xs={2} className={classes.fieldLabel}>
