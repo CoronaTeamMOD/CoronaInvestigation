@@ -12,7 +12,6 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
@@ -23,13 +22,14 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const classes = useStyles();
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const interactedContactsState = useContext(interactedContactsContext);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
+    const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
 
-    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse, loadInteractedContacts } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact });
+    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse, loadInteractedContacts } =
+        useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact });
 
     React.useEffect(() => {
         loadInteractedContacts();
@@ -47,9 +47,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     return (
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveContacted(e)}>
-                <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({interactedContactsState.interactedContacts.length})</b></Typography>
+                <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({allContactedInteractions.length})</b></Typography>
                 {
-                    interactedContactsState.interactedContacts.sort((firstInteractedContact, secondInteractedContact) =>
+                    allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
                         firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (
                             <div key={interactedContact.id} className={classes.form}>
                                 <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
