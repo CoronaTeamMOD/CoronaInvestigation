@@ -17,6 +17,8 @@ import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocation
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
 import useStyles from './InteractionCardStyles';
+import useStyle from './InteractionCardStyles';
+import ExcelUploader from "../../ExcelUploader/ExcelUploader";
 
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
@@ -101,6 +103,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         <Typography>
                             <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
+
+                        {interaction.id && <ExcelUploader contactEvent={interaction.id} onSave={props.loadInteractions}/>}
                     </Grid>
                     {interaction.contacts.map(person => <ContactGrid contact={person}/>)}
                 </Grid>
@@ -114,6 +118,7 @@ interface Props {
     interaction: Interaction;
     onEditClick: () => void;
     onDeleteClick: () => void;
+    loadInteractions: () => void;
 };
 
 export default InteractionCard;

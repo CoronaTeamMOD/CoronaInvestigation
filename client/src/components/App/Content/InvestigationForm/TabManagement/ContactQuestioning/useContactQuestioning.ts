@@ -77,6 +77,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         additionalPhoneNumber: contact.personByPersonInfo.additionalPhoneNumber,
                         gender: contact.personByPersonInfo.gender,
                         contactDate: contact.contactEventByContactEvent.startTime,
+                        contactEvent: contact.contactEventByContactEvent.id,
                         contactType: contact.contactType,
                         cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
                         extraInfo: contact.extraInfo,

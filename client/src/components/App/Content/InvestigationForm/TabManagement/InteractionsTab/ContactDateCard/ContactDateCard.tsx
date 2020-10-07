@@ -50,6 +50,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
             <Collapse in={areInteractionsOpen}>
                 {interactions?.map(interaction =>
                     <InteractionCard
+                        loadInteractions={props.loadInteractions}
                         onEditClick={() => onEditClick(interaction)}
                         onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
@@ -65,6 +66,7 @@ interface Props {
     createNewInteractionEvent: () => void;
     onEditClick: (interaction: Interaction) => void;
     onDeleteClick: (contactEventId: number) => void;
+    loadInteractions: () => void;
 };
 
 export default ContactDateCard;

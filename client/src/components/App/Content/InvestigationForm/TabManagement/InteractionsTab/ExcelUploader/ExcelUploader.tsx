@@ -1,0 +1,58 @@
+import React from 'react';
+import {Button, Typography} from "@material-ui/core";
+import ExcelLogo from './ExcelLogo.png';
+import useStyles from './ExcelUploaderStyles';
+import useContactExcel from "./useContactExcel";
+import useCustomSwal from "commons/CustomSwal/useCustomSwal";
+import axios from "Utils/axios";
+
+const fileEndings = [
+    "xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "txt", "ods", "fods", "uos", "sylk", "dif", "dbf", "prn", "qpw", "123", "wb*", "wq*", "html", "htm"
+].map((x) => `.${x}`).join(",");
+
+interface ExcelUploaderProps {
+    contactEvent:number;
+    onSave: () => void;
+}
+const ExcelUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
+    const {alertError} = useCustomSwal();
+    const [data, setData] = React.useState<any>();
+    const buttonRef = React.useRef<any>();
+    const onFail = () => alertError('שגיאה בטעינת הקובץ');
+    const {onFileSelect} = useContactExcel(setData, onFail);
+
+    const classes = useStyles();
+
+    React.useEffect(() => {
+        saveDataInFile(data)
+    }, [data]);
+
+    const onButtonClick = () => buttonRef?.current?.click();
+
+    const saveDataInFile = (contacts: any[]) => {
+        if(contacts && contacts.length > 0) {
+            axios.post('/contactedPeople/excel', {contactEvent, contacts})
+                .then(onSave)
+                .catch(e => {
+                    console.error(e);
+                    alertError('שגיאה בשמירת הנתונים');
+                })
+        }
+    };
+
+    return (
+        <>
+            <Button className={classes.button} onClick={onButtonClick}>
+                <img className={classes.logo} src={ExcelLogo} alt='excel'/>
+                <Typography variant='body2'>
+                    טען אקסל
+                </Typography>
+            </Button>
+            <input type="file" accept={fileEndings}
+                   ref={buttonRef} className={classes.hiddenFileInput}
+                   onChange={onFileSelect}/>
+        </>
+    );
+};
+
+export default ExcelUploader;
