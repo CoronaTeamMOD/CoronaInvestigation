@@ -125,7 +125,7 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id='contactLocationStartTime'
+                        testId={'contactLocationStartTime'}
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
                                                                       interactionStartTime,
@@ -144,7 +144,7 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id='contactLocationEndTime'
+                        testId={'contactLocationEndTime'}
                         value={props.value}
                         onChange={(newTime: Date) => handleTimeChange(newTime,
                                                                       interationEndTime,
