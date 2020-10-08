@@ -1,9 +1,10 @@
--- FUNCTION: public.group_investigations_by_date_and_priority(integer)
+-- FUNCTION: public.group_ivestigations_by_date_and_priority(integer,character varying);
 
--- DROP FUNCTION public.group_investigations_by_date_and_priority(integer);
+-- DROP FUNCTION public.group_ivestigations_by_date_and_priority(integer,character varying);
 
-CREATE OR REPLACE FUNCTION public.group_investigations_by_date_and_priority(
-	investigation_group_id integer)
+CREATE OR REPLACE FUNCTION public.group_ivestigations_by_date_and_priority(
+	investigation_group_id integer,
+	order_by character varying)
     RETURNS json
     LANGUAGE 'plpgsql'
 
@@ -63,7 +64,74 @@ RETURN (select
 					where userTable.id = investigationTable.last_updator
 				)
             )
-			order by investigationTable.corona_test_date::date DESC,investigationTable.priority ASC
+			order by
+			CASE WHEN order_by='defaultOrder' THEN 
+			investigationTable.corona_test_date::date END DESC,
+			investigationTable.priority ASC,
+			CASE WHEN order_by='epidemiologyNumberDESC' THEN investigationTable.epidemiology_number END DESC,
+ 			CASE WHEN order_by='epidemiologyNumberASC' THEN investigationTable.epidemiology_number END ASC,
+			CASE WHEN order_by='cityDESC' THEN (
+				select display_name
+				from public.cities
+				where id = (
+					select city from public.address
+					where id = (
+						select address from public.investigated_patient
+						where id = investigationTable.investigated_patient_id
+					)
+				)
+			) END DESC,
+			CASE WHEN order_by='cityASC' THEN (
+				select display_name
+				from public.cities
+				where id = (
+					select city from public.address
+					where id = (
+						select address from public.investigated_patient
+						where id = investigationTable.investigated_patient_id
+					)
+				)
+			) END ASC,
+			CASE WHEN order_by='birthDateDESC' THEN (
+			select birth_date
+			from public.person
+			where id = (
+				select person_id from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END DESC,
+			CASE WHEN order_by='birthDateASC' THEN (
+			select birth_date
+			from public.person
+			where id = (
+				select person_id from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END ASC,
+			CASE WHEN order_by='patientFullNameDESC' THEN (
+			select CONCAT(first_name, ' ', last_name) from public.person
+			where id = (
+				select person_id from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END DESC,
+			CASE WHEN order_by='patientFullNameASC' THEN (
+			select CONCAT(first_name, ' ', last_name) from public.person
+			where id = (
+				select person_id from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END ASC,
+			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
+ 			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
+			CASE WHEN order_by='userNameDESC' THEN (
+				select user_name from public.user
+				where id = investigationTable.last_updator
+			) END DESC,
+ 			CASE WHEN order_by='userNameASC' THEN (
+				select user_name from public.user
+				where id = investigationTable.last_updator
+			) END ASC
         )
     ) investigations
 from public.investigation investigationTable
@@ -76,5 +144,5 @@ where (
 END;
 $BODY$;
 
-ALTER FUNCTION public.group_investigations_by_date_and_priority(integer)
+ALTER FUNCTION public.group_ivestigations_by_date_and_priority(integer,character varying)
     OWNER TO coronai;
