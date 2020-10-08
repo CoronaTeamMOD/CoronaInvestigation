@@ -1,18 +1,20 @@
 import React from 'react';
-import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
+import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
-import { isValid } from 'date-fns';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import useFormStyles from 'styles/formStyles';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 
 import PlaceTypeForm from './PlaceTypeForm';
@@ -20,8 +22,6 @@ import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
 import InteractionEventSchema from './InteractionEventSchema';
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
 
 export const defaultContact: Contact = {
   firstName: '',
