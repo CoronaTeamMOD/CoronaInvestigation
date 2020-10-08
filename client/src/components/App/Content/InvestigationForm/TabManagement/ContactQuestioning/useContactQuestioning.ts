@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux';
+import { subDays, isAfter, differenceInDays } from 'date-fns';
 import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
-import { subDays } from 'date-fns';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -46,6 +46,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 earliestDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
         }
+
         return earliestDate;
     }
 
@@ -97,7 +98,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             });
         }).then(() => {
             setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
-                new Date(contactedPerson.contactDate) > new Date(minimalDateToFilter)));
+                differenceInDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
+            ))
         }).catch((err) =>
             console.log(err));
     };
