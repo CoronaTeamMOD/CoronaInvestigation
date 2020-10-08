@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux';
+import { subDays, isAfter, differenceInDays } from 'date-fns';
 import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
-import { differenceInDays, subDays } from 'date-fns';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
