@@ -1,6 +1,7 @@
-import React from "react";
-import { Grid, Typography } from "@material-ui/core";
-import useFormStyles from "styles/formStyles";
+import React from 'react';
+import { Grid, Typography } from '@material-ui/core';
+
+import useFormStyles from 'styles/formStyles';
 
 interface FormRowWithInputProps {
 	fieldName: string;
@@ -14,7 +15,7 @@ const FormRowWithInput = ({ fieldName, children, testId }: FormRowWithInputProps
 	return (
 		<div className={classes.formRow} test-id={testId}>
 			<Grid item xs={12} sm={6} md={6} lg={3} xl={3}>
-				<Typography variant="caption" className={classes.fieldName}>
+				<Typography variant='caption' className={classes.fieldName}>
 					{fieldName}
 				</Typography>
 			</Grid>

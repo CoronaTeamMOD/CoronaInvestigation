@@ -5,11 +5,11 @@ import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 import AddressGrid from '../AddressGrid/AddressGrid';
+import BusinessContactGrid from '../BusinessContactGrid/BusinessContactGrid';
 
 
-const SchoolEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
+const SchoolEventGrid: React.FC<Props> = (props: Props): JSX.Element => {
     
     const { interaction } = props;
     
@@ -46,4 +46,4 @@ export default SchoolEventGrid;
 
 interface Props {
     interaction: InteractionEventDialogData;
-}
+};

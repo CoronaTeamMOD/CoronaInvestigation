@@ -5,44 +5,54 @@ import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
-import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
+import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const {setOccupations, setInsuranceCompanies, personalInfoStateContext, 
-        setSubOccupations, setSubOccupationName, setCityName, setStreetName, setStreets} = parameters;
+    const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName,
+            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
+    } = parameters;
 
-    const fetchPersonalInfo = () => {
-        axios.get('/personalDetails/occupations').then((res: any) => res && res.data && res.data.data && setOccupations(res.data.data.allOccupations.nodes.map((node: any) => node.displayName)));
+    const fetchPersonalInfo = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                               trigger: (payload?: string | string[]) => Promise<boolean>
+                              ) => {
+        axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
                 const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
-                personalInfoStateContext.setPersonalInfoData({
-                    phoneNumber: {...personalInfoStateContext.personalInfoData.phoneNumber, number: investigatedPatient.personByPersonId.phoneNumber},
-                    additionalPhoneNumber: {...personalInfoStateContext.personalInfoData.additionalPhoneNumber, number: investigatedPatient.personByPersonId.additionalPhoneNumber},
-                    contactPhoneNumber: {...personalInfoStateContext.personalInfoData.contactPhoneNumber, number: investigatedPatient.patientContactPhoneNumber},
+                const PersonalInfoData = {
+                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
+                    additionalPhoneNumber: investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    address: {...investigatedPatient.addressByAddress},
+                    city: investigatedPatient.addressByAddress.city,
+                    street: investigatedPatient.addressByAddress.street,
+                    floor: investigatedPatient.addressByAddress.floor,
+                    houseNum: investigatedPatient.addressByAddress.houseNum,
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: 
-                    (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation)
-                    ?
-                    investigatedPatient.subOccupationBySubOccupation.city : '',
+                    educationOccupationCity: investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation ?
+                        investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation,
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
                     contactInfo: investigatedPatient.patientContactInfo
-                });
+                }
+                setPersonalInfoData(PersonalInfoData);
+                reset(PersonalInfoData);
+                trigger();
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
                 if (patientAddress.cityByCity !== null) {
-                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);    
+                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);
                 }
                 if (patientAddress.streetByStreet !== null) {
                     setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
+                }
+                if (investigatedPatient.hmo !== null) {
+                    setInsuranceCompany(investigatedPatient.hmo);
                 }
             }
         })
@@ -52,7 +62,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
         axios.get('/personalDetails/subOccupations?parentOccupation=' + parentOccupation).then((res: any) => {
             setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => {
                 return {
-                    id: node.id, 
+                    id: node.id,
                     subOccupation: node.displayName
                 }
             }));
@@ -61,10 +71,10 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
 
     const getEducationSubOccupations = (city: string) => {
         axios.get('/personalDetails/educationSubOccupations?city=' + city).then((res: any) => {
-            setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => { 
+            setSubOccupations(res && res.data && res.data.data && res.data.data.allSubOccupations.nodes.map((node: any) => {
                 return {
-                    id: node.id, 
-                    subOccupation: node.displayName, 
+                    id: node.id,
+                    subOccupation: node.displayName,
                     street: node.street
                 }
             }));

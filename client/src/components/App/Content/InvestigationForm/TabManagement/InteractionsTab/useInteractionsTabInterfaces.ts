@@ -1,16 +1,17 @@
 import React from 'react';
+
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
-export interface useInteractionsTabInput {
+export interface useInteractionsTabParameters {
     interactions: Interaction[];
     setInteractions: (updatedInteractions: Interaction[]) => void;
+    setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface useInteractionsTabOutcome {
+    getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
     loadInteractions: () => void;
     getCoronaTestDate: (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => void;
-    addNewInteraction: (addedInteraction: Interaction) => void;
-    updateInteraction: (updatedInteraction: Interaction) => void;
-    getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
+    getClinicalDetailsSymptoms: (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean | any>>) => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
 };

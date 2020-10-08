@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import StartInvestiationDateVariables from 'models/StartInvestigationDateVariables'
+import StartInvestiationDateVariables from 'models/StartInvestigationDateVariables';
 
 interface EmptyStartInvestigationDateVariables {
     symptomsStartDate: undefined;

@@ -1,8 +1,7 @@
 import React from 'react';
-
-import { Variant } from '@material-ui/core/styles/createTypography';
-import { StandardTextFieldProps } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+import { StandardTextFieldProps } from '@material-ui/core';
+import { Variant } from '@material-ui/core/styles/createTypography';
 import { ParsableDate } from '@material-ui/pickers/constants/prop-types';
 
 import { useStyles } from './DatePickStyles';
@@ -10,23 +9,26 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange } = props;
+  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate } = props;
 
   return (
     <KeyboardDatePicker
+      error={error}
       test-id={props.testId}
       autoOk
       className={classes.dateText}
-      disableToolbar
-      variant="inline"
-      format="dd/MM/yyyy"
-      placeholder="dd/MM/yyyy"
-      margin="normal"
+      maxDate={maxDate}
+      disableToolbar={useBigCalender !== undefined ? useBigCalender : true}
+      variant='inline'
+      format='dd/MM/yyyy'
+      placeholder='dd/MM/yyyy'
+      margin='normal'
       label={labelText}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       KeyboardButtonProps={{
-        "aria-label": "change date",
+        'aria-label': 'change date',
       }}
       InputLabelProps={{
         shrink: true,
@@ -40,7 +42,11 @@ export default DatePick;
 interface Props extends StandardTextFieldProps {
   labelText?: string;
   labelTextVariant?: Variant;
+  useBigCalender?: boolean;
+  maxDate?: Date,
   value: ParsableDate;
-  onChange: any;
+  onChange: React.EventHandler<any>;
   testId?: string;
+  onBlur?: React.EventHandler<any>;
+  error?: boolean;
 }

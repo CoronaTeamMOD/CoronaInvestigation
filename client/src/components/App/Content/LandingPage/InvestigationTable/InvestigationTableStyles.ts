@@ -23,7 +23,14 @@ const useStyles = makeStyles({
     investigationRow: {
         textDecoration: 'none',
         cursor: 'pointer'
-    }
+    },
+    columnBorder: {
+        borderLeft: '2px solid black'
+    },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

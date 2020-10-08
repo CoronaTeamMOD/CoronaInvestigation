@@ -2,8 +2,8 @@ import React from 'react';
 
 interface StartInvestigationDateVariables {
     exposureDate: Date | undefined;
-    hasSymptoms: boolean,
-    endInvestigationDate: Date,
+    hasSymptoms: boolean;
+    endInvestigationDate: Date;
     symptomsStartDate: Date | undefined;
     setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | undefined>> | undefined;
     setExposureDate: React.Dispatch<React.SetStateAction<Date | undefined>> | undefined;

@@ -6,7 +6,7 @@ export const useStyles = makeStyles({
         flexDirection: 'row',
     },
     dateText: {
-        direction: "rtl",
+        direction: 'rtl',
     },
     textField: {
         minWidth: '10vw',

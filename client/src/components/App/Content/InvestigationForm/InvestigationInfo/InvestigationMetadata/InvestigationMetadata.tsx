@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Paper } from '@material-ui/core';
 
-import { InvestigationMetaData } from 'models/InvestigationMetadata';
+import InvestigationMetaData from 'models/InvestigationMetadata';
 
 import InfoItem from '../InfoItem';
 import useStyles from './InvestigationMetadataStyles';
@@ -33,7 +33,7 @@ const InvestigationMetadata = (props: Props) => {
 };
 
 interface Props {
-    investigationMetaData: InvestigationMetaData
+    investigationMetaData: InvestigationMetaData;
 }
 
 export default InvestigationMetadata;

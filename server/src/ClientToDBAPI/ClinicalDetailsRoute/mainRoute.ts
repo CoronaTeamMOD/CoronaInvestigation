@@ -10,8 +10,9 @@ import {
     GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT
 } from '../../DBService/ClinicalDetails/Query';
 import {
-    CREATE_ISOLATION_ADDRESS, ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
+    ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
+import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 
 const clinicalDetailsRoute = Router();
 
@@ -81,13 +82,13 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     
     if (isolationAddress !== null) {
         const requestAddress: Address = {
-            cityValue: isolationAddress?.city,
-            streetValue: isolationAddress?.street === '' ? null : isolationAddress?.street,
-            floorValue: +isolationAddress?.floor,
-            houseNumValue: +isolationAddress?.houseNum,
+            cityValue: isolationAddress?.city ? isolationAddress?.city : null,
+            streetValue: isolationAddress?.street ? isolationAddress?.street : null,
+            floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,
+            houseNumValue: isolationAddress?.houseNum ? isolationAddress?.houseNum : null,
         }
-        graphqlRequest(CREATE_ISOLATION_ADDRESS,  response.locals, {
-            input: { ...requestAddress }
+        graphqlRequest(CREATE_ADDRESS,  response.locals, {
+            input: requestAddress
         }).then((result: CreateAddressResponse) => {
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         });
@@ -96,8 +97,8 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(response.locals.epidemiologynumber)})
+clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, response: Response) => {
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(request.params.investigationId)})
         .then((result: CoronaTestDateQueryResult) => {
             response.send(result.data.allInvestigations.nodes[0]);
         })

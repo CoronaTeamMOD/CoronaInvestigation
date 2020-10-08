@@ -1,7 +1,12 @@
-export interface Person {
-    firstName: string,
-    identificationNumber: string,
-    lastName: string,
-    gender: string,
-    phoneNumber: string,
-}
+interface Person {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    identificationType: string;
+    identificationNumber: string;
+    additionalPhoneNumber: string;
+    gender: string;
+    birthDate: Date;
+};
+
+export default Person;

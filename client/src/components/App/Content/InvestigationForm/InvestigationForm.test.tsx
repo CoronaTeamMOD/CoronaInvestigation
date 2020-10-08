@@ -6,11 +6,7 @@ import { testHooksFunction } from 'TestHooks';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { personalInfoContextData } from 'models/Contexts/personalInfoContextData';
-import { ClinicalDetailsDataAndSet, initialAddress } from 'commons/Contexts/ClinicalDetailsContext';
 
-import { LAST_TAB_ID } from './InvestigationForm';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
@@ -28,55 +24,10 @@ describe('investigationForm tests', () => {
     });
 
     beforeEach(() => {
-      mockAdapter.onGet("/addressDetails/cities").reply(200);
-      mockAdapter.onGet("/personalDetails/updatePersonalDetails").reply(200);
-      mockAdapter.onGet("/addressDetails/countries").reply(200);
+      mockAdapter.onGet('/addressDetails/cities').reply(200);
+      mockAdapter.onGet('/personalDetails/updatePersonalDetails').reply(200);
+      mockAdapter.onGet('/addressDetails/countries').reply(200);
     });
-
-    const initialClinicalDetails: ClinicalDetailsData = {
-        isolationStartDate: null,
-        isolationEndDate: null,
-        isolationAddress: initialAddress,
-        isInIsolation: false,
-        isIsolationProblem: false,
-        isIsolationProblemMoreInfo: '',
-        symptomsStartDate: null,
-        symptoms: [''],
-        backgroundDeseases: [''],
-        hospital: '',
-        hospitalizationStartDate: null,
-        hospitalizationEndDate: null,
-        doesHaveSymptoms: false,
-        wasHospitalized: false,
-        isPregnant: false,
-        doesHaveBackgroundDiseases: false,
-        otherSymptomsMoreInfo: '',
-        otherBackgroundDiseasesMoreInfo: ''
-    };
-    
-    const clinicalDetailsVariables: ClinicalDetailsDataAndSet = {
-        clinicalDetailsData: initialClinicalDetails,
-        setClinicalDetailsData: () => {}
-    };
-
-    const initialPersonalInfo: personalInfoContextData = {
-        phoneNumber: '',
-        additionalPhoneNumber: '',
-        contactPhoneNumber: '',
-        insuranceCompany: '',
-        address: {
-            city: '',
-            street: '',
-            floor: '',
-            houseNum: ''
-        },
-        relevantOccupation: '',
-        educationOccupationCity: '',
-        institutionName: '',
-        otherOccupationExtraInfo: ''
-    };
-
-    const initialSetPersonalInfoData : React.Dispatch<React.SetStateAction<personalInfoContextData>> = () => {};
 
     describe('tabs tests', () => {
 
@@ -97,20 +48,12 @@ describe('investigationForm tests', () => {
                 };
             });
         });
-
-
-        it('isLastTab should be false when hook is initialized', async () => {
-            await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
-            });
-            expect(investigationFormOutcome.currentTab.id === LAST_TAB_ID).toBeFalsy();
-        });
     })
 
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
-                investigationFormOutcome = useInvestigationForm({ clinicalDetailsVariables: clinicalDetailsVariables, personalInfoData: initialPersonalInfo, setPersonalInfoData: initialSetPersonalInfoData });
+                investigationFormOutcome = useInvestigationForm();
             });
         })
 
