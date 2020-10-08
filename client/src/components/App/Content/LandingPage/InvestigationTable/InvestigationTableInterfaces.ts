@@ -15,4 +15,5 @@ export interface useInvestigationTableOutcome {
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof typeof TableHeadersNames]: any };
     getMapKeyByValue: (map: Map<string, User>, value: string) => string;
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;
+    getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
 };

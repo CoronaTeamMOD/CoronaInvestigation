@@ -27,6 +27,9 @@ const useStyles = makeStyles({
     columnBorder: {
         borderLeft: '2px solid black'
     },
+    rowBorder: {
+        borderBottom: '2px solid black'
+    },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',

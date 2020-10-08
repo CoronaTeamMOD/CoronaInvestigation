@@ -85,7 +85,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
   const getInvestigationsAxiosRequest = (): any => {
     if (user.isAdmin)
-      return axios.get<InvestigationsReturnType>('/landingPage/groupInvestigations')
+      return axios.get<InvestigationsReturnType>(`/landingPage/groupInvestigations?investigationGroup=${user.investigationGroup}`)
     return axios.get<InvestigationsReturnType>('/landingPage/investigations');
   }
 
@@ -175,10 +175,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     })
   }
 
+  const getDayAndMothFromDate = (date: string) => {
+    return format(new Date(date), 'dd/MM')
+  }
+
   const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
-      [TableHeadersNames.coronaTestDate]: format(new Date(row.coronaTestDate), 'dd/MM'),
+      [TableHeadersNames.coronaTestDate]: getDayAndMothFromDate(row.coronaTestDate),
       [TableHeadersNames.priority]: row.priority,
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
@@ -233,12 +237,31 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       })
   }
 
+  const getTableCellStyles = (rowIndex: number, cellKey: string) => {
+    let classNames = [];
+
+    if (cellKey === TableHeadersNames.investigatorName) {
+        classNames.push(classes.columnBorder);
+    }
+
+
+    if (rows.length - 1 !== rowIndex) {
+        if (getDayAndMothFromDate(rows[rowIndex].coronaTestDate) !==
+            getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
+            classNames.push(classes.rowBorder)
+        }
+    }
+
+    return classNames;
+}
+
   return {
     tableRows: rows,
     onInvestigationRowClick,
     convertToIndexedRow,
     getMapKeyByValue,
-    onInvestigatorChange
+    onInvestigatorChange,
+    getTableCellStyles
   };
 };
 

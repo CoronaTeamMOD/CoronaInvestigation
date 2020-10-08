@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField } from '@material-ui/core';
@@ -6,6 +7,7 @@ import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, Ta
 import User from 'models/User';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
+import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
@@ -26,9 +28,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
 
-    const { 
-        tableRows, onInvestigationRowClick, convertToIndexedRow, 
-        getMapKeyByValue, onInvestigatorChange
+    const {
+        tableRows, onInvestigationRowClick, convertToIndexedRow,
+        getMapKeyByValue, onInvestigatorChange, getTableCellStyles
     } = useInvestigationTable({
         selectedInvestigator: investigator, setSelectedRow
     });
@@ -59,7 +61,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row) => {
+                            {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 return (
                                     <TableRow
@@ -70,9 +72,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         }}
                                     >
                                         {
-                                            Object.values(user.isAdmin ? adminCols : userCols).map((key) => (
+                                            Object.values(user.isAdmin ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
-                                                    className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
+                                                    className={getTableCellStyles(index, key).join(' ')}
                                                     onClick={(event: any) => {
                                                         if (key === TableHeadersNames.investigatorName) {
                                                             event.stopPropagation();
@@ -87,8 +89,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                 options={Array.from(groupUsers, ([id, value]) => ({ id, value }))}
                                                                 getOptionLabel={(option) => option.value.userName}
                                                                 inputValue={investigator.userName}
-                                                                onChange={(event, newSelectedInvestigator) => 
-                                                                    onInvestigatorChange(indexedRow,newSelectedInvestigator, indexedRow.investigatorName)
+                                                                onChange={(event, newSelectedInvestigator) =>
+                                                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                                                 }
                                                                 onInputChange={(event, selectedInvestigatorName) => {
                                                                     const updatedInvestigator = {
