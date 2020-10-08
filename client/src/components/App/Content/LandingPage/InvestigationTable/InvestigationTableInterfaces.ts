@@ -16,5 +16,5 @@ export interface useInvestigationTableOutcome {
     getMapKeyByValue: (map: Map<string, User>, value: string) => string;
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
-    onClickFunc: () => void;
+    onClickFunc: (orderByValue: string) => void;
 };

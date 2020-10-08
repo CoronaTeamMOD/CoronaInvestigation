@@ -282,8 +282,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     return classNames;
   }
 
-  const onClickFunc = () => {
-    const orderByValue = orderOptions[Math.floor(Math.random() * orderOptions.length)];
+  const onClickFunc = (orderByValue: string) => {
+    // const orderByValue = orderOptions[Math.floor(Math.random() * orderOptions.length)];
     console.log("ORDER BY: ", orderByValue)
     setIsDefaultOrder(orderByValue === orderOptions[0])
     setOrderBy(orderByValue);
