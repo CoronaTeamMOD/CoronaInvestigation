@@ -1,5 +1,4 @@
 import React from 'react';
-import { isFuture } from 'date-fns';
 import { Grid } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 
@@ -9,6 +8,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import PlaceSubType from 'models/PlaceSubType';
 
 const ExposureForm = (props: any) => {
   const {
@@ -84,12 +84,10 @@ const ExposureForm = (props: any) => {
         onPlaceTypeChange={(value) =>
           handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
         }
-        onPlaceSubTypeChange={(value) =>
-          handleChangeExposureDataAndFlightsField(
-            fieldsNames.placeSubType,
-            value
-          )
+        onPlaceSubTypeChange={(placeSubType: PlaceSubType) =>
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, placeSubType.id)
         }
+        setValue={() => {}}
       />
     </Grid>
   );
