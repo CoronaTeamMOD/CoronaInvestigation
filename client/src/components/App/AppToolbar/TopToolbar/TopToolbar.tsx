@@ -42,7 +42,8 @@ const TopToolbar: React.FC = (): JSX.Element => {
                     <Tooltip title={toggleMessage} arrow>
                         <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive />
                     </Tooltip>
-                    <Typography>שלום, {user.userName}</Typography>
+                    <Typography variant='h6' className={classes.greetUserText}>שלום, {user.userName}</Typography>
+                    <Typography variant='h6'>דסק: </Typography>
                 </div>
             </Toolbar>
         </AppBar>

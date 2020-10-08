@@ -6,7 +6,7 @@ import useStyles from './IsActiveToggleStyles';
 import { useTheme } from '@material-ui/core';
 
 const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JSX.Element => {
-    const classes = useStyles({});
+    const classes = useStyles();
     const {value, setUserActivityStatus, ...rest} = props;
     const theme = useTheme();
 
@@ -21,7 +21,7 @@ const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JS
     };
 
     return(
-        <ToggleButtonGroup ref={ref} value={value} exclusive className={classes.isActiveToggle} {...rest}>
+        <ToggleButtonGroup {...rest} ref={ref} value={value} exclusive size='small' className={classes.isActiveToggle}>
             <ToggleButton className={classes.toggle}
                           style={value ? activeButtonStyle : {}}
                           onClick={()=> setUserActivityStatus(!value)}

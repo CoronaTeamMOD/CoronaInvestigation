@@ -1,16 +1,15 @@
-import {makeStyles} from '@material-ui/styles';
+import { Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     toggle: {
-        borderRadius: '2.5vh',
-        height: '3vh',
-        width: '4.6vw',
-        fontSize: '0.9vw',
+        borderRadius: 48
     },
     isActiveToggle: {
         cursor: 'pointer',
-        marginRight: '3vw',
+        marginLeft: theme.spacing(2),
+        flip: false
     }
-});
+}));
 
 export default useStyles;
