@@ -46,13 +46,11 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
 
         try {
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
-            console.log('parsedForeignKeys data', parsedForeignKeys.data);
 
             const {allCities, allContactTypes, allFamilyRelationships} = parsedForeignKeys.data;
             const contactedPersonCity = getIdFromResult(allCities),
                 contactType = getIdFromResult(allContactTypes),
                 familyRelationship = getIdFromResult(allFamilyRelationships);
-            console.log('contactedPerson', contactedPerson);
 
             return {
                 ...contactedPerson,
@@ -75,12 +73,10 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     });
 
     const parsedContacts = await Promise.all(parsedContactsPromises);
-    console.log('parsedContacts', parsedContacts);
     const mutationVariables = {
         unSavedContacts: JSON.stringify(parsedContacts),
     };
 
-    // return response.json({error:false});
 
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
         .then((result: any) => response.json({error:false}))
