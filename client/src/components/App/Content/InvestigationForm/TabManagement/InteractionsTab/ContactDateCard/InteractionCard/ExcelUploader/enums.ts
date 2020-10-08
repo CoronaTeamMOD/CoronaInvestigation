@@ -1,4 +1,4 @@
-import InteractedContact from "models/InteractedContact";
+import InteractedContact from 'models/InteractedContact';
 
 export enum booleanAnswers {
     TRUE = 'כן',

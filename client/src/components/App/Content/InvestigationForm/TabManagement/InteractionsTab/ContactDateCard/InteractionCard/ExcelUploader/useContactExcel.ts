@@ -1,7 +1,7 @@
-import useExcel from "./useExcel";
-import React from "react";
-import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from "./enums";
-import InteractedContact from "models/InteractedContact";
+import React from 'react';
+import InteractedContact from 'models/InteractedContact';
+import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from './enums';
+import useExcel from '../../../../../../../../../Utils/vendor/useExcel';
 
 type ParseCallback = (data:any[]) => void;
 type FailCallback = (error?:Error|string) => void;
@@ -42,8 +42,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         .find(englishName => ContactedPersonFieldMapper[englishName] === hebrewName);
 
     const parseRow = (row:ContactedPersonExcel) => {
-        console.log('parsing row:',row);
-
         const parsedObj: InteractedContact | {} = {};
         (Object.keys(row) as (keyof ContactedPersonExcel)[])
             .forEach(hebrewColumnName => {
@@ -54,7 +52,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
                 (parsedObj as any)[englishFieldName as any] = parsingFunc ? parsingFunc(value) : value
             });
 
-        console.log('rows with enligh col names:',parsedObj);
         return parsedObj;
     };
 
@@ -85,7 +82,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         fileReader.onload = parseContactsWorkbook(isAsBinaryString);
 
         try {
-            // TODO test read as array buffer
             isAsBinaryString ? fileReader.readAsBinaryString(file) : fileReader.readAsArrayBuffer(file) ;
         } catch (e) {
             console.error('error loading file:', e);

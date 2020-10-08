@@ -1,20 +1,21 @@
 import React from 'react';
-import {Button, Typography} from "@material-ui/core";
+import axios from 'Utils/axios';
+import {Button, Typography} from '@material-ui/core';
+
 import ExcelLogo from './ExcelLogo.png';
+import useContactExcel from './useContactExcel';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStyles from './ExcelUploaderStyles';
-import useContactExcel from "./useContactExcel";
-import useCustomSwal from "commons/CustomSwal/useCustomSwal";
-import axios from "Utils/axios";
 
 const fileEndings = [
-    "xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "txt", "ods", "fods", "uos", "sylk", "dif", "dbf", "prn", "qpw", "123", "wb*", "wq*", "html", "htm"
-].map((x) => `.${x}`).join(",");
+    'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
+].map((x) => `.${x}`).join(',');
 
 interface ExcelUploaderProps {
     contactEvent:number;
     onSave: () => void;
 }
-const ExcelUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
+const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const {alertError} = useCustomSwal();
     const [data, setData] = React.useState<any>();
     const buttonRef = React.useRef<any>();
@@ -48,11 +49,11 @@ const ExcelUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                     טען אקסל
                 </Typography>
             </Button>
-            <input type="file" accept={fileEndings}
+            <input type='file' accept={fileEndings}
                    ref={buttonRef} className={classes.hiddenFileInput}
                    onChange={onFileSelect}/>
         </>
     );
 };
 
-export default ExcelUploader;
+export default ContactUploader;
