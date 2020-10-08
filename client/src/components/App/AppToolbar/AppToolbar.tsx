@@ -42,7 +42,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
     }, [user])
 
     return (
-        <AppBar>
+        <AppBar className={classes.appBar} position='static'>
             <Toolbar >
                 <div className={classes.logoTitle}>
                     <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
