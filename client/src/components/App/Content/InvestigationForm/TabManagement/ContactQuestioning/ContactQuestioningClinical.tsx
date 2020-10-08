@@ -17,6 +17,11 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import useStyles from './ContactQuestioningStyles';
 
+const emptyFamilyRelationship: FamilyRelationship = {
+    id: null as any,
+    displayName: '',
+};
+
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const { errors, setError, clearErrors } = useForm({});
@@ -70,8 +75,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         )}
                                 >
                                     {
-                                        familyRelationships?.map((familyRelationship) => (
-                                            <MenuItem
+                                        familyRelationships?.length > 0 &&
+                                        [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
+                                            <MenuItem className={classes.menuItem}
                                                 key={familyRelationship.id}
                                                 value={familyRelationship.id}>
                                                 {familyRelationship.displayName}
