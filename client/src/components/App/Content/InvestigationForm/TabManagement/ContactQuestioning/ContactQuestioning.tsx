@@ -1,8 +1,8 @@
+import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useContext } from 'react';
-import { ExpandMore } from '@material-ui/icons';
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
+import { ExpandMore, Phone } from '@material-ui/icons';
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, IconButton, Tooltip, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
@@ -23,6 +23,9 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
+
+    const callContact = 'חייג';
+    const noPhoneNumber = 'טלפון לא קיים';
 
     const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
@@ -63,7 +66,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                         dir='ltr'
                                     >
                                         <Grid item xs={2} container>
-                                            <Grid item xs={9} container>
+                                            <Grid item xs={6} container>
                                                 <FormControlLabel
                                                     onClick={(event) => event.stopPropagation()}
                                                     onChange={((event: any, checked: boolean) => {
@@ -77,6 +80,20 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                     }
                                                     label='אין מענה'
                                                 />
+                                            </Grid>
+                                            <Grid container item xs={2}>
+                                                <Tooltip title={interactedContact.phoneNumber !== null ? callContact : noPhoneNumber}>
+                                                    <span>
+                                                        <IconButton
+                                                            color='primary'
+                                                            disabled={interactedContact.phoneNumber === null}
+                                                            href={`TEL:${interactedContact.phoneNumber}`}
+                                                            onClick={(event) => event.stopPropagation()}
+                                                        >
+                                                            <Phone />
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
                                             </Grid>
                                             <Divider variant='fullWidth' orientation='vertical' flexItem />
                                         </Grid>
