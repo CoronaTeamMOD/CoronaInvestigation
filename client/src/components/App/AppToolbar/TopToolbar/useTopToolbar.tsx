@@ -15,7 +15,7 @@ export interface useTopToolbarOutcome  {
 
 const useTopToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarOutcome => {
 
-    const classes = useStyles({});
+    const classes = useStyles();
 
     const getUserActivityStatus = () => {
         axios.get(`/users/userActivityStatus`)
