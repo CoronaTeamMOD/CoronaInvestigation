@@ -1,12 +1,13 @@
+import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
@@ -64,7 +65,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                         dir='ltr'
                                     >
                                         <Grid item xs={2} container>
-                                            <Grid item xs={9} container>
+                                            <Grid item xs={6} container>
                                                 <FormControlLabel
                                                     onClick={(event) => event.stopPropagation()}
                                                     onChange={((event: any, checked: boolean) => {
@@ -78,6 +79,13 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                     }
                                                     label='אין מענה'
                                                 />
+                                            </Grid>
+                                            <Grid container item xs={2}>
+                                                <span onClick={(event) => event.stopPropagation()}>
+                                                    <PhoneDial
+                                                        phoneNumber={interactedContact.phoneNumber}
+                                                    />
+                                                </span>
                                             </Grid>
                                             <Divider variant='fullWidth' orientation='vertical' flexItem />
                                         </Grid>
