@@ -30,7 +30,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
     
     const handleLeaveInvestigationClick = (e: React.ChangeEvent<{}>) => {
-        e.preventDefault();
         if(isEventTrigeredByMouseClicking(e)) {
             confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
         }
