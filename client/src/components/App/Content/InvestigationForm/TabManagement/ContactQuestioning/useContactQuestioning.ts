@@ -103,12 +103,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
-        setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
-        allContactedInteractions[contactIndex] = {
+        const updatedContactedInteractions = [...allContactedInteractions];
+        const updatedContact : InteractedContact = {
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
+        setCurrentInteractedContact(updatedContact);
+        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
+        setAllContactedInteractions(updatedContactedInteractions);
     };
 
     const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {
@@ -122,8 +125,18 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const updateNoResponse = (interactedContact: InteractedContact, checked: boolean) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
+        const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
+        const updatedContactedInteractions = [...allContactedInteractions];
+        const shouldExpand = checked ? false : allContactedInteractions[contactIndex].expand;
+        const updatedContact : InteractedContact = {
+            ...allContactedInteractions[contactIndex],
+            [InteractedContactFields.CANT_REACH_CONTACT]: checked,
+            [InteractedContactFields.EXPAND]: shouldExpand
+            
+        };
+        setCurrentInteractedContact(updatedContact);
+        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
+        setAllContactedInteractions(updatedContactedInteractions);
     };
 
     return {
