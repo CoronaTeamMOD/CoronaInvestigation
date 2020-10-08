@@ -77,12 +77,15 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         unSavedContacts: JSON.stringify(parsedContacts),
     };
 
-
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
-        .then((result: any) => response.json({error:false}))
+        .then((result: any) => {
+            const hasErrors = result?.errors?.length > 0;
+            const status = hasErrors ? 500 : 200;
+            return response.status(status).json({error: hasErrors});
+        })
         .catch(error => {
             console.error(error);
-            return response.status(500).json({error: 'failed to save all the contacts'})
+            return response.status(500).json({error: true})
         })
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import InteractedContact from 'models/InteractedContact';
 import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from './enums';
 import useExcel from 'Utils/vendor/useExcel';
+import {isObjectEmpty} from "Utils/vendor/underscoreReplacement";
 
 type ParseCallback = (data:any[]) => void;
 type FailCallback = (error?:Error|string) => void;
@@ -64,7 +65,8 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             setIsWorkbookDate1904 (!!(workbook?.Workbook?.WBProps?.date1904));
             const sheetJson = sheet_to_json<ContactedPersonExcel>(sheet);
-            parseCallback(sheetJson.map(parseRow));
+            const parsedData = sheetJson.map(parseRow).filter(row => !isObjectEmpty(row));
+            parseCallback(parsedData);
         } catch (e) {
             console.error('error reading or parsing file:', e);
             failCallback && failCallback(e);
