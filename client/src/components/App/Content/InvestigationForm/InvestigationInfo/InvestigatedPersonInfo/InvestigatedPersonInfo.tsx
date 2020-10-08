@@ -1,10 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography, Paper, IconButton, Tooltip } from '@material-ui/core';
-import { CakeOutlined, EventOutlined, Help, Phone } from '@material-ui/icons';
+import { Typography, Paper } from '@material-ui/core';
+import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -52,18 +53,13 @@ const InvestigatedPersonInfo = (props: Props) => {
                             epedemioligyNumber
                         }
                     </Typography>
-                    <Tooltip title='חייג'>
-                        <IconButton 
-                            href={`TEL:${investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}`} 
-                            color='primary'
-                        >
-                            <Phone/>
-                        </IconButton>
-                    </Tooltip>
+                    <PhoneDial
+                        phoneNumber={investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}
+                    />
                 </div>
                 <PrimaryButton
                     onClick={(e) => {handleLeaveInvestigationClick(e)}}
-                    type="submit"
+                    type='submit'
                     form={`form-${currentTab}`}
                 >
                     {leaveInvestigationMessage} 

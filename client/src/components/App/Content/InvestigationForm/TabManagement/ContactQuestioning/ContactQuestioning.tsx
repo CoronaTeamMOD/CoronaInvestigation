@@ -1,12 +1,13 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { ExpandMore, Phone } from '@material-ui/icons';
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, IconButton, Tooltip, Typography } from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
@@ -23,9 +24,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-
-    const callContact = 'חייג';
-    const noPhoneNumber = 'טלפון לא קיים';
 
     const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
@@ -82,18 +80,11 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                 />
                                             </Grid>
                                             <Grid container item xs={2}>
-                                                <Tooltip title={interactedContact.phoneNumber !== null ? callContact : noPhoneNumber}>
-                                                    <span>
-                                                        <IconButton
-                                                            color='primary'
-                                                            disabled={interactedContact.phoneNumber === null}
-                                                            href={`TEL:${interactedContact.phoneNumber}`}
-                                                            onClick={(event) => event.stopPropagation()}
-                                                        >
-                                                            <Phone />
-                                                        </IconButton>
-                                                    </span>
-                                                </Tooltip>
+                                                <span onClick={(event) => event.stopPropagation()}>
+                                                    <PhoneDial
+                                                        phoneNumber={interactedContact.phoneNumber}
+                                                    />
+                                                </span>
                                             </Grid>
                                             <Divider variant='fullWidth' orientation='vertical' flexItem />
                                         </Grid>
