@@ -1,7 +1,7 @@
 import React from 'react';
 import InteractedContact from 'models/InteractedContact';
 import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from './enums';
-import useExcel from '../../../../../../../../../Utils/vendor/useExcel';
+import useExcel from 'Utils/vendor/useExcel';
 
 type ParseCallback = (data:any[]) => void;
 type FailCallback = (error?:Error|string) => void;
