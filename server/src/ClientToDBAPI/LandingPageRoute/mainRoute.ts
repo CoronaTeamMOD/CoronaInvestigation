@@ -9,7 +9,7 @@ landingPageRoute.get('/', (request: Request, response: Response) => {
 })
 
 landingPageRoute.post('/investigations', (request: Request, response: Response) => {
-    graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, { userName: response.locals.user.id })
+    graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, { userId: response.locals.user.id })
     .then((result: any) => {
         response.send(result)
     })

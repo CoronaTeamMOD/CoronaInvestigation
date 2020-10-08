@@ -96,37 +96,40 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
-        if (user.investigationGroup !== -1 ) {
-        console.log("RES: ", data)
-        if (data && data.data && data.data.groupInvestigationsByDateAndPriority &&
-          data.data.groupInvestigationsByDateAndPriority.json) {
-            
-          allInvestigationsRawData = JSON.parse(
-            data.data.groupInvestigationsByDateAndPriority.json
-          ).allInvestigations;
-        }
+        if (user.investigationGroup !== -1) {
+          
+          if (data && data.data && data.data.groupInvestigationsByDateAndPriority &&
+            data.data.groupInvestigationsByDateAndPriority.json) {
 
-        if (data && data.data && data.data.userById) {
-          allInvestigationsRawData = data.data.userById.investigationsByLastUpdator.nodes;
-        }
+            allInvestigationsRawData = JSON.parse(
+              data.data.groupInvestigationsByDateAndPriority.json
+            ).allInvestigations;
+          }
 
-        const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
-          const patient = investigation.investigatedPatientByInvestigatedPatientId;
-          const patientCity = patient.addressByAddress.cityByCity;
-          const user = investigation.userByCreator;
-          return createRowData(investigation.epidemiologyNumber,
-            investigation.coronaTestDate,
-            investigation.priority,
-            investigation.investigationStatusByInvestigationStatus.displayName,
-            patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
-            patient.personByPersonId.phoneNumber,
-            Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-            patientCity ? patientCity.displayName : '',
-            user
-          )
-        });
-        setRows(investigationRows)
-      }
+          if (data && data.data && data.data.userInvestigationsByDateAndPriority &&
+            data.data.userInvestigationsByDateAndPriority.json) {
+              allInvestigationsRawData = JSON.parse(
+                data.data.userInvestigationsByDateAndPriority.json
+              ).allInvestigations;
+          }
+
+          const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
+            const patient = investigation.investigatedPatientByInvestigatedPatientId;
+            const patientCity = patient.addressByAddress.cityByCity;
+            const user = investigation.userByLastUpdator;
+            return createRowData(investigation.epidemiologyNumber,
+              investigation.coronaTestDate,
+              investigation.priority,
+              investigation.investigationStatusByInvestigationStatus.displayName,
+              patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
+              patient.personByPersonId.phoneNumber,
+              Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
+              patientCity ? patientCity.displayName : '',
+              user
+            )
+          });
+          setRows(investigationRows)
+        }
       })
       .catch((err: any) => {
         Swal.fire({

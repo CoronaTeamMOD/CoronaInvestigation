@@ -41,7 +41,6 @@ const App: React.FC = (): JSX.Element => {
             const user = result && result.data && result.data.userById;
             setUser({
                 ...user,
-                isAdmin: false,
                 id: userId,
                 userName: userName,
                 token: userToken,

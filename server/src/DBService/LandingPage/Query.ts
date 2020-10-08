@@ -1,35 +1,9 @@
 import { gql } from "postgraphile";
 
 export const GET_USER_INVESTIGATIONS = gql`
-query InvestigationsInfoByUser($userName: String!) {
-  userById(id: $userName) {
-    investigationsByLastUpdator(filter: {investigationStatus: {notEqualTo: "טופלה"}}, orderBy: CORONA_TEST_DATE_DESC) {
-      nodes {
-        epidemiologyNumber
-        coronaTestDate
-        priority
-        investigatedPatientByInvestigatedPatientId {
-          addressByAddress {
-            cityByCity {
-              displayName
-            }
-          }
-          personByPersonId {
-            birthDate
-            firstName
-            lastName
-            phoneNumber
-          }
-        }
-        investigationStatusByInvestigationStatus {
-          displayName
-        }
-        userByCreator {
-          id
-          userName
-        }
-      }
-    }
+mutation MyMutation($userId: String!) {
+  userInvestigationsByDateAndPriority(input: {userId: $userId}) {
+    json
   }
 }
 `;
