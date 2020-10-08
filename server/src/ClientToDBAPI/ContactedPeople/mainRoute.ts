@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import {SAVE_LIST_OF_CONTACTS, UPDATE_LIST_OF_CONTACTS} from '../../DBService/ContactedPeople/Mutation';
+import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
 import {
     GET_ALL_FAMILY_RELATIONSHIPS,
     GET_AMOUNT_OF_CONTACTED_PEOPLE,
