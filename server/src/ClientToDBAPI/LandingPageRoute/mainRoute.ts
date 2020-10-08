@@ -10,11 +10,11 @@ landingPageRoute.get('/', (request: Request, response: Response) => {
 })
 
 landingPageRoute.get('/investigations', (request: Request, response: Response) => {
-    graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, { userId: response.locals.user.id })
+    graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, { userId: response.locals.user.id, orderBy: request.query.orderBy })
         .then((result: any) => {
-            if (result && result.data && result.data.userInvestigationsByDateAndPriority &&
-                result.data.userInvestigationsByDateAndPriority.json) {
-                response.send(JSON.parse(result.data.userInvestigationsByDateAndPriority.json))
+            if (result && result.data && result.data.userInvestigationsSort &&
+                result.data.userInvestigationsSort.json) {
+                response.send(JSON.parse(result.data.userInvestigationsSort.json))
             }
             else {
                 response.status(500).send('error in fetching data')
@@ -24,11 +24,11 @@ landingPageRoute.get('/investigations', (request: Request, response: Response) =
 })
 
 landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, { investigationGroupId: +response.locals.user.group })
+    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, { investigationGroupId: +response.locals.user.group, orderBy: request.query.orderBy  })
         .then((result: any) => {
-            if (result && result.data && result.data.groupInvestigationsByDateAndPriority &&
-                result.data.groupInvestigationsByDateAndPriority.json) {
-                response.send(JSON.parse(result.data.groupInvestigationsByDateAndPriority.json))
+            if (result && result.data && result.data.groupInvestigationsSort &&
+                result.data.groupInvestigationsSort.json) {
+                response.send(JSON.parse(result.data.groupInvestigationsSort.json))
             }
             else {
                 response.status(500).send('error in fetching data')

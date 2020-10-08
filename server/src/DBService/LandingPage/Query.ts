@@ -1,16 +1,16 @@
 import { gql } from "postgraphile";
 
 export const GET_USER_INVESTIGATIONS = gql`
-mutation MyMutation($userId: String!) {
-  userInvestigationsByDateAndPriority(input: {userId: $userId}) {
+mutation GetSortedGroupInvestigation ($userId: String!, $orderBy: String!) {
+  userInvestigationsSort(input: {userId: $userId, orderBy: $orderBy}) {
     json
   }
 }
 `;
 
 export const GET_GROUP_INVESTIGATIONS = gql`
-mutation MyMutation($investigationGroupId: Int!) {
-  groupInvestigationsByDateAndPriority(input: {investigationGroupId: $investigationGroupId}) {
+mutation GetSortedGroupInvestigation ($investigationGroupId: Int!, $orderBy: String!) {
+  groupInvestigationsSort(input: {investigationGroupId: $investigationGroupId, orderBy: $orderBy}) {
     json
   }
 }

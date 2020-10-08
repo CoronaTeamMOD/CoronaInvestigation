@@ -21,6 +21,23 @@ import useStyle from './InvestigationTableStyles';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 
+const orderOptions = [
+  'defaultOrder',
+  'epidemiologyNumberDESC',
+  'epidemiologyNumberASC',
+  'cityDESC',
+  'cityASC',
+  'birthDateDESC',
+  'birthDateASC',
+  'patientFullNameDESC',
+  'patientFullNameASC',
+  'investigationStatusDESC',
+  'investigationStatusASC',
+  'userNameDESC',
+  'userNameASC'
+]
+
+
 export const createRowData = (
   epidemiologyNumber: number,
   coronaTestDate: string,
@@ -81,23 +98,29 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   const { selectedInvestigator, setSelectedRow } = parameters;
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
-  const user = useSelector<StoreStateType, User>(state => state.user);
+  const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
+  const [orderBy, setOrderBy] = useState<string>('defaultOrder');
 
-  const getInvestigationsAxiosRequest = (): any => {
+  const user = useSelector<StoreStateType, User>(state => state.user);
+  const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
+
+
+  const getInvestigationsAxiosRequest = (orderBy: string): any => {
     if (user.isAdmin)
-      return axios.get<InvestigationsReturnType>('/landingPage/groupInvestigations')
-    return axios.get<InvestigationsReturnType>('/landingPage/investigations');
+      return axios.get<InvestigationsReturnType>(`landingPage/groupInvestigations?orderBy=${orderBy}`)
+    return axios.get<InvestigationsReturnType>(`/landingPage/investigations?orderBy=${orderBy}`);
   }
 
   useEffect(() => {
-    user.userName !== initialUserState.userName && getInvestigationsAxiosRequest()
+    setIsLoading(true);
+    user.userName !== initialUserState.userName && getInvestigationsAxiosRequest(orderBy)
       .then((response: any) => {
 
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
         if (user.investigationGroup !== -1) {
-          
+
           if (data && data.allInvestigations) {
             allInvestigationsRawData = data.allInvestigations
           }
@@ -117,7 +140,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
               user
             )
           });
-          setRows(investigationRows)
+          setRows(investigationRows);
+          setIsLoading(false);
         }
       })
       .catch((err: any) => {
@@ -130,7 +154,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         })
         console.log(err)
       });
-  }, [user.id, classes.errorAlertTitle, user]);
+  }, [user.id, classes.errorAlertTitle, user, orderBy]);
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
     setEpidemiologyNum(epidemiologyNumberVal);
@@ -241,19 +265,28 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     let classNames = [];
 
     if (cellKey === TableHeadersNames.investigatorName) {
-        classNames.push(classes.columnBorder);
+      classNames.push(classes.columnBorder);
     }
 
 
-    if (rows.length - 1 !== rowIndex) {
+    if (isDefaultOrder && !isLoading) {
+      if (rows.length - 1 !== rowIndex) {
         if (getDayAndMothFromDate(rows[rowIndex].coronaTestDate) !==
-            getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
-            classNames.push(classes.rowBorder)
+          getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
+          classNames.push(classes.rowBorder)
         }
+      }
     }
 
     return classNames;
-}
+  }
+
+  const onClickFunc = () => {
+    const orderByValue = orderOptions[Math.floor(Math.random() * orderOptions.length)];
+    console.log("ORDER BY: ", orderByValue)
+    setIsDefaultOrder(orderByValue === orderOptions[0])
+    setOrderBy(orderByValue);
+  }
 
   return {
     tableRows: rows,
@@ -261,7 +294,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     convertToIndexedRow,
     getMapKeyByValue,
     onInvestigatorChange,
-    getTableCellStyles
+    getTableCellStyles,
+    onClickFunc
   };
 };
 

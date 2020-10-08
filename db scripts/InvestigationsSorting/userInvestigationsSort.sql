@@ -1,8 +1,8 @@
--- FUNCTION: public.user_ivestigations_by_date_and_priority(character varying,character varying);
+-- FUNCTION: public.user_investigations_sort(character varying,character varying);
 
--- DROP FUNCTION public.user_ivestigations_by_date_and_priority(character varying,character varying);
+-- DROP FUNCTION public.user_investigations_sort(character varying,character varying);
 
-CREATE OR REPLACE FUNCTION public.user_ivestigations_by_date_and_priority(
+CREATE OR REPLACE FUNCTION public.user_investigations_sort(
 	user_id character varying,
 	order_by character varying)
     RETURNS json
@@ -67,7 +67,8 @@ RETURN (select
 			order by
 			CASE WHEN order_by='defaultOrder' THEN 
 			investigationTable.corona_test_date::date END DESC,
-			investigationTable.priority ASC,
+			CASE WHEN order_by='defaultOrder' THEN
+			investigationTable.priority END ASC,
 			CASE WHEN order_by='epidemiologyNumberDESC' THEN investigationTable.epidemiology_number END DESC,
  			CASE WHEN order_by='epidemiologyNumberASC' THEN investigationTable.epidemiology_number END ASC,
 			CASE WHEN order_by='cityDESC' THEN (
@@ -143,5 +144,5 @@ where (
 END;
 $BODY$;
 
-ALTER FUNCTION public.user_ivestigations_by_date_and_priority(character varying,character varying)
+ALTER FUNCTION public.user_investigations_sort(character varying,character varying)
     OWNER TO coronai;
