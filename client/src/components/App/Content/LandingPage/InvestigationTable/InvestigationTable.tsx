@@ -43,7 +43,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     return (
         <>
             <Button onClick={() => onClickFunc()}>
-                CLICK ME To SORT!
+                CLICK ME TO SORT!
             </Button>
             <Typography color='textPrimary' className={classes.welcomeMessage}>
                 {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
