@@ -8,10 +8,10 @@ import { Controller, useFormContext } from 'react-hook-form';
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './TransportationFormsStyles';
-import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const BusEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();

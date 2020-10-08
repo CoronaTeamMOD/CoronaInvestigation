@@ -5,8 +5,7 @@ import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 
 const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFormOutcome => {  
