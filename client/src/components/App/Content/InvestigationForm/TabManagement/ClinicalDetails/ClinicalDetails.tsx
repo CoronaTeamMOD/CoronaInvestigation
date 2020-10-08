@@ -355,7 +355,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    <Collapse in={patientGender === Gender.FEMALE}>
+                    {
+                        patientGender === Gender.FEMALE &&
                         <Grid item xs={12}>
                             <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                                 <Grid item xs={2} className={classes.fieldLabel}>
@@ -384,7 +385,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Collapse>
+                    }
                 </Grid>
             </form>
         </div>
