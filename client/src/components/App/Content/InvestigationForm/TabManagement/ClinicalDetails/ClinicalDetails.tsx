@@ -364,7 +364,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     <Typography>
                                         <b>
                                             האם בהריון:
-                                </b>
+                                        </b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
