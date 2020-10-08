@@ -118,22 +118,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
-    const openAccordion = (interactedContact: InteractedContact) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false);
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
-    };
-
-    const updateNoResponse = (interactedContact: InteractedContact, checked: boolean) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
-    };
-
     return {
         saveContact,
         updateInteractedContact,
         changeIdentificationType,
-        openAccordion,
-        updateNoResponse,
         loadInteractedContacts,
         saveContactQuestioning,
     };

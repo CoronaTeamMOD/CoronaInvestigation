@@ -13,8 +13,6 @@ export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => void;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     changeIdentificationType: (interactedContact: InteractedContact, booleanValue: boolean) => void;
-    openAccordion: (interactedContact: InteractedContact) => void;
-    updateNoResponse: (interactedContact: InteractedContact, checked: boolean) => void;
     loadInteractedContacts: () => void;
     saveContactQuestioning: () => Promise<void>;
 };
