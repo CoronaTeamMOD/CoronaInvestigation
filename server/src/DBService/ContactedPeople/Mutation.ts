@@ -7,11 +7,3 @@ mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
   }
 }
 `;
-
-export const SAVE_LIST_OF_CONTACTS = gql`
-mutation saveContacts($contacts: JSON!, $contactEvent: Int!) {
-  updateContactPerson(input: {contacts: $contacts, contactEventId: $contactEvent}) {
-    clientMutationId
-  }
-}
-`;
