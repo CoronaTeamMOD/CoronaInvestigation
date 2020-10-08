@@ -72,26 +72,26 @@ const backgroundDiseasesMoreInfoSchema = yup.string().nullable().when(
 
 const ClinicalDetailsSchema = yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
-        [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().required(requiredText),
-        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().required(requiredText).nullable(),
-        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().required(requiredText).nullable()
+        [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText).nullable(),
+        [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().nullable(),
+        [ClinicalDetailsFields.ISOLATION_FLOOR]: yup.string().nullable(),
+        [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
     }).required(),
-    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().required(),
+    [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema,
-    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().required(),
-    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().nullable().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
             is: true,
             then: yup.string().required(requiredText),
             otherwise: yup.string()
         }),
-    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().required(),
-    [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
+    [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().nullable().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
         is: true,
-        then: yup.boolean().required(),
-        otherwise: yup.boolean().nullable()
+        then: yup.boolean().nullable().required(),
+        otherwise: yup.boolean().nullable().nullable()
     }),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when([ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN],
         (doesHaveSymptoms: boolean, isSymptomsDateUnknown: boolean, schema: any) => {
@@ -109,18 +109,18 @@ const ClinicalDetailsSchema = yup.object().shape({
             otherwise: yup.array().of(yup.string())
         }),
     [ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO]: symptomsMoreInfoSchema,
-    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().required(),
+    [ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.BACKGROUND_DESEASSES]: yup.array().of(yup.string()).when(
         ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES, {
             is: true,
             then: yup.array().of(yup.string()).min(1).required(),
             otherwise: yup.array().of(yup.string())
         }),
-    [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().required(),
+    [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
-    [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().required(),
+    [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO]: backgroundDiseasesMoreInfoSchema,
 });
 
