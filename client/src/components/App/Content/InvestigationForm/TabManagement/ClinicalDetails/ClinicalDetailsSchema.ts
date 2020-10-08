@@ -91,7 +91,7 @@ const ClinicalDetailsSchema = yup.object().shape({
     [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().nullable().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
         is: true,
         then: yup.boolean().nullable().required(),
-        otherwise: yup.boolean().nullable().nullable()
+        otherwise: yup.boolean().nullable()
     }),
     [ClinicalDetailsFields.SYMPTOMS_START_DATE]: yup.date().when([ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN],
         (doesHaveSymptoms: boolean, isSymptomsDateUnknown: boolean, schema: any) => {
@@ -117,7 +117,7 @@ const ClinicalDetailsSchema = yup.object().shape({
             otherwise: yup.array().of(yup.string())
         }),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable().required(),
-    [ClinicalDetailsFields.HOSPITAL]: yup.string(),
+    [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(),
