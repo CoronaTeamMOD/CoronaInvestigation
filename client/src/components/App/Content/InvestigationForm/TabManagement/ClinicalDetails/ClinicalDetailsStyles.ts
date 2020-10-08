@@ -75,6 +75,9 @@ export const useStyles = makeStyles({
             marginRight: '-5vw'
         },
     },
+    hiddenIsPregnant: {
+        display: 'none'
+    }
 });
 
 export interface ClinicalDetailsClasses {
