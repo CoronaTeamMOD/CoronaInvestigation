@@ -8,7 +8,7 @@ AS $function$declare
 person_arr json[];
 person json;
 firstName varchar;
-lastName varchar;
+lastName varchar; 
 phoneNumber varchar;
 identificationNumber varchar;
 identificationType varchar;
