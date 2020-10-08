@@ -7,13 +7,13 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './ContactFormStyles';
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from '../../InteractionsEventDialogContext/InteractionEventContactFields';
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';

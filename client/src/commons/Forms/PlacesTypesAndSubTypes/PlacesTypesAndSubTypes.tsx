@@ -7,7 +7,7 @@ import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
-import InteractionEventDialogFields from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 

@@ -1,14 +1,14 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form'
 import { Grid } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import AddressForm from '../AddressForm/AddressForm';
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();

@@ -5,10 +5,10 @@ import { Controller, useFormContext } from 'react-hook-form';
 import FormInput from 'commons/FormInput/FormInput';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarchy.otherPublicPlaces.subTypesCodes;
 
