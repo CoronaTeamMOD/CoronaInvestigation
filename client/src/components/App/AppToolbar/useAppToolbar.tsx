@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import axios from 'Utils/axios';
 
-import useStyles from './TopToolbarStyles';
+import useStyles from './AppToolbarStyles';
 
 export interface useInteractionsTabInput {
     setIsActive: (isActive: boolean) => void;
@@ -13,7 +13,7 @@ export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
 }
 
-const useTopToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarOutcome => {
+const useAppToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarOutcome => {
 
     const classes = useStyles();
 
@@ -55,4 +55,4 @@ const useTopToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarO
     }
 };
 
-export default useTopToolbar;
+export default useAppToolbar;
