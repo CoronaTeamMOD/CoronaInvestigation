@@ -98,19 +98,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (user.investigationGroup !== -1) {
           
-          if (data && data.data && data.data.groupInvestigationsByDateAndPriority &&
-            data.data.groupInvestigationsByDateAndPriority.json) {
-
-            allInvestigationsRawData = JSON.parse(
-              data.data.groupInvestigationsByDateAndPriority.json
-            ).allInvestigations;
-          }
-
-          if (data && data.data && data.data.userInvestigationsByDateAndPriority &&
-            data.data.userInvestigationsByDateAndPriority.json) {
-              allInvestigationsRawData = JSON.parse(
-                data.data.userInvestigationsByDateAndPriority.json
-              ).allInvestigations;
+          if (data && data.allInvestigations) {
+            allInvestigationsRawData = data.allInvestigations
           }
 
           const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
