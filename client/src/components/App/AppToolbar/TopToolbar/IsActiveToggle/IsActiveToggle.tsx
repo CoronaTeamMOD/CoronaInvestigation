@@ -3,18 +3,20 @@ import {ToggleButton} from '@material-ui/lab';
 import ToggleButtonGroup, {ToggleButtonGroupProps} from '@material-ui/lab/ToggleButtonGroup';
 
 import useStyles from './IsActiveToggleStyles';
+import { useTheme } from '@material-ui/core';
 
 const IsActiveToggle: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
     const {value, setUserActivityStatus, ...rest} = props;
+    const theme = useTheme();
 
     const activeButtonStyle = {
-        backgroundColor: '#117243',
+        backgroundColor: theme.palette.success.dark,
         color: 'white'
     };
 
     const notActiveButtonStyle = {
-        backgroundColor: '#9e2a2b',
+        backgroundColor: theme.palette.error.main,
         color: 'white'
     };
 
