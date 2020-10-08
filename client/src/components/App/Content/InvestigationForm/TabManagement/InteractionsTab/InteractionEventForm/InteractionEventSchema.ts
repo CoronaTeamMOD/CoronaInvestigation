@@ -1,9 +1,8 @@
 import * as yup from 'yup';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/;
 
