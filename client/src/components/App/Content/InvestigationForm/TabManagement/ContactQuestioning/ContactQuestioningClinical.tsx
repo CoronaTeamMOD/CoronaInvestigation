@@ -17,7 +17,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import useStyles from './ContactQuestioningStyles';
 
-const emptyFamilyRelationship = {
+const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
     displayName: '',
 };
