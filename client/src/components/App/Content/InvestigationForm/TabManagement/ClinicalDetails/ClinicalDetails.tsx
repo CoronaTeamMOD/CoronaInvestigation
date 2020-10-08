@@ -86,9 +86,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         e.preventDefault();
         const values = getValues();
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
-        ClinicalDetailsSchema.isValid(values).then(valid => {
-            setFormState(investigationId, id, valid);
-        })
+        setFormState(investigationId, id, true);
         onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
