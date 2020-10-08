@@ -16,6 +16,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
+import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
@@ -29,7 +30,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
 
-    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse, loadInteractedContacts } =
+    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts } =
         useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact });
 
     React.useEffect(() => {
@@ -57,7 +58,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                     <AccordionSummary
                                         expandIcon={<ExpandMore />}
                                         onClick={() => {
-                                            openAccordion(interactedContact);
+                                            updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
                                         }}
                                         aria-controls='panel1a-content'
                                         id='panel1a-header'
@@ -68,7 +69,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                 <FormControlLabel
                                                     onClick={(event) => event.stopPropagation()}
                                                     onChange={((event: any, checked: boolean) => {
-                                                        updateNoResponse(interactedContact, checked);
+                                                        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
                                                     })}
                                                     control={
                                                         <Checkbox
