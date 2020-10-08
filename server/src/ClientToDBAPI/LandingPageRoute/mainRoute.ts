@@ -8,7 +8,7 @@ landingPageRoute.get('/', (request: Request, response: Response) => {
     response.send('Hello from Landing page route');
 })
 
-landingPageRoute.post('/investigations', (request: Request, response: Response) => {
+landingPageRoute.get('/investigations', (request: Request, response: Response) => {
     graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, { userId: response.locals.user.id })
         .then((result: any) => {
             if (result && result.data && result.data.userInvestigationsByDateAndPriority &&

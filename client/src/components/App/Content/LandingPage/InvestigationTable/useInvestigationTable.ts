@@ -86,7 +86,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   const getInvestigationsAxiosRequest = (): any => {
     if (user.isAdmin)
       return axios.get<InvestigationsReturnType>(`/landingPage/groupInvestigations?investigationGroup=${user.investigationGroup}`)
-    return axios.post<InvestigationsReturnType>('/landingPage/investigations', {});
+    return axios.get<InvestigationsReturnType>('/landingPage/investigations');
   }
 
   useEffect(() => {
