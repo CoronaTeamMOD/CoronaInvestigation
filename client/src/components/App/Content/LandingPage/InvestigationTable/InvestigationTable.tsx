@@ -31,7 +31,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow,
         getMapKeyByValue, onInvestigatorChange, getTableCellStyles,
-        onClickFunc
     } = useInvestigationTable({
         selectedInvestigator: investigator, setSelectedRow
     });
@@ -42,9 +41,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <Button onClick={() => onClickFunc()}>
-                CLICK ME TO SORT!
-            </Button>
             <Typography color='textPrimary' className={classes.welcomeMessage}>
                 {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
             </Typography>
