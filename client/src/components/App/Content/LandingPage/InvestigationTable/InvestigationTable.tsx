@@ -1,8 +1,7 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField, Button } from '@material-ui/core';
+import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField } from '@material-ui/core';
 
 import User from 'models/User';
 import Investigator from 'models/Investigator';

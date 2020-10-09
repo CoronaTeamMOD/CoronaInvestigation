@@ -37,5 +37,4 @@ landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request,
         .catch(err => response.status(500).send('error in fetching data: ' + err));
 })
 
-
 export default landingPageRoute;

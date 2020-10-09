@@ -84,8 +84,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
 
   const user = useSelector<StoreStateType, User>(state => state.user);
-  const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
-
 
   const getInvestigationsAxiosRequest = (): any => {
     if (user.isAdmin)
@@ -94,7 +92,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   }
 
   useEffect(() => {
-    setIsLoading(true);
     user.userName !== initialUserState.userName && getInvestigationsAxiosRequest()
       .then((response: any) => {
 
@@ -123,7 +120,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             )
           });
           setRows(investigationRows);
-          setIsLoading(false);
         }
       })
       .catch((err: any) => {
