@@ -250,7 +250,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       classNames.push(classes.columnBorder);
     }
 
-
     if (rows.length - 1 !== rowIndex) {
       if (getDayAndMothFromDate(rows[rowIndex].coronaTestDate) !==
         getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
