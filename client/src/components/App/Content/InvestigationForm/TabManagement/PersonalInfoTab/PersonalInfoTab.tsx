@@ -263,7 +263,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון*'}
+                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
                                 />
                             )}
@@ -284,7 +284,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 errors={errors}
                                 placeholder={CONTACT_INFO}
                                 onBlur={props.onBlur}
-                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר*'}
+                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר'}
                                 className={classes.contactDescription}
                             />
                         )}
