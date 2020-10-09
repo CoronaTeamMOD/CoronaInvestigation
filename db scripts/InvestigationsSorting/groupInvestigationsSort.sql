@@ -1,6 +1,6 @@
--- FUNCTION: public.group_investigations_sort(integer,character varying);
+-- FUNCTION: public.group_investigations_sort(integer, character varying)
 
--- DROP FUNCTION public.group_investigations_sort(integer,character varying);
+-- DROP FUNCTION public.group_investigations_sort(integer, character varying);
 
 CREATE OR REPLACE FUNCTION public.group_investigations_sort(
 	investigation_group_id integer,
@@ -69,6 +69,8 @@ RETURN (select
 			investigationTable.corona_test_date::date END DESC,
 			CASE WHEN order_by='defaultOrder' THEN
 			investigationTable.priority END ASC,
+			CASE WHEN order_by='coronaTestDateDESC' THEN investigationTable.corona_test_date::date END DESC,
+			CASE WHEN order_by='coronaTestDateASC' THEN investigationTable.corona_test_date::date END ASC,
 			CASE WHEN order_by='epidemiologyNumberDESC' THEN investigationTable.epidemiology_number END DESC,
  			CASE WHEN order_by='epidemiologyNumberASC' THEN investigationTable.epidemiology_number END ASC,
 			CASE WHEN order_by='cityDESC' THEN (
@@ -93,15 +95,7 @@ RETURN (select
 					)
 				)
 			) END ASC,
-			CASE WHEN order_by='birthDateDESC' THEN (
-			select birth_date
-			from public.person
-			where id = (
-				select person_id from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END DESC,
-			CASE WHEN order_by='birthDateASC' THEN (
+			CASE WHEN order_by='ageDESC' THEN (
 			select birth_date
 			from public.person
 			where id = (
@@ -109,27 +103,21 @@ RETURN (select
 				where id = investigationTable.investigated_patient_id
 				)
 			) END ASC,
-			CASE WHEN order_by='patientFullNameDESC' THEN (
-			select CONCAT(first_name, ' ', last_name) from public.person
+			CASE WHEN order_by='ageASC' THEN (
+			select birth_date
+			from public.person
 			where id = (
 				select person_id from public.investigated_patient
 				where id = investigationTable.investigated_patient_id
 				)
 			) END DESC,
-			CASE WHEN order_by='patientFullNameASC' THEN (
-			select CONCAT(first_name, ' ', last_name) from public.person
-			where id = (
-				select person_id from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END ASC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
-			CASE WHEN order_by='userNameDESC' THEN (
+			CASE WHEN order_by='investigatorNameDESC' THEN (
 				select user_name from public.user
 				where id = investigationTable.last_updator
 			) END DESC,
- 			CASE WHEN order_by='userNameASC' THEN (
+ 			CASE WHEN order_by='investigatorNameASC' THEN (
 				select user_name from public.user
 				where id = investigationTable.last_updator
 			) END ASC
@@ -145,5 +133,5 @@ where (
 END;
 $BODY$;
 
-ALTER FUNCTION public.group_investigations_sort(integer,character varying)
+ALTER FUNCTION public.group_investigations_sort(integer, character varying)
     OWNER TO coronai;
