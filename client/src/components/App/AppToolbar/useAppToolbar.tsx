@@ -11,6 +11,7 @@ export interface useInteractionsTabInput {
 export interface useTopToolbarOutcome  {
     getUserActivityStatus: () => void;
     setUserActivityStatus: (isActive: boolean) => void;
+    setUserDesk: (deskId: number) => void;
 }
 
 const useAppToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarOutcome => {
@@ -49,9 +50,28 @@ const useAppToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarO
         });
     }
 
+    const setUserDesk = (deskId: number) => {
+        axios.post('users/updateUserDesk', {
+            deskId
+        }).then((result) => {
+            if(result.data) {
+                setIsActive(result.data.isActive);
+            }
+        }).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לעדכן את הדסק שלך',
+                icon: 'error',
+                customClass: {
+                    title: classes.swalTitle
+                },
+            });
+        });
+    }
+
     return {
         getUserActivityStatus,
-        setUserActivityStatus
+        setUserActivityStatus,
+        setUserDesk
     }
 };
 
