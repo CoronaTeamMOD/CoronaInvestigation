@@ -1,22 +1,36 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+
+import StoreStateType from 'redux/storeStateType';
+import User from 'models/User';
 import axios from 'Utils/axios';
 
-import useStyles from './AppToolbarStyles';
-
-export interface useInteractionsTabInput {
-    setIsActive: (isActive: boolean) => void;
-};
-
+import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
-    getUserActivityStatus: () => void;
     setUserActivityStatus: (isActive: boolean) => void;
     setUserDesk: (deskId: number) => void;
+    classes: AppToolbarClasses;
+    user: User;
+    isActive: boolean;
 }
 
-const useAppToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarOutcome => {
+const useAppToolbar = () :  useTopToolbarOutcome => {
 
+    const firstUserUpdate = React.useRef(true);
+    const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
+
+    const [isActive, setIsActive] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        if (firstUserUpdate.current) {
+            firstUserUpdate.current = false;
+        } else {
+            getUserActivityStatus();
+        }
+    }, [user]);
 
     const getUserActivityStatus = () => {
         axios.get(`/users/userActivityStatus`)
@@ -69,9 +83,11 @@ const useAppToolbar = ({setIsActive}: useInteractionsTabInput) :  useTopToolbarO
     }
 
     return {
-        getUserActivityStatus,
+        user,
+        isActive,
         setUserActivityStatus,
-        setUserDesk
+        setUserDesk,
+        classes
     }
 };
 

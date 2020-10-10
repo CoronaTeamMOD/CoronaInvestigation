@@ -7,7 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import User from 'models/User';
 import StoreStateType from 'redux/storeStateType';
 
-import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
 import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
 import { KeyboardArrowDown } from '@material-ui/icons';
@@ -16,12 +15,7 @@ import { Autocomplete } from '@material-ui/lab';
 const toggleMessage = 'מה הסטטוס שלך?';
 
 const AppToolbar: React.FC = (): JSX.Element => {
-    const classes = useStyles();
-    const firstUserUpdate = React.useRef(true);
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
-
-    const [isActive, setIsActive] = React.useState<boolean>(false);
     const [isDeskAutocompleteShown, setIsDeskAutocompleteShown] = React.useState<boolean>(false);
 
     const handleClick = () => {
@@ -32,15 +26,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
         setIsDeskAutocompleteShown(false);
     };
 
-    const { getUserActivityStatus, setUserActivityStatus } = useAppToolbar({ setIsActive });
-
-    React.useEffect(() => {
-        if (firstUserUpdate.current) {
-            firstUserUpdate.current = false;
-        } else {
-            getUserActivityStatus();
-        }
-    }, [user])
+    const { user, isActive, setUserActivityStatus, classes } = useAppToolbar();
 
     return (
         <AppBar className={classes.appBar} position='static'>
@@ -68,10 +54,11 @@ const AppToolbar: React.FC = (): JSX.Element => {
                             </Button>
                             :
                             <Autocomplete
-                                id="combo-box-demo"
                                 onBlur={handleClose}
-                                options={['one','tow']}
-                                style={{ width: 100 }}
+                                options={[{ id: 311, displayName: 'חיפה- משהו' }, { id: 311, displayName: 'חיפה- משהו' }]}
+                                getOptionLabel={(option) => option.displayName}
+                                getOptionSelected={(option, value) => option.id === value.id}
+                                style={{ width: 150 }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}

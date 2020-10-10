@@ -29,4 +29,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+export interface AppToolbarClasses {
+    appBar: string;
+    logoTitle: string;
+    userSection: string;
+    greetUserText: string;
+    deskTextField: string;
+    swalTitle: string;
+}
+
 export default useStyles;
