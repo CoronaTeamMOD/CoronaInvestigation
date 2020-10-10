@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { AppBar, Button, Menu, MenuItem, Toolbar } from '@material-ui/core';
+import { AppBar, Button, TextField, Toolbar } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -11,6 +11,7 @@ import useStyles from './AppToolbarStyles';
 import useAppToolbar from './useAppToolbar';
 import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 
@@ -21,14 +22,14 @@ const AppToolbar: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const [isActive, setIsActive] = React.useState<boolean>(false);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [isDeskAutocompleteShown, setIsDeskAutocompleteShown] = React.useState<boolean>(false);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = () => {
+        setIsDeskAutocompleteShown(true);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setIsDeskAutocompleteShown(false);
     };
 
     const { getUserActivityStatus, setUserActivityStatus } = useAppToolbar({ setIsActive });
@@ -54,26 +55,36 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     </Tooltip>
                     <Typography className={classes.greetUserText}>שלום, {user.userName}</Typography>
                     <Typography>דסק:&nbsp;</Typography>
-                    <Button
-                        color='inherit'
-                        aria-controls='desk-menu'
-                        aria-haspopup='true'
-                        onClick={handleClick}
-                        endIcon={<KeyboardArrowDown />}
-                        >
-                        באר שבוע
-                    </Button>
-                    <Menu
-                        id='desk-menu'
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <MenuItem selected onClick={handleClose}>באר שבוע</MenuItem>
-                        <MenuItem onClick={handleClose}>תל אבוב</MenuItem>
-                        <MenuItem onClick={handleClose}>רמת גון</MenuItem>
-                    </Menu>
+                    {
+                        !isDeskAutocompleteShown ?
+                            <Button
+                                color='inherit'
+                                aria-controls='desk-menu'
+                                aria-haspopup='true'
+                                onClick={handleClick}
+                                endIcon={<KeyboardArrowDown />}
+                            >
+                                <b>באר שבוע</b>
+                            </Button>
+                            :
+                            <Autocomplete
+                                id="combo-box-demo"
+                                onBlur={handleClose}
+                                options={['one','tow']}
+                                style={{ width: 100 }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        autoFocus
+                                        color='secondary'
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            className: classes.deskTextField
+                                        }}
+                                    />
+                                )}
+                            />
+                    }
                 </div>
             </Toolbar>
         </AppBar>

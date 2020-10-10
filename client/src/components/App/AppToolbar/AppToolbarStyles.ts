@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: theme.spacing(2),
         flip: false
     },
+    deskTextField: {
+        backgroundColor: theme.palette.background.default
+    },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
