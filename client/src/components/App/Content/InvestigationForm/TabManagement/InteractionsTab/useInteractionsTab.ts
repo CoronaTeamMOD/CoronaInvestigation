@@ -123,6 +123,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     params: {contactEventId}
                 }).then(() => {
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
+                    loadInteractions();
                 }).catch(() => {
                     handleDeleteEventFailed();
                 })
