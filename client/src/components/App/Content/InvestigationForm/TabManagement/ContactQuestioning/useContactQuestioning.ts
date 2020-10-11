@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux';
+import { subDays, isAfter, differenceInDays } from 'date-fns';
 import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
-import { subDays } from 'date-fns';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -46,6 +46,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 earliestDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
         }
+
         return earliestDate;
     }
 
@@ -98,7 +99,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             });
         }).then(() => {
             setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
-                new Date(contactedPerson.contactDate) > new Date(minimalDateToFilter)));
+                differenceInDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
+            ))
         }).catch((err) =>
             console.log(err));
     };
@@ -106,10 +108,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
-        allContactedInteractions[contactIndex] = {
+        const updatedContactedInteractions = [...allContactedInteractions];
+        const updatedContact : InteractedContact = {
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
+        setCurrentInteractedContact(updatedContact);
+        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
+        setAllContactedInteractions(updatedContactedInteractions);
     };
 
     const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {
@@ -117,22 +123,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
-    const openAccordion = (interactedContact: InteractedContact) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, false);
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
-    };
-
-    const updateNoResponse = (interactedContact: InteractedContact, checked: boolean) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
-    };
-
     return {
         saveContact,
         updateInteractedContact,
         changeIdentificationType,
-        openAccordion,
-        updateNoResponse,
         loadInteractedContacts,
         saveContactQuestioning,
     };

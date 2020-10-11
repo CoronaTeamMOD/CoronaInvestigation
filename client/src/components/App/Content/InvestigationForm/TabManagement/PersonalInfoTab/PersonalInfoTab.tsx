@@ -161,20 +161,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
         event.preventDefault();
-        axios.post('/personalDetails/updatePersonalDetails',
-            {
-                id: investigatedPatientId,
-                personalInfoData,
-            }).catch(() => {
-                Swal.fire({
-                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                    icon: 'error'
-                });
-            })
+        axios.post('/personalDetails/updatePersonalDetails', 
+        {
+            id : investigatedPatientId, 
+            personalInfoData, 
+        })
+        .then(onSubmit)
+        .catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        }) 
         personalInfoValidationSchema.isValid(getValues()).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
 
     return (
@@ -263,7 +264,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון*'}
+                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
                                 />
                             )}
@@ -284,7 +285,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 errors={errors}
                                 placeholder={CONTACT_INFO}
                                 onBlur={props.onBlur}
-                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר*'}
+                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר'}
                                 className={classes.contactDescription}
                             />
                         )}

@@ -52,7 +52,7 @@ export const useStyles = makeStyles({
     },
     otherTextField: {
         marginTop: '1vh',
-        marginLeft: '-15vw',
+        marginLeft: '-22vw',
     },
     symptomsDateCheckBox: {
         marginTop: '1vh',

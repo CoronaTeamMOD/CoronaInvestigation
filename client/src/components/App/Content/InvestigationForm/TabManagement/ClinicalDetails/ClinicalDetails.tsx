@@ -1,4 +1,5 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -85,11 +86,15 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
-        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
+        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
+            .then(onSubmit)
+            .catch(() => Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            }));
         ClinicalDetailsSchema.isValid(values).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
@@ -236,7 +241,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ?
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
                                                             :
-                                                            'רחוב *'
+                                                            'רחוב'
                                                     }
                                                     {...params}
                                                     placeholder='רחוב'
@@ -258,7 +263,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
                                                     :
-                                                    'מספר הבית *'
+                                                    'מספר הבית'
                                             }
                                             testId='currentQuarantineHomeNumber'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
@@ -287,7 +292,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
                                                     :
-                                                    'קומה *'
+                                                    'קומה'
                                             }
                                             testId='currentQuarantineFloor'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
@@ -364,7 +369,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     <Typography>
                                         <b>
                                             האם בהריון:
-                                </b>
+                                        </b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
