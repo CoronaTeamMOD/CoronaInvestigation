@@ -7,16 +7,15 @@ query InvestigationStaticDetails($investigationId: Int!) {
     lastUpdateTime
     investigatingUnit
     investigatedPatientByInvestigatedPatientId {
-      personByPersonId {
-        identificationType
-        identificationNumber
-        gender
-        firstName
-        lastName
-        birthDate
-        additionalPhoneNumber
-        phoneNumber
+      covidPatientByCovidPatient {
+        identityNumber
+        fullName
+        age
+        primaryPhone
       }
+      identityType
+      additionalPhoneNumber
+      gender
       isDeceased
     }
     coronaTestDate

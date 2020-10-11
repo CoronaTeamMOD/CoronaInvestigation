@@ -50,8 +50,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         if (!exposuresAndFlightsData.wasConfirmedExposure) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
-                [fieldsNames.firstName]: '',
-                [fieldsNames.lastName]: '',
+                [fieldsNames.exposureSource]: null,
                 [fieldsNames.date]: undefined,
                 [fieldsNames.address]: null,
                 [fieldsNames.placeType]: null,

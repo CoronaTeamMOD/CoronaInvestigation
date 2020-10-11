@@ -1,7 +1,7 @@
 import { gql } from "postgraphile";
 
 export const GET_USER_INVESTIGATIONS = gql`
-mutation GetSortedGroupInvestigation ($userId: String!, $orderBy: String!) {
+mutation GetSortedUserInvestigation ($userId: String!, $orderBy: String!) {
   userInvestigationsSort(input: {userId: $userId, orderBy: $orderBy}) {
     json
   }

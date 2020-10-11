@@ -1,11 +1,11 @@
 import StaticUser from './StaticUser';
-import { InvestigatedPatientByInvestigatedPatientId } from './InvestigatedPatientByInvestigatedPatientId';
+import InvestigatedPatientStaticInfo from './InvestigatedPatientStaticInfo';
 
 interface InvestigationInfo {
     startTime: Date;
     lastUpdateTime: Date;
     investigatingUnit: string;
-    investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
+    investigatedPatient: InvestigatedPatientStaticInfo;
     coronaTestDate: Date;
     investigatedPatientId: number;
     userByCreator: StaticUser;

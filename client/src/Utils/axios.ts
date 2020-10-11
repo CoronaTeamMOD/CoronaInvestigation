@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { store } from 'redux/store';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -14,11 +14,15 @@ const instance = axios.create({
 instance.interceptors.request.use(
     (config) => {
         config.headers.Authorization = store.getState().user.token;
-        setIsLoading(true);
+        activateIsLoading(config);
         return config;
     }, 
     (error) => Promise.reject(error)
 );
+
+export const activateIsLoading = (config: AxiosRequestConfig) => {
+    !config.url?.includes('/optionalExposureSources') && setIsLoading(true);
+}
 
 instance.interceptors.response.use(
     (config) => {

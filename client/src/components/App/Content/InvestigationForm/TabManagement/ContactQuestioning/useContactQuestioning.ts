@@ -1,6 +1,6 @@
 import {useSelector} from 'react-redux';
-import { subDays, isAfter, differenceInDays } from 'date-fns';
 import StoreStateType from 'redux/storeStateType';
+import { subDays, differenceInCalendarDays } from 'date-fns';
 
 import axios from 'Utils/axios';
 import InteractedContact from 'models/InteractedContact';
@@ -99,7 +99,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             });
         }).then(() => {
             setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
-                differenceInDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
+                differenceInCalendarDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
             ))
         }).catch((err) =>
             console.log(err));
