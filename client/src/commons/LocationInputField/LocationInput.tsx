@@ -1,7 +1,5 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
 import { Controller, Control } from 'react-hook-form';
-import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
 import useDBParser from 'Utils/vendor/useDBParsing';
 
@@ -76,7 +74,6 @@ const LocationInput = (props: LocationInputProps) => {
 
     const AutocompleteComponent =
         <AutocompletedField
-            required={required}
             value={parsedSelected}
             options={locationOptions}
             onChange={(event: React.ChangeEvent<{}>, newValue) => onChange(newValue as GoogleApiPlace | null)}
@@ -100,7 +97,6 @@ const LocationInput = (props: LocationInputProps) => {
 
 interface LocationInputProps {
     name: string;
-    required?: boolean;
     selectedAddress: GoogleApiPlace | null;
     setSelectedAddress: (newValue: GoogleApiPlace | null ) => void;
     control?: Control<Record<string, any>>;

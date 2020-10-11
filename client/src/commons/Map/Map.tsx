@@ -14,7 +14,6 @@ import useDBParser from "Utils/vendor/useDBParsing";
 interface MapProps {
     height?: number | string;
     width?: number | string;
-    required?: boolean;
     selectedAddress: GeocodeResponse | null;
     setSelectedAddress: (newValue: GeocodeResponse | null) => void;
     control?: any;
@@ -119,7 +118,6 @@ const Map = ({ selectedAddress, setSelectedAddress, control, name, required = fa
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
-                       required={required}
                        control={control}
         />
         <GoogleMap googleMapLoader={injectScript}
