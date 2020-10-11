@@ -1,14 +1,17 @@
-CREATE OR REPLACE FUNCTION public.update_contact_person(contacts json,contact_event_id integer)
-    RETURNS void
-    LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION public.update_contact_person(contacts json, contact_event_id integer)
+ RETURNS void
+ LANGUAGE plpgsql
 AS $function$declare
+/*Update or insert  contacted persons  assigned to specified contacted_event*/
 --Event variables:
+
 person_arr json[];
 person json;
 firstName varchar;
 lastName varchar;
 phoneNumber varchar;
 identificationNumber varchar;
+identificationType varchar;
 extraInfo varchar;
 igender varchar;
 contacted_person_id int4;
@@ -34,12 +37,14 @@ begin
 		select trim(nullif((person->'phoneNumber')::text,'null'),'"') into phoneNumber;
 		select trim(nullif((person->'extraInfo')::text,'null'),'"') into extraInfo;
 		select trim(nullif((person->'id')::text,'null'),'"')  into identificationNumber;
+		select trim(nullif((person->'identificationType')::text,'null'),'"')  into identificationType;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
 	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;  
-	   	select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;  
- 
+ 		select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;
+ 	--identificationType
+
 	    if contacted_person_id is not null then
-	    	
+	    	raise notice 'UPDATE contacted person';
 			/*update person and contacted person */
 	    update contacted_person 
 	    set extra_info = extraInfo,
@@ -51,16 +56,29 @@ begin
 	    	last_name  = LastName,
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
-	    	identification_type = case when identificationNumber is null then null else person.identification_type end
+	    	identification_type = (case when identificationNumber is null then null
+				 				  	     when identificationType is null then 'ת"ז' 
+				 				  	   else identificationType end)
+		  
 	   from contacted_person 
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
-	    else
-	    	INSERT INTO public.person(first_name, last_name,phone_number, identification_type, identification_number)
-			VALUES(firstName,lastName, phoneNumber, 'ת"ז', identificationNumber);
+	
+	   else
+	    	raise notice 'insert contacted person';
+	    	INSERT INTO public.person(first_name, 
+	    	last_name,phone_number, 
+	    	identification_type,
+	    	identification_number)
+			select firstName,lastName, phoneNumber,
+					(case when identificationNumber is null then null
+				 		  when identificationType is null then 'ת"ז' 
+				 		  else identificationType end),
+				   		  identificationNumber  ;
+				  
 			person_id := currval('person_id_seq');
 			INSERT INTO public.contacted_person
 			(person_info, contact_event,extra_info, contact_type)
-			VALUES(person_id, contact_event_id,extraInfo,contactType);
+			VALUES(person_id, contact_event_id,extraInfo, contactType);
 	    end if;
 	end loop;
 end;

@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { differenceInYears } from 'date-fns';
 import { useHistory } from 'react-router-dom';
+import { differenceInYears, format } from 'date-fns';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -23,6 +23,8 @@ import { useInvestigationTableOutcome, useInvestigationTableParameters } from '.
 
 export const createRowData = (
   epidemiologyNumber: number,
+  coronaTestDate: string,
+  priority: number,
   status: string,
   fullName: string,
   phoneNumber: string,
@@ -31,6 +33,8 @@ export const createRowData = (
   investigator: Investigator
 ): InvestigationTableRow => ({
   epidemiologyNumber,
+  coronaTestDate,
+  priority,
   status,
   fullName,
   phoneNumber,
@@ -68,6 +72,7 @@ type InvestigationsReturnType = {
 };
 
 export const UNDEFINED_ROW = -1;
+const defaultOrderBy = 'defaultOrder';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
 
@@ -77,47 +82,51 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   const { selectedInvestigator, setSelectedRow } = parameters;
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
-  const user = useSelector<StoreStateType, User>(state => state.user);
+  const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
+  const [orderBy, setOrderBy] = useState<string>('defaultOrder');
 
-  const getInvestigationsAxiosRequest = (): any => {
+  const user = useSelector<StoreStateType, User>(state => state.user);
+  const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
+
+
+  const getInvestigationsAxiosRequest = (orderBy: string): any => {
     if (user.isAdmin)
-      return axios.get<InvestigationsReturnType>(`/landingPage/groupInvestigations?investigationGroup=${user.investigationGroup}`)
-    return axios.post<InvestigationsReturnType>('/landingPage/investigations', {});
+      return axios.get<InvestigationsReturnType>(`landingPage/groupInvestigations?orderBy=${orderBy}`)
+    return axios.get<InvestigationsReturnType>(`/landingPage/investigations?orderBy=${orderBy}`);
   }
 
   useEffect(() => {
-    user.userName !== initialUserState.userName && getInvestigationsAxiosRequest()
+    setIsLoading(true);
+    user.userName !== initialUserState.userName && getInvestigationsAxiosRequest(orderBy)
       .then((response: any) => {
+
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
-        if (data && data.data && data.data.allUsers) {
-          data.data.allUsers.nodes.forEach((element: any) => {
-            allInvestigationsRawData.push(...element.investigationsByLastUpdator.nodes)
-          });
-        }
+        if (user.investigationGroup !== -1) {
 
-        if (data && data.data && data.data.userById) {
-          allInvestigationsRawData = data.data.userById.investigationsByLastUpdator.nodes;
+          if (data && data.allInvestigations) {
+            allInvestigationsRawData = data.allInvestigations
+          }
+
+          const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
+            const patient = investigation.investigatedPatientByInvestigatedPatientId;
+            const patientCity = patient.addressByAddress.cityByCity;
+            const user = investigation.userByLastUpdator;
+            return createRowData(investigation.epidemiologyNumber,
+              investigation.coronaTestDate,
+              investigation.priority,
+              investigation.investigationStatusByInvestigationStatus.displayName,
+              patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
+              patient.personByPersonId.phoneNumber,
+              Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
+              patientCity ? patientCity.displayName : '',
+              user
+            )
+          });
+          setRows(investigationRows);
+          setIsLoading(false);
         }
-        
-        const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
-          const patient = investigation.investigatedPatientByInvestigatedPatientId;
-          const patientCity = patient.addressByAddress.cityByCity;
-          const user = investigation.userByCreator;
-          return createRowData(investigation.epidemiologyNumber,
-            investigation.investigationStatusByInvestigationStatus.displayName,
-            patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
-            patient.personByPersonId.phoneNumber,
-            Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
-            patientCity ? patientCity.displayName : '',
-            user
-          )
-        })
-        .sort((firstInvestigation: InvestigationTableRow, secondInvestigation: InvestigationTableRow) => 
-          secondInvestigation.epidemiologyNumber - firstInvestigation.epidemiologyNumber);
-          
-        setRows(investigationRows)
       })
       .catch((err: any) => {
         Swal.fire({
@@ -129,7 +138,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         })
         console.log(err)
       });
-  }, [user.id, classes.errorAlertTitle, user]);
+  }, [user.id, classes.errorAlertTitle, user, orderBy]);
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
     setEpidemiologyNum(epidemiologyNumberVal);
@@ -174,15 +183,21 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     })
   }
 
+  const getFormattedDate = (date: string) => {
+    return format(new Date(date), 'dd/MM')
+  }
+
   const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
+      [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
+      [TableHeadersNames.priority]: row.priority,
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
       [TableHeadersNames.age]: row.age,
       [TableHeadersNames.city]: row.city,
       [TableHeadersNames.investigatorName]: row.investigator.userName,
-      [TableHeadersNames.status]: row.status,
+      [TableHeadersNames.investigationStatus]: row.status,
     }
   }
 
@@ -207,27 +222,49 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       }).then((result) => {
         if (result.isConfirmed) {
           axios.post('/users/changeInvestigator', {
-              epidemiologyNumber: indexedRow.epidemiologyNumber,
-              user: newSelectedInvestigator.id
-            }
+            epidemiologyNumber: indexedRow.epidemiologyNumber,
+            user: newSelectedInvestigator.id
+          }
           ).then(() => timeout(1900).then(() => {
-              setSelectedRow(UNDEFINED_ROW)
-              setRows(rows.map((investigation: InvestigationTableRow) => (
-                investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
-                  {
-                    ...investigation,
-                    investigator: {
-                      id: newSelectedInvestigator.id,
-                      userName: newSelectedInvestigator.value.userName
-                    }
+            setSelectedRow(UNDEFINED_ROW)
+            setRows(rows.map((investigation: InvestigationTableRow) => (
+              investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                {
+                  ...investigation,
+                  investigator: {
+                    id: newSelectedInvestigator.id,
+                    userName: newSelectedInvestigator.value.userName
                   }
-                  : investigation
-              )))
-            }))
+                }
+                : investigation
+            )))
+          }))
         } else if (result.isDismissed) {
           setSelectedRow(UNDEFINED_ROW)
         }
       })
+  }
+
+  const getTableCellStyles = (rowIndex: number, cellKey: string) => {
+    let classNames = [];
+
+    if (cellKey === TableHeadersNames.investigatorName) {
+      classNames.push(classes.columnBorder);
+    }
+
+    if (isDefaultOrder && !isLoading) {
+      if (rows.length - 1 !== rowIndex && (getFormattedDate(rows[rowIndex].coronaTestDate) !==
+        getFormattedDate(rows[rowIndex + 1].coronaTestDate))) {
+        classNames.push(classes.rowBorder)
+      }
+    }
+
+    return classNames;
+  }
+
+  const sortInvestigationTable = (orderByValue: string) => {
+    setIsDefaultOrder(orderByValue === 'defaultOrder')
+    setOrderBy(orderByValue);
   }
 
   return {
@@ -235,7 +272,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     onInvestigationRowClick,
     convertToIndexedRow,
     getMapKeyByValue,
-    onInvestigatorChange
+    onInvestigatorChange,
+    getTableCellStyles,
+    sortInvestigationTable
   };
 };
 
