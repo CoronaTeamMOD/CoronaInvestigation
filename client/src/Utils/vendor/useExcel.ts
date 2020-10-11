@@ -17,6 +17,8 @@ const useExcel = () => {
         return (epoch - dnthresh) / day_ms;
     };
 
+    // hotfix for sheet js parsing of israeli timezone dates from excel files
+    // according to https://github.com/SheetJS/sheetjs/issues/1565#issuecomment-548491331
     const fixIsraeliDate = (date1904: boolean) => (date: Date) => {
         // Convert JS Date back to Excel date code and parse them using SSF module.
         const parsed = XLSX.SSF.parse_date_code(datenum(date, false), {date1904});
