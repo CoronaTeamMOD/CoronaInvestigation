@@ -67,7 +67,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
                     getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
-                        <ContactDateCard 
+                        <ContactDateCard
+                            loadInteractions={loadInteractions}
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                             onDeleteClick={handleDeleteContactEvent}
