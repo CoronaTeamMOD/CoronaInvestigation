@@ -21,23 +21,6 @@ import useStyle from './InvestigationTableStyles';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 
-const orderOptions = [
-  'defaultOrder',
-  'epidemiologyNumberDESC',
-  'epidemiologyNumberASC',
-  'cityDESC',
-  'cityASC',
-  'birthDateDESC',
-  'birthDateASC',
-  'patientFullNameDESC',
-  'patientFullNameASC',
-  'investigationStatusDESC',
-  'investigationStatusASC',
-  'userNameDESC',
-  'userNameASC'
-]
-
-
 export const createRowData = (
   epidemiologyNumber: number,
   coronaTestDate: string,
@@ -214,7 +197,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       [TableHeadersNames.age]: row.age,
       [TableHeadersNames.city]: row.city,
       [TableHeadersNames.investigatorName]: row.investigator.userName,
-      [TableHeadersNames.status]: row.status,
+      [TableHeadersNames.investigationStatus]: row.status,
     }
   }
 
@@ -283,9 +266,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   }
 
   const onClickFunc = (orderByValue: string) => {
-    // const orderByValue = orderOptions[Math.floor(Math.random() * orderOptions.length)];
-    console.log("ORDER BY: ", orderByValue)
-    setIsDefaultOrder(orderByValue === orderOptions[0])
+    setIsDefaultOrder(orderByValue === 'defaultOrder')
     setOrderBy(orderByValue);
   }
 

@@ -11,7 +11,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
@@ -24,39 +24,6 @@ const defaultInvestigator = {
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
-
-    type Order = 'asc' | 'desc';
-    type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
-
-    const sortableCols: sortableHeaders = {
-        [TableHeadersNames.epidemiologyNumber]: true,
-        [TableHeadersNames.coronaTestDate]: true,
-        [TableHeadersNames.priority]: false,
-        [TableHeadersNames.fullName]: false,
-        [TableHeadersNames.phoneNumber]: false,
-        [TableHeadersNames.age]: true,
-        [TableHeadersNames.city]: true,
-        [TableHeadersNames.investigatorName]: true,
-        [TableHeadersNames.status]: true,
-    }
-
-    const orderOptions = [
-        // 'defaultOrder',
-        'coronaTestDateASC',
-        'coronaTestDateDESC',
-        'epidemiologyNumberDESC',
-        'epidemiologyNumberASC',
-        'cityDESC',
-        'cityASC',
-        'ageDESC',
-        'ageASC',
-        // 'patientFullNameDESC',
-        // 'patientFullNameASC',
-        'investigationStatusDESC',
-        'investigationStatusASC',
-        'investigatorNameDESC',
-        'investigatorNameASC'
-      ]
 
     const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
@@ -77,9 +44,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
         const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        const newOrder = isAsc ? 'desc' : 'asc'
+        setOrder(newOrder);
         setOrderBy(property);
-        onClickFunc('epidemiologyNumberDESC');
+        if (property === 'defaultOrder') {
+            onClickFunc(property);
+        } else {
+            onClickFunc(property + newOrder.toLocaleUpperCase());
+        }
     };
 
     return (
@@ -118,7 +90,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         key={indexedRow.epidemiologyNumber}
                                         className={classes.investigationRow}
                                         onClick={() => {
-                                            onInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.status)
+                                            onInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
                                         }}
                                     >
                                         {

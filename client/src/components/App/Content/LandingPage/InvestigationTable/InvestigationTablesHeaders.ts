@@ -7,10 +7,12 @@ export enum TableHeadersNames {
     age = 'age',
     city = 'city',
     investigatorName = 'investigatorName',
-    status = 'status'
+    investigationStatus = 'investigationStatus'
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number};
+export type Order = 'asc' | 'desc';
+type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
@@ -21,7 +23,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.age]: 'גיל',
     [TableHeadersNames.city]: '	עיר מגורים',
     [TableHeadersNames.investigatorName]: 'חוקר מבצע',
-    [TableHeadersNames.status]: 'סטטוס ביצוע',
+    [TableHeadersNames.investigationStatus]: 'סטטוס ביצוע',
 }
 
 export const adminCols: string[] = [
@@ -33,16 +35,28 @@ export const adminCols: string[] = [
     TableHeadersNames.age,
     TableHeadersNames.city,
     TableHeadersNames.investigatorName,
-    TableHeadersNames.status
+    TableHeadersNames.investigationStatus
 ]
 
 export const userCols: string[] = [
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.priority,
-    TableHeadersNames.status,
+    TableHeadersNames.investigationStatus,
     TableHeadersNames.fullName,
     TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
 ]
+
+export const sortableCols: sortableHeaders = {
+    [TableHeadersNames.epidemiologyNumber]: true,
+    [TableHeadersNames.coronaTestDate]: true,
+    [TableHeadersNames.priority]: false,
+    [TableHeadersNames.fullName]: false,
+    [TableHeadersNames.phoneNumber]: false,
+    [TableHeadersNames.age]: true,
+    [TableHeadersNames.city]: true,
+    [TableHeadersNames.investigatorName]: true,
+    [TableHeadersNames.investigationStatus]: true,
+}
