@@ -1,7 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField, TableSortLabel } from '@material-ui/core';
+import {
+    Paper, Table, TableRow, TableBody, TableCell, Typography,
+    TableHead, TableContainer, TextField, TableSortLabel, Button
+} from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import User from 'models/User';
 import Investigator from 'models/Investigator';
@@ -12,6 +16,8 @@ import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
 
+export const defaultOrderBy = 'defaultOrder';
+const resetSortButtonText = 'סידור לפי תעדוף';
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
@@ -28,7 +34,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
     const [order, setOrder] = React.useState<Order>(sortOrders.asc);
     const [orderBy, setOrderBy] = React.useState<string>(TableHeadersNames.epidemiologyNumber);
-    
+
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow,
         getMapKeyByValue, onInvestigatorChange, getTableCellStyles,
@@ -46,7 +52,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         const newOrder = isAsc ? sortOrders.desc : sortOrders.asc
         setOrder(newOrder);
         setOrderBy(property);
-        property === 'defaultOrder' ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
+        property === defaultOrderBy ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
     };
 
     return (
@@ -55,23 +61,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
             </Typography>
             <div className={classes.content}>
+                <div className={classes.tableHeaderButton}>
+                    <Button
+                        color='primary'
+                        className={classes.sortResetButton}
+                        startIcon={<RefreshIcon />}
+                        onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                    >
+                        {resetSortButtonText}
+                    </Button>
+                </div>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
                             <TableRow>
                                 {
                                     Object.values(user.isAdmin ? adminCols : userCols).map((key) => (
-                                        <TableCell 
-                                        className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
-                                        sortDirection={orderBy === key ? order : false}>
+                                        <TableCell
+                                            className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
+                                            sortDirection={orderBy === key ? order : false}
+                                        >
                                             {
                                                 TableHeaders[key as keyof typeof TableHeadersNames]
                                             }
-                                            {sortableCols[key as keyof typeof TableHeadersNames] && <TableSortLabel 
-                                                active
-                                                direction={orderBy === key ? order : sortOrders.asc}
-                                                onClick={(e) => handleRequestSort(e,key)}>
-                                            </TableSortLabel>}
+                                            {
+                                                sortableCols[key as keyof typeof TableHeadersNames] &&
+                                                <TableSortLabel
+                                                    active
+                                                    direction={orderBy === key ? order : sortOrders.asc}
+                                                    onClick={(event: any) => handleRequestSort(event, key)}>
+                                                </TableSortLabel>
+                                            }
                                         </TableCell>
                                     ))
                                 }

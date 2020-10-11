@@ -1,9 +1,17 @@
-import CovidPatient from './CovidPatient';
+import CovidPatientDBOutput from './CovidPatientDBOutput';
 
-interface Exposure {
+export default interface ExposureByInvestigationId {
+    data: {
+        allExposures: {
+            nodes: DBExposure[]
+        }
+    }
+}
+
+interface DBExposure {
     id?: number,
     investigationId: number,
-    exposureSource: CovidPatient | null,
+    covidPatientByExposureSource: CovidPatientDBOutput | null,
     exposureDate?: Date,
     exposureAddress?: string,
     exposurePlaceSubType?: number,
@@ -21,5 +29,3 @@ interface Exposure {
     wasAbroad?: boolean,
     wasConfirmedExposure: boolean
 };
-
-export default Exposure;

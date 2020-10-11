@@ -1,41 +1,28 @@
 import {makeStyles} from '@material-ui/styles';
 
 const useStyles = makeStyles({
-    exposureForm: {
-        display: 'flex',
-        flexDirection: 'column',
+    exposureSourceTextFied: {
+        width: '70vw',
     },
-    exposureContactNameFields: {
-        '@media screen and (max-width: 1250px)': {
-            marginLeft: '-30vw',
-        },
-        marginLeft: '-14vw',
+    optionalExposureSources: {
+        maxHeight: '50vh',
+        overflowY: 'auto',
+        marginTop: '1vh',
+        direction: 'rtl',
+        width: '70vw',
+        minHeight: '10vh',
     },
-    exposureContactName: {
-        marginLeft: '1vw',
+    loadingSpinner: {
+        margin: '1vh 48%'
     },
-    exposureNameLabel: {
-        marginRight: '-14vw',
+    optionalExposureSource: {
+        direction: 'ltr',
     },
-    exposureFields: {
-        marginLeft: '-2.5vw',
+    optionField: {
+        marginLeft: '1vw' 
     },
-    exposureDate: {
-        '@media screen and (max-width: 1250px)': {
-            marginLeft: '-30vw',
-        },
-        marginLeft: '-12.5vw',
-    },
-    exposureAddress: {
-        '@media screen and (min-width: 1220px)': {
-            paddingRight: '51vw'
-        },
-        paddingRight: '22vw'
-    },
-    exposureInputAddress: {
-        '@media screen and (max-width: 1250px)': {
-            marginLeft: '-20vw',
-        },
+    searchedField: {
+        fontWeight: 'bold'
     }
 });
 

@@ -1,48 +1,138 @@
-import React from 'react';
-import { Grid } from '@material-ui/core';
+import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 
+import axios from 'Utils/axios';
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
+import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
+import CovidPatientFields from 'models/CovidPatientFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
-const ExposureForm = (props: any) => {
-  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, } = props;
+import useStyles from './ExposureFormStyles';
 
-  const classes = useFormStyles();
+const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה או פרטים אחרים';
+
+const displayPatientFields : CovidPatientFields = {
+  fullName: 'שם',
+  age: 'גיל',
+  address: 'כתובת',
+}
+
+const allCovidPatientFields : CovidPatientFields = {
+  ...displayPatientFields,
+  epidemiologyNumber: 'מספר אפידמיולוגי',
+  identityNumber: 'מספר זיהוי',
+  primaryPhone: 'מספר טלפון',
+}
+
+const minFullNameLengthToSearch = 2;
+const minNumbersLengthToSearch = 4;
+
+const invalidCharRegex = /[^א-ת\da-zA-Z0-9]/;
+const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
+
+const ExposureForm = (props: any) => {
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, coronaTestDate, } = props;
+
+  const classes = useStyles();
+  const formClasses = useFormStyles();
   const { errors, setError, clearErrors } = useForm();
 
+  const [exposureSourceSearch, setExposureSourceSearch] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
+
+  const selectedExposureSourceDisplay = (exposureSource: CovidPatient) : string => {
+    const fields: string[] = [];
+    exposureSource.fullName && fields.push(displayPatientFields.fullName + ': ' + exposureSource.fullName);
+    exposureSource.age && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
+    exposureSource.address && fields.push(displayPatientFields.address + ': ' + exposureSource.address);
+    return fields.join(', ');
+  }
+
+  const exposureSourceSearchRegex = React.useMemo(() => {
+    try {
+      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[^0-9A-Za-z]*')+ '*');
+    } catch {
+      return null;
+    }
+  }, [exposureSourceSearch]);
+
+  const minSourceSearchLengthToSearch : number = React.useMemo(
+    () => phoneAndIdentityNumberRegex.test(exposureSourceSearch) ? minNumbersLengthToSearch : minFullNameLengthToSearch, 
+  [exposureSourceSearch]);
+
+  const createExposureSourceOption = (exposureSource: CovidPatient) => {
+    const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone} = exposureSource;
+    if (!exposureSourceSearchRegex) return <></>
+    return <>
+    {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
+    {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber +  ': ' + epidemiologyNumber}</Typography>}
+    {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
+    {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
+    {age && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
+    {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
+    </>
+  }
+
+  useEffect(() => {
+    if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
+    else {
+      setIsLoading(true)
+      axios
+        .get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
+          .then(result => {
+            result?.data && setOptionalCovidPatients(result.data);
+          })
+        .catch((err) => {
+          Swal.fire({
+            title: 'לא ניתן היה לטעון את החולים האפשריים',
+            icon: 'error',
+          })
+        })
+        .finally(() => setIsLoading(false));
+    }}, [exposureSourceSearch]);
+
+    useEffect(() => {
+      exposureAndFlightsData.exposureSource && 
+        setExposureSourceSearch(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
+    }, [exposureAndFlightsData.exposureSource]);
+
   return (
-    <Grid className={classes.form} container justify='flex-start'>
-      <FormRowWithInput fieldName='שם החולה:'>
+    <Grid className={formClasses.form} container justify='flex-start'>
+      <FormRowWithInput fieldName='פרטי החולה:'>
         <>
-          <AlphabetTextField
-            errors={errors}
-            value={exposureAndFlightsData[fieldsNames.firstName]}
-            onChange={(value: string) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, value)
-            }
-            setError={setError}
-            clearErrors={clearErrors}
-            name={fieldsNames.firstName}
-            placeholder='שם פרטי'
-            label='שם פרטי'
-          />
-          <AlphabetTextField
-            errors={errors}
-            value={exposureAndFlightsData[fieldsNames.lastName]}
-            onChange={(value: string) =>
-              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, value)
-            }
-            name={fieldsNames.lastName}
-            setError={setError}
-            clearErrors={clearErrors}
-            placeholder='שם משפחה'
-            label='שם משפחה'
-          />
+        <TextField
+            className={classes.exposureSourceTextFied}
+            onChange={(event) => {
+              setExposureSourceSearch(event.target.value);
+              (!event.target.value || !event.target.value.includes(':')) && handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, null);
+            }}
+            value={exposureSourceSearch}
+            test-id='exposureSource'
+            id={fieldsNames.exposureSource}
+            placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
+        />   
+        <div className={classes.optionalExposureSources}>
+          {
+            isLoading ? <CircularProgress className={classes.loadingSpinner} size='5vh' /> :
+              optionalCovidPatients.map(exposureSource => (
+                  <MenuItem 
+                    className={classes.optionalExposureSource} 
+                    key={exposureSource.epidemiologyNumber} 
+                    value={exposureSource.epidemiologyNumber}
+                    onClick={() => {
+                      handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
+                    }}>
+                      {createExposureSourceOption(exposureSource)}
+                  </MenuItem>
+              ))
+          }
+        </div>
         </>
       </FormRowWithInput>
 

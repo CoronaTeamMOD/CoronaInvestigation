@@ -19,8 +19,7 @@ export interface ExposureAndFlightsDetailsAndSet {
 
 export const fieldsNames = {
     wasConfirmedExposure: 'wasConfirmedExposure',
-    firstName: 'exposureFirstName',
-    lastName: 'exposureLastName',
+    exposureSource: 'exposureSource',
     date: 'exposureDate',
     address: 'exposureAddress',
     placeType: 'exposurePlaceType',
@@ -50,8 +49,7 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
 export const initialExposureOrFlight: Exposure = {
     id: null,
     wasConfirmedExposure: false,
-    exposureFirstName: null,
-    exposureLastName: null,
+    exposureSource: null,
     exposureDate: null,
     exposureAddress: null,
     exposurePlaceType: null,
@@ -70,7 +68,7 @@ export const initialExposureOrFlight: Exposure = {
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
-    !(exposure.exposureFirstName && exposure.exposureLastName ) &&
+    !(exposure.exposureSource) &&
     (!exposure.exposureAddress || !exposure.exposureAddress.place_id)
 
 export const isFlightInvalid = (exposure: Exposure) =>

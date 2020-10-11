@@ -1,13 +1,18 @@
+import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
+import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
-import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
+import useStyles from './PersonalInfoTabStyles';
+import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
 
 const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
+
+    const classes = useStyles({});
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
@@ -21,19 +26,37 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
         axios.get('/personalDetails/occupations').then((res: any) => occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
         axios.get('/personalDetails/hmos').then((res: any) => res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName)));
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
-            if (res && res.data && res.data.data && res.data.data.investigationByEpidemiologyNumber) {
-                const investigatedPatient = res.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+            if (res && res.data && res.data) {
+                const investigatedPatient = res.data;
                 setInvestigatedPatientId(investigatedPatient.id);
                 const patientAddress = investigatedPatient.addressByAddress;
+                let convertedPatientAddress = null;
+                if (patientAddress) {
+                    let city = null;
+                    let street = null;
+                    if (patientAddress.cityByCity !== null) {
+                        city = patientAddress.cityByCity.id;
+                        setCityName(patientAddress.cityByCity.displayName);
+                    }
+                    if (patientAddress.streetByStreet !== null) {
+                        street = patientAddress.streetByStreet.id;
+                        setStreetName(patientAddress.streetByStreet.displayName);
+                    }
+                    convertedPatientAddress = {
+                        city,
+                        street,
+                        floor: patientAddress.floor,
+                        houseNum: patientAddress.houseNum,
+                    }
+                } else {
+                    convertedPatientAddress = initDBAddress;
+                }
                 const PersonalInfoData = {
-                    phoneNumber: investigatedPatient.personByPersonId.phoneNumber,
-                    additionalPhoneNumber: investigatedPatient.personByPersonId.additionalPhoneNumber,
+                    phoneNumber: investigatedPatient.primaryPhone,
+                    additionalPhoneNumber:  investigatedPatient.additionalPhoneNumber,
                     contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
-                    city: investigatedPatient.addressByAddress.city,
-                    street: investigatedPatient.addressByAddress.street,
-                    floor: investigatedPatient.addressByAddress.floor,
-                    houseNum: investigatedPatient.addressByAddress.houseNum,
+                    ...convertedPatientAddress,
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation ?
                         investigatedPatient.subOccupationBySubOccupation.city : '',
@@ -45,16 +68,18 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 reset(PersonalInfoData);
                 trigger();
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
-                if (patientAddress.cityByCity !== null) {
-                    setCityName(investigatedPatient.addressByAddress.cityByCity.displayName);
-                }
-                if (patientAddress.streetByStreet !== null) {
-                    setStreetName(investigatedPatient.addressByAddress.streetByStreet.displayName);
-                }
                 if (investigatedPatient.hmo !== null) {
                     setInsuranceCompany(investigatedPatient.hmo);
                 }
             }
+        }).catch(() => {
+            Swal.fire({
+                title: 'הייתה שגיאה בטעינת הפרטים האישיים',
+                icon: 'error',
+                customClass: {
+                    title: classes.swalTitle
+                },
+            });
         })
     }
 

@@ -193,10 +193,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.PHONE_NUMBER}
-                            test-id='personalDetailsPhone'
                             render={(props) => (
                                 <TextField
                                     id={PHONE_LABEL}
+                                    test-id='personalDetailsPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -223,10 +223,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
-                            test-id='personalDetailsAdditionalPhone'
                             render={(props) => (
                                 <TextField
                                     id={ADDITIONAL_PHONE_LABEL}
+                                    test-id='personalDetailsAdditionalPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -253,10 +253,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
-                            test-id='personalDetailsContactPhone'
                             render={(props) => (
                                 <TextField
                                     id={CONTACT_PHONE_LABEL}
+                                    test-id='personalDetailsContactPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -439,7 +439,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    test-id='personalDetailsFloor'
+                                    testId='personalDetailsFloor'
                                     className={classes.floorInput}
                                     name={PersonalInfoDataContextFields.FLOOR}
                                     value={props.value}
@@ -462,7 +462,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    test-id='personalDetailsHouseNumber'
+                                    testId='personalDetailsHouseNumber'
                                     className={classes.houseNumInput}
                                     name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                                     value={props.value}
@@ -596,7 +596,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         control={control}
                                         render={(props) => (
                                             <AlphanumericTextField
-                                                test-id='institutionName'
+                                                testId='institutionName'
                                                 name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                 value={props.value}
                                                 onBlur={props.onBlur}

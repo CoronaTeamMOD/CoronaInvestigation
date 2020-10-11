@@ -5,8 +5,6 @@ query ExposureByInvestigationId ($investigationId: Int!){
     allExposures(condition: {investigationId: $investigationId}) {
         nodes {
             id
-            exposureFirstName
-            exposureLastName
             exposureDate
             exposureAddress
             exposurePlaceSubType
@@ -23,7 +21,48 @@ query ExposureByInvestigationId ($investigationId: Int!){
             flightDestinationCountry
             wasAbroad
             wasConfirmedExposure
+            covidPatientByExposureSource {
+              age
+              addressByAddress {
+                cityByCity {
+                  displayName
+                }
+                streetByStreet {
+                  displayName
+                }
+                floor
+                houseNum
+              }
+              epidemiologyNumber
+              fullName
+              identityNumber
+              primaryPhone
+            }
         }
     }
 }
+`;
+
+export const GET_EXPOSURE_SOURCE_OPTIONS = gql`
+query getOptionalExposureSources($searchRegex: String!) {
+    allCovidPatients(filter: {or: [{fullName: {like: $searchRegex}}, {identityNumber: {like: $searchRegex}}, {primaryPhone: {like: $searchRegex}}]}) {
+      nodes {
+        fullName
+        identityNumber
+        primaryPhone
+        epidemiologyNumber
+        age
+        addressByAddress {
+            cityByCity {
+              displayName
+            }
+            streetByStreet {
+              displayName
+            }
+            floor
+            houseNum
+        }
+      }
+    }
+  }
 `;
