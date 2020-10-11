@@ -107,10 +107,14 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
-        allContactedInteractions[contactIndex] = {
+        const updatedContactedInteractions = [...allContactedInteractions];
+        const updatedContact : InteractedContact = {
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
+        setCurrentInteractedContact(updatedContact);
+        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
+        setAllContactedInteractions(updatedContactedInteractions);
     };
 
     const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {

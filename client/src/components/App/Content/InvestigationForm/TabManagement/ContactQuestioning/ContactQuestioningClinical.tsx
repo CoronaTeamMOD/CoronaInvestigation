@@ -30,12 +30,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
 
-    const [needsToIsolate, setNeedsToIsolate] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
-
-    React.useEffect(() => {
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, needsToIsolate);
-    },[needsToIsolate]);
-
     const handleIsolation = (value: boolean) => {
         value ?
             Swal.fire({
@@ -51,11 +45,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 }
             }).then((result) => {
                 if (result.value) {
-                    setNeedsToIsolate(true);
+                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
                 }
             })
         :
-            setNeedsToIsolate(false);
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
     };
 
     return (
@@ -149,7 +143,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
                         <Toggle
-                            value={interactedContact.doesNeedIsolation ? interactedContact.doesNeedIsolation : needsToIsolate}
+                            value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>
