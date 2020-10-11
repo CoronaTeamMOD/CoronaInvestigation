@@ -1,27 +1,24 @@
+import React from 'react';
 import { Grid } from '@material-ui/core';
-import React, { useContext } from 'react';
+import { useFormContext } from 'react-hook-form';
 
+import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import LocationInput, {GoogleApiPlace} from 'commons/LocationInputField/LocationInput';
-import {InteractionEventDialogContext} from '../../InteractionsEventDialogContext/InteractionsEventDialogContext';
+import { GeocodeResponse } from 'commons/LocationInputField/LocationInput';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './AddressFormStyles';
 
 const AddressForm: React.FC = (): JSX.Element => {
+    const { setValue, getValues, control } = useFormContext();
+    const { locationAddress } = getValues();
+
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
 
-    const ctxt = useContext(InteractionEventDialogContext);
-    const {interactionEventDialogData, setInteractionEventDialogData} = ctxt;
-    const {locationAddress} = interactionEventDialogData;
-
-    const onGoogleApiLocationTextFieldChange = (event: React.ChangeEvent<{}>, newValue: GoogleApiPlace | null) => {
-        setInteractionEventDialogData({
-            ...ctxt.interactionEventDialogData as InteractionEventDialogData,
-            locationAddress: newValue
-        });
+    const onGoogleApiLocationTextFieldChange = (newValue: GeocodeResponse | null) => {
+        setValue(InteractionEventDialogFields.LOCATION_ADDRESS, newValue);
     };
 
     return (
@@ -29,7 +26,12 @@ const AddressForm: React.FC = (): JSX.Element => {
             <Grid item xs={4}>
                 <FormInput fieldName='כתובת'>
                     <div className={additionalClasses.addressAutoCompleteField}>
-                        <LocationInput selectedAddress={locationAddress} setSelectedAddress={onGoogleApiLocationTextFieldChange}/>
+                        <Map
+                            name={InteractionEventDialogFields.LOCATION_ADDRESS}
+                            selectedAddress={locationAddress}
+                            setSelectedAddress={onGoogleApiLocationTextFieldChange}
+                            control={control}
+                        />
                     </div>
                 </FormInput>
             </Grid>

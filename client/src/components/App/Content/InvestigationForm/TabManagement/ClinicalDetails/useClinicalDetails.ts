@@ -1,15 +1,15 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
-import Street from 'models/enums/Street';
+import Street from 'models/Street';
 import { initDBAddress } from 'models/Address';
-import DBAddress from 'models/enums/DBAddress';
 import StoreStateType from 'redux/storeStateType';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-import { otherBackgroundDiseaseFieldName, otherSymptomFieldName } from './ClinicalDetails';
+import { otherSymptomFieldName } from './SymptomsFields';
+import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
@@ -17,37 +17,10 @@ export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setSymptoms, setBackgroundDiseases, context, setIsolationCityName, setIsolationStreetName, setStreetsInCity
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails, setInitialDBClinicalDetails
     } = parameters;
 
-    const hasBackgroundDeseasesToggle = (event: React.ChangeEvent<{}>, value: boolean): void => updateClinicalDetails(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DESEASSES, value);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    const updateClinicalDetails = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({...context.clinicalDetailsData as ClinicalDetailsData, [fieldToUpdate]: updatedValue});
-    };
-
-    const updateIsolationAddressOnCityChange = (city: string) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress,
-                city,
-                street: ''
-            }
-        })
-    };
-
-    const updateIsolationAddress = (fieldToUpdate: ClinicalDetailsFields, updatedValue: any) => {
-        context.setClinicalDetailsData({
-            ...context.clinicalDetailsData as ClinicalDetailsData,
-            isolationAddress: {
-                ...context.clinicalDetailsData.isolationAddress as DBAddress,
-                [fieldToUpdate]: updatedValue
-            }
-        })
-    };
 
     const getSymptoms = () => {
         axios.post('/clinicalDetails/symptoms', {}).then(
@@ -68,7 +41,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
-    const getClinicalDetailsByEpidemiologyNumber = () => {
+    const fetchClinicalDetails = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                                  trigger: (payload?: string | string[]) => Promise<boolean>
+                                 ) => {
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
@@ -91,28 +66,31 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     } else {
                         patientAddress = initDBAddress;
                     }
-
-                    context.setClinicalDetailsData({
-                        ...context.clinicalDetailsData,
-                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
+                    const initialDBClinicalDetailsToSet = {
+                        ...initialDBClinicalDetails,
+                        isPregnant: Boolean(clinicalDetailsByEpidemiologyNumber.isPregnant),
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases,
+                        doesHaveBackgroundDiseases: Boolean(clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases),
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem,
+                        isInIsolation: Boolean(patientInvestigation.isInIsolation),
+                        isIsolationProblem: Boolean(patientInvestigation.isIsolationProblem),
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms,
-                        wasHospitalized: patientInvestigation.wasHospitalized,
+                        isSymptomsStartDateUnknown: patientInvestigation.symptomsStartTime === null,
+                        doesHaveSymptoms: Boolean(patientInvestigation.doesHaveSymptoms),
+                        wasHospitalized: Boolean(patientInvestigation.wasHospitalized),
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
-                    })
+                    }
+                    setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
+                    reset(initialDBClinicalDetailsToSet);
+                    trigger();
                 }
             }
         );
@@ -130,18 +108,24 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         return backgroundDiseases;
     }
 
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => {
+        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}})).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        });
+    }
+
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
-        getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
     return {
-        hasBackgroundDeseasesToggle,
         getStreetByCity,
-        updateClinicalDetails,
-        updateIsolationAddress,
-        updateIsolationAddressOnCityChange
+        saveClinicalDetails,
+        fetchClinicalDetails
     };
 };
 

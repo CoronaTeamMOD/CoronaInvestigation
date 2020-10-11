@@ -1,6 +1,6 @@
-import { Person } from "./Person";
+import Person from './Person';
 
 export interface InvestigatedPatientByInvestigatedPatientId {
-    isDeceased: boolean
-    personByPersonId: Person,
+    isDeceased: boolean;
+    personByPersonId: Person;
 }

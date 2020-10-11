@@ -1,8 +1,8 @@
 import {GeocodeResponse, GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
 
 interface ExposureData {
-    id: number | null,
-    wasConfirmedExposure: boolean,
+    id: number | null;
+    wasConfirmedExposure: boolean;
     exposureFirstName: string | null;
     exposureLastName: string | null;
     exposureDate: Date | null;

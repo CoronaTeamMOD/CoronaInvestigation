@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-export const primaryBackgroundColor =  '#F3F6FB';
+export const primaryBackgroundColor = '#F3F6FB';
 
 const theme = createMuiTheme({
     palette: {
@@ -63,12 +63,19 @@ const theme = createMuiTheme({
         //@ts-ignore
         MuiAutocomplete: {
             inputRoot: {
-              '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
-                flip: false,
-                padding: '1px 10px 1px 10px'
-              }
+                '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
+                    flip: false,
+                    padding: '1px 10px 1px 10px'
+                }
             }
-          }
+        },
+        MuiSelect: {
+            select: {
+                '&:focus': {
+                    borderRadius: '14px'
+                }
+            }
+        }
     },
     props: {
         MuiTextField: {

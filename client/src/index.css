@@ -1,5 +1,7 @@
 body {
     margin: 0;
+    overflow-y: auto !important;
+    padding-right: 0px !important;
 }
 
 html, body, #root {

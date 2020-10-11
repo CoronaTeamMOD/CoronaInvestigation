@@ -8,6 +8,7 @@ const useStyles = makeStyles({
         width: '17vw',
     },
     secondaryTextItem: {
+        marginRight: '3vw',
         '@media screen and (max-width: 1000px)': {
             marginLeft: '2vw',
         },

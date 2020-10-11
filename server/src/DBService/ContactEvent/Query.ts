@@ -16,6 +16,17 @@ query getPlacesSubTypesByTypes {
   }
 `;
 
+export const GET_ALL_CONTACT_TYPES = gql`
+query getAllContactTypes {
+  allContactTypes {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
+
 export const GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID = gql`
 query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
@@ -57,7 +68,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
         nodes {
           id
           contactEvent
-          doesNeedIsolation
+          contactType
           extraInfo
           personByPersonInfo {
             firstName
@@ -112,8 +123,8 @@ query getEventByID($currEventId: Int!) {
       contactedPeopleByContactEvent {
         nodes {
           id
+          contactType
           contactEvent
-          doesNeedIsolation
           extraInfo
           personByPersonInfo {
             firstName

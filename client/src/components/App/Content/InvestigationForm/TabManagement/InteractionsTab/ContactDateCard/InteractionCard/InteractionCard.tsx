@@ -16,14 +16,16 @@ import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
-import useStyle from './InteractionCardStyles';
+import useStyles from './InteractionCardStyles';
 
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
-    const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
+    const classes = useStyles();
+
     const { interaction, onEditClick, onDeleteClick } = props;
-    const classes = useStyle();
+
+    const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
 
     return (
         <Card className={classes.container}>
@@ -106,12 +108,12 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
             </Collapse>
         </Card>
     );
-}
+};
 
 interface Props {
-    interaction: Interaction,
-    onEditClick: () => void,
-    onDeleteClick: () => void
-}
+    interaction: Interaction;
+    onEditClick: () => void;
+    onDeleteClick: () => void;
+};
 
 export default InteractionCard;

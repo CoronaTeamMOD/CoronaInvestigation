@@ -4,7 +4,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import BusinessContactGrid from '../../BusinessContactGrid/BusinessContactGrid';
 
-const OrganizedTransportEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
+const OrganizedTransportEventGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { interaction } = props;
 

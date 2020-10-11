@@ -7,7 +7,7 @@ import axios from 'Utils/axios';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
-import { InvestigationInfo } from 'models/InvestigationInfo';
+import InvestigationInfo from 'models/InvestigationInfo';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
@@ -46,7 +46,9 @@ const defaultInvestigationStaticInfo = {
     userByLastUpdator: defaultUser
 }
 
-const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) => {
+export const LandingPageTimer = 1900;
+
+const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     let history = useHistory();
     const classes = useStyles();
@@ -74,7 +76,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
                     showConfirmButton: false
                 });
 
-                timeout(1900).then(() => history.push(landingPageRoute));
+                timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
             }
         })
     }, [epidemiologyNumber]);
@@ -85,7 +87,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
                 investigatedPatientByInvestigatedPatientId={
                     investigationStaticInfo.investigatedPatientByInvestigatedPatientId
                 }
-                onExitInvestigation={onExitInvestigation}
+                currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}
                 coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
@@ -99,7 +101,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ onExitInvestigation }: Props) =
 };
 
 interface Props {
-    onExitInvestigation: () => Promise<void>;
+    currentTab: number;
 }
 
 export default InvestigationInfoBar;

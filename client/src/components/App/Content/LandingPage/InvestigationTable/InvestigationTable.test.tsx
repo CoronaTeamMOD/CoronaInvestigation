@@ -1,21 +1,22 @@
-import  {createRowData}  from "./useInvestigationTable";
-import InvestigationTableRow from "models/InvestigationTableRow";
+import InvestigationTableRow from 'models/InvestigationTableRow';
 
-describe("investigationTable tests", () => {
+import  {createRowData}  from './useInvestigationTable';
+
+describe('investigationTable tests', () => {
   let newRowData: InvestigationTableRow;
 
   beforeAll(() => {
     newRowData = {
       epidemiologyNumber: 111,
-      status: "חדש",
-      fullName: "אמילי",
-      phoneNumber: "053-3486954",
+      status: 'חדש',
+      fullName: 'אמילי',
+      phoneNumber: '053-3486954',
       age: 25,
-      city: "חיפה",
+      city: 'חיפה',
     };
   });
 
-  it("shuld create correctly tableRow Object", async () => {
+  it('shuld create correctly tableRow Object', async () => {
     const newRow = createRowData(
       newRowData.epidemiologyNumber,
       newRowData.status,
@@ -28,7 +29,7 @@ describe("investigationTable tests", () => {
     expect(newRow).toEqual(newRowData);
   });
 
-  it("shuld not create correctly tableRow Object", async () => {
+  it('shuld not create correctly tableRow Object', async () => {
     const newRow = createRowData(
       newRowData.epidemiologyNumber,
       newRowData.fullName,

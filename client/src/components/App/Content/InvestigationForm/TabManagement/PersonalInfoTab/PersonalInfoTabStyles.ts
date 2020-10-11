@@ -1,6 +1,6 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const useStyles = makeStyles({
     tabInitialContainer: {
         padding: '2vh',
         height: '64vh'
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         },
     },
     spacedOutAddress: {
-        marginRight: '4vw'
+        marginRight: '5vw'
     },
     homeAddressItem: {
         '@media screen and (max-width: 1700px)': {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         }
     },
     contactDescription: {
-        marginLeft: '-3vw',
+        marginLeft: '1vw',
     },
     personalInfoFieldContainer: {
         display: 'flex',
@@ -99,7 +99,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         '@media screen and (max-width: 950px)': {
             marginLeft: '5vw',
         },
+    },
+    phoneInput: {
+        minWidth: '15vw',
+    },
+    floorInput: {
+        minWidth: '15vw',
+    },
+    houseNumInput: {
+        minWidth: '15vw',
+        marginLeft: '8vw'
     }
-}));
+});
 
 export default useStyles;

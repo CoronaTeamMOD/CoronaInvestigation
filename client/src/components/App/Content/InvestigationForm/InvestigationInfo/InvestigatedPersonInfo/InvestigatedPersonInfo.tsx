@@ -1,10 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography, Paper, IconButton, Tooltip } from '@material-ui/core';
-import { CakeOutlined, EventOutlined, Help, Phone } from '@material-ui/icons';
+import { Typography, Paper } from '@material-ui/core';
+import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
@@ -19,14 +20,25 @@ const leaveInvestigationMessage = 'צא מחקירה';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { investigatedPatientByInvestigatedPatientId, epedemioligyNumber, onExitInvestigation } = props;
+    const { currentTab, investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const cantReachInvestigated = useSelector<StoreStateType, boolean>(state => state.investigation.cantReachInvestigated);
 
-    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo({onExitInvestigation});
+    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
+    
+    const handleLeaveInvestigationClick = (e: React.ChangeEvent<{}>) => {
+        if(isEventTrigeredByMouseClicking(e)) {
+            confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+        }
+    };
+
+    const isEventTrigeredByMouseClicking = (e: React.ChangeEvent<{}>) => {
+        //@ts-ignore
+        return !(e.clientX==0 && e.clientY==0);
+    };
 
     return (
         <Paper className={classes.paper}>
@@ -40,18 +52,16 @@ const InvestigatedPersonInfo = (props: Props) => {
                             epedemioligyNumber
                         }
                     </Typography>
-                    <Tooltip title='חייג'>
-                        <IconButton 
-                            href={`TEL:${investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}`} 
-                            color='primary'
-                        >
-                            <Phone/>
-                        </IconButton>
-                    </Tooltip>
+                    <PhoneDial
+                        phoneNumber={investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}
+                    />
                 </div>
                 <PrimaryButton
-                    onClick={() => confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated)}>
-                    {leaveInvestigationMessage}
+                    onClick={(e) => {handleLeaveInvestigationClick(e)}}
+                    type='submit'
+                    form={`form-${currentTab}`}
+                >
+                    {leaveInvestigationMessage} 
                 </PrimaryButton>
             </div>
 
@@ -115,7 +125,7 @@ interface Props {
     investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
     epedemioligyNumber: number;
     coronaTestDate: Date;
-    onExitInvestigation: () => Promise<void>;
+    currentTab: number;
 }
 
 export default InvestigatedPersonInfo

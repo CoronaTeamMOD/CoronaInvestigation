@@ -36,7 +36,6 @@ export const useStyles = makeStyles({
     hospitalizationDates: {
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: '10vw',
     },
     smallGrid: {
         width: '60vw'
@@ -53,7 +52,7 @@ export const useStyles = makeStyles({
     },
     otherTextField: {
         marginTop: '1vh',
-        marginLeft: '-15vw',
+        marginLeft: '-22vw',
     },
     symptomsDateCheckBox: {
         marginTop: '1vh',
@@ -66,7 +65,7 @@ export const useStyles = makeStyles({
         marginBottom: '1vh',
     },
     hospitalInput: {
-      marginLeft: '6vw',
+      marginLeft: '5vw',
     },
     symptomsAndDiseasesCheckbox: {
         'media screen and (max-width: 1500px)': {
@@ -77,3 +76,23 @@ export const useStyles = makeStyles({
         },
     },
 });
+
+export interface ClinicalDetailsClasses {
+    form: string;
+    rowGridItem: string;
+    containerGrid: string;
+    fieldLabel: string;
+    hospitalLabel: string;
+    backgroundDiseasesLabel: string;
+    dates: string;
+    hospitalizationDates: string;
+    smallGrid: string;
+    isolationProblemTextField: string;
+    cancelWhiteSpace: string;
+    otherTextField: string;
+    symptomsDateCheckBox: string;
+    spacedDates: string;
+    verticalSpacing: string;
+    hospitalInput: string;
+    symptomsAndDiseasesCheckbox: string;
+}
