@@ -1,9 +1,7 @@
 CREATE OR REPLACE FUNCTION public.update_exposures_function(input_exposures json)
-    RETURNS void
-    LANGUAGE plpgsql
+ RETURNS void
+ LANGUAGE plpgsql
 AS $function$declare
---Event variables:
-declare
 investigationId int4;
 exposures json;
 exposure_arr json[];
@@ -29,10 +27,21 @@ flightDestinationCountry varchar;
 flightDestinationCity varchar;
 flightDestinationAirport varchar;
 exposure_id int4;
+exposuresToDelete json;
+exposuresToDeleteArr int4[];
+exposureIdToDelete int4;
 begin
 	raise notice 'func began...';	
 	select nullif(trim((input_exposures->'investigationId')::text,'"'),'null')::int4 into investigationId;
 	select (input_exposures->'exposures') into exposures;
+	select (input_exposures->'exposuresToDelete') into exposuresToDelete;
+	if exposuresToDelete is not null and exposuresToDelete::TEXT != '[]' then
+		exposuresToDeleteArr :=(select  array_agg(e_data.value) from json_array_elements(exposuresToDelete) e_data);
+		foreach exposureIdToDelete in array exposuresToDeleteArr 
+		loop
+			DELETE from public.exposure where id=exposureIdToDelete;
+		end loop;
+	end if;
 	if exposures is not null and exposures::TEXT != '[]' then
 		exposure_arr :=(select  array_agg(e_data.value) from json_array_elements(exposures) e_data);
 		foreach exposure in array exposure_arr 
@@ -79,8 +88,15 @@ begin
 
 			
 			end if;
+		
 		end loop;
 	end if;
+
 end;
 $function$
 ;
+
+-- Permissions
+
+ALTER FUNCTION public.update_exposures_function(json) OWNER TO coronai;
+GRANT ALL ON FUNCTION public.update_exposures_function(json) TO coronai;
