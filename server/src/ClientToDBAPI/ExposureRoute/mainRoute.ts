@@ -59,8 +59,8 @@ const convertSearchValueToRegex = (searchValue: string) => {
 const createAddressString = (address: AddressDBOutput) => {
     const addressParts = [];
     if (address) {
-        address.streetByStreet && addressParts.push(address.streetByStreet.displayName + (!address.houseNum && ', '));
-        address.houseNum && addressParts.push(address.houseNum + ',');
+        address.streetByStreet && addressParts.push(address.streetByStreet.displayName);
+        address.houseNum ? addressParts.push(address.houseNum + ',') : addressParts.push(',');
         address.cityByCity && addressParts.push(address.cityByCity.displayName);
         address.floor && addressParts.push('קומה ' + address.floor);
     }
