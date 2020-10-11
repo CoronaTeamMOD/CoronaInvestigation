@@ -18,6 +18,8 @@ export interface AutocompletedFieldProps<T> {
     renderOption?: (option: T, state: AutocompleteRenderOptionState) => React.ReactNode;
     filterOptions?: (options: T[], state: FilterOptionsState<any>) => T[];
     className?: string;
+    label?: string;
+    placeholder?: string;
 }
 
 type AutocompletedFieldType = <T>(props: AutocompletedFieldProps<T>) => JSX.Element;
