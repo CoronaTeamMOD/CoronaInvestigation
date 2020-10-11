@@ -70,7 +70,6 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                         control={control}
                         render={(props) => (
                             <DatePick
-                                maxDate={new Date()}
                                 onBlur={props.onBlur}
                                 test-id='quarantinedUntilDate'
                                 labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : '* עד'}
