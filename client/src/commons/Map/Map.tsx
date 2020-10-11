@@ -25,7 +25,7 @@ const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
 const DEFAULT_MAP_HEIGHT = '40vh';
 const DEFAULT_MAP_WIDTH = '55vw';
-const Map = ({ selectedAddress, setSelectedAddress, control, name, required = false, ...props }: MapProps) => {
+const Map = ({ selectedAddress, setSelectedAddress, control, name, ...props }: MapProps) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { requestDetailsFromLocation } = useGoogleGeocoder();
     const { parseLocation } = useDBParser();
