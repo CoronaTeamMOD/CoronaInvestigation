@@ -21,7 +21,9 @@ landingPageRoute.get('/investigations', (request: Request, response: Response) =
                 response.status(500).send('error in fetching data')
             }
         })
-        .catch(err => response.status(500).send('error in fetching data: ' + err));
+        .catch(err => {
+            response.status(500).send('error in fetching data: ' + err);
+        });
 })
 
 landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {

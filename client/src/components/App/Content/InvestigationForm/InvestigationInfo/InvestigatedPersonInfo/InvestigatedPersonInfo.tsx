@@ -6,7 +6,6 @@ import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
-import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';

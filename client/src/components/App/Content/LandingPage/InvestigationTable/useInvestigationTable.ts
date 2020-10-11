@@ -1,8 +1,9 @@
 import Swal from 'sweetalert2';
+import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { differenceInYears, format } from 'date-fns';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import User from 'models/User';
 import theme from 'styles/theme';
