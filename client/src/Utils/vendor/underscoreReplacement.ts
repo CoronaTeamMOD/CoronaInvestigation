@@ -55,3 +55,7 @@ export function  throttle<T extends Function>(func: T, wait: number, options?:Th
 
     return throttled;
 }
+
+export const isObjectEmpty = (element: any): boolean => {
+    return Object.keys(element).length === 0 && element.constructor === Object
+};

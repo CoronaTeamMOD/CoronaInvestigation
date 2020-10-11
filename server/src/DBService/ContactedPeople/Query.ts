@@ -24,6 +24,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       }
       contactEventByContactEvent {
         startTime
+        id
       }
       id
       extraInfo
@@ -51,6 +52,26 @@ query getAllFamilyRelationships {
     nodes {
       id
       displayName
+    }
+  }
+}
+`;
+
+export const GET_FOREIGN_KEYS_BY_NAMES = gql`
+query getContactedPersonForeignIds($city: String!, $contactType:String!, $familyRelationship:String!) {
+  allCities(condition: {displayName: $city}, first: 1) {
+    nodes {
+      id
+    }
+  }
+  allContactTypes(condition: {displayName: $contactType}, first: 1) {
+    nodes {
+      id
+    }
+  }
+   allFamilyRelationships(condition: {displayName: $familyRelationship}, first: 1) {
+    nodes {
+      id
     }
   }
 }
