@@ -1,6 +1,6 @@
+import React from 'react';
 import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
-import React, { useEffect } from 'react';
 import {subDays, eachDayOfInterval} from 'date-fns';
 
 import axios from 'Utils/axios';
@@ -140,10 +140,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             })
         };
     }
-
-    useEffect(() => {
-        setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
-    }, [interactions]);
 
     return {
         getDatesToInvestigate,
