@@ -1,8 +1,7 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField, Button, TableSortLabel } from '@material-ui/core';
+import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField, TableSortLabel } from '@material-ui/core';
 
 import User from 'models/User';
 import Investigator from 'models/Investigator';
@@ -33,7 +32,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow,
         getMapKeyByValue, onInvestigatorChange, getTableCellStyles,
-        onClickFunc
+        sortInvestigationTable
     } = useInvestigationTable({
         selectedInvestigator: investigator, setSelectedRow
     });
@@ -47,11 +46,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         const newOrder = isAsc ? 'desc' : 'asc'
         setOrder(newOrder);
         setOrderBy(property);
-        if (property === 'defaultOrder') {
-            onClickFunc(property);
-        } else {
-            onClickFunc(property + newOrder.toLocaleUpperCase());
-        }
+        property === 'defaultOrder' ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
     };
 
     return (

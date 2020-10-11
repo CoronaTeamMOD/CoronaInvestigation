@@ -265,7 +265,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     return classNames;
   }
 
-  const onClickFunc = (orderByValue: string) => {
+  const sortInvestigationTable = (orderByValue: string) => {
     setIsDefaultOrder(orderByValue === 'defaultOrder')
     setOrderBy(orderByValue);
   }
@@ -277,7 +277,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     getMapKeyByValue,
     onInvestigatorChange,
     getTableCellStyles,
-    onClickFunc
+    sortInvestigationTable
   };
 };
 
