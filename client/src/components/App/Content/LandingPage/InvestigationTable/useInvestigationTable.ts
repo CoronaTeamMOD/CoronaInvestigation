@@ -18,6 +18,7 @@ import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreat
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
+import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 
@@ -72,7 +73,6 @@ type InvestigationsReturnType = {
 };
 
 export const UNDEFINED_ROW = -1;
-const defaultOrderBy = 'defaultOrder';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
 
@@ -83,7 +83,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
   const [rows, setRows] = useState<InvestigationTableRow[]>([]);
   const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
-  const [orderBy, setOrderBy] = useState<string>('defaultOrder');
+  const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
   const user = useSelector<StoreStateType, User>(state => state.user);
   const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
@@ -264,7 +264,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   }
 
   const sortInvestigationTable = (orderByValue: string) => {
-    setIsDefaultOrder(orderByValue === 'defaultOrder')
+    setIsDefaultOrder(orderByValue === defaultOrderBy);
     setOrderBy(orderByValue);
   }
 
