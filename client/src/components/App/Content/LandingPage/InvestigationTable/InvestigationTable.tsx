@@ -70,7 +70,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {sortableCols[key as keyof typeof TableHeadersNames] && <TableSortLabel 
                                                 active
                                                 direction={orderBy === key ? order : 'asc'}
-                                                onClick={(e)=>handleRequestSort(e,key)}>
+                                                onClick={(e) => handleRequestSort(e,key)}>
                                             </TableSortLabel>}
                                         </TableCell>
                                     ))
