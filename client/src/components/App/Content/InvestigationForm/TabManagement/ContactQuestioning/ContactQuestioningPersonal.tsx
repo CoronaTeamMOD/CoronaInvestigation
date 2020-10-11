@@ -62,11 +62,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item xs={10}>
                     <FormInput fieldName='תאריך לידה'>
                         <DatePick
+                            maxDate={new Date()}
                             useBigCalender={false}
                             value={interactedContact.birthDate}
                             onChange={(newDate: Date) =>
-                                updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate
-                                )
+                                updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate)
                             }
                         />
                     </FormInput>
@@ -91,8 +91,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             placeholder='הכנס טלפון:'
                             value={interactedContact.additionalPhoneNumber}
                             onChange={(newValue: string) =>
-                                updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue
-                                )}
+                                updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue)
+                            }
                             setError={setError}
                             clearErrors={clearErrors}
                             errors={errors}

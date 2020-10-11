@@ -1,5 +1,4 @@
 import React from 'react';
-import { isFuture } from 'date-fns';
 import { Grid } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 
@@ -11,11 +10,7 @@ import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 const ExposureForm = (props: any) => {
-  const {
-    exposureAndFlightsData,
-    fieldsNames,
-    handleChangeExposureDataAndFlightsField,
-  } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, } = props;
 
   const classes = useFormStyles();
   const { errors, setError, clearErrors } = useForm();
@@ -27,11 +22,8 @@ const ExposureForm = (props: any) => {
           <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
-            onChange={(value : string) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.firstName,
-                value
-              )
+            onChange={(value: string) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, value)
             }
             setError={setError}
             clearErrors={clearErrors}
@@ -42,11 +34,8 @@ const ExposureForm = (props: any) => {
           <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
-            onChange={(value : string) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.lastName,
-                value
-              )
+            onChange={(value: string) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, value)
             }
             name={fieldsNames.lastName}
             setError={setError}
@@ -85,10 +74,7 @@ const ExposureForm = (props: any) => {
           handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
         }
         onPlaceSubTypeChange={(value) =>
-          handleChangeExposureDataAndFlightsField(
-            fieldsNames.placeSubType,
-            value
-          )
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)
         }
       />
     </Grid>

@@ -13,17 +13,8 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const {
-        classes,
-        control,
-        watchDoesHaveSymptoms,
-        watchSymptoms,
-        watchIsSymptomsDateUnknown,
-        handleSymptomCheck,
-        symptoms,
-        setError,
-        clearErrors,
-        errors,
+    const { classes, control, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck,
+            symptoms, setError, clearErrors, errors,
     } = props;
 
     return (

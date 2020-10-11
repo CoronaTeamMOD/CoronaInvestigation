@@ -11,10 +11,10 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
     
-    React.useEffect(()=>{
+    React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
         trigger(ClinicalDetailsFields.ISOLATION_END_DATE);
-    },[watchIsolationStartDate,watchIsolationEndDate])
+    }, [watchIsolationStartDate, watchIsolationEndDate]);
     
     return (
         <>
@@ -52,14 +52,15 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                         render={(props) => (
                             <div className={classes.spacedDates}>
                                 <DatePick
+                                    maxDate={new Date()}
                                     onBlur={props.onBlur}
                                     test-id='quarantinedFromDate'
-                                    labelText={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : '* מתאריך'}
+                                    labelText={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : '* מתאריך'}
                                     value={props.value}
                                     onChange={(newDate: Date) => {
                                         props.onChange(newDate);
                                     }}
-                                    error={errors[ClinicalDetailsFields.ISOLATION_START_DATE]? true : false}
+                                    error={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? true : false}
                                 />
                             </div>
                         )}
@@ -69,14 +70,15 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                         control={control}
                         render={(props) => (
                             <DatePick
+                                maxDate={new Date()}
                                 onBlur={props.onBlur}
                                 test-id='quarantinedUntilDate'
-                                labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message :'* עד'}
+                                labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : '* עד'}
                                 value={props.value}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
                                 }}
-                                error={errors[ClinicalDetailsFields.ISOLATION_END_DATE]? true : false}
+                                error={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? true : false}
                             />
                         )}
                     />
