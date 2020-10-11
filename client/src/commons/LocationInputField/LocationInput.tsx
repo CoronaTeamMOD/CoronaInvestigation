@@ -6,7 +6,7 @@ import useDBParser from 'Utils/vendor/useDBParsing';
 import useStyles from './LocationInputFieldStyles';
 import LocationOptionItem from './OptionItem/LocationOptionItem';
 import useGoogleApiAutocomplete from './useGoogleApiAutocomplete';
-import AutocompletedField from "../AutoCompletedField/AutocompletedField";
+import AutocompletedField from '../AutoCompletedField/AutocompletedField';
 
 export interface GoogleApiPlace {
     description: string;
@@ -32,7 +32,7 @@ const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 
 const LocationInput = (props: LocationInputProps) => {
-    const { control, name, selectedAddress,  setSelectedAddress, required=false } = props;
+    const { control, name, selectedAddress,  setSelectedAddress } = props;
     const {autoCompletePlacesFromApi, parseAddress} = useGoogleApiAutocomplete();
     const {parseLocation} = useDBParser();
 
