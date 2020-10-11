@@ -25,27 +25,8 @@ const genericOptions: PostGraphileOptions = {
     }
 };
 
-let connection = {};
-
-if (process.env.ENVIRONMENT === 'preprod' || process.env.ENVIRONMENT === 'prod') {
-    connection = {
-        database: process.env.DB_NAME,
-        user: process.env.USER,
-        host: process.env.HOST,
-        ssl: {
-            key: process.env.KEY,
-            cert: process.env.CERT,
-            rejectUnauthorized: false
-        }
-    };
-} else {
-    connection = {
-        connectionString: process.env.CONNECTION_STRING
-    };
-}
-
 const pgPool = new Pool({
-    ...connection,
+    connectionString: process.env.CONNECTION_STRING,
     max: +process.env.MAX_POOL_CONNECTIONS
 });
 
