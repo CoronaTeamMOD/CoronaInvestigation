@@ -17,6 +17,11 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import useStyles from './ContactQuestioningStyles';
 
+const emptyFamilyRelationship: FamilyRelationship = {
+    id: null as any,
+    displayName: '',
+};
+
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
     const { errors, setError, clearErrors } = useForm({});
@@ -24,12 +29,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
-
-    const [needsToIsolate, setNeedsToIsolate] = useState<boolean>(interactedContact.doesNeedHelpInIsolation);
-
-    React.useEffect(() => {
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, needsToIsolate);
-    },[needsToIsolate]);
 
     const handleIsolation = (value: boolean) => {
         value ?
@@ -46,11 +45,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 }
             }).then((result) => {
                 if (result.value) {
-                    setNeedsToIsolate(true);
+                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
                 }
             })
         :
-            setNeedsToIsolate(false);
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
     };
 
     return (
@@ -76,8 +75,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         )}
                                 >
                                     {
-                                        familyRelationships?.map((familyRelationship) => (
-                                            <MenuItem
+                                        familyRelationships?.length > 0 &&
+                                        [emptyFamilyRelationship].concat(familyRelationships).map((familyRelationship) => (
+                                            <MenuItem className={classes.menuItem}
                                                 key={familyRelationship.id}
                                                 value={familyRelationship.id}>
                                                 {familyRelationship.displayName}
@@ -143,7 +143,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
                         <Toggle
-                            value={interactedContact.doesNeedIsolation ? interactedContact.doesNeedIsolation : needsToIsolate}
+                            value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>

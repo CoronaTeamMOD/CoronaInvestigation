@@ -161,20 +161,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
         event.preventDefault();
-        axios.post('/personalDetails/updatePersonalDetails',
-            {
-                id: investigatedPatientId,
-                personalInfoData,
-            }).catch(() => {
-                Swal.fire({
-                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                    icon: 'error'
-                });
-            })
+        axios.post('/personalDetails/updatePersonalDetails', 
+        {
+            id : investigatedPatientId, 
+            personalInfoData, 
+        })
+        .then(onSubmit)
+        .catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        }) 
         personalInfoValidationSchema.isValid(getValues()).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
 
     return (

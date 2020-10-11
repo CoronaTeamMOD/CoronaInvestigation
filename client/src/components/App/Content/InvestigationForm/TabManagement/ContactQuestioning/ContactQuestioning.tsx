@@ -74,7 +74,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                     control={
                                                         <Checkbox
                                                             color='primary'
-                                                            checked={currentInteractedContact === interactedContact ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
+                                                            checked={currentInteractedContact?.id === interactedContact.id ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
                                                         />
                                                     }
                                                     label='אין מענה'

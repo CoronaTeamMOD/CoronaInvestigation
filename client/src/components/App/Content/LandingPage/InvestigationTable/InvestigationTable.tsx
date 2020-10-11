@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField } from '@material-ui/core';
+import { Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField, TableSortLabel } from '@material-ui/core';
 
 import User from 'models/User';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
+import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
@@ -25,10 +26,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
-
-    const { 
-        tableRows, onInvestigationRowClick, convertToIndexedRow, 
-        getMapKeyByValue, onInvestigatorChange
+    const [order, setOrder] = React.useState<Order>(sortOrders.asc);
+    const [orderBy, setOrderBy] = React.useState<string>(TableHeadersNames.epidemiologyNumber);
+    
+    const {
+        tableRows, onInvestigationRowClick, convertToIndexedRow,
+        getMapKeyByValue, onInvestigatorChange, getTableCellStyles,
+        sortInvestigationTable
     } = useInvestigationTable({
         selectedInvestigator: investigator, setSelectedRow
     });
@@ -36,6 +40,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const groupUsers = useSelector<StoreStateType, Map<string, User>>(state => state.groupUsers);
+
+    const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
+        const isAsc = orderBy === property && order === sortOrders.asc;
+        const newOrder = isAsc ? sortOrders.desc : sortOrders.asc
+        setOrder(newOrder);
+        setOrderBy(property);
+        property === 'defaultOrder' ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
+    };
 
     return (
         <>
@@ -49,30 +61,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <TableRow>
                                 {
                                     Object.values(user.isAdmin ? adminCols : userCols).map((key) => (
-                                        <TableCell className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}>
+                                        <TableCell 
+                                        className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
+                                        sortDirection={orderBy === key ? order : false}>
                                             {
                                                 TableHeaders[key as keyof typeof TableHeadersNames]
                                             }
+                                            {sortableCols[key as keyof typeof TableHeadersNames] && <TableSortLabel 
+                                                active
+                                                direction={orderBy === key ? order : sortOrders.asc}
+                                                onClick={(e) => handleRequestSort(e,key)}>
+                                            </TableSortLabel>}
                                         </TableCell>
                                     ))
                                 }
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row) => {
+                            {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 return (
                                     <TableRow
                                         key={indexedRow.epidemiologyNumber}
                                         className={classes.investigationRow}
                                         onClick={() => {
-                                            onInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.status)
+                                            onInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
                                         }}
                                     >
                                         {
-                                            Object.values(user.isAdmin ? adminCols : userCols).map((key) => (
+                                            Object.values(user.isAdmin ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
-                                                    className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
+                                                    className={getTableCellStyles(index, key).join(' ')}
                                                     onClick={(event: any) => {
                                                         if (key === TableHeadersNames.investigatorName) {
                                                             event.stopPropagation();
@@ -87,8 +106,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                 options={Array.from(groupUsers, ([id, value]) => ({ id, value }))}
                                                                 getOptionLabel={(option) => option.value.userName}
                                                                 inputValue={investigator.userName}
-                                                                onChange={(event, newSelectedInvestigator) => 
-                                                                    onInvestigatorChange(indexedRow,newSelectedInvestigator, indexedRow.investigatorName)
+                                                                onChange={(event, newSelectedInvestigator) =>
+                                                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                                                 }
                                                                 onInputChange={(event, selectedInvestigatorName) => {
                                                                     const updatedInvestigator = {

@@ -9,7 +9,7 @@ const useStyles = makeStyles({
         justifyContent: 'center',
     },
     tableContainer : {
-        width: '70vw',
+        width: '83vw',
         height: '75vh',
     },
     welcomeMessage: {
@@ -26,6 +26,9 @@ const useStyles = makeStyles({
     },
     columnBorder: {
         borderLeft: '2px solid black'
+    },
+    rowBorder: {
+        borderBottom: '2px solid black'
     },
     swalTitle: {
         fontSize: '1.5vw',
