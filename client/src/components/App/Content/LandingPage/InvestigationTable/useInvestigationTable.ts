@@ -174,14 +174,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     })
   }
 
-  const getDayAndMonthFromDate = (date: string) => {
+  const getFormattedDate = (date: string) => {
     return format(new Date(date), 'dd/MM')
   }
 
   const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
-      [TableHeadersNames.coronaTestDate]: getDayAndMonthFromDate(row.coronaTestDate),
+      [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
       [TableHeadersNames.priority]: row.priority,
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
@@ -243,11 +243,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       classNames.push(classes.columnBorder);
     }
 
-    if (rows.length - 1 !== rowIndex) {
-      if (getDayAndMonthFromDate(rows[rowIndex].coronaTestDate) !==
-        getDayAndMonthFromDate(rows[rowIndex + 1].coronaTestDate)) {
-        classNames.push(classes.rowBorder)
-      }
+    if (rows.length - 1 !== rowIndex && (getFormattedDate(rows[rowIndex].coronaTestDate) !==
+      getFormattedDate(rows[rowIndex + 1].coronaTestDate))) {
+      classNames.push(classes.rowBorder)
     }
 
     return classNames;

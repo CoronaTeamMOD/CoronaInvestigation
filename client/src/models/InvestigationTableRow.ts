@@ -2,8 +2,8 @@ import Investigator from './Investigator';
 
 interface InvestigationTableRow {
     epidemiologyNumber: number;
-    coronaTestDate: string,
-    priority: number,
+    coronaTestDate: string;
+    priority: number;
     status: string;
     fullName: string;
     phoneNumber: string;
