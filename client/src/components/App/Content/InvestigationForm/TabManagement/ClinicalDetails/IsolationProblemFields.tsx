@@ -44,7 +44,7 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    test-id='problematicQuarantineReason'
+                                    testId='problematicQuarantineReason'
                                     name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO}
                                     value={props.value}
                                     onChange={(newValue: string) => (
