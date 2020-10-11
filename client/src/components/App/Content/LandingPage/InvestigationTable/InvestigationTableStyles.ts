@@ -9,7 +9,7 @@ const useStyles = makeStyles({
         justifyContent: 'center',
     },
     tableContainer : {
-        width: '83vw',
+        width: '90vw',
         height: '75vh',
     },
     welcomeMessage: {
