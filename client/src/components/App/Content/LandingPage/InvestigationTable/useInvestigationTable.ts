@@ -98,11 +98,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const { data } = response;
         let allInvestigationsRawData: any = [];
 
-        if (user.investigationGroup !== -1) {
-
-          if (data && data.allInvestigations) {
-            allInvestigationsRawData = data.allInvestigations
-          }
+        if (user.investigationGroup !== -1 && data && data.allInvestigations) {
+          allInvestigationsRawData = data.allInvestigations
 
           const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
             const patient = investigation.investigatedPatientByInvestigatedPatientId;
@@ -177,14 +174,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     })
   }
 
-  const getDayAndMothFromDate = (date: string) => {
+  const getDayAndMonthFromDate = (date: string) => {
     return format(new Date(date), 'dd/MM')
   }
 
   const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
     return {
       [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
-      [TableHeadersNames.coronaTestDate]: getDayAndMothFromDate(row.coronaTestDate),
+      [TableHeadersNames.coronaTestDate]: getDayAndMonthFromDate(row.coronaTestDate),
       [TableHeadersNames.priority]: row.priority,
       [TableHeadersNames.fullName]: row.fullName,
       [TableHeadersNames.phoneNumber]: row.phoneNumber,
@@ -247,8 +244,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     if (rows.length - 1 !== rowIndex) {
-      if (getDayAndMothFromDate(rows[rowIndex].coronaTestDate) !==
-        getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
+      if (getDayAndMonthFromDate(rows[rowIndex].coronaTestDate) !==
+        getDayAndMonthFromDate(rows[rowIndex + 1].coronaTestDate)) {
         classNames.push(classes.rowBorder)
       }
     }
