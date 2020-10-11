@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
@@ -63,6 +65,12 @@ const App: React.FC = (): JSX.Element => {
     }
 
     React.useEffect(() => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'login to the app',
+            step: 'before environment condition'
+        })
         if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH) {
             axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
                 .then((response) => {

@@ -2,10 +2,12 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 
+import logger from './Logger/logger';
 import MOHApi from './MOHAPI/mainRoute';
+import { Service, Severity } from './Models/Logger/types';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
-import postgraphileServices from './DBService/postgraphile';
 import convertToJson from './middlewares/ConvertToObject';
+import postgraphileServices from './DBService/postgraphile';
 
 require('dotenv').config();
 
@@ -27,5 +29,10 @@ postgraphileServices.forEach(postgraphileService => {
 });
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server started at port ${process.env.PORT}`);
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        step: `server started on port ${process.env.PORT}`,
+        workflow: 'initiate server'
+    });
 });
