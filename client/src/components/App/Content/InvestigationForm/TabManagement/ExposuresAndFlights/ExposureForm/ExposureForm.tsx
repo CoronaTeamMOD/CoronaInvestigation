@@ -1,5 +1,4 @@
 import Swal from 'sweetalert2';
-import { isFuture } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
@@ -37,12 +36,7 @@ const invalidCharRegex = /[^א-ת\da-zA-Z0-9]/;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {
-  const {
-    exposureAndFlightsData,
-    fieldsNames,
-    handleChangeExposureDataAndFlightsField,
-    coronaTestDate,
-  } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, coronaTestDate, } = props;
 
   const classes = useStyles();
   const formClasses = useFormStyles();
@@ -170,10 +164,7 @@ const ExposureForm = (props: any) => {
           handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
         }
         onPlaceSubTypeChange={(value) =>
-          handleChangeExposureDataAndFlightsField(
-            fieldsNames.placeSubType,
-            value
-          )
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)
         }
       />
     </Grid>
