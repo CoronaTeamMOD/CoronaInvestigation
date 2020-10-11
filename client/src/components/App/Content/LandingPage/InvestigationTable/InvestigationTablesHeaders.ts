@@ -10,9 +10,14 @@ export enum TableHeadersNames {
     investigationStatus = 'investigationStatus'
 }
 
+export enum sortOrders {
+    asc = 'asc',
+    desc = 'desc'
+}
+
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number};
-export type Order = 'asc' | 'desc';
-type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
+export type Order = sortOrders.asc | sortOrders.desc;
+export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',

@@ -10,7 +10,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
 
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
@@ -26,7 +26,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
-    const [order, setOrder] = React.useState<Order>('asc');
+    const [order, setOrder] = React.useState<Order>(sortOrders.asc);
     const [orderBy, setOrderBy] = React.useState<string>(TableHeadersNames.epidemiologyNumber);
     
     const {
@@ -42,8 +42,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const groupUsers = useSelector<StoreStateType, Map<string, User>>(state => state.groupUsers);
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
-        const isAsc = orderBy === property && order === 'asc';
-        const newOrder = isAsc ? 'desc' : 'asc'
+        const isAsc = orderBy === property && order === sortOrders.asc;
+        const newOrder = isAsc ? sortOrders.desc : sortOrders.asc
         setOrder(newOrder);
         setOrderBy(property);
         property === 'defaultOrder' ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
@@ -69,7 +69,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             }
                                             {sortableCols[key as keyof typeof TableHeadersNames] && <TableSortLabel 
                                                 active
-                                                direction={orderBy === key ? order : 'asc'}
+                                                direction={orderBy === key ? order : sortOrders.asc}
                                                 onClick={(e) => handleRequestSort(e,key)}>
                                             </TableSortLabel>}
                                         </TableCell>
