@@ -10,29 +10,22 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
-    const {
-        errors,
-        setError,
-        clearErrors,
-        country,
-        countryFieldName,
-        city,
-        cityFieldName,
-        airport,
-        airportFieldName,
+    const { errors, setError, clearErrors, country, countryFieldName, city, cityFieldName, airport, airportFieldName,
         handleChangeExposureDataAndFlightsField,
     } = props;
 
     const classes = useStyles();
+
     const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
     const options = Array.from(countries).map(([name, value]) => (value));
+
     const getLabel = (option: any) => {
         if (option.displayName) {
             return option.displayName
         } else if (option !== '')
             return countries.get(option)?.displayName
         else return ''
-    }
+    };
 
     const filterOptions = createFilterOptions({
         matchFrom: 'start',
