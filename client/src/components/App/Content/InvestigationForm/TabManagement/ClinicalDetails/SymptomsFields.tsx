@@ -126,7 +126,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     control={control}
                                     render={(props) => (
                                         <AlphanumericTextField
-                                            test-id='symptomInput'
+                                            testId='symptomInput'
                                             name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
                                             value={props.value}
                                             onChange={(newValue: string) =>

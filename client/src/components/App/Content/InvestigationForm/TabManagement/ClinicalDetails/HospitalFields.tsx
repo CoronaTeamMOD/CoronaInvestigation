@@ -67,7 +67,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     render={(props) => (
                                         <AlphanumericTextField
                                             className={classes.hospitalInput}
-                                            test-id='hospitalInput'
+                                            testId='hospitalInput'
                                             name={ClinicalDetailsFields.HOSPITAL}
                                             value={props.value}
                                             onChange={(newValue: string) =>
