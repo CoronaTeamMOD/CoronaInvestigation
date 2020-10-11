@@ -9,7 +9,7 @@ import useStyles from './ExcelUploaderStyles';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
-].map((x) => `.${x}`).join(',');
+].map((suffix) => `.${suffix}`).join(',');
 
 interface ExcelUploaderProps {
     contactEvent:number;

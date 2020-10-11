@@ -1,6 +1,6 @@
 import React from 'react';
 import InteractedContact from 'models/InteractedContact';
-import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from './enums';
+import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import useExcel from 'Utils/vendor/useExcel';
 import {isObjectEmpty} from "Utils/vendor/underscoreReplacement";
 
