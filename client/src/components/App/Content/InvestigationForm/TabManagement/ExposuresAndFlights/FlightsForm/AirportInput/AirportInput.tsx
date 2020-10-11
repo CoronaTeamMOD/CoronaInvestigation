@@ -48,6 +48,8 @@ const AirportInput = (props: any) => {
                     onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
                     getOptionLabel={(option) => getLabel(option)}
                     filterOptions={filterOptions}
+                    label='מדינה'
+                    placeholder='מדינה'
                 />
             </div>
             <div>
