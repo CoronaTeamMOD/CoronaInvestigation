@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
 
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 
