@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import logger from './Logger/logger';
+import logger from './Logger/Logger';
 import MOHApi from './MOHAPI/mainRoute';
 import { Service, Severity } from './Models/Logger/types';
 import ClientToDBApi from './ClientToDBAPI/mainRoute';
