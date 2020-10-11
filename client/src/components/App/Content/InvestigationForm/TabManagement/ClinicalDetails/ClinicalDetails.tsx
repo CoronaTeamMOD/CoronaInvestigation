@@ -362,36 +362,34 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    <Collapse in={patientGender === Gender.FEMALE}>
-                        <Grid item xs={12}>
-                            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                <Grid item xs={2} className={classes.fieldLabel}>
-                                    <Typography>
-                                        <b>
-                                            האם בהריון:
-                                        </b>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Controller
-                                        name={ClinicalDetailsFields.IS_PREGNANT}
-                                        control={control}
-                                        render={(props) => (
-                                            <Toggle
-                                                test-id='isPregnant'
-                                                value={props.value}
-                                                onChange={(e, value) => {
-                                                    if (value !== null) {
-                                                        props.onChange(value)
-                                                    }
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
+                    <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
+                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <Grid item xs={2} className={classes.fieldLabel}>
+                                <Typography>
+                                    <b>
+                                        האם בהריון:
+                                    </b>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Controller
+                                    name={ClinicalDetailsFields.IS_PREGNANT}
+                                    control={control}
+                                    render={(props) => (
+                                        <Toggle
+                                            test-id='isPregnant'
+                                            value={props.value}
+                                            onChange={(e, value) => {
+                                                if (value !== null) {
+                                                    props.onChange(value)
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                />
                             </Grid>
                         </Grid>
-                    </Collapse>
+                    </Grid>
                 </Grid>
             </form>
         </div>
