@@ -28,8 +28,7 @@ const useGoogleApiAutocomplete = () => {
     const autoCompleteFetch = React.useMemo(() => throttle(callGoogleApi, 200), [autoCompleteService]);
 
     const autoCompletePlacesFromApi = (input: string, callback: (data?: GoogleApiPlace[]) => any) => {
-        const componentRestrictions = {country: 'IL'};
-        autoCompleteFetch({input, componentRestrictions}, callback);
+        autoCompleteFetch({input}, callback);
     };
 
     const parseAddress = (address: string | GeocodeResponse | GoogleApiPlace | null) => {
