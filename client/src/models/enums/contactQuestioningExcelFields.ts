@@ -31,4 +31,4 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     doesNeedIsolation: 'הקמת דיווח בידוד',
 };
 
-export type ContactedPersonExcel =  { [K in keyof Omit<Omit<InteractedContact, 'id'>,'contactEvent'>]: string };
+export type ContactedPersonExcel =  { [K in keyof Omit<InteractedContact, 'id'|'contactEvent'>]: string };

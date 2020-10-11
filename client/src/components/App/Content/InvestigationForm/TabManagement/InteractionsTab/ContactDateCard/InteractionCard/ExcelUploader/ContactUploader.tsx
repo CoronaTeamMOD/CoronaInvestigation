@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'Utils/axios';
 import {Button, Typography} from '@material-ui/core';
 
-import ExcelLogo from './ExcelLogo.png';
+import InteractedContact from 'models/InteractedContact';
 import useContactExcel from './useContactExcel';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStyles from './ExcelUploaderStyles';
@@ -17,8 +17,8 @@ interface ExcelUploaderProps {
 }
 const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const {alertError} = useCustomSwal();
-    const [data, setData] = React.useState<any>();
-    const buttonRef = React.useRef<any>();
+    const [data, setData] = React.useState<InteractedContact[] | undefined>();
+    const buttonRef = React.useRef<HTMLInputElement>(null);
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
     const {onFileSelect} = useContactExcel(setData, onFail);
 
@@ -30,7 +30,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
 
     const onButtonClick = () => buttonRef?.current?.click();
 
-    const saveDataInFile = (contacts: any[]) => {
+    const saveDataInFile = (contacts?: InteractedContact[]) => {
         if(contacts && contacts.length > 0) {
             axios.post('/contactedPeople/excel', {contactEvent, contacts})
                 .then(onSave)
@@ -44,7 +44,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     return (
         <>
             <Button className={classes.button} onClick={onButtonClick}>
-                <img className={classes.logo} src={ExcelLogo} alt='excel'/>
+                <img className={classes.logo} src='./assets/img/ExcelLogo.png' alt='excel'/>
                 <Typography variant='body2'>
                     טען אקסל
                 </Typography>

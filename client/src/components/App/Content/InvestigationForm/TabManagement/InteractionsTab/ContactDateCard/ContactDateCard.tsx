@@ -12,7 +12,7 @@ import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
-    const { contactDate, interactions, createNewInteractionEvent, onEditClick, onDeleteClick } = props;
+    const { contactDate, interactions, createNewInteractionEvent, onEditClick, onDeleteClick, loadInteractions } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -50,7 +50,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
             <Collapse in={areInteractionsOpen}>
                 {interactions?.map(interaction =>
                     <InteractionCard
-                        loadInteractions={props.loadInteractions}
+                        loadInteractions={loadInteractions}
                         onEditClick={() => onEditClick(interaction)}
                         onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />

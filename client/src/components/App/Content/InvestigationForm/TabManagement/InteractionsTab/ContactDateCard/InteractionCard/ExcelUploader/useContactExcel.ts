@@ -1,17 +1,18 @@
 import React from 'react';
+
 import InteractedContact from 'models/InteractedContact';
 import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import useExcel from 'Utils/vendor/useExcel';
 import {isObjectEmpty} from "Utils/vendor/underscoreReplacement";
 
-type ParseCallback = (data:any[]) => void;
+type ParseCallback = (data:InteractedContact[]) => void;
 type FailCallback = (error?:Error|string) => void;
 
 const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallback) => {
     const [isWorkbookDate1904, setIsWorkbookDate1904] = React.useState<boolean>(false);
-    const {read, sheet_to_json, fixImportedDate} = useExcel();
+    const {read, sheet_to_json, fixIsraeliDate} = useExcel();
 
-    const fixDateByWorkbook = React.useCallback(fixImportedDate(isWorkbookDate1904), [isWorkbookDate1904]);
+    const fixDateByWorkbook = React.useCallback(fixIsraeliDate(isWorkbookDate1904), [isWorkbookDate1904]);
 
     const parseBooleanAnswer = (value: string | undefined) => {
         switch (value) {
@@ -46,14 +47,14 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         const parsedObj: InteractedContact | {} = {};
         (Object.keys(row) as (keyof ContactedPersonExcel)[])
             .forEach(hebrewColumnName => {
-                const englishFieldName = getEnglishNameByHebrew(hebrewColumnName);
+                const englishFieldName: keyof ContactedPersonExcel | undefined = getEnglishNameByHebrew(hebrewColumnName);
                 if(!englishFieldName) return;
                 const value = row[hebrewColumnName as keyof typeof row];
-                const parsingFunc = constParsingFunctions[englishFieldName as keyof ContactedPersonExcel];
-                (parsedObj as any)[englishFieldName as any] = parsingFunc ? parsingFunc(value) : value
+                const parsingFunc = constParsingFunctions[englishFieldName];
+                (parsedObj as any)[englishFieldName] = parsingFunc ? parsingFunc(value) : value
             });
 
-        return parsedObj;
+        return parsedObj as InteractedContact;
     };
 
     const parseContactsWorkbook = (isAsBinaryString: boolean) =>  (event: ProgressEvent<FileReader>) => {

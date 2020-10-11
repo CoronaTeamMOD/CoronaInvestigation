@@ -81,11 +81,11 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         .then((result: any) => {
             const hasErrors = result?.errors?.length > 0;
             const status = hasErrors ? 500 : 200;
-            return response.status(status).json({error: hasErrors});
+            return response.status(status);
         })
         .catch(error => {
             console.error(error);
-            return response.status(500).json({error: true})
+            return response.status(500);
         })
 });
 
