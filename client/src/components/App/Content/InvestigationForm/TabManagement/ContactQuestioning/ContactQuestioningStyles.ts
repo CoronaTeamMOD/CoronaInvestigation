@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         direction: 'rtl',
         flip: false,
     },
+    menuItem: {
+        minHeight: '3vh'
+    }
 }));
 
 export default useStyles;

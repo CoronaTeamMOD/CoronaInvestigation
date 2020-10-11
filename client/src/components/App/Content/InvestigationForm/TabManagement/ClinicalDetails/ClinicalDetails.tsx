@@ -1,8 +1,9 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 
 import City from 'models/City';
@@ -14,6 +15,7 @@ import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext'
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
+import Gender from 'models/enums/Gender';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -84,11 +86,15 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
-        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
+        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
+            .then(onSubmit)
+            .catch(() => Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            }));
         ClinicalDetailsSchema.isValid(values).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
@@ -235,7 +241,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ?
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
                                                             :
-                                                            'רחוב *'
+                                                            'רחוב'
                                                     }
                                                     {...params}
                                                     placeholder='רחוב'
@@ -257,7 +263,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
                                                     :
-                                                    'מספר הבית *'
+                                                    'מספר הבית'
                                             }
                                             testId='currentQuarantineHomeNumber'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
@@ -286,7 +292,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
                                                     :
-                                                    'קומה *'
+                                                    'קומה'
                                             }
                                             testId='currentQuarantineFloor'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
@@ -356,34 +362,36 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    {patientGender === 'נקבה' && <Grid item xs={12}>
-                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Grid item xs={2} className={classes.fieldLabel}>
-                                <Typography>
-                                    <b>
-                                        האם בהריון:
-                                </b>
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Controller
-                                    name={ClinicalDetailsFields.IS_PREGNANT}
-                                    control={control}
-                                    render={(props) => (
-                                        <Toggle
-                                            test-id='isPregnant'
-                                            value={props.value}
-                                            onChange={(e, value) => {
-                                                if (value !== null) {
-                                                    props.onChange(value)
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                />
+                    <Collapse in={patientGender === Gender.FEMALE}>
+                        <Grid item xs={12}>
+                            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                                <Grid item xs={2} className={classes.fieldLabel}>
+                                    <Typography>
+                                        <b>
+                                            האם בהריון:
+                                        </b>
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Controller
+                                        name={ClinicalDetailsFields.IS_PREGNANT}
+                                        control={control}
+                                        render={(props) => (
+                                            <Toggle
+                                                test-id='isPregnant'
+                                                value={props.value}
+                                                onChange={(e, value) => {
+                                                    if (value !== null) {
+                                                        props.onChange(value)
+                                                    }
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>}
+                    </Collapse>
                 </Grid>
             </form>
         </div>

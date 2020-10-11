@@ -1,5 +1,4 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
@@ -68,22 +67,22 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,
-                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
+                        isPregnant: Boolean(clinicalDetailsByEpidemiologyNumber.isPregnant),
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases? true : false,
+                        doesHaveBackgroundDiseases: Boolean(clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases),
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation? true : false,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem? true : false,
+                        isInIsolation: Boolean(patientInvestigation.isInIsolation),
+                        isIsolationProblem: Boolean(patientInvestigation.isIsolationProblem),
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
                         isSymptomsStartDateUnknown: patientInvestigation.symptomsStartTime === null,
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms? true : false,
-                        wasHospitalized: patientInvestigation.wasHospitalized? true : false,
+                        doesHaveSymptoms: Boolean(patientInvestigation.doesHaveSymptoms),
+                        wasHospitalized: Boolean(patientInvestigation.wasHospitalized),
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
@@ -108,13 +107,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         return backgroundDiseases;
     }
 
-    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => {
-        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}})).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
-        });
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) : Promise<void> => {
+        return axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}}));
     }
 
     React.useEffect(() => {

@@ -1,21 +1,22 @@
+import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { useContext } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
+import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
@@ -23,13 +24,14 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const classes = useStyles();
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const interactedContactsState = useContext(interactedContactsContext);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
+    const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
 
-    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, openAccordion, updateNoResponse, loadInteractedContacts } = useContactQuestioning({ interactedContactsState, setCurrentInteractedContact });
+    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts } =
+        useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact });
 
     React.useEffect(() => {
         loadInteractedContacts();
@@ -47,36 +49,43 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     return (
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveContacted(e)}>
-                <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({interactedContactsState.interactedContacts.length})</b></Typography>
+                <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({allContactedInteractions.length})</b></Typography>
                 {
-                    interactedContactsState.interactedContacts.sort((firstInteractedContact, secondInteractedContact) =>
+                    allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
                         firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (
                             <div key={interactedContact.id} className={classes.form}>
                                 <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMore />}
                                         onClick={() => {
-                                            openAccordion(interactedContact);
+                                            updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
                                         }}
                                         aria-controls='panel1a-content'
                                         id='panel1a-header'
                                         dir='ltr'
                                     >
                                         <Grid item xs={2} container>
-                                            <Grid item xs={9} container>
+                                            <Grid item xs={6} container>
                                                 <FormControlLabel
                                                     onClick={(event) => event.stopPropagation()}
                                                     onChange={((event: any, checked: boolean) => {
-                                                        updateNoResponse(interactedContact, checked);
+                                                        updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
                                                     })}
                                                     control={
                                                         <Checkbox
                                                             color='primary'
-                                                            checked={currentInteractedContact === interactedContact ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
+                                                            checked={currentInteractedContact?.id === interactedContact.id ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
                                                         />
                                                     }
                                                     label='אין מענה'
                                                 />
+                                            </Grid>
+                                            <Grid container item xs={2}>
+                                                <span onClick={(event) => event.stopPropagation()}>
+                                                    <PhoneDial
+                                                        phoneNumber={interactedContact.phoneNumber}
+                                                    />
+                                                </span>
                                             </Grid>
                                             <Divider variant='fullWidth' orientation='vertical' flexItem />
                                         </Grid>

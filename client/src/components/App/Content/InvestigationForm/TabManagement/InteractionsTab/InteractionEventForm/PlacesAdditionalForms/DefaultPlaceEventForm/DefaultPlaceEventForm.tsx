@@ -4,11 +4,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
 import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
 
 import useStyles from './DefaultPlaceEventFormStyles';
-import InteractionEventDialogFields from '../../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const DefaultPlaceEventForm: React.FC = (): JSX.Element => {
     const { control, errors, setError, clearErrors} = useFormContext();
