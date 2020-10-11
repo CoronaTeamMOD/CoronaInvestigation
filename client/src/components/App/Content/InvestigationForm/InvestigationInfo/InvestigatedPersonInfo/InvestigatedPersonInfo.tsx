@@ -9,7 +9,7 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import { getPersonFullName } from 'Utils/displayUtils';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigatedPatientByInvestigatedPatientId';
+import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
@@ -20,7 +20,7 @@ const leaveInvestigationMessage = 'צא מחקירה';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
@@ -46,14 +46,14 @@ const InvestigatedPersonInfo = (props: Props) => {
                 <div className={classes.investigationHeaderInfo}>
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {
-                            getPersonFullName(investigatedPatientByInvestigatedPatientId.personByPersonId)
+                            investigatedPatientStaticInfo.patientInfo.fullName
                         },
                         {
                             epedemioligyNumber
                         }
                     </Typography>
                     <PhoneDial
-                        phoneNumber={investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}
+                        phoneNumber={investigatedPatientStaticInfo.patientInfo.primaryPhone}
                     />
                 </div>
                 <PrimaryButton
@@ -68,7 +68,7 @@ const InvestigatedPersonInfo = (props: Props) => {
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
                     <InfoItemWithIcon testId='age' name='גיל' value={
-                        getPersonAge(new Date(investigatedPatientByInvestigatedPatientId.personByPersonId.birthDate))
+                        investigatedPatientStaticInfo.patientInfo.age
                     }
                         icon={CakeOutlined}
                     />
@@ -80,25 +80,25 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     <Divider />
                     <InfoItemWithIcon testId='gender' name='מין' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.gender
+                        investigatedPatientStaticInfo.gender
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationType
+                        investigatedPatientStaticInfo.identityType
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationNumber
+                        investigatedPatientStaticInfo.patientInfo.identityNumber
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
-                        investigatedPatientByInvestigatedPatientId.isDeceased ?
+                        investigatedPatientStaticInfo.isDeceased ?
                             'כן' :
                             'לא'
                     }
@@ -122,7 +122,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 };
 
 interface Props {
-    investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
+    investigatedPatientStaticInfo: InvestigatedPatientStaticInfo;
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;

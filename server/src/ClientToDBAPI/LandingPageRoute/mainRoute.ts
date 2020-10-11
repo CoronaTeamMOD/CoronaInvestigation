@@ -2,7 +2,8 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_USER_INVESTIGATIONS, GET_USER_BY_ID, GET_GROUP_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
+import {GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS} from '../../DBService/LandingPage/Query';
+
 const landingPageRoute = Router();
 
 landingPageRoute.get('/', (request: Request, response: Response) => {

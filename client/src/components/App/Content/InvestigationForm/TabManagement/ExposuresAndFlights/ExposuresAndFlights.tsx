@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AddCircle } from '@material-ui/icons';
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
@@ -10,13 +10,13 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
-import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
-import { exposureAndFlightsContext, fieldsNames, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid } from 'commons/Contexts/ExposuresAndFlights';
+import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
+import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
 
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
+import { exposureAndFlightsContext, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
@@ -40,6 +40,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
     exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
     , [exposures]);
 
+  const [coronaTestDate, setCoronaTestDate] = useState<Date>();
+
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure)
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
 
@@ -56,11 +58,13 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
     return ({exposureAddress: parseAddress(exposureAddress), ...restOfData});
   };
 
+  const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
+
   useEffect(() => {
     axios
-      .get('/exposure/' + investigationId)
+      .get('/exposure/exposures/' + investigationId)
         .then(result => {
-          const data: Exposure[] = result?.data?.data?.allExposures?.nodes;
+          const data: Exposure[] = result?.data;
           return data && data.map(parseDbExposure);
         })
       .then((exposures?: Exposure[]) => {
@@ -73,13 +77,20 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
               });
           }
       })
+      .then(() => {
+        axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
+            if (res.data) {
+              setCoronaTestDate(convertDate(res.data.coronaTestDate));
+            }
+        })
+      })
       .catch((err) => {
         Swal.fire({
           title: 'לא ניתן היה לטעון את החשיפה',
           icon: 'error',
         })
       });
-  }, [investigationId]);
+  }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
     const updatedExpousres = [...exposureAndFlightsData.exposures];
@@ -137,9 +148,10 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
                 exposure.wasConfirmedExposure &&
                   <>
                     <ExposureForm
+                      coronaTestDate={coronaTestDate}
                       key={(exposure.id || '') + index.toString()}
-                      exposureAndFlightsData={exposure}
                       fieldsNames={fieldsNames}
+                      exposureAndFlightsData={exposure}
                       handleChangeExposureDataAndFlightsField={
                         (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
                       }
@@ -188,9 +200,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
                 exposure.wasAbroad &&
                 <>
                   <FlightsForm
+                  fieldsNames={fieldsNames}
                   key={(exposure.id || '') + index.toString()}
                   exposureAndFlightsData={exposure}
-                    fieldsNames={fieldsNames}
                     handleChangeExposureDataAndFlightsField={
                       (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
                     }
@@ -217,7 +229,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
       </form>
     </>
   );
-  //}
 };
 
 interface Props {
