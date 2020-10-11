@@ -21,33 +21,32 @@ query getAllHmos {
 `;
 
 export const GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER = gql`
-query getInvestigationByEpidemiologyNumber($id: Int!) {
+query getInvestigatedPatientDetails($id: Int!) {
     investigationByEpidemiologyNumber(epidemiologyNumber: $id) {
       investigatedPatientByInvestigatedPatientId {
         id
-        addressByAddress {
-          city
-          street
-          floor
-          houseNum
-          cityByCity {
-            displayName
+        covidPatientByCovidPatient {
+          addressByAddress {
+            floor
+            houseNum
+            cityByCity {
+              id
+              displayName
+            }
+            streetByStreet {
+              id
+              displayName
+            }
           }
-          streetByStreet {
-            displayName
-          }
+          primaryPhone
         }
-        personId
         patientContactPhoneNumber
         patientContactInfo
         subOccupation
         occupation
         otherOccupationExtraInfo
         hmo
-        personByPersonId {
-          additionalPhoneNumber
-          phoneNumber
-        }
+        additionalPhoneNumber
         subOccupationBySubOccupation {
           city
           displayName

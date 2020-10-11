@@ -27,17 +27,16 @@ const defaultInvestigationStaticInfo = {
     startTime: new Date(),
     lastUpdateTime: new Date(),
     investigatingUnit: '',
-    investigatedPatientByInvestigatedPatientId: {
+    investigatedPatient: {
         isDeceased: false,
-        personByPersonId: {
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            identificationType: '',
-            identificationNumber: '',
-            additionalPhoneNumber: '',
-            gender: '',
-            birthDate: new Date(),
+        additionalPhoneNumber: '',
+        gender: '',
+        identityType: '',
+        patientInfo: {
+            fullName: '',
+            primaryPhone: '',
+            identityNumber: '',
+            age: ''
         },
     },
     coronaTestDate: new Date(),
@@ -60,32 +59,39 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     React.useEffect(() => { 
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
-            if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {
-                setInvestigatedPatientId(result.data.data.investigationByEpidemiologyNumber.investigatedPatientId);
-                setGender(result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.personByPersonId.gender);
-                setInvestigationStaticInfo(result.data.data.investigationByEpidemiologyNumber);
+            if (result && result.data) {
+                const investigationInfo = result.data;
+                setInvestigatedPatientId(investigationInfo.investigatedPatientId);
+                const gender = investigationInfo.gender;
+                setGender(gender ? gender : '');
+                setInvestigationStaticInfo(investigationInfo);
             }
             else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
-                    customClass: {
-                        title: classes.swalTitle
-                    },
-                    timer: 1750,
-                    showConfirmButton: false
-                });
-
-                timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
+                handleInvalidEntrance();
             }
         })
+        .catch(() => handleInvalidEntrance)
     }, [epidemiologyNumber]);
+
+    const handleInvalidEntrance = () => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
+            customClass: {
+                title: classes.swalTitle
+            },
+            timer: 1750,
+            showConfirmButton: false
+        });
+
+        timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
+    }
 
     return (
         <>
             <InvestigatedPersonInfo
-                investigatedPatientByInvestigatedPatientId={
-                    investigationStaticInfo.investigatedPatientByInvestigatedPatientId
+                investigatedPatientStaticInfo={
+                    investigationStaticInfo.investigatedPatient
                 }
                 currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}

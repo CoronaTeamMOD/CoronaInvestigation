@@ -1,12 +1,13 @@
 
 import { Router, Request, Response } from 'express';
 
-import Address from '../../Models/Address';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
-import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_PERSON_PERSONAL_INFO } from '../../DBService/PersonalDetails/Mutation';
+import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
+import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_COVID_PATIENT_PERSONAL_INFO } from '../../DBService/PersonalDetails/Mutation';
 import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, 
     GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY } from '../../DBService/PersonalDetails/Query';
+import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
 
 const personalDetailsRoute = Router();
 const errorStatusCode = 500;
@@ -23,8 +24,26 @@ personalDetailsRoute.get('/hmos', (request: Request, response: Response) => {
     graphqlRequest(GET_HMOS, response.locals).then((result: any) => response.send(result));
 });
 
+const convertPatientDetailsFromDB = (investigatedPatientDetails: PersonalInfoDbData) => {
+    const convertedInvestigatedPatientDetails = {
+        ...investigatedPatientDetails,
+        ...investigatedPatientDetails.covidPatientByCovidPatient
+    }
+    delete convertedInvestigatedPatientDetails.covidPatientByCovidPatient;
+
+    return convertedInvestigatedPatientDetails;
+}
+
 personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Request, response: Response) => {
-    graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, {id: +request.query.epidemioligyNumber}).then((result: any) => response.send(result));
+    graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, {id: +request.query.epidemioligyNumber})
+    .then((result: GetInvestigatedPatientDetails) => {
+        if (result?.data?.investigationByEpidemiologyNumber?.investigatedPatientByInvestigatedPatientId) {
+            const investigatedPatientDetails = result.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
+            response.send(convertPatientDetailsFromDB(investigatedPatientDetails));
+        } else {
+            response.status(errorStatusCode).json({error: 'failed to fetch personal details'});
+        }
+    });
 });
 
 personalDetailsRoute.get('/subOccupations', (request: Request, response: Response) => {
@@ -35,30 +54,30 @@ personalDetailsRoute.get('/educationSubOccupations', (request: Request, response
 });
 
 const savePersonalDetails = (request: Request, response: Response, address?: number, ) => {
+    const { personalInfoData } = request.body;
     graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, response.locals,
         {
             id: request.body.id, 
-            hmo: request.body.personalInfoData.insuranceCompany,
-            otherOccupationExtraInfo: request.body.personalInfoData.otherOccupationExtraInfo
-            ? request.body.personalInfoData.otherOccupationExtraInfo : null,
-            occupation: request.body.personalInfoData.relevantOccupation,
-            patientContactPhoneNumber: request.body.personalInfoData.contactPhoneNumber,
-            patientContactInfo: request.body.personalInfoData.contactInfo ? request.body.personalInfoData.contactInfo : null,
-            subOccupation: request.body.personalInfoData.institutionName ? request.body.personalInfoData.institutionName : null,
-            address,
+            hmo: personalInfoData.insuranceCompany,
+            otherOccupationExtraInfo: personalInfoData.otherOccupationExtraInfo || null,
+            occupation: personalInfoData.relevantOccupation,
+            patientContactPhoneNumber: personalInfoData.contactPhoneNumber,
+            patientContactInfo: personalInfoData.contactInfo || null,
+            subOccupation: personalInfoData.institutionName || null,
+            additionalPhoneNumber: personalInfoData.additionalPhoneNumber,
         }
     ).then((result: any) => {
-        graphqlRequest(UPDATE_PERSON_PERSONAL_INFO,  response.locals,
+        graphqlRequest(UPDATE_COVID_PATIENT_PERSONAL_INFO,  response.locals,
             {
-                id: result.data.updateInvestigatedPatientById.personByPersonId.id,
-                phoneNumber: request.body.personalInfoData.phoneNumber,
-                additionalPhoneNumber: request.body.personalInfoData.additionalPhoneNumber
+                id: result.data.updateInvestigatedPatientById.covidPatientByCovidPatient.epidemiologyNumber,
+                primaryPhone: personalInfoData.phoneNumber,
+                address,
             }).then((result: any) => response.send(result)).catch(err => response.status(errorStatusCode).send(err));
         }).catch(err => response.status(errorStatusCode).send(err));
 }
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
     const address = request.body.personalInfoData.address;
-    const requestAddress: Address = {
+    const requestAddress: InsertAndGetAddressIdInput = {
         cityValue: address.city ? address.city : null ,
         streetValue: address?.street ? address.street : null,
         floorValue: address?.floor ? address?.floor : null,

@@ -1,19 +1,19 @@
 import Swal from 'sweetalert2';
+import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { differenceInYears, format } from 'date-fns';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import User from 'models/User';
-import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
+import axios, { activateIsLoading } from 'Utils/axios';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
@@ -111,15 +111,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
           const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
             const patient = investigation.investigatedPatientByInvestigatedPatientId;
-            const patientCity = patient.addressByAddress.cityByCity;
+            const covidPatient = patient.covidPatientByCovidPatient;
+            const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
             const user = investigation.userByLastUpdator;
             return createRowData(investigation.epidemiologyNumber,
               investigation.coronaTestDate,
               investigation.priority,
               investigation.investigationStatusByInvestigationStatus.displayName,
-              patient.personByPersonId.firstName + ' ' + patient.personByPersonId.lastName,
-              patient.personByPersonId.phoneNumber,
-              Math.floor(differenceInYears(new Date(), new Date(patient.personByPersonId.birthDate))),
+              covidPatient.fullName,
+              covidPatient.primaryPhone,
+              covidPatient.age,
               patientCity ? patientCity.displayName : '',
               user
             )
@@ -150,7 +151,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       (config) => {
         config.headers.Authorization = user.token;
         config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-        setIsLoading(true);
+        activateIsLoading(config);
         return config;
       },
       (error) => Promise.reject(error)

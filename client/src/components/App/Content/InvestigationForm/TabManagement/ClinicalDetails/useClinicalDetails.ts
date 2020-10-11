@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/Street';
-import { initDBAddress } from 'models/Address';
+import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 

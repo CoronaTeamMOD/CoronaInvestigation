@@ -19,7 +19,6 @@ intersectionsRoute.get('/', (request: Request, response: Response) => {
 intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response: Response) => {
     graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, response.locals)
         .then((result: GetPlaceSubTypesByTypesResposne) => {
-            console.log(result);
             const locationsSubTypesByTypes : PlacesSubTypesByTypes = {};
             result.data.allPlaceTypes.nodes.forEach(type =>
                 locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
