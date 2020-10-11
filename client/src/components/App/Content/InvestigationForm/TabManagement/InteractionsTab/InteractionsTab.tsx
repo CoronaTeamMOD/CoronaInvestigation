@@ -56,7 +56,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         });
 
         setInteractionsMap(mappedInteractionsArray);
-
         setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
     }, [interactions]);
 
