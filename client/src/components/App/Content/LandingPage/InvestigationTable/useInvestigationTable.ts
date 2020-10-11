@@ -252,13 +252,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
       classNames.push(classes.columnBorder);
     }
 
-
     if (isDefaultOrder && !isLoading) {
-      if (rows.length - 1 !== rowIndex) {
-        if (getDayAndMothFromDate(rows[rowIndex].coronaTestDate) !==
-          getDayAndMothFromDate(rows[rowIndex + 1].coronaTestDate)) {
-          classNames.push(classes.rowBorder)
-        }
+      if (rows.length - 1 !== rowIndex && (getFormattedDate(rows[rowIndex].coronaTestDate) !==
+        getFormattedDate(rows[rowIndex + 1].coronaTestDate))) {
+        classNames.push(classes.rowBorder)
       }
     }
 
