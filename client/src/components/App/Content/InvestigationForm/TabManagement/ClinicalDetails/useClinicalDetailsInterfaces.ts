@@ -18,5 +18,5 @@ export interface useClinicalDetailsOutcome {
                            trigger: (payload?: string | string[]) => Promise<boolean>
                           ) => void;
     getStreetByCity: (cityId: string) => void;
-    saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => void;
+    saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => Promise<void>;
 };
