@@ -33,7 +33,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
     const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
     const [order, setOrder] = React.useState<Order>(sortOrders.asc);
-    const [orderBy, setOrderBy] = React.useState<string>(TableHeadersNames.epidemiologyNumber);
+    const [orderBy, setOrderBy] = React.useState<string>('');
 
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow,
@@ -87,6 +87,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 sortableCols[key as keyof typeof TableHeadersNames] &&
                                                 <TableSortLabel
+                                                    classes={{icon : key === orderBy ? classes.activeSortIcon : ''}}
                                                     active
                                                     direction={orderBy === key ? order : sortOrders.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
