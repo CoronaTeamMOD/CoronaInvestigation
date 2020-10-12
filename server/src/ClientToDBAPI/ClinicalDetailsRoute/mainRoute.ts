@@ -78,7 +78,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
-    const isolationAddress = request.body.clinicalDetails.isolationAddress;
+    const isolationAddress = request.body.clinicalDetails?.isolationAddress;
     
     if (isolationAddress !== null) {
         const requestAddress: InsertAndGetAddressIdInput = {

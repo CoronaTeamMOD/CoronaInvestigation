@@ -9,6 +9,7 @@ import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './BusinessContactFormStyles';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const businessContactFirstNameField = 'שם פרטי';
 const businessContactLastNameField = 'שם משפחה';
@@ -71,11 +72,14 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER}
                             control={control}
                             render={(props) => (
-                                <TextField
+                                <NumericTextField
+                                    name={props.name}
                                     value={props.value}
-                                    onChange={event => props.onChange(event.target.value as string)}
-                                    error={get(errors, props.name)}
-                                    label={get(errors, props.name)?.message}
+                                    onChange={(newValue: string) => props.onChange(newValue)}
+                                    onBlur={props.onBlur}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
                                 />
                             )}
                         />
