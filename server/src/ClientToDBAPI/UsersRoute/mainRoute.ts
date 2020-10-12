@@ -73,8 +73,8 @@ usersRoute.get('/desks', adminMiddleWare, (request: Request, response: Response)
 usersRoute.post('/createInvestigator', adminMiddleWare, (request: Request, response: Response) => {
     graphqlRequest(CREATE_INVESTIGATOR, response.locals, { ...request.body })
         .then((result: CreateUserResponse) => {
-            if (result?.data?.createUser?.clientMutationId)
-                response.send(result.data.createUser.clientMutationId);
+            if (result?.data?.createUser)
+                response.send(result.data.createUser);
             else  response.status(errorStatusCode).send(`Couldn't create investigator`);
         })
         .catch((error) => response.status(errorStatusCode).send('Error while trying to create investigator'));
