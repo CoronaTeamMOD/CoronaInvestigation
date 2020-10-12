@@ -21,28 +21,27 @@ RETURN (select
 				'priority', investigationTable.priority,
 				'investigatedPatientByInvestigatedPatientId', (
 					select json_build_object (
-						'addressByAddress', (
+						'covidPatientByCovidPatient', (
 							select json_build_object (
-								'cityByCity', (
+								'age', covidPatientTable.age,
+								'fullName', covidPatientTable.full_name,
+								'primaryPhone', covidPatientTable.primary_phone,
+								'addressByAddress', (
 									select json_build_object (
-										'displayName', citiesTable.display_name
+										'cityByCity', (
+											select json_build_object (
+												'displayName', citiesTable.display_name
+											)
+											from public.cities citiesTable
+											where citiesTable.id = addressTable.city
+										)
 									)
-									from public.cities citiesTable
-									where citiesTable.id = addressTable.city
+									from public.address addressTable
+									where addressTable.id = covidPatientTable.address
 								)
 							)
-							from public.address addressTable
-							where addressTable.id = investigatedPatientTable.address
-						),
-						'personByPersonId', (
-							select json_build_object (
-								'birthDate', personTable.birth_date,
-								'firstName', personTable.first_name,
-								'lastName', personTable.last_name,
-								'phoneNumber', personTable.phone_number
-							)
-							from public.person personTable
-							where personTable.id = investigatedPatientTable.person_id
+							from public.covid_patients covidPatientTable
+							where covidPatientTable.epidemiology_number = investigatedPatientTable.covid_patient
 						)
 					)
 					from public.investigated_patient investigatedPatientTable
@@ -79,8 +78,8 @@ RETURN (select
 				where id = (
 					select city from public.address
 					where id = (
-						select address from public.investigated_patient
-						where id = investigationTable.investigated_patient_id
+						select address from public.covid_patients
+						where epidemiology_number = investigationTable.epidemiology_number
 					)
 				)
 			) END DESC,
@@ -90,27 +89,19 @@ RETURN (select
 				where id = (
 					select city from public.address
 					where id = (
-						select address from public.investigated_patient
-						where id = investigationTable.investigated_patient_id
+						select address from public.covid_patients
+						where epidemiology_number = investigationTable.epidemiology_number
 					)
 				)
 			) END ASC,
 			CASE WHEN order_by='ageDESC' THEN (
-			select birth_date
-			from public.person
-			where id = (
-				select person_id from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END ASC,
+			select age
+			from public.covid_patients
+			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
 			CASE WHEN order_by='ageASC' THEN (
-			select birth_date
-			from public.person
-			where id = (
-				select person_id from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END DESC,
+			select age
+			from public.covid_patients
+			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
 			CASE WHEN order_by='investigatorNameDESC' THEN (
