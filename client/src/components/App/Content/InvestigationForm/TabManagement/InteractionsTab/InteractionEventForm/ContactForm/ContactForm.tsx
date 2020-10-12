@@ -14,6 +14,7 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './ContactFormStyles';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';
@@ -92,11 +93,14 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
                             control={control}
                             render={(props) => (
-                                <TextField
+                                <NumericTextField
+                                    name={props.name}
                                     value={props.value}
-                                    onChange={event => props.onChange(event.target.value as string)}
-                                    error={get(errors, props.name)}
-                                    label={get(errors, props.name)? get(errors, props.name).message: PHONE_NUMBER_LABEL}
+                                    onChange={(newValue: string) => props.onChange(newValue)}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    onBlur={props.onBlur}
                                 />
                             )}
                         />
@@ -110,7 +114,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <NumericTextField
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === "" ? null : newValue as string)}
