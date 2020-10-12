@@ -15,17 +15,6 @@ import { Autocomplete } from '@material-ui/lab';
 const toggleMessage = 'מה הסטטוס שלך?';
 
 const AppToolbar: React.FC = (): JSX.Element => {
-
-    const [isDeskAutocompleteShown, setIsDeskAutocompleteShown] = React.useState<boolean>(false);
-
-    const handleClick = () => {
-        setIsDeskAutocompleteShown(true);
-    };
-
-    const handleClose = () => {
-        setIsDeskAutocompleteShown(false);
-    };
-
     const { user, isActive, setUserActivityStatus, classes } = useAppToolbar();
 
     return (
