@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
@@ -32,20 +33,8 @@ const interactionEventSchema = yup.object().shape({
           [InteractionEventContactFields.ID]: yup.string().nullable()
             .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
             .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-            .test('isValid', "ת.ז לא תקינה", (id: string | null | undefined) => {
-              let sum = 0;
-              if (id?.length === 9) {
-                Array.from(id)?.forEach((digit: string, index: number) => {
-                  let digitMul = parseInt(digit) * ((index % 2) + 1);
-                  if (digitMul > 9) {
-                    digitMul -= 9;
-                  }
-                  sum += digitMul;
-                })
-              }
-              return sum % 10 === 0;
-          })
-      })),
-    });
+            .test('isValid', "ת.ז לא תקינה", id => isIdValid(id))
+    })),
+  });
 
 export default interactionEventSchema;
