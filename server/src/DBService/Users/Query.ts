@@ -37,12 +37,12 @@ query AllGroupUsers($investigationGroup: Int!) {
 }
 `;
 
-export const GET_ALL_DESKS = gql`
-query AllDesks {
-  allDesks {
+export const GET_ALL_COUNTIES = gql`
+query allCounties {
+  allCounties {
     nodes {
       id
-      district
+      displayName
     }
   }
 }

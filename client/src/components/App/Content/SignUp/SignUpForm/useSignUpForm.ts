@@ -8,7 +8,7 @@ import { useSignUpFormParameters } from './SignUpFormInterfaces';
 
 const useSignUp = (props: useSignUpFormParameters) => {
 
-    const { setDesks } = props;
+    const { setCounties } = props;
 
     const fetchCities = () => {
         axios.get('/addressDetails/cities')
@@ -22,17 +22,17 @@ const useSignUp = (props: useSignUpFormParameters) => {
             .catch(err => console.log(err));
     };
 
-    const fetchDesks = () => {
-        axios.get('/users/desks')
+    const fetchCounties = () => {
+        axios.get('/users/counties')
             .then(result => {
-                result?.data && setDesks(result?.data);
+                result?.data && setCounties(result?.data);
             })
             .catch(err => console.log(err));
     };
 
     useEffect(() => {
         fetchCities();
-        fetchDesks();
+        fetchCounties();
     }, [])
 }
 

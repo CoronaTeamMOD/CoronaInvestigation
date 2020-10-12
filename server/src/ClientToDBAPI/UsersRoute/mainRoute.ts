@@ -4,8 +4,8 @@ import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
-import GetAllDesksResponse from '../../Models/User/GetAllDesksResponse';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS, GET_ALL_DESKS } from '../../DBService/Users/Query';
+import GetAllCountiesResponse from '../../Models/User/GetAllCountiesResponse';
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS, GET_ALL_COUNTIES } from '../../DBService/Users/Query';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
@@ -60,14 +60,14 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         });
 });
 
-usersRoute.get('/desks', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(GET_ALL_DESKS, response.locals, { ...request.body })
-        .then((result: GetAllDesksResponse) => {
-            if (result?.data?.allDesks?.nodes)
-                response.send(result.data.allDesks.nodes);
-            else  response.status(errorStatusCode).send(`Couldn't query all desks`);
+usersRoute.get('/counties', adminMiddleWare, (request: Request, response: Response) => {
+    graphqlRequest(GET_ALL_COUNTIES, response.locals)
+        .then((result: GetAllCountiesResponse) => {
+            if (result?.data?.allCounties?.nodes)
+                response.send(result.data.allCounties.nodes);
+            else  response.status(errorStatusCode).send(`Couldn't query all counties`);
         })
-        .catch((error) => response.status(errorStatusCode).send('Error while trying to query all desks'));
+        .catch((error) => response.status(errorStatusCode).send('Error while trying to query all counties'));
 });
 
 usersRoute.post('/createInvestigator', adminMiddleWare, (request: Request, response: Response) => {

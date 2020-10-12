@@ -13,11 +13,11 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import FormInput from 'commons/FormInput/FormInput'
 import useFormStyles from 'styles/formStyles'
+import County from 'models/County';
 
 import SignUpFields from './SignUpFields'
 import SignUpSchema from './SignUpSchema'
 import useSignUpForm from './useSignUpForm'
-import Desk from 'models/Desk';
 // import useStyles from './SignUpFormStyles'
 
 
@@ -33,9 +33,9 @@ const SignUpForm: React.FC = () => {
     const formClasses = useFormStyles();
     // const classes = useStyles();
     
-    const [desks, setDesks] = React.useState<Desk[]>([]);
+    const [counties, setCounties] = React.useState<County[]>([]);
     
-    useSignUpForm({setDesks});
+    useSignUpForm({setCounties});
     
     const methods = useForm({
         mode: 'all',

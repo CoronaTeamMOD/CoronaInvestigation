@@ -1,5 +1,5 @@
-import Desk from 'models/Desk';
+import County from 'models/County';
 
 export interface useSignUpFormParameters {
-    setDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
+    setCounties: React.Dispatch<React.SetStateAction<County[]>>;
 }
