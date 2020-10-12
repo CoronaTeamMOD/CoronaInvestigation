@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import Address from '../../Models/Address';
+import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
@@ -81,7 +81,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     const isolationAddress = request.body.clinicalDetails.isolationAddress;
     
     if (isolationAddress !== null) {
-        const requestAddress: Address = {
+        const requestAddress: InsertAndGetAddressIdInput = {
             cityValue: isolationAddress?.city ? isolationAddress?.city : null,
             streetValue: isolationAddress?.street ? isolationAddress?.street : null,
             floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,

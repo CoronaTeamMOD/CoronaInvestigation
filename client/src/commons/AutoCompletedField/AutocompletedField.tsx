@@ -4,15 +4,26 @@ import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
 import useStyles from './AutoCompletedFieldStyles';
 import AutocompletedFieldType from './AutoCompletedFieldTypes';
+const defaultNoOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 const AutocompletedField: AutocompletedFieldType = (props) => {
-    const { required, value, options, onChange, onInputChange, constOptions = false, className, filterOptions = (x: any) => x} = props;
+    const {
+        required,
+        value,
+        options,
+        onChange,
+        onInputChange,
+        constOptions = false,
+        label,
+        placeholder,
+        className, filterOptions = (x: any) => x,
+        noOptionsMessage = defaultNoOptionsMessage
+    } = props;
     const classes = useStyles();
 
-    const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <TextField required={required} {...params} fullWidth />;
+        <TextField required={required} placeholder={placeholder} label={label} {...params} fullWidth />;
 
     const staticOptionConfig = {
         autoComplete: true,

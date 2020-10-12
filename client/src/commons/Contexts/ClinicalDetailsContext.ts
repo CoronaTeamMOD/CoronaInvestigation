@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { initDBAddress } from 'models/Address';
+import { initDBAddress } from 'models/DBAddress';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
 export interface ClinicalDetailsDataAndSet {

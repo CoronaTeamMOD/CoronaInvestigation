@@ -4,13 +4,14 @@ const useStyles = makeStyles({
     content: {
         height: '84vh',
         backgroundColor: '#F3F6FB',
-        padding: '1vh 1vw 0 1vw',
         display: 'flex',
         justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     tableContainer : {
-        width: '70vw',
-        height: '75vh',
+        width: '90vw',
+        height: '70vh',
     },
     welcomeMessage: {
         fontSize: '4vh',
@@ -27,10 +28,21 @@ const useStyles = makeStyles({
     columnBorder: {
         borderLeft: '2px solid black'
     },
+    rowBorder: {
+        borderBottom: '2px solid black'
+    },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    tableHeaderButton: {
+        width: '90vw',
+        display: 'flex',
+        justifyContent: 'flex-end'
+    },
+    sortResetButton: {
+        fontWeight: 600
+    }
 });
 
 export default useStyles;

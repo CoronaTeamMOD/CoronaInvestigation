@@ -52,7 +52,7 @@ export const useStyles = makeStyles({
     },
     otherTextField: {
         marginTop: '1vh',
-        marginLeft: '-15vw',
+        marginLeft: '-22vw',
     },
     symptomsDateCheckBox: {
         marginTop: '1vh',
@@ -74,6 +74,9 @@ export const useStyles = makeStyles({
         'media screen and (min-width: 1500px)': {
             marginRight: '-5vw'
         },
+    },
+    hiddenIsPregnant: {
+        display: 'none'
     },
 });
 

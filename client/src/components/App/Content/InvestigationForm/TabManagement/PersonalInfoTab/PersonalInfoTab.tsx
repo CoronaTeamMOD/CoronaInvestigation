@@ -161,20 +161,21 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
         event.preventDefault();
-        axios.post('/personalDetails/updatePersonalDetails',
-            {
-                id: investigatedPatientId,
-                personalInfoData,
-            }).catch(() => {
-                Swal.fire({
-                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                    icon: 'error'
-                });
-            })
+        axios.post('/personalDetails/updatePersonalDetails', 
+        {
+            id : investigatedPatientId, 
+            personalInfoData, 
+        })
+        .then(onSubmit)
+        .catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            });
+        }) 
         personalInfoValidationSchema.isValid(getValues()).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
 
     return (
@@ -192,10 +193,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.PHONE_NUMBER}
-                            test-id='personalDetailsPhone'
                             render={(props) => (
                                 <TextField
                                     id={PHONE_LABEL}
+                                    test-id='personalDetailsPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -222,10 +223,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
-                            test-id='personalDetailsAdditionalPhone'
                             render={(props) => (
                                 <TextField
                                     id={ADDITIONAL_PHONE_LABEL}
+                                    test-id='personalDetailsAdditionalPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -252,10 +253,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             control={control}
                             name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
-                            test-id='personalDetailsContactPhone'
                             render={(props) => (
                                 <TextField
                                     id={CONTACT_PHONE_LABEL}
+                                    test-id='personalDetailsContactPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue) => (
@@ -263,7 +264,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     )}
                                     placeholder={PHONE_LABEL}
                                     error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון*'}
+                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
                                 />
                             )}
@@ -284,7 +285,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 errors={errors}
                                 placeholder={CONTACT_INFO}
                                 onBlur={props.onBlur}
-                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר*'}
+                                label={errors[PersonalInfoDataContextFields.CONTACT_INFO] ? errors[PersonalInfoDataContextFields.CONTACT_INFO]?.message : 'פרטי איש קשר'}
                                 className={classes.contactDescription}
                             />
                         )}
@@ -438,7 +439,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    test-id='personalDetailsFloor'
+                                    testId='personalDetailsFloor'
                                     className={classes.floorInput}
                                     name={PersonalInfoDataContextFields.FLOOR}
                                     value={props.value}
@@ -461,7 +462,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             render={(props) => (
                                 <AlphanumericTextField
-                                    test-id='personalDetailsHouseNumber'
+                                    testId='personalDetailsHouseNumber'
                                     className={classes.houseNumInput}
                                     name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                                     value={props.value}
@@ -595,7 +596,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         control={control}
                                         render={(props) => (
                                             <AlphanumericTextField
-                                                test-id='institutionName'
+                                                testId='institutionName'
                                                 name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
                                                 value={props.value}
                                                 onBlur={props.onBlur}

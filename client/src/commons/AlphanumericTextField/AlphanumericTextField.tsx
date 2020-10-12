@@ -1,6 +1,5 @@
 import React from 'react';
 import * as yup from 'yup';
-import { TextField, Tooltip } from '@material-ui/core';
 
 import AlphanumericTextFieldType from './AlphanumericTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';

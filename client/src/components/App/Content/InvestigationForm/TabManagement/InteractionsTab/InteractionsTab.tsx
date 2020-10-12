@@ -44,6 +44,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
         interactions.forEach(interaction => {
             const interactionStartTime : Date | undefined = interaction.startTime;
+            
             if (interactionStartTime) {
                 const interactionDate = startOfDay(interactionStartTime).getTime();
                 if (mappedInteractionsArray.get(interactionDate) === undefined) {
@@ -53,7 +54,9 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 }
             }
         });
+
         setInteractionsMap(mappedInteractionsArray);
+        setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
     }, [interactions]);
 
     const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
@@ -67,7 +70,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
                     getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
-                        <ContactDateCard 
+                        <ContactDateCard
+                            loadInteractions={loadInteractions}
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                             onDeleteClick={handleDeleteContactEvent}

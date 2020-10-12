@@ -1,14 +1,14 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Typography, Paper, IconButton, Tooltip } from '@material-ui/core';
-import { CakeOutlined, EventOutlined, Help, Phone } from '@material-ui/icons';
+import { Typography, Paper } from '@material-ui/core';
+import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 
 import StoreStateType from 'redux/storeStateType';
-import { getPersonFullName } from 'Utils/displayUtils';
+import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import { InvestigatedPatientByInvestigatedPatientId } from 'models/InvestigatedPatientByInvestigatedPatientId';
+import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
@@ -19,7 +19,7 @@ const leaveInvestigationMessage = 'צא מחקירה';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientByInvestigatedPatientId, epedemioligyNumber } = props;
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
@@ -29,7 +29,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck, getPersonAge } = useInvestigatedPersonInfo();
     
     const handleLeaveInvestigationClick = (e: React.ChangeEvent<{}>) => {
-        e.preventDefault();
         if(isEventTrigeredByMouseClicking(e)) {
             confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
         }
@@ -46,24 +45,19 @@ const InvestigatedPersonInfo = (props: Props) => {
                 <div className={classes.investigationHeaderInfo}>
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {
-                            getPersonFullName(investigatedPatientByInvestigatedPatientId.personByPersonId)
+                            investigatedPatientStaticInfo.patientInfo.fullName
                         },
                         {
                             epedemioligyNumber
                         }
                     </Typography>
-                    <Tooltip title='חייג'>
-                        <IconButton 
-                            href={`TEL:${investigatedPatientByInvestigatedPatientId.personByPersonId.phoneNumber}`} 
-                            color='primary'
-                        >
-                            <Phone/>
-                        </IconButton>
-                    </Tooltip>
+                    <PhoneDial
+                        phoneNumber={investigatedPatientStaticInfo.patientInfo.primaryPhone}
+                    />
                 </div>
                 <PrimaryButton
                     onClick={(e) => {handleLeaveInvestigationClick(e)}}
-                    type="submit"
+                    type='submit'
                     form={`form-${currentTab}`}
                 >
                     {leaveInvestigationMessage} 
@@ -73,7 +67,7 @@ const InvestigatedPersonInfo = (props: Props) => {
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
                     <InfoItemWithIcon testId='age' name='גיל' value={
-                        getPersonAge(new Date(investigatedPatientByInvestigatedPatientId.personByPersonId.birthDate))
+                        investigatedPatientStaticInfo.patientInfo.age
                     }
                         icon={CakeOutlined}
                     />
@@ -85,25 +79,25 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     <Divider />
                     <InfoItemWithIcon testId='gender' name='מין' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.gender
+                        investigatedPatientStaticInfo.gender
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationType
+                        investigatedPatientStaticInfo.identityType
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={
-                        investigatedPatientByInvestigatedPatientId.personByPersonId.identificationNumber
+                        investigatedPatientStaticInfo.patientInfo.identityNumber
                     }
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
-                        investigatedPatientByInvestigatedPatientId.isDeceased ?
+                        investigatedPatientStaticInfo.isDeceased ?
                             'כן' :
                             'לא'
                     }
@@ -127,7 +121,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 };
 
 interface Props {
-    investigatedPatientByInvestigatedPatientId: InvestigatedPatientByInvestigatedPatientId;
+    investigatedPatientStaticInfo: InvestigatedPatientStaticInfo;
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;

@@ -10,17 +10,14 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import AirportInput from './AirportInput/AirportInput';
 
 const FlightsForm = (props: any) => {
-  const {
-    exposureAndFlightsData,
-    fieldsNames,
-    handleChangeExposureDataAndFlightsField,
-  } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, } = props;
+
   const classes = useFormStyles();
   const { errors, setError, clearErrors } = useForm();
 
   return (
-    <Grid className={classes.form} container justify="flex-start">
-      <FormRowWithInput testId='flightDestination' fieldName="יעד:">
+    <Grid className={classes.form} container justify='flex-start'>
+      <FormRowWithInput testId='flightDestination' fieldName='יעד:'>
         <AirportInput
           errors={errors}
           setError={setError}
@@ -37,7 +34,7 @@ const FlightsForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <FormRowWithInput testId='flightStartingPoint' fieldName="מוצא:">
+      <FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
         <AirportInput
           errors={errors}
           setError={setError}
@@ -54,36 +51,32 @@ const FlightsForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="תאריך טיסה:">
+      <FormRowWithInput fieldName='תאריך טיסה:'>
         <div className={classes.formRow}>
-          <Typography variant="caption">מתאריך</Typography>
+          <Typography variant='caption'>מתאריך</Typography>
           <DatePick
+            maxDate={new Date()}
             testId='flightFromDate'
-            labelText="מתאריך"
+            labelText='מתאריך'
             value={exposureAndFlightsData[fieldsNames.flightStartDate]}
             onChange={(newDate: Date) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.flightStartDate,
-                newDate
-              )
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate)
             }
           />
-          <Typography variant="caption">עד תאריך</Typography>
+          <Typography variant='caption'>עד תאריך</Typography>
           <DatePick
+            maxDate={new Date()}
             testId='flightToDate'
-            labelText="עד"
+            labelText='עד'
             value={exposureAndFlightsData[fieldsNames.flightEndDate]}
             onChange={(newDate: Date) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.flightEndDate,
-                newDate
-              )
+              handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate)
             }
           />
         </div>
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="חברת תעופה:">
+      <FormRowWithInput fieldName='חברת תעופה:'>
         <AlphanumericTextField
           testId={'airlineCompany'}
           name={fieldsNames.airline}
@@ -92,16 +85,13 @@ const FlightsForm = (props: any) => {
           clearErrors={clearErrors}
           value={exposureAndFlightsData[fieldsNames.airline]}
           onChange={(value) =>
-            handleChangeExposureDataAndFlightsField(
-              fieldsNames.airline,
-              value
-            )
+            handleChangeExposureDataAndFlightsField(fieldsNames.airline, value)
           }
-          placeholder="הזן חברת תעופה"
+          placeholder='הזן חברת תעופה'
         />
       </FormRowWithInput>
 
-      <FormRowWithInput fieldName="מספר טיסה:">
+      <FormRowWithInput fieldName='מספר טיסה:'>
         <AlphanumericTextField
           testId={'airlineNumber'}
           name={fieldsNames.flightNumber}
@@ -110,12 +100,9 @@ const FlightsForm = (props: any) => {
           clearErrors={clearErrors}
           value={exposureAndFlightsData[fieldsNames.flightNumber]}
           onChange={(value) =>
-            handleChangeExposureDataAndFlightsField(
-              fieldsNames.flightNumber,
-              value
-            )
+            handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber, value)
           }
-          placeholder="הזן מספר טיסה"
+          placeholder='הזן מספר טיסה'
         />
       </FormRowWithInput>
     </Grid>

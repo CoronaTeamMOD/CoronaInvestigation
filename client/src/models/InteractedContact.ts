@@ -5,6 +5,7 @@ import Occupations from './enums/Occupations';
 interface InteractedContact extends Person {
     id: number;
     contactDate: Date;
+    contactEvent: number;
     contactType: ContactType;
     extraInfo: string;
     birthDate: Date;
