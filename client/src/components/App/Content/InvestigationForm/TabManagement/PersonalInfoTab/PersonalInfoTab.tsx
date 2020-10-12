@@ -28,6 +28,7 @@ import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/Person
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -194,18 +195,20 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             name={PersonalInfoDataContextFields.PHONE_NUMBER}
                             render={(props) => (
-                                <TextField
-                                    id={PHONE_LABEL}
+                                <NumericTextField
+                                    name={props.name}
                                     test-id='personalDetailsPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
-                                    onChange={(newValue) => (
-                                        props.onChange(newValue.target.value)
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
                                     )}
                                     placeholder={PHONE_LABEL}
-                                    error={errors[PersonalInfoDataContextFields.PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.PHONE_NUMBER]?.message : 'טלפון*'}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
                                     onBlur={props.onBlur}
+                                    label='טלפון*'
                                 />
                             )}
                         />
@@ -224,18 +227,20 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             name={PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER}
                             render={(props) => (
-                                <TextField
-                                    id={ADDITIONAL_PHONE_LABEL}
+                                <NumericTextField
+                                    name={props.name}
                                     test-id='personalDetailsAdditionalPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
-                                    onChange={(newValue) => (
-                                        props.onChange(newValue.target.value)
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
                                     )}
                                     placeholder={PHONE_LABEL}
-                                    error={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.ADDITIONAL_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    label='טלפון'
                                 />
                             )}
                         />
@@ -254,18 +259,20 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             control={control}
                             name={PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER}
                             render={(props) => (
-                                <TextField
-                                    id={CONTACT_PHONE_LABEL}
+                                <NumericTextField
+                                    name={props.name}
                                     test-id='personalDetailsContactPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
-                                    onChange={(newValue) => (
-                                        props.onChange(newValue.target.value)
+                                    onChange={(newValue: string) => (
+                                        props.onChange(newValue)
                                     )}
                                     placeholder={PHONE_LABEL}
-                                    error={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]}
-                                    label={errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER] ? errors[PersonalInfoDataContextFields.CONTACT_PHONE_NUMBER]?.message : 'טלפון'}
                                     onBlur={props.onBlur}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    label='טלפון'
                                 />
                             )}
                         />
