@@ -208,6 +208,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     onBlur={props.onBlur}
+                                    label='טלפון*'
                                 />
                             )}
                         />
@@ -239,6 +240,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
+                                    label='טלפון'
                                 />
                             )}
                         />
@@ -270,6 +272,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     errors={errors}
                                     setError={setError}
                                     clearErrors={clearErrors}
+                                    label='טלפון'
                                 />
                             )}
                         />
