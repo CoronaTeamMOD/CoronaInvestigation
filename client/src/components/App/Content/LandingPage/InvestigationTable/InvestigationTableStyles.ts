@@ -42,6 +42,9 @@ const useStyles = makeStyles({
     },
     sortResetButton: {
         fontWeight: 600
+    },
+    activeSortIcon: {
+        color: "rgb(5, 105, 137) !important"
     }
 });
 
