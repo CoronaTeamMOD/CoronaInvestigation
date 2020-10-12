@@ -6,6 +6,7 @@ const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת ה�
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
 const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
+const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
 const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/
 const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/
 
@@ -16,22 +17,23 @@ const schema = yup.object().shape({
     [PersonalInfoDataContextFields.INSURANCE_COMPANY]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.CITY]: yup.string().nullable().required(requiredText),
     [PersonalInfoDataContextFields.CONTACT_INFO]: yup.string().nullable(),
-    [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]:  yup.string().when(
-        PersonalInfoDataContextFields.RELEVANT_OCCUPATION, {
+    [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when(
+        PersonalInfoDataContextFields.RELEVANT_OCCUPATION, 
+        {
             is: 'מערכת החינוך',
-            then: yup.string().nullable().required(requiredText),
+            then: yup.string().nullable().required(requiredSelectionText),
             else: yup.string().nullable()
         }
     ),
-    [PersonalInfoDataContextFields.INSTITUTION_NAME]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
-        return occupationsWithInstitution.find(element => element === relevantOccupation)? 
-        schema.nullable().required(requiredText) : 
-        schema.nullable()
+    [PersonalInfoDataContextFields.INSTITUTION_NAME]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
+        return occupationsWithInstitution.find(element => element === relevantOccupation) ?
+            schema.nullable().required(requiredSelectionText) :
+            schema.nullable()
     }),
-    [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]:  yup.string().when('relevantOccupation', (relevantOccupation:any, schema:any) => {
-        return occupationsWithoutExtraInfo.find(element => element === relevantOccupation)? 
-        schema.nullable() :
-        schema.nullable().required(requiredText)  
+    [PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
+        return occupationsWithoutExtraInfo.find(element => element === relevantOccupation) ?
+            schema.nullable() :
+            schema.nullable().required(requiredText)
     }),
 });
 
