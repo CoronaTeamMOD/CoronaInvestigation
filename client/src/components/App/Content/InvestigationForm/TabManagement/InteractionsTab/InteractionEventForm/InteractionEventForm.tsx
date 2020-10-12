@@ -5,17 +5,17 @@ import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
 import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Contact from 'models/Contact';
-import PlaceSubType from 'models/PlaceSubType';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
-import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import useFormStyles from 'styles/formStyles';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 
 import PlaceTypeForm from './PlaceTypeForm';
@@ -35,14 +35,10 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  {
-    interactionData,
-    loadInteractions,
-    closeNewDialog,
-    closeEditDialog,
-  } : Props): JSX.Element => {
+  { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
+): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm( { loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
 
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -129,9 +125,9 @@ const InteractionEventForm: React.FC<Props> = (
                       <TimePick
                         testId='contactLocationStartTime'
                         value={props.value}
-                        onChange={(newTime: Date) => handleTimeChange(newTime,
-                                                                      interactionStartTime,
-                                                                      InteractionEventDialogFields.START_TIME)}
+                        onChange={(newTime: Date) =>
+                          handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                        }
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
                         error={get(methods.errors, props.name)}
                       />
@@ -148,9 +144,9 @@ const InteractionEventForm: React.FC<Props> = (
                       <TimePick
                         testId='contactLocationEndTime'
                         value={props.value}
-                        onChange={(newTime: Date) => handleTimeChange(newTime,
-                                                                      interationEndTime,
-                                                                      InteractionEventDialogFields.END_TIME)}
+                        onChange={(newTime: Date) =>
+                          handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                        }
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                         error={get(methods.errors, props.name)}
                       />
@@ -214,4 +210,4 @@ interface Props {
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
-}
+};

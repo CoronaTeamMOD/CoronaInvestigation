@@ -4,18 +4,14 @@ import { useForm } from 'react-hook-form';
 
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-import PlaceSubType from 'models/PlaceSubType';
 
 const ExposureForm = (props: any) => {
-  const {
-    exposureAndFlightsData,
-    fieldsNames,
-    handleChangeExposureDataAndFlightsField,
-  } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, } = props;
 
   const classes = useFormStyles();
   const { errors, setError, clearErrors } = useForm();
@@ -27,11 +23,8 @@ const ExposureForm = (props: any) => {
           <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.firstName]}
-            onChange={(value : string) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.firstName,
-                value
-              )
+            onChange={(value: string) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.firstName, value)
             }
             setError={setError}
             clearErrors={clearErrors}
@@ -42,11 +35,8 @@ const ExposureForm = (props: any) => {
           <AlphabetTextField
             errors={errors}
             value={exposureAndFlightsData[fieldsNames.lastName]}
-            onChange={(value : string) =>
-              handleChangeExposureDataAndFlightsField(
-                fieldsNames.lastName,
-                value
-              )
+            onChange={(value: string) =>
+              handleChangeExposureDataAndFlightsField(fieldsNames.lastName, value)
             }
             name={fieldsNames.lastName}
             setError={setError}

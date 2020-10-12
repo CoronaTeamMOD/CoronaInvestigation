@@ -3,17 +3,16 @@ import { Control, Controller } from 'react-hook-form';
 import { Grid, FormControl, TextField } from '@material-ui/core';
 import { Autocomplete, AutocompleteRenderInputParams } from '@material-ui/lab';
 
-import PlaceSubType from 'models/PlaceSubType';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
-import FormInput from 'commons/FormInput/FormInput';
 import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
+import FormInput from 'commons/FormInput/FormInput';
+import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
 const placeTypeDisplayName = 'סוג אתר';
 const placeSubTypeDisplayName = 'תת סוג';
-const defaultPlaceSubType = { id: -1, displayName: '' };
 
 const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -49,7 +48,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
         } else {
             setValue(InteractionEventDialogFields.PLACE_NAME, `${placeType}`);
         }
-    },[placeSubType])
+    }, [placeSubType]);
 
     const placeSubTypeById = (placeSubTypeId: number): PlaceSubType => {
         return placesSubTypesByTypes[placeType]?.filter((placeSubType: PlaceSubType) => placeSubType.id === placeSubTypeId)[0];
