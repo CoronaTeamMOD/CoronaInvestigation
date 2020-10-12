@@ -49,7 +49,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 }
             })
         :
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
+        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
     };
 
     return (
