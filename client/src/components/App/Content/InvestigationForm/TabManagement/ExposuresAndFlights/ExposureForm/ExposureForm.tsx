@@ -14,7 +14,7 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 
 import useStyles from './ExposureFormStyles';
 
-const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה או פרטים אחרים';
+const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
 const displayPatientFields : CovidPatientFields = {
   fullName: 'שם',
