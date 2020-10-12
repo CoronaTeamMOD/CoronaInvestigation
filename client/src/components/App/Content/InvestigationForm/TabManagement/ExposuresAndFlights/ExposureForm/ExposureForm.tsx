@@ -1,11 +1,11 @@
 import Swal from 'sweetalert2';
-import { useForm } from 'react-hook-form';
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import CovidPatientFields from 'models/CovidPatientFields';
@@ -40,7 +40,6 @@ const ExposureForm = (props: any) => {
 
   const classes = useStyles();
   const formClasses = useFormStyles();
-  const { errors, setError, clearErrors } = useForm();
 
   const [exposureSourceSearch, setExposureSourceSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,12 +61,12 @@ const ExposureForm = (props: any) => {
     }
   }, [exposureSourceSearch]);
 
-  const minSourceSearchLengthToSearch : number = React.useMemo(
-    () => phoneAndIdentityNumberRegex.test(exposureSourceSearch) ? minNumbersLengthToSearch : minFullNameLengthToSearch, 
-  [exposureSourceSearch]);
+  const minSourceSearchLengthToSearch: number = React.useMemo(
+    () => phoneAndIdentityNumberRegex.test(exposureSourceSearch) ? minNumbersLengthToSearch : minFullNameLengthToSearch,
+    [exposureSourceSearch]);
 
   const createExposureSourceOption = (exposureSource: CovidPatient) => {
-    const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone} = exposureSource;
+    const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone } = exposureSource;
     if (!exposureSourceSearchRegex) return <></>
     return <>
     {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
@@ -82,12 +81,11 @@ const ExposureForm = (props: any) => {
   useEffect(() => {
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
-      setIsLoading(true)
-      axios
-        .get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
-          .then(result => {
-            result?.data && setOptionalCovidPatients(result.data);
-          })
+      setIsLoading(true);
+      axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
+        .then(result => {
+          result?.data && setOptionalCovidPatients(result.data);
+        })
         .catch((err) => {
           Swal.fire({
             title: 'לא ניתן היה לטעון את החולים האפשריים',
@@ -95,7 +93,8 @@ const ExposureForm = (props: any) => {
           })
         })
         .finally(() => setIsLoading(false));
-    }}, [exposureSourceSearch]);
+    }
+  }, [exposureSourceSearch]);
 
     useEffect(() => {
       exposureAndFlightsData.exposureSource && 
@@ -106,7 +105,7 @@ const ExposureForm = (props: any) => {
     <Grid className={formClasses.form} container justify='flex-start'>
       <FormRowWithInput fieldName='פרטי החולה:'>
         <>
-        <TextField
+          <TextField
             className={classes.exposureSourceTextFied}
             onChange={(event) => {
               setExposureSourceSearch(event.target.value);
@@ -116,23 +115,23 @@ const ExposureForm = (props: any) => {
             test-id='exposureSource'
             id={fieldsNames.exposureSource}
             placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
-        />   
-        <div className={classes.optionalExposureSources}>
-          {
-            isLoading ? <CircularProgress className={classes.loadingSpinner} size='5vh' /> :
-              optionalCovidPatients.map(exposureSource => (
-                  <MenuItem 
-                    className={classes.optionalExposureSource} 
-                    key={exposureSource.epidemiologyNumber} 
+          />
+          <div className={classes.optionalExposureSources}>
+            {
+              isLoading ? <CircularProgress className={classes.loadingSpinner} size='5vh' /> :
+                optionalCovidPatients.map(exposureSource => (
+                  <MenuItem
+                    className={classes.optionalExposureSource}
+                    key={exposureSource.epidemiologyNumber}
                     value={exposureSource.epidemiologyNumber}
                     onClick={() => {
                       handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
                     }}>
-                      {createExposureSourceOption(exposureSource)}
+                    {createExposureSourceOption(exposureSource)}
                   </MenuItem>
-              ))
-          }
-        </div>
+                ))
+            }
+          </div>
         </>
       </FormRowWithInput>
 
@@ -149,10 +148,11 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
-          <Map 
-              name={fieldsNames.address}
-               setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
-               selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
+        <Map
+          name={fieldsNames.address}
+          setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
+          selectedAddress={exposureAndFlightsData[fieldsNames.address]}
+        />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
@@ -163,9 +163,10 @@ const ExposureForm = (props: any) => {
         onPlaceTypeChange={(value) =>
           handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
         }
-        onPlaceSubTypeChange={(value) =>
-          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, value)
+        onPlaceSubTypeChange={(placeSubType: PlaceSubType) =>
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, placeSubType.id)
         }
+        setValue={() => {}}
       />
     </Grid>
   );
