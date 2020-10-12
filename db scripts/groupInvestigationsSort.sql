@@ -79,7 +79,7 @@ RETURN (select
 					select city from public.address
 					where id = (
 						select address from public.covid_patients
-						where id = investigationTable.epidemiology_number
+						where epidemiology_number = investigationTable.epidemiology_number
 					)
 				)
 			) END DESC,
