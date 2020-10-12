@@ -26,14 +26,3 @@ mutation CreateUser($user: UserInput!) {
     }
   }  
 `;
-
-export const UPDATE_USER_DESK = gql`
-    mutation updateUserDesk($id: String!, $deskId: Int!) {
-        updateUserById(input: {userPatch: {investigation_group: $deskId}, id: $id}) {
-            user {
-                id
-                investigation_group
-            }
-        }
-    }
-`;

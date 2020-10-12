@@ -10,7 +10,6 @@ import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
-    setUserDesk: (deskId: number) => void;
     classes: AppToolbarClasses;
     user: User;
     isActive: boolean;
@@ -64,29 +63,10 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
     }
 
-    const setUserDesk = (deskId: number) => {
-        axios.post('users/updateUserDesk', {
-            deskId
-        }).then((result) => {
-            if(result.data) {
-                setIsActive(result.data.isActive);
-            }
-        }).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לעדכן את הדסק שלך',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                },
-            });
-        });
-    }
-
     return {
         user,
         isActive,
         setUserActivityStatus,
-        setUserDesk,
         classes
     }
 };

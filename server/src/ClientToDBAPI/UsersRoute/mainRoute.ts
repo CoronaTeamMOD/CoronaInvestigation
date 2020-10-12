@@ -4,7 +4,7 @@ import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS } from '../../DBService/Users/Query';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, UPDATE_USER_DESK } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
 
@@ -53,18 +53,6 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
             }
             return response.send(users);
         });
-});
-
-usersRoute.post('/updateUserDesk', (request: Request, response: Response) => {
-    graphqlRequest(UPDATE_USER_DESK, response.locals, { id: response.locals.user.id, deskId: request.body.deskId })
-    .then((result: any) => {
-        if (result.data.updateUserById)
-            response.send(result.data.updateUserById.user);
-        else
-            response.status(400).send(`Couldn't find the user nor update the status`);
-
-    })
-    .catch(error => response.status(500).send('Error while trying to activate / deactivate user'))
 });
 
 export default usersRoute;

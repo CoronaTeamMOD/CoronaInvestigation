@@ -40,38 +40,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive />
                     </Tooltip>
                     <Typography className={classes.greetUserText}>שלום, {user.userName}</Typography>
-                    <Typography>דסק:&nbsp;</Typography>
-                    {
-                        !isDeskAutocompleteShown ?
-                            <Button
-                                color='inherit'
-                                aria-controls='desk-menu'
-                                aria-haspopup='true'
-                                onClick={handleClick}
-                                endIcon={<KeyboardArrowDown />}
-                            >
-                                <b>באר שבוע</b>
-                            </Button>
-                            :
-                            <Autocomplete
-                                onBlur={handleClose}
-                                options={[{ id: 311, displayName: 'חיפה- משהו' }, { id: 311, displayName: 'חיפה- משהו' }]}
-                                getOptionLabel={(option) => option.displayName}
-                                getOptionSelected={(option, value) => option.id === value.id}
-                                style={{ width: 150 }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        autoFocus
-                                        color='secondary'
-                                        InputProps={{
-                                            ...params.InputProps,
-                                            className: classes.deskTextField
-                                        }}
-                                    />
-                                )}
-                            />
-                    }
+                    <Typography>הנך מחובר ללשכת <b>באר שבוע</b> בדסק <b>שם דסק</b></Typography>
                 </div>
             </Toolbar>
         </AppBar>
