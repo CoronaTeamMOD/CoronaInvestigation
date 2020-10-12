@@ -1,16 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { AppBar, Button, TextField, Toolbar } from '@material-ui/core';
+import { AppBar, Toolbar } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import User from 'models/User';
-import StoreStateType from 'redux/storeStateType';
-
 import useAppToolbar from './useAppToolbar';
 import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
-import { KeyboardArrowDown } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 
