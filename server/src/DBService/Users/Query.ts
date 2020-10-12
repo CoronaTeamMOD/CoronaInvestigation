@@ -36,3 +36,14 @@ query AllGroupUsers($investigationGroup: Int!) {
   }
 }
 `;
+
+export const GET_ALL_DESKS = gql`
+query AllDesks {
+  allDesks {
+    nodes {
+      id
+      district
+    }
+  }
+}
+`;

@@ -8,6 +8,7 @@ import { Grid, TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab';
 
 import City from 'models/City';
+import axios from 'Utils/axios';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField'
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import FormInput from 'commons/FormInput/FormInput'
@@ -16,6 +17,7 @@ import useFormStyles from 'styles/formStyles'
 import SignUpFields from './SignUpFields'
 import SignUpSchema from './SignUpSchema'
 import useSignUpForm from './useSignUpForm'
+import Desk from 'models/Desk';
 // import useStyles from './SignUpFormStyles'
 
 
@@ -28,10 +30,13 @@ const ID_LABEL = 'תז'
 const MAIL_LABEL = 'מייל'
 
 const SignUpForm: React.FC = () => {
-    useSignUpForm();
     const formClasses = useFormStyles();
     // const classes = useStyles();
-
+    
+    const [desks, setDesks] = React.useState<Desk[]>([]);
+    
+    useSignUpForm({setDesks});
+    
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(SignUpSchema)
@@ -41,8 +46,9 @@ const SignUpForm: React.FC = () => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const onSubmit = (data: any) => {
-        console.log("hey")
-        console.log(data)
+        console.log("hey");
+        console.log(data);
+        axios.post('/users/createInvestigator').then(() => console.log('successfully saved'));
     }
 
     return (

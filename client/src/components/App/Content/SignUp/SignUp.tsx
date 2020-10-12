@@ -13,7 +13,7 @@ const SignUp : React.FC<Props> = ({ open, handleCloseSignUp }) => {
     const classes = useStyles();
 
     return (
-        <Dialog open={open} maxWidth='sm' fullWidth={true}>
+        <Dialog open={true} maxWidth='sm' fullWidth={true}>
             <DialogTitle>
                 {signUpTitle}
                 <IconButton test-id='closeSignUpForm' aria-label="close" className={classes.closeButton} onClick={handleCloseSignUp}>

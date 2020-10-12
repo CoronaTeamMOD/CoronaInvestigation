@@ -3,10 +3,15 @@ import { Router, Request, Response } from 'express';
 import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS } from '../../DBService/Users/Query';
+import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import GetAllDesksResponse from '../../Models/User/GetAllDesksResponse';
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS, GET_ALL_DESKS } from '../../DBService/Users/Query';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
+
+const errorStatusCode = 500;
+const badRequestStatusCode = 400;
 
 usersRoute.get('/userActivityStatus', (request: Request, response: Response) => {
     graphqlRequest(GET_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id })
@@ -14,9 +19,9 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
             if (result.data?.userById)
                 response.send(result.data?.userById);
             else
-                response.status(400).send(`Couldn't find the user nor get its status`);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor get its status`);
         })
-        .catch(error => response.status(500).send('Error while trying to fetch isActive user status'))
+        .catch(error => response.status(errorStatusCode).send('Error while trying to fetch isActive user status'))
 })
 
 usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
@@ -25,10 +30,10 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
             if (result.data.updateUserById)
                 response.send(result.data.updateUserById.user);
             else
-                response.status(400).send(`Couldn't find the user nor update the status`);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor update the status`);
 
         })
-        .catch(error => response.status(500).send('Error while trying to activate / deactivate user'))
+        .catch(error => response.status(errorStatusCode).send('Error while trying to activate / deactivate user'))
 })
 
 usersRoute.get('/user', (request: Request, response: Response) => {
@@ -53,6 +58,26 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
             }
             return response.send(users);
         });
+});
+
+usersRoute.get('/desks', adminMiddleWare, (request: Request, response: Response) => {
+    graphqlRequest(GET_ALL_DESKS, response.locals, { ...request.body })
+        .then((result: GetAllDesksResponse) => {
+            if (result?.data?.allDesks?.nodes)
+                response.send(result.data.allDesks.nodes);
+            else  response.status(errorStatusCode).send(`Couldn't query all desks`);
+        })
+        .catch((error) => response.status(errorStatusCode).send('Error while trying to query all desks'));
+});
+
+usersRoute.post('/createInvestigator', adminMiddleWare, (request: Request, response: Response) => {
+    graphqlRequest(CREATE_INVESTIGATOR, response.locals, { ...request.body })
+        .then((result: CreateUserResponse) => {
+            if (result?.data?.createUser?.clientMutationId)
+                response.send(result.data.createUser.clientMutationId);
+            else  response.status(errorStatusCode).send(`Couldn't create investigator`);
+        })
+        .catch((error) => response.status(errorStatusCode).send('Error while trying to create investigator'));
 });
 
 export default usersRoute;

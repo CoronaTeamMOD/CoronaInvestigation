@@ -4,7 +4,12 @@ import City from 'models/City'
 import axios from 'Utils/axios'
 import { setCities } from 'redux/City/cityActionCreators';
 
-const useSignUp = () => {
+import { useSignUpFormParameters } from './SignUpFormInterfaces';
+
+const useSignUp = (props: useSignUpFormParameters) => {
+
+    const { setDesks } = props;
+
     const fetchCities = () => {
         axios.get('/addressDetails/cities')
             .then((result: any) => {
@@ -17,8 +22,17 @@ const useSignUp = () => {
             .catch(err => console.log(err));
     };
 
+    const fetchDesks = () => {
+        axios.get('/users/desks')
+            .then(result => {
+                result?.data && setDesks(result?.data);
+            })
+            .catch(err => console.log(err));
+    };
+
     useEffect(() => {
         fetchCities();
+        fetchDesks();
     }, [])
 }
 
