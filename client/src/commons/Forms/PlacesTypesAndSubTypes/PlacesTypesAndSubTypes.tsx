@@ -42,8 +42,8 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     }, [placeType]);
 
     useEffect(() => {
-        setPlaceSubTypeInput(placeSubTypeById(placeSubType)?.displayName);
         if (placeSubTypeById(placeSubType)) {
+            setPlaceSubTypeInput(placeSubTypeById(placeSubType).displayName);
             setValue(InteractionEventDialogFields.PLACE_NAME, `${placeType} ${placeSubTypeById(placeSubType)?.displayName}`);
         } else {
             setValue(InteractionEventDialogFields.PLACE_NAME, `${placeType}`);

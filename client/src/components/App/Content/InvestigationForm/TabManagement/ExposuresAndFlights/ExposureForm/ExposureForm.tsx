@@ -66,7 +66,7 @@ const ExposureForm = (props: any) => {
     [exposureSourceSearch]);
 
   const createExposureSourceOption = (exposureSource: CovidPatient) => {
-    const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone} = exposureSource;
+    const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone } = exposureSource;
     if (!exposureSourceSearchRegex) return <></>
     return <>
     {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
@@ -148,10 +148,11 @@ const ExposureForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput testId='exposureAddress' fieldName='כתובת החשיפה:'>
-          <Map 
-              name={fieldsNames.address}
-               setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
-               selectedAddress={exposureAndFlightsData[fieldsNames.address]} />
+        <Map
+          name={fieldsNames.address}
+          setSelectedAddress={(newAddress) => handleChangeExposureDataAndFlightsField(fieldsNames.address, newAddress)}
+          selectedAddress={exposureAndFlightsData[fieldsNames.address]}
+        />
       </FormRowWithInput>
 
       <PlacesTypesAndSubTypes
