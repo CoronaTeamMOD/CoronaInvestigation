@@ -87,7 +87,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 sortableCols[key as keyof typeof TableHeadersNames] &&
                                                 <TableSortLabel
-                                                    classes={{icon : key === orderBy ? classes.activeSortIcon : ''}}
+                                                    classes={{root : key === orderBy ? classes.activeSortIcon : '' , icon: classes.icon, active: classes.active}}
                                                     active
                                                     direction={orderBy === key ? order : sortOrders.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
