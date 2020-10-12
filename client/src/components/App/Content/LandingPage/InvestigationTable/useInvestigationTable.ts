@@ -14,13 +14,13 @@ import axios, { activateIsLoading } from 'Utils/axios';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
-import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setCantReachInvestigated, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import { AxiosRequestConfig } from 'axios';
 
 export const createRowData = (
   epidemiologyNumber: number,
@@ -87,7 +87,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
   const user = useSelector<StoreStateType, User>(state => state.user);
   const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
-
+  const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+  const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
 
   const getInvestigationsAxiosRequest = (orderBy: string): any => {
     if (user.isAdmin)
@@ -147,15 +148,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {
-    axios.interceptors.request.use(
-      (config) => {
-        config.headers.Authorization = user.token;
-        config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-        activateIsLoading(config);
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+    if (epidemiologyNumber !== epidemiologyNumberVal) {
+      const newInterceptor = axios.interceptors.request.use(
+        (config) => {
+          config.headers.Authorization = user.token;
+          config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+          activateIsLoading(config);
+          return config;
+        },
+        (error) => Promise.reject(error)
+        );
+      setAxiosInterceptorId(newInterceptor);
+      axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
+    }
     if (currentInvestigationStatus === InvestigationStatus.NEW) {
       axios.post('/investigationInfo/updateInvestigationStartTime', {
         investigationStartTime: new Date(),
