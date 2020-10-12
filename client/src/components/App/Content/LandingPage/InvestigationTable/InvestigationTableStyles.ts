@@ -1,6 +1,7 @@
+import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     content: {
         height: '84vh',
         backgroundColor: '#F3F6FB',
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
         fontFamily: 'Assistant',
     },
     tableHeaderButton: {
-        width: '90vw',
+        width: '90vw',  
         display: 'flex',
         justifyContent: 'flex-end'
     },
@@ -44,8 +45,14 @@ const useStyles = makeStyles({
         fontWeight: 600
     },
     activeSortIcon: {
-        color: "rgb(5, 105, 137) !important"
-    }
-});
+        '&$active': {
+            '&& $icon': {
+              color: theme.palette.primary.dark
+            }
+        }
+    },
+    icon: {},
+    active: {},
+}));
 
 export default useStyles;
