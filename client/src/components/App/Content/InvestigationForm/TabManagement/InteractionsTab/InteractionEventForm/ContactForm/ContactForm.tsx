@@ -101,6 +101,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     setError={setError}
                                     clearErrors={clearErrors}
                                     onBlur={props.onBlur}
+                                    label={PHONE_NUMBER_LABEL}
                                 />
                             )}
                         />
