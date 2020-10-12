@@ -23,7 +23,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive />
                     </Tooltip>
                     <Typography className={classes.greetUserText}>שלום, {user.userName}</Typography>
-                    <Typography>הינך מחוברת ללשכת <b>באר שבוע</b> בדסק <b>שם דסק</b></Typography>
+                    <Typography>הינך מחוברת ללשכת <b>באר שבוע</b></Typography>
                 </div>
             </Toolbar>
         </AppBar>
