@@ -12,6 +12,5 @@ export default interface StoreStateType {
     cities: Map<string, City>;
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
-    groupUsers: Map<string, User>;
     formsValidations: {[key: number] : (boolean | null)[]};
 }
