@@ -108,7 +108,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <DatePick
-                                    maxDate={new Date()}
                                     test-id='wasHospitalizedUntilDate'
                                     labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : '* עד'}
                                     value={props.value}
