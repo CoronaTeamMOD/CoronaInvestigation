@@ -57,7 +57,15 @@ RETURN (select
 				'userByLastUpdator', (
 					select json_build_object (
 						'id', userTable.id,
-						'userName', userTable.user_name
+						'userName', userTable.user_name,
+                        'countyByInvestigationGroup', (
+                            select json_build_object (
+                                'id', countiesTable.id,
+                                'displayName', countiesTable.district || '-' || countiesTable.display_name
+                            )
+                            from public.counties countiesTable
+                            where countiesTable.id = userTable.investigation_group
+                        )
 					) 
 					from public.user userTable
 					where userTable.id = investigationTable.last_updator
@@ -97,11 +105,19 @@ RETURN (select
 			CASE WHEN order_by='ageDESC' THEN (
 			select age
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
+			where epidemiology_number = (
+				select covid_patient from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END ASC,
 			CASE WHEN order_by='ageASC' THEN (
 			select age
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
+			where epidemiology_number = (
+				select covid_patient from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END DESC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
 			CASE WHEN order_by='investigatorNameDESC' THEN (

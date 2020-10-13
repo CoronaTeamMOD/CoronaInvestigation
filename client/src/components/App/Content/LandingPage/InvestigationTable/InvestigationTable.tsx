@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -8,6 +8,7 @@ import {
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import User from 'models/User';
+import County from 'models/County';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -23,29 +24,121 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 
 const defaultInvestigator = {
     id: '',
+    countyId: 0,
     userName: ''
 };
+
+const defaultCounty = {
+    id: 0,
+    displayName: ''
+}
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
 
-    const [selectedRow, setSelectedRow] = React.useState<number>(UNDEFINED_ROW);
-    const [investigator, setInvestigator] = React.useState<Investigator>(defaultInvestigator);
-    const [order, setOrder] = React.useState<Order>(sortOrders.asc);
-    const [orderBy, setOrderBy] = React.useState<string>('');
+    const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
+    const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
+    const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
+    const [countyAutoCompleteClicked, setCountyAutoCompleteClicked] = useState<boolean>(false);
+    const [currCounty, setCurrCounty] = useState<County>(defaultCounty);
+    const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
+    const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
+    const [order, setOrder] = useState<Order>(sortOrders.asc);
+    const [orderBy, setOrderBy] = useState<string>(TableHeadersNames.epidemiologyNumber);
+
+    useEffect(() => {
+        if(investigatorAutoCompleteClicked) {
+            setInvestigatorAutoCompleteClicked(false);
+        }
+    }, [countyAutoCompleteClicked]);
+
+    useEffect(() => {
+        if(countyAutoCompleteClicked) {
+            setCountyAutoCompleteClicked(false);
+        }
+    }, [investigatorAutoCompleteClicked]);
+
+    useEffect(() => {
+        if(countyAutoCompleteClicked) {
+            setCountyAutoCompleteClicked(false);
+        }
+
+        if(investigatorAutoCompleteClicked) {
+            setInvestigatorAutoCompleteClicked(false);
+        }
+    }, [selectedRow]);
 
     const {
-        tableRows, onInvestigationRowClick, convertToIndexedRow,
-        getMapKeyByValue, onInvestigatorChange, getTableCellStyles,
-        sortInvestigationTable
-    } = useInvestigationTable({
-        selectedInvestigator: investigator, setSelectedRow
-    });
+        tableRows, handleInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
+    } = useInvestigationTable({selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties});
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
-    const groupUsers = useSelector<StoreStateType, Map<string, User>>(state => state.groupUsers);
+    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+        switch (cellName) {
+            case TableHeadersNames.investigatorName:
+                if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
+                    return (
+                        <Autocomplete
+                            test-id='currentInvetigationUser'
+                            options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({id, value}))}
+                            getOptionLabel={(option) => option.value.userName}
+                            inputValue={selectedInvestigator.userName}
+                            onChange={(event, newSelectedInvestigator) => {
+                                onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
+                            }}
+                            onInputChange={(event, selectedInvestigatorName) => {
+                                const updatedInvestigator = {
+                                    id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                    userName: selectedInvestigatorName
+                                }
+                                setSelectedInvestigator(updatedInvestigator);
+                            }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    placeholder='חוקר'
+                                />
+                            }
+                        />)
+                }
+                else {
+                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                }
+            case TableHeadersNames.county:
+                if (selectedRow === indexedRow.epidemiologyNumber && countyAutoCompleteClicked) {
+                    return (
+                        <Autocomplete
+                            options={Array.from(allCounties, ([id, value]) => ({id, value}))}
+                            getOptionLabel={(option) => option.value.displayName}
+                            inputValue={currCounty.displayName}
+                            onChange={(event, newSelectedCounty) => {
+                                onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
+                            }}
+                            onInputChange={(event, selectedCounty) => {
+                                const updatedCounty: County = {
+                                    id: getCountyMapKeyByValue(allCounties, selectedCounty),
+                                    displayName: selectedCounty
+                                }
+                                setCurrCounty(updatedCounty);
+                            }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    placeholder='דסק'
+                                />
+                            }
+                        />)
+                }
+                else {
+                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                }
+            default:
+                return indexedRow[cellName as keyof typeof TableHeadersNames]
+        }
+    }
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
         const isAsc = orderBy === property && order === sortOrders.asc;
@@ -106,7 +199,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         key={indexedRow.epidemiologyNumber}
                                         className={classes.investigationRow}
                                         onClick={() => {
-                                            onInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
+                                            handleInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
                                         }}
                                     >
                                         {
@@ -114,38 +207,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 <TableCell
                                                     className={getTableCellStyles(index, key).join(' ')}
                                                     onClick={(event: any) => {
-                                                        if (key === TableHeadersNames.investigatorName) {
+                                                        if (key === TableHeadersNames.investigatorName || key === TableHeadersNames.county) {
                                                             event.stopPropagation();
+                                                            key === TableHeadersNames.county ? setCountyAutoCompleteClicked(true) :
+                                                                setInvestigatorAutoCompleteClicked(true);
                                                             setSelectedRow(indexedRow.epidemiologyNumber);
                                                         }
                                                     }}
                                                 >
                                                     {
-                                                        key === TableHeadersNames.investigatorName && selectedRow === indexedRow.epidemiologyNumber ?
-                                                            <Autocomplete
-                                                                test-id='currentInvetigationUser'
-                                                                options={Array.from(groupUsers, ([id, value]) => ({ id, value }))}
-                                                                getOptionLabel={(option) => option.value.userName}
-                                                                inputValue={investigator.userName}
-                                                                onChange={(event, newSelectedInvestigator) =>
-                                                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
-                                                                }
-                                                                onInputChange={(event, selectedInvestigatorName) => {
-                                                                    const updatedInvestigator = {
-                                                                        id: getMapKeyByValue(groupUsers, selectedInvestigatorName),
-                                                                        userName: selectedInvestigatorName
-                                                                    }
-                                                                    setInvestigator(updatedInvestigator);
-                                                                }}
-                                                                renderInput={(params) =>
-                                                                    <TextField
-                                                                        {...params}
-                                                                        placeholder='חוקר'
-                                                                    />
-                                                                }
-                                                            />
-                                                            :
-                                                            indexedRow[key as keyof typeof TableHeadersNames]
+                                                        getTableCell(key, indexedRow)
                                                     }
                                                 </TableCell>
                                             ))

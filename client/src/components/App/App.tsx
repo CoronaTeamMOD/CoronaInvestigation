@@ -9,7 +9,6 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
-import { setGroupUsers } from 'redux/GroupUsers/groupUsersActionCreators';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
@@ -51,17 +50,14 @@ const App: React.FC = (): JSX.Element => {
             setIsUserUpdated(true);
             return user;
 
-        }).then((user: any) => {
-            user && user.isAdmin && axios.get(`/users/group`)
-                .then((result: any) => {
-                    const groupUsers: Map<string, User> = new Map();
-                    result && result.data && result.data.forEach((user: User) => {
-                        groupUsers.set(user.id, user)
-                    });
-                    setGroupUsers(groupUsers);
-                })
-                .catch(err => console.log(err));
-        })
+        }).catch((err) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET user request to the DB',
+                step: err
+            });
+        });
     }
 
     React.useEffect(() => {

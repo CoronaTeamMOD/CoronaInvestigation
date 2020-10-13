@@ -7,7 +7,8 @@ import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventi
 const stringAlphabet = yup
   .string()
   .required()
-  .matches(/^[0-9]*$/);
+  .matches(/^[0-9]*$/)
+  .max(50);
 
 const errorMessage = 'השדה יכול להכיל רק מספרים';
 

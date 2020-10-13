@@ -1,21 +1,24 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
+import { useForm, Controller } from 'react-hook-form';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import logger from 'logger/logger';
+import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
-import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
-import Gender from 'models/enums/Gender';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -46,7 +49,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
@@ -86,14 +90,42 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Saving clinical details tab',
+            step: 'launching the server request',
+            investigation: epidemiologyNumber,
+            user: userId
+        })
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
-            .then(onSubmit)
-            .catch(() => Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            }));
+            .then(() => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving clinical details tab',
+                    step: 'saved clinical details successfully',
+                    investigation: epidemiologyNumber,
+                    user: userId
+                });
+                onSubmit();
+            })
+            .catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving clinical details tab',
+                    step: `got error from server: ${error}`,
+                    investigation: epidemiologyNumber,
+                    user: userId
+                });
+                Swal.fire({
+                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                    icon: 'error'
+                })
+            });
         ClinicalDetailsSchema.isValid(values).then(valid => {
-            setFormState(investigationId, id, valid);
+            setFormState(epidemiologyNumber, id, valid);
         })
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
@@ -182,6 +214,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                             getOptionLabel={(option) => option ? option.value.displayName : option}
                                             inputValue={isolationCityName}
+                                            filterOptions={cityFilterOptions}
                                             onChange={(event, selectedCity) => {
                                                 props.onChange(selectedCity ? selectedCity.id : '')
                                                 if (selectedCity?.id && selectedCity.id !== props.value) {
@@ -224,6 +257,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             options={streetsInCity}
                                             getOptionLabel={(option) => option ? option.displayName : option}
                                             inputValue={isolationStreetName}
+                                            filterOptions={streetFilterOptions}
                                             onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                             onInputChange={(event, selectedStreetName) => {
                                                 setIsolationStreetName(selectedStreetName);

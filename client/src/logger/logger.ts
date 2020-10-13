@@ -7,11 +7,19 @@ class Logger {
     _applicationInsights: ApplicationInsights;
 
     constructor () {
-        this._applicationInsights = new ApplicationInsights({
-            config: {
-                instrumentationKey: process.env.REACT_APP_INSTRUMENTATION_KEY
-            }
-        })
+        if(process.env.REACT_APP_INSTRUMENTATION_KEY) {
+            this._applicationInsights = new ApplicationInsights({
+                config: {
+                    instrumentationKey: process.env.REACT_APP_INSTRUMENTATION_KEY
+                }
+            });
+        } else {
+            this._applicationInsights = new ApplicationInsights({
+                config: {
+                    instrumentationKey: 'xxxx'
+                }
+            });
+        }
         this._applicationInsights.loadAppInsights();
     }
 
