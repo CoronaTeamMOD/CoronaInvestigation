@@ -53,7 +53,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 workflow: 'GraphQL request to the DB',
                 step: 'fetched user activity status successfully'
             });
-        }).catch(() => {
+        }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לקבל את הסטטוס הנוכחי שלך',
                 icon: 'error',
@@ -65,7 +65,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'GraphQL request to the DB',
-                step: 'error in fetching user activity status'
+                step: `error in fetching user activity status ${error}`
             });
         });
     }
@@ -88,7 +88,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     workflow: 'GraphQL request to the DB',
                     step: 'updated is user active successfully'
                 });
-        }).catch(() => {
+        }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לעדכן את הסטטוס שלך',
                 icon: 'error',
@@ -100,7 +100,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'GraphQL request to the DB',
-                step: 'error in updating is user active'
+                step: `error in updating is user active ${error}`
             });
         });
     }
@@ -122,7 +122,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     step: 'fetched county display name by user successfully'
                 });
             }
-        }).catch(() => {
+        }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לקבל את הלשכה שלך',
                 icon: 'error',
@@ -134,7 +134,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'GraphQL request to the DB',
-                step: 'error in fetching county display name by user'
+                step: `error in fetching county display name by user ${error}`
             });
         });
     }
