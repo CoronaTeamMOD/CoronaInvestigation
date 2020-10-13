@@ -70,7 +70,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                 handleInvalidEntrance();
             }
         })
-        .catch(() => handleInvalidEntrance)
+        .catch(() => handleInvalidEntrance())
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
