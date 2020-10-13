@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/Street';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -20,32 +22,124 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const getSymptoms = () => {
-        axios.post('/clinicalDetails/symptoms', {}).then(
-            result => (result && result.data && result.data.data) &&
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Symptoms',
+            step: `launching symptoms request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.post('/clinicalDetails/symptoms', {}).then(result => {
+            if (result && result.data && result.data.data) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching Symptoms',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting Symptoms',
+                    step: 'got status 200 but wrong data'
+                });
+            }}
         );
     };
 
     const getBackgroundDiseases = () => {
-        axios.post('/clinicalDetails/backgroundDiseases', {}).then(
-            result => (result?.data && result.data.data) &&
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Background Diseases',
+            step: `launching background diseases request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.post('/clinicalDetails/backgroundDiseases', {}).then(result => {
+            if (result?.data && result.data.data) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching Background Diseases',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting Background Diseases',
+                    step: 'got status 200 but wrong data'
+                });
+            }}
         );
     };
 
     const getStreetByCity = (cityId: string) => {
-        axios.get('/addressDetails/city/' + cityId + '/streets').then(
-            result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
-        )};
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting streets of city',
+            step: `launching request to server with parameter ${cityId}`,
+            user: userId,
+            investigation: epidemiologyNumber
+        })
+        axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
+            if (result?.data) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting streets of city',
+                    step: 'got data from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                })
+                setStreetsInCity(result.data.map((node: Street) => node))
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching Clinical Details',
+                    step: `got errors in server result: ${JSON.stringify(result)}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            }
+        }
+    )};
     
     const fetchClinicalDetails = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-                                  trigger: (payload?: string | string[]) => Promise<boolean>
-                                 ) => {
+                                  trigger: (payload?: string | string[]) => Promise<boolean>) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Clinical Details',
+            step: 'launching clinical data request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching Clinical Details',
+                        step: 'got results back from the server',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     let patientAddress = patientInvestigation.addressByIsolationAddress;
@@ -90,6 +184,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
                     reset(initialDBClinicalDetailsToSet);
                     trigger();
+                } else {
+                    logger.warn({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Fetching Clinical Details',
+                        step: 'got status 200 but got invalid outcome'
+                    })
                 }
             }
         );
