@@ -4,6 +4,8 @@ interface InvestigationRedux {
     investigatedPatientId: number;
     creator: string;
     lastUpdator: string;
+    lastOpenedEpidemiologyNumber: number;
+    isCurrentlyLoading: boolean;
     axiosInterceptorId: number;
 }
 
