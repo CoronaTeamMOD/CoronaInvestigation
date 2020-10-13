@@ -228,39 +228,29 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             },
             (error) => Promise.reject(error)
         );
+        if (epidemiologyNumber !== epidemiologyNumberVal) {
+            const newInterceptor = axios.interceptors.request.use(
+                (config) => {
+                    config.headers.Authorization = user.token;
+                    config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+                    activateIsLoading(config);
+                    return config;
+                },
+                (error) => Promise.reject(error)
+            );
+            setAxiosInterceptorId(newInterceptor);
+            axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
+        }
         if (currentInvestigationStatus === InvestigationStatus.NEW) {
-            if (epidemiologyNumber !== epidemiologyNumberVal) {
-                const newInterceptor = axios.interceptors.request.use(
-                    (config) => {
-                        config.headers.Authorization = user.token;
-                        config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-                        activateIsLoading(config);
-                        return config;
-                    },
-                    (error) => Promise.reject(error)
-                );
-                setAxiosInterceptorId(newInterceptor);
-                axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
-            }
-            if (currentInvestigationStatus === InvestigationStatus.NEW) {
-                axios.post('/investigationInfo/updateInvestigationStartTime', {
-                    investigationStartTime: new Date(),
+            axios.post('/investigationInfo/updateInvestigationStartTime', {
+                investigationStartTime: new Date(),
+                epidemiologyNumber: epidemiologyNumberVal
+            }).then(() => {
+                axios.post('/investigationInfo/updateInvestigationStatus', {
+                    investigationStatus: InvestigationStatus.IN_PROCESS,
                     epidemiologyNumber: epidemiologyNumberVal
                 }).then(() => {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationStatus: InvestigationStatus.IN_PROCESS,
-                        epidemiologyNumber: epidemiologyNumberVal
-                    }).then(() => {
-                        moveToTheInvestigationForm(epidemiologyNumberVal);
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'GraphQL POST request to the DB',
-                            step: error
-                        });
-                        fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
-                    });
+                    moveToTheInvestigationForm(epidemiologyNumberVal);
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -269,11 +259,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         step: error
                     });
                     fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
-                })
-            } else {
-                setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
-                moveToTheInvestigationForm(epidemiologyNumberVal);
-            }
+                });
+            }).catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL POST request to the DB',
+                    step: error
+                });
+                fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
+            })
+        } else {
+            setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
+            moveToTheInvestigationForm(epidemiologyNumberVal);
         }
     }
 
