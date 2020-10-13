@@ -129,7 +129,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const fetchAllCounties = () => {
-        axios.get('/counties/allCounties').then((result: any) => {
+        axios.get('/counties').then((result: any) => {
             const allCounties: Map<number, County> = new Map();
             result && result.data && result.data.data.allCounties.nodes.forEach((county: any) => {
                 allCounties.set(county.id, {
