@@ -11,7 +11,7 @@ import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';

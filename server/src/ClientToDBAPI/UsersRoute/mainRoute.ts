@@ -1,16 +1,21 @@
 import { Router, Request, Response } from 'express';
 
-import User from '../../Models/User/User';
 import logger from '../../Logger/Logger';
+import User from '../../Models/User/User';
+import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
+import { Service, Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
-import {Service, Severity} from "../../../../client/src/models/Logger";
+import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS,
+         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
+import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
+const badRequestStatusCode = 400;
 
 usersRoute.get('/userActivityStatus', (request: Request, response: Response) => {
     graphqlRequest(GET_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id })
@@ -18,7 +23,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
             if (result.data?.userById)
                 response.send(result.data?.userById);
             else
-                response.status(400).send(`Couldn't find the user nor get its status`);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor get its status`);
         })
         .catch(error => response.status(RESPONSE_ERROR_CODE).send('Error while trying to fetch isActive user status'))
 })
@@ -29,7 +34,7 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
             if (result.data.updateUserById)
                 response.send(result.data.updateUserById.user);
             else
-                response.status(400).send(`Couldn't find the user nor update the status`);
+                response.status(badRequestStatusCode).send(`Couldn't find the user nor update the status`);
 
         })
         .catch(error => response.status(RESPONSE_ERROR_CODE).send('Error while trying to activate / deactivate user'))
@@ -99,6 +104,113 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
             });
             response.status(RESPONSE_ERROR_CODE).send('error while changing county');
     })
+})
+
+usersRoute.get('/sourcesOrganization', (request: Request, response: Response) => {
+    graphqlRequest(GET_ALL_SOURCE_ORGANIZATION, response.locals)
+        .then((result: GetAllSourceOrganizations) => {
+            if (result?.data?.allSourceOrganizations?.nodes) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'All Sources Organizations Query',
+                    step: `Queried all sources organizations successfully`,
+                })
+                response.send(result.data.allSourceOrganizations.nodes);
+            } else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.CRITICAL,
+                    workflow: 'All Sources Organizations Query',
+                    step: `couldnt query all sources organizations due to ${result.errors[0].message}`,
+                })
+                response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
+            }
+        })
+        .catch((error) => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'All Sources Organizations Query',
+                step: `couldnt query all sources organizations due to ${error}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
+        })
+})
+
+usersRoute.get('/languages', (request: Request, response: Response) => {
+    graphqlRequest(GET_ALL_LANGUAGES, response.locals)
+        .then((result: GetAllLanguagesResponse) => {
+            if (result?.data?.allLanguages?.nodes) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'All Sources Organizations Query',
+                    step: `Queried all languages successfully`,
+                })
+                response.send(result.data.allLanguages.nodes);
+            } else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.CRITICAL,
+                    workflow: 'All Languages Query',
+                    step: `couldnt query all languages due to ${result.errors[0].message}`,
+                })
+                response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all languages`);
+            }
+        })
+        .catch((error) => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'All Languages Query',
+                step: `couldnt query all languages due to ${error}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all languages`);
+        })
+})
+
+const convertUserToDB = (clientUserInput: any) : User => {
+    return { 
+    ...clientUserInput,
+        investigationGroup: +clientUserInput.investigationGroup,
+        fullName: clientUserInput.fullName.firstName + ' ' +  clientUserInput.fullName.lastName,
+        languages: clientUserInput.languages?.map((language: Language) => language.displayName)
+    }
+}
+
+usersRoute.post('', (request: Request, response: Response) => {
+    const newUser : User = convertUserToDB(request.body);
+    graphqlRequest(CREATE_USER, response.locals, {input: newUser})
+        .then((result: CreateUserResponse) => {
+            if (result?.data?.createNewUser) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Create User',
+                    step: `the user ${JSON.stringify(newUser)} was created successfully`,
+                })
+                response.send(result.data.createNewUser);
+            }
+            else  {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.CRITICAL,
+                    workflow: 'Create User',
+                    step: `the user ${JSON.stringify(newUser)} wasn't created due to ${result.errors[0].message}`,
+                })
+                response.status(RESPONSE_ERROR_CODE).send(`Couldn't create investigator`)
+            };
+        })
+        .catch((error) => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'Create User',
+                step: `the user ${JSON.stringify(newUser)} wasn't created due to ${error}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to create investigator')
+        });
 });
 
 export default usersRoute;

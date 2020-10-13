@@ -1,4 +1,5 @@
 import React from 'react';
+import { DeepMap, FieldError } from 'react-hook-form';
 import * as yup from 'yup';
 
 export interface TypePreventiveTextFieldProps<T> {
@@ -10,7 +11,7 @@ export interface TypePreventiveTextFieldProps<T> {
     label?: string,
     setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void,
     clearErrors: (name?: string | string[]) => void,
-    errors: Record<string, Object>,
+    errors: Record<string, Object> | DeepMap<object, FieldError>,
     placeholder?: string,
     className?: string,
     testId?: string,

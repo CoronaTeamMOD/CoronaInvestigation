@@ -6,8 +6,9 @@ import {investigationFormRoute, landingPageRoute} from 'Utils/Routes/Routes';
 
 import LandingPage from  './LandingPage/LandingPage';
 import InvestigationForm from './InvestigationForm/InvestigationForm';
+import SignUp from './SignUp/SignUp';
 
-const Content: React.FC = (): JSX.Element => {
+const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSignUp }): JSX.Element => {
   
     return (
         <>
@@ -16,9 +17,16 @@ const Content: React.FC = (): JSX.Element => {
                 <Route path= {landingPageRoute} component={LandingPage} />
                 <Redirect from='/' to={landingPageRoute}/>
             </Switch>
+            <SignUp open={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp}/>
             <LoadingSpinner />
         </>
     )
+}
+
+interface Props {
+    isSignUpOpen: boolean;
+    handleSaveUser: () => void;
+    handleCloseSignUp: () => void;
 }
 
 export default Content;

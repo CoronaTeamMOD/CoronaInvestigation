@@ -19,9 +19,9 @@ mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!) {
   }     
 `;
 
-export const CREATE_INVESTIGATOR = gql`
-mutation CreateUser($user: UserInput!) {
-    createUser(input: {user: $user}) {
+export const CREATE_USER = gql`
+mutation CreateUser($input: CreateNewUserInput!) {
+    createNewUser(input: $input) {
       clientMutationId
     }
   }  

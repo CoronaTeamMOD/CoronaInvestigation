@@ -23,6 +23,7 @@ import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const classes = useStyles({});
     let history = useHistory();
@@ -37,15 +38,17 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchCities = () => {
-        axios.get('/addressDetails/cities')
-            .then((result: any) => {
-                const cities: Map<string, City> = new Map();
-                result && result.data && result.data.forEach((city: City) => {
-                    cities.set(city.id, city)
-                });
-                setCities(cities);
-            })
-            .catch(err => console.log(err));
+        if (cities && cities.size === 0) {
+            axios.get('/addressDetails/cities')
+                .then((result: any) => {
+                    const cities: Map<string, City> = new Map();
+                    result && result.data && result.data.forEach((city: City) => {
+                        cities.set(city.id, city)
+                    });
+                    setCities(cities);
+                })
+                .catch(err => console.log(err));
+        }
     };
 
     const fetchContactTypes = () => {
