@@ -5,7 +5,8 @@ query allCounties {
   allCounties {
     nodes {
       id
-      displayName
+      displayName,
+      district
     }
   }
 }
