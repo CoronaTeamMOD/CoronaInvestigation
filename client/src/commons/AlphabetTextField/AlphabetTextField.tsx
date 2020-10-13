@@ -7,7 +7,8 @@ import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventi
 const stringAlphabet = yup
   .string()
   .required()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s]*$/);
+  .matches(/^[a-zA-Z\u0590-\u05fe\s]*$/)
+  .max(50);
 
 const errorMessage = 'השדה יכול להכיל רק אותיות';
 
