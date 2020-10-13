@@ -73,7 +73,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 }
             }
         }).catch(() => {
-            Swal.fire({
+            epidemiologyNumber !== -1 && Swal.fire({
                 title: 'הייתה שגיאה בטעינת הפרטים האישיים',
                 icon: 'error',
                 customClass: {

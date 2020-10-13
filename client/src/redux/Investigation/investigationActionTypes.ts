@@ -1,6 +1,7 @@
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
 export const SET_CANT_REACH_INVESTIGATED = 'SET_CANT_REACH_INVESTIGATED';
 export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
+export const SET_AXIOS_INTERCEPTOR_ID = 'SET_AXIOS_INTERCEPTOR_ID';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -17,4 +18,9 @@ interface SetInvestigatedPatientId {
     payload: {investigatedPatientId: number}
 }
 
-export type InvestigationAction = SetEpidemiologyNum | SetCantReachInvestigated | SetInvestigatedPatientId;
+interface SetAxiosInterceptorId {
+    type: typeof SET_AXIOS_INTERCEPTOR_ID,
+    payload: {axiosInterceptorId: number}
+}
+
+export type InvestigationAction = SetEpidemiologyNum | SetCantReachInvestigated | SetInvestigatedPatientId | SetAxiosInterceptorId;
