@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
@@ -48,6 +50,7 @@ const ExposureForm = (props: any) => {
   const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
   const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+  const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
   const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
     const fields: string[] = [];
@@ -86,11 +89,44 @@ const ExposureForm = (props: any) => {
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
       setIsLoading(true);
+      logger.info({
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: 'Fetching list of confirmed exposures',
+        step: `launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`,
+        user: userId,
+        investigation: epidemiologyNumber
+      });
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
-          result?.data && setOptionalCovidPatients(result.data);
+          if (result?.data) {
+            logger.info({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Fetching list of confirmed exposures',
+              step: 'got results back from the server',
+              user: userId,
+              investigation: epidemiologyNumber
+            });
+            setOptionalCovidPatients(result.data);
+          } else {
+            logger.warn({
+              service: Service.CLIENT,
+              severity: Severity.HIGH,
+              workflow: 'Fetching list of confirmed exposures',
+              step: 'got status 200 but wrong data'
+            });
+          }
         })
-        .catch((err) => {
+        .catch((error) => {
+          logger.error({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching list of confirmed exposures',
+            step: `got error from server: ${error}`,
+            investigation: epidemiologyNumber,
+            user: userId
+          });
           Swal.fire({
             title: 'לא ניתן היה לטעון את החולים האפשריים',
             icon: 'error',
