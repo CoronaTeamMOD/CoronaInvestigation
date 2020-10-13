@@ -35,11 +35,20 @@ const App: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const [isUserUpdated, setIsUserUpdated] = useState<boolean>(true);
+    const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
+
+    const handleCloseSignUp = () => setIsSignUpOpen(false);
+
+    const handleSaveUser = () => {
+        setIsSignUpOpen(false);
+        setIsUserUpdated(false);
+    }
 
     const setCurrentAndGroupUsers = (userId: string, userName: string, userToken: string) => {
         axios.get(`/users/user`).then((result: any) => {
             
             const user = result && result.data && result.data.userById;
+            !Boolean(user) && setIsSignUpOpen(true);
             setUser({
                 ...user,
                 id: userId,
@@ -114,7 +123,7 @@ const App: React.FC = (): JSX.Element => {
     return (
         <>
             <AppToolbar />
-            <Content />
+            <Content isSignUpOpen={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp} />
         </>
     );
 }

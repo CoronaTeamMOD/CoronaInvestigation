@@ -4,7 +4,7 @@ import { Grid, TextField, Typography } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 

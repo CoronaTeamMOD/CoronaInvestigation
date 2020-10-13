@@ -42,7 +42,25 @@ query getAdminsOfGivenCounty($requestedCounty: Int) {
   allUsers(filter: {isAdmin: {equalTo: true}, investigationGroup: {equalTo: $requestedCounty}}) {
     nodes {
       id
-      isActive
+      isActive 
+    }
+  }
+}`;
+export const GET_ALL_SOURCE_ORGANIZATION = gql`
+query allSourceOrganizations {
+  allSourceOrganizations {
+    nodes {
+      displayName
+    }
+  }
+}
+`;
+
+export const GET_ALL_LANGUAGES = gql`
+query allLanguages {
+  allLanguages {
+    nodes {
+      displayName
     }
   }
 }
