@@ -16,7 +16,6 @@ mutation GetSortedGroupInvestigation ($investigationGroupId: Int!, $orderBy: Str
 }
 `;
 
-
 export const GET_USER_BY_ID = gql`
 query GetUserById($userId: String!) {
   userById(id: $userId) {
@@ -26,6 +25,18 @@ query GetUserById($userId: String!) {
     phoneNumber
     serialNumber
     userName
+  }
+}
+`;
+
+export const GET_ALL_COUNTIES = gql`
+query getAllAvailableCounties {
+  allCounties {
+    nodes {
+      id
+      district
+      displayName
+    }
   }
 }
 `;

@@ -6,6 +6,7 @@ export enum TableHeadersNames {
     phoneNumber = 'phoneNumber',
     age = 'age',
     city = 'city',
+    county = 'county',
     investigatorName = 'investigatorName',
     investigationStatus = 'investigationStatus'
 }
@@ -28,6 +29,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.age]: 'גיל',
     [TableHeadersNames.city]: '	עיר מגורים',
     [TableHeadersNames.investigatorName]: 'חוקר מבצע',
+    [TableHeadersNames.county]: 'נפה מבצעת',
     [TableHeadersNames.investigationStatus]: 'סטטוס ביצוע',
 }
 
@@ -40,6 +42,7 @@ export const adminCols: string[] = [
     TableHeadersNames.age,
     TableHeadersNames.city,
     TableHeadersNames.investigatorName,
+    TableHeadersNames.county,
     TableHeadersNames.investigationStatus
 ]
 
@@ -63,5 +66,6 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.age]: true,
     [TableHeadersNames.city]: true,
     [TableHeadersNames.investigatorName]: true,
+    [TableHeadersNames.county]: false,
     [TableHeadersNames.investigationStatus]: true,
 }
