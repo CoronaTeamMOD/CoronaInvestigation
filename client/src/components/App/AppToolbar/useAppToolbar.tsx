@@ -40,7 +40,13 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const getUserActivityStatus = () => {
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
-            setIsActive(result.data.isActive)
+            setIsActive(result.data.isActive);
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL request to the DB',
+                step: 'fetched user activity status successfully'
+            });
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לקבל את הסטטוס הנוכחי שלך',
@@ -48,6 +54,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 customClass: {
                     title: classes.swalTitle
                 },
+            });
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL request to the DB',
+                step: 'error in fetching user activity status'
             });
         });
     }
@@ -58,6 +70,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         }).then((result) => {
             if(result.data)
                 setIsActive(result.data.isActive);
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL request to the DB',
+                    step: 'updated is user active successfully'
+                });
         }).catch(() => {
             Swal.fire({
                 title: 'לא הצלחנו לעדכן את הסטטוס שלך',
@@ -65,6 +83,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 customClass: {
                     title: classes.swalTitle
                 },
+            });
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL request to the DB',
+                step: 'error in updating is user active'
             });
         });
     }
