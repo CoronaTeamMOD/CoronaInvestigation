@@ -5,6 +5,8 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
@@ -28,6 +30,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const {saveExposureAndFlightData} = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+  const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
   const { fieldName } = useFormStyles();
   const classes = useStyles();
@@ -61,9 +64,25 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
   useEffect(() => {
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow: 'Fetching Exposures And Flights',
+      step: `launching exposures and flights request`,
+      user: userId,
+      investigation: investigationId
+    });
     axios
       .get('/exposure/exposures/' + investigationId)
         .then(result => {
+          logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Exposures And Flights',
+            step: 'got results back from the server',
+            user: userId,
+            investigation: investigationId
+        });
           const data: Exposure[] = result?.data;
           return data && data.map(parseDbExposure);
         })
@@ -78,13 +97,44 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
           }
       })
       .then(() => {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Getting Corona Test Date',
+          step: `launching Corona Test Date request`,
+          user: userId,
+          investigation: investigationId
+        });
         axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
             if (res.data) {
+              logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting Corona Test Date',
+                step: 'got results back from the server',
+                user: userId,
+                investigation: investigationId
+              });
               setCoronaTestDate(convertDate(res.data.coronaTestDate));
+            } else {
+              logger.warn({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: 'Getting Corona Test Date',
+                step: 'got status 200 but wrong data'
+              });
             }
         })
       })
-      .catch((err) => {
+      .catch((error) => {
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Fetching Exposures And Flights',
+          step: `got error from server: ${error}`,
+          investigation: investigationId,
+          user: userId
+        });
         Swal.fire({
           title: 'לא ניתן היה לטעון את החשיפה',
           icon: 'error',
@@ -120,7 +170,39 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const saveExposure = (e: React.ChangeEvent<{}>) => {
     e.preventDefault();
     setFormState(investigationId, id, true);
-    saveExposureAndFlightData().then(onSubmit);
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow: 'Saving Exposures And Flights tab',
+      step: 'launching the server request',
+      investigation: investigationId,
+      user: userId
+  })
+    saveExposureAndFlightData().then(() => {
+      logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Saving Exposures And Flights tab',
+          step: 'saved exposures and flights successfully',
+          investigation: investigationId,
+          user: userId
+      });
+      onSubmit();
+    })
+    .catch((error) => {
+      logger.error({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Saving Exposures And Flights tab',
+          step: `got error from server: ${error}`,
+          investigation: investigationId,
+          user: userId
+      });
+      Swal.fire({
+          title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+          icon: 'error'
+      });
+    })
   }
 
   return (
