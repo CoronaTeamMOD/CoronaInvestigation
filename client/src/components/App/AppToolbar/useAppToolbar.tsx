@@ -70,7 +70,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const getCountyByUser = () => {
-        axios.get('users/county/displayName').then((result) => {
+        axios.get('counties/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data.countyById.displayName);
                 logger.info({
