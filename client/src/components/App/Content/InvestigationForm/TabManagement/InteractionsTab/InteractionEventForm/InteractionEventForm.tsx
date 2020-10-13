@@ -182,7 +182,6 @@ const InteractionEventForm: React.FC<Props> = (
                 contacts.map((contact, index: number) => (
                   <ContactForm
                     key={index}
-                    contact={contact as Contact}
                     updatedContactIndex={index}
                   />
                 ))

@@ -27,8 +27,8 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, contact }: Props): JSX.Element => {
-    const { control, errors, setError, clearErrors, setValue } = useFormContext();
+const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
+    const { control, errors, setError, clearErrors, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -36,7 +36,9 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contact }: Props): 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     
     useEffect(() => {
-        setValue(`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`, Array.from(contactTypes.keys())[0]);
+        const values = getValues();
+        const contactContactType: number = values.contacts[updatedContactIndex]?.contactType ? values.contacts[updatedContactIndex]?.contactType : Array.from(contactTypes.keys())[0];
+        setValue(`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`, contactContactType);
     }, []);
 
     return (
@@ -140,7 +142,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contact }: Props): 
                                             <Select
                                                 test-id='contactType'
                                                 defaultValue={Array.from(contactTypes.keys())[0]}
-                                                value={contact?.contactType}
+                                                value={props.value}
                                                 onChange={event => props.onChange(event.target.value as number)}
                                                 label={contactTypeName}
                                             >
@@ -185,5 +187,4 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
-    contact: Contact;
 };
