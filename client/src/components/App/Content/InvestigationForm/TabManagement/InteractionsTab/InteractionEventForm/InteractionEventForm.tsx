@@ -178,9 +178,14 @@ const InteractionEventForm: React.FC<Props> = (
             className={formClasses.form + ' ' + classes.spacedOutForm}
           >
             <div className={classes.newContactFieldsContainer}>
-              {contacts.map((contact, index: number) => (
-                <ContactForm key={index} updatedContactIndex={index} />
-              ))}
+              {
+                contacts.map((contact, index: number) => (
+                  <ContactForm
+                    key={index}
+                    updatedContactIndex={index}
+                  />
+                ))
+              }
               <Grid item>
                 <IconButton
                   test-id='addContact'
