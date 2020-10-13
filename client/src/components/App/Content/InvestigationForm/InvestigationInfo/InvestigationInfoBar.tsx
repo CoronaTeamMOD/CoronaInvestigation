@@ -62,7 +62,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             if (result && result.data) {
                 const investigationInfo = result.data;
                 setInvestigatedPatientId(investigationInfo.investigatedPatientId);
-                const gender = investigationInfo.gender;
+                const gender = investigationInfo.investigatedPatient.gender;
                 setGender(gender ? gender : '');
                 setInvestigationStaticInfo(investigationInfo);
             }
