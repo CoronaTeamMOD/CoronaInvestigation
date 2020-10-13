@@ -59,7 +59,6 @@ const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const history = useHistory();
     const classes = useStyle();
 
     const {selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty} = parameters;
@@ -131,7 +130,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCounties = () => {
         axios.get('/counties').then((result: any) => {
             const allCounties: Map<number, County> = new Map();
-            result && result.data && result.data.data.allCounties.nodes.forEach((county: any) => {
+            result && result.data && result.data.forEach((county: any) => {
                 allCounties.set(county.id, {
                     id: county.id,
                     displayName: `${county.district} - ${county.displayName}`
