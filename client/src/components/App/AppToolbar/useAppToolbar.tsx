@@ -75,7 +75,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             }
         }).catch(() => {
             Swal.fire({
-                title: 'לא הצלחנו לעדכן את הסטטוס שלך',
+                title: 'לא הצלחנו לקבל את הלשכה שלך',
                 icon: 'error',
                 customClass: {
                     title: classes.swalTitle
