@@ -16,6 +16,8 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import Gender from 'models/enums/Gender';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -46,7 +48,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
-    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
@@ -86,14 +89,42 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Saving clinical details tab',
+            step: 'launching the server request',
+            investigation: epidemiologyNumber,
+            user: userId
+        })
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
-            .then(onSubmit)
-            .catch(() => Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            }));
+            .then(() => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving clinical details tab',
+                    step: 'saved clinical details successfully',
+                    investigation: epidemiologyNumber,
+                    user: userId
+                });
+                onSubmit();
+            })
+            .catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving clinical details tab',
+                    step: `got error from server: ${error}`,
+                    investigation: epidemiologyNumber,
+                    user: userId
+                });
+                Swal.fire({
+                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                    icon: 'error'
+                })
+            });
         ClinicalDetailsSchema.isValid(values).then(valid => {
-            setFormState(investigationId, id, valid);
+            setFormState(epidemiologyNumber, id, valid);
         })
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
