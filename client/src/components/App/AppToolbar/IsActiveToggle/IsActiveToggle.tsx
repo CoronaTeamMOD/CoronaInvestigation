@@ -3,23 +3,25 @@ import {ToggleButton} from '@material-ui/lab';
 import ToggleButtonGroup, {ToggleButtonGroupProps} from '@material-ui/lab/ToggleButtonGroup';
 
 import useStyles from './IsActiveToggleStyles';
+import { useTheme } from '@material-ui/core';
 
-const IsActiveToggle: React.FC<Props> = (props: Props): JSX.Element => {
-    const classes = useStyles({});
+const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JSX.Element => {
+    const classes = useStyles();
     const {value, setUserActivityStatus, ...rest} = props;
+    const theme = useTheme();
 
     const activeButtonStyle = {
-        backgroundColor: '#117243',
+        backgroundColor: theme.palette.success.dark,
         color: 'white'
     };
 
     const notActiveButtonStyle = {
-        backgroundColor: '#9e2a2b',
+        backgroundColor: theme.palette.error.main,
         color: 'white'
     };
 
     return(
-        <ToggleButtonGroup value={value} exclusive className={classes.isActiveToggle} {...rest}>
+        <ToggleButtonGroup {...rest} ref={ref} value={value} exclusive size='small' className={classes.isActiveToggle}>
             <ToggleButton className={classes.toggle}
                           style={value ? activeButtonStyle : {}}
                           onClick={()=> setUserActivityStatus(!value)}
@@ -34,7 +36,7 @@ const IsActiveToggle: React.FC<Props> = (props: Props): JSX.Element => {
             </ToggleButton>
         </ToggleButtonGroup>
     )
-};
+});
 
 interface Props extends ToggleButtonGroupProps {
     setUserActivityStatus: (isActive: boolean) => void;
