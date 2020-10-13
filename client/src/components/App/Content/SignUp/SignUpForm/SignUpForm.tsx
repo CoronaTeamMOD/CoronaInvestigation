@@ -73,9 +73,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                         placeholder='itay.benmoshe'
                                         onBlur={props.onBlur}
                                         error={get(methods.errors, props.name)}
-                                        label={get(methods.errors, props.name)? 
-                                                get(methods.errors, props.name).message : 
-                                                MABAR_USER_NAME}
+                                        label={get(methods.errors, props.name)?.message || MABAR_USER_NAME}
                                         className={classes.textField}
                                     />
                                 )}
@@ -149,9 +147,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                                 test-id={props.name}
                                                 placeholder='בחר עיר...'
                                                 error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name) ? 
-                                                        get(methods.errors, props.name).message :
-                                                        CITY_LABEL}
+                                                label={get(methods.errors, props.name)?.message || CITY_LABEL}
                                             />
                                         }
                                     />
@@ -227,7 +223,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                         onBlur={props.onBlur}
                                         placeholder='הכנס מייל...'
                                         error={get(methods.errors, props.name)}
-                                        label={get(methods.errors, props.name) ? get(methods.errors, props.name).message: MAIL_LABEL}
+                                        label={get(methods.errors, props.name)?.message || MAIL_LABEL}
                                         className={classes.textField}
                                     />
                                 )}
@@ -256,9 +252,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                                 test-id={props.name}
                                                 placeholder='בחר נפה...'
                                                 error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name) ? 
-                                                        get(methods.errors, props.name).message :
-                                                        COUNTY_LABEL}
+                                                label={get(methods.errors, props.name)?.message || COUNTY_LABEL}
                                             />
                                         }
                                     />
@@ -289,9 +283,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                                 test-id={props.name}
                                                 placeholder='בחר מסגרת...'
                                                 error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name) ? 
-                                                        get(methods.errors, props.name).message :
-                                                        SOURCE_ORGANIZATION_LABEL}
+                                                label={get(methods.errors, props.name)?.message || SOURCE_ORGANIZATION_LABEL}
                                             />
                                         }
                                     />
@@ -322,9 +314,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                                 test-id={props.name}
                                                 placeholder='בחר שפות...'
                                                 error={get(methods.errors, props.name)}
-                                                label={get(methods.errors, props.name) ? 
-                                                        get(methods.errors, props.name).message :
-                                                        LANGUAGE_LABEL}
+                                                label={get(methods.errors, props.name)?.message || LANGUAGE_LABEL}
                                             />
                                         }
                                     />
