@@ -10,6 +10,8 @@ import theme from 'styles/theme';
 import useInvestigationForm from './useInvestigationForm';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
+jest.mock('redux/store', () => {middlewares: []});
+
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
 

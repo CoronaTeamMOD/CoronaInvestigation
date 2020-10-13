@@ -1,4 +1,5 @@
-import {combineReducers} from 'redux';
+import { withReduxStateSync } from 'redux-state-sync';
+import {combineReducers, Reducer, CombinedState, AnyAction} from 'redux';
 
 import formReducer from './Form/formReducer';
 import cityReducer from './City/cityReducer';
@@ -10,7 +11,7 @@ import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import investigationReducer from './Investigation/investigationReducer';
 
-export default combineReducers<StoreStateType>({
+export default withReduxStateSync(combineReducers<StoreStateType>({
      user: userReducer,
      isLoading: isLoadingReducer,
      investigation: investigationReducer,
@@ -19,4 +20,4 @@ export default combineReducers<StoreStateType>({
      countries: countryReducer,
      contactTypes: contactTypeReducer,
      formsValidations: formReducer
-})
+})) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

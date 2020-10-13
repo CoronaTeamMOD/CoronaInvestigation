@@ -1,6 +1,5 @@
 import * as Actions from './isLoadingActionTypes';
 
-
 const initialState: boolean = false
 
 const isLoadingReducer = (state = initialState, action: Actions.IsLoadingAction): boolean => {
