@@ -115,8 +115,6 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
                     severity: Severity.LOW,
                     workflow: 'All Sources Organizations Query',
                     step: `Queried all sources organizations successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.send(result.data.allSourceOrganizations.nodes);
             } else {
@@ -125,8 +123,6 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
                     severity: Severity.CRITICAL,
                     workflow: 'All Sources Organizations Query',
                     step: `couldnt query all sources organizations due to ${result.errors[0].message}`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
             }
@@ -137,8 +133,6 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
                 severity: Severity.CRITICAL,
                 workflow: 'All Sources Organizations Query',
                 step: `couldnt query all sources organizations due to ${error}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
             })
             response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
         })
@@ -153,8 +147,6 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
                     severity: Severity.LOW,
                     workflow: 'All Sources Organizations Query',
                     step: `Queried all languages successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.send(result.data.allLanguages.nodes);
             } else {
@@ -163,8 +155,6 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
                     severity: Severity.CRITICAL,
                     workflow: 'All Languages Query',
                     step: `couldnt query all languages due to ${result.errors[0].message}`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all languages`);
             }
@@ -175,8 +165,6 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
                 severity: Severity.CRITICAL,
                 workflow: 'All Languages Query',
                 step: `couldnt query all languages due to ${error}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
             })
             response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all languages`);
         })
@@ -191,7 +179,7 @@ const convertUserToDB = (clientUserInput: any) : User => {
     }
 }
 
-usersRoute.post('/createUser', (request: Request, response: Response) => {
+usersRoute.post('', (request: Request, response: Response) => {
     const newUser : User = convertUserToDB(request.body);
     graphqlRequest(CREATE_USER, response.locals, {input: newUser})
         .then((result: CreateUserResponse) => {
@@ -201,8 +189,6 @@ usersRoute.post('/createUser', (request: Request, response: Response) => {
                     severity: Severity.LOW,
                     workflow: 'Create User',
                     step: `the user ${JSON.stringify(newUser)} was created successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.send(result.data.createNewUser);
             }
@@ -212,8 +198,6 @@ usersRoute.post('/createUser', (request: Request, response: Response) => {
                     severity: Severity.CRITICAL,
                     workflow: 'Create User',
                     step: `the user ${JSON.stringify(newUser)} wasn't created due to ${result.errors[0].message}`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't create investigator`)
             };
@@ -224,8 +208,6 @@ usersRoute.post('/createUser', (request: Request, response: Response) => {
                 severity: Severity.CRITICAL,
                 workflow: 'Create User',
                 step: `the user ${JSON.stringify(newUser)} wasn't created due to ${error}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
             })
             response.status(RESPONSE_ERROR_CODE).send('Error while trying to create investigator')
         });

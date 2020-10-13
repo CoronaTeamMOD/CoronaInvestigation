@@ -19,8 +19,6 @@ countiesRoute.get('', (request: Request, response: Response) => {
                     severity: Severity.LOW,
                     workflow: 'All Counties Query',
                     step: `Queried all counties successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.send(result.data.allCounties.nodes);
             } else {
@@ -29,8 +27,6 @@ countiesRoute.get('', (request: Request, response: Response) => {
                     severity: Severity.CRITICAL,
                     workflow: 'All Counties Query',
                     step: `couldnt query all counties due to ${result.errors[0].message}`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
                 })
                 response.status(errorStatusCode).send(`Couldn't query all counties`);
             }
@@ -41,8 +37,6 @@ countiesRoute.get('', (request: Request, response: Response) => {
                 severity: Severity.CRITICAL,
                 workflow: 'All Counties Query',
                 step: `couldnt query all counties due to ${error}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
             })
             response.status(errorStatusCode).send(`Couldn't query all counties`);
         });

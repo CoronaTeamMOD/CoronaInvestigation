@@ -196,7 +196,7 @@ const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/users/createUser', newUser)
+        axios.post('/users', newUser)
         .then(() => {
             handleSaveUser();
             logger.info({
