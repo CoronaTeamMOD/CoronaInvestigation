@@ -25,7 +25,7 @@ countiesRoute.get('/county/displayName', adminMiddleWare, (request: Request, res
                 step: 'Got response from DB',
                 user: response.locals.user.id
             });
-            return response.send(result.data);
+            return response.send(result.data.countyById.displayName as string);
         });
 });
 

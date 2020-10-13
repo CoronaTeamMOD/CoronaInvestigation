@@ -114,7 +114,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
         axios.get('counties/county/displayName').then((result) => {
             if(result.data){
-                setCountyDisplayName(result.data.countyById.displayName);
+                setCountyDisplayName(result.data);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
