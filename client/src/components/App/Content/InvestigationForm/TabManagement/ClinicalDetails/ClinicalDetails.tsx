@@ -1,23 +1,24 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
+import { useForm, Controller } from 'react-hook-form';
+import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import logger from 'logger/logger';
+import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
-import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
-import Gender from 'models/enums/Gender';
-import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -213,6 +214,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                             getOptionLabel={(option) => option ? option.value.displayName : option}
                                             inputValue={isolationCityName}
+                                            filterOptions={cityFilterOptions}
                                             onChange={(event, selectedCity) => {
                                                 props.onChange(selectedCity ? selectedCity.id : '')
                                                 if (selectedCity?.id && selectedCity.id !== props.value) {
@@ -255,6 +257,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             options={streetsInCity}
                                             getOptionLabel={(option) => option ? option.displayName : option}
                                             inputValue={isolationStreetName}
+                                            filterOptions={streetFilterOptions}
                                             onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                             onInputChange={(event, selectedStreetName) => {
                                                 setIsolationStreetName(selectedStreetName);

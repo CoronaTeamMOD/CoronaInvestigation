@@ -26,6 +26,7 @@ import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
@@ -394,12 +395,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             render={(props: any) => (
                                 <Autocomplete
                                     className={classes.spacedOutAddress}
-                                    options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
+                                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                     getOptionLabel={(option) => {
                                         return option?.value?.displayName ? option.value.displayName : cityName
                                     }}
                                     getOptionSelected={(option) => option.value.id === props.value}
                                     inputValue={cityName}
+                                    filterOptions={cityFilterOptions}
                                     onInputChange={(event, newInputValue) => {
                                         if (event.type !== 'blur') {
                                             setValue(PersonalInfoDataContextFields.STREET, '')
@@ -411,8 +413,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         }
                                     }}
                                     onChange={(event, newValue) => {
-                                        setCityId(newValue ? newValue.cityId : '');
-                                        props.onChange(newValue ? newValue.cityId : '')
+                                        setCityId(newValue ? newValue.id : '');
+                                        props.onChange(newValue ? newValue.id : '')
                                     }}
                                     renderInput={(params) =>
                                         <TextField
@@ -443,6 +445,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         getOptionLabel={(option) => {
                                             return option?.displayName ? option.displayName : streetName
                                         }}
+                                        filterOptions={streetFilterOptions}
                                         getOptionSelected={(option) => option.id === props.value}
                                         inputValue={streetName}
                                         onInputChange={(event, newInputValue) => {
