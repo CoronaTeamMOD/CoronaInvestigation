@@ -10,7 +10,15 @@ import axios from 'Utils/axios';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
-jest.mock('redux/store', () => {middlewares: []});
+jest.mock('redux/store', () => {
+    return {
+        store: {
+            getState: () => ({user: {token: 1}})
+        }
+    }
+})
+
+jest.mock('redux/IsLoading/isLoadingActionCreators', () => {return {setIsLoading: (isLoading: boolean) => jest.fn()}})
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -78,7 +86,6 @@ describe('investigatedPersonInfo tests', () => {
                 isDismissed: false,
                 value: true
             });
-
             mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').replyOnce(200);
             const myspy = jest.spyOn(Swal, 'fire').mockResolvedValue({
                 isConfirmed: false,

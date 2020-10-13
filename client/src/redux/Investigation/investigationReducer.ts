@@ -1,14 +1,15 @@
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigationRedux from 'models/InvestigationRedux';
 
 import * as Actions from './investigationActionTypes';
 
 const initialState: InvestigationRedux = {
-    epidemiologyNumber: -1,
+    epidemiologyNumber: defaultEpidemiologyNumber,
     cantReachInvestigated: false,
     investigatedPatientId: -1,
     creator: '',
     lastUpdator: '',
-    lastOpenedEpidemiologyNumber: -1,
+    lastOpenedEpidemiologyNumber: defaultEpidemiologyNumber,
     isCurrentlyLoading: false
 }
 

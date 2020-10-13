@@ -9,9 +9,10 @@ import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setGender } from 'redux/Gender/GenderActionCreators';
-import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
@@ -76,9 +77,9 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     React.useEffect(() => {
         timeout(2000).then(() => {
             let openedEpidemiologyNumber = store.getState().investigation.lastOpenedEpidemiologyNumber;
-            if (openedEpidemiologyNumber !== -1) {
+            if (openedEpidemiologyNumber !== defaultEpidemiologyNumber) {
                 setEpidemiologyNum(openedEpidemiologyNumber);
-                setLastOpenedEpidemiologyNum(-1);
+                setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
             } else {
                 noInvestigationError();
             }
@@ -86,7 +87,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, []);
 
     React.useEffect(() => {
-        epidemiologyNumber !== -1 &&
+        epidemiologyNumber !== defaultEpidemiologyNumber &&
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
             if (result && result.data && result.data.data && result.data.data.investigationByEpidemiologyNumber) {

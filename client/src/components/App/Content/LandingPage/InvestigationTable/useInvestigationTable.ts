@@ -6,9 +6,11 @@ import { differenceInYears } from 'date-fns';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
+import { store } from 'redux/store';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
@@ -138,8 +140,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
   const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
     setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
-    epidemiologyNumberVal !== -1 && window.open(investigationURL);
+    epidemiologyNumberVal !== defaultEpidemiologyNumber && window.open(investigationURL);
     setIsCurrentlyLoading(true);
+    timeout(15000).then(() => {
+      store.getState().investigation.isCurrentlyLoading && setIsCurrentlyLoading(false);
+    });
   }
 
   const onInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {
