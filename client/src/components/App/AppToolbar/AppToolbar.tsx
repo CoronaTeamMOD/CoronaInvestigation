@@ -9,7 +9,7 @@ import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
 const toggleMessage = 'מה הסטטוס שלך?';
 
 const AppToolbar: React.FC = (): JSX.Element => {
-    const { user, isActive, setUserActivityStatus, classes } = useAppToolbar();
+    const { user, isActive, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
 
     return (
         <AppBar className={classes.appBar} position='static'>
@@ -23,7 +23,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive />
                     </Tooltip>
                     <Typography className={classes.greetUserText}>שלום, {user.userName}</Typography>
-                    <Typography>הינך מחוברת ללשכת <b>באר שבוע</b></Typography>
+                    <Typography>הינך מחוברת ללשכת <b>{countyDisplayName}</b></Typography>
                 </div>
             </Toolbar>
         </AppBar>

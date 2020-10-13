@@ -10,9 +10,11 @@ import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
+    getCountyByUser: () => void;
     classes: AppToolbarClasses;
     user: User;
     isActive: boolean;
+    countyDisplayName: string;
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
@@ -20,12 +22,14 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const firstUserUpdate = React.useRef(true);
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
-
+    
     const [isActive, setIsActive] = React.useState<boolean>(false);
+    const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
         if (firstUserUpdate.current) {
             firstUserUpdate.current = false;
+            getCountyByUser();
         } else {
             getUserActivityStatus();
         }
@@ -63,11 +67,30 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
     }
 
+    const getCountyByUser = () => {
+        axios.get('users/county/displayName').then((result) => {
+            console.log(result)
+            if(result.data){
+                setCountyDisplayName(result.data.countyById.displayName);
+            }
+        }).catch(() => {
+            Swal.fire({
+                title: 'לא הצלחנו לעדכן את הסטטוס שלך',
+                icon: 'error',
+                customClass: {
+                    title: classes.swalTitle
+                },
+            });
+        });
+    }
+
     return {
         user,
         isActive,
         setUserActivityStatus,
-        classes
+        classes,
+        getCountyByUser,
+        countyDisplayName
     }
 };
 

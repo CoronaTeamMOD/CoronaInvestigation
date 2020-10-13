@@ -36,3 +36,11 @@ query AllGroupUsers($investigationGroup: Int!) {
   }
 }
 `;
+
+export const GET_COUNTY_BY_USER = gql`
+query getCounty($id: Int!) {
+  countyById(id: $id) {
+    displayName
+  }
+}
+`;

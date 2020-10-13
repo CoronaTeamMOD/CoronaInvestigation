@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS } from '../../DBService/Users/Query';
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS, GET_COUNTY_BY_USER as GET_COUNTY_DISPLAY_NAME_BY_USER } from '../../DBService/Users/Query';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
@@ -52,6 +52,13 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
                 }));
             }
             return response.send(users);
+        });
+});
+
+usersRoute.get('/county/displayName', adminMiddleWare, (request: Request, response: Response) => {
+    graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.group })
+        .then((result: any) => {
+            return response.send(result.data);
         });
 });
 
