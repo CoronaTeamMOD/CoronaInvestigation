@@ -16,6 +16,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import City from 'models/City';
 import axios from 'Utils/axios';
 import Street from 'models/Street';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
@@ -63,10 +65,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [occupation, setOccupation] = React.useState<string>('');
     const [personalInfoState, setPersonalInfoData] = React.useState<PersonalInfoFormData>(initialPersonalInfo);
     const [insuranceCompany, setInsuranceCompany] = React.useState<string>('');
-
+    
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
@@ -162,13 +165,39 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
         event.preventDefault();
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Saving personal details tab',
+            step: 'launching the server request',
+            investigation: investigationId,
+            user: userId
+        })
         axios.post('/personalDetails/updatePersonalDetails', 
         {
             id : investigatedPatientId, 
             personalInfoData, 
         })
-        .then(onSubmit)
-        .catch(() => {
+        .then(() => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving personal details tab',
+                step: 'saved personal details successfully',
+                investigation: investigationId,
+                user: userId
+            });
+            onSubmit();
+        })
+        .catch((error) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving personal details tab',
+                step: `got error from server: ${error}`,
+                investigation: investigationId,
+                user: userId
+            });
             Swal.fire({
                 title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                 icon: 'error'
