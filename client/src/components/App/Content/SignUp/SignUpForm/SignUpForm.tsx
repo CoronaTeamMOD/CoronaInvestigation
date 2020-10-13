@@ -52,10 +52,41 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
         resolver: yupResolver(SignUpSchema)
     })
 
+    const GenericAlphabetTextField = (props: any, label: string, placeholder: string) => (
+        <AlphabetTextField
+            testId={props.name}
+            name={props.name}
+            value={props.value}
+            onChange={(newValue: string) => props.onChange(newValue as string)}
+            label={label}
+            placeholder={placeholder}
+            onBlur={props.onBlur}
+            errors={methods.errors}
+            setError={methods.setError}
+            clearErrors={methods.clearErrors}
+        />
+    )
+    
+    const GenericNumericTextField = (props: any, label: string, placeholder: string) => (
+        <NumericTextField
+            testId={props.name}
+            name={props.name}
+            value={props.value}
+            onChange={(newValue: string) => props.onChange(newValue)}
+            onBlur={props.onBlur}
+            placeholder={placeholder}
+            label={label}
+            errors={methods.errors}
+            setError={methods.setError}
+            clearErrors={methods.clearErrors}
+            className={classes.textField}
+        />
+    )
+    
     const onSubmit = (data: SignUpUser) => {
         createUser(data);
     }
-
+    
     return (
         <FormProvider {...methods}>
             <form id='signUp' onSubmit={methods.handleSubmit(onSubmit)}>
@@ -89,18 +120,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
                                 control={methods.control}
                                 render={(props) => (
-                                    <AlphabetTextField
-                                        testId={props.name}
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue as string)}
-                                        label={FIRST_NAME_LABEL}
-                                        placeholder='הכנס שם פרטי...'
-                                        onBlur={props.onBlur}
-                                        errors={methods.errors}
-                                        setError={methods.setError}
-                                        clearErrors={methods.clearErrors}
-                                    />
+                                    GenericAlphabetTextField(props, FIRST_NAME_LABEL, 'הכנס שם פרטי...')
                                 )}
                             />
                         </FormInput>
@@ -110,18 +130,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                             name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
                             control={methods.control}
                             render={(props) => (
-                                <AlphabetTextField
-                                    testId={props.name}
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    label={LAST_NAME_LABEL}
-                                    placeholder='הכנס שם משפחה...'
-                                    onBlur={props.onBlur}
-                                    errors={methods.errors}
-                                    setError={methods.setError}
-                                    clearErrors={methods.clearErrors}
-                                />
+                                GenericAlphabetTextField(props, LAST_NAME_LABEL, 'הכנס שם משפחה...')
                             )}
                         />
                     </Grid>
@@ -164,19 +173,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.PHONE_NUMBER}
                                 control={methods.control}
                                 render={(props) => (
-                                    <NumericTextField
-                                        testId={props.name}
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue)}
-                                        onBlur={props.onBlur}
-                                        placeholder='הכנס טלפון...'
-                                        errors={methods.errors}
-                                        setError={methods.setError}
-                                        clearErrors={methods.clearErrors}
-                                        label={PHONE_NUMBER_LABEL}
-                                        className={classes.textField}
-                                    />
+                                    GenericNumericTextField(props, PHONE_NUMBER_LABEL, 'הכנס מספר טלפון...')
                                 )}
                             />
                         </FormInput> 
@@ -190,19 +187,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.ID}
                                 control={methods.control}
                                 render={(props) => (
-                                    <NumericTextField
-                                        testId={props.name}
-                                        name={props.name}
-                                        value={props.value}
-                                        onChange={(newValue: string) => props.onChange(newValue)}
-                                        onBlur={props.onBlur}
-                                        placeholder='הכנס מספר ת"ז...'
-                                        errors={methods.errors}
-                                        setError={methods.setError}
-                                        clearErrors={methods.clearErrors}
-                                        label={ID_LABEL}
-                                        className={classes.textField}
-                                    />
+                                    GenericNumericTextField(props, ID_LABEL, 'הכנס מספר תעודת זהות...')
                                 )}
                             />
                         </FormInput>
