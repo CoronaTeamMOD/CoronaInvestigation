@@ -197,7 +197,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             render={(props) => (
                                 <NumericTextField
                                     name={props.name}
-                                    test-id='personalDetailsPhone'
+                                    testId='personalDetailsPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue: string) => (
@@ -229,7 +229,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             render={(props) => (
                                 <NumericTextField
                                     name={props.name}
-                                    test-id='personalDetailsAdditionalPhone'
+                                    testId='personalDetailsAdditionalPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue: string) => (
@@ -261,7 +261,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             render={(props) => (
                                 <NumericTextField
                                     name={props.name}
-                                    test-id='personalDetailsContactPhone'
+                                    testId='personalDetailsContactPhone'
                                     className={classes.phoneInput}
                                     value={props.value}
                                     onChange={(newValue: string) => (
