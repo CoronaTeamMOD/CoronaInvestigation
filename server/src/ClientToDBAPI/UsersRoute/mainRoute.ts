@@ -4,7 +4,7 @@ import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS } from '../../DBService/Users/Query';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR } from '../../DBService/Users/Mutation';
 
 const usersRoute = Router();
 
