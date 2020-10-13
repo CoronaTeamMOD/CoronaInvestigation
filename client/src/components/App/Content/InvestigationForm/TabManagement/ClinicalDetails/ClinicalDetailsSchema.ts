@@ -4,57 +4,51 @@ import { startOfTomorrow } from 'date-fns';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
 const requiredText = 'שדה זה הוא חובה';
-const maxText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
-const minText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
-const futureText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
+const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
+const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
+const futureDateText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
 
 const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
-        then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (startDate: Date) => {
+        then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (isolationStartDate: Date) => {
             const startOfTomorrowDate = startOfTomorrow();
-            return startDate < startOfTomorrowDate ?
-                yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), maxText)
-                    .required(requiredText).typeError(requiredText) :
-                yup.date().max(startOfTomorrowDate, futureText)
-                    .required(requiredText).typeError(requiredText)
+            return isolationStartDate < startOfTomorrowDate ?
+                yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
+                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText)
         }),
         otherwise: yup.date().nullable()
-    });
+    }
+);
 
 const isInIsolationEndDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
-        then: yup.date()
-            .min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), minText)
-            .max(startOfTomorrow(), futureText)
-            .required(requiredText).typeError(requiredText),
+        then: yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(requiredText),
         otherwise: yup.date().nullable()
-    });
+    }
+);
 
 const wasHospitilizedStartDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
         is: true,
-        then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (startDate: Date) => {
+        then: yup.date().when(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, (hospitalizationStartDate: Date) => {
             const startOfTomorrowDate = startOfTomorrow();
-            return startDate < startOfTomorrowDate ?
-                yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), maxText)
-                    .required(requiredText).typeError(requiredText) :
-                yup.date().max(startOfTomorrowDate, futureText)
-                    .required(requiredText).typeError(requiredText)
+            return hospitalizationStartDate < startOfTomorrowDate ?
+                yup.date().max(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
+                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText)
         }),
         otherwise: yup.date().nullable()
-    });
+    }
+);
 
 const wasHospitilizedEndDateSchema = yup.date().when(
     ClinicalDetailsFields.WAS_HOPITALIZED, {
         is: true,
-        then: yup.date()
-            .min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), minText)
-            .max(startOfTomorrow(), futureText)
-            .required(requiredText).typeError(requiredText),
+        then: yup.date().min(yup.ref(ClinicalDetailsFields.HOSPITALIZATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(requiredText),
         otherwise: yup.date().nullable()
-    });
+    }
+);
 
 const symptomsMoreInfoSchema = yup.string().when(
     ClinicalDetailsFields.SYMPTOMS,
