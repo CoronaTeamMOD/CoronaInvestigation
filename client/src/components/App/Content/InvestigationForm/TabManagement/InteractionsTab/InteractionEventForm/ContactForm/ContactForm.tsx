@@ -141,7 +141,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contact }: Props): 
                                                 test-id='contactType'
                                                 defaultValue={Array.from(contactTypes.keys())[0]}
                                                 value={contact?.contactType}
-                                                //value={props.value}
                                                 onChange={event => props.onChange(event.target.value as number)}
                                                 label={contactTypeName}
                                             >
