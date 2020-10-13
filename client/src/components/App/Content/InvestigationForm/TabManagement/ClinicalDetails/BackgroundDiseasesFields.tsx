@@ -95,7 +95,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                 control={control}
                                 render={(props) => (
                                     <AlphanumericTextField
-                                        test-id='otherBackgroundDisease'
+                                        testId='otherBackgroundDisease'
                                         name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                                         value={props.value}
                                         onChange={(newValue: string) =>
