@@ -1,11 +1,11 @@
 import * as yup from 'yup';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
-const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/;
+const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
 const interactionEventSchema = yup.object().shape({
     [InteractionEventDialogFields.PLACE_TYPE]: yup.string().nullable().required('סוג אתר חובה'),
