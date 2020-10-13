@@ -52,13 +52,13 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
         resolver: yupResolver(SignUpSchema)
     })
 
-    const GenericAlphabetTextField = (props: any, placeholder: string) => (
+    const GenericAlphabetTextField = (props: any, label: string, placeholder: string) => (
         <AlphabetTextField
             testId={props.name}
             name={props.name}
             value={props.value}
             onChange={(newValue: string) => props.onChange(newValue as string)}
-            label={FIRST_NAME_LABEL}
+            label={label}
             placeholder={placeholder}
             onBlur={props.onBlur}
             errors={methods.errors}
@@ -67,7 +67,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
         />
     )
     
-    const GenericNumericTextField = (props: any, placeholder: string) => (
+    const GenericNumericTextField = (props: any, label: string, placeholder: string) => (
         <NumericTextField
             testId={props.name}
             name={props.name}
@@ -75,10 +75,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
             onChange={(newValue: string) => props.onChange(newValue)}
             onBlur={props.onBlur}
             placeholder={placeholder}
+            label={label}
             errors={methods.errors}
             setError={methods.setError}
             clearErrors={methods.clearErrors}
-            label={PHONE_NUMBER_LABEL}
             className={classes.textField}
         />
     )
@@ -120,7 +120,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericAlphabetTextField(props, 'הכנס שם פרטי...')
+                                    GenericAlphabetTextField(props, FIRST_NAME_LABEL, 'הכנס שם פרטי...')
                                 )}
                             />
                         </FormInput>
@@ -130,7 +130,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                             name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
                             control={methods.control}
                             render={(props) => (
-                                GenericAlphabetTextField(props, 'הכנס שם משפחה...')
+                                GenericAlphabetTextField(props, LAST_NAME_LABEL, 'הכנס שם משפחה...')
                             )}
                         />
                     </Grid>
@@ -173,7 +173,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.PHONE_NUMBER}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericNumericTextField(props, 'הכנס מספר טלפון...')
+                                    GenericNumericTextField(props, PHONE_NUMBER_LABEL, 'הכנס מספר טלפון...')
                                 )}
                             />
                         </FormInput> 
@@ -187,7 +187,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.ID}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericNumericTextField(props, 'הכנס מספר תעודת זהות...')
+                                    GenericNumericTextField(props, ID_LABEL, 'הכנס מספר תעודת זהות...')
                                 )}
                             />
                         </FormInput>
