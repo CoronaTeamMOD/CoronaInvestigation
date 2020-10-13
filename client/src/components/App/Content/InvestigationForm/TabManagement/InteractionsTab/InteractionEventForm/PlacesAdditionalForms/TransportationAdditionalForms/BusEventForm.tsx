@@ -8,6 +8,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
+import { cityFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -72,7 +73,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                 <Autocomplete
                                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                     getOptionLabel={(option) => option.value?.displayName || ''}
-                                    defaultValue={{ id: props.value as string, value: cities.get(props.value as string)}}
+                                    filterOptions={cityFilterOptions}
                                     onChange={(event, selectedCity) => props.onChange(selectedCity?.id as string)}
                                     onInputChange={(event, newInputValue) => {
                                         if (newInputValue === '') {
@@ -120,7 +121,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                 <Autocomplete
                                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                     getOptionLabel={(option) => option.value?.displayName || ''}
-                                    defaultValue={{ id: props.value as string, value: cities.get(props.value as string)}}
+                                    filterOptions={cityFilterOptions}
                                     onChange={(event, selectedCity) => props.onChange(selectedCity?.id as string)}
                                     onInputChange={(event, newInputValue) => {
                                         if (newInputValue === '') {
