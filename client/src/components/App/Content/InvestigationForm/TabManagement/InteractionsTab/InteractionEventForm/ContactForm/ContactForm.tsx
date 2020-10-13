@@ -7,13 +7,14 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './ContactFormStyles';
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from '../../InteractionsEventDialogContext/InteractionEventContactFields';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';
@@ -24,7 +25,7 @@ const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המג
 
 const FIRST_NAME_LABEL='שם פרטי*';
 const LAST_NAME_LABEL='שם משפחה*';
-const PHONE_NUMBER_LABEL='מספר טלפון*';
+const PHONE_NUMBER_LABEL='מספר טלפון';
 
 
 const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
@@ -40,7 +41,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
     }, [])
 
     return (
-        <div className={classes.addContactFields} key='addContactFields'>
+        <div test-id='contactFormContainer' className={classes.addContactFields} key='addContactFields'>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <Grid item xs={4}>
                     <FormInput fieldName={contactedPersonFirstName}>
@@ -92,11 +93,15 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
                             control={control}
                             render={(props) => (
-                                <TextField
+                                <NumericTextField
+                                    name={props.name}
                                     value={props.value}
-                                    onChange={event => props.onChange(event.target.value as string)}
-                                    error={get(errors, props.name)}
-                                    label={get(errors, props.name)? get(errors, props.name).message: PHONE_NUMBER_LABEL}
+                                    onChange={(newValue: string) => props.onChange(newValue)}
+                                    errors={errors}
+                                    setError={setError}
+                                    clearErrors={clearErrors}
+                                    onBlur={props.onBlur}
+                                    label={PHONE_NUMBER_LABEL}
                                 />
                             )}
                         />
@@ -110,7 +115,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
                             control={control}
                             render={(props) => (
-                                <AlphanumericTextField
+                                <NumericTextField
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === "" ? null : newValue as string)}

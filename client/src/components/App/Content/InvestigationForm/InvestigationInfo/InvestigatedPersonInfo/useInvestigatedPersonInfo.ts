@@ -7,7 +7,6 @@ import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { interactedContactsContext } from 'commons/Contexts/InteractedContactsContext';
 import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
@@ -17,8 +16,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     let history = useHistory();
     const classes = useStyles({});
-
-    const interactedContactsState = useContext(interactedContactsContext);
 
     const getInvestigationStatus = (cantReachInvestigated: boolean) => {
         if (cantReachInvestigated) return InvestigationStatus.CANT_REACH;

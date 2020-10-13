@@ -109,7 +109,11 @@ const useStyles = makeStyles({
     houseNumInput: {
         minWidth: '15vw',
         marginLeft: '8vw'
-    }
+    },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

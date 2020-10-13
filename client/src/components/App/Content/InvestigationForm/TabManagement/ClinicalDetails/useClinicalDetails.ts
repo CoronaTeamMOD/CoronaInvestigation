@@ -1,10 +1,9 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/Street';
-import { initDBAddress } from 'models/Address';
+import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
@@ -41,7 +40,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             result => result?.data && setStreetsInCity(result.data.map((node: Street) => node))
         )};
     
-    const getClinicalDetailsByEpidemiologyNumber = () => {
+    const fetchClinicalDetails = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                                  trigger: (payload?: string | string[]) => Promise<boolean>
+                                 ) => {
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
@@ -64,28 +65,31 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     } else {
                         patientAddress = initDBAddress;
                     }
-                    setInitialDBClinicalDetails({
+                    const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,
-                        isPregnant: clinicalDetailsByEpidemiologyNumber.isPregnant,
+                        isPregnant: Boolean(clinicalDetailsByEpidemiologyNumber.isPregnant),
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases? true : false,
+                        doesHaveBackgroundDiseases: Boolean(clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases),
                         hospital: patientInvestigation.hospital,
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: patientInvestigation.isInIsolation? true : false,
-                        isIsolationProblem: patientInvestigation.isIsolationProblem? true : false,
+                        isInIsolation: Boolean(patientInvestigation.isInIsolation),
+                        isIsolationProblem: Boolean(patientInvestigation.isIsolationProblem),
                         isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
                         symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
                         isSymptomsStartDateUnknown: patientInvestigation.symptomsStartTime === null,
-                        doesHaveSymptoms: patientInvestigation.doesHaveSymptoms? true : false,
-                        wasHospitalized: patientInvestigation.wasHospitalized? true : false,
+                        doesHaveSymptoms: Boolean(patientInvestigation.doesHaveSymptoms),
+                        wasHospitalized: Boolean(patientInvestigation.wasHospitalized),
                         isolationAddress: patientAddress,
                         otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
                         otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
-                    })
+                    }
+                    setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
+                    reset(initialDBClinicalDetailsToSet);
+                    trigger();
                 }
             }
         );
@@ -103,24 +107,19 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         return backgroundDiseases;
     }
 
-    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => {
-        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}})).catch(() => {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
-        });
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) : Promise<void> => {
+        return axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}}));
     }
 
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
-        getClinicalDetailsByEpidemiologyNumber();
     }, []);
 
     return {
         getStreetByCity,
-        saveClinicalDetails
+        saveClinicalDetails,
+        fetchClinicalDetails
     };
 };
 

@@ -1,20 +1,21 @@
 import React from 'react';
+import Swal from 'sweetalert2';
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { yupResolver } from '@hookform/resolvers';
-import { useForm, Controller } from 'react-hook-form';
 import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
+import { yupResolver } from '@hookform/resolvers';
 
 import City from 'models/City';
 import Street from 'models/Street';
-import Gender from 'models/enums/Gender';
-import Toggle from 'commons/Toggle/Toggle';
-import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import Toggle from 'commons/Toggle/Toggle';
 import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import StoreStateType from 'redux/storeStateType';
+import { setFormState } from 'redux/Form/formActionCreators';
+import Gender from 'models/enums/Gender';
 
 import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
@@ -28,9 +29,9 @@ import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
     const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-    const { control, setValue, getValues, formState, reset, watch, errors, setError, clearErrors, trigger } = useForm({
+    const { control, setValue, getValues, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
-        defaultValues: initialDBClinicalDetails,
+        defaultValues: initialClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
     });
 
@@ -46,11 +47,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
-    const { touched } = formState;
-
-    const { getStreetByCity, saveClinicalDetails } = useClinicalDetails({
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
         setBackgroundDiseases,
         setIsolationCityName,
@@ -84,25 +82,19 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         };
     };
 
-    React.useEffect(() => {
-        reset(initialDBClinicalDetails);
-    }, [initialDBClinicalDetails])
-
-    React.useEffect(() => {
-        if (formsValidations && formsValidations[id] !== null) {
-            trigger();
-        }
-    }, [touched])
 
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
-        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId);
-
+        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
+            .then(onSubmit)
+            .catch(() => Swal.fire({
+                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                icon: 'error'
+            }));
         ClinicalDetailsSchema.isValid(values).then(valid => {
             setFormState(investigationId, id, valid);
         })
-        onSubmit();
     }
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
@@ -117,6 +109,9 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
+    React.useEffect(() => {
+        fetchClinicalDetails(reset, trigger)
+    }, []);
 
     React.useEffect(() => {
         if (watchIsInIsolation === false) {
@@ -246,7 +241,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ?
                                                             errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
                                                             :
-                                                            'רחוב *'
+                                                            'רחוב'
                                                     }
                                                     {...params}
                                                     placeholder='רחוב'
@@ -268,7 +263,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER].message
                                                     :
-                                                    'מספר הבית *'
+                                                    'מספר הבית'
                                             }
                                             testId='currentQuarantineHomeNumber'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
@@ -297,7 +292,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR] ?
                                                     errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_FLOOR].message
                                                     :
-                                                    'קומה *'
+                                                    'קומה'
                                             }
                                             testId='currentQuarantineFloor'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
@@ -346,6 +341,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             backgroundDiseases={backgroundDiseases}
                             handleBackgroundIllnessCheck={handleBackgroundIllnessCheck}
                             setError={setError}
+                            setValue={setValue}
                             clearErrors={clearErrors}
                             errors={errors}
                             control={control}
@@ -366,13 +362,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             watchHospitalizedEndDate={watcHospitalizedEndDate}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                         <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <Grid item xs={2} className={classes.fieldLabel}>
                                 <Typography>
                                     <b>
                                         האם בהריון:
-                                </b>
+                                    </b>
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>

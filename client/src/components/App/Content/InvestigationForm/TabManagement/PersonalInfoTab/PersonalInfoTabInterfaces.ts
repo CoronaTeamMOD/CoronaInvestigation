@@ -12,10 +12,13 @@ export interface usePersoanlInfoTabParameters {
     setCityName: React.Dispatch<React.SetStateAction<string>>;
     setStreetName: React.Dispatch<React.SetStateAction<string>>;
     setStreets: React.Dispatch<React.SetStateAction<Street[]>>;
+    setInsuranceCompany: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface usePersonalInfoTabOutcome {
-    fetchPersonalInfo: (epidemiologyNumber: number) => void;
+    fetchPersonalInfo: (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+                        trigger: (payload?: string | string[]) => Promise<boolean>
+                        ) => void;
     getSubOccupations: (parentOccupation: string) => void;
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;

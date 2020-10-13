@@ -4,13 +4,40 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { GET_INVESTIGATION_INFO } from '../../DBService/InvestigationInfo/Query';
 import { UPDATE_INVESTIGATION_STATUS, UPDATE_INVESTIGATION_START_TIME, UPDATE_INVESTIGATION_END_TIME } from '../../DBService/InvestigationInfo/Mutation';
 
+const errorStatusCode = 500;
+
 const investigationInfo = Router();
+
+const convertInvestigationInfoFromDB = (investigationInfo: any) => {
+    const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;
+    
+    const convertedInvestigationPatient = {
+        ...investigationPatient,
+        patientInfo: investigationPatient.covidPatientByCovidPatient
+    }
+    delete convertedInvestigationPatient.covidPatientByCovidPatient;
+
+    const convertedInvestigation = {
+        ...investigationInfo,
+        investigatedPatient: convertedInvestigationPatient
+    }
+    delete convertedInvestigation.investigatedPatientByInvestigatedPatientId;
+
+    return convertedInvestigation;
+}
 
 investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
         investigationId: +request.query.investigationId
     })
-    .then((result: any) => response.send(result));
+    .then((result: any) => {
+        if (result?.data?.investigationByEpidemiologyNumber) {
+            const investigationInfo = result.data.investigationByEpidemiologyNumber;
+            response.send(convertInvestigationInfoFromDB(investigationInfo));
+        } else {
+            response.status(errorStatusCode).json({error: 'failed to fetch static info'});
+        }
+    });
 })
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {

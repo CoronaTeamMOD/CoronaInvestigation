@@ -1,18 +1,17 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import { GeocodeResponse } from 'commons/LocationInputField/LocationInput';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './AddressFormStyles';
-import InteractionEventDialogFields from '../../InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const AddressForm: React.FC = (): JSX.Element => {
-    const { setValue, getValues, control } = useFormContext();
-    const { locationAddress } = getValues();
+    const { setValue, control } = useFormContext();
 
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
@@ -26,11 +25,16 @@ const AddressForm: React.FC = (): JSX.Element => {
             <Grid item xs={4}>
                 <FormInput fieldName='כתובת'>
                     <div className={additionalClasses.addressAutoCompleteField}>
-                        <Map
+                    <Controller
                             name={InteractionEventDialogFields.LOCATION_ADDRESS}
-                            selectedAddress={locationAddress}
-                            setSelectedAddress={onGoogleApiLocationTextFieldChange}
                             control={control}
+                            render={(props) => (
+                                <Map
+                                    name={InteractionEventDialogFields.LOCATION_ADDRESS}
+                                    selectedAddress={props.value}
+                                    setSelectedAddress={onGoogleApiLocationTextFieldChange}
+                                />
+                            )}
                         />
                     </div>
                 </FormInput>

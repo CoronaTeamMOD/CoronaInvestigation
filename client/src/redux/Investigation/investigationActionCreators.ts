@@ -8,6 +8,13 @@ export const setEpidemiologyNum = (epidemiologyNumber: number): void => {
     })
 };
 
+export const setAxiosInterceptorId = (axiosInterceptorId: number): void => {
+    store.dispatch({
+        type: actionTypes.SET_AXIOS_INTERCEPTOR_ID,
+        payload: { axiosInterceptorId }
+    })
+};
+
 export const setCantReachInvestigated = (cantReachInvestigated: boolean): void => {
     store.dispatch({
         type: actionTypes.SET_CANT_REACH_INVESTIGATED,

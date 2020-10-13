@@ -12,16 +12,8 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const {
-        classes,
-        control,
-        setError,
-        clearErrors,
-        errors,
-        watchWasHospitalized,
-        trigger,
-        watchHospitalizedStartDate,
-        watchHospitalizedEndDate
+    const { classes, control, setError, clearErrors, errors, watchWasHospitalized, trigger, watchHospitalizedStartDate,
+            watchHospitalizedEndDate,
     } = props;
 
     React.useEffect(() => {
@@ -31,7 +23,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-            <Grid id="1" spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+            <Grid id='1' spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
                         <b>
@@ -75,7 +67,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     render={(props) => (
                                         <AlphanumericTextField
                                             className={classes.hospitalInput}
-                                            test-id='hospitalInput'
+                                            testId='hospitalInput'
                                             name={ClinicalDetailsFields.HOSPITAL}
                                             value={props.value}
                                             onChange={(newValue: string) =>
@@ -99,6 +91,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <DatePick
+                                    maxDate={new Date()}
                                     labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : '* מתאריך'}
                                     test-id='wasHospitalizedFromDate'
                                     value={props.value}

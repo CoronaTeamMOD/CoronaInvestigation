@@ -1,4 +1,4 @@
-import { initDBAddress } from 'models/Address';
+import { initDBAddress } from 'models/DBAddress';
 import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 export const initialPersonalInfo: PersonalInfoFormData = {

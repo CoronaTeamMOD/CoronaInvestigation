@@ -1,18 +1,21 @@
 import React from 'react';
-import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
+import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
-import { isValid } from 'date-fns';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
+import useFormStyles from 'styles/formStyles';
+import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
+import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
-import get from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import useFormStyles from 'styles/formStyles';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 
 import PlaceTypeForm from './PlaceTypeForm';
@@ -20,8 +23,6 @@ import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
 import InteractionEventSchema from './InteractionEventSchema';
-import InteractionEventDialogFields from '../InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from '../InteractionsEventDialogContext/InteractionEventContactFields';
 
 export const defaultContact: Contact = {
   firstName: '',
@@ -34,14 +35,10 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  {
-    interactionData,
-    loadInteractions,
-    closeNewDialog,
-    closeEditDialog,
-  } : Props): JSX.Element => {
+  { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
+): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm( { loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
 
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -54,7 +51,7 @@ const InteractionEventForm: React.FC<Props> = (
   const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
-  
+
   const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
   const contacts = fields;
 
@@ -69,8 +66,11 @@ const InteractionEventForm: React.FC<Props> = (
       newDate.setMinutes(currentTime.getMinutes());
 
       if (newDate.getTime()) {
+        methods.clearErrors(fieldName);
         methods.setValue(fieldName, newDate);
       }
+    } else {
+        methods.setError(fieldName, { type: 'manual', message: 'שעה לא תקינה'});
     }
   }
 
@@ -105,12 +105,13 @@ const InteractionEventForm: React.FC<Props> = (
           <Grid className={formClasses.form} container justify='flex-start'>
             <PlacesTypesAndSubTypes
               control={methods.control}
+              setValue={methods.setValue}
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
               placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
               placeType={placeType}
               placeSubType={placeSubType}
               onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
-              onPlaceSubTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue)}
+              onPlaceSubTypeChange={(placeSubType: PlaceSubType) => methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, placeSubType.id)}
             />
 
             <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType}/>
@@ -122,11 +123,11 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id='contactLocationStartTime'
+                        testId='contactLocationStartTime'
                         value={props.value}
-                        onChange={(newTime: Date) => handleTimeChange(newTime,
-                          interactionStartTime,
-                          InteractionEventDialogFields.START_TIME)}
+                        onChange={(newTime: Date) =>
+                          handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                        }
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
                         error={get(methods.errors, props.name)}
                       />
@@ -141,11 +142,11 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                       <TimePick
-                        test-id='contactLocationEndTime'
+                        testId='contactLocationEndTime'
                         value={props.value}
-                        onChange={(newTime: Date) => handleTimeChange(newTime,
-                          interationEndTime,
-                          InteractionEventDialogFields.END_TIME)}
+                        onChange={(newTime: Date) =>
+                          handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                        }
                         labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                         error={get(methods.errors, props.name)}
                       />
@@ -209,4 +210,4 @@ interface Props {
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
-}
+};

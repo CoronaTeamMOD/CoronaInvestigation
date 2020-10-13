@@ -15,6 +15,7 @@ import DefaultPlaceEventGrid from './PlacesAdditionalGrids/DefaultPlaceEventGrid
 import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
+import ContactUploader from './ExcelUploader/ContactUploader';
 
 import useStyles from './InteractionCardStyles';
 
@@ -101,6 +102,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         <Typography>
                             <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                         </Typography>
+
+                        {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions}/>}
                     </Grid>
                     {interaction.contacts.map(person => <ContactGrid contact={person}/>)}
                 </Grid>
@@ -114,6 +117,7 @@ interface Props {
     interaction: Interaction;
     onEditClick: () => void;
     onDeleteClick: () => void;
+    loadInteractions: () => void;
 };
 
 export default InteractionCard;
