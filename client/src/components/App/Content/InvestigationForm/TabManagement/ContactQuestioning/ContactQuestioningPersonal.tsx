@@ -20,7 +20,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
 
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
 
-    const contactAge = interactedContact.birthDate && !isNaN(differenceInYears(new Date(), new Date(interactedContact.birthDate)) as number) ? differenceInYears(new Date(), new Date(interactedContact.birthDate)) : null;
+    const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
+    const contactAge = interactedContact.birthDate && !isNaN(age as number) ? age === 0 ? '0' : age : null;
 
     return (
         <Grid item xs={4}>
