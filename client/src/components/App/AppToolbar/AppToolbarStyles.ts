@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: theme.spacing(2),
         flip: false
     },
-    deskTextField: {
+    countyTextField: {
         backgroundColor: theme.palette.background.default
     },
     swalTitle: {
@@ -34,7 +34,7 @@ export interface AppToolbarClasses {
     logoTitle: string;
     userSection: string;
     greetUserText: string;
-    deskTextField: string;
+    countyTextField: string;
     swalTitle: string;
 }
 

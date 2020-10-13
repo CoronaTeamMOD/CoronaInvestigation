@@ -1,3 +1,4 @@
+import County from './County';
 import Investigator from './Investigator';
 
 interface InvestigationTableRow {
@@ -10,6 +11,7 @@ interface InvestigationTableRow {
     age: number;
     city: string;
     investigator: Investigator;
+    county: County;
 };
 
 export default InvestigationTableRow;

@@ -36,3 +36,14 @@ query AllGroupUsers($investigationGroup: Int!) {
   }
 }
 `;
+
+export const GET_ADMINS_OF_COUNTY = gql`
+query getAdminsOfGivenCounty($requestedCounty: Int) {
+  allUsers(filter: {isAdmin: {equalTo: true}, investigationGroup: {equalTo: $requestedCounty}}) {
+    nodes {
+      id
+      isActive
+    }
+  }
+}
+`;

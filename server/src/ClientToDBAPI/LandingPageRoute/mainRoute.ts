@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import {GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS} from '../../DBService/LandingPage/Query';
+import {GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_COUNTIES} from '../../DBService/LandingPage/Query';
 
 const landingPageRoute = Router();
 
@@ -34,10 +34,15 @@ landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request,
                 response.send(JSON.parse(result.data.groupInvestigationsSort.json))
             }
             else {
+                console.log(result);
                 response.status(500).send('error in fetching data')
             }
         })
-        .catch(err => response.status(500).send('error in fetching data: ' + err));
-})
+        .catch(err => {
+            console.log(err);
+            response.status(500).send('error in fetching data: ' + err)
+        });
+});
+
 
 export default landingPageRoute;
