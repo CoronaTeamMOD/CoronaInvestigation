@@ -7,8 +7,9 @@ import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventi
 const stringAlphanum = yup
   .string()
   .required()
-  .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/);
-
+  .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/)
+  .max(50);
+  
 const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
 
 const AlphanumericTextField: AlphanumericTextFieldType = (props) => {
