@@ -38,7 +38,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchCities = () => {
-        if (cities.size === 0) {
+        if (cities && cities.size === 0) {
             axios.get('/addressDetails/cities')
                 .then((result: any) => {
                     const cities: Map<string, City> = new Map();
