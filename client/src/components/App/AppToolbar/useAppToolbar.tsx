@@ -8,6 +8,7 @@ import axios from 'Utils/axios';
 
 import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
@@ -72,6 +73,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         axios.get('users/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data.countyById.displayName);
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL request to the DB',
+                    step: 'fetched county display name by user successfully'
+                });
             }
         }).catch(() => {
             Swal.fire({
@@ -80,6 +87,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 customClass: {
                     title: classes.swalTitle
                 },
+            });
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL request to the DB',
+                step: 'error in fetching county display name by user'
             });
         });
     }
