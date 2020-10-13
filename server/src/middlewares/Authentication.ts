@@ -129,14 +129,48 @@ export const adminMiddleWare = (
     response: Response,
     next: NextFunction
 ) => {
-    graphqlRequest(GET_USER_BY_ID, response.locals, { id: response.locals.user.id })
-        .then((result: any) => {
-            if (result.data.userById.isAdmin) {
+    const userIdForQuery = { id: response.locals.user.id }
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW, 
+        workflow: 'Admin validation',
+        step: `request to the graphql API with parameters: ${userIdForQuery}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    graphqlRequest(GET_USER_BY_ID, response.locals, userIdForQuery)
+    .then((result: any) => {
+        if (result.data.userById.isAdmin) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW, 
+                    workflow: 'Admin validation',
+                    step: 'the requested user is admin',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
                 response.locals.user.group = result.data.userById.investigationGroup
                 return next();
             } else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.MEDIUM, 
+                    workflow: 'Admin validation',
+                    step: 'the user is not admin!',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
                 response.status(401).json({error: "unauthorized non admin user" })
             }
+        }).catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH, 
+                workflow: 'Admin validation',
+                step: 'error in requesting the graphql API',
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
         });
 };
 
