@@ -7,6 +7,7 @@ import User from 'models/User';
 import axios from 'Utils/axios';
 
 import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
+import logger from 'logger/logger';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
@@ -69,7 +70,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
 
     const getCountyByUser = () => {
         axios.get('users/county/displayName').then((result) => {
-            console.log(result)
             if(result.data){
                 setCountyDisplayName(result.data.countyById.displayName);
             }
