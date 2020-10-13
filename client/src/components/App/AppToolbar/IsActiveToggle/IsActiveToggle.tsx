@@ -24,13 +24,13 @@ const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JS
         <ToggleButtonGroup {...rest} ref={ref} value={value} exclusive size='small' className={classes.isActiveToggle}>
             <ToggleButton className={classes.toggle}
                           style={value ? activeButtonStyle : {}}
-                          onClick={()=> setUserActivityStatus(true)}
+                          onClick={()=> value === false && setUserActivityStatus(true)}
                           value={value}>
                 פעיל
             </ToggleButton>
             <ToggleButton className={classes.toggle}
                           style={!value ? notActiveButtonStyle : {}}
-                          onClick={()=> setUserActivityStatus(false)}
+                          onClick={()=> value === true && setUserActivityStatus(false)}
                           value={value}>
                 לא פעיל
             </ToggleButton>
