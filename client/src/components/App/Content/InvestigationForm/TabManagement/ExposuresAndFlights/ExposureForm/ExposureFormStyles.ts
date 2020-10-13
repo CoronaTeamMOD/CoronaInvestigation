@@ -19,7 +19,8 @@ const useStyles = makeStyles({
         direction: 'ltr',
     },
     optionField: {
-        marginLeft: '1vw' 
+        marginLeft: '1vw',
+        fontSize: '1vw',
     },
     searchedField: {
         fontWeight: 'bold'
