@@ -38,6 +38,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user]);
 
     const getUserActivityStatus = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'GraphQL request to the DB',
+            step: 'started user activity status fetching'
+        });
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
             setIsActive(result.data.isActive);
@@ -65,6 +71,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const setUserActivityStatus = (isActive: boolean) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'GraphQL request to the DB',
+            step: 'started is user active updating'
+        });
         axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
@@ -94,6 +106,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const getCountyByUser = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'GraphQL request to the DB',
+            step: 'started fetching county display name by user'
+        });
         axios.get('counties/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data.countyById.displayName);
