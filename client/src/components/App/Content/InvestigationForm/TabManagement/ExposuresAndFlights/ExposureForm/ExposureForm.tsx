@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
 
@@ -8,6 +9,7 @@ import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import CovidPatientFields from 'models/CovidPatientFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -16,13 +18,13 @@ import useStyles from './ExposureFormStyles';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
 
-const displayPatientFields : CovidPatientFields = {
+const displayPatientFields: CovidPatientFields = {
   fullName: 'שם',
   age: 'גיל',
   address: 'כתובת',
 }
 
-const allCovidPatientFields : CovidPatientFields = {
+const allCovidPatientFields: CovidPatientFields = {
   ...displayPatientFields,
   epidemiologyNumber: 'מספר אפידמיולוגי',
   identityNumber: 'מספר זיהוי',
@@ -45,7 +47,9 @@ const ExposureForm = (props: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
-  const selectedExposureSourceDisplay = (exposureSource: CovidPatient) : string => {
+  const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+  const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
     const fields: string[] = [];
     exposureSource.fullName && fields.push(displayPatientFields.fullName + ': ' + exposureSource.fullName);
     exposureSource.age && fields.push(displayPatientFields.age + ': ' + exposureSource.age);
@@ -55,7 +59,7 @@ const ExposureForm = (props: any) => {
 
   const exposureSourceSearchRegex = React.useMemo(() => {
     try {
-      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[^0-9A-Za-z]*')+ '*');
+      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[^0-9A-Za-z]*') + '*');
     } catch {
       return null;
     }
@@ -69,12 +73,12 @@ const ExposureForm = (props: any) => {
     const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone } = exposureSource;
     if (!exposureSourceSearchRegex) return <></>
     return <>
-    {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
-    {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber +  ': ' + epidemiologyNumber}</Typography>}
-    {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
-    {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
-    {age && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
-    {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
+      {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
+      {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}</Typography>}
+      {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
+      {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
+      {age && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
+      {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
     </>
   }
 
@@ -96,10 +100,10 @@ const ExposureForm = (props: any) => {
     }
   }, [exposureSourceSearch]);
 
-    useEffect(() => {
-      exposureAndFlightsData.exposureSource && 
-        setExposureSourceSearch(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
-    }, [exposureAndFlightsData.exposureSource]);
+  useEffect(() => {
+    exposureAndFlightsData.exposureSource &&
+      setExposureSourceSearch(selectedExposureSourceDisplay(exposureAndFlightsData.exposureSource));
+  }, [exposureAndFlightsData.exposureSource]);
 
   return (
     <Grid className={formClasses.form} container justify='flex-start'>
@@ -119,7 +123,7 @@ const ExposureForm = (props: any) => {
           <div className={classes.optionalExposureSources}>
             {
               isLoading ? <CircularProgress className={classes.loadingSpinner} size='5vh' /> :
-                optionalCovidPatients.map(exposureSource => (
+                optionalCovidPatients.filter((exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber).map(exposureSource => (
                   <MenuItem
                     className={classes.optionalExposureSource}
                     key={exposureSource.epidemiologyNumber}
