@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 
-import Contact from 'models/Contact';
 import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
