@@ -4,12 +4,15 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
+import { store } from 'redux/store';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
+import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
@@ -56,7 +59,34 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    React.useEffect(() => { 
+    const noInvestigationError = () => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
+            customClass: {
+                title: classes.swalTitle
+            },
+            timer: 1750,
+            showConfirmButton: false
+        });
+
+        timeout(1900).then(() => history.push(landingPageRoute));
+    }
+
+    React.useEffect(() => {
+        timeout(2000).then(() => {
+            let openedEpidemiologyNumber = store.getState().investigation.lastOpenedEpidemiologyNumber;
+            if (openedEpidemiologyNumber !== defaultEpidemiologyNumber) {
+                setEpidemiologyNum(openedEpidemiologyNumber);
+                setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
+            } else {
+                noInvestigationError();
+            }
+        });
+    }, []);
+
+    React.useEffect(() => {
+        epidemiologyNumber !== defaultEpidemiologyNumber &&
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
             if (result && result.data) {

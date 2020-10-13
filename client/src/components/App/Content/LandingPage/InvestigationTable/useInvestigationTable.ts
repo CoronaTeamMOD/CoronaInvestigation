@@ -3,26 +3,31 @@ import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import User from 'models/User';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
+import { store } from 'redux/store';
 import Investigator from 'models/Investigator';
 import {Service, Severity} from 'models/Logger';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import axios, { activateIsLoading } from 'Utils/axios';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { setEpidemiologyNum, setCantReachInvestigated, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setCantReachInvestigated, setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+
+const investigationURL = '/investigation';
 
 export const createRowData = (
     epidemiologyNumber: number,
@@ -64,6 +69,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
     const user = useSelector<StoreStateType, User>(state => state.user);
+    const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
@@ -75,6 +81,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             customClass: {
                 title: classes.errorAlertTitle
             }
+        });
+    }
+
+    useEffect(() => {
+        setIsLoading(isCurrentlyLoadingInvestigation);
+    }, [isCurrentlyLoadingInvestigation])
+    
+    const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
+        setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
+        epidemiologyNumberVal !== defaultEpidemiologyNumber && window.open(investigationURL);
+        setIsCurrentlyLoading(true);
+        timeout(15000).then(() => {
+          store.getState().investigation.isCurrentlyLoading && setIsCurrentlyLoading(false);
         });
     }
 
@@ -198,11 +217,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             });
     }, [user.id, classes.errorAlertTitle, user, orderBy]);
 
-    const transferToInvestigationForm  = (epidemiologyNumber: number) => {
-        setEpidemiologyNum(epidemiologyNumber);
-        history.push('/investigation');
-    }
-
     const handleInvestigationRowClick = (epidemiologyNumberVal: number, currentInvestigationStatus: string) => {
         axios.interceptors.request.use(
             (config) => {
@@ -214,39 +228,29 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             },
             (error) => Promise.reject(error)
         );
+        if (epidemiologyNumber !== epidemiologyNumberVal) {
+            const newInterceptor = axios.interceptors.request.use(
+                (config) => {
+                    config.headers.Authorization = user.token;
+                    config.headers.EpidemiologyNumber = epidemiologyNumberVal;
+                    activateIsLoading(config);
+                    return config;
+                },
+                (error) => Promise.reject(error)
+            );
+            setAxiosInterceptorId(newInterceptor);
+            axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
+        }
         if (currentInvestigationStatus === InvestigationStatus.NEW) {
-            if (epidemiologyNumber !== epidemiologyNumberVal) {
-                const newInterceptor = axios.interceptors.request.use(
-                    (config) => {
-                        config.headers.Authorization = user.token;
-                        config.headers.EpidemiologyNumber = epidemiologyNumberVal;
-                        activateIsLoading(config);
-                        return config;
-                    },
-                    (error) => Promise.reject(error)
-                );
-                setAxiosInterceptorId(newInterceptor);
-                axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
-            }
-            if (currentInvestigationStatus === InvestigationStatus.NEW) {
-                axios.post('/investigationInfo/updateInvestigationStartTime', {
-                    investigationStartTime: new Date(),
+            axios.post('/investigationInfo/updateInvestigationStartTime', {
+                investigationStartTime: new Date(),
+                epidemiologyNumber: epidemiologyNumberVal
+            }).then(() => {
+                axios.post('/investigationInfo/updateInvestigationStatus', {
+                    investigationStatus: InvestigationStatus.IN_PROCESS,
                     epidemiologyNumber: epidemiologyNumberVal
                 }).then(() => {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationStatus: InvestigationStatus.IN_PROCESS,
-                        epidemiologyNumber: epidemiologyNumberVal
-                    }).then(() => {
-                        transferToInvestigationForm(epidemiologyNumberVal);
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'GraphQL POST request to the DB',
-                            step: error
-                        });
-                        fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
-                    });
+                    moveToTheInvestigationForm(epidemiologyNumberVal);
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -255,11 +259,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         step: error
                     });
                     fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
-                })
-            } else {
-                setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
-                transferToInvestigationForm(epidemiologyNumberVal);
-            }
+                });
+            }).catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL POST request to the DB',
+                    step: error
+                });
+                fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
+            })
+        } else {
+            setCantReachInvestigated(currentInvestigationStatus === InvestigationStatus.CANT_REACH);
+            moveToTheInvestigationForm(epidemiologyNumberVal);
         }
     }
 

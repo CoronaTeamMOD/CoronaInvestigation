@@ -24,6 +24,7 @@ import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
@@ -117,8 +118,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }
 
     React.useEffect(() => {
-        fetchPersonalInfo(reset, trigger);
-    }, [])
+        if(investigationId !== -1) {
+            fetchPersonalInfo(reset, trigger);
+            setIsCurrentlyLoading(false);
+        }
+    }, [investigationId])
 
     React.useEffect(() => {
         if (personalInfoState.city) {
@@ -388,7 +392,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             name={PersonalInfoDataContextFields.CITY}
                             control={control}
-                            render={(props) => (
+                            render={(props: any) => (
                                 <Autocomplete
                                     className={classes.spacedOutAddress}
                                     options={Array.from(cities, ([id, value]) => ({ id, value }))}
@@ -476,7 +480,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             name={PersonalInfoDataContextFields.FLOOR}
                             control={control}
-                            render={(props) => (
+                            render={(props: any) => (
                                 <AlphanumericTextField
                                     testId='personalDetailsFloor'
                                     className={classes.floorInput}
@@ -499,7 +503,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         <Controller
                             name={PersonalInfoDataContextFields.HOUSE_NUMBER}
                             control={control}
-                            render={(props) => (
+                            render={(props: any) => (
                                 <AlphanumericTextField
                                     testId='personalDetailsHouseNumber'
                                     className={classes.houseNumInput}
@@ -600,7 +604,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     <Controller
                                         name={PersonalInfoDataContextFields.INSTITUTION_NAME}
                                         control={control}
-                                        render={(props) => (
+                                        render={(props: any) => (
                                             <Autocomplete
                                                 options={subOccupations}
                                                 getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
