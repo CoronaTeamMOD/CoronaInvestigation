@@ -16,15 +16,13 @@ import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationStatus from 'models/enums/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
-import { setEpidemiologyNum, setCantReachInvestigated, setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
+import { setCantReachInvestigated, setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { AxiosRequestConfig } from 'axios';
 
 const investigationURL = '/investigation';
 
