@@ -4,20 +4,21 @@ import * as yup from 'yup';
 import AlphbetTextFieldType from './AlphabetTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
+const errorMessage = 'השדה יכול להכיל רק אותיות';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 אותיות בלבד';
+
 const stringAlphabet = yup
   .string()
   .required()
-  .matches(/^[a-zA-Z\u0590-\u05fe\s]*$/)
-  .max(50);
+  .matches(/^[a-zA-Z\u0590-\u05fe\s]*$/, errorMessage)
+  .max(50, maxLengthErrorMessage);
 
-const errorMessage = 'השדה יכול להכיל רק אותיות';
 
 const AlphabetTextField: AlphbetTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
         validationSchema={stringAlphabet}
-        errorMessage={errorMessage}
     />
   );
 };
