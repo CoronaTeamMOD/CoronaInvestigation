@@ -191,6 +191,7 @@ const convertEventToDBType = (event: any) => {
     });
     updatedContacts?.forEach((contact: Contact) => {
         contact.id = contact.id ? contact.id : null;
+        contact.phoneNumber = contact.phoneNumber ? contact.phoneNumber : null;
     })
     event.contacts = updatedContacts;
     resetEmptyFields(event);

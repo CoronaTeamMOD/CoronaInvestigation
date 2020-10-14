@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, Controller } from 'react-hook-form';
-import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
+import { Grid, Typography, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -20,14 +20,14 @@ import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext'
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
-import SymptomsFields from './SymptomsFields';
 import HospitalFields from './HospitalFields';
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
-import BackgroundDiseasesFields from './BackgroundDiseasesFields';
+import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
+import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
@@ -86,7 +86,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         };
     };
 
-
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = getValues();
@@ -128,6 +127,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             setFormState(epidemiologyNumber, id, valid);
         })
     }
+
     const watchIsInIsolation = watch(ClinicalDetailsFields.IS_IN_ISOLATION);
     const watchIsolationStartDate = watch(ClinicalDetailsFields.ISOLATION_START_DATE);
     const watchIsolationEndDate = watch(ClinicalDetailsFields.ISOLATION_END_DATE);
@@ -167,6 +167,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [watchDoesHaveSymptoms]);
 
     React.useEffect(() => {
+        if (!watchSymptoms.includes(otherSymptomFieldName)) {
+            setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
+        }
+    }, [watchSymptoms]);
+
+    React.useEffect(() => {
         if (watchIsSymptomsDateUnknown) {
             setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
         }
@@ -178,6 +184,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
     }, [watchDoesHaveBackgroundDiseases]);
+
+    React.useEffect(() => {
+        if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
+            setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
+        }
+    }, [watchBackgroundDiseases]);
 
     React.useEffect(() => {
         if (watchWasHospitalized === false) {
