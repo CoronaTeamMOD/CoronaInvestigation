@@ -12,6 +12,7 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
@@ -87,7 +88,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
-                        <AlphanumericTextField
+                        <NumericTextField
                             name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             placeholder='הכנס טלפון:'
                             value={interactedContact.additionalPhoneNumber}
