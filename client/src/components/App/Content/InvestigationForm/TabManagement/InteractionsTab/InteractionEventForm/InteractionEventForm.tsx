@@ -79,7 +79,7 @@ const InteractionEventForm: React.FC<Props> = (
     saveIntreactions(interactionDataToSave);
   }
 
-  const generatePlacenameByPlaceType = (input :string) => {
+  const generatePlacenameByPlaceSubType = (input :string) => {
     if (!placeType) return '';
     if (placeType !== input) {
       return `${placeType} ${input}`;
@@ -93,7 +93,7 @@ const InteractionEventForm: React.FC<Props> = (
     return  {
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceType(placeSubtypeName),
+      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
         ?.map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
