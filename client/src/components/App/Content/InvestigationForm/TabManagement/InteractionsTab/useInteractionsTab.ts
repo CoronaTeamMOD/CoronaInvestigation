@@ -10,6 +10,7 @@ import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InteractionsTabStyles';
 import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
@@ -17,14 +18,15 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 10;
+const maxInvestigatedDays: number = 21;
 
-export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-
     const {interactions, setInteractions, setAreThereContacts} = parameters;
 
     const {parseAddress} = useGoogleApiAutocomplete();
+    const {alertError} = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
@@ -40,6 +42,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             user: userId,
             investigation: epidemiologyNumber
         });
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
                 logger.info({
@@ -76,7 +79,12 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
             try {
-                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
+                const daysToInvestigate = eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
+                if (daysToInvestigate.length > maxInvestigatedDays) {
+                    alertError('תאריך תחילת הסימפטומים לא חוקי');
+                    return []
+                }
+                return daysToInvestigate;
             } catch (e) {
                 return []
             }
