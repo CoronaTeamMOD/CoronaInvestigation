@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import { store } from 'redux/store';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
@@ -58,6 +60,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const noInvestigationError = () => {
         Swal.fire({
@@ -86,10 +89,26 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, []);
 
     React.useEffect(() => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching investigation Info',
+            step: 'launching investigation info request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         epidemiologyNumber !== defaultEpidemiologyNumber &&
         axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
         ).then((result: any) => {
             if (result && result.data) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching investigation Info',
+                    step: 'investigation info request was successful',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 const investigationInfo = result.data;
                 setInvestigatedPatientId(investigationInfo.investigatedPatientId);
                 const gender = investigationInfo.investigatedPatient.gender;
@@ -97,10 +116,26 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                 setInvestigationStaticInfo(investigationInfo);
             }
             else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching investigation Info',
+                    step: 'got status 200 but wrong data'
+                });
                 handleInvalidEntrance();
             }
         })
-        .catch(() => handleInvalidEntrance())
+        .catch((error) => { 
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: 'Fetching investigation Info',
+                step: `got errors in server result: ${error}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            handleInvalidEntrance()
+        })
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
