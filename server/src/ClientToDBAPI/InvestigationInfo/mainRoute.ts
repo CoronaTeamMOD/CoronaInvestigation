@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 
+import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import { Service, Severity } from '../../Models/Logger/types';
 import { GET_INVESTIGATION_INFO } from '../../DBService/InvestigationInfo/Query';
 import { UPDATE_INVESTIGATION_STATUS, UPDATE_INVESTIGATION_START_TIME, UPDATE_INVESTIGATION_END_TIME } from '../../DBService/InvestigationInfo/Mutation';
 
@@ -42,14 +44,70 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationStatus } = request.body;
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Investigation click',
+        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify({ epidemiologyNumber, investigationStatus })}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologyNumber
+    })
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus })
-    .then((result: any) => response.send(result));
+    .then((result: any) => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Investigation click',
+            step: 'the investigation status was updated successfully',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+        response.send(result)
+    })
+    .catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Investigation click',
+            step: `the investigation status failed to update due to: ${err}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+    });
 })
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationStartTime } = request.body;
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Investigation click',
+        step: `requesting the graphql API to update investigation start time with parameters ${JSON.stringify({ epidemiologyNumber, investigationStartTime })}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologyNumber
+    })
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStartTime })
-    .then((result: any) => response.send(result));
+    .then((result: any) => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Investigation click',
+            step: 'the investigation start time was updated successfully',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+        response.send(result)
+    })
+    .catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Investigation click',
+            step: `the investigation start time failed to update due to: ${err}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+    });
 })
 
 investigationInfo.post('/updateInvestigationEndTime', (request: Request, response: Response) => {
