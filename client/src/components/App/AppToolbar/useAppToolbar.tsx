@@ -31,8 +31,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     React.useEffect(() => {
         if (firstUserUpdate.current) {
             firstUserUpdate.current = false;
-            getCountyByUser();
         } else {
+            getCountyByUser();
             getUserActivityStatus();
         }
     }, [user]);
