@@ -48,26 +48,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>(TableHeadersNames.epidemiologyNumber);
 
     useEffect(() => {
-        if(investigatorAutoCompleteClicked) {
+        if(investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
             setInvestigatorAutoCompleteClicked(false);
         }
     }, [countyAutoCompleteClicked]);
 
     useEffect(() => {
-        if(countyAutoCompleteClicked) {
+        if(countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
             setCountyAutoCompleteClicked(false);
         }
     }, [investigatorAutoCompleteClicked]);
-
-    useEffect(() => {
-        if(countyAutoCompleteClicked) {
-            setCountyAutoCompleteClicked(false);
-        }
-
-        if(investigatorAutoCompleteClicked) {
-            setInvestigatorAutoCompleteClicked(false);
-        }
-    }, [selectedRow]);
 
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
