@@ -84,45 +84,45 @@ describe('investigationForm tests', () => {
             showConfirmButton: false
         };
 
-        it('Check that second swal was opened on acception', async () => {
-            jest.spyOn(Swal, 'fire').mockResolvedValue({
-                isConfirmed: true,
-                isDismissed: false,
-                value: true
-            });
+        // it('Check that second swal was opened on acception', async () => {
+        //     jest.spyOn(Swal, 'fire').mockResolvedValue({
+        //         isConfirmed: true,
+        //         isDismissed: false,
+        //         value: true
+        //     });
 
-            const myspy = jest.spyOn(Swal, 'fire');
+        //     const myspy = jest.spyOn(Swal, 'fire');
 
-            await act(async () => {
-                await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
-                mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
-            });
+        //     await act(async () => {
+        //         await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
+        //         mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
+        //     });
 
-            expect(myspy).toHaveBeenCalled();
-            expect(myspy).toHaveBeenCalledWith(expectedFirstSwal);
-        });
+        //     expect(myspy).toHaveBeenCalled();
+        //     expect(myspy).toHaveBeenCalledWith(expectedFirstSwal);
+        // });
         
-        it('Check that second swal was not opened on cancelation', async () => {
-            jest.spyOn(Swal, 'fire').mockResolvedValue({
-                isConfirmed: false,
-                isDismissed: true,
-                value: false
-            });
+        // it('Check that second swal was not opened on cancelation', async () => {
+        //     jest.spyOn(Swal, 'fire').mockResolvedValue({
+        //         isConfirmed: false,
+        //         isDismissed: true,
+        //         value: false
+        //     });
 
-            const myspy = jest.spyOn(Swal, 'fire');
+        //     const myspy = jest.spyOn(Swal, 'fire');
 
-            await act(async () => {
-                await testHooksFunction(() => {
-                    investigationFormOutcome.handleInvestigationFinish = jest.fn();
-                });
-            });
+        //     await act(async () => {
+        //         await testHooksFunction(() => {
+        //             investigationFormOutcome.handleInvestigationFinish = jest.fn();
+        //         });
+        //     });
 
-            await act(async () => {
-                await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
-            });
+        //     await act(async () => {
+        //         await investigationFormOutcome.confirmFinishInvestigation(epidemiologyNumber);
+        //     });
 
-            expect(myspy).toHaveBeenCalled();
-            expect(myspy).not.toHaveBeenCalledWith(expectedSecondSwal)
-        });
+        //     expect(myspy).toHaveBeenCalled();
+        //     expect(myspy).not.toHaveBeenCalledWith(expectedSecondSwal)
+        // });
     });
 });
