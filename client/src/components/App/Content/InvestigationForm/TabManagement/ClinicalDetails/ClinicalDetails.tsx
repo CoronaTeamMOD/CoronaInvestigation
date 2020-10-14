@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, Controller } from 'react-hook-form';
-import { Grid, Typography, TextField, Collapse } from '@material-ui/core';
+import { Grid, Typography, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -31,13 +31,14 @@ import BackgroundDiseasesFields from './BackgroundDiseasesFields';
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
-    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
+
     const { control, setValue, getValues, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
     });
-
+    
+    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
@@ -46,11 +47,9 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
-
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
@@ -142,7 +141,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
     React.useEffect(() => {
-        fetchClinicalDetails(reset, trigger)
+        fetchClinicalDetails(reset, trigger);
     }, []);
 
     React.useEffect(() => {
@@ -200,8 +199,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             <Grid item xs={2} className={classes.fieldLabel}>
                                 <Typography>
                                     <b>
-                                        כתובת לאשפוז ביתי:
-                            </b>
+                                        כתובת לבידוד:
+                                    </b>
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>

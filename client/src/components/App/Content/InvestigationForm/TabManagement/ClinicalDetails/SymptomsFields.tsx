@@ -23,7 +23,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                 <Grid item xs={2} className={classes.fieldLabel}>
                     <Typography>
                         <b>
-                            האם יש סימפטומים:
+                            האם יש תסמינים:
                         </b>
                     </Typography>
                 </Grid>
@@ -56,7 +56,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     testId='unkownSymptomsDate'
                                     checkboxElements={[{
                                         value: props.value,
-                                        labelText: 'תאריך התחלת סימפטומים לא ידוע',
+                                        labelText: 'תאריך התחלת תסמינים לא ידוע',
                                         checked: props.value,
                                         onChange: (e, value) => {
                                             props.onChange(value);
@@ -78,7 +78,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             maxDate={new Date()}
                                             test-id='symptomsStartDate'
                                             value={props.value}
-                                            labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת סימפטומים'}
+                                            labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת תסמינים'}
                                             onChange={(newDate: Date) =>
                                                 props.onChange(newDate)
                                             }
@@ -91,7 +91,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </Collapse>
                     {
                         watchDoesHaveSymptoms &&
-                        <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>סימפטומים: (יש
+                        <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>תסמינים: (יש
                             לבחור לפחות סימפטום אחד)</Typography>
                     }
                     <Grid item container className={classes.smallGrid}>
