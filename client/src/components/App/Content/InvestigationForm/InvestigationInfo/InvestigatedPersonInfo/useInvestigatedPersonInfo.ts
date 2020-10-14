@@ -1,13 +1,17 @@
 import Swal from 'sweetalert2';
-import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
+import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
-import InvestigationStatus from 'models/enums/InvestigationStatus';
-import { setCantReachInvestigated } from 'redux/Investigation/investigationActionCreators';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { InvestigationStatus } from 'models/InvestigationStatus';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import { setInvestigationStatus, setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
@@ -17,12 +21,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     let history = useHistory();
     const classes = useStyles({});
 
-    const getInvestigationStatus = (cantReachInvestigated: boolean) => {
-        if (cantReachInvestigated) return InvestigationStatus.CANT_REACH;
-        return InvestigationStatus.IN_PROCESS;
-    }
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
-    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number, cantReachInvestigated: boolean) => {
+    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
@@ -36,9 +37,11 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             }
         }).then((result) => {
             if (result.value) {
+                const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationStatus: getInvestigationStatus(cantReachInvestigated),
-                    epidemiologyNumber
+                    investigationMainStatus: investigationStatus.mainStatus,
+                    investigationSubStatus: subStatus,
+                    epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
                     handleInvestigationFinish();
                 }).catch(() => {
@@ -58,7 +61,10 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(1900).then(()=> history.push(landingPageRoute));
+            timeout(1900).then(()=> {
+                setIsInInvestigation(false);
+                history.push(landingPageRoute)
+            });
     };
 
     const getPersonAge = (birthDate: Date) => {
@@ -83,13 +89,24 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const handleCantReachInvestigatedCheck = (cantReachInvestigated: boolean) => {       
-        setCantReachInvestigated(cantReachInvestigated);
+    const handleCantReachInvestigatedCheck = (cantReachInvestigated: boolean) => {   
+        setInvestigationStatus({
+            mainStatus: cantReachInvestigated ? InvestigationMainStatus.CANT_REACH : InvestigationMainStatus.IN_PROCESS,
+            subStatus: investigationStatus.subStatus
+        })
+    };
+
+    const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {      
+        setInvestigationStatus({
+            mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
+            subStatus:  investigationStatus.subStatus
+        })
     };
 
     return {
         confirmExitUnfinishedInvestigation,
         handleCantReachInvestigatedCheck,
+        handleCannotCompleteInvestigationCheck,
         getPersonAge
     }
 };

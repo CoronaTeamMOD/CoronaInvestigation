@@ -13,7 +13,7 @@ import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
-import InvestigationStatus from 'models/enums/InvestigationStatus';
+import InvestigationStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
@@ -102,8 +102,9 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }).then((result) => {
             if (result.value) {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    epidemiologyNumber,
-                    investigationStatus: InvestigationStatus.DONE,
+                    investigationMainStatus : InvestigationStatus.DONE,
+                    investigationSubStatus: null,
+                    epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
