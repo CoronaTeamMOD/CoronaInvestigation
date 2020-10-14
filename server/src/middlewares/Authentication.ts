@@ -72,11 +72,19 @@ const handleConfidentialAuth = (
             severity: Severity.LOW,
             workflow: 'Authentication',
             step: `request to the graphql API with parameters: ${user.id}`,
-            user: response.locals.user.id,
+            user: user.id,
             investigation: +request.headers.epidemiologynumber
         });
 
         graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Authentication',
+                step: 'fetched user by id successfully',
+                user: user.id,
+                investigation: +request.headers.epidemiologynumber
+            });
             response.locals.user = {
                 ...user,
                 isAdmin: result.data.userById.isAdmin,
@@ -141,8 +149,25 @@ const authMiddleware = (
                 severity: Severity.LOW,
                 workflow: 'Authentication',
                 step: `noauth user found successfully, the user is: ${JSON.stringify(user)}`
-            })
+            });
+
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Authentication',
+                step: `request to the graphql API with parameters: ${user.id}`,
+                user: user.id,
+                investigation: +request.headers.epidemiologynumber
+            });
             graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Authentication',
+                    step: 'fetched user by id successfully',
+                    user: user.id,
+                    investigation: +request.headers.epidemiologynumber
+                });
                 response.locals.user = {
                     ...user,
                     isAdmin: result.data.userById.isAdmin,
