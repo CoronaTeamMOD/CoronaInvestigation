@@ -8,7 +8,7 @@ const requiredText = 'שגיאה: שדה חובה';
 const numberValidationText = 'שגיאה: מספר אינו תקין';
 const requiredSelectionText = 'שגיאה: יש לבחור מבין האפשרויות הקיימות';
 const phoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$/
-const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))|^$/
+const notRequiredPhoneNumberRegex = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
 const schema = yup.object().shape({
     [PersonalInfoDataContextFields.PHONE_NUMBER]: yup.string().nullable().required(requiredText).matches(phoneNumberRegex, numberValidationText),
