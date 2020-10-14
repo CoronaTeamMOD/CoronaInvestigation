@@ -1,6 +1,6 @@
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {NextFunction, Request, Response} from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import logger from '../Logger/Logger';
 import { Service, Severity } from '../Models/Logger/types';
@@ -16,8 +16,8 @@ const stubUsers = {
 
     },
     'demo token': {
-      id: '1',
-      name: 'XXXXXX',
+        id: '1',
+        name: 'XXXXXX',
     }
 };
 
@@ -34,7 +34,7 @@ const handleConfidentialAuth = (
             workflow: 'Authentication',
             step: 'got no token at all'
         })
-        return response.status(401).json({error: "unauthorized prod user"});
+        return response.status(401).json({ error: "unauthorized prod user" });
     }
 
     logger.info({
@@ -50,25 +50,58 @@ const handleConfidentialAuth = (
             name: decoded.name,
         };
 
-        if(!user || !user.name || !user.id) {
+        if (!user || !user.name || !user.id) {
             logger.warning({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Authentication',
                 step: 'got unauthorized token'
             })
-            return response.status(403).json({error: "forbidden prod user"});
+            return response.status(403).json({ error: "forbidden prod user" });
         }
 
         logger.info({
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Authentication',
-            step: `authorized azure token successfully! got user: ${JSON.stringify(user)}` 
-        })
-        response.locals.user = user;
-        response.locals.epidemiologynumber = request.headers.epidemiologynumber;
-        return next();
+            step: `authorized azure token successfully! got user: ${JSON.stringify(user)}`
+        });
+
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Authentication',
+            step: `request to the graphql API with parameters: ${user.id}`,
+            user: user.id,
+            investigation: +request.headers.epidemiologynumber
+        });
+
+        graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Authentication',
+                step: 'fetched user by id successfully',
+                user: user.id,
+                investigation: +request.headers.epidemiologynumber
+            });
+            response.locals.user = {
+                ...user,
+                isAdmin: result.data.userById.isAdmin,
+                investigationGroup: result.data.userById.investigationGroup
+            };
+            response.locals.epidemiologynumber = request.headers.epidemiologynumber;
+            return next();
+        }).catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Authentication',
+                step: 'error in requesting the graphql API',
+                user: user.id,
+            });
+        });;
+
     } catch (error) {
         logger.error({
             service: Service.SERVER,
@@ -90,7 +123,7 @@ const authMiddleware = (
             service: Service.SERVER,
             workflow: 'Authentication',
             step: 'authenticating with the azure recived JWT token',
-            severity: Severity.LOW 
+            severity: Severity.LOW
         });
         return handleConfidentialAuth(request, response, next);
     } else {
@@ -98,7 +131,7 @@ const authMiddleware = (
             service: Service.SERVER,
             workflow: 'Authentication',
             step: 'authenticating with the stubuser recived token',
-            severity: Severity.LOW 
+            severity: Severity.LOW
         });
         const token = request.headers.authorization;
         const user = stubUsers[token as keyof typeof stubUsers];
@@ -109,17 +142,49 @@ const authMiddleware = (
                 workflow: 'Authentication',
                 step: `fake user doesn't exist got the token: ${token}`
             })
-            return response.status(401).json({error: "unauthorized noauth user"});
+            return response.status(401).json({ error: "unauthorized noauth user" });
         } else {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: 'Authentication',
                 step: `noauth user found successfully, the user is: ${JSON.stringify(user)}`
-            })
-            response.locals.user = user;
-            response.locals.epidemiologynumber = request.headers.epidemiologynumber;
-            return next();
+            });
+
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Authentication',
+                step: `request to the graphql API with parameters: ${user.id}`,
+                user: user.id,
+                investigation: +request.headers.epidemiologynumber
+            });
+            graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Authentication',
+                    step: 'fetched user by id successfully',
+                    user: user.id,
+                    investigation: +request.headers.epidemiologynumber
+                });
+                response.locals.user = {
+                    ...user,
+                    isAdmin: result.data.userById.isAdmin,
+                    investigationGroup: result.data.userById.investigationGroup
+                };
+                response.locals.epidemiologynumber = request.headers.epidemiologynumber;
+                return next();
+            }).catch(err => {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Authentication',
+                    step: 'error in requesting the graphql API',
+                    user: user.id,
+                });
+            });;
+            
         }
     }
 };
@@ -129,49 +194,27 @@ export const adminMiddleWare = (
     response: Response,
     next: NextFunction
 ) => {
-    const userIdForQuery = { id: response.locals.user.id }
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW, 
-        workflow: 'Admin validation',
-        step: `request to the graphql API with parameters: ${userIdForQuery}`,
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    });
-    graphqlRequest(GET_USER_BY_ID, response.locals, userIdForQuery)
-    .then((result: any) => {
-        if (result.data.userById.isAdmin) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW, 
-                    workflow: 'Admin validation',
-                    step: 'the requested user is admin',
-                    user: response.locals.user.id,
-                    investigation: response.locals.epidemiologynumber
-                });
-                response.locals.user.group = result.data.userById.investigationGroup
-                return next();
-            } else {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.MEDIUM, 
-                    workflow: 'Admin validation',
-                    step: 'the user is not admin!',
-                    user: response.locals.user.id,
-                    investigation: response.locals.epidemiologynumber
-                });
-                response.status(401).json({error: "unauthorized non admin user" })
-            }
-        }).catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH, 
-                workflow: 'Admin validation',
-                step: 'error in requesting the graphql API',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologynumber
-            });
+    if (response.locals.user.isAdmin) {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Admin validation',
+            step: 'the requested user is admin',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
         });
+        return next();
+    } else {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.MEDIUM,
+            workflow: 'Admin validation',
+            step: 'the user is not admin!',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+        response.status(401).json({ error: "unauthorized non admin user" })
+    }
 };
 
 export default authMiddleware;
