@@ -1,6 +1,5 @@
 import { format } from 'date-fns';
 
-import logger from 'logger/logger';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import { createRowData } from './useInvestigationTable';
