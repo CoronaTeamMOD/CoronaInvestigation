@@ -16,7 +16,7 @@ const placeSubTypeDisplayName = 'תת סוג';
 
 const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { control, setValue, placeTypeName, placeSubTypeName, placeType, placeSubType,
+    const { control, placeTypeName, placeSubTypeName, placeType, placeSubType,
             onPlaceTypeChange, onPlaceSubTypeChange,
     } = props;
 
@@ -50,12 +50,9 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     useEffect(() => {
         if (placeSubTypeObj) {
             setPlaceSubTypeInput(placeSubTypeObj.displayName);
-            setValue(InteractionEventDialogFields.PLACE_NAME, `${placeType} ${placeSubTypeObj?.displayName}`);
-        } else {
-            setValue(InteractionEventDialogFields.PLACE_NAME, `${placeType}`);
         }
     }, [placeSubType]);
-    
+
     const handleSubTypeInputChange = (subTypeInput: string) => {
         setPlaceSubTypeInput(subTypeInput);
         if (subTypeInput === '') {
@@ -177,5 +174,4 @@ interface Props {
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType) => void;
     control?: Control;
-    setValue: (name: string, value: any) => void;
 };
