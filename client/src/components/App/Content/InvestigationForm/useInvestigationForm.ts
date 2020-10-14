@@ -102,8 +102,9 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }).then((result) => {
             if (result.value) {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    epidemiologyNumber,
-                    investigationStatus: InvestigationStatus.DONE,
+                    investigationMainStatus : InvestigationStatus.DONE,
+                    investigationSubStatus: null,
+                    epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),

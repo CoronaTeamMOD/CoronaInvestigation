@@ -41,7 +41,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus: investigationStatus.mainStatus,
                     investigationSubStatus: subStatus,
-                    epidemiologyNumber
+                    epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
                     handleInvestigationFinish();
                 }).catch(() => {
