@@ -170,8 +170,8 @@ const authMiddleware = (
                 });
                 response.locals.user = {
                     ...user,
-                    isAdmin: result.data.userById.isAdmin,
-                    investigationGroup: result.data.userById.investigationGroup
+                    isAdmin: result.data.userById?.isAdmin,
+                    investigationGroup: result.data.userById?.investigationGroup
                 };
                 response.locals.epidemiologynumber = request.headers.epidemiologynumber;
                 return next();

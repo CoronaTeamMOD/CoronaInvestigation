@@ -46,13 +46,22 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
-            setIsActive(result.data.isActive);
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: 'fetched user activity status successfully'
-            });
+            if (result.data) {
+                setIsActive(result.data.isActive);
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL request to the DB',
+                    step: 'fetched user activity status successfully'
+                });
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow: 'GraphQL request to the DB',
+                    step: 'The user doesnt exist on db'
+                });
+            }
         }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לקבל את הסטטוס הנוכחי שלך',

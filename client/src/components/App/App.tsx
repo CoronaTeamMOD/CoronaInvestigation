@@ -53,7 +53,7 @@ const App: React.FC = (): JSX.Element => {
             user: user.id
         });
         axios.get(`/users/user`).then((result: any) => {
-            if (result && result.data) {
+            if (result && result.data.userById) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -62,7 +62,6 @@ const App: React.FC = (): JSX.Element => {
                     user: result.data.userById
                 })
                 const user = result.data.userById;
-                !Boolean(user) && setIsSignUpOpen(true);
                 setUser({
                     ...user,
                     id: userId,
@@ -72,7 +71,8 @@ const App: React.FC = (): JSX.Element => {
                 setIsUserUpdated(true);
                 return user;
             } else {
-                logger.error({
+                setIsSignUpOpen(true);
+                logger.warn({
                     service: Service.CLIENT,
                     severity: Severity.MEDIUM,
                     workflow: 'Getting user details',

@@ -27,7 +27,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
     })
     graphqlRequest(GET_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id })
         .then((result: any) => {
-            if (result.data?.userById) {
+            if (result.data) {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,

@@ -5,7 +5,7 @@ const useStyles = makeStyles(() => ({
         margin: '3vh 0',
     },
     textField: {
-        width: '18vw',
+        width: '15.5vw',
     }
 }));
 
