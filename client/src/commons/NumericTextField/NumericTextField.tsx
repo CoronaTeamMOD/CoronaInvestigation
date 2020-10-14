@@ -4,20 +4,21 @@ import * as yup from 'yup';
 import NumericTextFieldType from './NumericTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
+const maxLengthErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
+const alphabeticErrorMessage = 'השדה יכול להכיל מספרים בלבד';
+
 const stringAlphabet = yup
   .string()
   .required()
-  .matches(/^[0-9]*$/)
-  .max(50);
+  .matches(/^[0-9]*$/, alphabeticErrorMessage)
+  .max(10, maxLengthErrorMessage);
 
-const errorMessage = 'השדה יכול להכיל רק מספרים';
 
 const NumericTextField: NumericTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
         validationSchema={stringAlphabet}
-        errorMessage={errorMessage}
     />
   );
 };

@@ -16,7 +16,6 @@ export interface TypePreventiveTextFieldProps<T> {
     className?: string,
     testId?: string,
     error? : boolean,
-    errorMessage: string,
     validationSchema: yup.StringSchema<string, object>
 }
 
