@@ -98,6 +98,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <TextField
+                                        disabled
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={(event) => props.onChange(event.target.value as string)}
