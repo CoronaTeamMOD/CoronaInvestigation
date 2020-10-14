@@ -176,10 +176,10 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Switch investigator',
-        step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.group })}`,
+        step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`,
         user: response.locals.user.id
     });
-    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.group })
+    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
         .then((result: any) => {
             let users: User[] = [];
             if (result && result.data && result.data.allUsers) {

@@ -3,7 +3,6 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import { adminMiddleWare } from '../../middlewares/Authentication';
 import {GET_COUNTY_DISPLAY_NAME_BY_USER, GET_ALL_COUNTIES} from '../../DBService/Counties/Query';
 import GetAllCountiesResponse from '../../Models/User/GetAllCountiesResponse';
 
@@ -43,7 +42,7 @@ countiesRoute.get('', (request: Request, response: Response) => {
 });
 
 
-countiesRoute.get('/county/displayName', adminMiddleWare, (request: Request, response: Response) => {
+countiesRoute.get('/county/displayName', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -51,7 +50,7 @@ countiesRoute.get('/county/displayName', adminMiddleWare, (request: Request, res
         step: 'launching DB request',
         user: response.locals.user.id
     });
-    graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.group })
+    graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.investigationGroup })
         .then((result: any) => {
             logger.info({
                 service: Service.SERVER,
