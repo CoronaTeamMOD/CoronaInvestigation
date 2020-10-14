@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
@@ -23,6 +25,7 @@ import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const classes = useStyles({});
@@ -30,49 +33,148 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const initializeTabShow = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting Amount Of Contacts',
+            step: `launching amount of contacts request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting Amount Of Contacts',
+                step: `amount of contacts request was successful`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
             setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
-        }).catch(() => {
+        }).catch((error) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: 'Getting Amount Of Contacts',
+                step: `got errors in server result: ${error}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
             handleContactsQueryFail();
         });
     };
 
     const fetchCities = () => {
         if (cities && cities.size === 0) {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Fetching Cities',
+                step: `launching cities request`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
             axios.get('/addressDetails/cities')
                 .then((result: any) => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching Cities',
+                        step: `cities request was successful`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     const cities: Map<string, City> = new Map();
                     result && result.data && result.data.forEach((city: City) => {
                         cities.set(city.id, city)
                     });
                     setCities(cities);
                 })
-                .catch(err => console.log(err));
+                .catch(error => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Fetching Cities',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                });
         }
     };
 
     const fetchContactTypes = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Contact Types',
+            step: `launching contact types request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get('/intersections/contactTypes')
             .then((result: any) => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching Contact Types',
+                    step: `contact types request was successful`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 const contactTypes: Map<number, ContactType> = new Map();
                 result && result.data && result.data.forEach((contactType: ContactType) => {
                     contactTypes.set(contactType.id, contactType)
                 });
                 setContactType(contactTypes);
             })
-            .catch(err => console.log(err));
+            .catch(error => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching Contact Types',
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            });
     }
 
     const fetchCountries = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Countries',
+            step: `launching countries request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get('/addressDetails/countries')
             .then((result: any) => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching Countries',
+                    step: `countries request was successful`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 const countries: Map<string, Country> = new Map();
                 result && result.data && result.data.forEach((country: Country) => {
                     countries.set(country.id, country)
                 });
                 setCountries(countries);
             })
-            .catch(err=> console.log(err));
+            .catch(error=> {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching Countries',
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            });
     };
 
     useEffect(() => {
@@ -101,16 +203,69 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             }
         }).then((result) => {
             if (result.value) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Update Investigation Status',
+                    step: `launching investigation status request`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus : InvestigationStatus.DONE,
                     investigationSubStatus: null,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation Status',
+                        step: `update investigation status request was successful`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation End Time',
+                        step: `launching investigation end time request`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     axios.post('/investigationInfo/updateInvestigationEndTime', {
                         investigationEndTime: new Date(),
                         epidemiologyNumber
-                    }).then(() => handleInvestigationFinish()).catch(() => handleInvestigationFinishFailed())
-                }).catch(() => {
+                    }).then(() => {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation End Time',
+                            step: `update investigation end time request was successful`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                        handleInvestigationFinish()
+                    })
+                    .catch((error) => {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.HIGH,
+                            workflow: 'Update Investigation End Time',
+                            step: `got errors in server result: ${error}`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                        handleInvestigationFinishFailed()
+                    })
+                }).catch((error) => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Update Investigation Status',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     handleInvestigationFinishFailed();
                 })
             };

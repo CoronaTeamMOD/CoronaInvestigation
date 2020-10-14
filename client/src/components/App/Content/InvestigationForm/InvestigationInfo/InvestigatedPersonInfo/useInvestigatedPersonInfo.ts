@@ -3,15 +3,16 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
-import { setInvestigationStatus, setEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
@@ -22,6 +23,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const classes = useStyles({});
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
@@ -37,14 +39,38 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             }
         }).then((result) => {
             if (result.value) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Update Investigation Status',
+                    step: `launching investigation status request`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus: investigationStatus.mainStatus,
                     investigationSubStatus: subStatus,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation Status',
+                        step: `update investigation status request was successful`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     handleInvestigationFinish();
-                }).catch(() => {
+                }).catch((error) => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation Status',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     handleUnfinishedInvestigationFailed();
                 })
             };
