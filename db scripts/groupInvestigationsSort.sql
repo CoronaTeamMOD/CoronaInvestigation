@@ -1,7 +1,3 @@
-CREATE OR REPLACE FUNCTION public.group_investigations_sort(investigation_group_id integer, order_by character varying)
- RETURNS json
- LANGUAGE plpgsql
-AS $function$
 BEGIN
 RETURN (select
     json_build_object(
@@ -46,7 +42,7 @@ RETURN (select
 					from public.investigation_status investigationStatusTable
 					where investigationStatusTable.display_name = investigationTable.investigation_status 
 				),
-				'investigationSubStatusByInvestigationSubStatus', (
+				'investigationSubStatusByInvestigationStatus', (
 					select json_build_object (
 						'displayName', investigationSubStatusTable.display_name
 					)
@@ -104,11 +100,19 @@ RETURN (select
 			CASE WHEN order_by='ageDESC' THEN (
 			select age
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
+			where epidemiology_number = (
+				select covid_patient from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END ASC,
 			CASE WHEN order_by='ageASC' THEN (
 			select age
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
+			where epidemiology_number = (
+				select covid_patient from public.investigated_patient
+				where id = investigationTable.investigated_patient_id
+				)
+			) END DESC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
 			CASE WHEN order_by='investigatorNameDESC' THEN (
@@ -129,5 +133,3 @@ where (
 	) = investigation_group_id
 ));
 END;
-$function$
-;
