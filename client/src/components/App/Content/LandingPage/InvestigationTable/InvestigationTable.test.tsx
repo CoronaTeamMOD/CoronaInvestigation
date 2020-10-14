@@ -12,7 +12,8 @@ describe('investigationTable tests', () => {
 
         newRowData = {
             epidemiologyNumber: 111,
-            status: 'חדש',
+            mainStatus: 'חדש',
+            subStatus: 'חדש2',
             fullName: 'אמילי',
             phoneNumber: '053-3486954',
             age: 25,
@@ -35,12 +36,13 @@ describe('investigationTable tests', () => {
             newRowData.epidemiologyNumber,
             newRowData.coronaTestDate,
             newRowData.priority,
-            newRowData.status,
+            newRowData.mainStatus,
+            newRowData.subStatus,
             newRowData.fullName,
             newRowData.phoneNumber,
             newRowData.age,
-            newRowData.city,
             newRowData.county,
+            newRowData.city,
             newRowData.investigator
         );
 
@@ -53,11 +55,12 @@ describe('investigationTable tests', () => {
             newRowData.coronaTestDate,
             newRowData.priority,
             newRowData.fullName,
-            newRowData.status,
+            newRowData.mainStatus,
+            newRowData.subStatus,
             newRowData.phoneNumber,
             newRowData.age,
-            newRowData.city,
             newRowData.county,
+            newRowData.city,
             newRowData.investigator
         );
 

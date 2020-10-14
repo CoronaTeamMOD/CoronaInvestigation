@@ -60,7 +60,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }, [investigatorAutoCompleteClicked]);
 
     const {
-        tableRows, handleInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
     } = useInvestigationTable({selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties});
 
@@ -188,9 +188,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     <TableRow
                                         key={indexedRow.epidemiologyNumber}
                                         className={classes.investigationRow}
-                                        onClick={() => {
-                                            handleInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
-                                        }}
+                                        onClick={() => onInvestigationRowClick(indexedRow)}
                                     >
                                         {
                                             Object.values(user.isAdmin ? adminCols : userCols).map((key: string) => (

@@ -1,7 +1,8 @@
 export interface InvestigatedPersonInfoOutcome {
     getPersonAge: (birthDate: Date) => string;
-    confirmExitUnfinishedInvestigation: (epidemiologyNumber: number, cantReachInvestigated: boolean) => void;
+    confirmExitUnfinishedInvestigation: (epidemiologyNumber: number) => void;
     handleCantReachInvestigatedCheck: (cantReachInvestigated: boolean) => void
+    handleCannotCompleteInvestigationCheck: (cannotCompleteInvestigation: boolean) => void
 };
 
 export interface InvestigatedPersonInfoIncome {
