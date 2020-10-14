@@ -45,28 +45,42 @@ const App: React.FC = (): JSX.Element => {
     }
 
     const setCurrentAndGroupUsers = (userId: string, userName: string, userToken: string) => {
-        axios.get(`/users/user`).then((result: any) => {
-            
-            const user = result && result.data && result.data.userById;
-            !Boolean(user) && setIsSignUpOpen(true);
-            setUser({
-                ...user,
-                id: userId,
-                userName: userName,
-                token: userToken,
-            });
-
-            setIsUserUpdated(true);
-            return user;
-
-        }).catch((err) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL GET user request to the DB',
-                step: err
-            });
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting group users',
+            step: 'launch request to the server',
+            user: user.id
         });
+        axios.get(`/users/user`).then((result: any) => {
+            if (result && result.data) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting group users',
+                    step: 'recived user from the server',
+                    user: result.data.userById
+                })
+                const user = result.data.userById;
+                !Boolean(user) && setIsSignUpOpen(true);
+                setUser({
+                    ...user,
+                    id: userId,
+                    userName: userName,
+                    token: userToken,
+                });
+                setIsUserUpdated(true);
+                return user;
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow: 'Getting group users',
+                    step: `user has not been found due to: ${JSON.stringify(result)}`,
+                    user: userId
+                })
+            }
+        })
     }
 
     React.useEffect(() => {
