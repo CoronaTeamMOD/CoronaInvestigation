@@ -1,7 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
-import {subDays, eachDayOfInterval} from 'date-fns';
+import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
@@ -10,6 +10,7 @@ import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InteractionsTabStyles';
 import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
@@ -17,21 +18,22 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 10;
+const maxInvestigatedDays: number = 21;
 
-export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-
     const {interactions, setInteractions, setAreThereContacts} = parameters;
 
     const {parseAddress} = useGoogleApiAutocomplete();
+    const {alertError} = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const classes = useStyles({});
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -40,6 +42,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             user: userId,
             investigation: epidemiologyNumber
         });
+
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
                 logger.info({
@@ -51,7 +54,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 setTestDate(convertDate(res.data.coronaTestDate));
-                setInvestigationStartTime(convertDate(res.data.startTime));
             } else {
                 logger.warn({
                     service: Service.CLIENT,
@@ -68,8 +70,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             const endInvestigationDate = new Date();
             let startInvestigationDate: Date;
             if (doesHaveSymptoms) {
-                if (symptomsStartDate)
+                if (symptomsStartDate) {
+                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate,  coronaTestDate));
+                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
+                        alertError('תאריך תחילת הסימפטומים לא חוקי');
+                        return []
+                    }
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                }
                 else
                     startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
             } else {

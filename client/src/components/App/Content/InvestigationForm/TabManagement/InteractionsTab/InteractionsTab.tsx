@@ -23,7 +23,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
-    const [investigationStartTime, setInvestigationStartTime] = useState<Date | null>(null);
     const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
@@ -36,7 +35,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     useEffect(() => {
         loadInteractions();
-        getCoronaTestDate(setCoronaTestDate, setInvestigationStartTime);
+        getCoronaTestDate(setCoronaTestDate);
         getClinicalDetailsSymptoms(setSymptomsStartDate, setDoesHaveSymptoms);
     }, []);
 
