@@ -10,10 +10,12 @@ import countryReducer from './Country/countryReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import investigationReducer from './Investigation/investigationReducer';
+import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 
 export default withReduxStateSync(combineReducers<StoreStateType>({
      user: userReducer,
      isLoading: isLoadingReducer,
+     isInInvestigation: isInInvestigationReducer,
      investigation: investigationReducer,
      gender: genderReducer,
      cities: cityReducer,

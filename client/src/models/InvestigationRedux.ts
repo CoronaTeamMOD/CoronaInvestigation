@@ -1,6 +1,8 @@
+import { InvestigationStatus } from './InvestigationStatus';
+
 interface InvestigationRedux {
     epidemiologyNumber: number;
-    cantReachInvestigated: boolean;
+    investigationStatus: InvestigationStatus;
     investigatedPatientId: number;
     creator: string;
     lastUpdator: string;

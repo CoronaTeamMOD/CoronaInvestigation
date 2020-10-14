@@ -73,7 +73,7 @@ describe('investigatedPersonInfo tests', () => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 investigatedPersonInfoOutcome
-                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber);
             });
 
             expect(myspy).toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe('investigatedPersonInfo tests', () => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 await investigatedPersonInfoOutcome
-                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber);
                 await wait();
             });
 
@@ -120,7 +120,7 @@ describe('investigatedPersonInfo tests', () => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
                 await investigatedPersonInfoOutcome
-                    .confirmExitUnfinishedInvestigation(epidemiologyNumber, cantReachInvestigated);
+                    .confirmExitUnfinishedInvestigation(epidemiologyNumber);
             });
 
             expect(myspy).toHaveBeenCalled();
