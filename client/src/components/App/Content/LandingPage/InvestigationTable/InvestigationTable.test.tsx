@@ -27,7 +27,8 @@ describe('investigationTable tests', () => {
             county: {
                 displayName: 'תל אביב - תל אביב',
                 id: 50,
-            }
+            },
+            investigationDesk: 'שם דסק'
         };
     });
 
@@ -41,9 +42,10 @@ describe('investigationTable tests', () => {
             newRowData.fullName,
             newRowData.phoneNumber,
             newRowData.age,
-            newRowData.county,
             newRowData.city,
-            newRowData.investigator
+            newRowData.investigationDesk,
+            newRowData.county,
+            newRowData.investigator,
         );
 
         expect(newRow).toEqual(newRowData);
@@ -59,8 +61,9 @@ describe('investigationTable tests', () => {
             newRowData.subStatus,
             newRowData.phoneNumber,
             newRowData.age,
-            newRowData.county,
             newRowData.city,
+            newRowData.investigationDesk,
+            newRowData.county,
             newRowData.investigator
         );
 
