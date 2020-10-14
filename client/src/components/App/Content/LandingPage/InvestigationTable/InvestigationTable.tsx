@@ -117,7 +117,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
-                                    placeholder='דסק'
+                                    placeholder='נפה'
                                 />
                             }
                         />)
