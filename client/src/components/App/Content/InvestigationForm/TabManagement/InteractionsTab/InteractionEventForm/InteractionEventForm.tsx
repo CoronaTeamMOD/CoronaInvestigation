@@ -79,25 +79,21 @@ const InteractionEventForm: React.FC<Props> = (
     saveIntreactions(interactionDataToSave);
   }
 
-  const generatePlacenameByPlaceType = React.useMemo(() => {
+  const generatePlacenameByPlaceType = (input :string) => {
     if (!placeType) return '';
-    if (placeType !== placeSubtypeName) {
-      return `${placeType} ${placeSubtypeName}`;
+    if (placeType !== input) {
+      return `${placeType} ${input}`;
     } else {
       return `${placeType}`;
     }
-  }, [placeSubtypeName]);
-
-  useEffect(() =>{
-    methods.setValue(InteractionEventDialogFields.PLACE_NAME, generatePlacenameByPlaceType);
-  }, [generatePlacenameByPlaceType]);
+  };
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
     return  {
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceType,
+      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceType(placeSubtypeName),
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
         ?.map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
