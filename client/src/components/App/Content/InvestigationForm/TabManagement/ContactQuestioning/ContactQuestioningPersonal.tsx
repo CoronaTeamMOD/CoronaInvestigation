@@ -12,8 +12,8 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
-import NumericTextField from "../../../../../../commons/NumericTextField/NumericTextField";
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
