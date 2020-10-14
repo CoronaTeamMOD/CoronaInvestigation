@@ -141,14 +141,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }
 
     const fetchCountries = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching Countries',
-            step: `launching countries request`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
         axios.get('/addressDetails/countries')
             .then((result: any) => {
                 logger.info({
@@ -203,14 +195,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             }
         }).then((result) => {
             if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Update Investigation Status',
-                    step: `launching investigation status request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus : InvestigationStatus.DONE,
                     investigationSubStatus: null,
