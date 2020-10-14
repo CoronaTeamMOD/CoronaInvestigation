@@ -33,7 +33,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const classes = useStyles({});
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -42,7 +42,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             user: userId,
             investigation: epidemiologyNumber
         });
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
                 logger.info({
@@ -54,7 +54,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 setTestDate(convertDate(res.data.coronaTestDate));
-                setInvestigationStartTime(convertDate(res.data.startTime));
             } else {
                 logger.warn({
                     service: Service.CLIENT,
