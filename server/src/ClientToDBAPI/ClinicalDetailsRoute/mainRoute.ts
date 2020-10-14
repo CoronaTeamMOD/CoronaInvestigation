@@ -308,6 +308,8 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
               });
+            console.log(result.data.allInvestigations);
+            result.data.allInvestigations.nodes?.map(console.log);
             response.send(result.data.allInvestigations.nodes[0]);
         }).catch(err => {
             logger.error({

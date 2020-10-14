@@ -1,7 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
-import {subDays, eachDayOfInterval} from 'date-fns';
+import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
@@ -71,20 +71,21 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             const endInvestigationDate = new Date();
             let startInvestigationDate: Date;
             if (doesHaveSymptoms) {
-                if (symptomsStartDate)
+                if (symptomsStartDate) {
+                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate,  coronaTestDate));
+                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
+                        alertError('תאריך תחילת הסימפטומים לא חוקי');
+                        return []
+                    }
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                }
                 else
                     startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
             } else {
                 startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
             try {
-                const daysToInvestigate = eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
-                if (daysToInvestigate.length > maxInvestigatedDays) {
-                    alertError('תאריך תחילת הסימפטומים לא חוקי');
-                    return []
-                }
-                return daysToInvestigate;
+                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});;
             } catch (e) {
                 return []
             }
