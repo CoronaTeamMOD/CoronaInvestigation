@@ -79,7 +79,8 @@ const handleConfidentialAuth = (
         graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
             response.locals.user = {
                 ...user,
-                ...result.data.userById
+                isAdmin: result.data.userById.isAdmin,
+                investigationGroup: result.data.userById.investigationGroup
             };
             response.locals.epidemiologynumber = request.headers.epidemiologynumber;
             return next();
@@ -144,7 +145,8 @@ const authMiddleware = (
             graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
                 response.locals.user = {
                     ...user,
-                    ...result.data.userById
+                    isAdmin: result.data.userById.isAdmin,
+                    investigationGroup: result.data.userById.investigationGroup
                 };
                 response.locals.epidemiologynumber = request.headers.epidemiologynumber;
                 return next();
