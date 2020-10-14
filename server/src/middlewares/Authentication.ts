@@ -146,7 +146,6 @@ const authMiddleware = (
                     ...user,
                     ...result.data.userById
                 };
-                console.log(response.locals.user)
                 response.locals.epidemiologynumber = request.headers.epidemiologynumber;
                 return next();
             }).catch(err => {
