@@ -50,7 +50,7 @@ countiesRoute.get('/county/displayName', (request: Request, response: Response) 
         step: 'launching DB request',
         user: response.locals.user.id
     });
-    graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.group })
+    graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.investigationGroup })
         .then((result: any) => {
             logger.info({
                 service: Service.SERVER,

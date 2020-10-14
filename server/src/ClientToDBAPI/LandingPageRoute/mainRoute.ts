@@ -63,7 +63,7 @@ landingPageRoute.get('/investigations', (request: Request, response: Response) =
 
 landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {    
     const getInvestigationsParameters = { 
-        investigationGroupId: +response.locals.user.group, 
+        investigationGroupId: +response.locals.user.investigationGroup, 
         orderBy: request.query.orderBy  
     };   
     logger.info({
