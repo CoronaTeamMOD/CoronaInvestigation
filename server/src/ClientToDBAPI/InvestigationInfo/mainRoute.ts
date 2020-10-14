@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../../src/Models/Logger/types';
+import { Service, Severity } from '../../Models/Logger/types';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES } from '../../DBService/InvestigationInfo/Query';
 import { UPDATE_INVESTIGATION_STATUS, UPDATE_INVESTIGATION_START_TIME, UPDATE_INVESTIGATION_END_TIME } from '../../DBService/InvestigationInfo/Mutation';
 
