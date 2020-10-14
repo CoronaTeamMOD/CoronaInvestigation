@@ -48,7 +48,7 @@ const App: React.FC = (): JSX.Element => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
-            workflow: 'Getting group users',
+            workflow: 'Getting user details',
             step: 'launch request to the server',
             user: user.id
         });
@@ -57,7 +57,7 @@ const App: React.FC = (): JSX.Element => {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
-                    workflow: 'Getting group users',
+                    workflow: 'Getting user details',
                     step: 'recived user from the server',
                     user: result.data.userById
                 })
@@ -75,11 +75,19 @@ const App: React.FC = (): JSX.Element => {
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.MEDIUM,
-                    workflow: 'Getting group users',
+                    workflow: 'Getting user details',
                     step: `user has not been found due to: ${JSON.stringify(result)}`,
                     user: userId
                 })
             }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.MEDIUM,
+                workflow: 'Getting user details',
+                step: `got error from the server: ${err}`,
+                user: userId
+            })
         })
     }
 

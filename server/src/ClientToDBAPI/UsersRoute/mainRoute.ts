@@ -111,7 +111,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Getting group users',
+        workflow: 'Getting user details',
         step: 'requesting graphql API for user details',
         user: response.locals.user.id
     });
@@ -120,7 +120,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'Getting group users',
+                workflow: 'Getting user details',
                 step: 'got the result from the DB',
                 user: response.locals.user.id
             });
@@ -130,7 +130,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
-                workflow: 'Getting group users',
+                workflow: 'Getting user details',
                 step: `failed to get user details from the DB due to: ${err}`,
                 user: response.locals.user.id
             });
