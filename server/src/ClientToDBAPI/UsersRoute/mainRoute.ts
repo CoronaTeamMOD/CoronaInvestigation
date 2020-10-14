@@ -2,74 +2,206 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import User from '../../Models/User/User';
-import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
-import { Service, Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS,
-         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS,
+         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
 const badRequestStatusCode = 400;
 
 usersRoute.get('/userActivityStatus', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting user activity status',
+        step: `make the graphql API request with parameters ${JSON.stringify({ id: response.locals.user.id })}`,
+        user: response.locals.user.id
+    })
     graphqlRequest(GET_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id })
         .then((result: any) => {
-            if (result.data?.userById)
+            if (result.data?.userById) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting user activity status',
+                    step: 'got response from the DB',
+                    user: response.locals.user.id
+                })
                 response.send(result.data?.userById);
-            else
+            }
+            else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting user activity status',
+                    step: 'didnt get data from the DB',
+                    user: response.locals.user.id
+                })
                 response.status(badRequestStatusCode).send(`Couldn't find the user nor get its status`);
+            }
         })
-        .catch(error => response.status(RESPONSE_ERROR_CODE).send('Error while trying to fetch isActive user status'))
+        .catch(error => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting user activity status',
+                step: `failed to get response from the graphql API due to: ${error}`,
+                user: response.locals.user.id
+            })
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to fetch isActive user status');
+        })
 })
 
 usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
-    graphqlRequest(UPDATE_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id, isActive: request.body.isActive })
+    const updateIsActiveStatusVariables = { 
+        id: response.locals.user.id, 
+        isActive: request.body.isActive 
+    }
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Updating user activity status',
+        step: `make the graphql API request with parameters ${JSON.stringify(updateIsActiveStatusVariables)}`,
+        user: response.locals.user.id
+    })
+    graphqlRequest(UPDATE_IS_USER_ACTIVE, response.locals, updateIsActiveStatusVariables)
         .then((result: any) => {
-            if (result.data.updateUserById)
+            if (result.data.updateUserById) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Updating user activity status',
+                    step: 'got response from the DB',
+                    user: response.locals.user.id
+                })
                 response.send(result.data.updateUserById.user);
-            else
+            }
+            else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Updating user activity status',
+                    step: 'didnt get data from the DB',
+                    user: response.locals.user.id
+                })
                 response.status(badRequestStatusCode).send(`Couldn't find the user nor update the status`);
-
+            }
         })
-        .catch(error => response.status(RESPONSE_ERROR_CODE).send('Error while trying to activate / deactivate user'))
+        .catch(error => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Updating user activity status',
+                step: `failed to get response from the graphql API due to: ${error}`,
+                user: response.locals.user.id
+            })
+            response.status(RESPONSE_ERROR_CODE).send('Error while trying to activate / deactivate user')
+        })
 })
 
 usersRoute.get('/user', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting group users',
+        step: 'requesting graphql API for user details',
+        user: response.locals.user.id
+    });
     graphqlRequest(GET_USER_BY_ID, response.locals, { id: response.locals.user.id })
-        .then((result: any) => response.send(result.data));
+        .then((result: any) => {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Getting group users',
+                step: 'got the result from the DB',
+                user: response.locals.user.id
+            });
+            response.send(result.data);
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting group users',
+                step: `failed to get user details from the DB due to: ${err}`,
+                user: response.locals.user.id
+            });
+        });
 });
 
 usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(UPDATE_INVESTIGATOR, response.locals, {
-        epidemiologyNumber: request.body.epidemiologyNumber,
-        newUser: request.body.user
-    }).then((result: any) => response.send(result.data))
-        .catch((error) => {
-            logger.error({
+    const changeInvestigatorVariables = { 
+        epidemiologyNumber: request.body.epidemiologyNumber, 
+        newUser: request.body.user 
+    };
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Switch investigator',
+        step: `querying the graphql API with parameters ${JSON.stringify(changeInvestigatorVariables)}`,
+        user: response.locals.user.id
+    });
+    graphqlRequest(UPDATE_INVESTIGATOR, response.locals, changeInvestigatorVariables).then((result: any) => {
+            logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'GraphQL POST request to the DB',
-                step: error
+                workflow: 'Switch investigator',
+                step: `investigator have been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
+                user: response.locals.user.id
             });
-            response.status(RESPONSE_ERROR_CODE).send('error in changing investigator')
-        })
+            response.send(result.data)
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: 'Switch investigator',
+                step: `querying the graphql API failed du to ${err}`,
+                investigation: response.locals.epidemiologyNumber,
+                user: response.locals.user.id
+            });
+            response.sendStatus(500);
+        });
 });
 
 usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Switch investigator',
+        step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.group })}`,
+        user: response.locals.user.id
+    });
     graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.group })
         .then((result: any) => {
             let users: User[] = [];
             if (result && result.data && result.data.allUsers) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting group users',
+                    step: 'got group users from the DB',
+                    user: response.locals.user.id
+                });
                 users = result.data.allUsers.nodes.map((user: User) => ({
                     ...user,
                     token: ''
                 }));
+            } else {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting group users',
+                    step: 'didnt get group users from the DB',
+                    user: response.locals.user.id
+                });
             }
             return response.send(users);
         });
