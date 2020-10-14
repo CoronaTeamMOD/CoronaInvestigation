@@ -43,7 +43,7 @@ countiesRoute.get('', (request: Request, response: Response) => {
 });
 
 
-countiesRoute.get('/county/displayName', (request: Request, response: Response) => {
+countiesRoute.get('/county/displayName', adminMiddleWare, (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
