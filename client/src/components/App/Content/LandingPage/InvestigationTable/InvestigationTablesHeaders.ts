@@ -9,7 +9,8 @@ export enum TableHeadersNames {
     county = 'county',
     investigatorName = 'investigatorName',
     investigationMainStatus = 'investigationMainStatus',
-    investigationSubStatus = 'investigationSubStatus'
+    investigationSubStatus = 'investigationSubStatus',
+    investigationDesk = 'investigationDesk'
 }
 
 export enum sortOrders {
@@ -32,7 +33,8 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.investigatorName]: 'חוקר מבצע',
     [TableHeadersNames.county]: 'נפה מבצעת',
     [TableHeadersNames.investigationMainStatus]: 'סטטוס ביצוע',
-    [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף'
+    [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף',
+    [TableHeadersNames.investigationDesk]: 'דסק מבצע'
 }
 
 export const adminCols: string[] = [
@@ -45,7 +47,8 @@ export const adminCols: string[] = [
     TableHeadersNames.city,
     TableHeadersNames.investigatorName,
     TableHeadersNames.county,
-    TableHeadersNames.investigationMainStatus
+    TableHeadersNames.investigationMainStatus,
+    TableHeadersNames.investigationDesk
 ]
 
 export const userCols: string[] = [
@@ -57,6 +60,7 @@ export const userCols: string[] = [
     TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
+    TableHeadersNames.investigationDesk,
 ]
 
 export const sortableCols: sortableHeaders = {
@@ -70,5 +74,6 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.investigatorName]: true,
     [TableHeadersNames.county]: false,
     [TableHeadersNames.investigationMainStatus]: true,
-    [TableHeadersNames.investigationSubStatus]: false
+    [TableHeadersNames.investigationSubStatus]: false,
+    [TableHeadersNames.investigationDesk]: false,
 }

@@ -39,8 +39,9 @@ export const createRowData = (
     fullName: string,
     phoneNumber: string,
     age: number,
-    county: County,
     city: string,
+    investigationDesk: string,
+    county: County,
     investigator: Investigator
 ): InvestigationTableRow => ({
     epidemiologyNumber,
@@ -51,8 +52,9 @@ export const createRowData = (
     fullName,
     phoneNumber,
     age,
-    county,
     city,
+    investigationDesk,
+    county,
     investigator
 });
 
@@ -259,15 +261,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
                             const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                            const desk = investigation.desk;
                             const covidPatient = patient.covidPatientByCovidPatient;
                             const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
                             const county = investigation.userByLastUpdator.countyByInvestigationGroup;
                             const user = investigation.userByLastUpdator;
-
                             const subStatus = investigation.investigationSubStatusByInvestigationStatus ?
                                 investigation.investigationSubStatusByInvestigationStatus.displayName :
-                                ''
-
+                                '';
                             return createRowData(
                                 investigation.epidemiologyNumber,
                                 investigation.coronaTestDate,
@@ -277,8 +278,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 covidPatient.fullName,
                                 covidPatient.primaryPhone,
                                 covidPatient.age,
-                                county,
                                 patientCity ? patientCity.displayName : '',
+                                desk,
+                                county,
                                 { id: user.id, userName: user.userName }
                             )
                         });
@@ -419,7 +421,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.investigationMainStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
-
+            [TableHeadersNames.investigationDesk]: row.investigationDesk
         }
     }
 

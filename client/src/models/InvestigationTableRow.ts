@@ -11,6 +11,7 @@ interface InvestigationTableRow {
     phoneNumber: string;
     age: number;
     city: string;
+    investigationDesk: string,
     investigator: Investigator;
     county: County;
 };
