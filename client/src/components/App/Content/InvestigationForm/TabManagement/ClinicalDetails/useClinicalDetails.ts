@@ -9,8 +9,6 @@ import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
-import { otherSymptomFieldName } from './SymptomsFields';
-import { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
@@ -198,13 +196,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
 
     const getSymptomsList = (patientInvestigation: any) => {
         const symptoms: string[] = patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName);
-        if (patientInvestigation.otherSymptomsMoreInfo) symptoms.push(otherSymptomFieldName);
         return symptoms;
     }
 
     const getBackgroundDiseasesList = (clinicalDetails: any) => {
         const backgroundDiseases: string[] = clinicalDetails.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
-        if (clinicalDetails.otherBackgroundDiseasesMoreInfo) backgroundDiseases.push(otherBackgroundDiseaseFieldName);
         return backgroundDiseases;
     }
 
