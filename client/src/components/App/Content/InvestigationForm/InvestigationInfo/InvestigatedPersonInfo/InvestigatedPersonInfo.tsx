@@ -9,8 +9,8 @@ import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
 import axios from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import InvestigationRedux from 'models/InvestigationRedux';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
-import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -29,8 +29,10 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const investigation = useSelector<StoreStateType, InvestigationRedux>(state => state.investigation);
+    const { epidemiologyNumber, investigationStatus } = investigation;
+    //const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    //const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck,
         handleCannotCompleteInvestigationCheck
