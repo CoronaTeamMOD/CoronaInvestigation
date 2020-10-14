@@ -2,15 +2,16 @@ import { format } from 'date-fns';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Collapse, Grid, Button } from '@material-ui/core';
-import { Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
+import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
+import { Service, Severity } from 'models/Logger';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
-import InvestigationRedux from 'models/InvestigationRedux';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -29,10 +30,8 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    const investigation = useSelector<StoreStateType, InvestigationRedux>(state => state.investigation);
-    const { epidemiologyNumber, investigationStatus } = investigation;
-    //const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    //const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck,
         handleCannotCompleteInvestigationCheck
@@ -59,11 +58,25 @@ const InvestigatedPersonInfo = (props: Props) => {
     React.useEffect(() => {
         axios.get('/investigationInfo/subStatuses').then((result: any) => {
 
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `recieved DB response ${JSON.stringify(result)}`,
+            });
+
             const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
 
             if (resultNodes) {
                 setSubStatuses(resultNodes.map((element: any) => element.displayName))
             }
+        }).catch((err: any) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `error DB response ${JSON.stringify(err)}`,
+            });
         });
     }, [])
 
