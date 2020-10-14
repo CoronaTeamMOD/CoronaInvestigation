@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
@@ -39,7 +39,7 @@ const InteractionEventForm: React.FC<Props> = (
 ): JSX.Element => {
 
   const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
-
+  const [placeSubtypeName, setPlaceSubtypeName] = React.useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
     mode: 'all',
@@ -76,13 +76,28 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveIntreactions(interactionDataToSave);    
+    saveIntreactions(interactionDataToSave);
   }
 
+  const generatePlacenameByPlaceType = React.useMemo(() => {
+    if (!placeType) return '';
+    if (placeType !== placeSubtypeName) {
+      return `${placeType} ${placeSubtypeName}`;
+    } else {
+      return `${placeType}`;
+    }
+  }, [placeSubtypeName]);
+
+  useEffect(() =>{
+    methods.setValue(InteractionEventDialogFields.PLACE_NAME, generatePlacenameByPlaceType);
+  }, [generatePlacenameByPlaceType]);
+
   const convertData = (data: InteractionEventDialogData) => {
+    const name = data[InteractionEventDialogFields.PLACE_NAME];
     return  {
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
+      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceType,
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
         ?.map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
@@ -90,7 +105,7 @@ const InteractionEventForm: React.FC<Props> = (
             return {
               ...contact,
               [InteractionEventContactFields.SERIAL_ID]: serialId
-            } 
+            }
           } else {
             return contact
           }
@@ -98,20 +113,23 @@ const InteractionEventForm: React.FC<Props> = (
     }
   }
 
+  const onPlaceSubtypeChange = (newValue: PlaceSubType) => {
+    setPlaceSubtypeName(newValue?.displayName);
+    methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id)
+  };
+
   return (
-    <>
       <FormProvider {...methods}>
         <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
           <Grid className={formClasses.form} container justify='flex-start'>
             <PlacesTypesAndSubTypes
               control={methods.control}
-              setValue={methods.setValue}
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
               placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
               placeType={placeType}
               placeSubType={placeSubType}
               onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
-              onPlaceSubTypeChange={(placeSubType: PlaceSubType) => methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, placeSubType.id)}
+              onPlaceSubTypeChange={onPlaceSubtypeChange}
             />
 
             <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType}/>
@@ -204,7 +222,6 @@ const InteractionEventForm: React.FC<Props> = (
           </Grid>
         </form>
       </FormProvider>
-    </>
   );
 };
 
