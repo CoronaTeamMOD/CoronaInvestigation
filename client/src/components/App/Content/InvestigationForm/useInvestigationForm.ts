@@ -76,11 +76,16 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
-        initializeTabShow();
         fetchCities();
         fetchCountries();
         fetchContactTypes();
     }, []);
+
+    useEffect(() => {
+        if (epidemiologyNumber !== -1) {
+            initializeTabShow();
+        }
+    }, [epidemiologyNumber]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
