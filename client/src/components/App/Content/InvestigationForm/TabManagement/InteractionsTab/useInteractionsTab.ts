@@ -85,7 +85,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
             try {
-                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});;
+                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
             } catch (e) {
                 return []
             }
