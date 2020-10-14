@@ -13,8 +13,10 @@ import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import axios, { activateIsLoading } from 'Utils/axios';
+
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { initialUserState } from 'redux/User/userReducer';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -29,6 +31,7 @@ import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHe
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
 
 const investigationURL = '/investigation';
+const {alertError} = useCustomSwal();
 
 export const createRowData = (
     epidemiologyNumber: number,
@@ -295,13 +298,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     }
                 })
                 .catch((err: any) => {
-                    Swal.fire({
-                        title: 'אופס... לא הצלחנו לשלוף',
-                        icon: 'error',
-                        customClass: {
-                            title: classes.errorAlertTitle
-                        }
-                    })
+                    alertError('אופס... לא הצלחנו לשלוף');
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
