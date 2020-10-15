@@ -10,7 +10,7 @@ interface InteractionEventDialogData {
     investigationId: number;
     placeName?: string;
     locationAddress: Address;
-    placeSubType: number;
+    placeSubType: number | null;
     busLine?: string;
     airline?: string;
     flightNum?: string;
