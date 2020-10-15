@@ -1,11 +1,11 @@
 enum SignUpFields {
-    MABAR_USER_NAME = 'userName',
+    MABAR_USER_NAME = 'id',
     FULL_NAME = 'fullName',
     FIRST_NAME = 'firstName',
     LAST_NAME = 'lastName',
     CITY = 'city',
     PHONE_NUMBER = 'phoneNumber',
-    ID = 'id',
+    ID = 'identityNumber',
     MAIL = 'mail',
     COUNTY = 'investigationGroup',
     SOURCE_ORGANIZATION = 'sourceOrganization',

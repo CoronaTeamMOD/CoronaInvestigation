@@ -17,23 +17,6 @@ const FlightsForm = (props: any) => {
 
   return (
     <Grid className={classes.form} container justify='flex-start'>
-      <FormRowWithInput testId='flightDestination' fieldName='יעד:'>
-        <AirportInput
-          errors={errors}
-          setError={setError}
-          clearErrors={clearErrors}
-          country={exposureAndFlightsData[fieldsNames.destinationCountry]}
-          countryFieldName={fieldsNames.destinationCountry}
-          city={exposureAndFlightsData[fieldsNames.destinationCity]}
-          cityFieldName={fieldsNames.destinationCity}
-          airport={exposureAndFlightsData[fieldsNames.destinationAirport]}
-          airportFieldName={fieldsNames.destinationAirport}
-          handleChangeExposureDataAndFlightsField={
-            handleChangeExposureDataAndFlightsField
-          }
-        />
-      </FormRowWithInput>
-
       <FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
         <AirportInput
           errors={errors}
@@ -45,6 +28,23 @@ const FlightsForm = (props: any) => {
           cityFieldName={fieldsNames.originCity}
           airport={exposureAndFlightsData[fieldsNames.originAirport]}
           airportFieldName={fieldsNames.originAirport}
+          handleChangeExposureDataAndFlightsField={
+            handleChangeExposureDataAndFlightsField
+          }
+        />
+      </FormRowWithInput>
+      
+      <FormRowWithInput testId='flightDestination' fieldName='יעד:'>
+        <AirportInput
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
+          country={exposureAndFlightsData[fieldsNames.destinationCountry]}
+          countryFieldName={fieldsNames.destinationCountry}
+          city={exposureAndFlightsData[fieldsNames.destinationCity]}
+          cityFieldName={fieldsNames.destinationCity}
+          airport={exposureAndFlightsData[fieldsNames.destinationAirport]}
+          airportFieldName={fieldsNames.destinationAirport}
           handleChangeExposureDataAndFlightsField={
             handleChangeExposureDataAndFlightsField
           }

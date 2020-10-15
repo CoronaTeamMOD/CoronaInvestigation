@@ -1,10 +1,15 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
+
 import axios from 'Utils/axios';
 import {Button, Typography} from '@material-ui/core';
-
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
-import useContactExcel from './useContactExcel';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+
+import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
 
 const fileEndings = [
@@ -22,6 +27,9 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
     const {onFileSelect} = useContactExcel(setData, onFail);
 
+    const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
     const classes = useStyles();
 
     React.useEffect(() => {
@@ -32,10 +40,35 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
 
     const saveDataInFile = (contacts?: InteractedContact[]) => {
         if(contacts && contacts.length > 0) {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving Contacted People Excel',
+                step: 'launching saving contacted people excel request',
+                investigation: epidemiologyNumber,
+                user: userId
+            })
             axios.post('/contactedPeople/excel', {contactEvent, contacts})
-                .then(onSave)
-                .catch(e => {
-                    console.error(e);
+                .then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving Contacted People Excel',
+                        step: 'contacted people excel was saved successfully',
+                        investigation: epidemiologyNumber,
+                        user: userId
+                    })
+                    onSave();
+                })
+                .catch(error => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving Contacted People Excel',
+                        step: `got error from server: ${error}`,
+                        investigation: epidemiologyNumber,
+                        user: userId
+                    })
                     alertError('שגיאה בשמירת הנתונים');
                 })
         }

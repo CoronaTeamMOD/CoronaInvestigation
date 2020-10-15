@@ -9,7 +9,6 @@ import County from 'models/County';
 import SourceOrganization from 'models/SourceOrganization'
 import Language from 'models/Language';
 import { Service, Severity } from 'models/Logger';
-import Environment from 'models/enums/Environments';
 import axios from 'Utils/axios'
 import logger from 'logger/logger'
 import StoreStateType from 'redux/storeStateType';
@@ -178,13 +177,10 @@ const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
     }, [])
 
     const getDefaultValues = () : SignUpUser => {
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH) {
-            return {
-                ...UserInitialValues,
-                [SignUpFields.ID]: userId,
-            }
-        } 
-        return UserInitialValues;
+        return {
+            ...UserInitialValues,
+            [SignUpFields.MABAR_USER_NAME]: userId,
+        }
     }
 
     const createUser = (newUser: SignUpUser) => {

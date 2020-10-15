@@ -48,21 +48,20 @@ const App: React.FC = (): JSX.Element => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
-            workflow: 'Getting group users',
+            workflow: 'Getting user details',
             step: 'launch request to the server',
             user: user.id
         });
         axios.get(`/users/user`).then((result: any) => {
-            if (result && result.data) {
+            if (result && result.data.userById) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
-                    workflow: 'Getting group users',
+                    workflow: 'Getting user details',
                     step: 'recived user from the server',
                     user: result.data.userById
                 })
                 const user = result.data.userById;
-                !Boolean(user) && setIsSignUpOpen(true);
                 setUser({
                     ...user,
                     id: userId,
@@ -72,14 +71,23 @@ const App: React.FC = (): JSX.Element => {
                 setIsUserUpdated(true);
                 return user;
             } else {
-                logger.error({
+                setIsSignUpOpen(true);
+                logger.warn({
                     service: Service.CLIENT,
                     severity: Severity.MEDIUM,
-                    workflow: 'Getting group users',
+                    workflow: 'Getting user details',
                     step: `user has not been found due to: ${JSON.stringify(result)}`,
                     user: userId
                 })
             }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.MEDIUM,
+                workflow: 'Getting user details',
+                step: `got error from the server: ${err}`,
+                user: userId
+            })
         })
     }
 

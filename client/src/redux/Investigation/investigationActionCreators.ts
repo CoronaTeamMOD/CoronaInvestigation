@@ -1,3 +1,5 @@
+import { InvestigationStatus } from 'models/InvestigationStatus';
+
 import { store } from '../store';
 import * as actionTypes from './investigationActionTypes';
 
@@ -12,13 +14,6 @@ export const setAxiosInterceptorId = (axiosInterceptorId: number): void => {
     store.dispatch({
         type: actionTypes.SET_AXIOS_INTERCEPTOR_ID,
         payload: { axiosInterceptorId }
-    })
-};
-
-export const setCantReachInvestigated = (cantReachInvestigated: boolean): void => {
-    store.dispatch({
-        type: actionTypes.SET_CANT_REACH_INVESTIGATED,
-        payload: { cantReachInvestigated }
     })
 };
 
@@ -42,3 +37,9 @@ export const setIsCurrentlyLoading = (isCurrentlyLoading : boolean): void => {
         payload: {isCurrentlyLoading}
     })
 };
+export const setInvestigationStatus = (investigationStatus: InvestigationStatus) => {
+    store.dispatch({
+        type: actionTypes.SET_INVESTIGATION_STATUS,
+        payload: { investigationStatus }
+    })
+}

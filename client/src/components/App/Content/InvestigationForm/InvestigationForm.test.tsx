@@ -52,7 +52,7 @@ describe('investigationForm tests', () => {
         });
     })
 
-    describe('confirmExitUnfinishedInvestigation tests', () => {
+    describe.skip('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
             await testHooksFunction(() => {
                 investigationFormOutcome = useInvestigationForm();

@@ -45,32 +45,22 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
     const [order, setOrder] = useState<Order>(sortOrders.asc);
-    const [orderBy, setOrderBy] = useState<string>(TableHeadersNames.epidemiologyNumber);
+    const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
-        if(investigatorAutoCompleteClicked) {
+        if(investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
             setInvestigatorAutoCompleteClicked(false);
         }
     }, [countyAutoCompleteClicked]);
 
     useEffect(() => {
-        if(countyAutoCompleteClicked) {
+        if(countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
             setCountyAutoCompleteClicked(false);
         }
     }, [investigatorAutoCompleteClicked]);
 
-    useEffect(() => {
-        if(countyAutoCompleteClicked) {
-            setCountyAutoCompleteClicked(false);
-        }
-
-        if(investigatorAutoCompleteClicked) {
-            setInvestigatorAutoCompleteClicked(false);
-        }
-    }, [selectedRow]);
-
     const {
-        tableRows, handleInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
     } = useInvestigationTable({selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties});
 
@@ -127,7 +117,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
-                                    placeholder='דסק'
+                                    placeholder='נפה'
                                 />
                             }
                         />)
@@ -198,9 +188,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     <TableRow
                                         key={indexedRow.epidemiologyNumber}
                                         className={classes.investigationRow}
-                                        onClick={() => {
-                                            handleInvestigationRowClick(indexedRow.epidemiologyNumber, indexedRow.investigationStatus)
-                                        }}
+                                        onClick={() => onInvestigationRowClick(indexedRow)}
                                     >
                                         {
                                             Object.values(user.isAdmin ? adminCols : userCols).map((key: string) => (

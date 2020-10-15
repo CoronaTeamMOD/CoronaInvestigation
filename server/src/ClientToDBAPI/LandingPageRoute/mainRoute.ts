@@ -9,10 +9,10 @@ import {GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS} from '../../DBService
 
 const landingPageRoute = Router();
 
-landingPageRoute.get('/investigations', (request: Request, response: Response) => {
+landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Response) => {
     const getInvestigationsParameters = { 
         userId: response.locals.user.id, 
-        orderBy: request.query.orderBy 
+        orderBy: request.params.orderBy 
     };
     logger.info({
         service: Service.SERVER,
@@ -61,10 +61,10 @@ landingPageRoute.get('/investigations', (request: Request, response: Response) =
     });
 })
 
-landingPageRoute.get('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {    
+landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request: Request, response: Response) => {    
     const getInvestigationsParameters = { 
-        investigationGroupId: +response.locals.user.group, 
-        orderBy: request.query.orderBy  
+        investigationGroupId: +response.locals.user.investigationGroup, 
+        orderBy: request.params.orderBy  
     };   
     logger.info({
         service: Service.SERVER,

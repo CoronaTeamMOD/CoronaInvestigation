@@ -5,11 +5,13 @@ interface InvestigationTableRow {
     epidemiologyNumber: number;
     coronaTestDate: string;
     priority: number;
-    status: string;
+    mainStatus: string;
+    subStatus: string;
     fullName: string;
     phoneNumber: string;
     age: number;
     city: string;
+    investigationDesk: string,
     investigator: Investigator;
     county: County;
 };
