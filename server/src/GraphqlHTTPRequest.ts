@@ -7,7 +7,7 @@ export const graphqlURL = '/coronai/graphql';
 export const baseUrl = 'http://localhost:';
 
 const updateLastTimeAndUpdator = (requestHeaders: any) =>
-    httpRequest(baseUrl+process.env.PORT+graphqlURL, 'POST', {
+    httpRequest(baseUrl + process.env.PORT + graphqlURL, 'POST', {
         query: (UPDATE_INVESTIGATION_METADATA as DocumentNode).loc?.source.body,
         variables: {
             epidemiologyNumber: +requestHeaders.epidemiologynumber,
@@ -15,7 +15,6 @@ const updateLastTimeAndUpdator = (requestHeaders: any) =>
             lastUpdator: requestHeaders.user.id
         }
     });
-
 
 
 export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variables?: any) => (
