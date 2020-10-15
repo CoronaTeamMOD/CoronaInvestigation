@@ -109,9 +109,14 @@ const InteractionEventForm: React.FC<Props> = (
     }
   }
 
-  const onPlaceSubtypeChange = (newValue: PlaceSubType) => {
-    setPlaceSubtypeName(newValue?.displayName);
-    methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id)
+  const onPlaceSubtypeChange = (newValue: PlaceSubType | null) => {
+    if (newValue) {
+      setPlaceSubtypeName(newValue?.displayName);
+      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id);
+    } else {
+      setPlaceSubtypeName('');
+      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, null);
+    }
   };
 
   return (
@@ -119,6 +124,7 @@ const InteractionEventForm: React.FC<Props> = (
         <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
           <Grid className={formClasses.form} container justify='flex-start'>
             <PlacesTypesAndSubTypes
+              errors={methods.errors}
               control={methods.control}
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
               placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
