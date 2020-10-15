@@ -78,7 +78,6 @@ const App: React.FC = (): JSX.Element => {
                     user: user.id
                 })
             }
-            setIsUserUpdated(true);
         }).catch(err => {
             logger.error({
                 service: Service.CLIENT,
