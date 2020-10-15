@@ -2,13 +2,13 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { addDays, format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
-import { addDays, format } from 'date-fns';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
