@@ -190,6 +190,14 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }, [epidemiologyNumber]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Ending Investigation',
+            step: 'the user has been offered the oppurtunity to finish the investigation',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
@@ -206,7 +214,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
-                    workflow: 'Update Investigation Status',
+                    workflow: 'Ending Investigation',
                     step: `launching investigation status request`,
                     user: userId,
                     investigation: epidemiologyNumber
@@ -219,7 +227,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
-                        workflow: 'Update Investigation Status',
+                        workflow: 'Ending Investigation',
                         step: `update investigation status request was successful`,
                         user: userId,
                         investigation: epidemiologyNumber
@@ -227,7 +235,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
-                        workflow: 'Update Investigation End Time',
+                        workflow: 'Ending Investigation',
                         step: `launching investigation end time request`,
                         user: userId,
                         investigation: epidemiologyNumber
@@ -239,7 +247,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         logger.info({
                             service: Service.CLIENT,
                             severity: Severity.LOW,
-                            workflow: 'Update Investigation End Time',
+                            workflow: 'Ending Investigation',
                             step: `update investigation end time request was successful`,
                             user: userId,
                             investigation: epidemiologyNumber
@@ -250,7 +258,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         logger.error({
                             service: Service.CLIENT,
                             severity: Severity.HIGH,
-                            workflow: 'Update Investigation End Time',
+                            workflow: 'Ending Investigation',
                             step: `got errors in server result: ${error}`,
                             user: userId,
                             investigation: epidemiologyNumber
@@ -261,7 +269,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.HIGH,
-                        workflow: 'Update Investigation Status',
+                        workflow: 'Ending Investigation',
                         step: `got errors in server result: ${error}`,
                         user: userId,
                         investigation: epidemiologyNumber
