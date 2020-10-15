@@ -50,6 +50,7 @@ stages:
         npm install
         npm run build
       displayName: 'npm build client'
+      condition: eq(variables.isDev,true)
 
     # pushing dev client without authentication image
     - task: Docker@2
@@ -159,6 +160,7 @@ stages:
         npm install
         npm run build
       displayName: 'npm build client'
+      condition: eq(variables.isMaster,true)
 
     # pushing prod client to azure client registry
     - task: Docker@2
