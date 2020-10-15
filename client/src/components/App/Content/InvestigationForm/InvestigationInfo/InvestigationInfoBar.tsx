@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import { store } from 'redux/store';
 import { timeout } from 'Utils/Timeout/Timeout';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
@@ -41,7 +41,8 @@ const defaultInvestigationStaticInfo = {
             fullName: '',
             primaryPhone: '',
             identityNumber: '',
-            age: ''
+            age: '',
+            birthDate: null
         },
     },
     coronaTestDate: new Date(),

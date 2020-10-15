@@ -9,7 +9,6 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד
 
 const stringAlphanum = yup
   .string()
-  .required()
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage)
   .max(50, maxLengthErrorMessage);
 

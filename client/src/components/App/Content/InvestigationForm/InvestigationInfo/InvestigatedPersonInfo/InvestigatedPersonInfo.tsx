@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { CakeOutlined, EventOutlined, Help } from '@material-ui/icons';
+import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 
 import axios from 'Utils/axios';
@@ -23,11 +23,14 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 
+const displayDateFormat = 'dd/MM/yyyy';
+
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
-
+    const { identityType, gender, isDeceased, patientInfo } = investigatedPatientStaticInfo;
+    const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -83,15 +86,10 @@ const InvestigatedPersonInfo = (props: Props) => {
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
                     <Typography variant='h6' className={classes.investigationTitle}>
-                        {
-                            investigatedPatientStaticInfo.patientInfo.fullName
-                        }
-                        {
-                            epedemioligyNumber
-                        }
+                        {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
                     <PhoneDial
-                        phoneNumber={investigatedPatientStaticInfo.patientInfo.primaryPhone}
+                        phoneNumber={primaryPhone}
                     />
                 </div>
                 <PrimaryButton
@@ -104,38 +102,37 @@ const InvestigatedPersonInfo = (props: Props) => {
             </div>
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
-                    <InfoItemWithIcon testId='age' name='גיל' value={
-                        investigatedPatientStaticInfo.patientInfo.age
-                    }
+                    <InfoItemWithIcon testId='age' name='גיל' value={age}
                         icon={CakeOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='examinationDate' name='תאריך הבדיקה' value={
-                        format(new Date(props.coronaTestDate), 'dd/MM/yyyy')
+                    <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
+                        birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
+                    }
+                        icon={CalendarToday}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon testId='examinationDate' name='תאריך הבדיקה' value=
+                    {
+                        format(new Date(props.coronaTestDate), displayDateFormat)
                     }
                         icon={EventOutlined}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='gender' name='מין' value={
-                        investigatedPatientStaticInfo.gender
-                    }
+                    <InfoItemWithIcon testId='gender' name='מין' value={gender}
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={
-                        investigatedPatientStaticInfo.identityType
-                    }
+                    <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={
-                        investigatedPatientStaticInfo.patientInfo.identityNumber
-                    }
+                    <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
                         icon={Help}
                     />
                     <Divider />
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
-                        investigatedPatientStaticInfo.isDeceased ?
+                        isDeceased ?
                             'כן' :
                             'לא'
                     }
