@@ -13,7 +13,7 @@ const interactionEventSchema = yup.object().shape({
       InteractionEventDialogFields.PLACE_TYPE, {
         is: placeType => placeType !== placeTypesCodesHierarchy.geriatric.code &&
                          placeType !== placeTypesCodesHierarchy.office.code,
-        then: yup.number().required('תת סוג אתר חובה'),
+        then: yup.number().nullable().required('תת סוג אתר חובה'),
         otherwise: yup.number().nullable()
       }
     ),

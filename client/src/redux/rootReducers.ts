@@ -7,6 +7,7 @@ import userReducer from './User/userReducer';
 import StoreStateType from './storeStateType';
 import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
+import addressReducer from './Address/AddressReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import investigationReducer from './Investigation/investigationReducer';
@@ -21,5 +22,6 @@ export default withReduxStateSync(combineReducers<StoreStateType>({
      cities: cityReducer,
      countries: countryReducer,
      contactTypes: contactTypeReducer,
-     formsValidations: formReducer
+     formsValidations: formReducer,
+     address: addressReducer,
 })) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

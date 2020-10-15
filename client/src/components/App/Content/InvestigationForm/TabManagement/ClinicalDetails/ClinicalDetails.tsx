@@ -31,13 +31,14 @@ import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './Bac
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
-    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
+
     const { control, setValue, getValues, reset, watch, errors, setError, clearErrors, trigger } = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
         resolver: yupResolver(ClinicalDetailsSchema)
     });
-
+    
+    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
@@ -46,19 +47,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
-        setSymptoms,
-        setBackgroundDiseases,
-        setIsolationCityName,
-        setIsolationStreetName,
-        setStreetsInCity,
-        initialDBClinicalDetails,
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
         setInitialDBClinicalDetails
     });
 
@@ -142,7 +136,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
     React.useEffect(() => {
-        fetchClinicalDetails(reset, trigger)
+        fetchClinicalDetails(reset, trigger);
     }, []);
 
     React.useEffect(() => {
@@ -212,8 +206,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             <Grid item xs={2} className={classes.fieldLabel}>
                                 <Typography>
                                     <b>
-                                        כתובת לאשפוז ביתי:
-                            </b>
+                                        כתובת לבידוד:
+                                    </b>
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
@@ -237,7 +231,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             onInputChange={(event, selectedCityName) => {
                                                 setIsolationCityName(selectedCityName);
                                                 if (selectedCityName === '') {
-                                                    setStreetsInCity([])
+                                                    setStreetsInCity([]);
                                                     props.onChange('');
                                                     setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                                 }

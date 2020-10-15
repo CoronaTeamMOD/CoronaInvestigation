@@ -42,7 +42,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
         let gradesOptions : string[] = [];
         if (placeSubType === elementarySchool) gradesOptions = elementarySchoolGrades;
         else if (placeSubType === highSchool) gradesOptions = highSchoolGrades;
-        if (placeSubType !== -1 && !grade) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
+        if (placeSubType && !grade) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
         setGrades(gradesOptions);
     }, [placeSubType])
 
