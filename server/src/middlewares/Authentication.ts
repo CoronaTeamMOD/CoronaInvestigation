@@ -90,7 +90,6 @@ const handleConfidentialAuth = (
                 isAdmin: result.data.userById?.isAdmin,
                 investigationGroup: result.data.userById?.investigationGroup
             };
-            response.locals.epidemiologynumber = request.headers.epidemiologynumber;
             return next();
         }).catch(err => {
             logger.error({
@@ -118,6 +117,7 @@ const authMiddleware = (
     response: Response,
     next: NextFunction
 ) => {
+    response.locals.epidemiologynumber = request.headers.epidemiologynumber;
     if (process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'prod') {
         logger.info({
             service: Service.SERVER,
@@ -173,7 +173,6 @@ const authMiddleware = (
                     isAdmin: result.data.userById?.isAdmin,
                     investigationGroup: result.data.userById?.investigationGroup
                 };
-                response.locals.epidemiologynumber = request.headers.epidemiologynumber;
                 return next();
             }).catch(err => {
                 logger.error({
