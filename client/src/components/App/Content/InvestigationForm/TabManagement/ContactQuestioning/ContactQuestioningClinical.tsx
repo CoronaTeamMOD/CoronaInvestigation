@@ -156,7 +156,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName='תאריך סיום בידוד'>
                         <AlphanumericTextField
-                            name={'isolationEndDate'}
+                            name='isolationEndDate'
                             value={formattedIsolationEndDate}
                             onChange={() => {}}
                             errors={errors}
