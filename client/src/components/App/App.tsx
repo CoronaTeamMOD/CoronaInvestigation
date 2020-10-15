@@ -36,8 +36,6 @@ const App: React.FC = (): JSX.Element => {
 
     const [isUserUpdated, setIsUserUpdated] = useState<boolean>(true);
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-
-    const handleOpenSignUp = () => setIsSignUpOpen(true);
     
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
@@ -72,7 +70,7 @@ const App: React.FC = (): JSX.Element => {
                 });
                 return userFromDB;
             } else {
-                handleOpenSignUp();
+                setIsSignUpOpen(true);
                 logger.warn({
                     service: Service.CLIENT,
                     severity: Severity.MEDIUM,
