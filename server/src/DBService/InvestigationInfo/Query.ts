@@ -12,6 +12,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
         fullName
         age
         primaryPhone
+        birthDate
       }
       identityType
       additionalPhoneNumber
