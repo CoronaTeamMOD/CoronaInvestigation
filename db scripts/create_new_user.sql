@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION public.create_new_user(
 	mail character varying,
 	phone_number character varying,
 	source_organization character varying,
-	user_name character varying)
+	identity_number character varying)
     RETURNS void
     LANGUAGE 'plpgsql'
 
@@ -18,8 +18,8 @@ DECLARE language character varying;
 BEGIN
 
 	INSERT INTO public."user"(
-	user_name, id, phone_number, investigation_group, is_admin, is_active, source_organization, full_name, city, mail)
-	VALUES (user_name, id, phone_number, investigation_group, false, false, source_organization, full_name, city, mail);
+	user_name, identity_number, id, phone_number, investigation_group, is_admin, is_active, source_organization, full_name, city, mail)
+	VALUES ('', identity_number, id, phone_number, investigation_group, false, false, source_organization, full_name, city, mail);
 	
 	FOREACH language IN ARRAY languages
 	LOOP
