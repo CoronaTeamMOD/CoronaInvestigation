@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import axios from 'Utils/axios';
 import Street from 'models/Street';
 import logger from 'logger/logger';
+import DBAddress from 'models/DBAddress';
 import { Service, Severity } from 'models/Logger';
-import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
@@ -16,11 +16,13 @@ export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
     const {
-        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails, setInitialDBClinicalDetails
+        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
+        setInitialDBClinicalDetails
     } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const address = useSelector<StoreStateType, DBAddress>(state => state.address);
 
     const getSymptoms = () => {
         logger.info({
@@ -117,8 +119,10 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }
     )};
     
-    const fetchClinicalDetails = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-                                  trigger: (payload?: string | string[]) => Promise<boolean>) => {
+    const fetchClinicalDetails = (
+        reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+        trigger: (payload?: string | string[]) => Promise<boolean>
+    ) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -155,7 +159,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             houseNum: patientAddress.houseNum
                         }
                     } else {
-                        patientAddress = initDBAddress;
+                        patientAddress = address;
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,

@@ -76,8 +76,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
-        setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
-        setStreets, occupationsStateContext, setInsuranceCompany,
+            setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
+            setStreets, occupationsStateContext, setInsuranceCompany,
     });
 
     const { control, setValue, getValues, reset, errors, setError, clearErrors, trigger } = useForm({
