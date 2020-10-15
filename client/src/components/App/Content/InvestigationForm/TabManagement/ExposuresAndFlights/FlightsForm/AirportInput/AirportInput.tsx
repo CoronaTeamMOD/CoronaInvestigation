@@ -34,16 +34,18 @@ const AirportInput = (props: any) => {
         stringify: (option: Country) => option.displayName,
     });
 
+    const handleCountryChange = (selectedCountry: Country | null) => {
+        setCountryToShow(selectedCountry);
+        handleChangeExposureDataAndFlightsField(countryFieldName, selectedCountry?.id);
+    };
+
     return (
         <div className={classes.airportDetails}>
             <div className={classes.airportCountryTextField}>
                 <AutocompletedField
                     value={countryToShow}
                     options={options}
-                    onChange={(e, newValue) => {
-                        setCountryToShow(newValue);
-                        handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
-                    }
+                    onChange={(event, newValue) => handleCountryChange(newValue)}
                     getOptionLabel={(option) => getLabel(option)}
                     filterOptions={filterOptions}
                     label='מדינה'
