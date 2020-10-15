@@ -76,7 +76,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         <DatePick
                                             onBlur={props.onBlur}
                                             maxDate={new Date()}
-                                            test-id='symptomsStartDate'
+                                            testId='symptomsStartDate'
                                             value={props.value}
                                             labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת סימפטומים'}
                                             onChange={(newDate: Date) =>
