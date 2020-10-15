@@ -120,7 +120,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 step: 'user is admin so landingPage/groupInvestigations route is chosen',
                 user: user.id
             });
-            return axios.get(`landingPage/groupInvestigations?orderBy=${orderBy}`)
+            return axios.get('landingPage/groupInvestigations/' + orderBy)
         }
         logger.info({
             service: Service.CLIENT,
@@ -129,7 +129,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             step: 'user isnt admin so landingPage/investigations route is chosen',
             user: user.id
         });
-        return axios.get(`/landingPage/investigations?orderBy=${orderBy}`);
+        return axios.get('/landingPage/investigations/' + orderBy);
     }
 
     const fetchAllCountyUsers = () => {
