@@ -11,6 +11,7 @@ import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
@@ -19,7 +20,7 @@ import InvestigationStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 
 import useStyles from './InvestigationFormStyles';
-import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
+import {defaultUser, LandingPageTimer} from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
@@ -178,16 +179,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
-        fetchCities();
-        fetchCountries();
-        fetchContactTypes();
-    }, []);
-
-    useEffect(() => {
-        if (epidemiologyNumber !== -1) {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+            fetchCities();
+            fetchCountries();
+            fetchContactTypes();
             initializeTabShow();
         }
-    }, [epidemiologyNumber]);
+    }, [epidemiologyNumber, userId]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({

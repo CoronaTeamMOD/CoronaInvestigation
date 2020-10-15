@@ -20,7 +20,7 @@ import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
-const defaultUser = {
+export const defaultUser = {
     id: '',
     userName: '',
     phoneNumber: '',
