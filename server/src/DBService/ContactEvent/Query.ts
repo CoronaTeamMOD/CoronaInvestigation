@@ -70,6 +70,10 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           contactEvent
           contactType
           extraInfo
+          relationship
+          familyRelationshipByFamilyRelationship {
+            displayName
+          }
           personByPersonInfo {
             firstName
             identificationNumber

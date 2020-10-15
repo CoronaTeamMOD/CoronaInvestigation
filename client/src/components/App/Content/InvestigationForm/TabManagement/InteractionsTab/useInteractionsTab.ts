@@ -15,6 +15,9 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStyles from './InteractionsTabStyles';
 import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
 
+
+import Contact from 'models/Contact';
+
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 10;
@@ -168,6 +171,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
             ...dbInteraction,
+            contacts: (dbInteraction.contacts as any[]).map((dbContact: any) => ({
+                ...dbContact,
+                familyRelationship: dbContact.familyRelationshipByFamilyRelationship?.displayName
+            })) as Contact[],
             locationAddress: parseAddress(dbInteraction.locationAddress) || null,
             startTime: new Date(dbInteraction.startTime),
             endTime: new Date(dbInteraction.endTime),

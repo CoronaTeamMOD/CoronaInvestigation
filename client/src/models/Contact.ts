@@ -4,6 +4,8 @@ interface Contact {
     lastName: string;
     phoneNumber?: string;
     id?: string;
+    familyRelationship?: string;
+    relationship?: string;
     contactType: number;
     extraInfo?: string;
 }
