@@ -145,6 +145,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                                 <Grid item xs={7} className={classes.fieldLabel}>
                                     <CustomCheckbox
+                                        testId='cannotCompleteInvestigation'
                                         checkboxElements={[
                                             {
                                                 checked: investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE,
