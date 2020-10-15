@@ -259,16 +259,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             });
                         }
 
-                        const investigationRows: InvestigationTableRow[] = allInvestigationsRawData.map((investigation: any) => {
-                            const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                            const desk = investigation.desk;
-                            const covidPatient = patient.covidPatientByCovidPatient;
-                            const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                            const county = investigation.userByLastUpdator.countyByInvestigationGroup;
-                            const user = investigation.userByLastUpdator;
-                            const subStatus = investigation.investigationSubStatusByInvestigationStatus ?
-                                investigation.investigationSubStatusByInvestigationStatus.displayName :
-                                '';
+                        const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
+                          .filter((investigation: any) => 
+                          investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                          investigation?.userByLastUpdator)
+                          .map((investigation: any) => {
+                              const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                              const desk = investigation.desk;
+                              const covidPatient = patient.covidPatientByCovidPatient;
+                              const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                              const user = investigation.userByLastUpdator;
+                              const county = user ? user.countyByInvestigationGroup : '';
+                              const subStatus = investigation.investigationSubStatusByInvestigationStatus ?
+                                  investigation.investigationSubStatusByInvestigationStatus.displayName :
+                                  '';
                             return createRowData(
                                 investigation.epidemiologyNumber,
                                 investigation.coronaTestDate,
