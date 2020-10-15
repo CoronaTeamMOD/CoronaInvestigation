@@ -136,7 +136,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             fetchPersonalInfo(reset, trigger);
             setIsCurrentlyLoading(false);
         }
-    }, [investigationId])
+    }, [investigationId]);
 
     React.useEffect(() => {
         if (personalInfoState.city) {

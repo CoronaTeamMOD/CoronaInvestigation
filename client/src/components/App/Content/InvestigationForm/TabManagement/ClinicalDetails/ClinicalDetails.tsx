@@ -51,7 +51,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const { fetchClinicalDetails, saveClinicalDetails } = useClinicalDetails({
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
         setInitialDBClinicalDetails
     });
@@ -134,7 +134,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
     const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
-    const watchIsolationAddress = watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
 
     React.useEffect(() => {
         fetchClinicalDetails(reset, trigger);
@@ -226,12 +225,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 props.onChange(selectedCity ? selectedCity.id : '')
                                                 if (selectedCity?.id && selectedCity.id !== props.value) {
                                                     setIsolationStreetName('');
+                                                    getStreetByCity(selectedCity.id);
                                                 }
                                             }}
                                             onInputChange={(event, selectedCityName) => {
                                                 setIsolationCityName(selectedCityName);
                                                 if (selectedCityName === '') {
-                                                    setStreetsInCity([])
+                                                    setStreetsInCity([]);
                                                     props.onChange('');
                                                     setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                                 }
