@@ -20,8 +20,6 @@ export interface useTopToolbarOutcome  {
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
-
-    const firstUserUpdate = React.useRef(true);
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
     
@@ -29,9 +27,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
-        if (firstUserUpdate.current) {
-            firstUserUpdate.current = false;
-        } else {
+        if (user.investigationGroup !== -1) {
             getCountyByUser();
             getUserActivityStatus();
         }

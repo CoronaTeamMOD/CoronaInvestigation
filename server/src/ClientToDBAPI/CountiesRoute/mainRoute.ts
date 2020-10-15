@@ -59,7 +59,16 @@ countiesRoute.get('/county/displayName', (request: Request, response: Response) 
                 step: 'Got response from DB',
                 user: response.locals.user.id
             });
-            return response.send(result.data.countyById.displayName as string);
+            return response.send(result?.data?.countyById?.displayName as string);
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'Fetching county display name by user',
+                step: `error while trying fetch displayName due to ${err}`,
+            });
+            response.status(errorStatusCode).send(`Couldn't query county display name`);
         });
 });
 

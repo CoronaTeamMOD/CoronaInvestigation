@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import User from 'models/User';
@@ -33,18 +33,17 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
-
-    const [isUserUpdated, setIsUserUpdated] = useState<boolean>(true);
+    
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-
+    
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const handleSaveUser = () => {
-        setIsSignUpOpen(false);
-        setIsUserUpdated(false);
+        handleCloseSignUp();
+        fetchUser();
     }
 
-    const setCurrentAndGroupUsers = (userId: string, userName: string, userToken: string) => {
+    const fetchUser = () => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -61,15 +60,14 @@ const App: React.FC = (): JSX.Element => {
                     step: 'recived user from the server',
                     user: result.data.userById
                 })
-                const user = result.data.userById;
+                const userFromDB = result.data.userById;
                 setUser({
-                    ...user,
-                    id: userId,
-                    userName: userName,
-                    token: userToken,
+                    ...userFromDB,
+                    id: user.id,
+                    userName: user.userName,
+                    token: user.token,
                 });
-                setIsUserUpdated(true);
-                return user;
+                return userFromDB;
             } else {
                 setIsSignUpOpen(true);
                 logger.warn({
@@ -77,7 +75,7 @@ const App: React.FC = (): JSX.Element => {
                     severity: Severity.MEDIUM,
                     workflow: 'Getting user details',
                     step: `user has not been found due to: ${JSON.stringify(result)}`,
-                    user: userId
+                    user: user.id
                 })
             }
         }).catch(err => {
@@ -86,12 +84,12 @@ const App: React.FC = (): JSX.Element => {
                 severity: Severity.MEDIUM,
                 workflow: 'Getting user details',
                 step: `got error from the server: ${err}`,
-                user: userId
+                user: user.id
             })
         })
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -117,7 +115,7 @@ const App: React.FC = (): JSX.Element => {
                         userName: userName,
                         token: userToken,
                     });
-                    setIsUserUpdated(false);
+                    fetchUser();
                 })
         } else {
             const userId = '7'
@@ -134,13 +132,9 @@ const App: React.FC = (): JSX.Element => {
                 userName: userName,
                 token: userToken,
             });
-            setIsUserUpdated(false);
+            fetchUser();
         }
     }, [])
-
-    React.useEffect(() => {
-        !isUserUpdated && setCurrentAndGroupUsers(user.id, user.userName, user.token);
-    }, [isUserUpdated])
 
     return (
         <>
