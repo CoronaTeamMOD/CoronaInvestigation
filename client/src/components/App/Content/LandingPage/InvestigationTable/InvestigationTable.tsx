@@ -45,7 +45,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
     const [order, setOrder] = useState<Order>(sortOrders.asc);
-    const [orderBy, setOrderBy] = useState<string>(TableHeadersNames.epidemiologyNumber);
+    const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
         if(investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
