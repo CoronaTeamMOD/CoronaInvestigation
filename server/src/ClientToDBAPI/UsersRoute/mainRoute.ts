@@ -254,7 +254,7 @@ usersRoute.get('/sourcesOrganization', (request: Request, response: Response) =>
                     service: Service.SERVER,
                     severity: Severity.CRITICAL,
                     workflow: 'All Sources Organizations Query',
-                    step: `couldnt query all sources organizations due to ${result.errors[0].message}`,
+                    step: `couldnt query all sources organizations due to ${result?.errors[0]?.message}`,
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
             }
@@ -286,7 +286,7 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
                     service: Service.SERVER,
                     severity: Severity.CRITICAL,
                     workflow: 'All Languages Query',
-                    step: `couldnt query all languages due to ${result.errors[0].message}`,
+                    step: `couldnt query all languages due to ${result?.errors[0]?.message}`,
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all languages`);
             }
@@ -329,7 +329,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                     service: Service.SERVER,
                     severity: Severity.CRITICAL,
                     workflow: 'Create User',
-                    step: `the user ${JSON.stringify(newUser)} wasn't created due to ${result.errors[0].message}`,
+                    step: `the user ${JSON.stringify(newUser)} wasn't created due to ${result?.errors[0]?.message}`,
                 })
                 response.status(RESPONSE_ERROR_CODE).send(`Couldn't create investigator`)
             };
