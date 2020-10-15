@@ -16,7 +16,7 @@ export interface TypePreventiveTextFieldProps<T> {
     className?: string,
     testId?: string,
     error? : boolean,
-    validationSchema: yup.StringSchema<string, object>
+    validationSchema: yup.StringSchema<string | undefined, object>
 }
 
 type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;
