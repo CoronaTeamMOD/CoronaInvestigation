@@ -33,9 +33,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
-    const { confirmExitUnfinishedInvestigation, handleCantReachInvestigatedCheck,
-        handleCannotCompleteInvestigationCheck
-    } = useInvestigatedPersonInfo();
+    const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
 
     const [subStatuses, setSubStatuses] = useState<string[]>([]);
     const [subStatusInput, setSubStatusInput] = useState<string>(investigationStatus.subStatus);
@@ -53,7 +51,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
-    }, [investigationStatus])
+    }, [investigationStatus]);
 
     React.useEffect(() => {
         axios.get('/investigationInfo/subStatuses').then((result: any) => {
@@ -78,7 +76,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                 step: `error DB response ${JSON.stringify(err)}`,
             });
         });
-    }, [])
+    }, []);
 
     return (
         <Paper className={classes.paper}>
@@ -87,7 +85,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {
                             investigatedPatientStaticInfo.patientInfo.fullName
-                        },
+                        }
                         {
                             epedemioligyNumber
                         }
@@ -146,17 +144,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                 </div>
                 <div className={classes.managementControllers}>
                     <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                        <Grid item xs={12} className={classes.fieldLabel}>
-                            <CustomCheckbox
-                                checkboxElements={[
-                                    {
-                                        checked: investigationStatus.mainStatus === InvestigationMainStatus.CANT_REACH,
-                                        labelText: 'אין מענה במספר זה',
-                                        onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCantReachInvestigatedCheck(checked))
-                                    }
-                                ]}
-                            />
-                        </Grid>
                         <Grid item xs={12} className={classes.fieldLabel}>
                             <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                                 <Grid item xs={7} className={classes.fieldLabel}>
