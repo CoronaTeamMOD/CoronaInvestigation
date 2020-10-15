@@ -33,15 +33,14 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
-
-    const [isUserUpdated, setIsUserUpdated] = useState<boolean>(true);
+    
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
     
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const handleSaveUser = () => {
         handleCloseSignUp();
-        setIsUserUpdated(false);
+        fetchUser();
     }
 
     const fetchUser = () => {
@@ -79,7 +78,6 @@ const App: React.FC = (): JSX.Element => {
                     user: user.id
                 })
             }
-            setIsUserUpdated(true);
         }).catch(err => {
             logger.error({
                 service: Service.CLIENT,
@@ -117,6 +115,7 @@ const App: React.FC = (): JSX.Element => {
                         userName: userName,
                         token: userToken,
                     });
+                    fetchUser();
                 })
         } else {
             const userId = '7'
@@ -133,13 +132,9 @@ const App: React.FC = (): JSX.Element => {
                 userName: userName,
                 token: userToken,
             });
+            fetchUser();
         }
-        setIsUserUpdated(false);
     }, [])
-
-    useEffect(() => {
-        !isUserUpdated && fetchUser();
-    }, [isUserUpdated])
 
     return (
         <>
