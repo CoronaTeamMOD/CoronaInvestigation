@@ -11,6 +11,8 @@ import FormInput from 'commons/FormInput/FormInput';
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';
 const contactedPersonLastName: string = 'שם משפחה';
+const contactRelationship: string = 'קשר';
+const familyRelationship: string = 'קרבה משפחתית';
 const contactedPersonID: string = 'ת.ז';
 const contactType: string = 'סוג המגע';
 const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע'
@@ -40,26 +42,48 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                         </Typography>
                     </FormInput>
                 </Grid>
-                <Grid item xs={3}>
-                    {
-                        contact.phoneNumber && <FormInput fieldName={contactedPersonPhone}>
+                {
+                    contact.phoneNumber && 
+                    <Grid item xs={3}>
+                        <FormInput fieldName={contactedPersonPhone}>
                             <Typography variant='caption'>
                                 {contact.phoneNumber}
                             </Typography>
                         </FormInput>
-                    }
-                </Grid>
-                <Grid item xs={3}>
-                    {
-                        contact.id && <FormInput fieldName={contactedPersonID}>
+                    </Grid>
+                }
+                {
+                    contact.familyRelationship &&
+                    <Grid item xs={3}>
+                        <FormInput fieldName={familyRelationship}>
+                            <Typography variant='caption'>
+                                {contact.familyRelationship}
+                            </Typography>
+                        </FormInput>
+                    </Grid>
+                }
+            </Grid>
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+                {   
+                    contact.relationship &&
+                    <Grid item xs={3}>
+                        <FormInput fieldName={contactRelationship}>
+                            <Typography variant='caption'>
+                                {contact.relationship}
+                            </Typography>
+                        </FormInput>
+                    </Grid>
+                }
+                {
+                    contact.id && 
+                    <Grid item xs={3}>
+                        <FormInput fieldName={contactedPersonID}>
                             <Typography variant='caption'>
                                 {contact.id}
                             </Typography>
                         </FormInput>
-                    }
-                </Grid>
-            </Grid>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
+                    </Grid>
+                }
                 <Grid item xs={3}>
                     <FormInput fieldName={contactType}>
                         <Typography variant='caption'>
@@ -67,7 +91,7 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                         </Typography>
                     </FormInput>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={contact.relationship ? 3 : 6}>
                     {
                         contact.extraInfo && <FormInput fieldName={contactTypeMoreDetails}>
                             <Typography variant='caption'>
