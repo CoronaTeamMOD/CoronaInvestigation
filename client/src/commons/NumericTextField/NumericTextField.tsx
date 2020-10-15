@@ -9,7 +9,6 @@ const alphabeticErrorMessage = 'השדה יכול להכיל מספרים בלב
 
 const stringAlphabet = yup
   .string()
-  .required()
   .matches(/^[0-9]*$/, alphabeticErrorMessage)
   .max(10, maxLengthErrorMessage);
 
