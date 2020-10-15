@@ -347,10 +347,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationMainStatus,
+            mainStatus: investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
         })
-        if (investigationRow.investigationMainStatus === InvestigationMainStatus.NEW) {
+        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -418,7 +418,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
-            [TableHeadersNames.investigationMainStatus]: row.mainStatus,
+            [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk
