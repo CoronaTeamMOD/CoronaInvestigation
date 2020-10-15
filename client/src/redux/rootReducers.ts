@@ -10,6 +10,7 @@ import countryReducer from './Country/countryReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import investigationReducer from './Investigation/investigationReducer';
+import addressReducer from './Address/AddressReducer';
 
 export default withReduxStateSync(combineReducers<StoreStateType>({
      user: userReducer,
@@ -19,5 +20,6 @@ export default withReduxStateSync(combineReducers<StoreStateType>({
      cities: cityReducer,
      countries: countryReducer,
      contactTypes: contactTypeReducer,
-     formsValidations: formReducer
+     formsValidations: formReducer,
+     address: addressReducer,
 })) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

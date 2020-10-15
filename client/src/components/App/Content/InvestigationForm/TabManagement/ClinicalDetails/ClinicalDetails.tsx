@@ -10,6 +10,7 @@ import City from 'models/City';
 import Street from 'models/Street';
 import logger from 'logger/logger';
 import Gender from 'models/enums/Gender';
+import DBAddress from 'models/DBAddress';
 import Toggle from 'commons/Toggle/Toggle';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
@@ -44,12 +45,16 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
     const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
     const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
+    const [useDefaultAddress, setUseDefaultAddress] = React.useState<boolean>(false);
+    const [defaultStreetAddress, setDefaultStreetAddress] = React.useState<Street>();
+    const [defaultCityAddress, setDefaultCityAddress] = React.useState<{ id: string, value: City }>();
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const address = useSelector<StoreStateType, DBAddress>(state => state.address);
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
         setSymptoms,
@@ -139,17 +144,34 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchWasHospitalized = watch(ClinicalDetailsFields.WAS_HOPITALIZED);
     const watchHospitalizedStartDate = watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
     const watcHospitalizedEndDate = watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
+    const watchIsolationAddress = watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
 
     React.useEffect(() => {
         fetchClinicalDetails(reset, trigger);
     }, []);
 
     React.useEffect(() => {
+        const defaultCity = cities.get(address.city);
+        defaultCity && setDefaultCityAddress({ id: address.city, value: defaultCity });
+        getStreetByCity(address.city)
+    }, [address]);
+
+    React.useEffect(() => {
+        setDefaultStreetAddress(streetsInCity.find((street) => street.id === address.street));
+    }, [streetsInCity]);
+
+    React.useEffect(() => {
         if (watchIsInIsolation === false) {
             setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
             setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
+            setUseDefaultAddress(true);
         }
-    }, [watchIsInIsolation]);
+        if (watchIsInIsolation === true) {
+            if (watchIsolationAddress.city !== '' || watchIsolationAddress.street !== '') {
+                setUseDefaultAddress(false);
+            }
+        }
+    }, [watchIsInIsolation, watchIsolationAddress]);
 
     React.useEffect(() => {
         if (watchIsIsolationProblem === false) {
@@ -211,6 +233,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         <Autocomplete
                                             test-id='currentQuarantineCity'
                                             options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                            //defaultValue={{id: address.city, value: {id: address.city, displayName: cities.get(address.city)?.displayName as string}}}
+                                            //defaultValue={defaultCityAddress ? defaultCityAddress : undefined}
                                             getOptionLabel={(option) => option ? option.value.displayName : option}
                                             inputValue={isolationCityName}
                                             filterOptions={cityFilterOptions}
@@ -218,7 +242,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 props.onChange(selectedCity ? selectedCity.id : '')
                                                 if (selectedCity?.id && selectedCity.id !== props.value) {
                                                     setIsolationStreetName('');
-                                                    getStreetByCity(selectedCity.id);
                                                 }
                                             }}
                                             onInputChange={(event, selectedCityName) => {
@@ -256,6 +279,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             options={streetsInCity}
                                             getOptionLabel={(option) => option ? option.displayName : option}
                                             inputValue={isolationStreetName}
+                                            //defaultValue={defaultStreetAddress}
                                             filterOptions={streetFilterOptions}
                                             onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                             onInputChange={(event, selectedStreetName) => {
@@ -300,7 +324,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             }
                                             testId='currentQuarantineHomeNumber'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER}`}
-                                            value={props.value}
+                                            value={!useDefaultAddress ? props.value : address.houseNum}
                                             onChange={(newValue: string) => (
                                                 props.onChange(newValue)
                                             )}
@@ -329,7 +353,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             }
                                             testId='currentQuarantineFloor'
                                             name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_FLOOR}`}
-                                            value={props.value}
+                                            value={!useDefaultAddress ? props.value : address.floor}
                                             onChange={(newValue: string) => (
                                                 props.onChange(newValue)
                                             )}

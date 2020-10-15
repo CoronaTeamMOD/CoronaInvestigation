@@ -17,11 +17,14 @@ import City from 'models/City';
 import axios from 'Utils/axios';
 import Street from 'models/Street';
 import logger from 'logger/logger';
+import DBAddress from 'models/DBAddress';
 import { Service, Severity } from 'models/Logger';
 import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
+import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
@@ -32,7 +35,6 @@ import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/Person
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
-import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -96,8 +98,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }
 
+    const data = getValues();
+
     const convertToDBData = (): PersonalInfoDbData => {
-        const data = getValues();
         return {
             phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
             additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
@@ -116,6 +119,17 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             otherOccupationExtraInfo: data.otherOccupationExtraInfo ? data.otherOccupationExtraInfo : null,
         }
     }
+
+    React.useEffect(() => {
+        const address: DBAddress = {
+            city: data.city !== '' ? data.city : null,
+            street: data.street !== '' ? data.street : null,
+            floor: data.floor !== '' ? data.floor : null,
+            houseNum: data.houseNum !== '' ? data.houseNum : null
+        }
+
+        setAddress(address);
+    }, [data.city, data.street, data.floor, data.houseNum]);
 
     React.useEffect(() => {
         if(investigationId !== -1) {
@@ -414,7 +428,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     }}
                                     onChange={(event, newValue) => {
                                         setCityId(newValue ? newValue.id : '');
-                                        props.onChange(newValue ? newValue.id : '')
+                                        props.onChange(newValue ? newValue.id : '');
                                     }}
                                     renderInput={(params) =>
                                         <TextField

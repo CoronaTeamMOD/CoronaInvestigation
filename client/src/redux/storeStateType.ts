@@ -1,6 +1,7 @@
 import User from 'models/User';
 import City from 'models/City';
 import Country from 'models/Country';
+import DBAddress from 'models/DBAddress';
 import ContactType from 'models/ContactType';
 import InvestigationRedux from 'models/InvestigationRedux';
 
@@ -13,4 +14,5 @@ export default interface StoreStateType {
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
     formsValidations: {[key: number] : (boolean | null)[]};
-}
+    address: DBAddress;
+};
