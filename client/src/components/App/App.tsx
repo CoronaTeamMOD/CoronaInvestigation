@@ -62,10 +62,7 @@ const App: React.FC = (): JSX.Element => {
                 })
                 const userFromDB = result.data.userById;
                 setUser({
-                    ...userFromDB,
-                    id: user.id,
-                    userName: user.userName,
-                    token: user.token,
+                    ...userFromDB
                 });
                 return userFromDB;
             } else {
