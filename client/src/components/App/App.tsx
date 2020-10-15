@@ -64,9 +64,6 @@ const App: React.FC = (): JSX.Element => {
                 const user = result.data.userById;
                 setUser({
                     ...user,
-                    id: userId,
-                    userName: userName,
-                    token: userToken,
                 });
                 setIsUserUpdated(true);
                 return user;
