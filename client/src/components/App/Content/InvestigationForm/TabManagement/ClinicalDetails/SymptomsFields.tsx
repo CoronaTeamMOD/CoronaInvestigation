@@ -78,7 +78,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             maxDate={new Date()}
                                             testId='symptomsStartDate'
                                             value={props.value}
-                                            labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? errors[ClinicalDetailsFields.SYMPTOMS_START_DATE].message : '* תאריך התחלת תסמינים'}
+                                            labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]?.message || '* תאריך התחלת תסמינים'}
                                             onChange={(newDate: Date) =>
                                                 props.onChange(newDate)
                                             }
