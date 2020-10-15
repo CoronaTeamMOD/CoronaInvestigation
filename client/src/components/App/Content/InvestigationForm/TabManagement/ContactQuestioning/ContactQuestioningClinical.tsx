@@ -1,7 +1,8 @@
+import React from 'react';
 import Swal from 'sweetalert2';
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { addDays, format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
@@ -29,6 +30,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+
+    const daysToIsolate = 14;
+    const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
+    const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
     const handleIsolation = (value: boolean) => {
         value ?
@@ -147,6 +152,18 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>
+                </Grid>
+                <Grid item>
+                    <FormInput fieldName='תאריך סיום בידוד'>
+                        <AlphanumericTextField
+                            name='isolationEndDate'
+                            value={formattedIsolationEndDate}
+                            onChange={() => {}}
+                            errors={errors}
+                            setError={setError}
+                            clearErrors={clearErrors}
+                        />
+                    </FormInput>
                 </Grid>
             </Grid>
         </Grid>
