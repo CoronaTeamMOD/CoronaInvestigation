@@ -3,16 +3,16 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
-import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
+import logger from 'logger/logger';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
+import { Service, Severity } from 'models/Logger';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
@@ -115,13 +115,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const handleCantReachInvestigatedCheck = (cantReachInvestigated: boolean) => {   
-        setInvestigationStatus({
-            mainStatus: cantReachInvestigated ? InvestigationMainStatus.CANT_REACH : InvestigationMainStatus.IN_PROCESS,
-            subStatus: investigationStatus.subStatus
-        })
-    };
-
     const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {      
         setInvestigationStatus({
             mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
@@ -131,9 +124,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     return {
         confirmExitUnfinishedInvestigation,
-        handleCantReachInvestigatedCheck,
         handleCannotCompleteInvestigationCheck,
-        getPersonAge
+        getPersonAge,
     }
 };
 
