@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { createFilterOptions } from '@material-ui/lab';
@@ -10,22 +10,17 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
-    const {
-        errors,
-        setError,
-        clearErrors,
-        country,
-        countryFieldName,
-        city,
-        cityFieldName,
-        airport,
-        airportFieldName,
-        handleChangeExposureDataAndFlightsField,
+    const { errors, setError, clearErrors, country, countryFieldName, city, cityFieldName, airport,
+            airportFieldName, handleChangeExposureDataAndFlightsField,
     } = props;
 
     const classes = useStyles();
+
+    const [countryToShow, setCountryToShow] = useState<Country | null>(country);
+    
     const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
     const options = Array.from(countries).map(([name, value]) => (value));
+
     const getLabel = (option: any) => {
         if (option.displayName) {
             return option.displayName
@@ -43,9 +38,12 @@ const AirportInput = (props: any) => {
         <div className={classes.airportDetails}>
             <div className={classes.airportCountryTextField}>
                 <AutocompletedField
-                    value={country}
+                    value={countryToShow}
                     options={options}
-                    onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+                    onChange={(e, newValue) => {
+                        setCountryToShow(newValue);
+                        handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+                    }
                     getOptionLabel={(option) => getLabel(option)}
                     filterOptions={filterOptions}
                     label='מדינה'
