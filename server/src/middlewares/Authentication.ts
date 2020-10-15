@@ -97,9 +97,10 @@ const handleConfidentialAuth = (
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Authentication',
-                step: 'error in requesting the graphql API',
+                step: `error in requesting the graphql API: ${err}`,
                 user: user.id,
             });
+            response.sendStatus(500);
         });;
 
     } catch (error) {
