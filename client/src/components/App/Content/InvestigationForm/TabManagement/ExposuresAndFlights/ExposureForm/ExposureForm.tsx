@@ -5,12 +5,12 @@ import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@materi
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import CovidPatientFields from 'models/CovidPatientFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
@@ -156,23 +156,33 @@ const ExposureForm = (props: any) => {
             id={fieldsNames.exposureSource}
             placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
           />
-          <div className={classes.optionalExposureSources}>
-            {
-              isLoading ? <CircularProgress className={classes.loadingSpinner} size='5vh' /> :
-                optionalCovidPatients.filter((exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber).map(exposureSource => (
-                  <MenuItem
-                    className={classes.optionalExposureSource}
-                    key={exposureSource.epidemiologyNumber}
-                    value={exposureSource.epidemiologyNumber}
-                    onClick={() => {
-                      handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
-                    }}>
-                    {createExposureSourceOption(exposureSource)}
-                  </MenuItem>
-                ))
-            }
-          </div>
         </>
+      </FormRowWithInput>
+      <FormRowWithInput fieldName=''>
+        <div className={classes.optionalExposureSources}>
+          {
+            isLoading ?
+              <div className={classes.loadingDiv}>
+                <CircularProgress className={classes.loadingSpinner} size='5vh' />
+              </div>
+            :
+              <div>
+                {
+                  optionalCovidPatients.filter((exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber).map(exposureSource => (
+                    <MenuItem
+                      className={classes.optionalExposureSource}
+                      key={exposureSource.epidemiologyNumber}
+                      value={exposureSource.epidemiologyNumber}
+                      onClick={() => {
+                        handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
+                      }}>
+                      {createExposureSourceOption(exposureSource)}
+                    </MenuItem>
+                  ))
+                }
+              </div>
+          }
+        </div>
       </FormRowWithInput>
 
       <FormRowWithInput fieldName='תאריך החשיפה:'>
