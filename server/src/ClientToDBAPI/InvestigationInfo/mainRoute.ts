@@ -3,7 +3,8 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import { GET_INVESTIGATION_INFO } from '../../DBService/InvestigationInfo/Query';
+import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
+import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES } from '../../DBService/InvestigationInfo/Query';
 import { UPDATE_INVESTIGATION_STATUS, UPDATE_INVESTIGATION_START_TIME, UPDATE_INVESTIGATION_END_TIME } from '../../DBService/InvestigationInfo/Mutation';
 
 const errorStatusCode = 500;
@@ -43,21 +44,22 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
 })
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
-    const { epidemiologyNumber, investigationStatus } = request.body;
+    const { epidemiologyNumber, investigationMainStatus, investigationSubStatus } = request.body;
+    const currentWorkflow = investigationMainStatus === InvestigationMainStatus.DONE ? 'Ending Investigation' : 'Investigation click';
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Investigation click',
-        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify({ epidemiologyNumber, investigationStatus })}`,
+        workflow: currentWorkflow,
+        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify({ epidemiologyNumber, investigationMainStatus })}`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologyNumber
     })
-    graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus })
+    graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationStatus: investigationMainStatus, investigationSubStatus })
     .then((result: any) => {
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
-            workflow: 'Investigation click',
+            workflow: currentWorkflow,
             step: 'the investigation status was updated successfully',
             user: response.locals.user.id,
             investigation: response.locals.epidemiologyNumber
@@ -68,7 +70,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
         logger.error({
             service: Service.SERVER,
             severity: Severity.HIGH,
-            workflow: 'Investigation click',
+            workflow: currentWorkflow,
             step: `the investigation status failed to update due to: ${err}`,
             user: response.locals.user.id,
             investigation: response.locals.epidemiologyNumber
@@ -112,8 +114,60 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
 
 investigationInfo.post('/updateInvestigationEndTime', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationEndTime } = request.body;
+    logger.info({
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: 'Ending Investigation',
+        step: `launching graphql API request to update end time with parameters: ${JSON.stringify({ epidemiologyNumber: +epidemiologyNumber, investigationEndTime })}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologyNumber
+    });
     graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationEndTime })
-    .then((result: any) => response.send(result));
+    .then((result: any) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Ending Investigation',
+            step: 'got respond from the DB in the request to update end time',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+        response.send(result)
+    }).catch(err => {
+        logger.error({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Ending Investigation',
+            step: `got error from the DB in the request to update end time: ${err}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber
+        });
+    });
 })
+
+investigationInfo.get('/subStatuses', (request: Request, response: Response) => {
+    graphqlRequest(GET_SUB_STATUSES, response.locals, { investigationGroupId: +response.locals.user.group, orderBy: request.query.orderBy  })
+        .then((result: any) => {
+
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET subStatuses request to the DB',
+                step: 'graphqlResult THEN succsses'
+            });
+
+            response.send(result)
+        })
+        .catch((err: any) => { 
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET subStatuses request to the DB',
+                step: `graphqlResult CATCH fail ${err}`
+            });
+            response.status(errorStatusCode).send('error in fetching data: ' + err)
+        });
+});
+
 
 export default investigationInfo;

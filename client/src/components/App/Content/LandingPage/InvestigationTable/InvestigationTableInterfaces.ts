@@ -14,7 +14,7 @@ export interface useInvestigationTableParameters {
 
 export interface useInvestigationTableOutcome {
     tableRows: InvestigationTableRow[];
-    handleInvestigationRowClick: (epidemiologyNumber: number, currentInvestigationStatus: string) => void;
+    onInvestigationRowClick: (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof typeof TableHeadersNames]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;

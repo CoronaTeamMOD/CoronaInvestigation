@@ -5,7 +5,9 @@ import { ExpandMore } from '@material-ui/icons';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
 import ContactType from 'models/ContactType';
+import { Severity, Service } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
@@ -23,6 +25,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
 
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
@@ -35,15 +38,70 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     React.useEffect(() => {
         loadInteractedContacts();
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting family relationships',
+            step: 'launching server request',
+            user: userId,
+            investigation: investigationId
+        });
         axios.get('/contactedPeople/familyRelationships').then((result: any) => {
-            setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+            if (result?.data?.data?.allFamilyRelationships) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting family relationships',
+                    step: 'got respond from the server that has data',
+                    user: userId,
+                    investigation: investigationId
+                });
+                setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow: 'Getting family relationships',
+                    step: 'got respond from the server without data',
+                    user: userId,
+                    investigation: investigationId
+                });
+            }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting family relationships',
+                step: `got the following error from the server: ${err}`,
+                user: userId,
+                investigation: investigationId
+            });
         });
     },[]);
 
     const saveContacted = (e: React.ChangeEvent<{}>) => {
         e.preventDefault();
         setFormState(investigationId, id, true);
-        saveContactQuestioning().then(onSubmit);
+        saveContactQuestioning().then(() => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving all contacts',
+                step: 'got respond from the server',
+                user: userId,
+                investigation: investigationId
+            });
+            onSubmit();
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving all contacts',
+                step: `got the following error from the server: ${err}`,
+                user: userId,
+                investigation: investigationId
+            });
+        });
     }
 
     return (

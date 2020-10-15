@@ -1,18 +1,15 @@
+import { InvestigationStatus } from 'models/InvestigationStatus';
+
 export const SET_EPIDEMIOLOGY_NUM = 'SET_EPIDEMIOLOGY_NUM';
-export const SET_CANT_REACH_INVESTIGATED = 'SET_CANT_REACH_INVESTIGATED';
 export const SET_INVESTIGATED_PATIENT_ID = 'SET_INVESTIGATED_PATIENT_ID';
 export const SET_LAST_OPENED_EPIDEMIOLOGY_NUM = 'SET_LAST_OPENED_EPIDEMIOLOGY_NUM';
 export const SET_IS_CURRENTLY_LOADING = 'SET_IS_CURRENTLY_LOADING';
 export const SET_AXIOS_INTERCEPTOR_ID = 'SET_AXIOS_INTERCEPTOR_ID';
+export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
     payload: {epidemiologyNumber: number}
-}
-
-interface SetCantReachInvestigated {
-    type: typeof SET_CANT_REACH_INVESTIGATED,
-    payload: {cantReachInvestigated: boolean}
 }
 
 interface SetInvestigatedPatientId {
@@ -35,4 +32,9 @@ interface SetAxiosInterceptorId {
     payload: {axiosInterceptorId: number}
 }
 
-export type InvestigationAction = SetEpidemiologyNum | SetCantReachInvestigated | SetInvestigatedPatientId | SetAxiosInterceptorId | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading;
+interface SetInvestigationStatus {
+    type: typeof SET_INVESTIGATION_STATUS,
+    payload: {investigationStatus: InvestigationStatus}
+}
+
+export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading;

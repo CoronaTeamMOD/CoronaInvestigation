@@ -15,7 +15,7 @@ const wideAreas = [publicPark, zoo, stadium, amphitheater, beach];
 const OtherPublicLocationGrid: React.FC<Props> = (props: Props): JSX.Element => {
     
     const { interaction } = props;
-    const isWideArea: boolean = wideAreas.includes(interaction.placeSubType);
+    const isWideArea: boolean = interaction.placeSubType ? wideAreas.includes(interaction.placeSubType) : false;
 
     return (
         <>

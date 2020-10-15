@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/styles';
 
 const useStyles = makeStyles({
     exposureSourceTextFied: {
-        width: '70vw',
+        width: '60vw',
     },
     optionalExposureSources: {
         maxHeight: '50vh',
@@ -11,6 +11,8 @@ const useStyles = makeStyles({
         direction: 'rtl',
         width: '70vw',
         minHeight: '10vh',
+        display: 'flex',
+        justifyContent: 'flex-end'
     },
     loadingSpinner: {
         margin: '1vh 48%'
@@ -24,6 +26,11 @@ const useStyles = makeStyles({
     },
     searchedField: {
         fontWeight: 'bold'
+    },
+    loadingDiv: {
+        width: '60vw',
+        display: 'flex',
+        justifyContent: 'center'
     }
 });
 

@@ -1,11 +1,11 @@
 import { gql } from "postgraphile";
 
 export const UPDATE_INVESTIGATION_STATUS = gql`
-  mutation UpdateInvestigationStatus($investigationStatus: String!, $epidemiologyNumber: Int!) {
-    updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus}, epidemiologyNumber: $epidemiologyNumber}) {
-      clientMutationId
-    }
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: String!, $investigationSubStatus: String) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {investigationStatus: $investigationStatus, investigationSubStatus: $investigationSubStatus}, epidemiologyNumber: $epidemiologyNumber}) {
+    clientMutationId
   }
+}
 `;
 
 export const UPDATE_INVESTIGATION_START_TIME = gql`

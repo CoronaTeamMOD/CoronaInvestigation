@@ -1,13 +1,16 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
-import {subDays, eachDayOfInterval} from 'date-fns';
+import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
 import StoreStateType from 'redux/storeStateType';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InteractionsTabStyles';
 import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
@@ -15,24 +18,49 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 10;
+const maxInvestigatedDays: number = 21;
 
-export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-
     const {interactions, setInteractions, setAreThereContacts} = parameters;
 
     const {parseAddress} = useGoogleApiAutocomplete();
+    const {alertError} = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const classes = useStyles({});
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>, setInvestigationStartTime: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting Corona Test Date',
+            step: `launching Corona Test Date request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting Corona Test Date',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 setTestDate(convertDate(res.data.coronaTestDate));
-                setInvestigationStartTime(convertDate(res.data.startTime));
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting Corona Test Date',
+                    step: 'got status 200 but wrong data'
+                });
             }
         })
     }
@@ -42,8 +70,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             const endInvestigationDate = new Date();
             let startInvestigationDate: Date;
             if (doesHaveSymptoms) {
-                if (symptomsStartDate)
+                if (symptomsStartDate) {
+                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate,  coronaTestDate));
+                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
+                        alertError('תאריך תחילת הסימפטומים לא חוקי');
+                        return []
+                    }
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                }
                 else
                     startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
             } else {
@@ -59,28 +93,75 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const getClinicalDetailsSymptoms = (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean>>) => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Clinical Details',
+            step: 'launching clinical data request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching Clinical Details',
+                        step: 'got results back from the server',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
                     const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
                     setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
                     setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms);
+                } else {
+                    logger.warn({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Fetching Clinical Details',
+                        step: 'got status 200 but got invalid outcome'
+                    })
                 }
             });
     }
 
     const loadInteractions = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Interactions',
+            step: `launching interactions request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching Interactions',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
                     return currentValue + interaction.contacts.length
                 }, 0);
                 setAreThereContacts(numberOfContactedPeople > 0);
                 setInteractions(allInteractions);
-            }).catch(() => {
-            handleLoadInteractionsError();
+            }).catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching Interactions',
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                handleLoadInteractionsError();
         });
     }
 
@@ -119,11 +200,35 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }
         }).then((result) => {
             if (result.value) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Deleting Interaction',
+                    step: `launching interaction delete request`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
                 axios.delete('/intersections/deleteContactEvent', {
                     params: {contactEventId}
                 }).then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Deleting Interaction',
+                        step: `interaction was deleted successfully`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
-                }).catch(() => {
+                }).catch((error) => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Deleting Interaction',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     handleDeleteEventFailed();
                 })
             }

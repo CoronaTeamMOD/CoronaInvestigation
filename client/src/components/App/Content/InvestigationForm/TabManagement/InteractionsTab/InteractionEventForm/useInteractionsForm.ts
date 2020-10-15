@@ -2,6 +2,8 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -12,35 +14,83 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
   const { loadInteractions, closeNewDialog, closeEditDialog } = props;    
   const { parseLocation } = useDBParser();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const saveIntreactions = async (interactionsDataToSave: InteractionEventDialogData) => {
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
       if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Update Interaction',
+          step: `launching update interaction request`,
+          user: userId,
+          investigation: epidemiologyNumber
+        });
         axios.post('/intersections/updateContactEvent', {
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
         })
           .then(() => {
+            logger.info({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Update Interaction',
+              step: 'updated interaction successfully',
+              user: userId,
+              investigation: epidemiologyNumber
+            });
             loadInteractions();
             closeEditDialog();
-          }).catch(() => {
+          }).catch((error) => {
+            logger.error({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Update Interaction',
+              step: `got error from server: ${error}`,
+              investigation: epidemiologyNumber,
+              user: userId
+            });
             handleFailedSave('לא ניתן היה לשמור את השינויים');
           })
       } else {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Create Interaction',
+          step: `launching create interaction request`,
+          user: userId,
+          investigation: epidemiologyNumber
+        });
         axios.post('/intersections/createContactEvent', {
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
         })
           .then(() => {
+            logger.info({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Create Interaction',
+              step: 'created interaction successfully',
+              user: userId,
+              investigation: epidemiologyNumber
+            });
             loadInteractions()
             closeNewDialog();
           })
           .catch((error) => {
-              console.log(error);
+              logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Create Interaction',
+                step: `got error from server: ${error}`,
+                investigation: epidemiologyNumber,
+                user: userId
+              });
               closeNewDialog();
               handleFailedSave('לא ניתן היה ליצור אירוע חדש');
           })

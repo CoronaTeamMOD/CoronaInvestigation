@@ -27,7 +27,7 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
     })
     graphqlRequest(GET_IS_USER_ACTIVE, response.locals, { id: response.locals.user.id })
         .then((result: any) => {
-            if (result.data?.userById) {
+            if (result.data) {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
@@ -111,7 +111,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Getting group users',
+        workflow: 'Getting user details',
         step: 'requesting graphql API for user details',
         user: response.locals.user.id
     });
@@ -120,7 +120,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'Getting group users',
+                workflow: 'Getting user details',
                 step: 'got the result from the DB',
                 user: response.locals.user.id
             });
@@ -130,7 +130,7 @@ usersRoute.get('/user', (request: Request, response: Response) => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
-                workflow: 'Getting group users',
+                workflow: 'Getting user details',
                 step: `failed to get user details from the DB due to: ${err}`,
                 user: response.locals.user.id
             });
@@ -176,10 +176,10 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Switch investigator',
-        step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.group })}`,
+        step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`,
         user: response.locals.user.id
     });
-    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.group })
+    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
         .then((result: any) => {
             let users: User[] = [];
             if (result && result.data && result.data.allUsers) {

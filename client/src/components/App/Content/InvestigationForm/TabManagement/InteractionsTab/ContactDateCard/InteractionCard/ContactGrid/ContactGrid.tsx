@@ -41,11 +41,13 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={3}>
-                    <FormInput fieldName={contactedPersonPhone}>
-                        <Typography variant='caption'>
-                            {contact.phoneNumber}
-                        </Typography>
-                    </FormInput>
+                    {
+                        contact.phoneNumber && <FormInput fieldName={contactedPersonPhone}>
+                            <Typography variant='caption'>
+                                {contact.phoneNumber}
+                            </Typography>
+                        </FormInput>
+                    }
                 </Grid>
                 <Grid item xs={3}>
                     {
@@ -66,11 +68,13 @@ const ContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                     </FormInput>
                 </Grid>
                 <Grid item xs={9}>
-                    <FormInput fieldName={contactTypeMoreDetails}>
-                        <Typography variant='caption'>
-                            {contact.extraInfo}
-                        </Typography>
-                    </FormInput>
+                    {
+                        contact.extraInfo && <FormInput fieldName={contactTypeMoreDetails}>
+                            <Typography variant='caption'>
+                                {contact.extraInfo}
+                            </Typography>
+                        </FormInput>
+                    }
                 </Grid>
             </Grid>
         </>

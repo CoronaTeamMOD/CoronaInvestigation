@@ -1,16 +1,3 @@
--- FUNCTION: public.group_investigations_sort(integer, character varying)
-
--- DROP FUNCTION public.group_investigations_sort(integer, character varying);
-
-CREATE OR REPLACE FUNCTION public.group_investigations_sort(
-	investigation_group_id integer,
-	order_by character varying)
-    RETURNS json
-    LANGUAGE 'plpgsql'
-
-    COST 100
-    VOLATILE 
-AS $BODY$
 BEGIN
 RETURN (select
     json_build_object(
@@ -19,6 +6,7 @@ RETURN (select
                 'epidemiologyNumber', investigationTable.epidemiology_number,
 				'coronaTestDate', investigationTable.corona_test_date,
 				'priority', investigationTable.priority,
+				'desk', investigationTable.desk,
 				'investigatedPatientByInvestigatedPatientId', (
 					select json_build_object (
 						'covidPatientByCovidPatient', (
@@ -53,6 +41,13 @@ RETURN (select
 					)
 					from public.investigation_status investigationStatusTable
 					where investigationStatusTable.display_name = investigationTable.investigation_status 
+				),
+				'investigationSubStatusByInvestigationStatus', (
+					select json_build_object (
+						'displayName', investigationSubStatusTable.display_name
+					)
+					from public.investigation_sub_status investigationSubStatusTable
+					where investigationSubStatusTable.display_name = investigationTable.investigation_sub_status 
 				),
 				'userByLastUpdator', (
 					select json_build_object (
@@ -138,7 +133,3 @@ where (
 	) = investigation_group_id
 ));
 END;
-$BODY$;
-
-ALTER FUNCTION public.group_investigations_sort(integer, character varying)
-    OWNER TO coronai;
