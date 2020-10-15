@@ -13,7 +13,7 @@ import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 
 const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
     placeType: '',
-    placeSubType: -1,
+    placeSubType: null,
     investigationId,
     locationAddress: initAddress,
     startTime,

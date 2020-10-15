@@ -213,8 +213,8 @@ const ExposureForm = (props: any) => {
         onPlaceTypeChange={(value) =>
           handleChangeExposureDataAndFlightsField(fieldsNames.placeType, value)
         }
-        onPlaceSubTypeChange={(placeSubType: PlaceSubType) =>
-          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, placeSubType.id)
+        onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) =>
+          handleChangeExposureDataAndFlightsField(fieldsNames.placeSubType, placeSubType?.id || null)
         }
       />
     </Grid>
