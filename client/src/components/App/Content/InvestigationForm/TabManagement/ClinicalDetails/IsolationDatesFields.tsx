@@ -54,7 +54,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 <DatePick
                                     maxDate={new Date()}
                                     onBlur={props.onBlur}
-                                    test-id='quarantinedFromDate'
+                                    testId='quarantinedFromDate'
                                     labelText={errors[ClinicalDetailsFields.ISOLATION_START_DATE] ? errors[ClinicalDetailsFields.ISOLATION_START_DATE].message : '* מתאריך'}
                                     value={props.value}
                                     onChange={(newDate: Date) => {
@@ -71,7 +71,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                         render={(props) => (
                             <DatePick
                                 onBlur={props.onBlur}
-                                test-id='quarantinedUntilDate'
+                                testId='quarantinedUntilDate'
                                 labelText={errors[ClinicalDetailsFields.ISOLATION_END_DATE] ? errors[ClinicalDetailsFields.ISOLATION_END_DATE].message : '* עד'}
                                 value={props.value}
                                 onChange={(newDate: Date) => {

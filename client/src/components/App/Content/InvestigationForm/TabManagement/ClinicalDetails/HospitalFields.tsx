@@ -93,7 +93,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 <DatePick
                                     maxDate={new Date()}
                                     labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_START_DATE].message : '* מתאריך'}
-                                    test-id='wasHospitalizedFromDate'
+                                    testId='wasHospitalizedFromDate'
                                     value={props.value}
                                     onBlur={props.onBlur}
                                     onChange={(newDate: Date) =>
@@ -108,7 +108,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <DatePick
-                                    test-id='wasHospitalizedUntilDate'
+                                    testId='wasHospitalizedUntilDate'
                                     labelText={errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE] ? errors[ClinicalDetailsFields.HOSPITALIZATION_END_DATE].message : '* עד'}
                                     value={props.value}
                                     onBlur={props.onBlur}
