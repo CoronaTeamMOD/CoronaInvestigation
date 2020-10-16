@@ -115,8 +115,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     relevantOccupation: investigatedPatient.occupation,
                     educationOccupationCity: investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation ?
                         investigatedPatient.subOccupationBySubOccupation.city : '',
-                    institutionName: investigatedPatient.subOccupation,
-                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo,
+                    institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
+                    otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
                     contactInfo: investigatedPatient.patientContactInfo
                 }
                 setPersonalInfoData(PersonalInfoData);

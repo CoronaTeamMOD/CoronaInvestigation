@@ -14,6 +14,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
     (config) => {
         config.headers.Authorization = store.getState().user.token;
+        config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
         activateIsLoading(config);
         return config;
     }, 
