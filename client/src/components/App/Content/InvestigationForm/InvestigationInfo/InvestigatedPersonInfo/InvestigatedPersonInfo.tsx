@@ -25,13 +25,14 @@ const displayDateFormat = 'dd/MM/yyyy';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber, subStatuses } = props;
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
     const { identityType, gender, isDeceased, patientInfo } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
 
     const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
 
@@ -167,7 +168,6 @@ interface Props {
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;
-    subStatuses: string[]
 }
 
 export default InvestigatedPersonInfo

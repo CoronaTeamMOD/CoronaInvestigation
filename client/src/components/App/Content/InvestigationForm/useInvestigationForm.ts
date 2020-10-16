@@ -6,17 +6,18 @@ import { useHistory } from 'react-router-dom';
 import City from 'models/City';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
-import {timeout} from 'Utils/Timeout/Timeout';
+import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import {landingPageRoute} from 'Utils/Routes/Routes';
-import {setCities} from 'redux/City/cityActionCreators';
+import { Service, Severity } from 'models/Logger';
+import { landingPageRoute } from 'Utils/Routes/Routes';
+import { setCities } from 'redux/City/cityActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
+import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
@@ -165,7 +166,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 });
                 setCountries(countries);
             })
-            .catch(error=> {
+            .catch(error => {
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.HIGH,
@@ -177,10 +178,43 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             });
     };
 
+    const fetchSubStatuses = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Sub Statuses',
+            step: `launching sub statuses request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/investigationInfo/subStatuses').then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `recieved DB response ${JSON.stringify(result)}`,
+            });
+
+            const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
+
+            if (resultNodes) {
+                setSubStatuses(resultNodes.map((element: any) => element.displayName))
+            }
+        }).catch((err: any) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `error DB response ${JSON.stringify(err)}`,
+            });
+        });
+    };
+
     useEffect(() => {
         fetchCities();
         fetchCountries();
         fetchContactTypes();
+        fetchSubStatuses();
     }, []);
 
     useEffect(() => {
@@ -220,7 +254,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     investigation: epidemiologyNumber
                 });
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus : InvestigationStatus.DONE,
+                    investigationMainStatus: InvestigationStatus.DONE,
                     investigationSubStatus: null,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
@@ -254,17 +288,17 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         });
                         handleInvestigationFinish()
                     })
-                    .catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.HIGH,
-                            workflow: 'Ending Investigation',
-                            step: `got errors in server result: ${error}`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        handleInvestigationFinishFailed()
-                    })
+                        .catch((error) => {
+                            logger.error({
+                                service: Service.CLIENT,
+                                severity: Severity.HIGH,
+                                workflow: 'Ending Investigation',
+                                step: `got errors in server result: ${error}`,
+                                user: userId,
+                                investigation: epidemiologyNumber
+                            });
+                            handleInvestigationFinishFailed()
+                        })
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
