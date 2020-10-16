@@ -15,7 +15,7 @@ import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExpos
 const exposureRoute = Router();
 
 const errorStatusCode = 500;
-const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
+const phoneOrIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
 
 const searchDaysAmount = 14;
@@ -75,10 +75,10 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
     }
 );
 
-const convertSearchValueToRegex = (searchValue: string) => {
+const convertSearchValueToRegex = (searchValue: string, isPhoneOrIdentityNumber: boolean) => {
     let searchRegexContent : string;
-    if (phoneAndIdentityNumberRegex.test(searchValue)) searchRegexContent = searchValue;
-    else searchRegexContent = searchValue.replace(invalidCharsRegex, '%');
+    if (isPhoneOrIdentityNumber) searchRegexContent = searchValue;
+    else searchRegexContent = searchValue.replace(new RegExp(invalidCharsRegex, 'g'), '%');
     return `%${searchRegexContent}%`
 }
 
@@ -105,7 +105,9 @@ const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) : 
 }
 
 exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
-    const searchRegex = convertSearchValueToRegex(request.params.searchValue);
+    const searchValue : string = request.params.searchValue || '';
+    const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
+    const searchRegex = convertSearchValueToRegex(searchValue, isPhoneOrIdentityNumber);
     const dateToStartSearching = subDays(new Date(request.params.coronaTestDate), searchDaysAmount);
 
     logger.info({
@@ -127,8 +129,12 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
                     investigation: response.locals.epidemiologynumber,
                     user: response.locals.user.id
                   });
-                const dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
-                response.send(convertCovidPatientsFromDB(dbBCovidPatients));
+                  let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
+                  if (!isPhoneOrIdentityNumber) {
+                    const complicatedRegex = new RegExp(searchValue.trimRight().replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+                    dbBCovidPatients = dbBCovidPatients.filter(patient => complicatedRegex.test(patient.fullName) === true);
+                  }
+                  response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
                 logger.warning({
                     service: Service.SERVER,
