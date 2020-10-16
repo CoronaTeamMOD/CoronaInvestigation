@@ -14,9 +14,10 @@ export interface useClinicalDetailsIncome {
 };
 
 export interface useClinicalDetailsOutcome {
-    fetchClinicalDetails: (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-                           trigger: (payload?: string | string[]) => Promise<boolean>
-                          ) => void;
+    fetchClinicalDetails: (
+        reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
+        trigger: (payload?: string | string[]) => Promise<boolean>
+    ) => void;
     getStreetByCity: (cityId: string) => void;
     saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => Promise<void>;
 };

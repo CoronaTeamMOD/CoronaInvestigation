@@ -34,16 +34,6 @@ stages:
         versionSpec: '10.18'
       displayName: 'Install Node.js'
 
-    # loading env variables for mabar client
-    - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_MABAR_DEV)"
-        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_MABAR)"
-        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
-        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_DEV_MABAR)"
-        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
-      condition: eq(variables.isMabarDev,true)
-      displayName: 'setting .env for mabar-dev environment'
-
     # loading env variables for client dev without authentication
     - script: |
         echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_DEV_NO_AUTH)"
@@ -54,38 +44,19 @@ stages:
       condition: eq(variables.isDev,true)
       displayName: 'setting .env for dev environment'
 
-    # loading env variables for automation tests client
-    - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
-        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_TEST)"
-        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
-        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_AUTOMATION_TEST)"
-        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
-      condition: eq(variables.isTest,true)
-      displayName: 'setting .env db route to test route'
-
-    # loading env variables for prod client
-    - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
-        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_PROD)"
-        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
-        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_PROD)"
-        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
-      condition: eq(variables.isMaster,true)
-      displayName: 'setting .env db route to prod route'
-
     # building dev client without authentication or any other environment
     - script: |
         cd client
         npm install
         npm run build
       displayName: 'npm build client'
+      condition: eq(variables.isDev,true)
 
-    # building & pushing dev client without authentication image
+    # pushing dev client without authentication image
     - task: Docker@2
       condition: eq(variables.isDev,true)
       continueOnError: 'false'
-      displayName: Build and push Dev client image to container registry
+      displayName: Push Dev client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -113,11 +84,11 @@ stages:
       condition: eq(variables.isDev,true)
       displayName: 'npm build client with auth'
 
-    # building & pushing dev client with authentication image
+    # pushing dev client with authentication image
     - task: Docker@2
       condition: eq(variables.isDev,true)
       continueOnError: 'false'
-      displayName: Build and push Dev client image to container registry
+      displayName: Push Dev client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -126,26 +97,30 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-dev-auth
-    
-    # building & pushing mabar-dev image
-    - task: Docker@2
-      condition: eq(variables.isMabarDev,true)
-      continueOnError: 'false'
-      displayName: Build and push Mabar Dev client image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          client-mabar-dev
 
-    # building & pushing automation test client image
+    # loading env variables for test client
+    - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_TEST)"
+        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_TEST)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
+        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_AUTOMATION_TEST)"
+        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
+      condition: eq(variables.isTest,true)
+      displayName: 'setting .env db route to test route'
+
+    # building test client
+    - script: |
+        cd client
+        npm install
+        npm run build
+      condition: eq(variables.isTest,true)
+      displayName: 'npm build load testing client'
+
+    # pushing test client to azure client registry
     - task: Docker@2
       condition: eq(variables.isTest,true)
       continueOnError: 'false'
-      displayName: Build and push test client image to container registry
+      displayName: Push test client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -154,44 +129,12 @@ stages:
         containerRegistry: '$(AzureContainerRegistry)'
         tags: |
           client-test
-    
-    # loading env variables to load testing client
-    - script: |
-        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_LOAD_TEST)"
-        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_LOAD_TESTING)"
-        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
-        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_LOAD_TESTING)"
-        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
-      condition: eq(variables.isTest,true)
-      displayName: 'setting .env for load testing environment'
-    
-    # building load testing client
-    - script: |
-        cd client
-        npm install
-        npm run build
-      condition: eq(variables.isTest,true)
-      displayName: 'npm build load testing client'
 
-    # building & pushing load testing client image
+    # pushing test client to MOH client registry
     - task: Docker@2
       condition: eq(variables.isTest,true)
       continueOnError: 'false'
-      displayName: Build and push Load Testing client image to container registry
-      inputs:
-        command: buildAndPush
-        dockerfile: '**/client/Dockerfile'
-        repository: '$(arcName)'
-        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
-        containerRegistry: '$(AzureContainerRegistry)'
-        tags: |
-          client-load-test
-
-    # building & pushing test client to MOH client registry
-    - task: Docker@2
-      condition: eq(variables.isTest,true)
-      continueOnError: 'false'
-      displayName: Build and push test client image to container registry
+      displayName: Push test client image to container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
@@ -201,11 +144,43 @@ stages:
         tags: |
           client-test
 
-    # building & pushing prod client to MOH client registry
+    # loading env variables for prod client
+    - script: |
+        echo "##vso[task.setvariable variable=REACT_APP_DB_API]$(DB_API_PROD)"
+        echo "##vso[task.setvariable variable=REACT_APP_ENVIRONMENT]$(APP_ENVIRONMENT_PROD)"
+        echo "##vso[task.setvariable variable=REACT_APP_GOOGLE_API_KEY]$(GOOGLE_API)"
+        echo "##vso[task.setvariable variable=REACT_APP_INSTRUMENTATION_KEY]$(INSTRUMENTATION_KEY_PROD)"
+        echo "##vso[task.setvariable variable=REACT_APP_SHOULD_POST_TO_AZURE]$(POST_TO_AZURE)"
+      condition: eq(variables.isMaster,true)
+      displayName: 'setting .env db route to prod route'
+    
+    # building prod client
+    - script: |
+        cd client
+        npm install
+        npm run build
+      displayName: 'npm build client'
+      condition: eq(variables.isMaster,true)
+
+    # pushing prod client to azure client registry
     - task: Docker@2
       condition: eq(variables.isMaster,true)
       continueOnError: 'false'
-      displayName: Build and push master client image to container registry
+      displayName: Push master client image to container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/client/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          client-master
+
+    # pushing prod client to MOH client registry
+    - task: Docker@2
+      condition: eq(variables.isMaster,true)
+      continueOnError: 'false'
+      displayName: Push master client image to MOH container registry
       inputs:
         command: buildAndPush
         dockerfile: '**/client/Dockerfile'
