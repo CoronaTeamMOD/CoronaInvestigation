@@ -20,8 +20,9 @@ import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 
 import useStyles from './InvestigationFormStyles';
-import { LandingPageTimer } from './InvestigationInfo/InvestigationInfoBar';
+import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -211,17 +212,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id)
         fetchCities();
         fetchCountries();
         fetchContactTypes();
         fetchSubStatuses();
-    }, []);
-
-    useEffect(() => {
-        if (epidemiologyNumber !== -1) {
-            initializeTabShow();
-        }
-    }, [epidemiologyNumber]);
+        initializeTabShow();
+    }, [epidemiologyNumber, userId]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         logger.info({
