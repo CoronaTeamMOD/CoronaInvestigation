@@ -384,7 +384,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         service: Service.CLIENT,
                         severity: Severity.LOW,
                         workflow: 'Investigation click',
-                        step: `the new investigation status is updated to in process, investigated person ${investigationRow.fullName}`,
+                        step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
                         investigation: investigationRow.epidemiologyNumber,
                         user: user.id
                     })
@@ -412,7 +412,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'Investigation click',
-                step: `the clicked investigation isn't new, investigated person ${investigationRow.fullName}`,
+                step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
                 investigation: investigationRow.epidemiologyNumber,
                 user: user.id
             })
