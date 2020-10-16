@@ -166,12 +166,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         isPregnant: Boolean(clinicalDetailsByEpidemiologyNumber.isPregnant),
                         backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
                         doesHaveBackgroundDiseases: Boolean(clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases),
-                        hospital: patientInvestigation.hospital,
+                        hospital: patientInvestigation.hospital !== null ? patientInvestigation.hospital : '',
                         hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
                         hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
                         isInIsolation: Boolean(patientInvestigation.isInIsolation),
                         isIsolationProblem: Boolean(patientInvestigation.isIsolationProblem),
-                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo,
+                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo !== null ?
+                            patientInvestigation.isIsolationProblemMoreInfo : '',
                         isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
                         isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
                         symptoms: getSymptomsList(patientInvestigation),
@@ -180,8 +181,10 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         doesHaveSymptoms: Boolean(patientInvestigation.doesHaveSymptoms),
                         wasHospitalized: Boolean(patientInvestigation.wasHospitalized),
                         isolationAddress: patientAddress,
-                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo,
-                        otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo,
+                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo !== null ?
+                            patientInvestigation.otherSymptomsMoreInfo : '',
+                        otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo !== null ?
+                            clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo : '',
                     }
                     setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
                     reset(initialDBClinicalDetailsToSet);
