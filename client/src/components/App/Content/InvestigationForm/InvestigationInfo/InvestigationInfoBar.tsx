@@ -20,7 +20,7 @@ import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
 
-const defaultUser = {
+export const defaultUser = {
     id: '',
     userName: '',
     phoneNumber: '',
@@ -99,44 +99,43 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             investigation: epidemiologyNumber
         });
         epidemiologyNumber !== defaultEpidemiologyNumber &&
-        axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
-        ).then((result: any) => {
-            if (result && result.data) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching investigation Info',
-                    step: 'investigation info request was successful',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const investigationInfo = result.data;
-                setInvestigatedPatientId(investigationInfo.investigatedPatientId);
-                const gender = investigationInfo.investigatedPatient.gender;
-                setGender(gender ? gender : '');
-                setInvestigationStaticInfo(investigationInfo);
-            }
-            else {
-                logger.warn({
+            axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
+            ).then((result: any) => {
+                if (result && result.data) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching investigation Info',
+                        step: 'investigation info request was successful',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    const investigationInfo = result.data;
+                    setInvestigatedPatientId(investigationInfo.investigatedPatientId);
+                    const gender = investigationInfo.investigatedPatient.gender;
+                    setGender(gender ? gender : '');
+                    setInvestigationStaticInfo(investigationInfo);
+                }
+                else {
+                    logger.warn({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Fetching investigation Info',
+                        step: 'got status 200 but wrong data'
+                    });
+                    handleInvalidEntrance();
+                }
+            }).catch((error) => {
+                logger.error({
                     service: Service.CLIENT,
                     severity: Severity.HIGH,
                     workflow: 'Fetching investigation Info',
-                    step: 'got status 200 but wrong data'
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
                 });
-                handleInvalidEntrance();
-            }
-        })
-        .catch((error) => { 
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Fetching investigation Info',
-                step: `got errors in server result: ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
+                handleInvalidEntrance()
             });
-            handleInvalidEntrance()
-        })
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
