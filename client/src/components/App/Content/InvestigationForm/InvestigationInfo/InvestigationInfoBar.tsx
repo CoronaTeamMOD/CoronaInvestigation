@@ -63,6 +63,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
+    const [subStatuses, setSubStatuses] = React.useState<string[]>([]);
+
     const noInvestigationError = () => {
         Swal.fire({
             icon: 'warning',
@@ -99,44 +101,65 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             investigation: epidemiologyNumber
         });
         epidemiologyNumber !== defaultEpidemiologyNumber &&
-        axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
-        ).then((result: any) => {
-            if (result && result.data) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching investigation Info',
-                    step: 'investigation info request was successful',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const investigationInfo = result.data;
-                setInvestigatedPatientId(investigationInfo.investigatedPatientId);
-                const gender = investigationInfo.investigatedPatient.gender;
-                setGender(gender ? gender : '');
-                setInvestigationStaticInfo(investigationInfo);
-            }
-            else {
-                logger.warn({
+            axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
+            ).then((result: any) => {
+                if (result && result.data) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching investigation Info',
+                        step: 'investigation info request was successful',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    const investigationInfo = result.data;
+                    setInvestigatedPatientId(investigationInfo.investigatedPatientId);
+                    const gender = investigationInfo.investigatedPatient.gender;
+                    setGender(gender ? gender : '');
+                    setInvestigationStaticInfo(investigationInfo);
+                }
+                else {
+                    logger.warn({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Fetching investigation Info',
+                        step: 'got status 200 but wrong data'
+                    });
+                    handleInvalidEntrance();
+                }
+            }).catch((error) => {
+                logger.error({
                     service: Service.CLIENT,
                     severity: Severity.HIGH,
                     workflow: 'Fetching investigation Info',
-                    step: 'got status 200 but wrong data'
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
                 });
-                handleInvalidEntrance();
-            }
-        })
-        .catch((error) => { 
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Fetching investigation Info',
-                step: `got errors in server result: ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
+                handleInvalidEntrance()
             });
-            handleInvalidEntrance()
-        })
+        epidemiologyNumber !== defaultEpidemiologyNumber &&
+            axios.get('/investigationInfo/subStatuses').then((result: any) => {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting sub statuses',
+                    step: `recieved DB response ${JSON.stringify(result)}`,
+                });
+
+                const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
+
+                if (resultNodes) {
+                    setSubStatuses(resultNodes.map((element: any) => element.displayName))
+                }
+            }).catch((err: any) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting sub statuses',
+                    step: `error DB response ${JSON.stringify(err)}`,
+                });
+            });
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
@@ -162,6 +185,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                 currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}
                 coronaTestDate={investigationStaticInfo.coronaTestDate}
+                subStatuses={subStatuses}
             />
             <InvestigationMetadata
                 investigationMetaData={

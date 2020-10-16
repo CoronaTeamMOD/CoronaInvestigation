@@ -2,13 +2,10 @@ import { format } from 'date-fns';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
+import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
-import axios from 'Utils/axios';
-import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
@@ -28,7 +25,7 @@ const displayDateFormat = 'dd/MM/yyyy';
 const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber, subStatuses } = props;
     const { identityType, gender, isDeceased, patientInfo } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -38,7 +35,6 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
 
-    const [subStatuses, setSubStatuses] = useState<string[]>([]);
     const [subStatusInput, setSubStatusInput] = useState<string>(investigationStatus.subStatus);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
@@ -55,31 +51,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
     }, [investigationStatus]);
-
-    React.useEffect(() => {
-        axios.get('/investigationInfo/subStatuses').then((result: any) => {
-
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting sub statuses',
-                step: `recieved DB response ${JSON.stringify(result)}`,
-            });
-
-            const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
-
-            if (resultNodes) {
-                setSubStatuses(resultNodes.map((element: any) => element.displayName))
-            }
-        }).catch((err: any) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting sub statuses',
-                step: `error DB response ${JSON.stringify(err)}`,
-            });
-        });
-    }, []);
 
     return (
         <Paper className={classes.paper}>
@@ -196,6 +167,7 @@ interface Props {
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;
+    subStatuses: string[]
 }
 
 export default InvestigatedPersonInfo
