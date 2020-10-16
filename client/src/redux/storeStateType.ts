@@ -11,6 +11,7 @@ export default interface StoreStateType {
     investigation: InvestigationRedux;
     gender: string;
     cities: Map<string, City>;
+    subStatuses: string[];
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
     formsValidations: {[key: number] : (boolean | null)[]};
