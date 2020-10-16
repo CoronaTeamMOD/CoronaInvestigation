@@ -62,7 +62,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 user: userId,
                 investigation: epidemiologyNumber
             });
-            handleContactsQueryFail();
         });
     };
 
@@ -330,13 +329,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
-            icon: 'error',
-        })
-    };
-
-    const handleContactsQueryFail = () => {
-        Swal.fire({
-            title: 'לא היה ניתן לשלוף את מספר המגעים',
             icon: 'error',
         })
     };
