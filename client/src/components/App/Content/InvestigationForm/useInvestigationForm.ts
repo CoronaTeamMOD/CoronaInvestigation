@@ -6,22 +6,23 @@ import { useHistory } from 'react-router-dom';
 import City from 'models/City';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
 import {timeout} from 'Utils/Timeout/Timeout';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import {landingPageRoute} from 'Utils/Routes/Routes';
 import {setCities} from 'redux/City/cityActionCreators';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
+import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 
 import useStyles from './InvestigationFormStyles';
-import {defaultUser, LandingPageTimer} from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import {defaultUser, LandingPageTimer} from './InvestigationInfo/InvestigationInfoBar';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -61,7 +62,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 user: userId,
                 investigation: epidemiologyNumber
             });
-            handleContactsQueryFail();
         });
     };
 
@@ -178,10 +178,43 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             });
     };
 
+    const fetchSubStatuses = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching Sub Statuses',
+            step: `launching sub statuses request`,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/investigationInfo/subStatuses').then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `recieved DB response ${JSON.stringify(result)}`,
+            });
+
+            const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
+
+            if (resultNodes) {
+                setSubStatuses(resultNodes.map((element: any) => element.displayName))
+            }
+        }).catch((err: any) => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting sub statuses',
+                step: `error DB response ${JSON.stringify(err)}`,
+            });
+        });
+    };
+
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
             fetchCountries();
+            fetchSubStatuses();
             fetchContactTypes();
             initializeTabShow();
         }
@@ -289,13 +322,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const handleInvestigationFinishFailed = () => {
         Swal.fire({
             title: 'לא ניתן היה לסיים את החקירה',
-            icon: 'error',
-        })
-    };
-
-    const handleContactsQueryFail = () => {
-        Swal.fire({
-            title: 'לא היה ניתן לשלוף את מספר המגעים',
             icon: 'error',
         })
     };
