@@ -62,7 +62,7 @@ const ExposureForm = (props: any) => {
 
   const exposureSourceSearchRegex = React.useMemo(() => {
     try {
-      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[^0-9A-Za-z]*') + '*');
+      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
     } catch {
       return null;
     }
