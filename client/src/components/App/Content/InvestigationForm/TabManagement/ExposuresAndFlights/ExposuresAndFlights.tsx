@@ -6,14 +6,14 @@ import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
+import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
-import useExposuresSaving from "Utils/ControllerHooks/useExposuresSaving";
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
+import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
@@ -277,6 +277,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
           className={classes.additionalInformationForm}
         >
           <div>
+            <Typography variant='caption' className={fieldName}>
+              פרטי טיסת חזור לארץ:
+            </Typography>
             {
               exposures.map((exposure, index) => 
                 exposure.wasAbroad &&
