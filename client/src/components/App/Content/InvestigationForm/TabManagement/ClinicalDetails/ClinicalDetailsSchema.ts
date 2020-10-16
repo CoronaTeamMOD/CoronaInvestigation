@@ -53,14 +53,14 @@ const wasHospitilizedEndDateSchema = yup.date().when(
 const symptomsMoreInfoSchema = yup.string().when(
     ClinicalDetailsFields.SYMPTOMS,
     (symptoms: string[], schema: any) => {
-        return symptoms.includes('אחר') ? schema.required(requiredText) : schema;
+        return symptoms.includes('אחר') ? schema.required(requiredText).nullable() : schema;
     }
 );
 
 const backgroundDiseasesMoreInfoSchema = yup.string().nullable().when(
     ClinicalDetailsFields.BACKGROUND_DESEASSES,
     (backgroundDiseases: string[], schema: any) => {
-        return backgroundDiseases.includes('אחר') ? schema.required(requiredText) : schema;
+        return backgroundDiseases.includes('אחר') ? schema.required(requiredText).nullable() : schema;
     }
 );
 
@@ -79,7 +79,7 @@ const ClinicalDetailsSchema = yup.object().shape({
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
             is: true,
             then: yup.string().required(requiredText),
-            otherwise: yup.string()
+            otherwise: yup.string().nullable()
         }),
     [ClinicalDetailsFields.DOES_HAVE_SYMPTOMS]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.IS_SYMPTOMS_DATE_UNKNOWN]: yup.boolean().nullable().when(ClinicalDetailsFields.DOES_HAVE_SYMPTOMS, {
@@ -111,7 +111,7 @@ const ClinicalDetailsSchema = yup.object().shape({
             otherwise: yup.array().of(yup.string())
         }),
     [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable().required(),
-    [ClinicalDetailsFields.HOSPITAL]: yup.string(),
+    [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
     [ClinicalDetailsFields.IS_PREGNANT]: yup.boolean().nullable().required(),
