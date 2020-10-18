@@ -3,7 +3,7 @@ interface CovidPatient {
     identityNumber: string;
     primaryPhone: string;
     epidemiologyNumber: number;
-    age: string; 
+    age: number; 
     address: string;
 }
 
