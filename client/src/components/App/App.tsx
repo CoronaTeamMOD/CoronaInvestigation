@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
-import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -93,7 +93,7 @@ const App: React.FC = (): JSX.Element => {
             workflow: 'login to the app',
             step: 'before environment condition'
         })
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH) {
+        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH || process.env.REACT_APP_ENVIRONMENT === Environment.TEST) {
             axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
                 .then((response) => {
                     const { data } = response;
