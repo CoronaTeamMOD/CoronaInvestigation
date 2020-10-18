@@ -87,9 +87,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 timer: 1750,
                 showConfirmButton: false
             })
-            timeout(1900).then(()=> {
+            timeout(1500).then(()=> {
                 setIsInInvestigation(false);
-                history.push(landingPageRoute)
+                window.close();
             });
     };
 
