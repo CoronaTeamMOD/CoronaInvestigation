@@ -23,7 +23,7 @@ RETURN (select
 					select json_build_object (
 						'covidPatientByCovidPatient', (
 							select json_build_object (
-								'age', covidPatientTable.age,
+								'age', (select EXTRACT(YEAR FROM (AGE(covidPatientTable.birth_date)))),
 								'fullName', covidPatientTable.full_name,
 								'primaryPhone', covidPatientTable.primary_phone,
 								'addressByAddress', (
@@ -95,11 +95,11 @@ RETURN (select
 				)
 			) END ASC,
 			CASE WHEN order_by='ageDESC' THEN (
-			select age
+			select birth_date
 			from public.covid_patients
 			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
 			CASE WHEN order_by='ageASC' THEN (
-			select age
+			select birth_date
 			from public.covid_patients
 			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
