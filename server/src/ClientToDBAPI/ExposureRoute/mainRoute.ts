@@ -22,7 +22,7 @@ const searchDaysAmount = 14;
 
 const getPatientAge = (birthDate: Date) : number => {
     if (birthDate) return differenceInYears(new Date(), new Date(birthDate));
-    return null;
+    return -1;
 }
 
 const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] => {
