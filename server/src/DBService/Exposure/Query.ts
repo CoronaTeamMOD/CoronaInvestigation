@@ -22,7 +22,7 @@ query ExposureByInvestigationId ($investigationId: Int!){
             wasAbroad
             wasConfirmedExposure
             covidPatientByExposureSource {
-              age
+              birthDate
               addressByAddress {
                 cityByCity {
                   displayName
@@ -51,7 +51,7 @@ query getOptionalExposureSources($searchRegex: String!) {
         identityNumber
         primaryPhone
         epidemiologyNumber
-        age
+        birthDate
         addressByAddress {
             cityByCity {
               displayName
