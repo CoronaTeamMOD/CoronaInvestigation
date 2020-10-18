@@ -174,6 +174,7 @@ const ExposureForm = (props: any) => {
                       key={exposureSource.epidemiologyNumber}
                       value={exposureSource.epidemiologyNumber}
                       onClick={() => {
+                        setOptionalCovidPatients([]);
                         handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
                       }}>
                       {createExposureSourceOption(exposureSource)}

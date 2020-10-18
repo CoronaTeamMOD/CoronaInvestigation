@@ -1,5 +1,5 @@
-import { subDays } from 'date-fns';
 import { Router, Request, Response } from 'express';
+import { differenceInYears, subDays } from 'date-fns';
 
 import Exposure from '../../Models/Exposure/Exposure';
 import logger from '../../Logger/Logger';
@@ -20,11 +20,17 @@ const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
 
 const searchDaysAmount = 14;
 
+const getPatientAge = (birthDate: Date) : number => {
+    if (birthDate) return differenceInYears(new Date(), new Date(birthDate));
+    return null;
+}
+
 const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] => {
     const convertedExposures : Exposure[] = result.data.allExposures.nodes.map(exposure => 
     {
         const exposureSource = exposure.covidPatientByExposureSource ? {
             ...exposure.covidPatientByExposureSource,
+            age: getPatientAge(exposure.covidPatientByExposureSource.birthDate),
             address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress)
         } : null;
         
@@ -99,7 +105,7 @@ const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) : 
         identityNumber: covidPatient.identityNumber,
         primaryPhone: covidPatient.primaryPhone,
         epidemiologyNumber: covidPatient.epidemiologyNumber,
-        age: covidPatient.age,
+        age: getPatientAge(covidPatient.birthDate),
         address: createAddressString(covidPatient.addressByAddress)
     }))
 }

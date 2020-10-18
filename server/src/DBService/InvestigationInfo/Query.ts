@@ -10,7 +10,6 @@ query InvestigationStaticDetails($investigationId: Int!) {
       covidPatientByCovidPatient {
         identityNumber
         fullName
-        age
         primaryPhone
         birthDate
       }

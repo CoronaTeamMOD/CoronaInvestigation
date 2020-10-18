@@ -4,7 +4,7 @@ interface CovidPatientDBOutput {
     primaryPhone: string;
     epidemiologyNumber: number;
     birthDate: Date;
-    age: string; 
+    age: number; 
     addressByAddress: AddressDBOutput;
 }
 

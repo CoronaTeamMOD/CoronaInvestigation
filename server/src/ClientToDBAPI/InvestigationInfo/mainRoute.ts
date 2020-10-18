@@ -1,3 +1,4 @@
+import { differenceInYears } from 'date-fns';
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
@@ -11,12 +12,20 @@ const errorStatusCode = 500;
 
 const investigationInfo = Router();
 
+const getPatientAge = (birthDate: Date) : number => {
+    if (birthDate) return differenceInYears(new Date(), new Date(birthDate));
+    return null;
+}
+
 const convertInvestigationInfoFromDB = (investigationInfo: any) => {
     const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;
     
     const convertedInvestigationPatient = {
         ...investigationPatient,
-        patientInfo: investigationPatient.covidPatientByCovidPatient
+        patientInfo: {
+            ...investigationPatient.covidPatientByCovidPatient,
+            age: getPatientAge(investigationPatient.covidPatientByCovidPatient.birthDate)
+        }
     }
     delete convertedInvestigationPatient.covidPatientByCovidPatient;
 
