@@ -376,7 +376,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     step: 'updated investigation start time now sending request to update status',
                     investigation: investigationRow.epidemiologyNumber,
                     user: user.id
-                })
+                });
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Investigation click',
+                    step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
+                    investigation: investigationRow.epidemiologyNumber,
+                    user: user.id
+                });
                 moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
             }).catch((error) => {
                 logger.error({
