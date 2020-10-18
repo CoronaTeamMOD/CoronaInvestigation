@@ -17,7 +17,7 @@ const getPatientAge = (birthDate: Date) : number => {
 }
 
 const convertInvestigationInfoFromDB = (investigationInfo: any) => {
-    const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;   
+    const investigationPatient = investigationInfo.investigatedPatientByInvestigatedPatientId;
     
     const convertedInvestigationPatient = {
         ...investigationPatient,
@@ -33,8 +33,6 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
         investigatedPatient: convertedInvestigationPatient
     }
     delete convertedInvestigation.investigatedPatientByInvestigatedPatientId;
-
-    console.log('----', convertedInvestigationPatient);
 
     return convertedInvestigation;
 }
