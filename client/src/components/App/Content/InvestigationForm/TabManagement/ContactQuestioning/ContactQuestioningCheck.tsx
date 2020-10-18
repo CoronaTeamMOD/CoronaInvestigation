@@ -5,6 +5,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import InteractedContact from 'models/InteractedContact';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
+import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
 import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -25,7 +26,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2' className={classes.text}><b>האם חש בטוב?</b></Typography>
+                        <FieldName xs={5} fieldName='האם חש בטוב?'/>
                         <Toggle
                             value={interactedContact.doesFeelGood}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_FEEL_GOOD, booleanValue)}
@@ -34,7 +35,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2' className={classes.text}><b>האם סובל ממחלות רקע?</b></Typography>
+                        <FieldName xs={5} fieldName='האם סובל ממחלות רקע?'/>
                         <Toggle
                             value={interactedContact.doesHaveBackgroundDiseases}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, booleanValue)}
@@ -43,7 +44,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2' className={classes.text}><b>האם חי באותו הבית עם המאומת?</b></Typography>
+                        <FieldName xs={5} fieldName='האם חי באותו הבית עם המאומת?'/>
                         <Toggle
                             value={interactedContact.doesLiveWithConfirmed}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, booleanValue)}
@@ -52,7 +53,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2' className={classes.text}><b>מפגש חוזר עם המאומת?</b></Typography>
+                        <FieldName xs={5} fieldName='מפגש חוזר עם המאומת?'/>
                         <Toggle
                             value={interactedContact.repeatingOccuranceWithConfirmed}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, booleanValue)}
@@ -61,7 +62,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2' className={classes.text}><b>עבודה עם קהל במסגרת העבודה?</b></Typography>
+                        <FieldName xs={5} fieldName='עבודה עם קהל במסגרת העבודה?'/>
                         <Toggle
                             value={interactedContact.doesWorkWithCrowd}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_WORK_WITH_CROWD, booleanValue)}
@@ -70,9 +71,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Grid item xs={7}>
-                            <Typography variant='body2' className={classes.text}><b>{RELEVANT_OCCUPATION_LABEL}</b></Typography>
-                        </Grid>
+                        <FieldName xs={7} fieldName={RELEVANT_OCCUPATION_LABEL}/>
                         <Grid item xs={5}>
                             <FormControl>
                                 <RadioGroup

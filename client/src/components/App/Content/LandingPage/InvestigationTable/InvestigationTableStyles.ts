@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     rowBorder: {
         borderBottom: '2px solid black'
     },
+    font: {
+        color:'#424242'
+    },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',

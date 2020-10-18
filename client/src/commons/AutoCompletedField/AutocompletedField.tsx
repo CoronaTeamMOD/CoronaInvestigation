@@ -23,7 +23,8 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
 
 
     const inputElement = (params: AutocompleteRenderInputParams) =>
-        <TextField required={required} placeholder={placeholder} label={label} {...params} fullWidth />;
+        <TextField className={classes.autcompleteField}
+                   required={required} placeholder={placeholder} label={label} {...params} fullWidth/>;
 
     const staticOptionConfig = {
         autoComplete: true,
@@ -38,7 +39,6 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
     const genericLabel = (option: any) => (option.name);
     return (
         <Autocomplete
-            className={classes.autcompleteField + className}
             {...config}
             {...(props.renderOption) ? { renderOption: props.renderOption } : {}}
             value={value}

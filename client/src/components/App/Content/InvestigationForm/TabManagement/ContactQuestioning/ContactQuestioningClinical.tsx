@@ -9,14 +9,14 @@ import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } fr
 import City from 'models/City';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import StoreStateType from 'redux/storeStateType';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import FieldName from 'commons/FieldName/FieldName';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -66,9 +66,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <Grid item xs={6}>
-                            <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
-                        </Grid>
+                        <FieldName xs={6} fieldName='קרבה משפחתית:'/>
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
@@ -94,9 +92,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='קשר'>
-                        <AlphanumericTextField
+                <Grid container item>
+                    <FieldName xs={6} fieldName='קשר:'/>
+                    <AlphanumericTextField
                             name={InteractedContactFields.RELATIONSHIP}
                             placeholder='קשר'
                             value={interactedContact.relationship}
@@ -107,37 +105,32 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             clearErrors={clearErrors}
                             errors={errors}
                         />
-                    </FormInput>
                 </Grid>
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Typography variant='body2' className={classes.text}><b>יישוב השהייה בבידוד:</b></Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Autocomplete
-                                className={classes.autocompleteTextField}
-                                options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
-                                getOptionLabel={(option) => option.value.displayName}
-                                inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName}
-                                onChange={(event, selectedCity) => {
-                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.cityId);
-                                }}
-                                renderInput={(params) =>
-                                    <TextField
-                                        {...params}
-                                        id={InteractedContactFields.CONTACTED_PERSON_CITY}
-                                        placeholder='עיר'
-                                        value={interactedContact.contactedPersonCity}
-                                    />
-                                }
-                            />
-                        </Grid>
+                <Grid container item>
+                    <FieldName xs={6} fieldName='יישוב השהייה בבידוד:'/>
+                    <Grid item xs={6}>
+                        <Autocomplete
+                            className={classes.autocompleteTextField}
+                            options={Array.from(cities, ([cityId, value]) => ({cityId, value}))}
+                            getOptionLabel={(option) => option.value.displayName}
+                            inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName}
+                            onChange={(event, selectedCity) => {
+                                updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.cityId);
+                            }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    id={InteractedContactFields.CONTACTED_PERSON_CITY}
+                                    placeholder='עיר'
+                                    value={interactedContact.contactedPersonCity}
+                                />
+                            }
+                        />
                     </Grid>
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
+                        <FieldName xs={6} fieldName='האם נדרש סיוע עבור מקום בידוד?'/>
                         <Toggle
                             value={interactedContact.doesNeedHelpInIsolation}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
@@ -146,16 +139,16 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
+                        <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='תאריך סיום בידוד'>
-                        <AlphanumericTextField
+                <Grid container item>
+                    <FieldName xs={6} fieldName='תאריך סיום בידוד:'/>
+                     <AlphanumericTextField
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}
                             onChange={() => {}}
@@ -163,7 +156,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             setError={setError}
                             clearErrors={clearErrors}
                         />
-                    </FormInput>
                 </Grid>
             </Grid>
         </Grid>

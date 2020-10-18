@@ -572,6 +572,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
         let classNames = [];
 
+        classNames.push(classes.font);
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
         }

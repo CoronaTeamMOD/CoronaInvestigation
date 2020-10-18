@@ -5,11 +5,11 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -32,9 +32,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Typography><b>פרטים אישיים נוספים</b></Typography>
                 </Grid>
                 <Grid item container>
-                    <Grid item xs={3}>
-                        <Typography variant='body2' className={classes.text}><b>תעודה מזהה:</b></Typography>
-                    </Grid>
+                    <FieldName fieldName='תעודה מזהה:'/>
                     <Grid item xs={3}>
                         <Toggle
                             firstOption={'ת.ז'}
@@ -43,9 +41,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             onChange={(event, value) => changeIdentificationType(interactedContact, value)}
                         />
                     </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='body2' className={classes.text}><b>מספר תעודה:</b></Typography>
-                    </Grid>
+                    <FieldName fieldName='מספר תעודה:'/>
                     <Grid item xs={3}>
                         <AlphanumericTextField
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
@@ -61,9 +57,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                 </Grid>
-                <Grid item xs={10}>
-                    <FormInput fieldName='תאריך לידה'>
-                        <DatePick
+                <Grid container item alignItems='center'>
+                    <FieldName xs={5} fieldName='תאריך לידה:'/>
+                     <DatePick
                             maxDate={new Date()}
                             useBigCalender={false}
                             value={interactedContact.birthDate}
@@ -71,24 +67,23 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                                 updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate)
                             }
                         />
-                    </FormInput>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='גיל'>
-                        <AlphanumericTextField
-                            name={'age'}
-                            placeholder={'בחר תאריך לידה'}
-                            value={contactAge}
-                            onChange={() => {}}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
-                        />
-                    </FormInput>
+                <Grid container item>
+                    <FieldName xs={5} fieldName='גיל:'/>
+                    <AlphanumericTextField
+                        name={'age'}
+                        placeholder={'בחר תאריך לידה'}
+                        value={contactAge}
+                        onChange={() => {
+                        }}
+                        setError={setError}
+                        clearErrors={clearErrors}
+                        errors={errors}
+                    />
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
-                        <NumericTextField
+                <Grid container item>
+                    <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL}/>
+                     <NumericTextField
                             name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             placeholder='הכנס טלפון:'
                             value={interactedContact.additionalPhoneNumber}
@@ -99,7 +94,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             clearErrors={clearErrors}
                             errors={errors}
                         />
-                    </FormInput>
                 </Grid>
             </Grid>
         </Grid>

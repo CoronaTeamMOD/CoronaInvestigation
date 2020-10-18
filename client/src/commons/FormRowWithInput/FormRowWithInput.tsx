@@ -1,29 +1,31 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import {Grid, GridItemsAlignment, GridProps, GridSize, GridSpacing} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
+import FieldName from '../FieldName/FieldName';
 
 interface FormRowWithInputProps {
-	fieldName: string;
-	children: React.ReactElement;
-	testId?: string;
+    fieldName: string;
+    children: React.ReactElement;
+    testId?: string;
+    xs?: GridSize;
+    gridProps?: GridProps;
 }
 
-const FormRowWithInput = ({ fieldName, children, testId }: FormRowWithInputProps) => {
-	const classes = useFormStyles();
+const defaultGridProps = {
+    alignItems: 'center' as GridItemsAlignment,
+    spacing: 3 as GridSpacing,
+};
 
-	return (
-		<div className={classes.formRow} test-id={testId}>
-			<Grid item xs={12} sm={6} md={6} lg={3} xl={3}>
-				<Typography variant='caption' className={classes.fieldName}>
-					{fieldName}
-				</Typography>
-			</Grid>
-			<Grid item xs={12} sm={6} md={6} lg={9} xl={9}>
-				{children}
-			</Grid>
-		</div>
-	);
+const FormRowWithInput = ({fieldName, children, testId, xs, gridProps}: FormRowWithInputProps) => {
+    const classes = useFormStyles();
+    return (
+        <Grid container test-id={testId} className={classes.containerGrid}
+              {...{...defaultGridProps, ...gridProps}}>
+            <FieldName xs={xs} fieldName={fieldName} className={classes.fieldContainer}/>
+            {children}
+        </Grid>
+    );
 };
 
 export default FormRowWithInput;
