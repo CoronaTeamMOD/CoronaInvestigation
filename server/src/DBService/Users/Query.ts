@@ -21,9 +21,9 @@ query GetUser($id: String!) {
   }   
 `;
 
-export const GET_ALL_GROUP_USERS = gql`
+export const GET_ACTIVE_GROUP_USERS = gql`
 query AllGroupUsers($investigationGroup: Int!) {
-  allUsers(filter: {investigationGroup: {equalTo: $investigationGroup}}) {
+  allUsers(filter: {investigationGroup: {equalTo: $investigationGroup}, isActive: {equalTo: true}}) {
     nodes {
       id
       isActive
