@@ -28,14 +28,17 @@ const getPatientAge = (birthDate: Date) : number => {
 const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] => {
     const convertedExposures : Exposure[] = result.data.allExposures.nodes.map(exposure => 
     {
-        const exposureSource = exposure.covidPatientByExposureSource ? {
-            ...exposure.covidPatientByExposureSource,
-            age: getPatientAge(exposure.covidPatientByExposureSource.birthDate),
-            address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress)
-        } : null;
+        let exposureSource = null;
+        if (exposure.covidPatientByExposureSource) {
+            exposureSource = {
+                ...exposure.covidPatientByExposureSource,
+                age: getPatientAge(exposure.covidPatientByExposureSource.birthDate),
+                address: createAddressString(exposure.covidPatientByExposureSource.addressByAddress)
+            };
+            delete exposureSource.addressByAddress;
+            delete exposureSource.birthDate;
+        }
         
-        exposureSource && delete exposureSource.addressByAddress;
-
         const convertedExposure = {
             ...exposure, 
             exposureSource
