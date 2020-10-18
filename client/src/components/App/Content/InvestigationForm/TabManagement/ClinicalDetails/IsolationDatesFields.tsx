@@ -4,14 +4,15 @@ import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate } = props;
+    const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
     const { control, errors, trigger} = useFormContext();
-    
+
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
         trigger(ClinicalDetailsFields.ISOLATION_END_DATE);
@@ -19,14 +20,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
     
     return (
         <>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={3} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם שהה בבידוד לפני ביצוע הבדיקה:
-                        </b>
-                    </Typography>
-                </Grid>
+            <FormRowWithInput fieldName='האם שהה בבידוד לפני ביצוע הבדיקה:'>
                 <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.IS_IN_ISOLATION}
@@ -44,7 +38,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                         )}
                     />
                 </Grid>
-            </Grid>
+            </FormRowWithInput>
             <Collapse in={watchIsInIsolation}>
                 <Grid item xs={2} className={classes.dates}>
                     <Controller

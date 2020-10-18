@@ -7,7 +7,7 @@ const useStyles = makeStyles({
     },
     fieldName: {
         fontWeight: 'bold',
-        marginRight: '1vw'
+        marginRight: '1vw',
     },
     formField: {
         display: 'flex',
@@ -40,7 +40,6 @@ const useStyles = makeStyles({
     selectPlaceType: {
         width: '10vw',
         marginLeft: '2vw',
-
     },
     formTypesSelect: {
         '@media screen and (max-width: 1400px)': {
@@ -48,6 +47,36 @@ const useStyles = makeStyles({
         },
         marginLeft: '-4vw',
     },
+    fieldContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        margin: '2vh',
+        '@media screen and (min-width: 1870px)': {
+            marginRight: '-3vw'
+        },
+        '@media screen and (max-width: 1000px)': {
+            marginRight: '0.5vw',
+        },
+        marginRight: '-3vw',
+    },
+    fontSize15: {
+        fontSize: 16,
+    },
+    containerGrid: {
+        maxWidth: '100vw',
+    },
+    formValue: {
+            marginLeft: '-4vw',
+            '@media screen and (max-width: 1700px)': {
+                marginRight: '2vw',
+            },
+    },
+    inputRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        minWidth: '35vw',
+    }
 });
 
 export default useStyles;

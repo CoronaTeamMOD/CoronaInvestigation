@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         width: 300
     },
     autcompleteField: {
-        margin: '0 1vw'
+        margin: '0 1vw',
     }
 });
 

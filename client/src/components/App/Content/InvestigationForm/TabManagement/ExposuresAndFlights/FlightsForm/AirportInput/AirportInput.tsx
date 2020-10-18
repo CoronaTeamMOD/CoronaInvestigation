@@ -7,12 +7,14 @@ import Country from 'models/Country';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
+import useFormStyles from 'styles/formStyles';
 import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
     const { country, countryFieldName, city, cityFieldName, airport, airportFieldName, handleChangeExposureDataAndFlightsField} = props;
 
     const classes = useStyles();
+    const formStyles = useFormStyles();
 
     const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
     const options = Array.from(countries).map(([name, value]) => (value));
@@ -35,8 +37,8 @@ const AirportInput = (props: any) => {
     };
 
     return (
-        <div className={classes.airportDetails}>
-            <div className={classes.airportCountryTextField}>
+        <div className={formStyles.inputRow}>
+            <>
                 <AutocompletedField
                     value={country}
                     options={options}
@@ -46,8 +48,8 @@ const AirportInput = (props: any) => {
                     label='מדינה'
                     placeholder='מדינה'
                 />
-            </div>
-            <div>
+            </>
+            <>
                 <AlphanumericTextField
                     name={cityFieldName}
                     value={city}
@@ -63,7 +65,7 @@ const AirportInput = (props: any) => {
                     label='שדה תעופה'
                     className={classes.airportTextField}
                 />
-            </div>
+            </>
         </div>
     );
 };

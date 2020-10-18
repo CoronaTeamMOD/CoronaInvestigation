@@ -9,11 +9,11 @@ import City from 'models/City';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -64,9 +64,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container>
-                        <Grid item xs={6}>
-                            <Typography variant='body2' className={classes.text}><b>קרבה משפחתית:</b></Typography>
-                        </Grid>
+                        <FieldName xs={6} fieldName='קרבה משפחתית:'/>
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
@@ -93,24 +91,21 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='קשר'>
-                        <AlphanumericTextField
-                            testId='relationship'
-                            name={InteractedContactFields.RELATIONSHIP}
+                <Grid container item>
+                    <FieldName xs={6} fieldName='קשר:'/>
+                    <AlphanumericTextField
+                        testId='relationship'
+                        name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.RELATIONSHIP, newValue as string
                             )}
                             placeholder='קשר'
                         />
-                    </FormInput>
                 </Grid>
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Typography variant='body2' className={classes.text}><b>יישוב השהייה בבידוד:</b></Typography>
-                        </Grid>
+                <Grid container item>
+                    <Grid container item>
+                        <FieldName xs={6} fieldName='יישוב השהייה בבידוד:'/>
                         <Grid item xs={6}>
                             <Autocomplete
                                 className={classes.autocompleteTextField}
@@ -135,7 +130,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
+                        <FieldName xs={6} fieldName='האם נדרש סיוע עבור מקום בידוד?'/>
                         <Toggle
                             test-id='doesNeedHelpInIsolation'
                             value={interactedContact.doesNeedHelpInIsolation}
@@ -145,7 +140,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid item>
                     <Grid container justify='space-between'>
-                        <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
+                        <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
                             test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
@@ -153,15 +148,14 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='תאריך סיום בידוד'>
-                        <AlphanumericTextField
-                            testId='isolationEndDate'
-                            name='isolationEndDate'
+                <Grid container item>
+                    <FieldName xs={6} fieldName='תאריך סיום בידוד:'/>
+                     <AlphanumericTextField
+                         testId='isolationEndDate'
+                         name='isolationEndDate'
                             value={formattedIsolationEndDate}
                             onChange={() => {}}
                         />
-                    </FormInput>
                 </Grid>
             </Grid>
         </Grid>

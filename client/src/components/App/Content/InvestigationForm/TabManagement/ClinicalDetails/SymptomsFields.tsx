@@ -7,25 +7,21 @@ import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms} = props;
+    const { classes, control, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck,
+            symptoms, setError, clearErrors, errors,
+    } = props;
     const { control, errors } = useFormContext();
 
     return (
         <>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם יש תסמינים:
-                        </b>
-                    </Typography>
-                </Grid>
+            <FormRowWithInput fieldName='האם יש תסמינים:'>
                 <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_SYMPTOMS}
@@ -43,7 +39,9 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         )}
                     />
                 </Grid>
-            </Grid>
+            </FormRowWithInput>
+
+            <FormRowWithInput fieldName=''>
             <Collapse in={watchDoesHaveSymptoms}>
                 <Grid item xs={7}>
                     <div className={classes.symptomsDateCheckBox}>
@@ -141,6 +139,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </Grid>
                 </Grid>
             </Collapse>
+            </FormRowWithInput>
         </>
     );
 };

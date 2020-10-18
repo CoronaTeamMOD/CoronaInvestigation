@@ -24,6 +24,7 @@ import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
@@ -219,15 +220,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         <div className={classes.tabInitialContainer}>
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(event) => savePersonalData(event, convertToDBData())}>
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {PHONE_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2} className={classes.personalInfoItem}>
+                    <FormRowWithInput fieldName={PHONE_LABEL}>
+                    <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
                                 name={PersonalInfoDataContextFields.PHONE_NUMBER}
@@ -245,15 +239,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 )}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {ADDITIONAL_PHONE_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
+                    </FormRowWithInput>
+                    <FormRowWithInput fieldName={ADDITIONAL_PHONE_LABEL}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
@@ -272,15 +259,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 )}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {CONTACT_PHONE_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
+                    </FormRowWithInput>
+                    <FormRowWithInput fieldName={CONTACT_PHONE_LABEL}>
+                        <>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 control={methods.control}
@@ -314,15 +295,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 />
                             )}
                         />
-                    </Grid>
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {INSURANCE_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
+                        </>
+                    </FormRowWithInput>
+                    <FormRowWithInput fieldName={INSURANCE_LABEL}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <FormControl fullWidth>
                                 <Controller
@@ -362,15 +337,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 />
                             </FormControl>
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='center'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {ADDRESS_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
+                    </FormRowWithInput>
+                    <FormRowWithInput fieldName={ADDRESS_LABEL}>
+                        <>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller
                                 name={PersonalInfoDataContextFields.CITY}
@@ -494,14 +463,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         </Grid>
                     </Grid>
 
-                    <Grid container spacing={3} className={classes.containerGrid} alignItems='baseline'>
-                        <Grid item xs={2} className={classes.personalInfoFieldContainer}>
-                            <Typography className={classes.fontSize15}>
-                                <b>
-                                    {RELEVANT_OCCUPATION_LABEL}
-                                </b>
-                            </Typography>
-                        </Grid>
+                        <FormRowWithInput gridProps={{alignItems:'baseline'}} fieldName={RELEVANT_OCCUPATION_LABEL}>
+                            <>
                         <Grid item xs={2} className={classes.responsiveOccupation}>
                             <FormControl component='fieldset'>
                                 <Controller
@@ -555,7 +518,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 <TextField
                                                     {...params}
                                                     error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
-                                                    label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message 
+                                                    label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
                                                            || 'עיר המצאות המוסד*'}
                                                     onBlur={props.onBlur}
                                                     test-id='institutionCity'
@@ -592,7 +555,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                         <TextField
                                                             {...params}
                                                             error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
-                                                            label={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message 
+                                                            label={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message
                                                                     || 'שם מוסד*'}
                                                             onBlur={props.onBlur}
                                                             test-id='insertInstitutionName'
