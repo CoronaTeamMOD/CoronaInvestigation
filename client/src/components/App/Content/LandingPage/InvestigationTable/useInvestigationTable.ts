@@ -270,8 +270,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                               const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
                               const user = investigation.userByLastUpdator;
                               const county = user ? user.countyByInvestigationGroup : '';
-                              const subStatus = investigation.investigationSubStatusByInvestigationStatus ?
-                                  investigation.investigationSubStatusByInvestigationStatus.displayName :
+                              const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                  investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                   '';
                             return createRowData(
                                 investigation.epidemiologyNumber,
@@ -351,7 +351,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus,
+            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ? 
+            InvestigationMainStatus.IN_PROCESS :
+            investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
         })
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
@@ -375,29 +377,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     investigation: investigationRow.epidemiologyNumber,
                     user: user.id
                 })
-                axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
-                    investigationSubStatus: null,
-                    epidemiologyNumber: investigationRow.epidemiologyNumber
-                }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Investigation click',
-                        step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                        investigation: investigationRow.epidemiologyNumber,
-                        user: user.id
-                    })
-                    moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-                }).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: error
-                    });
-                    fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
-                });
+                moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
             }).catch((error) => {
                 logger.error({
                     service: Service.CLIENT,
