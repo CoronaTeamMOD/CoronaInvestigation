@@ -10,7 +10,7 @@ import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse'
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ALL_GROUP_USERS,
+import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
          GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
@@ -179,7 +179,7 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
         step: `querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`,
         user: response.locals.user.id
     });
-    graphqlRequest(GET_ALL_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
+    graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
         .then((result: any) => {
             let users: User[] = [];
             if (result && result.data && result.data.allUsers) {
