@@ -72,14 +72,14 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         setNextTab
     } = useTabManagement();
 
+    const lastTabDisplayedId = areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;
+
     const isInvestigationValid = () => {
-        return !(formsValidations.some((formValidation) => !formValidation));
+        return !(formsValidations.slice(0, lastTabDisplayedId + 1).some((formValidation) => !formValidation));
     }
 
-    const lastTabId = areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;
-
     const handleNextPageClick = () => {
-        if(currentTab === lastTabId) { 
+        if(currentTab === lastTabDisplayedId) { 
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
@@ -116,9 +116,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                         <PrimaryButton 
                                             type="submit"
                                             form={`form-${currentTab}`}
-                                            test-id={currentTab === lastTabId ? 'endInvestigation' : 'continueToNextStage'}
+                                            test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
                                             onClick={handleNextPageClick}>
-                                        {currentTab === lastTabId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                        {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                         </PrimaryButton>
                                     </div>
                                 </div>
