@@ -133,7 +133,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         });
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
-                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                if (result?.data) {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -142,9 +142,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
-                    let patientAddress = patientInvestigation.addressByIsolationAddress;
+                    const patientClinicalDetails = result.data;
+                    let patientAddress = patientClinicalDetails.isolationAddress;
                     if (patientAddress !== null && patientAddress.cityByCity !== null) {
                         let street = '';
                         if (patientAddress.streetByStreet !== null) {
@@ -163,28 +162,28 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialDBClinicalDetails,
-                        isPregnant: Boolean(clinicalDetailsByEpidemiologyNumber.isPregnant),
-                        backgroundDeseases: getBackgroundDiseasesList(clinicalDetailsByEpidemiologyNumber),
-                        doesHaveBackgroundDiseases: Boolean(clinicalDetailsByEpidemiologyNumber.doesHaveBackgroundDiseases),
-                        hospital: patientInvestigation.hospital !== null ? patientInvestigation.hospital : '',
-                        hospitalizationStartDate: convertDate(patientInvestigation.hospitalizationStartTime),
-                        hospitalizationEndDate: convertDate(patientInvestigation.hospitalizationEndTime),
-                        isInIsolation: Boolean(patientInvestigation.isInIsolation),
-                        isIsolationProblem: Boolean(patientInvestigation.isIsolationProblem),
-                        isIsolationProblemMoreInfo: patientInvestigation.isIsolationProblemMoreInfo !== null ?
-                            patientInvestigation.isIsolationProblemMoreInfo : '',
-                        isolationStartDate: convertDate(patientInvestigation.isolationStartTime),
-                        isolationEndDate: convertDate(patientInvestigation.isolationEndTime),
-                        symptoms: getSymptomsList(patientInvestigation),
-                        symptomsStartDate: convertDate(patientInvestigation.symptomsStartTime),
-                        isSymptomsStartDateUnknown: patientInvestigation.symptomsStartTime === null,
-                        doesHaveSymptoms: Boolean(patientInvestigation.doesHaveSymptoms),
-                        wasHospitalized: Boolean(patientInvestigation.wasHospitalized),
+                        isPregnant: Boolean(patientClinicalDetails.isPregnant),
+                        backgroundDeseases: patientClinicalDetails.backgroundDiseases,
+                        doesHaveBackgroundDiseases: Boolean(patientClinicalDetails.doesHaveBackgroundDiseases),
+                        hospital: patientClinicalDetails.hospital !== null ? patientClinicalDetails.hospital : '',
+                        hospitalizationStartDate: convertDate(patientClinicalDetails.hospitalizationStartTime),
+                        hospitalizationEndDate: convertDate(patientClinicalDetails.hospitalizationEndTime),
+                        isInIsolation: Boolean(patientClinicalDetails.isInIsolation),
+                        isIsolationProblem: Boolean(patientClinicalDetails.isIsolationProblem),
+                        isIsolationProblemMoreInfo: patientClinicalDetails.isIsolationProblemMoreInfo !== null ?
+                            patientClinicalDetails.isIsolationProblemMoreInfo : '',
+                        isolationStartDate: convertDate(patientClinicalDetails.isolationStartTime),
+                        isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
+                        symptoms: patientClinicalDetails.symptoms,
+                        symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartTime),
+                        isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
+                        doesHaveSymptoms: Boolean(patientClinicalDetails.doesHaveSymptoms),
+                        wasHospitalized: Boolean(patientClinicalDetails.wasHospitalized),
                         isolationAddress: patientAddress,
-                        otherSymptomsMoreInfo: patientInvestigation.otherSymptomsMoreInfo !== null ?
-                            patientInvestigation.otherSymptomsMoreInfo : '',
-                        otherBackgroundDiseasesMoreInfo: clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo !== null ?
-                            clinicalDetailsByEpidemiologyNumber.otherBackgroundDiseasesMoreInfo : '',
+                        otherSymptomsMoreInfo: patientClinicalDetails.otherSymptomsMoreInfo !== null ?
+                            patientClinicalDetails.otherSymptomsMoreInfo : '',
+                        otherBackgroundDiseasesMoreInfo: patientClinicalDetails.otherBackgroundDiseasesMoreInfo !== null ?
+                        patientClinicalDetails.otherBackgroundDiseasesMoreInfo : '',
                     }
                     setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
                     reset(initialDBClinicalDetailsToSet);
@@ -201,13 +200,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     };
 
-    const getSymptomsList = (patientInvestigation: any) => {
-        const symptoms: string[] = patientInvestigation.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName);
+    const getSymptomsList = (patientClinicalDetails: any) => {
+        const symptoms: string[] = patientClinicalDetails.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName);
         return symptoms;
     }
 
     const getBackgroundDiseasesList = (clinicalDetails: any) => {
-        const backgroundDiseases: string[] = clinicalDetails.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
+        const backgroundDiseases: string[] = clinicalDetails.backgroundDiseases.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
         return backgroundDiseases;
     }
 
