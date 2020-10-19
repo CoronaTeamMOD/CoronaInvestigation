@@ -37,6 +37,8 @@ const defaultInvestigationStaticInfo = {
         additionalPhoneNumber: '',
         gender: '',
         identityType: '',
+        isHospitalized: false,
+        isInInstitution: false,
         patientInfo: {
             fullName: '',
             primaryPhone: '',
@@ -155,17 +157,13 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     return (
         <>
             <InvestigatedPersonInfo
-                investigatedPatientStaticInfo={
-                    investigationStaticInfo.investigatedPatient
-                }
+                investigatedPatientStaticInfo={investigationStaticInfo.investigatedPatient}
                 currentTab={currentTab}
                 epedemioligyNumber={epidemiologyNumber}
                 coronaTestDate={investigationStaticInfo.coronaTestDate}
             />
             <InvestigationMetadata
-                investigationMetaData={
-                    investigationStaticInfo
-                }
+                investigationMetaData={investigationStaticInfo}
             />
         </>
     );
@@ -173,6 +171,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
 interface Props {
     currentTab: number;
-}
+};
 
 export default InvestigationInfoBar;

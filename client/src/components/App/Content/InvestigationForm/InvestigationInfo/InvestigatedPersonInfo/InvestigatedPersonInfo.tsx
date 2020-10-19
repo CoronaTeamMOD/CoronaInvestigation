@@ -19,14 +19,16 @@ import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
-
 const displayDateFormat = 'dd/MM/yyyy';
+const yes = 'כן';
+const no = 'לא';
 
 const InvestigatedPersonInfo = (props: Props) => {
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
-    const { identityType, gender, isDeceased, patientInfo } = investigatedPatientStaticInfo;
+    
+    const { identityType, gender, isDeceased, patientInfo, isHospitalized, isInInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
@@ -103,11 +105,15 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
-                        isDeceased ?
-                            'כן' :
-                            'לא'
-                    }
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={isDeceased ? yes : no}
+                        icon={Help}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon testId='isHospitalized' name='האם מאושפז' value={isHospitalized ? yes : no}
+                        icon={Help}
+                    />
+                    <Divider />
+                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={isInInstitution ? yes : no}
                         icon={Help}
                     />
                 </div>
@@ -168,6 +174,6 @@ interface Props {
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;
-}
+};
 
 export default InvestigatedPersonInfo
