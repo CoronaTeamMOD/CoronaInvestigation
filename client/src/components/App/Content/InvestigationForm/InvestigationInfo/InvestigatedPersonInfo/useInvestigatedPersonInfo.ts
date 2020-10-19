@@ -89,7 +89,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             })
             timeout(1900).then(()=> {
                 setIsInInvestigation(false);
-                history.push(landingPageRoute)
+                window.close();
             });
     };
 

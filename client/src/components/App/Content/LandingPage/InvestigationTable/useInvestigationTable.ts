@@ -260,34 +260,34 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
-                          .filter((investigation: any) => 
-                          investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                          investigation?.userByLastUpdator)
-                          .map((investigation: any) => {
-                              const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                              const desk = investigation.desk;
-                              const covidPatient = patient.covidPatientByCovidPatient;
-                              const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                              const user = investigation.userByLastUpdator;
-                              const county = user ? user.countyByInvestigationGroup : '';
-                              const subStatus = investigation.investigationSubStatusByInvestigationStatus ?
-                                  investigation.investigationSubStatusByInvestigationStatus.displayName :
-                                  '';
-                            return createRowData(
-                                investigation.epidemiologyNumber,
-                                investigation.coronaTestDate,
-                                investigation.priority,
-                                investigation.investigationStatusByInvestigationStatus.displayName,
-                                subStatus,
-                                covidPatient.fullName,
-                                covidPatient.primaryPhone,
-                                covidPatient.age,
-                                patientCity ? patientCity.displayName : '',
-                                desk,
-                                county,
-                                { id: user.id, userName: user.userName }
-                            )
-                        });
+                            .filter((investigation: any) =>
+                                investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                investigation?.userByCreator)
+                            .map((investigation: any) => {
+                                const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                const desk = investigation.desk;
+                                const covidPatient = patient.covidPatientByCovidPatient;
+                                const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                const user = investigation.userByCreator;
+                                const county = user ? user.countyByInvestigationGroup : '';
+                                const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                    investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                    '';
+                                return createRowData(
+                                    investigation.epidemiologyNumber,
+                                    investigation.coronaTestDate,
+                                    investigation.priority,
+                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    subStatus,
+                                    covidPatient.fullName,
+                                    covidPatient.primaryPhone,
+                                    covidPatient.age,
+                                    patientCity ? patientCity.displayName : '',
+                                    desk,
+                                    county,
+                                    { id: user.id, userName: user.userName }
+                                )
+                            });
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
@@ -351,7 +351,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationMainStatus,
+            mainStatus: investigationRow.investigationMainStatus === InvestigationMainStatus.NEW ?
+                InvestigationMainStatus.IN_PROCESS :
+                investigationRow.investigationMainStatus,
             subStatus: investigationRow.investigationSubStatus
         })
         if (investigationRow.investigationMainStatus === InvestigationMainStatus.NEW) {
@@ -374,30 +376,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     step: 'updated investigation start time now sending request to update status',
                     investigation: investigationRow.epidemiologyNumber,
                     user: user.id
-                })
-                axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
-                    investigationSubStatus: null,
-                    epidemiologyNumber: investigationRow.epidemiologyNumber
-                }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Investigation click',
-                        step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                        investigation: investigationRow.epidemiologyNumber,
-                        user: user.id
-                    })
-                    moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-                }).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: error
-                    });
-                    fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
                 });
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Investigation click',
+                    step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
+                    investigation: investigationRow.epidemiologyNumber,
+                    user: user.id
+                })
+                moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
             }).catch((error) => {
                 logger.error({
                     service: Service.CLIENT,
