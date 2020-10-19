@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -12,9 +12,8 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, setError, clearErrors, errors, watchWasHospitalized, trigger, watchHospitalizedStartDate,
-            watchHospitalizedEndDate,
-    } = props;
+    const { classes, watchWasHospitalized, watchHospitalizedStartDate, watchHospitalizedEndDate } = props;
+    const { control, errors, trigger } = useFormContext();
 
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
@@ -66,19 +65,14 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     control={control}
                                     render={(props) => (
                                         <AlphanumericTextField
-                                            className={classes.hospitalInput}
                                             testId='hospitalInput'
                                             name={ClinicalDetailsFields.HOSPITAL}
                                             value={props.value}
-                                            onChange={(newValue: string) =>
-                                                props.onChange(newValue)
-                                            }
+                                            onChange={(newValue: string) => props.onChange(newValue)}
                                             onBlur={props.onBlur}
-                                            setError={setError}
-                                            clearErrors={clearErrors}
-                                            errors={errors}
                                             label='בית חולים'
                                             placeholder='הזן בית חולים...'
+                                            className={classes.hospitalInput}
                                         />
                                     )}
                                 />
@@ -129,12 +123,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     classes: ClinicalDetailsClasses;
-    control: Control;
-    setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
-    clearErrors: (name?: string | string[]) => void;
-    errors: Record<string, any>;
     watchWasHospitalized: boolean;
-    trigger: (payload?: string | string[]) => Promise<boolean>;
     watchHospitalizedStartDate: Date;
     watchHospitalizedEndDate: Date;
 };

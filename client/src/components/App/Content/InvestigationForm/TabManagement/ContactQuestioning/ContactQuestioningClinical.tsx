@@ -1,6 +1,5 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { addDays, format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
@@ -25,7 +24,6 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
-    const { errors, setError, clearErrors } = useForm({});
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
@@ -98,14 +96,11 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName='קשר'>
                         <AlphanumericTextField
                             name={InteractedContactFields.RELATIONSHIP}
-                            placeholder='קשר'
                             value={interactedContact.relationship}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.RELATIONSHIP, newValue as string
-                                )}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
+                            )}
+                            placeholder='קשר'
                         />
                     </FormInput>
                 </Grid>
@@ -159,9 +154,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}
                             onChange={() => {}}
-                            errors={errors}
-                            setError={setError}
-                            clearErrors={clearErrors}
                         />
                     </FormInput>
                 </Grid>
