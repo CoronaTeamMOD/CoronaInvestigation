@@ -546,38 +546,58 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         </Grid>
                         {
                             occupation === Occupations.EDUCATION_SYSTEM &&
-                            <Grid item xs={2}>
-                                <Controller
-                                    name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                    control={methods.control}
-                                    render={(props) => (
-                                        <Autocomplete
-                                            options={Array.from(cities, ([name, value]) => ({ name, value }))}
-                                            getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
-                                            getOptionSelected={(option) => {
-                                                return option.value?.displayName === props.value
-                                            }}
-                                            value={props.value}
-                                            onChange={(event, newValue) => {
-                                                newValue && getEducationSubOccupations(newValue.value.displayName);
-                                                setSubOccupationName('');
-                                                props.onChange(newValue ? newValue.value.displayName : '')
-                                            }}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
-                                                    label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message 
-                                                           || 'עיר המצאות המוסד*'}
-                                                    onBlur={props.onBlur}
-                                                    test-id='institutionCity'
-                                                    id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                    placeholder={'עיר המצאות המוסד'}
-                                                />}
-                                        />
-                                    )}
-                                />
-                            </Grid>
+                            <>
+                                <Grid item xs={2}>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <Autocomplete
+                                                options={Array.from(cities, ([name, value]) => ({ name, value }))}
+                                                getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
+                                                getOptionSelected={(option) => {
+                                                    return option.value?.displayName === props.value
+                                                }}
+                                                value={props.value}
+                                                onChange={(event, newValue) => {
+                                                    newValue && getEducationSubOccupations(newValue.value.displayName);
+                                                    setSubOccupationName('');
+                                                    props.onChange(newValue ? newValue.value.displayName : '')
+                                                }}
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        {...params}
+                                                        error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
+                                                        label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
+                                                            || 'עיר המצאות המוסד*'}
+                                                        onBlur={props.onBlur}
+                                                        test-id='institutionCity'
+                                                        id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                        placeholder={'עיר המצאות המוסד'}
+                                                    />}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <AlphanumericTextField
+                                        name='role'
+                                        label='תפקיד'
+                                        value={''}
+                                        onChange={() => { }}
+                                        className={classes.markComplicity}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <AlphanumericTextField
+                                        name='educationGrade'
+                                        label='שכבת גיל'
+                                        value={''}
+                                        onChange={() => { }}
+                                        className={false ? classes.markComplicity : ''}
+                                    />
+                                </Grid>
+                            </>
                         }
                         <Grid item xs={3}>
                             <Collapse in={occupation !== Occupations.UNEMPLOYED}>
