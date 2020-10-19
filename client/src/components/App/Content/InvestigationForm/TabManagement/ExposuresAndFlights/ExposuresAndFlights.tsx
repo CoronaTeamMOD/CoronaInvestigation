@@ -23,6 +23,8 @@ import { exposureAndFlightsContext, Exposure, initialExposureOrFlight, isConfirm
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
+const defaultDestinationCountryCode = '900';
+
 const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
@@ -160,7 +162,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   };
 
   const onExposureAdded = (wasConfirmedExposure: boolean, wasAbroad: boolean) => {
-    const updatedExposures : Exposure[] = [...exposures, {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad}]
+    const newExposure : Exposure = {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
+    if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
+    const updatedExposures : Exposure[] = [...exposures, newExposure];
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
         exposures: updatedExposures,

@@ -15,8 +15,6 @@ const FlightsForm = (props: any) => {
   const classes = useFormStyles();
   const { errors, setError, clearErrors } = useForm();
 
-  const defaultDestinationCountry = {id: '900', displayName: 'ישראל'};
-
   return (
     <Grid className={classes.form} container justify='flex-start'>
       <FormRowWithInput testId='flightStartingPoint' fieldName='מוצא:'>
@@ -41,7 +39,7 @@ const FlightsForm = (props: any) => {
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}
-          country={exposureAndFlightsData[fieldsNames.destinationCountry] ? exposureAndFlightsData[fieldsNames.destinationCountry] : defaultDestinationCountry}
+          country={exposureAndFlightsData[fieldsNames.destinationCountry]}
           countryFieldName={fieldsNames.destinationCountry}
           city={exposureAndFlightsData[fieldsNames.destinationCity]}
           cityFieldName={fieldsNames.destinationCity}
