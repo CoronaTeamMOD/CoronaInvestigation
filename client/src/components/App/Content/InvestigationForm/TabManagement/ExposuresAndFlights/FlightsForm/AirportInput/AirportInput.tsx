@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { createFilterOptions } from '@material-ui/lab';
@@ -16,8 +16,6 @@ const AirportInput = (props: any) => {
 
     const classes = useStyles();
 
-    const [countryToShow, setCountryToShow] = useState<Country | null>(country);
-    
     const countries = useSelector<StoreStateType, Map<string, Country>>(state => state.countries);
     const options = Array.from(countries).map(([name, value]) => (value));
 
@@ -35,7 +33,6 @@ const AirportInput = (props: any) => {
     });
 
     const handleCountryChange = (selectedCountry: Country | null) => {
-        setCountryToShow(selectedCountry);
         handleChangeExposureDataAndFlightsField(countryFieldName, selectedCountry?.id);
     };
 
@@ -43,7 +40,7 @@ const AirportInput = (props: any) => {
         <div className={classes.airportDetails}>
             <div className={classes.airportCountryTextField}>
                 <AutocompletedField
-                    value={countryToShow}
+                    value={country}
                     options={options}
                     onChange={(event, newValue) => handleCountryChange(newValue)}
                     getOptionLabel={(option) => getLabel(option)}
