@@ -12,6 +12,7 @@ import County from 'models/County';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
@@ -125,6 +126,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
+            case TableHeadersNames.isComplicated: 
+                return <ComplexityIcon tooltipText='Hello world' style={{marginLeft: '0.2vw'}} />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

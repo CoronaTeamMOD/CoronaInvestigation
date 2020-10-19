@@ -4,6 +4,7 @@ export enum TableHeadersNames {
     priority = 'priority',
     fullName = 'fullName',
     phoneNumber = 'phoneNumber',
+    isComplicated = 'isComplicated',
     age = 'age',
     city = 'city',
     county = 'county',
@@ -26,6 +27,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תאריך הבדיקה',
     [TableHeadersNames.priority]: 'עדיפות',
+    [TableHeadersNames.isComplicated]: '',
     [TableHeadersNames.fullName]: 'שם מלא',
     [TableHeadersNames.phoneNumber]: 'מספר טלפון',
     [TableHeadersNames.age]: 'גיל',
@@ -40,6 +42,7 @@ export const TableHeaders: IndexedInvestigation = {
 export const adminCols: string[] = [
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
+    TableHeadersNames.isComplicated,
     TableHeadersNames.priority,
     TableHeadersNames.fullName,
     TableHeadersNames.phoneNumber,
@@ -54,6 +57,7 @@ export const adminCols: string[] = [
 export const userCols: string[] = [
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
+    TableHeadersNames.isComplicated,
     TableHeadersNames.priority,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.fullName,
@@ -66,6 +70,7 @@ export const userCols: string[] = [
 export const sortableCols: sortableHeaders = {
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,
+    [TableHeadersNames.isComplicated]: false,
     [TableHeadersNames.priority]: false,
     [TableHeadersNames.fullName]: false,
     [TableHeadersNames.phoneNumber]: false,

@@ -54,6 +54,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
+    priorityCell: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    priorityTableCell: {
+        paddingLeft: '0.4vw'
+    }
 }));
 
 export default useStyles;
