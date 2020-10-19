@@ -18,6 +18,7 @@ import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
+import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
@@ -330,6 +331,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     {INSURANCE_LABEL}
                                 </b>
                             </Typography>
+                            {
+                                insuranceCompany === NO_INSURANCE && <ComplexityIcon tooltipText='המאומת חסר מעמד' />
+                            }
                         </Grid>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <FormControl fullWidth>
@@ -588,7 +592,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         className={classes.markComplicity}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={1}>
                                     <AlphanumericTextField
                                         name='educationGrade'
                                         label='שכבת גיל'

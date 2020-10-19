@@ -9,6 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -79,6 +80,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <InfoItemWithIcon testId='age' name='גיל' value={age}
                         icon={CakeOutlined}
                     />
+                    {
+                        (age && Number(age) <= 14) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
                         birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
@@ -108,14 +112,23 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={isDeceased ? yes : no}
                         icon={Help}
                     />
+                    {
+                        isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='isHospitalized' name='האם מאושפז' value={isHospitalized ? yes : no}
                         icon={Help}
                     />
+                    {
+                        isHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={isInInstitution ? yes : no}
                         icon={Help}
                     />
+                    {
+                        isInInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                    }
                 </div>
                 <div className={classes.managementControllers}>
                     <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
