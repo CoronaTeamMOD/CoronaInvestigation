@@ -14,12 +14,12 @@ import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 const placeTypeDisplayName = 'סוג אתר';
 const placeSubTypeDisplayName = 'תת סוג';
 
-const defaultSubType = {displayName: '', id: -1};
+const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { control, placeTypeName, placeSubTypeName, placeType, placeSubType,
-            onPlaceTypeChange, onPlaceSubTypeChange, errors
+        onPlaceTypeChange, onPlaceSubTypeChange, errors
     } = props;
 
     const formClasses = useFormStyles();
@@ -33,7 +33,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     };
 
     const placeSubTypeObj: PlaceSubType = placeSubTypeById(placeSubType);
-
+    
     useEffect(() => {
         if (Object.keys(placesSubTypesByTypes).length > 0 && !placeType) {
             onPlaceTypeChange(Object.keys(placesSubTypesByTypes)[0]);
@@ -50,8 +50,8 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     }, [placeType]);
 
     useEffect(() => {
-        if (placeSubTypeObj) {
-            setPlaceSubTypeInput(placeSubTypeObj.displayName);
+        if (placeSubType !== null && placeSubTypeObj) {
+                setPlaceSubTypeInput(placeSubTypeObj.displayName);
         }
     }, [placeSubType]);
 
@@ -100,12 +100,12 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
         <Autocomplete
             options={placesSubTypesByTypes[placeType]}
             getOptionLabel={(option) => option ? option.displayName : option}
-            value={placeSubTypeObj}
+            value={placeSubType === null ? defaultSubType : placeSubTypeObj}
             inputValue={placeSubTypeInput}
             getOptionSelected={(option) => option.id === placeSubType}
-            onChange={(event, chosenPlaceSubType) =>
+            onChange={(event, chosenPlaceSubType) => {
                 onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
-            }
+            }}
             onInputChange={(event, placeSubTypeInput) => {
                 handleSubTypeInputChange(placeSubTypeInput);
             }}
@@ -138,7 +138,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                 )}
                             />
                             :
-                            PlaceTypeAutocompleteComponent(() => {})
+                            PlaceTypeAutocompleteComponent(() => { })
                         }
                     </FormControl>
                 </FormInput>
@@ -159,7 +159,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                     )}
                                 />
                                 :
-                                PlaceSubTypeAutocompleteComponent(() => {})
+                                PlaceSubTypeAutocompleteComponent(() => { })
                             }
                         </FormControl>
                     </FormInput>
