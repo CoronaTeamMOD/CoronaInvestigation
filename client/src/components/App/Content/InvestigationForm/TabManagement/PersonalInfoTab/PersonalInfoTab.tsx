@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, Typography, FormControl, Collapse } from '@material-ui/core';
 import Swal from 'sweetalert2';
 
@@ -49,6 +49,7 @@ const OFFICE_NAME_LABEL = 'שם משרד/ רשות*';
 const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
+const NO_INSURANCE = 'אף אחד מהנ"ל';
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -352,6 +353,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
                                                 }
                                             }}
+                                            className={props.value === NO_INSURANCE ? classes.markComplicity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}

@@ -114,6 +114,10 @@ const useStyles = makeStyles({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    markComplicity: {
+        border: 'solid #FFC90E',
+        borderRadius: 24,
+    },
 });
 
 export default useStyles;
