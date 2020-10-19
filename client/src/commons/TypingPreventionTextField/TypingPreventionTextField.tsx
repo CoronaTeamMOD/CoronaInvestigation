@@ -1,28 +1,18 @@
 import React from 'react';
-import {TextField} from '@material-ui/core';
+import { useFormContext } from 'react-hook-form'
+import { ValidationError } from "yup";
+import { TextField } from '@material-ui/core';
 
-import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
-import {ValidationError} from "yup";
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
+    const { testId, name, onChange, onBlur, required, validationSchema, placeholder, label, className } = props;
+    const { errors, setError, clearErrors } = useFormContext(); 
+    
     const value = !props.value ? "" : props.value;
-    const {
-        name,
-        onChange,
-        onBlur,
-        setError,
-        clearErrors,
-        errors,
-        placeholder,
-        className,
-        label,
-        required,
-        testId,
-        validationSchema
-    } = props;
-
+    
     const conditionalyTriggerOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         try {
@@ -43,14 +33,14 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
     return (
         <TextField
             test-id={testId}
-            required={required}
             name={name}
             value={value}
             onChange={conditionalyTriggerOnChange}
             onBlur={onBlur}
+            required={required}
             error={errorObject ? true : false}
-            label={errorObject ? errorObject.message : label}
             placeholder={placeholder}
+            label={errorObject ? errorObject.message : label}
             className={className}
         />
     );

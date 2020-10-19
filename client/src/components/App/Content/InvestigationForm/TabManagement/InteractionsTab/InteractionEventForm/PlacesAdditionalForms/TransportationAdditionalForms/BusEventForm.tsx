@@ -1,9 +1,9 @@
 import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import StoreStateType from 'redux/storeStateType';
 import { Grid, TextField } from '@material-ui/core';
-import { Controller, useFormContext } from 'react-hook-form';
 
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
@@ -15,7 +15,7 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 import useStyles from './TransportationFormsStyles';
 
 const BusEventForm: React.FC = (): JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
 
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -35,9 +35,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />
@@ -54,9 +51,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />
@@ -102,9 +96,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />
@@ -150,9 +141,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />

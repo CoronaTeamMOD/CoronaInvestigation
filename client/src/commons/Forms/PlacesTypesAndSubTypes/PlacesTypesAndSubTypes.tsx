@@ -1,13 +1,12 @@
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, FormControl, TextField } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
 import PlacesSubTypesByTypes from 'models/PlacesSubTypesByTypes';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import usePlacesTypesAndSubTypes from './usePlacesTypesAndSubTypes';
 
@@ -18,9 +17,8 @@ const defaultSubType = { displayName: '', id: -1 };
 
 const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { control, placeTypeName, placeSubTypeName, placeType, placeSubType,
-        onPlaceTypeChange, onPlaceSubTypeChange, errors
-    } = props;
+    const { placeTypeName, placeSubTypeName, placeType, placeSubType, onPlaceTypeChange, onPlaceSubTypeChange } = props;
+    const { control, errors } = useFormContext();
 
     const formClasses = useFormStyles();
 
@@ -178,6 +176,4 @@ interface Props {
     placeSubType: number;
     onPlaceTypeChange: (newPlaceType: string) => void;
     onPlaceSubTypeChange: (placeSubType: PlaceSubType | null) => void;
-    control?: Control;
-    errors?: Record<string, any>;
 };

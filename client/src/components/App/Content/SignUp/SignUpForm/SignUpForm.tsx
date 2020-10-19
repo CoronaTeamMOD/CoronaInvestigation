@@ -61,9 +61,6 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
             label={label}
             placeholder={placeholder}
             onBlur={props.onBlur}
-            errors={methods.errors}
-            setError={methods.setError}
-            clearErrors={methods.clearErrors}
         />
     )
     
@@ -76,9 +73,6 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
             onBlur={props.onBlur}
             placeholder={placeholder}
             label={label}
-            errors={methods.errors}
-            setError={methods.setError}
-            clearErrors={methods.clearErrors}
             className={classes.textField}
         />
     )

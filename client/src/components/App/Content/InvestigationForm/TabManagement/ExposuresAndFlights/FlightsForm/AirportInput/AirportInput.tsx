@@ -10,9 +10,7 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
-    const { errors, setError, clearErrors, country, countryFieldName, city, cityFieldName, airport,
-            airportFieldName, handleChangeExposureDataAndFlightsField,
-    } = props;
+    const { country, countryFieldName, city, cityFieldName, airport, airportFieldName, handleChangeExposureDataAndFlightsField} = props;
 
     const classes = useStyles();
 
@@ -52,24 +50,18 @@ const AirportInput = (props: any) => {
             <div>
                 <AlphanumericTextField
                     name={cityFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
                     value={city}
+                    onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
                     placeholder='עיר'
                     label='עיר'
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
                 />
                 <AlphanumericTextField
-                    className={classes.airportTextField}
                     name={airportFieldName}
-                    errors={errors}
-                    setError={setError}
-                    clearErrors={clearErrors}
                     value={airport}
                     onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
                     placeholder='שדה תעופה'
                     label='שדה תעופה'
+                    className={classes.airportTextField}
                 />
             </div>
         </div>

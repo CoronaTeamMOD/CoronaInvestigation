@@ -1,10 +1,9 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
@@ -17,7 +16,7 @@ const businessContactNumField = 'טלפון';
 
 const BusinessContactForm: React.FC = (): JSX.Element => {
         
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
 
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -33,14 +32,11 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphabetTextField
-                                    name={props.name}
                                     testId='businessContactFirstName'
+                                    name={props.name}
                                     value={props.value ? props.value : null}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />
@@ -53,14 +49,11 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             control={control}
                             render={(props) => (
                                 <AlphabetTextField
-                                    name={props.name}
                                     testId='businessContactLastName'
+                                    name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}   
                                 />
                             )}
                         />
@@ -77,9 +70,6 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />

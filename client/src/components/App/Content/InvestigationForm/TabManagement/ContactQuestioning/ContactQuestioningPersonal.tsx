@@ -1,5 +1,4 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { differenceInYears } from 'date-fns';
 import { Avatar, Grid, Typography } from '@material-ui/core';
 
@@ -17,7 +16,6 @@ import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
-    const { errors, setError, clearErrors } = useForm({});
 
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
 
@@ -49,15 +47,12 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={3}>
                         <AlphanumericTextField
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
-                            placeholder='מספר תעודה'
-                            className={classes.idTextField}
                             value={interactedContact.identificationNumber}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue as string
-                                )}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
+                            )}
+                            placeholder='מספר תעודה'
+                            className={classes.idTextField}
                         />
                     </Grid>
                 </Grid>
@@ -76,13 +71,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName='גיל'>
                         <AlphanumericTextField
-                            name={'age'}
-                            placeholder={'בחר תאריך לידה'}
+                            name='age'
                             value={contactAge}
                             onChange={() => {}}
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
+                            placeholder='בחר תאריך לידה'
                         />
                     </FormInput>
                 </Grid>
@@ -90,14 +82,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
                         <NumericTextField
                             name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
-                            placeholder='הכנס טלפון:'
                             value={interactedContact.additionalPhoneNumber}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue)
                             }
-                            setError={setError}
-                            clearErrors={clearErrors}
-                            errors={errors}
+                            placeholder='הכנס טלפון:'
                         />
                     </FormInput>
                 </Grid>

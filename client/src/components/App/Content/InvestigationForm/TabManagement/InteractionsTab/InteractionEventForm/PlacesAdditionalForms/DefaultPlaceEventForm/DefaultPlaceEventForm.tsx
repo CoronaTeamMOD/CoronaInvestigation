@@ -1,6 +1,6 @@
 import React from 'react';
-import {Grid} from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Grid } from '@material-ui/core';
 
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -11,7 +11,7 @@ import BusinessContactForm from 'components/App/Content/InvestigationForm/TabMan
 import useStyles from './DefaultPlaceEventFormStyles';
 
 const DefaultPlaceEventForm: React.FC = (): JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
     
     const classes = useStyles();
     return (
@@ -27,9 +27,6 @@ const DefaultPlaceEventForm: React.FC = (): JSX.Element => {
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue as string)}
                                 onBlur={props.onBlur}
-                                errors={errors}
-                                setError={setError}
-                                clearErrors={clearErrors}
                                 className={classes.placeNameField}
                             />
                         )}

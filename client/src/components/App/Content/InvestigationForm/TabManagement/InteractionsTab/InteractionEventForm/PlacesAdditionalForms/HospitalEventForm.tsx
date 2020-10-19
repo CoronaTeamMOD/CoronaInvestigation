@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Grid } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
@@ -11,7 +11,7 @@ import BusinessContactForm from 'components/App/Content/InvestigationForm/TabMan
 import AddressForm from '../AddressForm/AddressForm';
 
 const HospitalEventForm : React.FC = () : JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
 
     const formClasses = useFormStyles();
 
@@ -29,9 +29,6 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />      
                             )}
                         />         
@@ -48,9 +45,6 @@ const HospitalEventForm : React.FC = () : JSX.Element => {
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                 />
                             )}
                         />

@@ -27,7 +27,6 @@ export interface GeocodeResponse extends google.maps.GeocoderResult {
     description?: string;
 }
 
-const renderOption = LocationOptionItem;
 const noOptionsMessage = 'הקלידו מיקום תיקני לחיפוש...';
 
 

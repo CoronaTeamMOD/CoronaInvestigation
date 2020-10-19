@@ -15,7 +15,7 @@ const { publicPark, zoo, stadium, amphitheater, beach } = placeTypesCodesHierarc
 const wideAreas = [publicPark, zoo, stadium, amphitheater, beach];
 
 const OtherPublicLocationForm: React.FC<Props> = ({ placeSubType }: Props): JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
 
     const isWideArea: boolean = wideAreas.includes(placeSubType);
 
@@ -32,9 +32,6 @@ const OtherPublicLocationForm: React.FC<Props> = ({ placeSubType }: Props): JSX.
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue as string)}
                                 onBlur={props.onBlur}
-                                errors={errors}
-                                setError={setError}
-                                clearErrors={clearErrors}
                             />
                         )}
                     />
