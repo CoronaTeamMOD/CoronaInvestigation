@@ -117,8 +117,6 @@ RETURN (select
 from public.investigation investigationTable
 where (
 	investigationTable.last_updator = user_id
-	AND
-	investigationTable.investigation_status != 'טופלה'
 ));
 END;
 $BODY$;

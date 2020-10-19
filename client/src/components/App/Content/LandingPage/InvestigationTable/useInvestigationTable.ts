@@ -318,6 +318,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
 
+    const shouldChangeStatusToInProcess = (currentStatus: InvestigationMainStatus) : boolean =>
+        currentStatus === InvestigationMainStatus.NEW || currentStatus === InvestigationMainStatus.DONE
+
     const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         axios.interceptors.request.use(
             (config) => {
@@ -350,13 +353,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             setAxiosInterceptorId(newInterceptor);
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
+
+        const shouldChangeStatus = shouldChangeStatusToInProcess(investigationRow.investigationStatus);
+        
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ? 
-            InvestigationMainStatus.IN_PROCESS :
-            investigationRow.investigationStatus,
+            mainStatus: shouldChangeStatus ? InvestigationMainStatus.IN_PROCESS : investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
         })
-        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
+        if (shouldChangeStatus) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
