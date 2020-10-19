@@ -421,9 +421,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             setValue(PersonalInfoDataContextFields.STREET, '')
                                             setStreetName('')
                                             setCityName(newInputValue);
-                                            if (!newInputValue) {
-                                                setValue(PersonalInfoDataContextFields.CITY, '')
-                                            }
+                                            setValue(PersonalInfoDataContextFields.CITY, '')
                                         }
                                     }}
                                     onChange={(event, newValue) => {
