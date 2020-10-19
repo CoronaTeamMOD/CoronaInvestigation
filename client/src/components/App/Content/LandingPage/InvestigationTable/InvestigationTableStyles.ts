@@ -54,6 +54,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
+    priorityCell: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    priorityTableCell: {
+        paddingLeft: '0'
+    },
+    testDateCell: {
+        width: '6vw'
+    }, 
+    epiNumberCell: {
+        width: '7vw'
+    }
 }));
 
 export default useStyles;

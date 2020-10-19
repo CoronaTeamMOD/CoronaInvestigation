@@ -562,6 +562,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
+        } else if (cellKey === TableHeadersNames.priority) {
+            classNames.push(classes.priorityTableCell);
+        } else if (cellKey === TableHeadersNames.coronaTestDate) {
+            classNames.push(classes.testDateCell);
+        } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
+            classNames.push(classes.epiNumberCell);
         }
 
         if ((isDefaultOrder && !isLoading) &&
