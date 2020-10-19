@@ -224,7 +224,11 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
             <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
               <Toggle
                 value={wereConfirmedExposures}
-                onChange={() => onExposuresStatusChange(fieldsNames.wereConfirmedExposures, !wereConfirmedExposures)}
+                onChange={(e, value) => {
+                  if (value !== null) {
+                    onExposuresStatusChange(fieldsNames.wereConfirmedExposures,value)
+                  }
+                }}
               />
             </FormRowWithInput>
 
@@ -276,7 +280,11 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
             <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
               <Toggle
                 value={wereFlights}
-                onChange={() => onExposuresStatusChange(fieldsNames.wereFlights, !wereFlights)}
+                onChange={(e, value) => {
+                  if (value !== null) {
+                    onExposuresStatusChange(fieldsNames.wereFlights,value)
+                  }
+                }}
               />
             </FormRowWithInput>
               
