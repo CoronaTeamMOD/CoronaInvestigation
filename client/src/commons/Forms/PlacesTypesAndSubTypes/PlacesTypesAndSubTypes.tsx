@@ -28,11 +28,11 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     const [placeTypeInput, setPlaceTypeInput] = useState<string>('');
     const [placeSubTypeInput, setPlaceSubTypeInput] = useState<string>('');
 
+    const [placeSubTypeObj, setPlaceSubTypeObj] = useState<PlaceSubType>(defaultSubType);
+
     const placeSubTypeById = (placeSubTypeId: number): PlaceSubType => {
         return placesSubTypesByTypes[placeType]?.filter((placeSubType: PlaceSubType) => placeSubType.id === placeSubTypeId)[0];
     };
-
-    const placeSubTypeObj: PlaceSubType = placeSubTypeById(placeSubType);
 
     useEffect(() => {
         if (Object.keys(placesSubTypesByTypes).length > 0 && !placeType) {
@@ -50,8 +50,10 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     }, [placeType]);
 
     useEffect(() => {
-        if (placeSubTypeObj) {
-            setPlaceSubTypeInput(placeSubTypeObj.displayName);
+        const newPlaceSubType = placeSubTypeById(placeSubType)
+        if (newPlaceSubType) {
+            setPlaceSubTypeObj(newPlaceSubType);
+            onPlaceSubTypeChange(newPlaceSubType);
         }
     }, [placeSubType]);
 
@@ -103,9 +105,9 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
             value={placeSubTypeObj}
             inputValue={placeSubTypeInput}
             getOptionSelected={(option) => option.id === placeSubType}
-            onChange={(event, chosenPlaceSubType) =>
+            onChange={(event, chosenPlaceSubType) => {
                 onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
-            }
+            }}
             onInputChange={(event, placeSubTypeInput) => {
                 handleSubTypeInputChange(placeSubTypeInput);
             }}
