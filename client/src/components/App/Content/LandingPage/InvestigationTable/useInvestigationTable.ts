@@ -262,13 +262,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
                             .filter((investigation: any) =>
                                 investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                                investigation?.userByLastUpdator)
+                                investigation?.userByCreator)
                             .map((investigation: any) => {
                                 const patient = investigation.investigatedPatientByInvestigatedPatientId;
                                 const desk = investigation.desk;
                                 const covidPatient = patient.covidPatientByCovidPatient;
                                 const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                                const user = investigation.userByLastUpdator;
+                                const user = investigation.userByCreator;
                                 const county = user ? user.countyByInvestigationGroup : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
