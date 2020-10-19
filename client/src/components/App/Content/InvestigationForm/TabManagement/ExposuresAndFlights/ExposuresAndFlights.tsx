@@ -160,7 +160,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   };
 
   const onExposureAdded = (wasConfirmedExposure: boolean, wasAbroad: boolean) => {
-    const updatedExposures : Exposure[] = [...exposures, {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad}]
+    const newExposure : Exposure = {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
+    if (wasAbroad) newExposure.flightDestinationCountry = '900';
+    const updatedExposures : Exposure[] = [...exposures, newExposure];
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
         exposures: updatedExposures,
