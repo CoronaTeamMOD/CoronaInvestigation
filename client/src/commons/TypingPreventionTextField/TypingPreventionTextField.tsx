@@ -8,7 +8,7 @@ import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
-    const { testId, name, onChange, onBlur, required, validationSchema, placeholder, label, className } = props;
+    const { testId, name, onChange, onBlur, validationSchema, placeholder, label, className } = props;
     const { errors, setError, clearErrors } = useFormContext(); 
     
     const value = !props.value ? "" : props.value;
@@ -37,7 +37,6 @@ const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
             value={value}
             onChange={conditionalyTriggerOnChange}
             onBlur={onBlur}
-            required={required}
             error={errorObject ? true : false}
             placeholder={placeholder}
             label={errorObject ? errorObject.message : label}

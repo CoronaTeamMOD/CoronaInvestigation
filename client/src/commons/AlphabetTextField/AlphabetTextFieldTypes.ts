@@ -6,7 +6,6 @@ export interface AlphabetTextFieldProps<T> {
     value: T | null,
     onChange: (value: string) => void,
     onBlur?: (event: React.ChangeEvent<{}>) => void,
-    required?: boolean,
     placeholder?: string,
     label?: string,
     className?: string,

@@ -6,7 +6,6 @@ export interface NumericTextFieldProps<T> {
     value: T | null,
     onChange: (value: string) => void,
     onBlur?: (event: React.ChangeEvent<{}>) => void,
-    required?: boolean,
     error? : boolean,
     placeholder?: string,
     label?: string,

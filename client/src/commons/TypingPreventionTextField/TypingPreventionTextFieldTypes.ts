@@ -8,7 +8,6 @@ export interface TypePreventiveTextFieldProps<T> {
     onChange: (value: string) => void,
     onBlur?: (event: React.ChangeEvent<{}>) => void,
     validationSchema: yup.StringSchema<string | undefined, object>
-    required?: boolean,
     placeholder?: string,
     label?: string,
     className?: string,

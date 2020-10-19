@@ -9,7 +9,6 @@ export interface AlphanumericTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     error? : boolean,
-    required?: boolean,
     className?: string,
 }
 
