@@ -126,8 +126,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
-            case TableHeadersNames.isComplicated: 
-                return <ComplexityIcon tooltipText='Hello world' style={{marginLeft: '0.2vw'}} />
+            case TableHeadersNames.priority: 
+                return (
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <ComplexityIcon tooltipText='Hello world' />
+                        <span style={{marginRight: '0.5vw'}}>
+                            {indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        </span>
+                    </div>
+                );
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

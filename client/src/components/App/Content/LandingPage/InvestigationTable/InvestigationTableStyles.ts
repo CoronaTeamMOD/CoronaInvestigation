@@ -59,7 +59,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center'
     },
     priorityTableCell: {
-        paddingLeft: '0.4vw'
+        paddingLeft: '0'
+    },
+    testDateCell: {
+        width: '6vw'
+    }, 
+    epiNumberCell: {
+        width: '7vw'
     }
 }));
 

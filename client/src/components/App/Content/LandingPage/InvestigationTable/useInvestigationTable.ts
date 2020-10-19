@@ -413,7 +413,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
             [TableHeadersNames.priority]: row.priority,
-            [TableHeadersNames.isComplicated]: '',
             [TableHeadersNames.fullName]: row.fullName,
             [TableHeadersNames.phoneNumber]: row.phoneNumber,
             [TableHeadersNames.age]: row.age,
@@ -564,7 +563,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
-            // classNames.push(classes.priorityTableCell);
+            classNames.push(classes.priorityTableCell);
+        } else if (cellKey === TableHeadersNames.coronaTestDate) {
+            classNames.push(classes.testDateCell);
+        } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
+            classNames.push(classes.epiNumberCell);
         }
 
         if ((isDefaultOrder && !isLoading) &&
