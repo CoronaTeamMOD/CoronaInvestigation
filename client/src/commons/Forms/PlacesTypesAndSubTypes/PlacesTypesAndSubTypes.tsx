@@ -67,57 +67,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
         }
     };
 
-    usePlacesTypesAndSubTypes({ setPlacesSubTypesByTypes });
-
-    const PlaceTypeAutocompleteComponent = (onBlur: () => void) =>
-        <Autocomplete
-            options={Object.keys(placesSubTypesByTypes)}
-            getOptionLabel={(option) => option}
-            inputValue={placeTypeInput}
-            value={placeType}
-            onBlur={onBlur}
-            getOptionSelected={(option) => option === placeType}
-            onChange={(event, chosenPlaceType) => {
-                onPlaceTypeChange(chosenPlaceType as string)
-            }}
-            onInputChange={(event, chosenPlaceType: string) => {
-                handlePlaceTypeInputChange(chosenPlaceType);
-            }}
-            placeholder={placeTypeDisplayName}
-            renderInput={(params) =>
-                <TextField
-                    {...params}
-                    error={errors && errors[placeTypeName]}
-                    label={errors && errors[placeTypeName]?.message || placeTypeDisplayName}
-                    test-id='placeType'
-                />
-            }
-        />;
-
-    const PlaceSubTypeAutocompleteComponent = (onBlur: () => void) =>
-        <Autocomplete
-            options={placesSubTypesByTypes[placeType]}
-            getOptionLabel={(option) => option ? option.displayName : option}
-            value={placeSubType === null ? defaultSubType : placeSubTypeObj}
-            inputValue={placeSubTypeInput}
-            getOptionSelected={(option) => option.id === placeSubType}
-            onChange={(event, chosenPlaceSubType) => {
-                onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
-            }}
-            onInputChange={(event, placeSubTypeInput) => {
-                handleSubTypeInputChange(placeSubTypeInput);
-            }}
-            onBlur={onBlur}
-            placeholder={placeSubTypeDisplayName}
-            renderInput={(params) =>
-                <TextField
-                    {...params}
-                    error={errors && errors[placeSubTypeName]}
-                    label={errors && errors[placeSubTypeName]?.message || placeSubTypeDisplayName}
-                    test-id='placeSubType'
-                />
-            }
-        />;
+    usePlacesTypesAndSubTypes({ setPlacesSubTypesByTypes });        
 
     return (
         <Grid className={formClasses.formRow} container justify='flex-start'>
@@ -127,17 +77,35 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                         disabled={Object.keys(placesSubTypesByTypes).length === 0}
                         fullWidth
                     >
-                        {control ?
-                            <Controller
-                                name={placeTypeName}
-                                control={control}
-                                render={(props) => (
-                                    PlaceTypeAutocompleteComponent(props.onBlur)
-                                )}
-                            />
-                            :
-                            PlaceTypeAutocompleteComponent(() => { })
-                        }
+                        <Controller
+                            name={placeTypeName}
+                            control={control}
+                            render={(props) => (
+                                <Autocomplete
+                                    options={Object.keys(placesSubTypesByTypes)}
+                                    getOptionLabel={(option) => option}
+                                    inputValue={placeTypeInput}
+                                    value={placeType}
+                                    onBlur={props.onBlur}
+                                    getOptionSelected={(option) => option === placeType}
+                                    onChange={(event, chosenPlaceType) => {
+                                        onPlaceTypeChange(chosenPlaceType as string)
+                                    }}
+                                    onInputChange={(event, chosenPlaceType: string) => {
+                                        handlePlaceTypeInputChange(chosenPlaceType);
+                                    }}
+                                    placeholder={placeTypeDisplayName}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                            error={errors && errors[placeTypeName]}
+                                            label={errors && errors[placeTypeName]?.message || placeTypeDisplayName}
+                                            test-id='placeType'
+                                        />
+                                    }
+                                />
+                            )}
+                        />
                     </FormControl>
                 </FormInput>
             </Grid>
@@ -148,17 +116,35 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                         <FormControl
                             fullWidth
                         >
-                            {control ?
-                                <Controller
-                                    name={placeSubTypeName}
-                                    control={control}
-                                    render={(props) => (
-                                        PlaceSubTypeAutocompleteComponent(props.onBlur)
-                                    )}
-                                />
-                                :
-                                PlaceSubTypeAutocompleteComponent(() => { })
-                            }
+                            <Controller
+                                name={placeSubTypeName}
+                                control={control}
+                                render={(props) => (
+                                    <Autocomplete
+                                        options={placesSubTypesByTypes[placeType]}
+                                        getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={placeSubType === null ? defaultSubType : placeSubTypeObj}
+                                        inputValue={placeSubTypeInput}
+                                        getOptionSelected={(option) => option.id === placeSubType}
+                                        onChange={(event, chosenPlaceSubType) =>
+                                            onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
+                                        }
+                                        onInputChange={(event, placeSubTypeInput) => {
+                                            handleSubTypeInputChange(placeSubTypeInput);
+                                        }}
+                                        onBlur={props.onBlur}
+                                        placeholder={placeSubTypeDisplayName}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                error={errors && errors[placeSubTypeName]}
+                                                label={errors && errors[placeSubTypeName]?.message || placeSubTypeDisplayName}
+                                                test-id='placeSubType'
+                                            />
+                                        }
+                                    />
+                                )}
+                            />    
                         </FormControl>
                     </FormInput>
                 </Grid>
