@@ -322,7 +322,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
         timeout(LandingPageTimer).then(() => {
-            history.push(landingPageRoute);
+            window.close();
         });
     };
 
