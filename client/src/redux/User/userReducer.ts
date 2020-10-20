@@ -1,4 +1,5 @@
 import User from 'models/User';
+import userType from 'models/enums/UserType';
 
 import * as Actions from './userActionTypes';
 
@@ -12,7 +13,7 @@ export const initialUserState: User = {
     serialNumber: -1,
     activeInvestigationsCount: 0,
     newInvestigationsCount: 0,
-    userType: 1,
+    userType: userType.INVESTIGATOR,
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {
