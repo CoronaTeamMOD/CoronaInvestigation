@@ -82,11 +82,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             PopperComponent={CustomPopper}
                             test-id='currentInvetigationUser'
                             options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.userName ? option.value.userName : 'zsfasdf'}
+                            getOptionLabel={(option) => option.value.userName}
                             renderOption={(option, { selected }) => (
                                 option.value.userName ?
-                                <React.Fragment
-                                >
+                                <>
                                     <div>
                                         <Typography variant='body1' color='textSecondary'>
                                             {investigatorNameMsg} :
@@ -105,9 +104,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 </b>
                                         </Typography>
                                     </div>
-                                </React.Fragment>
-                                 :
-                                 ''
+                                </>
+                                :
+                                ''
                             )}
                             inputValue={selectedInvestigator.userName}
                             onChange={(event, newSelectedInvestigator) => {
