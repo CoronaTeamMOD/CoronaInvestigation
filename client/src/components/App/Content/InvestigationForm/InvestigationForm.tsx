@@ -13,11 +13,11 @@ import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialC
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
         initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
 
-        import useStyles from './InvestigationFormStyles';
-        import useInvestigationForm from './useInvestigationForm';
-        import useTabManagement from './TabManagement/useTabManagement';
-        import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-        import TabManagement, { orderedTabsNames } from './TabManagement/TabManagement';
+import useStyles from './InvestigationFormStyles';
+import useInvestigationForm from './useInvestigationForm';
+import useTabManagement from './TabManagement/useTabManagement';
+import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
+import TabManagement, { orderedTabsNames } from './TabManagement/TabManagement';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 export const LAST_TAB_ID = 4;
