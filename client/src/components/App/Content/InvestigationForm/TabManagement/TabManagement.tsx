@@ -15,6 +15,8 @@ import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
 
+export const orderedTabsNames: string[] = [TabNames.PERSONAL_INFO, TabNames.CLINICAL_DETAILS, TabNames.EXPOSURES_AND_FLIGHTS, TabNames.INTERACTIONS, TabNames.CONTACT_QUESTIONING]
+
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
     const {
@@ -30,27 +32,27 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const tabs: TabObj[] = [
         {
             id: 0,
-            name: TabNames.PERSONAL_INFO,
+            name: orderedTabsNames[0],
             displayComponent: <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>
         },
         {
             id: 1,
-            name: TabNames.CLINICAL_DETAILS,
+            name: orderedTabsNames[1],
             displayComponent: <ClinicalDetails id={1} onSubmit={moveToNextTab}/>
         },
         {
             id: 2,
-            name: TabNames.EXPOSURES_AND_FLIGHTS,
+            name: orderedTabsNames[2],
             displayComponent: <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>
         },
         {
             id: 3,
-            name: TabNames.INTERACTIONS,
+            name: orderedTabsNames[3],
             displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
         },
         {
             id: lastTabId,
-            name: TabNames.CONTACT_QUESTIONING,
+            name: orderedTabsNames[4],
             displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
         }
     ];
