@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -9,6 +9,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import User from 'models/User';
 import County from 'models/County';
+import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -51,13 +52,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
     useEffect(() => {
-        if(investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
+        if (investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
             setInvestigatorAutoCompleteClicked(false);
         }
     }, [countyAutoCompleteClicked]);
 
     useEffect(() => {
-        if(countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
+        if (countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
             setCountyAutoCompleteClicked(false);
         }
     }, [investigatorAutoCompleteClicked]);
@@ -65,7 +66,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
-    } = useInvestigationTable({selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties});
+    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties });
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
@@ -85,15 +86,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             getOptionLabel={(option) => option.value.userName}
                             renderOption={(option, { selected }) => (
                                 option.value.userName ?
-                                <>
-                                    <div>
-                                        <Typography variant='body1' color='textSecondary'>
-                                            {investigatorNameMsg} :
+                                    <>
+                                        <div>
+                                            <Typography variant='body1' color='textSecondary'>
+                                                {investigatorNameMsg} :
                                                 <b>
                                                     {option.value.userName}
                                                 </b>
-                                            <br></br>
-                                            {newInvestigationsMsg} :
+                                                <br></br>
+                                                {newInvestigationsMsg} :
                                                 <b>
                                                     {option.value.newInvestigationsCount}
                                                 </b>
@@ -102,11 +103,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 <b>
                                                     {option.value.activeInvestigationsCount}
                                                 </b>
-                                        </Typography>
-                                    </div>
-                                </>
-                                :
-                                ''
+                                            </Typography>
+                                        </div>
+                                    </>
+                                    :
+                                    ''
                             )}
                             inputValue={selectedInvestigator.userName}
                             onChange={(event, newSelectedInvestigator) => {
@@ -137,7 +138,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 if (selectedRow === indexedRow.epidemiologyNumber && countyAutoCompleteClicked) {
                     return (
                         <Autocomplete
-                            options={Array.from(allCounties, ([id, value]) => ({id, value}))}
+                            options={Array.from(allCounties, ([id, value]) => ({ id, value }))}
                             getOptionLabel={(option) => option.value.displayName}
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
@@ -195,7 +196,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <TableHead>
                             <TableRow>
                                 {
-                                    Object.values(user.isAdmin ? adminCols : userCols).map((key) => (
+                                    Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
                                             className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
                                             sortDirection={orderBy === key ? order : false}
@@ -206,7 +207,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 sortableCols[key as keyof typeof TableHeadersNames] &&
                                                 <TableSortLabel
-                                                    classes={{root : key === orderBy ? classes.activeSortIcon : '' , icon: classes.icon, active: classes.active}}
+                                                    classes={{ root: key === orderBy ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
                                                     active
                                                     direction={orderBy === key ? order : sortOrders.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
@@ -227,7 +228,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         onClick={() => onInvestigationRowClick(indexedRow)}
                                     >
                                         {
-                                            Object.values(user.isAdmin ? adminCols : userCols).map((key: string) => (
+                                            Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
                                                     className={getTableCellStyles(index, key).join(' ')}
                                                     onClick={(event: any) => {

@@ -1,4 +1,5 @@
 import User from 'models/User';
+import userType from 'models/enums/UserType';
 
 import * as Actions from './userActionTypes';
 
@@ -6,13 +7,13 @@ export const initialUserState: User = {
     id: '1',
     userName: 'XXXXXX',
     token: 'demo token',
-    isAdmin: false,
     investigationGroup: -1,
     isActive: false,
     phoneNumber: '',
     serialNumber: -1,
     activeInvestigationsCount: 0,
-    newInvestigationsCount: 0
+    newInvestigationsCount: 0,
+    userType: userType.INVESTIGATOR,
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {

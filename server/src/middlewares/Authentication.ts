@@ -87,7 +87,7 @@ const handleConfidentialAuth = (
             });
             response.locals.user = {
                 ...user,
-                isAdmin: result.data.userById?.isAdmin,
+                userType: result.data.userById?.userType,
                 investigationGroup: result.data.userById?.investigationGroup
             };
             return next();
@@ -171,7 +171,7 @@ const authMiddleware = (
                 });
                 response.locals.user = {
                     ...user,
-                    isAdmin: result.data.userById?.isAdmin,
+                    userType: result.data.userById?.userType,
                     investigationGroup: result.data.userById?.investigationGroup
                 };
                 return next();
@@ -184,7 +184,7 @@ const authMiddleware = (
                     user: user.id,
                 });
             });;
-            
+
         }
     }
 };
@@ -194,7 +194,7 @@ export const adminMiddleWare = (
     response: Response,
     next: NextFunction
 ) => {
-    if (response.locals.user.isAdmin) {
+    if (response.locals.user.userType > 1) {
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,

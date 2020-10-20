@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import userType from 'models/enums/UserType';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
@@ -33,9 +34,9 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
-    
+
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-    
+
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const handleSaveUser = () => {
@@ -105,14 +106,14 @@ const App: React.FC = (): JSX.Element => {
                     setUser({
                         investigationGroup: -1,
                         isActive: true,
-                        isAdmin: false,
                         phoneNumber: '123',
                         serialNumber: 34,
                         id: userId,
                         userName: userName,
                         token: userToken,
                         activeInvestigationsCount: 0,
-                        newInvestigationsCount: 0
+                        newInvestigationsCount: 0,
+                        userType: userType.INVESTIGATOR,
                     });
                     fetchUser();
                 })
@@ -124,14 +125,14 @@ const App: React.FC = (): JSX.Element => {
             setUser({
                 investigationGroup: -1,
                 isActive: true,
-                isAdmin: false,
                 phoneNumber: '123',
                 serialNumber: 34,
                 id: userId,
                 userName: userName,
                 token: userToken,
                 activeInvestigationsCount: 0,
-                newInvestigationsCount: 0
+                newInvestigationsCount: 0,
+                userType: userType.INVESTIGATOR,
             });
             fetchUser();
         }

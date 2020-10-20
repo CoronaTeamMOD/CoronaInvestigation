@@ -21,10 +21,10 @@ query GetUserById($userId: String!) {
   userById(id: $userId) {
     id
     investigationGroup
-    isAdmin
     phoneNumber
     serialNumber
     userName
+    userType
   }
 }
 `;
