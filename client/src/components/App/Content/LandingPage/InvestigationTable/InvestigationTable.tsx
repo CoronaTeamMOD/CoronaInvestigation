@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
-    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper
+    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
+    useMediaQuery
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -12,6 +13,7 @@ import County from 'models/County';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
@@ -24,6 +26,7 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
+const complexInvestigationMessage = 'חקירה מורכבת';
 
 const defaultInvestigator = {
     id: '',
@@ -39,6 +42,7 @@ const defaultCounty = {
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
+    const isScreenWide = useMediaQuery('(min-width: 1680px)');
 
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
@@ -161,6 +165,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
+            case TableHeadersNames.priority: 
+                let cssClass = '';
+                if (indexedRow.isComplex) {
+                    cssClass = classes.priorityWithComplex
+                } else {
+                    if (isScreenWide) {
+                        cssClass = classes.priorityWithoutComplex;
+                    } else {
+                        cssClass = classes.priorityWithoutComplexSmall;
+                    }
+                }
+                return (
+                    <div className={classes.priorityCell}>
+                        {indexedRow.isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />}
+                        <span className={cssClass}>
+                            {indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        </span>
+                    </div>
+                );
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

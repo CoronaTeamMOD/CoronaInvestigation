@@ -33,6 +33,7 @@ const investigationURL = '/investigation';
 export const createRowData = (
     epidemiologyNumber: number,
     coronaTestDate: string,
+    isComplex: boolean,
     priority: number,
     mainStatus: string,
     subStatus: string,
@@ -46,6 +47,7 @@ export const createRowData = (
 ): InvestigationTableRow => ({
     epidemiologyNumber,
     coronaTestDate,
+    isComplex,
     priority,
     mainStatus,
     subStatus,
@@ -280,6 +282,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             return createRowData(
                                 investigation.epidemiologyNumber,
                                 investigation.coronaTestDate,
+                                investigation.isComplex,
                                 investigation.priority,
                                 investigation.investigationStatusByInvestigationStatus.displayName,
                                 subStatus,
@@ -416,6 +419,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return {
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
+            [TableHeadersNames.isComplex]: row.isComplex,
             [TableHeadersNames.priority]: row.priority,
             [TableHeadersNames.fullName]: row.fullName,
             [TableHeadersNames.phoneNumber]: row.phoneNumber,
@@ -566,6 +570,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
+        } else if (cellKey === TableHeadersNames.priority) {
+            classNames.push(classes.priorityTableCell);
+        } else if (cellKey === TableHeadersNames.coronaTestDate) {
+            classNames.push(classes.testDateCell);
+        } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
+            classNames.push(classes.epiNumberCell);
         }
 
         if ((isDefaultOrder && !isLoading) &&
