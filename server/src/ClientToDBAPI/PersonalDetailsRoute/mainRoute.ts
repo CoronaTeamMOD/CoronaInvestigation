@@ -8,7 +8,7 @@ import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_COVID_PATIENT_PERSONAL_INFO } from '../../DBService/PersonalDetails/Mutation';
 import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, 
-    GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY } from '../../DBService/PersonalDetails/Query';
+    GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY, GET_ALL_INVESTIGATED_PATIENT_ROLES } from '../../DBService/PersonalDetails/Query';
 import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
 
 const personalDetailsRoute = Router();
@@ -70,6 +70,38 @@ personalDetailsRoute.get('/hmos', (request: Request, response: Response) => {
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Fetching HMOs',
+            step: `got error when approaching the graphql API: ${error}`,
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        })
+        response.sendStatus(errorStatusCode);
+    });
+});
+
+personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Fetching investigated patient roles',
+        step: 'launching DB request',
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    })
+    graphqlRequest(GET_ALL_INVESTIGATED_PATIENT_ROLES, response.locals).then((result: any) => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Fetching investigated patient roles',
+            step: 'got respond from DB',
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.send(result);
+    }).catch(error => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Fetching investigated patient roles',
             step: `got error when approaching the graphql API: ${error}`,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id

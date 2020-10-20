@@ -79,3 +79,13 @@ query getEducationSubOccupationsByCity($city: String!) {
   } 
 `;
 
+export const GET_ALL_INVESTIGATED_PATIENT_ROLES = gql`
+query {
+  allInvestigatedPatientRoles {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;

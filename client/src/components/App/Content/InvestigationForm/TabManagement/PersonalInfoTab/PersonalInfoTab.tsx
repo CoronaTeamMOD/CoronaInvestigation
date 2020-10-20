@@ -19,6 +19,7 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
+import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
@@ -51,7 +52,6 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
-const roles = ['a', 'b', 'c'];
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -69,8 +69,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [personalInfoState, setPersonalInfoData] = useState<PersonalInfoFormData>(initialPersonalInfo);
     const [insuranceCompany, setInsuranceCompany] = useState<string>('');
     const [educationGrade, setEducationGrade] = useState<string>('');
-    const [role, setRole] = useState<string>('');
+    const [role, setRole] = useState<investigatedPatientRole>();
     const [roleInput, setRoleInput] = useState<string>('');
+    const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -79,7 +80,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
             setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
-            setStreets, occupationsStateContext, setInsuranceCompany,
+            setStreets, occupationsStateContext, setInsuranceCompany, setInvestigatedPatientRoles,
     });
 
     const methods = useForm({
@@ -602,12 +603,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 </Grid>
                                 <Grid item xs={2}>
                                     <Autocomplete
-                                        options={roles}
-                                        getOptionLabel={(option) => option}
+                                        options={investigatedPatientRoles}
+                                        getOptionLabel={(option) => option.displayName}
                                         inputValue={roleInput}
                                         className={classes.markComplexity}
                                         onChange={(event, selectedRole) => {
-                                            setRole(selectedRole as string);
+                                            setRole(selectedRole as investigatedPatientRole);
                                         }}
                                         onInputChange={(event, newRoleInput) => {
                                             setRoleInput(newRoleInput);
