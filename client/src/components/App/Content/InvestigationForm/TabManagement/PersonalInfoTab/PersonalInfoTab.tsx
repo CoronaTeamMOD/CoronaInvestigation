@@ -105,10 +105,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             contactInfo: data.contactInfo !== '' ? data.contactInfo : null,
             insuranceCompany: data.insuranceCompany !== '' ? data.insuranceCompany : null,
             address: {
-                city: data.city !== '' ? data.city : null,
-                street: data.street !== '' ? data.street : null,
-                floor: data.floor !== '' ? data.floor : null,
-                houseNum: data.houseNum !== '' ? data.houseNum : null
+                city: data.city ? data.city : null,
+                street: data.street ? data.street : null,
+                floor: data.floor ? data.floor : null,
+                houseNum: data.houseNum ? data.houseNum : null
             },
             relevantOccupation: data.relevantOccupation !== undefined ? data.relevantOccupation : null,
             educationOccupationCity: data.educationOccupationCity ? data.educationOccupationCity : null,
@@ -146,13 +146,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     React.useEffect(() => {
         cityId && getStreetsByCity(cityId);
     }, [cityId]);
-
-    React.useEffect(() => {
-        if (streets.length > 0 && streetName === '') {
-            setValue('street', streets[0].id);
-            setStreetName(streets[0].displayName);
-        }
-    }, [streets])
 
     const subOccupationsPlaceHolderByOccupation = () => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
@@ -432,50 +425,47 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             )}
                         />
                     </Grid>
-                    {
-                        cityName &&
-                        <Grid item xs={2} className={classes.personalInfoItem}>
-                            <Controller
-                                name={PersonalInfoDataContextFields.STREET}
-                                control={control}
-                                render={(props) => (
-                                    <Autocomplete
-                                        size='small'
-                                        options={streets}
-                                        getOptionLabel={(option) => {
-                                            return option?.displayName ? option.displayName : streetName
-                                        }}
-                                        filterOptions={streetFilterOptions}
-                                        getOptionSelected={(option) => option.id === props.value}
-                                        inputValue={streetName}
-                                        onInputChange={(event, newInputValue) => {
-                                            if (event.type !== 'blur') {
-                                                setStreetName(newInputValue);
-                                                if (newInputValue === '') {
-                                                    setValue(PersonalInfoDataContextFields.STREET, '')
-                                                }
+                    <Grid item xs={2} className={classes.personalInfoItem}>
+                        <Controller
+                            name={PersonalInfoDataContextFields.STREET}
+                            control={control}
+                            render={(props) => (
+                                <Autocomplete
+                                    size='small'
+                                    options={streets}
+                                    getOptionLabel={(option) => {
+                                        return option?.displayName ? option.displayName : streetName
+                                    }}
+                                    filterOptions={streetFilterOptions}
+                                    getOptionSelected={(option) => option.id === props.value}
+                                    inputValue={streetName}
+                                    onInputChange={(event, newInputValue) => {
+                                        if (event.type !== 'blur') {
+                                            setStreetName(newInputValue);
+                                            if (newInputValue === '') {
+                                                setValue(PersonalInfoDataContextFields.STREET, '')
                                             }
-                                        }}
-                                        onChange={(event, newValue) => {
-                                            props.onChange(newValue?.id)
-                                        }}
-                                        renderInput={(params) => {
-                                            return <TextField
-                                                test-id='personalDetailsStreet'
-                                                value={props.value ? props.value : ''}
-                                                {...params}
-                                                error={errors[PersonalInfoDataContextFields.STREET]}
-                                                label={errors[PersonalInfoDataContextFields.STREET] ? errors[PersonalInfoDataContextFields.STREET]?.message : 'רחוב'}
-                                                onBlur={props.onBlur}
-                                                id={PersonalInfoDataContextFields.STREET}
-                                                placeholder={'רחוב'}
-                                            />
-                                        }}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                    }
+                                        }
+                                    }}
+                                    onChange={(event, newValue) => {
+                                        props.onChange(newValue?.id)
+                                    }}
+                                    renderInput={(params) => {
+                                        return <TextField
+                                            test-id='personalDetailsStreet'
+                                            value={props.value ? props.value : ''}
+                                            {...params}
+                                            error={errors[PersonalInfoDataContextFields.STREET]}
+                                            label={errors[PersonalInfoDataContextFields.STREET] ? errors[PersonalInfoDataContextFields.STREET]?.message : 'רחוב'}
+                                            onBlur={props.onBlur}
+                                            id={PersonalInfoDataContextFields.STREET}
+                                            placeholder={'רחוב'}
+                                        />
+                                    }}
+                                />
+                            )}
+                        />
+                    </Grid>
                     <Grid item xs={1} className={classes.homeAddressItem}>
                         <Controller
                             name={PersonalInfoDataContextFields.FLOOR}
