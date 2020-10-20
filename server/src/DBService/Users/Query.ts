@@ -46,7 +46,7 @@ query AllGroupUsers($investigationGroup: Int!) {
 
 export const GET_ADMINS_OF_COUNTY = gql`
 query getAdminsOfGivenCounty($requestedCounty: Int) {
-  allUsers(filter: {userType: {in: [2,3]}, investigationGroup: {equalTo: $requestedCounty}}) {
+  allUsers(filter: or: [{userType: {equalTo: 2}}, {userType: {equalTo: 3}}], investigationGroup: {equalTo: $requestedCounty}}) {
     nodes {
       id
       isActive 
