@@ -83,31 +83,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             test-id='currentInvetigationUser'
                             options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
                             getOptionLabel={(option) => option.value.userName}
-                            renderOption={(option, { selected }) => (
-                                option.value.userName ?
-                                <>
-                                    <div>
-                                        <Typography variant='body1' color='textSecondary'>
-                                            {investigatorNameMsg} :
-                                                <b>
-                                                    {option.value.userName}
-                                                </b>
-                                            <br></br>
-                                            {newInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.newInvestigationsCount}
-                                                </b>
-                                            &nbsp;&nbsp;
-                                            {activeInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.activeInvestigationsCount}
-                                                </b>
-                                        </Typography>
-                                    </div>
-                                </>
-                                :
-                                ''
-                            )}
+                            // renderOption={(option, { selected }) => (
+                            //     option.value.userName ?
+                            //     <>
+                            //         <div>
+                            //             <Typography variant='body1' color='textSecondary'>
+                            //                 {investigatorNameMsg} :
+                            //                     <b>
+                            //                         {option.value.userName}
+                            //                     </b>
+                            //                 <br></br>
+                            //                 {newInvestigationsMsg} :
+                            //                     <b>
+                            //                         {option.value.newInvestigationsCount}
+                            //                     </b>
+                            //                 &nbsp;&nbsp;
+                            //                 {activeInvestigationsMsg} :
+                            //                     <b>
+                            //                         {option.value.activeInvestigationsCount}
+                            //                     </b>
+                            //             </Typography>
+                            //         </div>
+                            //     </>
+                            //     :
+                            //     ''
+                            // )}
                             inputValue={selectedInvestigator.userName}
                             onChange={(event, newSelectedInvestigator) => {
                                 onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
@@ -125,9 +125,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     placeholder='חוקר'
                                 />
                             }
-                            classes={{
-                                option: classes.userSelectOption
-                            }}
+                            // classes={{
+                            //     option: classes.userSelectOption
+                            // }}
                         />)
                 }
                 else {
