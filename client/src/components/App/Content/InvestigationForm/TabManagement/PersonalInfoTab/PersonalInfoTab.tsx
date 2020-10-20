@@ -635,11 +635,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         render={(props) => (
                                             <AlphanumericTextField
                                                 name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                className={props.value && classes.markComplexity}
                                                 value={props.value}
                                                 onChange={(newValue: string) => props.onChange(newValue)}
                                                 onBlur={props.onBlur}
                                                 placeholder='שכבה'
-                                                label='שכבה'
                                             />
                                         )}
                                     />
@@ -651,11 +651,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         render={(props) => (
                                             <NumericTextField
                                                 name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                className={props.value && classes.markComplexity}
                                                 value={props.value}
                                                 onChange={(newValue) => props.onChange(newValue)}
                                                 onBlur={props.onBlur}
                                                 placeholder='מספר כיתה'
-                                                label='מספר כיתה'
                                             />
                                         )}
                                     />
