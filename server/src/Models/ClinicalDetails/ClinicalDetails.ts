@@ -16,9 +16,6 @@ interface ClinicalDetails {
     doesHaveSymptoms: boolean;
     isPregnant: boolean;
     investigatedPatientId: number;
-    epidemioligyNumber: number;
-    creator: string;
-    lastUpdator: string;
     doesHaveBackgroundDiseases: boolean;
     otherSymptomsMoreInfo: string;
     otherBackgroundDiseasesMoreInfo: string;
