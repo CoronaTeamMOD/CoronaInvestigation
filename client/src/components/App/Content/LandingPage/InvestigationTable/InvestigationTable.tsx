@@ -70,7 +70,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const CustomPopper = (props: any) => {
-        return (<Popper {...props} style={{ width: 350}} placement='bottom-start' />)
+        return (<Popper {...props} className={classes.popperStyle} placement='bottom-start' />)
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
