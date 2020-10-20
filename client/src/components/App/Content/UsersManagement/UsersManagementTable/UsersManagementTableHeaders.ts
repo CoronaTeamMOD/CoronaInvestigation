@@ -5,7 +5,8 @@ export enum UsersManagementTableHeadersNames {
     MABAR_USER_NAME = 'id',
     COUNTY = 'investigationGroup',
     USER_TYPE = 'userType',
-    USER_STATUS = 'userStatus'
+    USER_STATUS = 'isActive',
+    WATCH = 'watch'
 }
 
 export const UsersManagementTableHeaders = {
@@ -16,4 +17,5 @@ export const UsersManagementTableHeaders = {
     [UsersManagementTableHeadersNames.COUNTY]: 'נפה',
     [UsersManagementTableHeadersNames.USER_TYPE]: 'סוג משתמש',
     [UsersManagementTableHeadersNames.USER_STATUS]: 'פעיל/לא פעיל',
+    [UsersManagementTableHeadersNames.WATCH]: ''
 }

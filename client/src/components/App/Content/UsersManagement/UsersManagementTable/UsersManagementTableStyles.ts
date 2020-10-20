@@ -13,6 +13,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     tableContainer : {
         width: '90vw',
         height: '70vh',
+    },
+    autoComplete: {
+        width: '10vw'
+    },
+    toggle: {
+        borderRadius: '2.5vh',
+        height: '4vh',
+        width: '4vw',
     }
 }));
 
