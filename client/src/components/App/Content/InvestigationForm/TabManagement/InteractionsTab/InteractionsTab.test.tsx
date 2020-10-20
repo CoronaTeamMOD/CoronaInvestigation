@@ -49,7 +49,7 @@ describe('useInteractionsTab tests', () => {
             it('get dates when symptoms start is not available', async () => {
                 const receivedDates = useInteractionsTabOutcome.getDatesToInvestigate(true, null, coronaTestDate);
 
-                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 10), end: investigationStartDate}));
+                expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 7), end: investigationStartDate}));
             });
         });
 

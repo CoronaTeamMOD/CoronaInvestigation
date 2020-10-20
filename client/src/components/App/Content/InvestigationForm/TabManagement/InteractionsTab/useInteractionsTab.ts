@@ -17,7 +17,7 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
-export const symptomsWithUnknownStartDate: number = 10;
+export const symptomsWithUnknownStartDate: number = 7;
 const maxInvestigatedDays: number = 21;
 
 export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;

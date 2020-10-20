@@ -5,6 +5,7 @@ import { UPDATE_INVESTIGATION_METADATA } from './DBService/InvestigationMetadata
 
 export const graphqlURL = '/coronai/graphql';
 export const baseUrl = 'http://localhost:';
+const initialEpidemiologyNumberByRedux:number = -1;
 
 const updateLastTimeAndUpdator = (requestHeaders: any) =>
     httpRequest(baseUrl + process.env.PORT + graphqlURL, 'POST', {
@@ -22,7 +23,7 @@ export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variabl
     .then((result) => {
         if (requestHeaders) {
             //@ts-ignore
-            if (query.definitions[0].operation === 'mutation') {
+            if (query.definitions[0].operation === 'mutation' && +requestHeaders.epidemiologynumber !== initialEpidemiologyNumberByRedux) {
                 updateLastTimeAndUpdator(requestHeaders)
             }
         }
