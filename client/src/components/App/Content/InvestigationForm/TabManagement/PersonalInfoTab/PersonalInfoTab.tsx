@@ -362,7 +362,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
                                                 }
                                             }}
-                                            className={props.value === NO_INSURANCE ? classes.markComplicity : ''}
+                                            className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -605,7 +605,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         options={roles}
                                         getOptionLabel={(option) => option}
                                         inputValue={roleInput}
-                                        className={classes.markComplicity}
+                                        className={classes.markComplexity}
                                         onChange={(event, selectedRole) => {
                                             setRole(selectedRole as string);
                                         }}
@@ -626,7 +626,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         label='שכבת גיל'
                                         value={educationGrade}
                                         onChange={(gradeInput: string) => setEducationGrade(gradeInput)}
-                                        className={educationGrade && classes.markComplicity}
+                                        className={educationGrade && classes.markComplexity}
                                     />
                                 </Grid>
                             </>

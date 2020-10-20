@@ -114,7 +114,7 @@ const useStyles = makeStyles({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
-    markComplicity: {
+    markComplexity: {
         border: 'solid #FFC90E',
         borderRadius: 24,
     },
