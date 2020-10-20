@@ -8,6 +8,7 @@ import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
 import { store } from 'redux/store';
+import userType from 'models/enums/userType';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';
@@ -112,7 +113,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
-        if (user.userType > 1) {
+        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -146,7 +147,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 if (result && result.data) {
                     result.data.forEach((user: any) => {
                         countyUsers.set(user.id, {
-                            ...user, 
+                            ...user,
                             newInvestigationsCount: user.newInvestigationsCount.totalCount,
                             activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
                         })
@@ -211,7 +212,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         setIsLoading(true);
-        if (user.userType > 1) {
+        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
             fetchAllCountyUsers();
             fetchAllCounties();
         }

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import userType from 'models/enums/userType';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
@@ -112,7 +113,7 @@ const App: React.FC = (): JSX.Element => {
                         token: userToken,
                         activeInvestigationsCount: 0,
                         newInvestigationsCount: 0,
-                        userType: 1,
+                        userType: userType.INVESTIGATOR,
                     });
                     fetchUser();
                 })
@@ -131,7 +132,7 @@ const App: React.FC = (): JSX.Element => {
                 token: userToken,
                 activeInvestigationsCount: 0,
                 newInvestigationsCount: 0,
-                userType: 1,
+                userType: userType.INVESTIGATOR,
             });
             fetchUser();
         }
