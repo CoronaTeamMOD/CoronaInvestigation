@@ -190,7 +190,7 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
                     step: 'got group users from the DB',
                     user: response.locals.user.id
                 });
-                users = result.data.allUsers.nodes.map((user: User) => ({
+                users = result.data.allUsers.nodes.map((user: any) => ({
                     ...user,
                     token: ''
                 }));

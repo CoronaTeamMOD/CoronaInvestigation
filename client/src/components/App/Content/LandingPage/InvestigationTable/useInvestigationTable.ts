@@ -168,7 +168,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     });
                 }
             }).catch(err => {
-                console.log("ERRR: ", err)
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
