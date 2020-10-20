@@ -6,7 +6,7 @@ const useStyles = makeStyles({
     },
     root: {
         marginTop: '1vh'
-    }
+    },
 });
 
 export default useStyles;

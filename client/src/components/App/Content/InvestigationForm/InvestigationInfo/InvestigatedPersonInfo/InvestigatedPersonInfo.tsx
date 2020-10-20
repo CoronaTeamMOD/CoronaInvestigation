@@ -21,6 +21,7 @@ import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
+const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 
@@ -52,6 +53,10 @@ const InvestigatedPersonInfo = (props: Props) => {
         return !(event.clientX === 0 && event.clientY === 0);
     };
 
+    const indication = (check: boolean) => {
+        return check ? yes : no;
+    };
+
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
     }, [investigationStatus]);
@@ -68,7 +73,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(e) => { handleLeaveInvestigationClick(e) }}
+                    onClick={(event) => { handleLeaveInvestigationClick(event) }}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
@@ -81,7 +86,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={CakeOutlined}
                     />
                     {
-                        (age && Number(age) <= 14) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                        (age && Number(age) <= maxComplexityAge) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
@@ -109,21 +114,21 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={isDeceased ? yes : no}
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(isDeceased)}
                         icon={Help}
                     />
                     {
                         isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isHospitalized' name='האם מאושפז' value={isHospitalized ? yes : no}
+                    <InfoItemWithIcon testId='isHospitalized' name='האם מאושפז' value={indication(isHospitalized)}
                         icon={Help}
                     />
                     {
                         isHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={isInInstitution ? yes : no}
+                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInInstitution)}
                         icon={Help}
                     />
                     {

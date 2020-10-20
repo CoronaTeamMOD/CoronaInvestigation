@@ -1,6 +1,6 @@
 import React from 'react';
 import { Star } from '@material-ui/icons';
-import { Icon, SvgIconProps, Tooltip } from '@material-ui/core';
+import { SvgIconProps, Tooltip } from '@material-ui/core';
 
 import useStyles from './ComplexityIconStyles';
 
@@ -19,6 +19,6 @@ const ComplexityIcon: React.FC<Props> = (props: Props) => {
 
 interface Props extends SvgIconProps {
     tooltipText: string;
-}
+};
 
 export default ComplexityIcon;
