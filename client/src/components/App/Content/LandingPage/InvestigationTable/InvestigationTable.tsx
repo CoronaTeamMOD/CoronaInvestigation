@@ -69,9 +69,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
-    const CustomPopper = (props: any) => {
-        return (<Popper {...props} className={classes.popperStyle} placement='bottom-start' />)
-    }
+    // const CustomPopper = (props: any) => {
+    //     return (<Popper {...props} className={classes.popperStyle} placement='bottom-start' />)
+    // }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
@@ -79,7 +79,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
                     return (
                         <Autocomplete
-                            PopperComponent={CustomPopper}
+                            // PopperComponent={CustomPopper}
                             test-id='currentInvetigationUser'
                             options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
                             getOptionLabel={(option) => option.value.userName}
