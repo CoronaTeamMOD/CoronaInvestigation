@@ -282,7 +282,7 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Saving personal details tab',
-                step: 'error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request',
+                step: 'error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request due to ' + result,
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
             });
@@ -294,7 +294,7 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Saving personal details tab',
-            step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request',
+            step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request due to ' + err,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });

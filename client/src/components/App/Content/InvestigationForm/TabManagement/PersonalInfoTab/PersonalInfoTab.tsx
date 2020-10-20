@@ -22,6 +22,7 @@ import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
@@ -633,7 +634,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                         control={methods.control}
                                         render={(props) => (
-                                            <AlphanumericTextField
+                                            <AlphabetTextField
                                                 name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                                 className={props.value && classes.markComplexity}
                                                 value={props.value}
