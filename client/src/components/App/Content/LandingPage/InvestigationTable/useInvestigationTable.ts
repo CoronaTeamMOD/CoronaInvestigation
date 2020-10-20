@@ -112,7 +112,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
-        if (user.isAdmin) {
+        if (user.userType > 1) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -211,7 +211,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         setIsLoading(true);
-        if (user.isAdmin) {
+        if (user.userType > 1) {
             fetchAllCountyUsers();
             fetchAllCounties();
         }
@@ -264,34 +264,34 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
-                          .filter((investigation: any) => 
-                          investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                          investigation?.userByCreator)
-                          .map((investigation: any) => {
-                              const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                              const desk = investigation.desk;
-                              const covidPatient = patient.covidPatientByCovidPatient;
-                              const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                              const user = investigation.userByCreator;
-                              const county = user ? user.countyByInvestigationGroup : '';
-                              const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
-                                  investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                  '';
-                            return createRowData(
-                                investigation.epidemiologyNumber,
-                                investigation.coronaTestDate,
-                                investigation.priority,
-                                investigation.investigationStatusByInvestigationStatus.displayName,
-                                subStatus,
-                                covidPatient.fullName,
-                                covidPatient.primaryPhone,
-                                covidPatient.age,
-                                patientCity ? patientCity.displayName : '',
-                                desk,
-                                county,
-                                { id: user.id, userName: user.userName }
-                            )
-                        });
+                            .filter((investigation: any) =>
+                                investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                investigation?.userByCreator)
+                            .map((investigation: any) => {
+                                const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                const desk = investigation.desk;
+                                const covidPatient = patient.covidPatientByCovidPatient;
+                                const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                const user = investigation.userByCreator;
+                                const county = user ? user.countyByInvestigationGroup : '';
+                                const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                    investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                    '';
+                                return createRowData(
+                                    investigation.epidemiologyNumber,
+                                    investigation.coronaTestDate,
+                                    investigation.priority,
+                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    subStatus,
+                                    covidPatient.fullName,
+                                    covidPatient.primaryPhone,
+                                    covidPatient.age,
+                                    patientCity ? patientCity.displayName : '',
+                                    desk,
+                                    county,
+                                    { id: user.id, userName: user.userName }
+                                )
+                            });
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
@@ -355,9 +355,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ? 
-            InvestigationMainStatus.IN_PROCESS :
-            investigationRow.investigationStatus,
+            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ?
+                InvestigationMainStatus.IN_PROCESS :
+                investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
         })
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {

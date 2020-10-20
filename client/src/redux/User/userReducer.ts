@@ -6,13 +6,13 @@ export const initialUserState: User = {
     id: '1',
     userName: 'XXXXXX',
     token: 'demo token',
-    isAdmin: false,
     investigationGroup: -1,
     isActive: false,
     phoneNumber: '',
     serialNumber: -1,
     activeInvestigationsCount: 0,
-    newInvestigationsCount: 0
+    newInvestigationsCount: 0,
+    userType: 1,
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {

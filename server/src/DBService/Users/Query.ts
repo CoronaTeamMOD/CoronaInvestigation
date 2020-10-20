@@ -1,4 +1,4 @@
-import {gql} from 'postgraphile';
+import { gql } from 'postgraphile';
 
 export const GET_IS_USER_ACTIVE = gql`
     query isUserActive($id: String!){
@@ -13,10 +13,10 @@ query GetUser($id: String!) {
     userById(id: $id) {
       investigationGroup
       isActive
-      isAdmin
       phoneNumber
       serialNumber
       userName
+      userType
     }
   }   
 `;
@@ -27,7 +27,6 @@ query AllGroupUsers($investigationGroup: Int!) {
     nodes {
       id
       isActive
-      isAdmin
       phoneNumber
       serialNumber
       userName
@@ -38,6 +37,7 @@ query AllGroupUsers($investigationGroup: Int!) {
       activeInvestigationsCount: investigationsByLastUpdator(filter: {investigationStatus: {equalTo: "בטיפול"}}) {
         totalCount
       }
+      userType
     }
   }
 }
@@ -46,7 +46,7 @@ query AllGroupUsers($investigationGroup: Int!) {
 
 export const GET_ADMINS_OF_COUNTY = gql`
 query getAdminsOfGivenCounty($requestedCounty: Int) {
-  allUsers(filter: {isAdmin: {equalTo: true}, investigationGroup: {equalTo: $requestedCounty}}) {
+  allUsers(filter: {userType: {greaterThan: 1}, investigationGroup: {equalTo: $requestedCounty}}) {
     nodes {
       id
       isActive 

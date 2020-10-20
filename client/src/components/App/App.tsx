@@ -33,9 +33,9 @@ const userNameClaimType = 'name';
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
-    
+
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-    
+
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const handleSaveUser = () => {
@@ -105,14 +105,14 @@ const App: React.FC = (): JSX.Element => {
                     setUser({
                         investigationGroup: -1,
                         isActive: true,
-                        isAdmin: false,
                         phoneNumber: '123',
                         serialNumber: 34,
                         id: userId,
                         userName: userName,
                         token: userToken,
                         activeInvestigationsCount: 0,
-                        newInvestigationsCount: 0
+                        newInvestigationsCount: 0,
+                        userType: 1,
                     });
                     fetchUser();
                 })
@@ -124,14 +124,14 @@ const App: React.FC = (): JSX.Element => {
             setUser({
                 investigationGroup: -1,
                 isActive: true,
-                isAdmin: false,
                 phoneNumber: '123',
                 serialNumber: 34,
                 id: userId,
                 userName: userName,
                 token: userToken,
                 activeInvestigationsCount: 0,
-                newInvestigationsCount: 0
+                newInvestigationsCount: 0,
+                userType: 1,
             });
             fetchUser();
         }
