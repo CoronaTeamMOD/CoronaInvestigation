@@ -102,6 +102,39 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
     const data = methods.getValues();
 
+    const institutionComponent = <Controller
+        name={PersonalInfoDataContextFields.INSTITUTION_NAME}
+        control={methods.control}
+        render={(props: any) => (
+            <Autocomplete
+                options={subOccupations}
+                getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
+                inputValue={subOccupationName}
+                onInputChange={(event, newValue) => {
+                    if (event && event.type !== 'blur') {
+                        setSubOccupationName(newValue)
+                    }
+                }}
+                value={props.value?.id}
+                onChange={(event, newValue) => {
+                    props.onChange(newValue ? newValue.id : '')
+                }}
+                renderInput={(params) =>
+                    <TextField
+                        {...params}
+                        error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
+                        label={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message
+                            || 'שם מוסד*'}
+                        onBlur={props.onBlur}
+                        test-id='insertInstitutionName'
+                        disabled={subOccupations.length === 0}
+                        id={PersonalInfoDataContextFields.INSTITUTION_NAME}
+                        placeholder={INSERT_INSTITUTION_NAME}
+                    />}
+            />
+        )}
+    />
+
     const convertToDBData = (): PersonalInfoDbData => {
         return {
             phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
@@ -569,7 +602,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             </FormControl>
                         </Grid>
                         {
-                            occupation === Occupations.EDUCATION_SYSTEM &&
+                            occupation === Occupations.EDUCATION_SYSTEM ?
                             <>
                                 <Grid item xs={2}>
                                     <Controller
@@ -604,6 +637,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
+                                    {institutionComponent}
+                                </Grid>
+                                <Grid item xs={2}>
                                     <Controller
                                         control={methods.control}
                                         name={PersonalInfoDataContextFields.ROLE}
@@ -629,7 +665,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={1}>
                                     <Controller
                                         name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                         control={methods.control}
@@ -645,7 +681,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={1}>
                                     <Controller
                                         name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                         control={methods.control}
@@ -656,67 +692,35 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 value={props.value}
                                                 onChange={(newValue) => props.onChange(newValue)}
                                                 onBlur={props.onBlur}
-                                                placeholder='מספר כיתה'
+                                                placeholder='כיתה'
                                             />
                                         )}
                                     />
                                 </Grid>
                             </>
-                        }
-                        <Grid item xs={3}>
-                            <Collapse in={occupation !== Occupations.UNEMPLOYED}>
-                                {
-                                    (subOccupations.length > 0 || occupation === Occupations.EDUCATION_SYSTEM) ?
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.INSTITUTION_NAME}
-                                            control={methods.control}
-                                            render={(props: any) => (
-                                                <Autocomplete
-                                                    options={subOccupations}
-                                                    getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
-                                                    inputValue={subOccupationName}
-                                                    onInputChange={(event, newValue) => {
-                                                        if (event && event.type !== 'blur') {
-                                                            setSubOccupationName(newValue)
-                                                        }
-                                                    }}
-                                                    value={props.value?.id}
-                                                    onChange={(event, newValue) => {
-                                                        props.onChange(newValue ? newValue.id : '')
-                                                    }}
-                                                    renderInput={(params) =>
-                                                        <TextField
-                                                            {...params}
-                                                            error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
-                                                            label={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message 
-                                                                    || 'שם מוסד*'}
-                                                            onBlur={props.onBlur}
-                                                            test-id='insertInstitutionName'
-                                                            disabled={subOccupations.length === 0}
-                                                            id={PersonalInfoDataContextFields.INSTITUTION_NAME}
-                                                            placeholder={INSERT_INSTITUTION_NAME}
-                                                        />}
-                                                />
-                                            )}
-                                        />
-                                        :
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                            control={methods.control}
-                                            render={(props) => (
-                                                <AlphanumericTextField
-                                                    testId='institutionName'
+                                : subOccupations.length > 0 ? <Grid item xs={3}>{institutionComponent}</Grid> :
+                                    <Grid item xs={2}>
+                                        <Collapse in={occupation !== Occupations.UNEMPLOYED}>
+                                            {
+                                                <Controller
                                                     name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
-                                                    value={props.value}
-                                                    onChange={(newValue: string) => props.onChange(newValue)}
-                                                    onBlur={props.onBlur}
-                                                    placeholder={subOccupationsPlaceHolderByOccupation()}
-                                                    label={subOccupationsLabelByOccupation()}
+                                                    control={methods.control}
+                                                    render={(props) => (
+                                                        <AlphanumericTextField
+                                                            testId='institutionName'
+                                                            name={PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO}
+                                                            value={props.value}
+                                                            onChange={(newValue: string) => props.onChange(newValue)}
+                                                            onBlur={props.onBlur}
+                                                            placeholder={subOccupationsPlaceHolderByOccupation()}
+                                                            label={subOccupationsLabelByOccupation()}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />}
-                            </Collapse>
-                        </Grid>
+                                            }
+                                        </Collapse>
+                                    </Grid>
+                        }
                     </Grid>
                 </form>
             </FormProvider>
