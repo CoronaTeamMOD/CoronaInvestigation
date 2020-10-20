@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
+import {OptimizelyFeature, OptimizelyProvider} from '@optimizely/react-sdk';
 
 import User from 'models/User';
 import axios from 'Utils/axios';
@@ -9,6 +10,7 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
+import { optimizely } from '../../featureToggle/featureToggle';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
@@ -139,7 +141,10 @@ const App: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <AppToolbar />
+            <OptimizelyFeature feature='testFeature'>
+                {/*{(enabled: any) => enabled ? console.log('feature is on!') : console.log('feature is off!')}*/}
+                <AppToolbar />
+            </OptimizelyFeature>
             <Content isSignUpOpen={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp} />
         </>
     );
