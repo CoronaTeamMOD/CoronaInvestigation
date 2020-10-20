@@ -126,10 +126,6 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
             if (result?.data?.investigationByEpidemiologyNumber) {
                 response.send(convertClinicalDetailsFromDB(result));
             }
-            // if (result?.data?.investigationByEpidemiologyNumber?.investigatedPatientByInvestigatedPatientId?.investigationsByInvestigatedPatientId?.nodes[0]?.symptomsStartTime) {
-            //     result.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId.investigationsByInvestigatedPatientId.nodes[0].symptomsStartTime = result.data.investigationByEpidemiologyNumber.symptomsStartTime;
-            //     delete result.data.investigationByEpidemiologyNumber.symptomsStartTime;
-            // }
             response.send(result)
         }
     ).catch(error => {
