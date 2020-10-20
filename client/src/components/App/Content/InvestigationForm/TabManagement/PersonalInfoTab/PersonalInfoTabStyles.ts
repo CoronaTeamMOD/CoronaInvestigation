@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         height: '64vh'
     },
     personalInfoItem: {
-        marginLeft: '-5vw',
+        marginLeft: '-4vw',
         '@media screen and (max-width: 1700px)': {
             marginRight: '2vw',
         },
@@ -118,6 +118,13 @@ const useStyles = makeStyles({
         border: 'solid #FFC90E',
         borderRadius: 24,
     },
+    occupation: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    complexIconOnOccupation: {
+        marginTop: '2vh',
+    }
 });
 
 export default useStyles;

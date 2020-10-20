@@ -531,16 +531,28 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             className={classes.relevantOccupationselect}>
                                             <FormLabel component='legend' className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                                             {
-                                                occupationsStateContext.occupations.map((occupation) => {
-                                                    return <FormControlLabel
-                                                        value={occupation}
-                                                        key={occupation}
-                                                        control={<Radio
-                                                            color='primary'
-                                                            onChange={handleChangeOccupation}
-                                                        />}
-                                                        label={<span style={{ fontSize: '15px' }}>{occupation}</span>}
-                                                    />
+                                                occupationsStateContext.occupations.map((occupationOption) => {
+                                                    return (
+                                                        <div className={classes.occupation}>
+                                                            <FormControlLabel
+                                                                value={occupationOption}
+                                                                key={occupationOption}
+                                                                control={<Radio
+                                                                    color='primary'
+                                                                    onChange={handleChangeOccupation}
+                                                                />}
+                                                                label={<span style={{ fontSize: '15px' }}>{occupationOption}</span>}
+                                                            />
+                                                            {
+                                                                (
+                                                                    (occupationOption === Occupations.EDUCATION_SYSTEM && occupation === Occupations.EDUCATION_SYSTEM) ||
+                                                                    (occupationOption === Occupations.HEALTH_SYSTEM && occupation === Occupations.HEALTH_SYSTEM)
+                                                                ) && <div className={classes.complexIconOnOccupation}>
+                                                                        <ComplexityIcon tooltipText='עובד במשרד הבריאות/החינוך' />
+                                                                    </div>
+                                                            }
+                                                        </div>
+                                                    )
                                                 })
                                             }
                                         </RadioGroup>
