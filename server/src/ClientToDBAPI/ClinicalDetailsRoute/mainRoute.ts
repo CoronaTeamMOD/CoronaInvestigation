@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
-import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
+import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
+import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import {
     GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT
@@ -14,7 +15,7 @@ import {
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
-import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
+import { GetInvestigatedPatientClinicalDetailsFields } from '../../Models/ClinicalDetails/getInvestigatedPatientClinicalDetailsFields';
 
 const clinicalDetailsRoute = Router();
 const errorStatusCode = 500;
@@ -83,6 +84,26 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
     });
 });
 
+const convertClinicalDetailsFromDB = (result: GetInvestigatedPatientClinicalDetailsFields) => {
+    const clinicalDetails = result.data.investigationByEpidemiologyNumber;
+    const convertedClincalDetails = {
+        ...clinicalDetails,
+        isolationAddress: clinicalDetails.addressByIsolationAddress,
+        symptoms: clinicalDetails.investigatedPatientSymptomsByInvestigationId.nodes
+            .map((symptom: any) => symptom.symptomName),
+        ...clinicalDetails.investigatedPatientByInvestigatedPatientId,
+        backgroundDiseases: clinicalDetails.investigatedPatientByInvestigatedPatientId.investigatedPatientBackgroundDiseasesByInvestigatedPatientId.nodes
+            .map((backgroudDisease: any) => backgroudDisease.backgroundDeseasName)
+    }
+
+    delete convertedClincalDetails.addressByIsolationAddress;
+    delete convertedClincalDetails.investigatedPatientSymptomsByInvestigationId;
+    delete convertedClincalDetails.investigatedPatientByInvestigatedPatientId;
+    delete convertedClincalDetails.investigatedPatientBackgroundDiseasesByInvestigatedPatientId;
+
+    return convertedClincalDetails;
+}
+
 clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
@@ -93,7 +114,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
         user: response.locals.user.id
     })
     graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,  response.locals, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
-        (result: any) => {
+        (result: GetInvestigatedPatientClinicalDetailsFields) => {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
@@ -102,6 +123,9 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
             })
+            if (result?.data?.investigationByEpidemiologyNumber) {
+                response.send(convertClinicalDetailsFromDB(result));
+            }
             response.send(result)
         }
     ).catch(error => {
