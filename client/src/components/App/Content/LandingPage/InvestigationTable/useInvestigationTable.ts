@@ -8,7 +8,7 @@ import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
 import { store } from 'redux/store';
-import userType from 'models/enums/userType';
+import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';

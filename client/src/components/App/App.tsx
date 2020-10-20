@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import userType from 'models/enums/userType';
+import userType from 'models/enums/UserType';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';

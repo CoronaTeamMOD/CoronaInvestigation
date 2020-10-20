@@ -9,7 +9,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import User from 'models/User';
 import County from 'models/County';
-import userType from 'models/enums/userType';
+import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
