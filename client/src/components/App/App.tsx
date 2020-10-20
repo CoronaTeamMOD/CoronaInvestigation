@@ -111,6 +111,8 @@ const App: React.FC = (): JSX.Element => {
                         id: userId,
                         userName: userName,
                         token: userToken,
+                        activeInvestigationsCount: 0,
+                        newInvestigationsCount: 0
                     });
                     fetchUser();
                 })
@@ -128,6 +130,8 @@ const App: React.FC = (): JSX.Element => {
                 id: userId,
                 userName: userName,
                 token: userToken,
+                activeInvestigationsCount: 0,
+                newInvestigationsCount: 0
             });
             fetchUser();
         }

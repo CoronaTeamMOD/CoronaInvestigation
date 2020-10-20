@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
-    TableHead, TableContainer, TextField, TableSortLabel, Button
+    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -21,6 +21,9 @@ export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
+const investigatorNameMsg = 'שם חוקר';
+const newInvestigationsMsg = 'חקירות חדשות';
+const activeInvestigationsMsg = 'חקירות בטיפול';
 
 const defaultInvestigator = {
     id: '',
@@ -66,15 +69,46 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
+    const CustomPopper = (props: any) => {
+        return (<Popper {...props} style={{ width: 350}} placement='bottom-start' />)
+    }
+
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
             case TableHeadersNames.investigatorName:
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
                     return (
                         <Autocomplete
+                            PopperComponent={CustomPopper}
                             test-id='currentInvetigationUser'
-                            options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({id, value}))}
-                            getOptionLabel={(option) => option.value.userName}
+                            options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
+                            getOptionLabel={(option) => option.value.userName ? option.value.userName : 'zsfasdf'}
+                            renderOption={(option, { selected }) => (
+                                option.value.userName ?
+                                <React.Fragment
+                                >
+                                    <div>
+                                        <Typography variant='body1' color='textSecondary'>
+                                            {investigatorNameMsg} :
+                                                <b>
+                                                    {option.value.userName}
+                                                </b>
+                                            <br></br>
+                                            {newInvestigationsMsg} :
+                                                <b>
+                                                    {option.value.newInvestigationsCount}
+                                                </b>
+                                            &nbsp;&nbsp;
+                                            {activeInvestigationsMsg} :
+                                                <b>
+                                                    {option.value.activeInvestigationsCount}
+                                                </b>
+                                        </Typography>
+                                    </div>
+                                </React.Fragment>
+                                 :
+                                 ''
+                            )}
                             inputValue={selectedInvestigator.userName}
                             onChange={(event, newSelectedInvestigator) => {
                                 onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
@@ -92,6 +126,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     placeholder='חוקר'
                                 />
                             }
+                            classes={{
+                                option: classes.userSelectOption
+                            }}
                         />)
                 }
                 else {

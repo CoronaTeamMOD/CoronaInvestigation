@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
+    userSelectOption: {
+        borderBottom: '2px solid rgba(224, 224, 224, 1)'
+    }
 }));
 
 export default useStyles;
