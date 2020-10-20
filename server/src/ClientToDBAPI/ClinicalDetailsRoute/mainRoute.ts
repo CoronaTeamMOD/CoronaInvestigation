@@ -15,7 +15,7 @@ import {
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
-import { GetInvestigatedPatientClinicalDetailsFields } from '../../Models/ClinicalDetails/getInvestigatedPatientClinicalDetailsFields';
+import { GetInvestigatedPatientClinicalDetailsFields } from '../../Models/ClinicalDetails/GetInvestigatedPatientClinicalDetailsFields';
 
 const clinicalDetailsRoute = Router();
 const errorStatusCode = 500;
