@@ -56,9 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     active: {},
     userSelectOption: {
         borderBottom: '2px solid rgba(224, 224, 224, 1)'
-    },
-    popperStyle: {
-        width: 350
     }
 }));
 
