@@ -14,7 +14,7 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import TabManagement, { orderedTabsNames } from './TabManagement/TabManagement';
+import TabManagement from './TabManagement/TabManagement';
 import useTabManagement from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
@@ -83,11 +83,12 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
-                const uncheckedTabNames : string[] = [];
-                formsValidations.forEach((form, index) => form === null && uncheckedTabNames.push(orderedTabsNames[index]));
+                const displayedForms = [...formsValidations];
+                if (!areThereContacts) displayedForms.pop();
+                const didAnyTabsWasntChecked = displayedForms.some(form => form === null);
                 Swal.fire({
                     icon: 'error',
-                    text: uncheckedTabNames.length > 0 ? `שים לב שלא עברת בטאבים הבאים: ${uncheckedTabNames.join(', ')}` : '',
+                    text: didAnyTabsWasntChecked ? 'שים לב שלא עברת בחלק מהטאבים' : '',
                     title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.',
                     customClass: {
                         title:classes.swalTitle,
