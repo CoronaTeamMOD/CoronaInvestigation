@@ -11,8 +11,8 @@ export const initialUserState: User = {
     isActive: false,
     phoneNumber: '',
     serialNumber: -1,
-    activeInvestigationsCount: 0,
-    newInvestigationsCount: 0
+    // activeInvestigationsCount: 0,
+    // newInvestigationsCount: 0
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {

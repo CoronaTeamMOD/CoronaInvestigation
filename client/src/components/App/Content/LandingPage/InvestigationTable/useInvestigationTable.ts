@@ -145,11 +145,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 const countyUsers: Map<string, User> = new Map();
                 if (result && result.data) {
                     result.data.forEach((user: any) => {
-                        countyUsers.set(user.id, {
-                            ...user, 
-                            newInvestigationsCount: user.newInvestigationsCount.totalCount,
-                            activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
-                        })
+                        // countyUsers.set(user.id, {
+                        //     ...user, 
+                        //     newInvestigationsCount: user.newInvestigationsCount.totalCount,
+                        //     activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
+                        // })
+                        countyUsers.set(user.id, user);
                     });
                     logger.info({
                         service: Service.CLIENT,
