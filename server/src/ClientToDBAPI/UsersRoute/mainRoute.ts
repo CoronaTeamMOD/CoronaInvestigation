@@ -311,7 +311,7 @@ const convertUserToDB = (clientUserInput: any) : User => {
     }
 }
 
-usersRoute.post('', (request: Request, response: Response) => {
+usersRoute.post('/user', (request: Request, response: Response) => {
     const newUser : User = convertUserToDB(request.body);
     graphqlRequest(CREATE_USER, response.locals, {input: newUser})
         .then((result: CreateUserResponse) => {
