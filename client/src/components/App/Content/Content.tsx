@@ -2,11 +2,12 @@ import React from 'react';
 import {Route, Switch, Redirect } from 'react-router-dom';
 
 import LoadingSpinner from 'commons/LoadingSpinner/LoadingSpinner';
-import {investigationFormRoute, landingPageRoute} from 'Utils/Routes/Routes';
+import { investigationFormRoute, landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
+import SignUp from './SignUp/SignUp';
 import LandingPage from  './LandingPage/LandingPage';
 import InvestigationForm from './InvestigationForm/InvestigationForm';
-import SignUp from './SignUp/SignUp';
+import UsersManagement from './UsersManagement/UsersManagement'
 
 const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSignUp }): JSX.Element => {
   
@@ -14,7 +15,8 @@ const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSig
         <>
             <Switch>
                 <Route path={investigationFormRoute} component={InvestigationForm} />
-                <Route path= {landingPageRoute} component={LandingPage} />
+                <Route path={landingPageRoute} component={LandingPage} />
+                <Route path={usersManagementRoute} component={UsersManagement} />
                 <Redirect from='/' to={landingPageRoute}/>
             </Switch>
             <SignUp open={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp}/>
