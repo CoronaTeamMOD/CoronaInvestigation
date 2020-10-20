@@ -6,13 +6,33 @@ import Environment from 'models/enums/Environments';
 import { setToken } from 'redux/User/userActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-const instance = axios.create({
-    baseURL: '/db',
-    headers: {
-        'content-type': 'text/plain',
-        'Access-Control-Allow-Origin': '*'
-    }
-});
+axios.defaults.baseURL = '/db';
+axios.defaults.headers['content-type'] = 'text/plain';
+axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
+
+axios.interceptors.request.use(
+    (config) => {
+        addStateHeaders(config);
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+const addStateHeaders = async (config: AxiosRequestConfig) => {
+    if(process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
+        process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
+        process.env.REACT_APP_ENVIRONMENT === Environment.TEST) {
+         try {
+             jwt_decode(store.getState().user.token);
+         } catch(err) {
+             await getNewTokenFromAzureEasyAuth();
+         }
+     }
+     config.headers.Authorization = store.getState().user.token;
+     config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
+};
+
+const instance = axios.create();
 
 const getNewTokenFromAzureEasyAuth = () => {
     return axios.get(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
@@ -23,20 +43,10 @@ const getNewTokenFromAzureEasyAuth = () => {
 
 instance.interceptors.request.use(
     async (config) => {
-        if(process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
-           process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
-           process.env.REACT_APP_ENVIRONMENT === Environment.TEST) {
-            try {
-                jwt_decode(store.getState().user.token);
-            } catch(err) {
-                await getNewTokenFromAzureEasyAuth();
-            }
-        }
-        config.headers.Authorization = store.getState().user.token;
-        config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
+        await addStateHeaders(config);
         activateIsLoading(config);
         return config;
-    }, 
+    },
     (error) => Promise.reject(error)
 );
 
@@ -48,7 +58,7 @@ instance.interceptors.response.use(
     (config) => {
         setIsLoading(false);
         return config;
-    }, 
+    },
     (error) => {
         setIsLoading(false);
         return Promise.reject(error);
