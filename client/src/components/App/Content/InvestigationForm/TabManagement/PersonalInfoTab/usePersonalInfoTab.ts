@@ -136,7 +136,10 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                         investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
-                    contactInfo: investigatedPatient.patientContactInfo
+                    contactInfo: investigatedPatient.patientContactInfo,
+                    role: investigatedPatient.role,
+                    educationGrade: investigatedPatient.educationGrade,
+                    educationClassNumber: investigatedPatient.educationClassNumber,
                 }
                 setPersonalInfoData(PersonalInfoData);
                 reset(PersonalInfoData);

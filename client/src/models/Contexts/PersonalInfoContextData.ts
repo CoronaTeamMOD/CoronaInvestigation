@@ -11,7 +11,10 @@ export interface PersonalInfoDbData {
     educationOccupationCity: string | null;
     institutionName: string | null;
     otherOccupationExtraInfo: string | null;
-}
+    role: number | null;
+    educationGrade: string | null;
+    educationClassNumber: number | null;
+};
 
 export interface PersonalInfoFormData {
     phoneNumber: string;
@@ -27,4 +30,7 @@ export interface PersonalInfoFormData {
     educationOccupationCity: string;
     institutionName: string;
     otherOccupationExtraInfo: string;
-}
+    role: number;
+    educationGrade: string;
+    educationClassNumber: number;
+};

@@ -68,8 +68,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const [occupation, setOccupation] = useState<string>('');
     const [personalInfoState, setPersonalInfoData] = useState<PersonalInfoFormData>(initialPersonalInfo);
     const [insuranceCompany, setInsuranceCompany] = useState<string>('');
-    const [educationGrade, setEducationGrade] = useState<string>('');
-    const [role, setRole] = useState<investigatedPatientRole>();
     const [roleInput, setRoleInput] = useState<string>('');
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
     
@@ -120,6 +118,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             educationOccupationCity: data.educationOccupationCity ? data.educationOccupationCity : null,
             institutionName: data.institutionName ? data.institutionName : null,
             otherOccupationExtraInfo: data.otherOccupationExtraInfo ? data.otherOccupationExtraInfo : null,
+            role: data.role ? data.role : null,
+            educationGrade: data.educationGrade ? data.educationGrade : null,
+            educationClassNumber: data.educationClassNumber ? +data.educationClassNumber : null,
         }
     }
 
@@ -602,32 +603,61 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Autocomplete
-                                        options={investigatedPatientRoles}
-                                        getOptionLabel={(option) => option.displayName}
-                                        inputValue={roleInput}
-                                        className={classes.markComplexity}
-                                        onChange={(event, selectedRole) => {
-                                            setRole(selectedRole as investigatedPatientRole);
-                                        }}
-                                        onInputChange={(event, newRoleInput) => {
-                                            setRoleInput(newRoleInput);
-                                        }}
-                                        renderInput={(params) =>
-                                            <TextField
-                                                {...params}
-                                                placeholder='תפקיד'
+                                    <Controller
+                                        control={methods.control}
+                                        name={PersonalInfoDataContextFields.ROLE}
+                                        render={(props) => (
+                                            <Autocomplete
+                                                options={investigatedPatientRoles}
+                                                getOptionLabel={(option) => option.displayName}
+                                                inputValue={roleInput}
+                                                className={classes.markComplexity}
+                                                onChange={(event, selectedRole) => {
+                                                    props.onChange(selectedRole?.id as number);
+                                                }}
+                                                onInputChange={(event, newRoleInput) => {
+                                                    setRoleInput(newRoleInput);
+                                                }}
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        {...params}
+                                                        placeholder='תפקיד'
+                                                    />
+                                                }
                                             />
-                                        }
+                                        )}
                                     />
                                 </Grid>
-                                <Grid item xs={1}>
-                                    <AlphanumericTextField
-                                        name='educationGrade'
-                                        label='שכבת גיל'
-                                        value={educationGrade}
-                                        onChange={(gradeInput: string) => setEducationGrade(gradeInput)}
-                                        className={educationGrade && classes.markComplexity}
+                                <Grid item xs={2}>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <AlphanumericTextField
+                                                name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                value={props.value}
+                                                onChange={(newValue: string) => props.onChange(newValue)}
+                                                onBlur={props.onBlur}
+                                                placeholder='שכבה'
+                                                label='שכבה'
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <NumericTextField
+                                                name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                value={props.value}
+                                                onChange={(newValue) => props.onChange(newValue)}
+                                                onBlur={props.onBlur}
+                                                placeholder='מספר כיתה'
+                                                label='מספר כיתה'
+                                            />
+                                        )}
                                     />
                                 </Grid>
                             </>

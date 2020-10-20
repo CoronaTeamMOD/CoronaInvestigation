@@ -12,7 +12,10 @@ enum PersonalInfoDataContextFields {
     RELEVANT_OCCUPATION = 'relevantOccupation',
     EDUCATION_OCCUPATION_CITY = 'educationOccupationCity',
     INSTITUTION_NAME = 'institutionName',
-    OTHER_OCCUPATION_EXTRA_INFO = 'otherOccupationExtraInfo'
-}
+    OTHER_OCCUPATION_EXTRA_INFO = 'otherOccupationExtraInfo',
+    ROLE = 'role',
+    EDUCATION_GRADE = 'educationGrade',
+    EDUCATION_CLASS_NUMBER = 'educationClassNumber',
+};
 
 export default PersonalInfoDataContextFields;

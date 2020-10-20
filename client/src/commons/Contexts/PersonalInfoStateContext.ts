@@ -12,4 +12,7 @@ export const initialPersonalInfo: PersonalInfoFormData = {
     institutionName: '',
     otherOccupationExtraInfo: '',
     contactInfo: '',
-} 
+    role: -1,
+    educationGrade: '',
+    educationClassNumber: -1,
+};
