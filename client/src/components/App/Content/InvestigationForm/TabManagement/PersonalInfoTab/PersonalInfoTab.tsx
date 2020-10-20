@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import Swal from 'sweetalert2';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, Typography, FormControl, Collapse } from '@material-ui/core';
-import Swal from 'sweetalert2';
 
 
 import City from 'models/City';
@@ -51,21 +51,26 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
+const roles = ['a', 'b', 'c'];
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
+
     const occupationsStateContext = useContext(occupationsContext);
 
-    const [subOccupationName, setSubOccupationName] = React.useState<string>('');
-    const [insuranceCompanies, setInsuranceCompanies] = React.useState<string[]>(['']);
-    const [subOccupations, setSubOccupations] = React.useState<SubOccupationAndStreet[]>([]);
-    const [cityName, setCityName] = React.useState<string>('');
-    const [streetName, setStreetName] = React.useState<string>('');
-    const [streets, setStreets] = React.useState<Street[]>([]);
-    const [cityId, setCityId] = React.useState<string>('');
-    const [occupation, setOccupation] = React.useState<string>('');
-    const [personalInfoState, setPersonalInfoData] = React.useState<PersonalInfoFormData>(initialPersonalInfo);
-    const [insuranceCompany, setInsuranceCompany] = React.useState<string>('');
+    const [subOccupationName, setSubOccupationName] = useState<string>('');
+    const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>(['']);
+    const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
+    const [cityName, setCityName] = useState<string>('');
+    const [streetName, setStreetName] = useState<string>('');
+    const [streets, setStreets] = useState<Street[]>([]);
+    const [cityId, setCityId] = useState<string>('');
+    const [occupation, setOccupation] = useState<string>('');
+    const [personalInfoState, setPersonalInfoData] = useState<PersonalInfoFormData>(initialPersonalInfo);
+    const [insuranceCompany, setInsuranceCompany] = useState<string>('');
+    const [educationGrade, setEducationGrade] = useState<string>('');
+    const [role, setRole] = useState<string>('');
+    const [roleInput, setRoleInput] = useState<string>('');
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -596,21 +601,32 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <AlphanumericTextField
-                                        name='role'
-                                        label='תפקיד'
-                                        value={''}
-                                        onChange={() => { }}
+                                    <Autocomplete
+                                        options={roles}
+                                        getOptionLabel={(option) => option}
+                                        inputValue={roleInput}
                                         className={classes.markComplicity}
+                                        onChange={(event, selectedRole) => {
+                                            setRole(selectedRole as string);
+                                        }}
+                                        onInputChange={(event, newRoleInput) => {
+                                            setRoleInput(newRoleInput);
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                placeholder='תפקיד'
+                                            />
+                                        }
                                     />
                                 </Grid>
                                 <Grid item xs={1}>
                                     <AlphanumericTextField
                                         name='educationGrade'
                                         label='שכבת גיל'
-                                        value={''}
-                                        onChange={() => { }}
-                                        className={false ? classes.markComplicity : ''}
+                                        value={educationGrade}
+                                        onChange={(gradeInput: string) => setEducationGrade(gradeInput)}
+                                        className={educationGrade && classes.markComplicity}
                                     />
                                 </Grid>
                             </>
