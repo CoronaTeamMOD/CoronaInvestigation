@@ -30,7 +30,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const classes = useStyles();
     
-    const { identityType, gender, isDeceased, patientInfo, isHospitalized, isInInstitution } = investigatedPatientStaticInfo;
+    const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
@@ -121,18 +121,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isHospitalized' name='האם מאושפז' value={indication(isHospitalized)}
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication(isCurrentlyHospitalized)}
                         icon={Help}
                     />
                     {
-                        isHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
+                        isCurrentlyHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInInstitution)}
+                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
                         icon={Help}
                     />
                     {
-                        isInInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                        isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
                 </div>
                 <div className={classes.managementControllers}>

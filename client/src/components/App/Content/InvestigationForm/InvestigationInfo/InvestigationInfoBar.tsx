@@ -37,8 +37,8 @@ const defaultInvestigationStaticInfo = {
         additionalPhoneNumber: '',
         gender: '',
         identityType: '',
-        isHospitalized: false,
-        isInInstitution: false,
+        isCurrentlyHospitalized: false,
+        isInClosedInstitution: false,
         patientInfo: {
             fullName: '',
             primaryPhone: '',

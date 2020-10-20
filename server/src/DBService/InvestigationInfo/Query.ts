@@ -17,6 +17,8 @@ query InvestigationStaticDetails($investigationId: Int!) {
       additionalPhoneNumber
       gender
       isDeceased
+      isCurrentlyHospitalized
+      isInClosedInstitution
     }
     coronaTestDate
     investigatedPatientId
