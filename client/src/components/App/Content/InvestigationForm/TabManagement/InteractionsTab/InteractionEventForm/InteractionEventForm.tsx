@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
-import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -124,8 +124,6 @@ const InteractionEventForm: React.FC<Props> = (
         <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
           <Grid className={formClasses.form} container justify='flex-start'>
             <PlacesTypesAndSubTypes
-              errors={methods.errors}
-              control={methods.control}
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
               placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
               placeType={placeType}

@@ -1,7 +1,8 @@
+import React, { useEffect, useContext, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form'
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AddCircle } from '@material-ui/icons';
-import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
@@ -33,6 +34,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
   const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
+  const methods = useForm();
 
   const { fieldName } = useFormStyles();
   const classes = useStyles();
@@ -211,111 +214,113 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
   return (
     <>
-    <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
-      <div className={classes.subForm}>
-        <Typography variant='caption' className={fieldName}>
-          חשיפה אפשרית
-        </Typography>
-
-        <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-          <Toggle
-            value={wereConfirmedExposures}
-            onChange={() => onExposuresStatusChange(fieldsNames.wereConfirmedExposures, !wereConfirmedExposures)}
-          />
-        </FormRowWithInput>
-
-        <Collapse
-          in={wereConfirmedExposures}
-          className={classes.additionalInformationForm}
-        >
-          <div>
-            {
-              exposures.map((exposure, index) => 
-                exposure.wasConfirmedExposure &&
-                  <>
-                    <ExposureForm
-                      coronaTestDate={coronaTestDate}
-                      key={(exposure.id || '') + index.toString()}
-                      fieldsNames={fieldsNames}
-                      exposureAndFlightsData={exposure}
-                      handleChangeExposureDataAndFlightsField={
-                        (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
-                      }
-                    />
-                    <Divider/>
-                  </>
-              )
-            }
-            <IconButton
-              test-id='addConfirmedExposure'
-              onClick={() => onExposureAdded(true, false)}
-              disabled={disableConfirmedExposureAddition}
-            >
-              <AddCircle color={disableConfirmedExposureAddition ? 'disabled' : 'primary'} />
-            </IconButton>
-            <Typography
-              variant='caption'
-            >
-              {addConfirmedExposureButton}
-            </Typography>
-          </div>
-        </Collapse>
-      </div>
-
-      <Divider />
-
-      <div className={classes.subForm}>
-        <Typography variant='caption' className={fieldName}>
-          חזרה מחו״ל
-        </Typography>
-
-        <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
-          <Toggle
-            value={wereFlights}
-            onChange={() => onExposuresStatusChange(fieldsNames.wereFlights, !wereFlights)}
-          />
-        </FormRowWithInput>
-
-        <Collapse
-          in={wereFlights}
-          className={classes.additionalInformationForm}
-        >
-          <div>
+      <FormProvider {...methods}>
+        <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
+          <div className={classes.subForm}>
             <Typography variant='caption' className={fieldName}>
-              פרטי טיסת חזור לארץ:
+              חשיפה אפשרית
             </Typography>
-            {
-              exposures.map((exposure, index) => 
-                exposure.wasAbroad &&
-                <>
-                  <FlightsForm
-                  fieldsNames={fieldsNames}
-                  key={(exposure.id || '') + index.toString()}
-                  exposureAndFlightsData={exposure}
-                    handleChangeExposureDataAndFlightsField={
-                      (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
-                    }
-                  />
-                  <Divider/>
-                </>
-              )
-            }
-            <IconButton
-              test-id='addFlight'
-              onClick={() => onExposureAdded(false, true)}
-              disabled={disableFlightAddition}
+
+            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+              <Toggle
+                value={wereConfirmedExposures}
+                onChange={() => onExposuresStatusChange(fieldsNames.wereConfirmedExposures, !wereConfirmedExposures)}
+              />
+            </FormRowWithInput>
+
+            <Collapse
+              in={wereConfirmedExposures}
+              className={classes.additionalInformationForm}
             >
-              <AddCircle color={disableFlightAddition ? 'disabled' : 'primary'} />
-            </IconButton>
-            <Typography
-              variant='caption'
-            >
-              {addFlightButton}
-            </Typography>
+              <div>
+                {
+                  exposures.map((exposure, index) => 
+                    exposure.wasConfirmedExposure &&
+                      <>
+                        <ExposureForm
+                          coronaTestDate={coronaTestDate}
+                          key={(exposure.id || '') + index.toString()}
+                          fieldsNames={fieldsNames}
+                          exposureAndFlightsData={exposure}
+                          handleChangeExposureDataAndFlightsField={
+                            (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
+                          }
+                        />
+                        <Divider/>
+                      </>
+                  )
+                }
+                <IconButton
+                  test-id='addConfirmedExposure'
+                  onClick={() => onExposureAdded(true, false)}
+                  disabled={disableConfirmedExposureAddition}
+                >
+                  <AddCircle color={disableConfirmedExposureAddition ? 'disabled' : 'primary'} />
+                </IconButton>
+                <Typography
+                  variant='caption'
+                >
+                  {addConfirmedExposureButton}
+                </Typography>
+              </div>
+            </Collapse>
           </div>
-        </Collapse>
-      </div>
-      </form>
+              
+          <Divider />
+              
+          <div className={classes.subForm}>
+            <Typography variant='caption' className={fieldName}>
+              חזרה מחו״ל
+            </Typography>
+              
+            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
+              <Toggle
+                value={wereFlights}
+                onChange={() => onExposuresStatusChange(fieldsNames.wereFlights, !wereFlights)}
+              />
+            </FormRowWithInput>
+              
+            <Collapse
+              in={wereFlights}
+              className={classes.additionalInformationForm}
+            >
+              <div>
+                <Typography variant='caption' className={fieldName}>
+                  פרטי טיסת חזור לארץ:
+                </Typography>
+                {
+                  exposures.map((exposure, index) => 
+                    exposure.wasAbroad &&
+                    <>
+                      <FlightsForm
+                      fieldsNames={fieldsNames}
+                      key={(exposure.id || '') + index.toString()}
+                      exposureAndFlightsData={exposure}
+                        handleChangeExposureDataAndFlightsField={
+                          (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
+                        }
+                      />
+                      <Divider/>
+                    </>
+                  )
+                }
+                <IconButton
+                  test-id='addFlight'
+                  onClick={() => onExposureAdded(false, true)}
+                  disabled={disableFlightAddition}
+                >
+                  <AddCircle color={disableFlightAddition ? 'disabled' : 'primary'} />
+                </IconButton>
+                <Typography
+                  variant='caption'
+                >
+                  {addFlightButton}
+                </Typography>
+              </div>
+            </Collapse>
+          </div>
+        </form>
+      </FormProvider>
     </>
   );
 };

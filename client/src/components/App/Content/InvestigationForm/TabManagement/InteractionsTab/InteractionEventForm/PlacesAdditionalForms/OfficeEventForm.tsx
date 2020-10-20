@@ -9,7 +9,7 @@ import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/
 
 
 const OfficeEventForm: React.FC = (): JSX.Element => {
-    const { control, errors, setError, clearErrors} = useFormContext();
+    const { control } = useFormContext();
 
     const formClasses = useFormStyles();
 
@@ -26,9 +26,6 @@ const OfficeEventForm: React.FC = (): JSX.Element => {
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue as string)}
                                 onBlur={props.onBlur}
-                                errors={errors}
-                                setError={setError}
-                                clearErrors={clearErrors}
                             />
                         )}
                     />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -12,18 +12,8 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
 const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const {
-        classes,
-        control,
-        watchBackgroundDiseases,
-        watchDoesHaveBackgroundDiseases,
-        backgroundDiseases,
-        handleBackgroundIllnessCheck,
-        setError,
-        setValue,
-        clearErrors,
-        errors,
-    } = props;
+    const {classes, watchBackgroundDiseases, watchDoesHaveBackgroundDiseases, backgroundDiseases, handleBackgroundIllnessCheck} = props;
+    const { control, setValue, errors } = useFormContext();
 
     React.useEffect(() => {
         if(!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
@@ -98,15 +88,9 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                                         testId='otherBackgroundDisease'
                                         name={ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO}
                                         value={props.value}
-                                        onChange={(newValue: string) =>
-                                            props.onChange(newValue)
-                                        }
+                                        onChange={(newValue: string) => props.onChange(newValue)}
                                         onBlur={props.onBlur}
-                                        setError={setError}
-                                        clearErrors={clearErrors}
-                                        errors={errors}
-                                        error={errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO] ? true : false}
-                                        label={errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO] ? errors[ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO].message : '* מחלת רקע'}
+                                        label='* מחלת רקע'
                                         placeholder='הזן מחלת רקע...'
                                         className={classes.otherTextField}
                                     />
@@ -122,11 +106,6 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 
 interface Props {
     classes: ClinicalDetailsClasses;
-    control?: Control;
-    setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
-    setValue: (name: string, value: any) => void;
-    clearErrors: (name?: string | string[]) => void;
-    errors: Record<string, any>;
     backgroundDiseases: string[];
     handleBackgroundIllnessCheck: (
         checkedBackgroundIllness: string,

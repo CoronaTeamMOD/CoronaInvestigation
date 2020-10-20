@@ -144,8 +144,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             .then((result: any) => {
                 const countyUsers: Map<string, User> = new Map();
                 if (result && result.data) {
-                    result.data.forEach((user: User) => {
-                        countyUsers.set(user.id, user)
+                    result.data.forEach((user: any) => {
+                        countyUsers.set(user.id, {
+                            ...user, 
+                            newInvestigationsCount: user.newInvestigationsCount.totalCount,
+                            activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
+                        })
                     });
                     logger.info({
                         service: Service.CLIENT,
@@ -262,13 +266,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
                           .filter((investigation: any) => 
                           investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                          investigation?.userByLastUpdator)
+                          investigation?.userByCreator)
                           .map((investigation: any) => {
                               const patient = investigation.investigatedPatientByInvestigatedPatientId;
                               const desk = investigation.desk;
                               const covidPatient = patient.covidPatientByCovidPatient;
                               const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                              const user = investigation.userByLastUpdator;
+                              const user = investigation.userByCreator;
                               const county = user ? user.countyByInvestigationGroup : '';
                               const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                   investigation.investigationSubStatusByInvestigationSubStatus.displayName :

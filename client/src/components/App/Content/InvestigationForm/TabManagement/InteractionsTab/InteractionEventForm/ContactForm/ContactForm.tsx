@@ -27,7 +27,7 @@ const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
 const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
-    const { control, errors, setError, clearErrors, setValue, getValues } = useFormContext();
+    const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -56,9 +56,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
                                     label={FIRST_NAME_LABEL}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                     className={classes.newContactField}
                                 />
                             )}
@@ -76,11 +73,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     key='contactedPersonLastName'
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    label={LAST_NAME_LABEL}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
+                                    label={LAST_NAME_LABEL}
                                     className={classes.newContactField}
                                 />
                             )}
@@ -97,9 +91,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue)}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                     onBlur={props.onBlur}
                                     label={PHONE_NUMBER_LABEL}
                                 />
@@ -120,9 +111,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
                                     onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
                                     className={classes.newContactField}
                                 />
                             )}
@@ -170,9 +158,6 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             value={props.value}
                             onChange={(newValue: string) => props.onChange(newValue as string)}
                             onBlur={props.onBlur}
-                            errors={errors}
-                            setError={setError}
-                            clearErrors={clearErrors}   
                             className={classes.moreContactDetails}
                         />
                     )}

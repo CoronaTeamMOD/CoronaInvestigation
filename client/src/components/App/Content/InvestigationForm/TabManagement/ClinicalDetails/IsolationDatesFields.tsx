@@ -1,5 +1,5 @@
 import React from 'react';
-import { Controller, Control } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -9,7 +9,8 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
+    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate } = props;
+    const { control, errors, trigger} = useFormContext();
     
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
@@ -90,9 +91,6 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
 interface Props {
     classes: ClinicalDetailsClasses;
     watchIsInIsolation: boolean;
-    control: Control;
-    errors: Record<string, any>;
-    trigger: (payload?: string | string[]) => Promise<boolean>;
     watchIsolationStartDate: Date;
     watchIsolationEndDate: Date;
 };

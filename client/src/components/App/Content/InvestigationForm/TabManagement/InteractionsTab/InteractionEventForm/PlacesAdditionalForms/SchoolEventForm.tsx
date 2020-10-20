@@ -32,7 +32,7 @@ export const highSchoolGrades = [
 const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
 
 const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.Element => {
-    const { control, errors, setError, clearErrors, setValue} = useFormContext();    
+    const { control, setValue } = useFormContext();    
 
     const formClasses = useFormStyles();
     
@@ -59,10 +59,7 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur}
-                                    errors={errors}
-                                    setError={setError}
-                                    clearErrors={clearErrors}
+                                    onBlur={props.onBlur} 
                                 />
                             )}
                         />

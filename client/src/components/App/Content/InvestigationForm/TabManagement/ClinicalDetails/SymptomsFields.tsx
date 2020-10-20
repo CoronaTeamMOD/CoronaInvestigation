@@ -1,6 +1,6 @@
 import React from 'react';
-import {Control, Controller} from 'react-hook-form';
-import {Collapse, Grid, Typography} from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
@@ -13,9 +13,8 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck,
-            symptoms, setError, clearErrors, errors,
-    } = props;
+    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms} = props;
+    const { control, errors } = useFormContext();
 
     return (
         <>
@@ -129,16 +128,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             testId='symptomInput'
                                             name={ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO}
                                             value={props.value}
-                                            onChange={(newValue: string) =>
-                                                props.onChange(newValue)
-                                            }
+                                            onChange={(newValue: string) => props.onChange(newValue)}
                                             onBlur={props.onBlur}
-                                            label='* סימפטום'
-                                            setError={setError}
-                                            clearErrors={clearErrors}
-                                            errors={errors}
-                                            className={classes.otherTextField}
                                             placeholder='הזן סימפטום...'
+                                            label='* סימפטום'
+                                            className={classes.otherTextField}
                                         />
                                     )}
                                 />
@@ -153,7 +147,6 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     classes: ClinicalDetailsClasses;
-    control: Control;
     watchDoesHaveSymptoms: boolean;
     watchSymptoms: string[];
     watchIsSymptomsDateUnknown: boolean;
@@ -163,9 +156,6 @@ interface Props {
         selectedSymptoms: string[]
     ) => void;
     symptoms: string[];
-    setError: (name: string, error: { type?: string, types?: object, message?: string, shouldFocus?: boolean }) => void;
-    clearErrors: (name?: string | string[]) => void;
-    errors: Record<string, any>;
 };
 
 export default SymptomsFields;

@@ -16,7 +16,6 @@ interface MapProps {
     width?: number | string;
     selectedAddress: GeocodeResponse | null;
     setSelectedAddress: (newValue: GeocodeResponse | null) => void;
-    control?: any;
     name: string;
 }
 
@@ -25,7 +24,7 @@ const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
 const DEFAULT_MAP_HEIGHT = '40vh';
 const DEFAULT_MAP_WIDTH = '55vw';
-const Map = ({ selectedAddress, setSelectedAddress, control, name, ...props }: MapProps) => {
+const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { requestDetailsFromLocation } = useGoogleGeocoder();
     const { parseLocation } = useDBParser();
@@ -118,7 +117,6 @@ const Map = ({ selectedAddress, setSelectedAddress, control, name, ...props }: M
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
-                       control={control}
         />
         <GoogleMap googleMapLoader={injectScript}
                    zoom={zoom} center={mapPosition}

@@ -32,9 +32,16 @@ query AllGroupUsers($investigationGroup: Int!) {
       serialNumber
       userName
       investigationGroup
+      newInvestigationsCount: investigationsByLastUpdator(filter: {investigationStatus: {equalTo: "חדשה"}}) {
+        totalCount
+      }
+      activeInvestigationsCount: investigationsByLastUpdator(filter: {investigationStatus: {equalTo: "בטיפול"}}) {
+        totalCount
+      }
     }
   }
 }
+
 `;
 
 export const GET_ADMINS_OF_COUNTY = gql`
