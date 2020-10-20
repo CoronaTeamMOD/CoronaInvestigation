@@ -10,7 +10,9 @@ export const initialUserState: User = {
     investigationGroup: -1,
     isActive: false,
     phoneNumber: '',
-    serialNumber: -1
+    serialNumber: -1,
+    activeInvestigationsCount: 0,
+    newInvestigationsCount: 0
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {
