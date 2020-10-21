@@ -25,6 +25,7 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
+const hasNoSorceOrganization = 'לא שויך למסגרת';
 
 const defaultInvestigator = {
     id: '',
@@ -95,7 +96,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {option.value.userName}
                                                     </b>
                                                 </a>
-                                                {option.value.sourceOrganization}
+                                                {
+                                                    option.value.sourceOrganization ? 
+                                                    option.value.sourceOrganization :
+                                                    hasNoSorceOrganization
+                                                }
                                                 <br></br>
                                             </Typography>
                                             <Typography variant='body1' color='textSecondary'>
