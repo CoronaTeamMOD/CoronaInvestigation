@@ -58,6 +58,8 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
+    const isMandatoryInfoMissing: boolean = birthDate === null && !fullName && !isLoading;
+
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
     }, [investigationStatus]);
@@ -69,7 +71,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
-                    {birthDate === null && !fullName && !isLoading && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
+                    {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
                     <PhoneDial
                         phoneNumber={primaryPhone}
                     />
@@ -97,7 +99,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={CalendarToday}
                     />
                     {
-                        birthDate === null && !isLoading && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                        isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך קבלת תשובה חיובית' value=
