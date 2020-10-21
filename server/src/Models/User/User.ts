@@ -7,11 +7,13 @@ export default interface User {
     investigationGroup: number;
     phoneNumber: string;
     userType: number;
-    serialNumber?: number
-    userName: string,
-    fullName: string,
-    city: string,
-    mail: string,
-    sourceOrganization: string
-    languages: Language[]
+    serialNumber?: number;
+    userName: string;
+    fullName: string;
+    city: string;
+    mail: string;
+    sourceOrganization: string;
+    languages: Language[];
+    newInvestigationsCount: number;
+    activeInvestigationsCount: number;
 }
