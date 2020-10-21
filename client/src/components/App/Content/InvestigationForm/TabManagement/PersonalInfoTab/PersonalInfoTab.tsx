@@ -2,8 +2,8 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
-import React, { useContext, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import React, { useContext, useEffect, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, Typography, FormControl, Collapse, Select, MenuItem } from '@material-ui/core';
 
@@ -53,7 +53,8 @@ const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
 
-const grades = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
+const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
+let roleObj: investigatedPatientRole | undefined;
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -159,7 +160,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         const address: DBAddress = {
             city: data.city !== '' ? data.city : null,
             street: data.street !== '' ? data.street : null,
@@ -170,14 +171,19 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         setAddress(address);
     }, [data.city, data.street, data.floor, data.houseNum]);
 
-    React.useEffect(() => {
-        if(investigationId !== -1) {
+    useEffect(() => {
+        roleObj = investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => investigatedPatientRole.id === data.role);
+        if (roleObj) setRoleInput(roleObj.displayName);
+    }, [data.role]);
+
+    useEffect(() => {
+        if (investigationId !== -1) {
             fetchPersonalInfo(methods.reset, methods.trigger);
             setIsCurrentlyLoading(false);
         }
     }, [investigationId]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (personalInfoState.city) {
             setCityId(personalInfoState.city);
         }
@@ -187,7 +193,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }, [personalInfoState]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (occupation === Occupations.DEFENSE_FORCES ||
             occupation === Occupations.HEALTH_SYSTEM) {
             getSubOccupations(occupation);
@@ -196,16 +202,16 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }, [occupation]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         cityId && getStreetsByCity(cityId);
     }, [cityId]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (streets.length > 0 && streetName === '') {
             methods.setValue('street', streets[0].id);
             setStreetName(streets[0].displayName);
         }
-    }, [streets])
+    }, [streets]);
 
     const subOccupationsPlaceHolderByOccupation = () => {
         if (occupation === Occupations.GOVERNMENT_OFFICE) return INSERT_OFFICE_NAME;
@@ -231,7 +237,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             investigation: investigationId,
             user: userId
         })
-        axios.post('/personalDetails/updatePersonalDetails', 
+        axios.post('/personalDetails/updatePersonalDetails',
         {
             id : investigatedPatientId, 
             personalInfoData, 
@@ -650,6 +656,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 getOptionLabel={(option) => option.displayName}
                                                 inputValue={roleInput}
                                                 className={classes.markComplexity}
+                                                value={roleObj}
                                                 onChange={(event, selectedRole) => {
                                                     props.onChange(selectedRole?.id as number);
                                                 }}
@@ -675,11 +682,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 <FormControl>
                                                     <Select
                                                         name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                        className={props.value && classes.markComplexity}
                                                         value={props.value}
                                                         onChange={(event) => props.onChange(event.target.value)}
                                                     >
                                                         {
-                                                            grades.map((grade) => (
+                                                            grades.map((grade: string) => (
                                                                 <MenuItem
                                                                     key={grade}
                                                                     value={grade}>
@@ -692,22 +700,20 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             )}
                                         />
                                     </Grid>
-                                    <Grid item xs={1}>
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                            control={methods.control}
-                                            render={(props) => (
-                                                <NumericTextField
-                                                    name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                                    className={props.value && classes.markComplexity}
-                                                    value={props.value}
-                                                    onChange={(newValue) => props.onChange(newValue)}
-                                                    onBlur={props.onBlur}
-                                                    placeholder='כיתה'
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
+                                    <Controller
+                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                        control={methods.control}
+                                        render={(props) => (
+                                            <NumericTextField
+                                                name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                className={props.value && classes.markComplexity}
+                                                value={props.value}
+                                                onChange={(newValue) => props.onChange(newValue)}
+                                                onBlur={props.onBlur}
+                                                placeholder='כיתה'
+                                            />
+                                        )}
+                                    />
                                 </Collapse>
                             </>
                                 : subOccupations.length > 0 ? <Grid item xs={3}>{institutionComponent}</Grid> :

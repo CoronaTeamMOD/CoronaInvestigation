@@ -243,6 +243,9 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
         patientContactInfo: personalInfoData.contactInfo || null,
         subOccupation: personalInfoData.institutionName || null,
         additionalPhoneNumber: personalInfoData.additionalPhoneNumber,
+        role: personalInfoData.role,
+        educationGrade: personalInfoData.educationGrade,
+        educationClassNumber: personalInfoData.educationClassNumber,
     };
 
     logger.info({

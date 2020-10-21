@@ -124,7 +124,7 @@ const useStyles = makeStyles({
     },
     complexIconOnOccupation: {
         marginTop: '2vh',
-    }
+    },
 });
 
 export default useStyles;
