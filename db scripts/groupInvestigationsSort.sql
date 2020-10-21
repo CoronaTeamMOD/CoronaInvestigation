@@ -1,3 +1,16 @@
+-- FUNCTION: public.group_investigations_sort(integer, character varying)
+
+DROP FUNCTION public.group_investigations_sort(integer, character varying);
+
+CREATE OR REPLACE FUNCTION public.group_investigations_sort(
+	investigation_group_id integer,
+	order_by character varying)
+    RETURNS json
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
 BEGIN
 RETURN (select
     json_build_object(
@@ -42,14 +55,14 @@ RETURN (select
 					from public.investigation_status investigationStatusTable
 					where investigationStatusTable.display_name = investigationTable.investigation_status 
 				),
-				'investigationSubStatusByInvestigationStatus', (
+				'investigationSubStatusByInvestigationSubStatus', (
 					select json_build_object (
 						'displayName', investigationSubStatusTable.display_name
 					)
 					from public.investigation_sub_status investigationSubStatusTable
 					where investigationSubStatusTable.display_name = investigationTable.investigation_sub_status 
 				),
-				'userByLastUpdator', (
+				'userByCreator', (
 					select json_build_object (
 						'id', userTable.id,
 						'userName', userTable.user_name,
@@ -63,7 +76,7 @@ RETURN (select
                         )
 					) 
 					from public.user userTable
-					where userTable.id = investigationTable.last_updator
+					where userTable.id = investigationTable.creator
 				)
             )
 			order by
@@ -98,30 +111,22 @@ RETURN (select
 				)
 			) END ASC,
 			CASE WHEN order_by='ageDESC' THEN (
-			select birth_date
+			SELECT birth_date
 			from public.covid_patients
-			where epidemiology_number = (
-				select covid_patient from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END ASC,
+			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
 			CASE WHEN order_by='ageASC' THEN (
-			select birth_date
+			SELECT birth_date
 			from public.covid_patients
-			where epidemiology_number = (
-				select covid_patient from public.investigated_patient
-				where id = investigationTable.investigated_patient_id
-				)
-			) END DESC,
+			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
 			CASE WHEN order_by='investigatorNameDESC' THEN (
 				select user_name from public.user
-				where id = investigationTable.last_updator
+				where id = investigationTable.creator
 			) END DESC,
  			CASE WHEN order_by='investigatorNameASC' THEN (
 				select user_name from public.user
-				where id = investigationTable.last_updator
+				where id = investigationTable.creator
 			) END ASC
         )
     ) investigations
@@ -129,7 +134,11 @@ from public.investigation investigationTable
 where (
 	(select investigation_group
 	 from public.user
-	 where id = investigationTable.last_updator
+	 where id = investigationTable.creator
 	) = investigation_group_id
 ));
 END;
+$BODY$;
+
+ALTER FUNCTION public.group_investigations_sort(integer, character varying)
+    OWNER TO coronai;

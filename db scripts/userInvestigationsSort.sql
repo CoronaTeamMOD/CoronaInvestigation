@@ -1,6 +1,6 @@
 -- FUNCTION: public.user_investigations_sort(character varying, character varying)
 
--- DROP FUNCTION public.user_investigations_sort(character varying, character varying);
+DROP FUNCTION public.user_investigations_sort(character varying, character varying);
 
 CREATE OR REPLACE FUNCTION public.user_investigations_sort(
 	user_id character varying,
@@ -19,6 +19,7 @@ RETURN (select
                 'epidemiologyNumber', investigationTable.epidemiology_number,
 				'coronaTestDate', investigationTable.corona_test_date,
 				'priority', investigationTable.priority,
+				'desk', investigationTable.desk,
 				'investigatedPatientByInvestigatedPatientId', (
 					select json_build_object (
 						'covidPatientByCovidPatient', (
@@ -54,13 +55,20 @@ RETURN (select
 					from public.investigation_status investigationStatusTable
 					where investigationStatusTable.display_name = investigationTable.investigation_status 
 				),
-				'userByLastUpdator', (
+				'investigationSubStatusByInvestigationSubStatus', (
+					select json_build_object (
+						'displayName', investigationSubStatusTable.display_name
+					)
+					from public.investigation_sub_status investigationSubStatusTable
+					where investigationSubStatusTable.display_name = investigationTable.investigation_sub_status 
+				),
+				'userByCreator', (
 					select json_build_object (
 						'id', userTable.id,
 						'userName', userTable.user_name
 					) 
 					from public.user userTable
-					where userTable.id = investigationTable.last_updator
+					where userTable.id = investigationTable.creator
 				)
             )
 			order by
@@ -97,26 +105,26 @@ RETURN (select
 			CASE WHEN order_by='ageDESC' THEN (
 			select birth_date
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
+			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
 			CASE WHEN order_by='ageASC' THEN (
 			select birth_date
 			from public.covid_patients
-			where epidemiology_number = investigationTable.epidemiology_number) END ASC,
+			where epidemiology_number = investigationTable.epidemiology_number) END DESC,
 			CASE WHEN order_by='investigationStatusDESC' THEN investigationTable.investigation_status  END DESC,
  			CASE WHEN order_by='investigationStatusASC' THEN investigationTable.investigation_status  END ASC,
 			CASE WHEN order_by='investigatorNameDESC' THEN (
 				select user_name from public.user
-				where id = investigationTable.last_updator
+				where id = investigationTable.creator
 			) END DESC,
  			CASE WHEN order_by='investigatorNameASC' THEN (
 				select user_name from public.user
-				where id = investigationTable.last_updator
+				where id = investigationTable.creator
 			) END ASC
         )
     ) investigations
 from public.investigation investigationTable
 where (
-	investigationTable.last_updator = user_id
+	investigationTable.creator = user_id
 	AND
 	investigationTable.investigation_status != 'טופלה'
 ));
