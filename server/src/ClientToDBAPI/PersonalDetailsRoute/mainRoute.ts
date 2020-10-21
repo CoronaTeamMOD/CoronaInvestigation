@@ -6,7 +6,7 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
-import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_COVID_PATIENT_PERSONAL_INFO } from '../../DBService/PersonalDetails/Mutation';
+import { UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, UPDATE_COVID_PATIENT_PERSONAL_INFO, CALC_INVESTIGATION_COMPLEXITY } from '../../DBService/PersonalDetails/Mutation';
 import { GET_OCCUPATIONS, GET_HMOS, GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, 
     GET_SUB_OCCUPATIONS_BY_OCCUPATION, GET_EDUCATION_SUB_OCCUPATION_BY_CITY } from '../../DBService/PersonalDetails/Query';
 import GetInvestigatedPatientDetails, { PersonalInfoDbData } from '../../Models/PersonalInfo/GetInvestigatedPatientDetails';
@@ -244,17 +244,59 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
             });
-            response.send(result);
+            graphqlRequest(CALC_INVESTIGATION_COMPLEXITY,  response.locals, {epidemiologyNumber: dbCovidPatientPersonalInfo.id})
+            .then((result: any) => {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Saving personal details tab',
+                    step: 'calced investigation complexity by patient info successfully',
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.send({message: 'saved personal details and calced complexity successfully'});
+            }).catch(err => {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Saving personal details tab',
+                    step: 'error in requesting graphql API request in CALC_INVESTIGATION_COMPLEXITY request due to ' + err,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                graphqlRequest(CALC_INVESTIGATION_COMPLEXITY,  response.locals, {epidemiologyNumber: dbCovidPatientPersonalInfo.id})
+                .then((result: any) => {
+                    logger.info({
+                        service: Service.SERVER,
+                        severity: Severity.LOW,
+                        workflow: 'Saving personal details tab',
+                        step: 'calced investigation complexity by patient info successfully on the second time',
+                        investigation: response.locals.epidemiologynumber,
+                        user: response.locals.user.id
+                    });
+                    response.send({message: 'saved personal details and calced complexity successfully'});
+                }).catch(err => {
+                    logger.error({
+                        service: Service.SERVER,
+                        severity: Severity.HIGH,
+                        workflow: 'Saving personal details tab',
+                        step: 'error again in requesting graphql API request in CALC_INVESTIGATION_COMPLEXITY request due to ' + err,
+                        investigation: response.locals.epidemiologynumber,
+                        user: response.locals.user.id
+                    });
+                    response.status(errorStatusCode).json({message: 'failed to calc the investigations complexity'});
+                });
+            });
         }).catch(err => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Saving personal details tab',
-                step: 'error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request',
+                step: 'error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request due to ' + err,
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
             });
-            response.status(errorStatusCode).send(err)
+            response.status(errorStatusCode).json({message: 'failed to save the personal details covid patient details'});
         });
     })
     .catch(err => {
@@ -262,11 +304,11 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Saving personal details tab',
-            step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request',
+            step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request due to ' + err,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        response.status(errorStatusCode).send(err)
+        response.status(errorStatusCode).json({message: 'failed to save the personal details investigated patient details'});
     });
 }
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
@@ -316,7 +358,7 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        response.status(errorStatusCode).send(err);
+        response.status(errorStatusCode).json({message: 'failed to save the personal details address due to ' + err});
     });
 });
 

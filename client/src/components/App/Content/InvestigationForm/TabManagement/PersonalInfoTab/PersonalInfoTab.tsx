@@ -201,14 +201,29 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'Saving personal details tab',
-                step: `got error from server: ${error}`,
+                step: `got error from server: ${error.response.data}`,
                 investigation: investigationId,
                 user: userId
             });
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error'
-            });
+            if (error?.response?.data?.message && error.response.data.message.includes('complexity')) {
+                Swal.fire({
+                    title: 'לא הצלחנו לחשב את מורכבות החקירה מחדש',
+                    text: 'משהו לא תקין בשדות גורם מבטח או תחום עיסוק',
+                    icon: 'error',
+                    customClass: {
+                        title: classes.swalTitle,
+                        content: classes.swalText
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+                    icon: 'error',
+                    customClass: {
+                        title: classes.swalTitle,
+                    }
+                });
+            }
         }) 
         personalInfoValidationSchema.isValid(data).then(valid => {
             setFormState(investigationId, id, valid);
