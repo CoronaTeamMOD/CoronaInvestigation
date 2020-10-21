@@ -11,7 +11,7 @@ import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizatio
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
 import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
-         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY } from '../../DBService/Users/Query';
+         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
@@ -311,7 +311,7 @@ const convertUserToDB = (clientUserInput: any) : User => {
     }
 }
 
-usersRoute.post('', (request: Request, response: Response) => {
+usersRoute.post('/user', (request: Request, response: Response) => {
     const newUser : User = convertUserToDB(request.body);
     graphqlRequest(CREATE_USER, response.locals, {input: newUser})
         .then((result: CreateUserResponse) => {
@@ -343,6 +343,28 @@ usersRoute.post('', (request: Request, response: Response) => {
             })
             response.status(RESPONSE_ERROR_CODE).send('Error while trying to create investigator')
         });
+});
+
+usersRoute.post('', (request: Request, response: Response) => {
+    graphqlRequest(
+        GET_USERS,
+        response.locals,
+        {
+            offset: (request.body.page.number - 1) * request.body.page.size,
+            size: request.body.page.size
+        }
+    )
+        .then((result: any) => {
+            const users = result.data.allUsers.nodes.map((user: any) => ({
+                id: user.id,
+                userName: user.userName,
+                isActive: user.isActive,
+                languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
+                userType: user.userTypeByUserType.displayName,
+                sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
+            }));
+            response.send(users);
+        })
 });
 
 export default usersRoute;
