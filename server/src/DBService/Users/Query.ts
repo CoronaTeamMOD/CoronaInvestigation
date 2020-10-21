@@ -79,6 +79,7 @@ query usersQuery($offset: Int!, $size: Int!) {
   allUsers(first: $size, offset: $offset) {
     nodes {
       id
+      fullName
       userName
       isActive
       userLanguagesByUserId {
@@ -87,6 +88,9 @@ query usersQuery($offset: Int!, $size: Int!) {
         }
       }
       userTypeByUserType {
+        displayName
+      }
+      countyByInvestigationGroup {
         displayName
       }
       sourceOrganizationBySourceOrganization {

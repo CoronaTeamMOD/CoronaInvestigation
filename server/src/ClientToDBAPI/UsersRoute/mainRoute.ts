@@ -390,10 +390,12 @@ usersRoute.post('', (request: Request, response: Response) => {
         .then((result: any) => {
             const users = result.data.allUsers.nodes.map((user: any) => ({
                 id: user.id,
+                fullName: user.fullName,
                 userName: user.userName,
                 isActive: user.isActive,
                 languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
                 userType: user.userTypeByUserType.displayName,
+                investigationGroup: user.countyByInvestigationGroup.displayName,
                 sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
             }));
             response.send(users);

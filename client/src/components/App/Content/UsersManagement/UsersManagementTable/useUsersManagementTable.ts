@@ -22,56 +22,37 @@ const useUsersManagementTable = () => {
     const [userTypes, setUserTypes] = useState<UserType[]>([]);
 
     const fetchUsers = () => {
-        const usersToSet = [
-            {
-                fullName: "בצלאל  זינגר",
-                sourceOrganization: "צהל",
-                languages: ["אנגלית", "ספרדית"],
-                id: "037103694",
-                investigationGroup: "חיפה",
-                isActive: true
-            },
-            {
-                fullName: "איתי בן משה",
-                sourceOrganization: "צהל",
-                languages: ["אנגלית", "ספרדית", "פרסית"],
-                id: "206534216",
-                investigationGroup: "תל אביב",
-                isActive: false
-            }
-        ]
-        setUsers(usersToSet);
-        // logger.info({
-        //     service: Service.CLIENT,
-        //     severity: Severity.LOW,
-        //     workflow: 'Fetching users',
-        //     step: 'launching users request',
-        //     user: userId,
-        //     investigation: epidemiologyNumber
-        // })
-        // axios.get('/users')
-        //     .then(result => {
-        //         result?.data && setUsers(result?.data);
-        //         logger.info({
-        //             service: Service.CLIENT,
-        //             severity: Severity.LOW,
-        //             workflow: 'Fetching users',
-        //             step: 'got results back from the server',
-        //             user: userId,
-        //             investigation: epidemiologyNumber
-        //         });
-        //     })
-        //     .catch(err => {
-        //         handleFailedRequest('לא ניתן היה לקבל משתמשים');
-        //         logger.error({
-        //             service: Service.CLIENT,
-        //             severity: Severity.HIGH,
-        //             workflow: 'Fetching users',
-        //             step: 'didnt get results back from the server',
-        //             user: userId,
-        //             investigation: epidemiologyNumber
-        //         });         
-        //     });
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching users',
+            step: 'launching users request',
+            user: userId,
+            investigation: epidemiologyNumber
+        })
+        axios.post('/users', { page: { number: 1, size: 20 } })
+            .then(result => {
+                result?.data && setUsers(result?.data);
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching users',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            })
+            .catch(err => {
+                handleFailedRequest('לא ניתן היה לקבל משתמשים');
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching users',
+                    step: 'didnt get results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });         
+            });
     
     }
 
