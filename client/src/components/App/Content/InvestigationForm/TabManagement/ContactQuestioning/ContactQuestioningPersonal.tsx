@@ -34,8 +34,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid item xs={3}>
                         <Toggle
                             test-id='identificationType'
-                            firstOption={'ת.ז'}
-                            secondOption={'דרכון'}
+                            firstOption='ת.ז'
+                            secondOption='דרכון'
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
                             onChange={(event, value) => changeIdentificationType(interactedContact, value)}
                         />

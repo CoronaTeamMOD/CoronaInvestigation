@@ -525,7 +525,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                         onBlur={props.onBlur}
                                                         test-id='institutionCity'
                                                         id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                        placeholder={'עיר המצאות המוסד'}
+                                                        placeholder='עיר המצאות המוסד'
                                                     />}
                                             />
                                         )}
