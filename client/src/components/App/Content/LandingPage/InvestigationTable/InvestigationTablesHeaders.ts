@@ -1,6 +1,7 @@
 export enum TableHeadersNames {
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
+    isComplex = 'isComplex',
     priority = 'priority',
     fullName = 'fullName',
     phoneNumber = 'phoneNumber',
@@ -18,13 +19,14 @@ export enum sortOrders {
     desc = 'desc'
 }
 
-export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number};
+export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
 export type Order = sortOrders.asc | sortOrders.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תאריך הבדיקה',
+    [TableHeadersNames.isComplex]: '',
     [TableHeadersNames.priority]: 'עדיפות',
     [TableHeadersNames.fullName]: 'שם מלא',
     [TableHeadersNames.phoneNumber]: 'מספר טלפון',
@@ -66,6 +68,7 @@ export const userCols: string[] = [
 export const sortableCols: sortableHeaders = {
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,
+    [TableHeadersNames.isComplex]: false,
     [TableHeadersNames.priority]: false,
     [TableHeadersNames.fullName]: false,
     [TableHeadersNames.phoneNumber]: false,

@@ -13,6 +13,7 @@ describe('investigationTable tests', () => {
             epidemiologyNumber: 111,
             mainStatus: 'חדש',
             subStatus: 'חדש2',
+            isComplex: false,
             fullName: 'אמילי',
             phoneNumber: '053-3486954',
             age: 25,
@@ -35,6 +36,7 @@ describe('investigationTable tests', () => {
         const newRow = createRowData(
             newRowData.epidemiologyNumber,
             newRowData.coronaTestDate,
+            newRowData.isComplex,
             newRowData.priority,
             newRowData.mainStatus,
             newRowData.subStatus,
@@ -54,6 +56,7 @@ describe('investigationTable tests', () => {
         const newRow = createRowData(
             newRowData.epidemiologyNumber,
             newRowData.coronaTestDate,
+            newRowData.isComplex,
             newRowData.priority,
             newRowData.fullName,
             newRowData.mainStatus,

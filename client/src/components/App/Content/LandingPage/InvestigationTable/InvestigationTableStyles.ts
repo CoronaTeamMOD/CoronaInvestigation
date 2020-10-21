@@ -54,13 +54,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
-    priorityCell: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    priorityTableCell: {
-        paddingLeft: '0'
-    },
     testDateCell: {
         width: '6vw'
     }, 
@@ -70,8 +63,28 @@ const useStyles = makeStyles((theme: Theme) => ({
     userSelectOption: {
         borderBottom: '2px solid rgba(224, 224, 224, 1)'
     },
-    popperStyle: {
-        width: 350
+    fullWidthDiv: {
+         width: '-webkit-fill-available'
+    },
+    userNameStyle: {
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    priorityCell: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    priorityWithoutComplex: {
+        marginLeft: '2vw'
+    },
+    priorityWithoutComplexSmall: {
+        marginLeft: '2.3vw'
+    },
+    priorityWithComplex: {
+        marginLeft: '0.6vw'
+    },
+    priorityTableCell: {
+        paddingLeft: '0'
     }
 }));
 

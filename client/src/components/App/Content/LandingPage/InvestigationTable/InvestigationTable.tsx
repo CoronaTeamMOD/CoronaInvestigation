@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
-    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper
+    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
+    useMediaQuery
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -26,6 +27,8 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
+const hasNoSourceOrganization = 'לא שויך למסגרת';
+const complexInvestigationMessage = 'חקירה מורכבת';
 
 const defaultInvestigator = {
     id: '',
@@ -41,6 +44,7 @@ const defaultCounty = {
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
+    const isScreenWide = useMediaQuery('(min-width: 1680px)');
 
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
@@ -72,7 +76,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const CustomPopper = (props: any) => {
-        return (<Popper {...props} className={classes.popperStyle} placement='bottom-start' />)
+        return (<Popper {...props} style={{width: 350}} placement='bottom-start' />)
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
@@ -86,24 +90,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
                             getOptionLabel={(option) => option.value.userName}
                             renderOption={(option, { selected }) => (
-                                option.value.userName ?
+                                option.value ?
                                     <>
-                                        <div>
-                                            <Typography variant='body1' color='textSecondary'>
-                                                {investigatorNameMsg} :
-                                                <b>
-                                                    {option.value.userName}
-                                                </b>
+                                        <div className={classes.fullWidthDiv}>
+                                            <Typography variant='body1' color='textSecondary' className={classes.userNameStyle}>
+                                                <a>
+                                                    {investigatorNameMsg} :
+                                                    <b>
+                                                        {option.value.userName}
+                                                    </b>
+                                                </a>
+                                                {
+                                                    option.value.sourceOrganization ? 
+                                                    option.value.sourceOrganization :
+                                                    hasNoSourceOrganization
+                                                }
                                                 <br></br>
-                                                {newInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.newInvestigationsCount}
-                                                </b>
-                                            &nbsp;&nbsp;
-                                            {activeInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.activeInvestigationsCount}
-                                                </b>
+                                            </Typography>
+                                            <Typography variant='body1' color='textSecondary'>
+                                                <a>
+                                                    {newInvestigationsMsg} :
+                                                    <b>
+                                                        {option.value.newInvestigationsCount}
+                                                    </b>
+                                                </a>
+                                                &nbsp;&nbsp;
+                                                <a>
+                                                    {activeInvestigationsMsg} :
+                                                    <b>
+                                                        {option.value.activeInvestigationsCount}
+                                                    </b>
+                                                </a>
                                             </Typography>
                                         </div>
                                     </>
@@ -164,10 +181,20 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
             case TableHeadersNames.priority: 
+                let cssClass = '';
+                if (indexedRow.isComplex) {
+                    cssClass = classes.priorityWithComplex
+                } else {
+                    if (isScreenWide) {
+                        cssClass = classes.priorityWithoutComplex;
+                    } else {
+                        cssClass = classes.priorityWithoutComplexSmall;
+                    }
+                }
                 return (
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <ComplexityIcon tooltipText='Hello world' />
-                        <span style={{marginRight: '0.5vw'}}>
+                    <div className={classes.priorityCell}>
+                        {indexedRow.isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />}
+                        <span className={cssClass}>
                             {indexedRow[cellName as keyof typeof TableHeadersNames]}
                         </span>
                     </div>

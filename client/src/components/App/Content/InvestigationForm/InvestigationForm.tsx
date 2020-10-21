@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -14,9 +15,9 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import TabManagement from './TabManagement/TabManagement';
 import useTabManagement from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
+import TabManagement, { orderedTabsNames } from './TabManagement/TabManagement';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
 export const LAST_TAB_ID = 4;
@@ -83,12 +84,18 @@ const InvestigationForm: React.FC = (): JSX.Element => {
             if(isInvestigationValid()) {
                 confirmFinishInvestigation(epidemiologyNumber);
             } else {
+                const displayedForms = [...formsValidations];
+                if (!areThereContacts) displayedForms.splice(orderedTabsNames.findIndex(tabName => tabName === TabNames.CONTACT_QUESTIONING), 1);
+                const didAnyTabsWasntChecked = displayedForms.some(form => form === null);
                 Swal.fire({
                     icon: 'error',
+                    text: didAnyTabsWasntChecked ? 'שים לב שלא עברת בחלק מהטאבים' : '',
                     title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.',
                     customClass: {
-                        title:classes.swalTitle
+                        title:classes.swalTitle,
+                        content: classes.swalText
                     },
+
                 });
             }
         } else {

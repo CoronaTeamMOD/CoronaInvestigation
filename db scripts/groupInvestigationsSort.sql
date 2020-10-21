@@ -18,6 +18,7 @@ RETURN (select
             json_build_object(
                 'epidemiologyNumber', investigationTable.epidemiology_number,
 				'coronaTestDate', investigationTable.corona_test_date,
+				'isComplex', investigationTable.complexity_code <> 2,
 				'priority', investigationTable.priority,
 				'desk', investigationTable.desk,
 				'investigatedPatientByInvestigatedPatientId', (
