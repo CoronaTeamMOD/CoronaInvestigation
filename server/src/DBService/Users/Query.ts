@@ -72,3 +72,28 @@ query allLanguages {
   }
 }
 `;
+
+
+export const GET_USERS = gql`
+query usersQuery {
+  allUsers {
+    nodes {
+      id
+      userName
+      isActive
+      userLanguagesByUserId {
+        nodes {
+          language
+        }
+      }
+      userTypeByUserType {
+        displayName
+      }
+      sourceOrganizationBySourceOrganization {
+        displayName
+      }
+    }
+  }
+}
+
+`;
