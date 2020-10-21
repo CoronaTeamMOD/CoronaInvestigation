@@ -7,7 +7,8 @@ import { PersonPin } from '@material-ui/icons';
 
 import SourceOrganization from 'models/SourceOrganization';
 import County from 'models/County';
-import UserType from 'models/enums/UserType';
+import UserTypeModel from 'models/UserType';
+import UserTypeEnum from 'models/enums/UserType';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
 import StoreStateType from 'redux/storeStateType';
 
@@ -19,11 +20,11 @@ const ACTIVE = 'פעיל';
 const NOT_ACTIVE = 'לא פעיל';
 
 const UsersManagementTable: React.FC = () => {
-    const { users, sourcesOrganization, counties } = useUsersManagementTable();
+    const { users, sourcesOrganization, counties, userTypes } = useUsersManagementTable();
     const userType =  useSelector<StoreStateType, number>(state => state.user.userType);
     const classes = useStyles();
 
-    const GenericAutoComplete = (options: County[] | SourceOrganization[], value: any) => (
+    const GenericAutoComplete = (options: County[] | SourceOrganization[] | UserTypeModel[], value: any) => (
         <Autocomplete
             options={options}
             getOptionLabel={(option) => option ? option.displayName : option}
@@ -39,7 +40,7 @@ const UsersManagementTable: React.FC = () => {
 
     const GenericPersonIcon = () => (
         <Tooltip title='צפייה בפרטי המשתמש'>
-            <IconButton onClick={() => console.log("gal")}>
+            <IconButton>
                 <PersonPin />
             </IconButton>
         </Tooltip>
@@ -66,11 +67,11 @@ const UsersManagementTable: React.FC = () => {
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION: {
                 return GenericAutoComplete(sourcesOrganization, row[cellName])
             }
-            case UsersManagementTableHeadersNames.COUNTY: {
-                return GenericAutoComplete(counties, row[cellName])
-            }
             case UsersManagementTableHeadersNames.LANGUAGES: {
                 return row[cellName].join(', ')
+            }
+            case UsersManagementTableHeadersNames.COUNTY: {
+                return GenericAutoComplete(counties, row[cellName])
             }
             case UsersManagementTableHeadersNames.USER_STATUS: {
                 return (
@@ -79,6 +80,9 @@ const UsersManagementTable: React.FC = () => {
                         setUserActivityStatus={(isActive: boolean) => console.log(isActive) }
                     />
                 )
+            }
+            case UsersManagementTableHeadersNames.USER_TYPE: {
+                return GenericAutoComplete(userTypes, row[cellName])
             }
             case UsersManagementTableHeadersNames.WATCH: {
                 return GenericPersonIcon()
@@ -115,10 +119,10 @@ const UsersManagementTable: React.FC = () => {
                                         Object.keys(UsersManagementTableHeaders).map(cellName => (
                                             <TableCell>
                                                 {
-                                                    userType === UserType.ADMIN ?
-                                                        getSuperAdminTableCell(user, cellName) :
-                                                    userType === UserType.SUPER_ADMIN ? 
-                                                        getAdminTableCell(user, cellName) : null
+                                                    userType === UserTypeEnum.ADMIN ?
+                                                        getAdminTableCell(user, cellName):
+                                                    userType === UserTypeEnum.SUPER_ADMIN ? 
+                                                        getSuperAdminTableCell(user, cellName) : null
 
                                                 }
                                             </TableCell>

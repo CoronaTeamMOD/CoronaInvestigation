@@ -74,7 +74,6 @@ query allLanguages {
 }
 `;
 
-
 export const GET_USERS = gql`
 query usersQuery($offset: Int!, $size: Int!) {
   allUsers(first: $size, offset: $offset) {
@@ -96,5 +95,15 @@ query usersQuery($offset: Int!, $size: Int!) {
     }
   }
 }
+`;
 
+export const GET_ALL_USER_TYPES = gql`
+query allUserTypes {
+  allUserTypes {
+    nodes {
+      displayName
+    	id
+    }
+  }
+}
 `;

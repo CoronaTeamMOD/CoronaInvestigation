@@ -9,9 +9,10 @@ import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
+import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse'
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
 import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
-         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS } from '../../DBService/Users/Query';
+         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS, GET_ALL_USER_TYPES } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
@@ -170,6 +171,38 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
             response.sendStatus(500);
         });
 });
+
+usersRoute.get('/userTypes', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting user types',
+        step: 'querying the graphql API',
+        user: response.locals.user.id
+    });
+    graphqlRequest(GET_ALL_USER_TYPES, response.locals)
+        .then((result: GetAllUserTypesResponse) => {
+            if (result && result.data && result.data.allUserTypes) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting user types',
+                    step: 'got user types from the DB',
+                    user: response.locals.user.id
+                });
+                response.send(result.data.allUserTypes?.nodes)
+            }
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'Getting user types',
+                step: `couldnt query all user types due to ${err}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
+        })
+})
 
 usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
     logger.info({

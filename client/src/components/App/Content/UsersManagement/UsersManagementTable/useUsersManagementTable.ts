@@ -6,6 +6,7 @@ import logger from 'logger/logger'
 import { Service, Severity } from 'models/Logger'
 import County from 'models/County';
 import SourceOrganization from 'models/SourceOrganization';
+import UserType from 'models/UserType';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
 
@@ -18,6 +19,7 @@ const useUsersManagementTable = () => {
     const [users, setUsers] = useState<any>([]);
     const [counties, setCounties] = useState<County[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
+    const [userTypes, setUserTypes] = useState<UserType[]>([]);
 
     const fetchUsers = () => {
         const usersToSet = [
@@ -84,7 +86,7 @@ const useUsersManagementTable = () => {
         })
         axios.get('/users/sourcesOrganization')
             .then(result => {
-                result?.data && setSourcesOrganization(result?.data);
+                result?.data && setSourcesOrganization(result.data);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -118,7 +120,7 @@ const useUsersManagementTable = () => {
         })
         axios.get('/counties')
             .then(result => {
-                result?.data && setCounties(result?.data);
+                result?.data && setCounties(result.data);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -141,10 +143,45 @@ const useUsersManagementTable = () => {
             });
     };
 
+    const fetchUserTypes = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching userTypes',
+            step: 'launching userTypes request',
+            user: userId,
+            investigation: epidemiologyNumber
+        })
+        axios.get('/users/userTypes')
+            .then(result => {
+                result?.data && setUserTypes(result.data);
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching userTypes',
+                    step: 'got results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            })
+            .catch(err => {
+                handleFailedRequest('לא ניתן היה לקבל סוגי משתמשים');
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching userTypes',
+                    step: 'didnt get results back from the server',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });         
+            });
+    }
+
     useEffect(() => {
         fetchUsers();
         fetchSourcesOrganization();
         fetchCounties();
+        fetchUserTypes();
     }, [])
     
     const handleFailedRequest = (message: string) => {
@@ -157,7 +194,8 @@ const useUsersManagementTable = () => {
     return {
         users,
         counties,
-        sourcesOrganization
+        sourcesOrganization,
+        userTypes
     }
 }
 
