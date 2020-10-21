@@ -346,7 +346,14 @@ usersRoute.post('/user', (request: Request, response: Response) => {
 });
 
 usersRoute.post('', (request: Request, response: Response) => {
-    graphqlRequest(GET_USERS, response.locals)
+    graphqlRequest(
+        GET_USERS,
+        response.locals,
+        {
+            offset: (request.body.page.number - 1) * request.body.page.size,
+            size: request.body.page.size
+        }
+    )
         .then((result: any) => {
             const users = result.data.allUsers.nodes.map((user: any) => ({
                 id: user.id,
