@@ -68,7 +68,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
             service: Service.CLIENT,
             severity: Severity.LOW,
             workflow: 'Fetching investigated patient roles',
-            step: 'launching HMOs request',
+            step: 'launching investigated patient roles request',
             user: userId,
             investigation: epidemiologyNumber
         });
