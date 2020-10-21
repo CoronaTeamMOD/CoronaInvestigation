@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     autoComplete: {
         width: '10vw'
+    },
+    pagination: {
+        marginTop: '3vh'
     }
 }));
 

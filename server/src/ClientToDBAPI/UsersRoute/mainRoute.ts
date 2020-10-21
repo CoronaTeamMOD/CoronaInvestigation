@@ -388,6 +388,7 @@ usersRoute.post('', (request: Request, response: Response) => {
         }
     )
         .then((result: any) => {
+            const totalCount = result.data.allUsers.totalCount;
             const users = result.data.allUsers.nodes.map((user: any) => ({
                 id: user.id,
                 fullName: user.fullName,
@@ -398,7 +399,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                 investigationGroup: user.countyByInvestigationGroup.displayName,
                 sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
             }));
-            response.send(users);
+            response.send({users, totalCount});
         })
 });
 

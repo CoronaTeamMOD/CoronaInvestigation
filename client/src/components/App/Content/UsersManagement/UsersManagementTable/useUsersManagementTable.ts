@@ -10,8 +10,7 @@ import UserType from 'models/UserType';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
 
-
-const useUsersManagementTable = () => {
+const useUsersManagementTable = ({ page, rowsPerPage}: useUsersManagementTableInCome) : useUsersManagementTableOutCome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -20,6 +19,7 @@ const useUsersManagementTable = () => {
     const [counties, setCounties] = useState<County[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
     const [userTypes, setUserTypes] = useState<UserType[]>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
 
     const fetchUsers = () => {
         logger.info({
@@ -30,9 +30,10 @@ const useUsersManagementTable = () => {
             user: userId,
             investigation: epidemiologyNumber
         })
-        axios.post('/users', { page: { number: 1, size: 20 } })
+        axios.post('/users', { page: { number: page, size: rowsPerPage } })
             .then(result => {
-                result?.data && setUsers(result?.data);
+                result?.data && setUsers(result.data?.users);
+                result?.data && setTotalCount(result.data?.totalCount);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -158,13 +159,6 @@ const useUsersManagementTable = () => {
             });
     }
 
-    useEffect(() => {
-        fetchUsers();
-        fetchSourcesOrganization();
-        fetchCounties();
-        fetchUserTypes();
-    }, [])
-    
     const handleFailedRequest = (message: string) => {
         Swal.fire({
           title: message,
@@ -172,12 +166,37 @@ const useUsersManagementTable = () => {
         })
     }
 
+    useEffect(() => {
+        fetchSourcesOrganization();
+        fetchCounties();
+        fetchUserTypes();
+    }, [])
+
+    useEffect(() => {
+        fetchUsers();
+    }, [page])
+    
+
     return {
         users,
         counties,
         sourcesOrganization,
-        userTypes
+        userTypes,
+        totalCount
     }
+}
+
+interface useUsersManagementTableInCome {
+    page: number;
+    rowsPerPage: number;
+}
+
+interface useUsersManagementTableOutCome {
+    users: any
+    counties: County[];
+    sourcesOrganization: SourceOrganization[];
+    userTypes: UserType[];
+    totalCount: number;
 }
 
 export default useUsersManagementTable;

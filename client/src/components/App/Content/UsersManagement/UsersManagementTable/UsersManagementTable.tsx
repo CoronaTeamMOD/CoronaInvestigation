@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
          TableSortLabel, TextField, IconButton, Tooltip } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 
 import SourceOrganization from 'models/SourceOrganization';
@@ -18,10 +18,18 @@ import useUsersManagementTable from './useUsersManagementTable';
 
 const ACTIVE = 'פעיל';
 const NOT_ACTIVE = 'לא פעיל';
+const rowsPerPage : number = 7;
 
 const UsersManagementTable: React.FC = () => {
-    const { users, sourcesOrganization, counties, userTypes } = useUsersManagementTable();
+    const [page, setPage] = useState<number>(1);
+
+    const { users, sourcesOrganization, counties, userTypes, totalCount } = useUsersManagementTable({ page, rowsPerPage });
+    
+    // @ts-ignore
+    const totalPages : number = totalCount % rowsPerPage === 0 ? parseInt(totalCount / rowsPerPage) : parseInt(totalCount / rowsPerPage) + 1  ;
+
     const userType =  useSelector<StoreStateType, number>(state => state.user.userType);
+
     const classes = useStyles();
 
     const GenericAutoComplete = (options: County[] | SourceOrganization[] | UserTypeModel[], value: any) => (
@@ -134,6 +142,13 @@ const UsersManagementTable: React.FC = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Pagination 
+                count={totalPages}
+                page={page}
+                onChange={(event, value) => setPage(value)}
+                size='large'
+                className={classes.pagination}
+            />
         </Grid>
     );
 };

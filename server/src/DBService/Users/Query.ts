@@ -97,6 +97,7 @@ query usersQuery($offset: Int!, $size: Int!) {
         displayName
       }
     }
+    totalCount
   }
 }
 `;
