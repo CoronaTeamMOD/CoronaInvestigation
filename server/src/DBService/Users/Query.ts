@@ -38,6 +38,7 @@ query AllGroupUsers($investigationGroup: Int!) {
         totalCount
       }
       userType
+      sourceOrganization
     }
   }
 }

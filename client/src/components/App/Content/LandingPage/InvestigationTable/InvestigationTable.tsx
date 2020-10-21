@@ -25,6 +25,7 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
+const hasNoSourceOrganization = 'לא שויך למסגרת';
 
 const defaultInvestigator = {
     id: '',
@@ -71,7 +72,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const CustomPopper = (props: any) => {
-        return (<Popper {...props} className={classes.popperStyle} placement='bottom-start' />)
+        return (<Popper {...props} placement='bottom-start' />)
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
@@ -85,24 +86,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
                             getOptionLabel={(option) => option.value.userName}
                             renderOption={(option, { selected }) => (
-                                option.value.userName ?
+                                option.value ?
                                     <>
-                                        <div>
-                                            <Typography variant='body1' color='textSecondary'>
-                                                {investigatorNameMsg} :
-                                                <b>
-                                                    {option.value.userName}
-                                                </b>
+                                        <div className={classes.fullWidthDiv}>
+                                            <Typography variant='body1' color='textSecondary' className={classes.userNameStyle}>
+                                                <a>
+                                                    {investigatorNameMsg} :
+                                                    <b>
+                                                        {option.value.userName}
+                                                    </b>
+                                                </a>
+                                                {
+                                                    option.value.sourceOrganization ? 
+                                                    option.value.sourceOrganization :
+                                                    hasNoSourceOrganization
+                                                }
                                                 <br></br>
-                                                {newInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.newInvestigationsCount}
-                                                </b>
-                                            &nbsp;&nbsp;
-                                            {activeInvestigationsMsg} :
-                                                <b>
-                                                    {option.value.activeInvestigationsCount}
-                                                </b>
+                                            </Typography>
+                                            <Typography variant='body1' color='textSecondary'>
+                                                <a>
+                                                    {newInvestigationsMsg} :
+                                                    <b>
+                                                        {option.value.newInvestigationsCount}
+                                                    </b>
+                                                </a>
+                                                &nbsp;&nbsp;
+                                                <a>
+                                                    {activeInvestigationsMsg} :
+                                                    <b>
+                                                        {option.value.activeInvestigationsCount}
+                                                    </b>
+                                                </a>
                                             </Typography>
                                         </div>
                                     </>
@@ -127,7 +141,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 />
                             }
                             classes={{
-                                option: classes.userSelectOption
+                                option: classes.userSelectOption,
+                                popper: classes.popperStyle
                             }}
                         />)
                 }

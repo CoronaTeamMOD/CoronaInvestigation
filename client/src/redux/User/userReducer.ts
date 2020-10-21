@@ -14,6 +14,7 @@ export const initialUserState: User = {
     activeInvestigationsCount: 0,
     newInvestigationsCount: 0,
     userType: userType.INVESTIGATOR,
+    sourceOrganization: ''
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {

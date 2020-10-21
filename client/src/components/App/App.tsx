@@ -114,6 +114,7 @@ const App: React.FC = (): JSX.Element => {
                         activeInvestigationsCount: 0,
                         newInvestigationsCount: 0,
                         userType: userType.INVESTIGATOR,
+                        sourceOrganization: ''
                     });
                     fetchUser();
                 })
@@ -133,6 +134,7 @@ const App: React.FC = (): JSX.Element => {
                 activeInvestigationsCount: 0,
                 newInvestigationsCount: 0,
                 userType: userType.INVESTIGATOR,
+                sourceOrganization: ''
             });
             fetchUser();
         }
