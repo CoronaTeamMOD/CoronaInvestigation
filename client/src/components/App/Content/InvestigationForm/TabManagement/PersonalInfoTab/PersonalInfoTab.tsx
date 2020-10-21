@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers';
 import React, { useContext, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
-import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, Typography, FormControl, Collapse } from '@material-ui/core';
+import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, Typography, FormControl, Collapse, Select, MenuItem } from '@material-ui/core';
 
 
 import City from 'models/City';
@@ -22,7 +22,6 @@ import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
-import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
@@ -53,6 +52,8 @@ const TRANSPORTATION_COMPANY_NAME_LABEL = 'שם החברה*';
 const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
+
+const grades = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -670,14 +671,24 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                         control={methods.control}
                                         render={(props) => (
-                                            <AlphabetTextField
-                                                name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                className={props.value && classes.markComplexity}
-                                                value={props.value}
-                                                onChange={(newValue: string) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
-                                                placeholder='שכבה'
-                                            />
+                                            <FormControl>
+                                                <Select
+                                                    name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                    value={props.value}
+                                                    onChange={(event) => props.onChange(event.target.value)}
+                                                >
+                                                    {
+                                                        grades.map((grade) => (
+                                                            <MenuItem
+                                                                key={grade}
+                                                                placeholder='שכבה'
+                                                                value={grade}>
+                                                                {grade}
+                                                            </MenuItem>
+                                                        ))
+                                                    }
+                                                </Select>
+                                            </FormControl>
                                         )}
                                     />
                                 </Grid>
