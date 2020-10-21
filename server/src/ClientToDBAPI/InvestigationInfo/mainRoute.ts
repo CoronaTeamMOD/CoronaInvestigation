@@ -121,7 +121,7 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
 
 investigationInfo.post('/updateInvestigationEndTime', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationEndTime } = request.body;
-    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationEndTime })
+    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationEndTime: new Date() })
     .then((result: any) => response.send(result));
 })
 
