@@ -17,6 +17,9 @@ const useStyles = makeStyles({
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
+    },
+    swalText: {
+        fontFamily: 'Assistant',
     }
 });
 
