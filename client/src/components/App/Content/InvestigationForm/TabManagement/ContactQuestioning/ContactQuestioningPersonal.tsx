@@ -35,6 +35,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                     <Grid item xs={3}>
                         <Toggle
+                            test-id='identificationType'
                             firstOption={'ת.ז'}
                             secondOption={'דרכון'}
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
@@ -46,7 +47,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                     <Grid item xs={3}>
                         <AlphanumericTextField
-                            testId={'identificationNumber'}
+                            testId='identificationNumber'
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             value={interactedContact.identificationNumber}
                             onChange={(newValue: string) =>
@@ -60,6 +61,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item xs={10}>
                     <FormInput fieldName='תאריך לידה'>
                         <DatePick
+                            testId='contactBirthDate'
                             maxDate={new Date()}
                             useBigCalender={false}
                             value={interactedContact.birthDate}
@@ -83,7 +85,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
                         <NumericTextField
-                            testId={'additionalPhoneNumber'}
+                            testId='additionalPhoneNumber'
                             name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             value={interactedContact.additionalPhoneNumber}
                             onChange={(newValue: string) =>

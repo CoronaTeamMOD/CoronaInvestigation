@@ -70,6 +70,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
+                                    test-id='familyRelationshipSelect'
                                     name={InteractedContactFields.FAMILY_RELATIONSHIP}
                                     placeholder='קרבה משפחתית'
                                     value={interactedContact.familyRelationship}
@@ -95,7 +96,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName='קשר'>
                         <AlphanumericTextField
-                            testId={'relationship'}
+                            testId='relationship'
                             name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
                             onChange={(newValue: string) =>
@@ -122,6 +123,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
+                                        test-id='contactedPersonCity'
                                         id={InteractedContactFields.CONTACTED_PERSON_CITY}
                                         placeholder='עיר'
                                         value={interactedContact.contactedPersonCity}
@@ -135,6 +137,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <Typography variant='body2'><b>האם נדרש סיוע עבור מקום בידוד?</b></Typography>
                         <Toggle
+                            test-id='doesNeedHelpInIsolation'
                             value={interactedContact.doesNeedHelpInIsolation}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
                         />
@@ -144,6 +147,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <Typography variant='body2'><b>הקמת דיווח בידוד</b></Typography>
                         <Toggle
+                            test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
                         />
@@ -152,6 +156,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName='תאריך סיום בידוד'>
                         <AlphanumericTextField
+                            testId='isolationEndDate'
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}
                             onChange={() => {}}
