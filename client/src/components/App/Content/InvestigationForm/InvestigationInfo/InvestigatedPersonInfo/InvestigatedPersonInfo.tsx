@@ -37,6 +37,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
+    const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
 
     const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
 
@@ -68,6 +69,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
+                    {birthDate === null && !fullName && !isLoading && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
                     <PhoneDial
                         phoneNumber={primaryPhone}
                     />
@@ -86,7 +88,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={CakeOutlined}
                     />
                     {
-                        (age && Number(age) <= maxComplexityAge) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                        (age && +age <= maxComplexityAge) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
@@ -95,7 +97,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={CalendarToday}
                     />
                     {
-                        birthDate === null && !fullName && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                        birthDate === null && !isLoading && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך קבלת תשובה חיובית' value=
