@@ -123,7 +123,7 @@ const useStyles = makeStyles({
         flexDirection: 'row',
     },
     complexIconOnOccupation: {
-        marginTop: '2vh',
+        marginTop: '5%',
     },
 });
 
