@@ -180,7 +180,7 @@ const authMiddleware = (
                     service: Service.SERVER,
                     severity: Severity.HIGH,
                     workflow: 'Authentication',
-                    step: 'error in requesting the graphql API',
+                    step: 'error in requesting the graphql API due to ' + err,
                     user: user.id,
                 });
             });;
