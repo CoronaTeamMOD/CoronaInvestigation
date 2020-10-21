@@ -94,6 +94,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                     }
                         icon={CalendarToday}
                     />
+                    {
+                        birthDate === null && !fullName && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך קבלת תשובה חיובית' value=
                     {
