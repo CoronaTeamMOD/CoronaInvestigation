@@ -1,5 +1,5 @@
-import React from 'react';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 import {useSelector} from 'react-redux';
 import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
 
@@ -27,13 +27,17 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const {parseAddress} = useGoogleApiAutocomplete();
     const {alertError} = useCustomSwal();
+    
+    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
+    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
+    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const classes = useStyles({});
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = () => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -53,7 +57,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                setTestDate(convertDate(res.data.coronaTestDate));
+                setCoronaTestDate(convertDate(res.data.coronaTestDate));
             } else {
                 logger.warn({
                     service: Service.CLIENT,
@@ -65,7 +69,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
+    const getDatesToInvestigate = (): Date[] => {
         if (coronaTestDate !== null) {
             const endInvestigationDate = new Date();
             let startInvestigationDate: Date;
@@ -92,7 +96,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         return [];
     }
 
-    const getClinicalDetailsSymptoms = (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const getClinicalDetailsSymptoms = () => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -103,7 +107,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
-                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                if (result?.data) {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -112,10 +116,9 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
-                    setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
-                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms);
+                    const clinicalDetails = result.data;
+                    setDoesHaveSymptoms(clinicalDetails.doesHaveSymptoms);
+                    setSymptomsStartDate(convertDate(clinicalDetails.symptomsStartTime));
                 } else {
                     logger.warn({
                         service: Service.CLIENT,

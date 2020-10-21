@@ -9,9 +9,9 @@ export interface useInteractionsTabParameters {
 };
 
 export interface useInteractionsTabOutcome {
-    getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
+    getDatesToInvestigate: () => Date[];
     loadInteractions: () => void;
-    getCoronaTestDate: (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => void;
-    getClinicalDetailsSymptoms: (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean | any>>) => void;
+    getCoronaTestDate: () => void;
+    getClinicalDetailsSymptoms: () => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
 };

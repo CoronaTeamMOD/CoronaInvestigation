@@ -22,9 +22,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
-    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
-    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
-    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, getClinicalDetailsSymptoms, handleDeleteContactEvent } =
         useInteractionsTab({
@@ -35,8 +32,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     useEffect(() => {
         loadInteractions();
-        getCoronaTestDate(setCoronaTestDate);
-        getClinicalDetailsSymptoms(setSymptomsStartDate, setDoesHaveSymptoms);
+        getCoronaTestDate();
+        getClinicalDetailsSymptoms();
     }, []);
 
     useEffect(() => {
@@ -68,7 +65,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
+                    getDatesToInvestigate().map(date =>
                         <ContactDateCard
                             loadInteractions={loadInteractions}
                             contactDate={date}
