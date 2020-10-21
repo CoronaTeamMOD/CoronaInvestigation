@@ -95,6 +95,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName='קשר'>
                         <AlphanumericTextField
+                            testId={'relationship'}
                             name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
                             onChange={(newValue: string) =>

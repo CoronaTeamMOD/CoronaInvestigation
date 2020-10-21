@@ -46,6 +46,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     </Grid>
                     <Grid item xs={3}>
                         <AlphanumericTextField
+                            testId={'identificationNumber'}
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             value={interactedContact.identificationNumber}
                             onChange={(newValue: string) =>
@@ -72,6 +73,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FormInput fieldName='גיל'>
                         <AlphanumericTextField
                             name='age'
+                            testId='contactAge'
                             value={contactAge}
                             onChange={() => {}}
                             placeholder='בחר תאריך לידה'
@@ -81,6 +83,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid item>
                     <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
                         <NumericTextField
+                            testId={'additionalPhoneNumber'}
                             name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             value={interactedContact.additionalPhoneNumber}
                             onChange={(newValue: string) =>
