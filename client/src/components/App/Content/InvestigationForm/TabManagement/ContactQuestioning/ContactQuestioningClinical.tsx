@@ -113,8 +113,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                             <Autocomplete
                                 className={classes.autocompleteTextField}
                                 options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
-                                getOptionLabel={(option) => option.value.displayName}
-                                inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName}
+                                getOptionLabel={(option) => option?.value?.displayName || ''}
+                                inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName || ''}
                                 onChange={(event, selectedCity) => {
                                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.cityId);
                                 }}
