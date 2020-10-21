@@ -5,6 +5,7 @@ const useStyles = makeStyles({
         fontWeight: 'bold',
         fontSize: '1.4rem',
         marginRight: '1vw',
+        flip:false,
     },
 });
 
