@@ -118,6 +118,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                 <div key={interactedContact.id} className={classes.form}>
                                     <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                         <AccordionSummary
+                                            test-id='contactLocation'
                                             expandIcon={<ExpandMore />}
                                             onClick={() => {
                                                 updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
@@ -135,6 +136,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                         })}
                                                         control={
                                                             <Checkbox
+                                                                test-id='noAnswer'
                                                                 color='primary'
                                                                 checked={currentInteractedContact?.id === interactedContact.id ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
                                                             />
@@ -199,6 +201,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                             </Grid>
                                         </AccordionDetails>
                                         <PrimaryButton
+                                            test-id='saveContact'
                                             style={{ marginRight: '1.5vw' }}
                                             onClick={() => {
                                                 saveContact(interactedContact);

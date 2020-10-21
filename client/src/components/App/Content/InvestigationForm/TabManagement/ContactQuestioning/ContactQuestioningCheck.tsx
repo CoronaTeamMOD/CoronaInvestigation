@@ -27,6 +27,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container justify='space-between'>
                         <Typography variant='body2' className={classes.text}><b>האם חש בטוב?</b></Typography>
                         <Toggle
+                            test-id='doesFeelGood'
                             value={interactedContact.doesFeelGood}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_FEEL_GOOD, booleanValue)}
                         />
@@ -36,6 +37,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container justify='space-between'>
                         <Typography variant='body2' className={classes.text}><b>האם סובל ממחלות רקע?</b></Typography>
                         <Toggle
+                            test-id='doesHaveBackgroundDiseases'
                             value={interactedContact.doesHaveBackgroundDiseases}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, booleanValue)}
                         />
@@ -45,6 +47,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container justify='space-between'>
                         <Typography variant='body2' className={classes.text}><b>האם חי באותו הבית עם המאומת?</b></Typography>
                         <Toggle
+                            test-id='doesLiveWithConfirmed'
                             value={interactedContact.doesLiveWithConfirmed}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, booleanValue)}
                         />
@@ -54,6 +57,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container justify='space-between'>
                         <Typography variant='body2' className={classes.text}><b>מפגש חוזר עם המאומת?</b></Typography>
                         <Toggle
+                            test-id='repeatingOccuranceWithConfirmed'
                             value={interactedContact.repeatingOccuranceWithConfirmed}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, booleanValue)}
                         />
@@ -63,6 +67,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                     <Grid container justify='space-between'>
                         <Typography variant='body2' className={classes.text}><b>עבודה עם קהל במסגרת העבודה?</b></Typography>
                         <Toggle
+                            test-id='doesWorkWithCrowd'
                             value={interactedContact.doesWorkWithCrowd}
                             onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_WORK_WITH_CROWD, booleanValue)}
                         />
