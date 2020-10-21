@@ -4,6 +4,7 @@ import Investigator from './Investigator';
 interface InvestigationTableRow {
     epidemiologyNumber: number;
     coronaTestDate: string;
+    isComplex: boolean;
     priority: number;
     mainStatus: string;
     subStatus: string;

@@ -63,6 +63,28 @@ const useStyles = makeStyles((theme: Theme) => ({
     userNameStyle: {
         display: 'flex',
         justifyContent: 'space-between'
+    },
+    priorityCell: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    priorityWithoutComplex: {
+        marginLeft: '2vw'
+    },
+    priorityWithoutComplexSmall: {
+        marginLeft: '2.3vw'
+    },
+    priorityWithComplex: {
+        marginLeft: '0.6vw'
+    },
+    priorityTableCell: {
+        paddingLeft: '0'
+    },
+    testDateCell: {
+        width: '6vw'
+    }, 
+    epiNumberCell: {
+        width: '7vw'
     }
 }));
 
