@@ -1,7 +1,6 @@
 interface User {
     id: string;
     token: string;
-    isAdmin: boolean;
     isActive: boolean;
     investigationGroup: number;
     phoneNumber: string;
@@ -9,6 +8,7 @@ interface User {
     userName: string;
     newInvestigationsCount: number;
     activeInvestigationsCount: number;
+    userType: number;
 };
 
 export default User;
