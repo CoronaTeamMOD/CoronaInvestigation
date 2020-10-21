@@ -63,9 +63,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     userNameStyle: {
         display: 'flex',
         justifyContent: 'space-between'
-    },
-    popperStyle: {
-        width: 350
     }
 }));
 
