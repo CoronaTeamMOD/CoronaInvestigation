@@ -663,48 +663,53 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         )}
                                     />
                                 </Grid>
-                                <Collapse in={roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM}>
-                                    <Grid item xs={1}>
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                            control={methods.control}
-                                            render={(props) => (
-                                                <FormControl>
-                                                    <Select
-                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                {
+                                    roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM &&
+                                    <>
+                                        <Grid item xs={1}>
+                                            <Controller
+                                                name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                control={methods.control}
+                                                render={(props) => (
+                                                    <FormControl>
+                                                        <Select
+                                                            name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                            className={props.value && classes.markComplexity}
+                                                            value={props.value}
+                                                            onChange={(event) => props.onChange(event.target.value)}
+                                                        >
+                                                            {
+                                                                grades.map((grade: string) => (
+                                                                    <MenuItem
+                                                                        key={grade}
+                                                                        value={grade}>
+                                                                        {grade}
+                                                                    </MenuItem>
+                                                                ))
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={1}>
+                                            <Controller
+                                                name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
+                                                control={methods.control}
+                                                render={(props) => (
+                                                    <NumericTextField
+                                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
                                                         className={props.value && classes.markComplexity}
                                                         value={props.value}
-                                                        onChange={(event) => props.onChange(event.target.value)}
-                                                    >
-                                                        {
-                                                            grades.map((grade: string) => (
-                                                                <MenuItem
-                                                                    key={grade}
-                                                                    value={grade}>
-                                                                    {grade}
-                                                                </MenuItem>
-                                                            ))
-                                                        }
-                                                    </Select>
-                                                </FormControl>
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Controller
-                                        name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                        control={methods.control}
-                                        render={(props) => (
-                                            <NumericTextField
-                                                name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                                className={props.value && classes.markComplexity}
-                                                value={props.value}
-                                                onChange={(newValue) => props.onChange(newValue)}
-                                                onBlur={props.onBlur}
-                                                placeholder='כיתה'
+                                                        onChange={(newValue) => props.onChange(newValue)}
+                                                        onBlur={props.onBlur}
+                                                        placeholder='כיתה'
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
-                                </Collapse>
+                                        </Grid>
+                                    </>
+                                }
                             </>
                                 : subOccupations.length > 0 ? <Grid item xs={3}>{institutionComponent}</Grid> :
                                     <Grid item xs={2}>
