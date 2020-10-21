@@ -25,7 +25,7 @@ const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
 const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
-const hasNoSorceOrganization = 'לא שויך למסגרת';
+const hasNoSourceOrganization = 'לא שויך למסגרת';
 
 const defaultInvestigator = {
     id: '',
@@ -72,7 +72,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const CustomPopper = (props: any) => {
-        return (<Popper {...props} style={{ width: 350 }} placement='bottom-start' />)
+        return (<Popper {...props} placement='bottom-start' />)
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
@@ -99,7 +99,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 {
                                                     option.value.sourceOrganization ? 
                                                     option.value.sourceOrganization :
-                                                    hasNoSorceOrganization
+                                                    hasNoSourceOrganization
                                                 }
                                                 <br></br>
                                             </Typography>
@@ -141,7 +141,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 />
                             }
                             classes={{
-                                option: classes.userSelectOption
+                                option: classes.userSelectOption,
+                                popper: classes.popperStyle
                             }}
                         />)
                 }
