@@ -123,7 +123,7 @@ const InteractionEventForm: React.FC<Props> = (
       <FormProvider {...methods}>
         <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
           <Grid className={formClasses.form} container justify='flex-start'>
-            <PlacesTypesAndSubTypes
+            <PlacesTypesAndSubTypes size='Dialog'
               placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
               placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
               placeType={placeType}

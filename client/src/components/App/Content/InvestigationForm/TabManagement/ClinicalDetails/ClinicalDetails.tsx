@@ -3,10 +3,8 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { Grid, Typography, TextField } from '@material-ui/core';
-import { useForm, Controller } from 'react-hook-form';
 import { Grid, TextField } from '@material-ui/core';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -328,7 +326,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 </Grid>
                                 </>
                             </FormRowWithInput>
-                            </Grid>
                         </Grid>
                         <Grid item xs={12}>
                             <IsolationProblemFields
@@ -365,7 +362,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
-
                             <Grid item xs={2}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
@@ -384,8 +380,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     />
                                 </Grid>
                             </FormRowWithInput>
-
-                        </Grid>
                         </Grid>
                     </Grid>
                 </form>

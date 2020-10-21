@@ -10,7 +10,7 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchIsInIsolation, errors, trigger, watchIsolationStartDate, watchIsolationEndDate } = props;
+    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate } = props;
     const { control, errors, trigger} = useFormContext();
 
     React.useEffect(() => {

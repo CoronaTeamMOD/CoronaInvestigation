@@ -210,7 +210,7 @@ const ExposureForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <PlacesTypesAndSubTypes
+      <PlacesTypesAndSubTypes size='Tab'
         placeTypeName={fieldsNames.placeType}
         placeSubTypeName={fieldsNames.placeSubType}
         placeType={exposureAndFlightsData[fieldsNames.placeType]}

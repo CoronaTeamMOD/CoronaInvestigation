@@ -9,7 +9,6 @@ import City from 'models/City';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
-import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -93,15 +92,17 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <FieldName xs={6} fieldName='קשר:'/>
-                    <AlphanumericTextField
-                        testId='relationship'
-                        name={InteractedContactFields.RELATIONSHIP}
+                    <Grid item xs={6}>
+                        <AlphanumericTextField
+                            testId='relationship'
+                            name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.RELATIONSHIP, newValue as string
-                            )}
+                                )}
                             placeholder='קשר'
                         />
+                    </Grid>
                 </Grid>
                 <Grid container item>
                     <Grid container item>
@@ -150,12 +151,16 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <FieldName xs={6} fieldName='תאריך סיום בידוד:'/>
-                     <AlphanumericTextField
-                         testId='isolationEndDate'
-                         name='isolationEndDate'
+
+                    <Grid item xs={6}>
+                        <AlphanumericTextField
+                            testId='isolationEndDate'
+                            name='isolationEndDate'
                             value={formattedIsolationEndDate}
-                            onChange={() => {}}
+                            onChange={() => {
+                            }}
                         />
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

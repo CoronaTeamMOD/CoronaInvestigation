@@ -1,6 +1,5 @@
 import React from 'react';
-import { Controller,Control, useFormContext } from 'react-hook-form';
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -11,7 +10,7 @@ import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, control, watchIsIsolationProblem, setError, clearErrors, errors } = props;
+    const { classes, watchIsIsolationProblem } = props;
     const { control } = useFormContext();
 
     return (

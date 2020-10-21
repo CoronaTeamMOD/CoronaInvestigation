@@ -75,7 +75,7 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        minWidth: '35vw',
+        minWidth: '45vw',
     }
 });
 
