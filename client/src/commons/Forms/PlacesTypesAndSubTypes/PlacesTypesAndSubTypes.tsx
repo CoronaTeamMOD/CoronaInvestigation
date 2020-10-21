@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import {Grid, FormControl, TextField} from '@material-ui/core';
 
-import FormRowWithInput from 'FormRowWithInput/FormRowWithInput';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import FormInput from 'commons/FormInput/FormInput';
