@@ -131,7 +131,7 @@ investigationInfo.post('/updateInvestigationEndTime', (request: Request, respons
         user: response.locals.user.id,
         investigation: response.locals.epidemiologyNumber
     });
-    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationEndTime })
+    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, { epidemiologyNumber: +epidemiologyNumber, investigationEndTime: new Date() })
     .then((result: any) => {
         logger.info({
             service: Service.CLIENT,
