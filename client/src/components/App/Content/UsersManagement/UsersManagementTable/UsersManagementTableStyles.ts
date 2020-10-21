@@ -16,11 +16,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     autoComplete: {
         width: '10vw'
-    },
-    toggle: {
-        borderRadius: '2.5vh',
-        height: '4vh',
-        width: '4vw',
     }
 }));
 

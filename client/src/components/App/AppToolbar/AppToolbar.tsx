@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import useAppToolbar from './useAppToolbar';
-import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 

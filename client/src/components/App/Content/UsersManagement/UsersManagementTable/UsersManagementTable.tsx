@@ -1,18 +1,26 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         TableSortLabel, TextField, Icon } from '@material-ui/core';
-import { Autocomplete, ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+         TableSortLabel, TextField, IconButton, Tooltip } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 
 import SourceOrganization from 'models/SourceOrganization';
 import County from 'models/County';
+import UserType from 'models/enums/UserType';
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
+import StoreStateType from 'redux/storeStateType';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders'
 import useStyles from './UsersManagementTableStyles'
 import useUsersManagementTable from './useUsersManagementTable';
 
+const ACTIVE = 'פעיל';
+const NOT_ACTIVE = 'לא פעיל';
+
 const UsersManagementTable: React.FC = () => {
     const { users, sourcesOrganization, counties } = useUsersManagementTable();
+    const userType =  useSelector<StoreStateType, number>(state => state.user.userType);
     const classes = useStyles();
 
     const GenericAutoComplete = (options: County[] | SourceOrganization[], value: any) => (
@@ -29,7 +37,31 @@ const UsersManagementTable: React.FC = () => {
         />
     )
 
-    const getTableCell = (row: any, cellName: string) => {
+    const GenericPersonIcon = () => (
+        <Tooltip title='צפייה בפרטי המשתמש'>
+            <IconButton onClick={() => console.log("gal")}>
+                <PersonPin />
+            </IconButton>
+        </Tooltip>
+    )
+    
+    const getAdminTableCell = (row: any, cellName: string) => {
+        switch (cellName) {
+            case UsersManagementTableHeadersNames.LANGUAGES: {
+                return row[cellName].join(', ')
+            }
+            case UsersManagementTableHeadersNames.USER_STATUS: {
+                return row[cellName] === true ? ACTIVE : NOT_ACTIVE
+            }
+            case UsersManagementTableHeadersNames.WATCH: {
+                return GenericPersonIcon()
+            }
+            default: 
+                return row[cellName]
+        }
+    }
+
+    const getSuperAdminTableCell = (row: any, cellName: string) => {
         switch(cellName) {
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION: {
                 return GenericAutoComplete(sourcesOrganization, row[cellName])
@@ -41,30 +73,15 @@ const UsersManagementTable: React.FC = () => {
                 return row[cellName].join(', ')
             }
             case UsersManagementTableHeadersNames.USER_STATUS: {
-                // TODO: use generic isActiveToggle
                 return (
-                    <ToggleButtonGroup 
-                        value={row[cellName]}
-                    >
-                        <ToggleButton
-                            value={true}
-                            className={classes.toggle}
-                            style={row[cellName] ? { backgroundColor: '#57ff83' } : undefined }
-                        >
-                            פעיל
-                        </ToggleButton>
-                        <ToggleButton 
-                            value={false} 
-                            className={classes.toggle}
-                            style={!row[cellName] ? { backgroundColor: '#fc4e5f' } : undefined }
-                        >
-                            לא פעיל
-                        </ToggleButton>
-                    </ToggleButtonGroup>
+                    <IsActiveToggle 
+                        value={row[cellName]} 
+                        setUserActivityStatus={(isActive: boolean) => console.log(isActive) }
+                    />
                 )
             }
             case UsersManagementTableHeadersNames.WATCH: {
-                return <PersonPin />
+                return GenericPersonIcon()
             }
             default: 
                 return row[cellName]
@@ -98,7 +115,11 @@ const UsersManagementTable: React.FC = () => {
                                         Object.keys(UsersManagementTableHeaders).map(cellName => (
                                             <TableCell>
                                                 {
-                                                    getTableCell(user, cellName)
+                                                    userType === UserType.ADMIN ?
+                                                        getSuperAdminTableCell(user, cellName) :
+                                                    userType === UserType.SUPER_ADMIN ? 
+                                                        getAdminTableCell(user, cellName) : null
+
                                                 }
                                             </TableCell>
                                         ))
