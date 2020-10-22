@@ -96,7 +96,7 @@ personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, respons
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        response.send(result);
+        response.send(result?.data?.allInvestigatedPatientRoles?.nodes);
     }).catch(error => {
         logger.error({
             service: Service.SERVER,
