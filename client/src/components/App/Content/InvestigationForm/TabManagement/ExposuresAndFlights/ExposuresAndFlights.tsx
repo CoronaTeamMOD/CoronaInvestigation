@@ -13,6 +13,8 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import FormTitle from 'commons/FormTitle/FormTitle';
+import FieldName from 'commons/FieldName/FieldName';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
@@ -38,6 +40,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
   const methods = useForm();
 
   const { fieldName } = useFormStyles();
+  const { fieldContainer } = useFormStyles();
   const classes = useStyles();
 
   const disableConfirmedExposureAddition : boolean= React.useMemo(() => 
@@ -217,11 +220,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
       <FormProvider {...methods}>
         <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
           <div className={classes.subForm}>
-            <Typography variant='caption' className={fieldName}>
-              חשיפה אפשרית
-            </Typography>
+              <FormTitle title='חשיפה אפשרית'/>
 
-            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+              <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
               <Toggle
                 value={wereConfirmedExposures}
                 onChange={(e, value) => {
@@ -238,7 +239,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
             >
               <div>
                 {
-                  exposures.map((exposure, index) => 
+                  exposures.map((exposure, index) =>
                     exposure.wasConfirmedExposure &&
                       <>
                         <ExposureForm
@@ -269,15 +270,13 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
               </div>
             </Collapse>
           </div>
-              
+
           <Divider />
-              
+
           <div className={classes.subForm}>
-            <Typography variant='caption' className={fieldName}>
-              חזרה מחו״ל
-            </Typography>
-              
-            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
+              <FormTitle title='חזרה מחו״ל'/>
+
+              <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
               <Toggle
                 value={wereFlights}
                 onChange={(e, value) => {
@@ -287,17 +286,15 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
                 }}
               />
             </FormRowWithInput>
-              
+
             <Collapse
               in={wereFlights}
               className={classes.additionalInformationForm}
             >
               <div>
-                <Typography variant='caption' className={fieldName}>
-                  פרטי טיסת חזור לארץ:
-                </Typography>
-                {
-                  exposures.map((exposure, index) => 
+                  <FieldName fieldName='פרטי טיסת חזור לארץ:' className={fieldContainer}/>
+                  {
+                  exposures.map((exposure, index) =>
                     exposure.wasAbroad &&
                     <>
                       <FlightsForm
@@ -319,9 +316,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
                 >
                   <AddCircle color={disableFlightAddition ? 'disabled' : 'primary'} />
                 </IconButton>
-                <Typography
-                  variant='caption'
-                >
+                <Typography variant='caption'>
                   {addFlightButton}
                 </Typography>
               </div>

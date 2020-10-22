@@ -1,13 +1,14 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Collapse, Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 
-import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import {ClinicalDetailsClasses} from './ClinicalDetailsStyles';
 
 export const otherBackgroundDiseaseFieldName = 'אחר';
 
@@ -22,14 +23,7 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <>
-            <Grid id='1' spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם אושפז:
-                        </b>
-                    </Typography>
-                </Grid>
+            <FormRowWithInput gridProps={{id: '1'}} fieldName='האם אושפז:'>
                 <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.WAS_HOPITALIZED}
@@ -47,19 +41,12 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                         )}
                     />
                 </Grid>
-            </Grid>
+            </FormRowWithInput>
             <Collapse in={watchWasHospitalized}>
                 <Grid container className={classes.smallGrid}>
                     <Grid item xs={12}>
-                        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <Grid item xs={2} className={classes.fieldLabel}>
-                                <Typography>
-                                    <b>
-                                        בית חולים:
-                                </b>
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={10}>
+                        <FormRowWithInput fieldName='בית חולים:'>
+                            <Grid item xs={9}>
                                 <Controller
                                     name={ClinicalDetailsFields.HOSPITAL}
                                     control={control}
@@ -77,9 +64,9 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     )}
                                 />
                             </Grid>
-                        </Grid>
+                        </FormRowWithInput>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid xs={12}>
                         <Controller
                             name={ClinicalDetailsFields.HOSPITALIZATION_START_DATE}
                             control={control}
@@ -116,7 +103,6 @@ const HospitalFields: React.FC<Props> = (props: Props): JSX.Element => {
                     </Grid>
                 </Grid>
             </Collapse>
-
         </>
     );
 };

@@ -6,6 +6,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -23,14 +24,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
 
     return (
         <>
-            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם יש לך מחלות רקע:
-                        </b>
-                    </Typography>
-                </Grid>
+            <FormRowWithInput fieldName='האם יש לך מחלות רקע:'>
                 <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES}
@@ -48,10 +42,12 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                         )}
                     />
                 </Grid>
-            </Grid>
+            </FormRowWithInput>
+            <FormRowWithInput fieldName=''>
             <Collapse in={watchDoesHaveBackgroundDiseases}>
-                <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} className={classes.backgroundDiseasesLabel}>מחלות רקע: (יש לבחור לפחות מחלת רקע
-                    אחת)</Typography>
+                <Typography color={errors[ClinicalDetailsFields.BACKGROUND_DESEASSES] ? 'error' : 'initial'} >
+                    מחלות רקע: (יש לבחור לפחות מחלת רקע אחת)
+                </Typography>
                 <Grid container className={classes.smallGrid}>
                     <Controller
                         name={ClinicalDetailsFields.BACKGROUND_DESEASSES}
@@ -100,6 +96,7 @@ const BackgroundDiseasesFields: React.FC<Props> = (props: Props): JSX.Element =>
                     </Collapse>
                 </Grid>
             </Collapse>
+            </FormRowWithInput>
         </>
     );
 };

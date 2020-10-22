@@ -3,8 +3,8 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
+import { Grid, TextField } from '@material-ui/core';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { Grid, Typography, TextField } from '@material-ui/core';
 
 import City from 'models/City';
 import Street from 'models/Street';
@@ -18,6 +18,7 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import HospitalFields from './HospitalFields';
@@ -207,14 +208,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                <Grid item xs={2} className={classes.fieldLabel}>
-                                    <Typography>
-                                        <b>
-                                            כתובת לבידוד:
-                                        </b>
-                                    </Typography>
-                                </Grid>
+                            <FormRowWithInput fieldName='כתובת לבידוד:'>
+                                <>
                                 <Grid item xs={2}>
                                     <Controller
                                         name={`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`}
@@ -329,7 +324,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         )}
                                     />
                                 </Grid>
-                            </Grid>
+                                </>
+                            </FormRowWithInput>
                         </Grid>
                         <Grid item xs={12}>
                             <IsolationProblemFields
@@ -365,15 +361,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             />
                         </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
-                            <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                <Grid item xs={2} className={classes.fieldLabel}>
-                                    <Typography>
-                                        <b>
-                                            האם בהריון:
-                                        </b>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={2}>
+                            <FormRowWithInput fieldName='האם בהריון:'>
+                            <Grid item xs={2}>
                                     <Controller
                                         name={ClinicalDetailsFields.IS_PREGNANT}
                                         control={methods.control}
@@ -390,7 +379,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                         )}
                                     />
                                 </Grid>
-                            </Grid>
+                            </FormRowWithInput>
                         </Grid>
                     </Grid>
                 </form>

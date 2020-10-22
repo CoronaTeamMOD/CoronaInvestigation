@@ -4,11 +4,11 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -30,21 +30,17 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <Typography><b>פרטים אישיים נוספים</b></Typography>
                 </Grid>
                 <Grid item container>
-                    <Grid item xs={3}>
-                        <Typography variant='body2' className={classes.text}><b>תעודה מזהה:</b></Typography>
-                    </Grid>
+                    <FieldName fieldName='תעודה מזהה:'/>
                     <Grid item xs={3}>
                         <Toggle
                             test-id='identificationType'
-                            firstOption={'ת.ז'}
-                            secondOption={'דרכון'}
+                            firstOption='ת.ז'
+                            secondOption='דרכון'
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
                             onChange={(event, value) => changeIdentificationType(interactedContact, value)}
                         />
                     </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='body2' className={classes.text}><b>מספר תעודה:</b></Typography>
-                    </Grid>
+                    <FieldName fieldName='מספר תעודה:'/>
                     <Grid item xs={3}>
                         <AlphanumericTextField
                             testId='identificationNumber'
@@ -58,21 +54,20 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         />
                     </Grid>
                 </Grid>
-                <Grid item xs={10}>
-                    <FormInput fieldName='תאריך לידה'>
-                        <DatePick
-                            testId='contactBirthDate'
-                            maxDate={new Date()}
+                <Grid container item alignItems='center'>
+                    <FieldName xs={5} fieldName='תאריך לידה:'/>
+                     <DatePick
+                         testId='contactBirthDate'
+                         maxDate={new Date()}
                             useBigCalender={false}
                             value={interactedContact.birthDate}
                             onChange={(newDate: Date) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.BIRTH_DATE, newDate)
                             }
                         />
-                    </FormInput>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName='גיל'>
+                <Grid container item>
+                    <FieldName xs={5} fieldName='גיל:'/>
                         <AlphanumericTextField
                             name='age'
                             testId='contactAge'
@@ -80,20 +75,18 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             onChange={() => {}}
                             placeholder='בחר תאריך לידה'
                         />
-                    </FormInput>
                 </Grid>
-                <Grid item>
-                    <FormInput fieldName={ADDITIONAL_PHONE_LABEL}>
-                        <NumericTextField
-                            testId='additionalPhoneNumber'
-                            name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
+                <Grid container item>
+                    <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL}/>
+                     <NumericTextField
+                         testId='additionalPhoneNumber'
+                         name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             value={interactedContact.additionalPhoneNumber}
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue)
                             }
                             placeholder='הכנס טלפון:'
                         />
-                    </FormInput>
                 </Grid>
             </Grid>
         </Grid>
