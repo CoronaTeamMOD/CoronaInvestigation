@@ -15,7 +15,7 @@ export interface useTopToolbarOutcome  {
     getCountyByUser: () => void;
     classes: AppToolbarClasses;
     user: User;
-    isActive: boolean;
+    isActive: boolean | null;
     countyDisplayName: string;
 }
 
@@ -23,7 +23,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
     
-    const [isActive, setIsActive] = React.useState<boolean>(false);
+    const [isActive, setIsActive] = React.useState<boolean | null>(null);
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
