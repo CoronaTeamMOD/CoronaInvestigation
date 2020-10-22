@@ -77,7 +77,7 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
                 return { displayName: language}
             }),
             [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.COUNTY] }},
+            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
             [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
         setUserDialog({isOpen: true, info: userInfoToSet});
