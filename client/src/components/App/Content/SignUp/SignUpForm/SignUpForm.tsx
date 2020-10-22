@@ -34,7 +34,7 @@ const COUNTY_LABEL = 'נפה'
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת'
 const LANGUAGE_LABEL = 'שפה'
 
-const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) => {
+const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser }: Props) => {
     const classes = useStyles();
     
     const [counties, setCounties] = useState<County[]>([]);
@@ -48,13 +48,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
-        defaultValues: defaultValue ? defaultValue : getDefaultValues(),
+        defaultValues: defaultValues ? defaultValues : getDefaultValues(),
         resolver: yupResolver(SignUpSchema)
     })
 
-    const GenericAlphabetTextField = (props: any, label: string, placeholder: string) => (
+    const GenericAlphabetTextField = (props: any, label: string, placeholder: string, className?: any) => (
         <AlphabetTextField
-            disabled={Boolean(defaultValue)}
+            disabled={Boolean(defaultValues)}
             testId={props.name}
             name={props.name}
             value={props.value}
@@ -62,12 +62,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
             onBlur={props.onBlur}
             placeholder={placeholder}
             label={label}
+            className={className}
         />
     )
     
     const GenericNumericTextField = (props: any, label: string, placeholder: string) => (
         <NumericTextField
-            disabled={Boolean(defaultValue)}
+            disabled={Boolean(defaultValues)}
             testId={props.name}
             name={props.name}
             value={props.value}
@@ -110,7 +111,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                     </Grid>
                 </Grid>
 
-                { defaultValue ? 
+                { defaultValues ? 
                     <Grid container justify='flex-start' className={classes.formRow}>
                         <Grid item xs={8}>
                             <FormInput fieldName='שם מלא'>
@@ -118,7 +119,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                     name={SignUpFields.FULL_NAME}
                                     control={methods.control}
                                     render={(props) => (
-                                        GenericAlphabetTextField(props, 'שם מלא', '')
+                                        GenericAlphabetTextField(props, 'שם מלא', '', classes.textField)
                                     )}
                                 />
                             </FormInput>
@@ -157,7 +158,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
-                                        disabled={Boolean(defaultValue)}
+                                        disabled={Boolean(defaultValues)}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                         getOptionLabel={(option) => option ? option.value?.displayName : option}
                                         value={props.value}
@@ -217,7 +218,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                 control={methods.control}
                                 render={(props) => (
                                     <TextField 
-                                        disabled={Boolean(defaultValue)}
+                                        disabled={Boolean(defaultValues)}
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={event => props.onChange(event.target.value as string)}
@@ -241,7 +242,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
-                                        disabled={Boolean(defaultValue)}
+                                        disabled={Boolean(defaultValues)}
                                         options={counties}
                                         getOptionLabel={(option) => option ? option.displayName : option}
                                         value={props.value}
@@ -273,7 +274,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
-                                        disabled={Boolean(defaultValue)}
+                                        disabled={Boolean(defaultValues)}
                                         options={sourcesOrganization}
                                         getOptionLabel={(option) => option ? option.displayName : option}
                                         value={props.value}
@@ -306,7 +307,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
-                                        disabled={Boolean(defaultValue)}
+                                        disabled={Boolean(defaultValues)}
                                         multiple
                                         options={languages}
                                         getOptionLabel={(option) => option ? option.displayName : option}
@@ -338,7 +339,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) =>
 }
 
 interface Props {
-    defaultValue?: SignUpUser;
+    defaultValues?: SignUpUser;
     handleSaveUser?: () => void;
 }
 

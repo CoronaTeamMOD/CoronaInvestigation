@@ -9,8 +9,7 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders'
 import useStyles from './UsersManagementStyles'
 import useUsersManagementTable from './useUsersManagement';
-import SignUp from '../SignUp/SignUp';
-
+import UserInfoDialog from './UserInfoDialog/UserInfoDialog'
 const rowsPerPage: number = 7;
 
 const UsersManagement: React.FC = () => {
@@ -90,10 +89,10 @@ const UsersManagement: React.FC = () => {
                 size='large'
                 className={classes.pagination}
             />
-            <SignUp 
+            <UserInfoDialog 
                 open={userDialog.isOpen}
-                defaultValue={userDialog.info}
-                handleCloseSignUp={handleCloseDialog}
+                defaultValues={userDialog.info}
+                handleCloseDialog={handleCloseDialog}
             />
         </Grid>
     );
