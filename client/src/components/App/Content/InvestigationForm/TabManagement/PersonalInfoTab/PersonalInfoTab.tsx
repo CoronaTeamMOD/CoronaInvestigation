@@ -110,38 +110,44 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const roleObj: investigatedPatientRole = useMemo(() => investigatedPatientRoles
         .find((investigatedPatientRole: investigatedPatientRole) => investigatedPatientRole.id === data.role) || defaultRole, [data.role]);
 
-    const institutionComponent = <Controller
-        name={PersonalInfoDataContextFields.INSTITUTION_NAME}
-        control={methods.control}
-        render={(props: any) => (
-            <Autocomplete
-                options={subOccupations}
-                getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
-                inputValue={subOccupationName}
-                onInputChange={(event, newValue) => {
-                    if (event && event.type !== 'blur') {
-                        setSubOccupationName(newValue)
-                    }
-                }}
-                value={props.value?.id}
-                onChange={(event, newValue) => {
-                    props.onChange(newValue ? newValue.id : '')
-                }}
-                renderInput={(params) =>
-                    <TextField
-                        {...params}
-                        error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]}
-                        label={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message
-                            || 'שם מוסד*'}
-                        onBlur={props.onBlur}
-                        test-id='insertInstitutionName'
-                        disabled={subOccupations.length === 0}
-                        id={PersonalInfoDataContextFields.INSTITUTION_NAME}
-                        placeholder={INSERT_INSTITUTION_NAME}
-                    />}
-            />
-        )}
-    />
+    const institutionComponent = (
+        <Controller
+            name={PersonalInfoDataContextFields.INSTITUTION_NAME}
+            control={methods.control}
+            render={(props: any) => (
+                <Autocomplete
+                    options={subOccupations}
+                    getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
+                    inputValue={subOccupationName}
+                    onInputChange={(event, newValue) => {
+                        if (event && event.type !== 'blur') {
+                            setSubOccupationName(newValue)
+                        }
+                    }}
+                    value={props.value?.id}
+                    onChange={(event, newValue) => {
+                        props.onChange(newValue ? newValue.id : '')
+                    }}
+                    renderInput={(params) =>
+                        <TextField
+                            {...params}
+                            error={methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME] && subOccupations.length !== 0}
+                            label={(methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message && subOccupations.length !== 0) 
+                                    ?
+                                   methods.errors[PersonalInfoDataContextFields.INSTITUTION_NAME]?.message 
+                                    : 
+                                   'שם מוסד*'
+                            }
+                            onBlur={props.onBlur}
+                            test-id='insertInstitutionName'
+                            disabled={subOccupations.length === 0}
+                            id={PersonalInfoDataContextFields.INSTITUTION_NAME}
+                            placeholder={INSERT_INSTITUTION_NAME}
+                        />}
+                />
+            )}
+        />
+    )
 
     const convertToDBData = (): PersonalInfoDbData => {
         return {
@@ -364,12 +370,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                     />
                                 )}
                             />
-                            {
-                                insuranceCompany === NO_INSURANCE && <ComplexityIcon tooltipText='המאומת חסר מעמד' />
-                            }
                         </>
                     </FormRowWithInput>
-                    <FormRowWithInput fieldName={INSURANCE_LABEL}>
+                    <FormRowWithInput fieldName={INSURANCE_LABEL} appendantLabelIcon={insuranceCompany === NO_INSURANCE ? <ComplexityIcon tooltipText='המאומת חסר מעמד' /> : undefined}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <FormControl fullWidth>
                                 <Controller

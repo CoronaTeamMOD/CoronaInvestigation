@@ -4,10 +4,11 @@ import useFormStyles from 'styles/formStyles';
 
 interface Props extends Partial<TypographyProps>{
     fieldName: string;
+    appendantLabelIcon?: JSX.Element;
     xs?: GridSize;
 }
 
-const FieldName = ({fieldName, xs, className, ...typographyProps}: Props) => {
+const FieldName = ({fieldName, xs, className, appendantLabelIcon, ...typographyProps}: Props) => {
     const classes = useFormStyles();
     const defaultGridXSSize = 3;
 
@@ -18,6 +19,7 @@ const FieldName = ({fieldName, xs, className, ...typographyProps}: Props) => {
                     {fieldName}
                 </b>
             </Typography>
+            {appendantLabelIcon}
         </Grid>
     );
 };
