@@ -135,9 +135,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.get('/landingPage/investigations/' + orderBy);
     }
 
-    const sortUsersByAviability = (user1: User, user2: User) =>
-        user1.newInvestigationsCount - user2.newInvestigationsCount || 
-            user1.activeInvestigationsCount - user2.activeInvestigationsCount
+    const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
+        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount || 
+            fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
     const fetchAllCountyUsers = () => {
         logger.info({
@@ -158,7 +158,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
                         })
                         countyUsers = new Map(Array.from(countyUsers.entries())
-                            .sort((user1, user2) => sortUsersByAviability(user1[1], user2[1])));
+                            .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
                     });
                     logger.info({
                         service: Service.CLIENT,
