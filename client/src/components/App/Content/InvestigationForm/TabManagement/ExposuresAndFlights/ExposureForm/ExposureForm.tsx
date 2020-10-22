@@ -99,7 +99,7 @@ const ExposureForm = (props: any) => {
       });
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
-          if (result?.data?.length) {
+          if (result?.data && result.headers['content-type'].includes('application/json')) {
             logger.info({
               service: Service.CLIENT,
               severity: Severity.LOW,
