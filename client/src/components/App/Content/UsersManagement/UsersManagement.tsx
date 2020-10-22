@@ -12,7 +12,7 @@ import useUsersManagementTable from './useUsersManagement';
 
 const rowsPerPage: number = 7;
 
-const UsersManagementTable: React.FC = () => {
+const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
 
     const { users, totalCount } = useUsersManagementTable({ page, rowsPerPage });
@@ -94,4 +94,4 @@ const UsersManagementTable: React.FC = () => {
 };
 
 
-export default UsersManagementTable;
+export default UsersManagement;

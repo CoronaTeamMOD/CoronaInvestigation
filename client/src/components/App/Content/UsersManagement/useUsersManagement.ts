@@ -8,7 +8,7 @@ import SignUpUser from 'models/SignUpUser';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
 
-const useUsersManagementTable = ({ page, rowsPerPage}: useUsersManagementTableInCome) : useUsersManagementTableOutCome => {
+const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : useUsersManagementOutCome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -70,14 +70,14 @@ const useUsersManagementTable = ({ page, rowsPerPage}: useUsersManagementTableIn
     }
 }
 
-interface useUsersManagementTableInCome {
+interface useUsersManagementInCome {
     page: number;
     rowsPerPage: number;
 }
 
-interface useUsersManagementTableOutCome {
+interface useUsersManagementOutCome {
     users: SignUpUser[],
     totalCount: number;
 }
 
-export default useUsersManagementTable;
+export default useUsersManagement;

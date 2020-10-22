@@ -191,6 +191,15 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
                     user: response.locals.user.id
                 });
                 response.send(result.data.allUserTypes?.nodes)
+            } else {
+                 logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting user types',
+                    step: 'didnt get data from the DB',
+                    user: response.locals.user.id
+                })
+                response.status(RESPONSE_ERROR_CODE).send('Error while trying to get userTypes')
             }
         })
         .catch(err => {
@@ -200,7 +209,7 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
                 workflow: 'Getting user types',
                 step: `couldnt query all user types due to ${err}`,
             })
-            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all sources organizations`);
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all userTypes`);
         })
 })
 

@@ -1,10 +1,10 @@
-import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { primaryBackgroundColor } from 'styles/theme';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     content: {
         height: '84vh',
-        backgroundColor: '#F3F6FB',
+        backgroundColor: primaryBackgroundColor,
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',
