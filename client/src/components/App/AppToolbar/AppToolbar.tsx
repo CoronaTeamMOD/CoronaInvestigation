@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import useAppToolbar from './useAppToolbar';
 import IsActiveToggle from './IsActiveToggle/IsActiveToggle';
