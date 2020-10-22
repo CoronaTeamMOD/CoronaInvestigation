@@ -19,9 +19,10 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     <Typography variant='h4' >אבן יסוד</Typography>
                 </div>
                 <div className={classes.userSection}>
+                    {isActive !== null &&
                     <Tooltip title={toggleMessage} arrow>
                         <IsActiveToggle value={isActive} setUserActivityStatus={setUserActivityStatus} exclusive />
-                    </Tooltip>
+                    </Tooltip>}
                     <Typography className={classes.greetUserText}>שלום, {user.userName}</Typography>
                     { countyDisplayName && <Typography>הינך מחובר/ת ללשכת <b>{countyDisplayName}</b></Typography>}
                 </div>
