@@ -99,7 +99,7 @@ const ExposureForm = (props: any) => {
       });
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
-          if (result?.data) {
+          if (result?.data?.length) {
             logger.info({
               service: Service.CLIENT,
               severity: Severity.LOW,
@@ -116,6 +116,10 @@ const ExposureForm = (props: any) => {
               workflow: 'Fetching list of confirmed exposures',
               step: 'got status 200 but wrong data'
             });
+            Swal.fire({
+              title: 'לא ניתן היה לטעון את החולים האפשריים',
+              icon: 'error',
+            })
           }
         })
         .catch((error) => {
