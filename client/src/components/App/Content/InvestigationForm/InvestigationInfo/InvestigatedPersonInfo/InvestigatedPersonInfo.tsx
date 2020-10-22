@@ -9,6 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
@@ -19,20 +20,24 @@ import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 
 const leaveInvestigationMessage = 'צא מחקירה';
-
 const displayDateFormat = 'dd/MM/yyyy';
+const maxComplexityAge = 14;
+const yes = 'כן';
+const no = 'לא';
 
 const InvestigatedPersonInfo = (props: Props) => {
+    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
-    const { identityType, gender, isDeceased, patientInfo } = investigatedPatientStaticInfo;
+    
+    const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
+    const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
 
     const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
 
@@ -49,6 +54,12 @@ const InvestigatedPersonInfo = (props: Props) => {
         return !(event.clientX === 0 && event.clientY === 0);
     };
 
+    const indication = (check: boolean) => {
+        return check ? yes : no;
+    };
+
+    const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
+
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
     }, [investigationStatus]);
@@ -60,12 +71,13 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
+                    {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
                     <PhoneDial
                         phoneNumber={primaryPhone}
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(e) => { handleLeaveInvestigationClick(e) }}
+                    onClick={(event) => { handleLeaveInvestigationClick(event) }}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
@@ -77,12 +89,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <InfoItemWithIcon testId='age' name='גיל' value={age}
                         icon={CakeOutlined}
                     />
+                    {
+                        (age && +age <= maxComplexityAge) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
                         birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
                     }
                         icon={CalendarToday}
                     />
+                    {
+                        isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                    }
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך קבלת תשובה חיובית' value=
                     {
@@ -103,13 +121,26 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={
-                        isDeceased ?
-                            'כן' :
-                            'לא'
-                    }
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(isDeceased)}
                         icon={Help}
                     />
+                    {
+                        isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
+                    }
+                    <Divider />
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication(isCurrentlyHospitalized)}
+                        icon={Help}
+                    />
+                    {
+                        isCurrentlyHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
+                    }
+                    <Divider />
+                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
+                        icon={Help}
+                    />
+                    {
+                        isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                    }
                 </div>
                 <div className={classes.managementControllers}>
                     <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
@@ -168,6 +199,6 @@ interface Props {
     epedemioligyNumber: number;
     coronaTestDate: Date;
     currentTab: number;
-}
+};
 
 export default InvestigatedPersonInfo

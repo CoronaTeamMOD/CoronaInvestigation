@@ -19,8 +19,8 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName,
-            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany
+    const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setInvestigatedPatientRoles,
+            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany,
     } = parameters;
 
     const fetchPersonalInfo = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
@@ -63,6 +63,25 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 investigation: epidemiologyNumber
             });
             res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName));
+        });
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching investigated patient roles',
+            step: 'launching investigated patient roles request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/personalDetails/investigatedPatientRoles').then((res: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Fetching investigated patient roles',
+                step: 'got results back from the server',
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            setInvestigatedPatientRoles(res?.data);
         });
         logger.info({
             service: Service.CLIENT,
@@ -117,7 +136,10 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                         investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
-                    contactInfo: investigatedPatient.patientContactInfo
+                    contactInfo: investigatedPatient.patientContactInfo,
+                    role: investigatedPatient.role,
+                    educationGrade: investigatedPatient.educationGrade,
+                    educationClassNumber: investigatedPatient.educationClassNumber,
                 }
                 setPersonalInfoData(PersonalInfoData);
                 reset(PersonalInfoData);

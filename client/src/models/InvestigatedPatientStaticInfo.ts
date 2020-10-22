@@ -6,6 +6,8 @@ interface InvestigatedPatientStaticInfo {
     gender: string;
     identityType: string;
     patientInfo: PersonStaticInfo;
-}
+    isCurrentlyHospitalized: boolean;
+    isInClosedInstitution: boolean;
+};
 
 export default InvestigatedPatientStaticInfo;

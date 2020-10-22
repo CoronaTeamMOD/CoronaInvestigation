@@ -57,6 +57,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
+    testDateCell: {
+        width: '6vw'
+    }, 
+    epiNumberCell: {
+        width: '7vw'
+    },
     userSelectOption: {
         borderBottom: '2px solid rgba(224, 224, 224, 1)'
     },
@@ -82,12 +88,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     priorityTableCell: {
         paddingLeft: '0'
-    },
-    testDateCell: {
-        width: '6vw'
-    }, 
-    epiNumberCell: {
-        width: '7vw'
     }
 }));
 

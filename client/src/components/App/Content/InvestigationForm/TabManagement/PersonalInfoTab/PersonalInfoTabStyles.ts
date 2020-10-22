@@ -6,7 +6,7 @@ const useStyles = makeStyles({
         height: '64vh'
     },
     personalInfoItem: {
-        marginLeft: '-5vw',
+        marginLeft: '-4vw',
         '@media screen and (max-width: 1700px)': {
             marginRight: '2vw',
         },
@@ -99,6 +99,7 @@ const useStyles = makeStyles({
         '@media screen and (max-width: 950px)': {
             marginLeft: '5vw',
         },
+        marginRight: '-7vw'
     },
     phoneInput: {
         minWidth: '15vw',
@@ -113,6 +114,17 @@ const useStyles = makeStyles({
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
+    },
+    markComplexity: {
+        border: 'solid #FFC90E',
+        borderRadius: 24,
+    },
+    occupation: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    complexIconOnOccupation: {
+        marginTop: '5%',
     },
     swalText: {
         fontFamily: 'Assistant',

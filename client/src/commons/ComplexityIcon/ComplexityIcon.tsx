@@ -19,6 +19,6 @@ const ComplexityIcon: React.FC<Props> = (props: Props) => {
 
 interface Props extends SvgIconProps {
     tooltipText: string;
-}
+};
 
 export default ComplexityIcon;
