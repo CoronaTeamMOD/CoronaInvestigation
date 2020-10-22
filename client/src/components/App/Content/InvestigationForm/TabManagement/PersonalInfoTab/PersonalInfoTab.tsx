@@ -56,6 +56,7 @@ const NO_INSURANCE = 'אף אחד מהנ"ל';
 
 const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 let roleObj: investigatedPatientRole | undefined;
+const defaultInvestigationId = -1;
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -178,7 +179,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [data.role]);
 
     useEffect(() => {
-        if (investigationId !== -1) {
+        if (investigationId !== defaultInvestigationId) {
             fetchPersonalInfo(methods.reset, methods.trigger);
             setIsCurrentlyLoading(false);
         }

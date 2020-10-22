@@ -81,7 +81,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                 user: userId,
                 investigation: epidemiologyNumber
             });
-            res && res.data && res.data.data && setInvestigatedPatientRoles(res.data.data.allInvestigatedPatientRoles.nodes);
+            setInvestigatedPatientRoles(res?.data?.data?.allInvestigatedPatientRoles?.nodes);
         });
         logger.info({
             service: Service.CLIENT,
