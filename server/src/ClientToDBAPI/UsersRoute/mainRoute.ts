@@ -388,6 +388,13 @@ usersRoute.post('/user', (request: Request, response: Response) => {
 });
 
 usersRoute.post('', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting users',
+        step: 'querying the graphql API',
+        user: response.locals.user.id
+    });
     graphqlRequest(
         GET_USERS,
         response.locals,
@@ -397,21 +404,48 @@ usersRoute.post('', (request: Request, response: Response) => {
         }
     )
         .then((result: any) => {
-            const totalCount = result.data.allUsers.totalCount;
-            const users = result.data.allUsers.nodes.map((user: any) => ({
-                id: user.id,
-                fullName: user.fullName,
-                phoneNumber: user.phoneNumber,
-                mail: user.mail,
-                identityNumber: user.identityNumber,
-                city: user.cityByCity?.displayName,
-                isActive: user.isActive,
-                languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-                userType: user.userTypeByUserType.displayName,
-                investigationGroup: user.countyByInvestigationGroup.displayName,
-                sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
-            }));
-            response.send({users, totalCount});
+            if (result?.data?.allUsers) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting users',
+                    step: 'got users from the DB',
+                    user: response.locals.user.id
+                });
+                const totalCount = result.data.allUsers.totalCount;
+                const users = result.data.allUsers.nodes.map((user: any) => ({
+                    id: user.id,
+                    fullName: user.fullName,
+                    phoneNumber: user.phoneNumber,
+                    mail: user.mail,
+                    identityNumber: user.identityNumber,
+                    city: user.cityByCity?.displayName,
+                    isActive: user.isActive,
+                    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
+                    userType: user.userTypeByUserType.displayName,
+                    investigationGroup: user.countyByInvestigationGroup.displayName,
+                    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
+                }));
+                response.send({users, totalCount});
+            } else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting users',
+                    step: 'didnt get data from the DB',
+                    user: response.locals.user.id
+                })
+                response.status(RESPONSE_ERROR_CODE).send('Error while trying to get users')
+            }
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'Getting users',
+                step: `couldnt query all users due to ${err}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all users`);
         })
 });
 
