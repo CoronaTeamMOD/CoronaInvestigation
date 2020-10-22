@@ -58,7 +58,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
-    const isMandatoryInfoMissing: boolean = birthDate === null && !fullName && !isLoading;
+    const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
 
     React.useEffect(() => {
         setSubStatusInput(investigationStatus.subStatus)
