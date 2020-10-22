@@ -103,7 +103,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
-                if (result?.data?.data?.investigationByEpidemiologyNumber) {
+                if (result?.data) {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -112,10 +112,9 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    const clinicalDetailsByEpidemiologyNumber = result.data.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
-                    const patientInvestigation = clinicalDetailsByEpidemiologyNumber.investigationsByInvestigatedPatientId.nodes[0];
-                    setSymptomsStartDate(convertDate(patientInvestigation.symptomsStartTime));
-                    setDoesHaveSymptoms(patientInvestigation.doesHaveSymptoms);
+                    const clinicalDetails = result.data;
+                    setDoesHaveSymptoms(clinicalDetails.doesHaveSymptoms);
+                    setSymptomsStartDate(convertDate(clinicalDetails.symptomsStartTime));
                 } else {
                     logger.warn({
                         service: Service.CLIENT,
