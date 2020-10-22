@@ -31,7 +31,14 @@ const useStyles = makeStyles({
         width: '60vw',
         display: 'flex',
         justifyContent: 'center'
-    }
+    },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    },
+    swalText: {
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

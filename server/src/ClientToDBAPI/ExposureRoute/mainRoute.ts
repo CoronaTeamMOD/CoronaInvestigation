@@ -16,7 +16,7 @@ const exposureRoute = Router();
 
 const errorStatusCode = 500;
 const phoneOrIdentityNumberRegex = /^([\da-zA-Z]+)$/;
-const invalidCharsRegex = /[^א-ת\da-zA-Z0-9]/;
+const invalidCharsRegex = /[^א-ת\da-zA-Z0-9'"`]/;
 
 const searchDaysAmount = 14;
 
@@ -139,7 +139,11 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
                 });
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 if (!isPhoneOrIdentityNumber) {
-                    const complicatedRegex = new RegExp(searchValue.trimRight().replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+                    const trimmedSearchValue = searchValue.trimRight();
+                    let searchRegex = trimmedSearchValue.replace(new RegExp(invalidCharsRegex, 'g'), '[ -*]+[^0-9A-Za-z]*');
+                    if (!trimmedSearchValue.endsWith('*')) searchRegex = searchRegex + '*';
+                    const complicatedRegex = new RegExp(searchRegex);
+                    console.log(complicatedRegex);
                     dbBCovidPatients = dbBCovidPatients.filter(patient => complicatedRegex.test(patient.fullName) === true);
                 }
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));

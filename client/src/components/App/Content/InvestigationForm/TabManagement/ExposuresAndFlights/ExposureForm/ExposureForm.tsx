@@ -36,7 +36,7 @@ const allCovidPatientFields: CovidPatientFields = {
 const minFullNameLengthToSearch = 2;
 const minNumbersLengthToSearch = 4;
 
-const invalidCharRegex = /[^א-ת\da-zA-Z0-9]/;
+const invalidCharRegex = /[^א-ת\da-zA-Z0-9'"`]/;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {
@@ -62,7 +62,10 @@ const ExposureForm = (props: any) => {
 
   const exposureSourceSearchRegex = React.useMemo(() => {
     try {
-      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+      const trimmedSearchValue = exposureSourceSearch.trimRight();
+      let searchRegex = trimmedSearchValue.replace(new RegExp(invalidCharRegex, 'g'), '[ -*]+[^0-9A-Za-z]*');
+      if (!trimmedSearchValue.endsWith('*')) searchRegex = searchRegex + '*';
+      return new RegExp(searchRegex);
     } catch {
       return null;
     }
@@ -80,7 +83,7 @@ const ExposureForm = (props: any) => {
       {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}</Typography>}
       {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
       {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
-      {age && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
+      {(exposureSource.age && exposureSource.age !== -1) && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
       {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
     </>
   }
@@ -117,8 +120,13 @@ const ExposureForm = (props: any) => {
               step: 'got status 200 but wrong data'
             });
             Swal.fire({
-              title: 'לא ניתן היה לטעון את החולים האפשריים',
+              title: 'לא הצלחנו לטעון את רשימת המאומתים',
+              text: 'שימו לב שהזנתם נתונים תקינים',
               icon: 'error',
+              customClass: {
+                title: classes.swalTitle,
+                content: classes.swalText
+              },
             })
           }
         })
@@ -132,8 +140,13 @@ const ExposureForm = (props: any) => {
             user: userId
           });
           Swal.fire({
-            title: 'לא ניתן היה לטעון את החולים האפשריים',
+            title: 'לא הצלחנו לטעון את רשימת המאומתים',
+            text: 'שימו לב שהזנתם נתונים תקינים',
             icon: 'error',
+            customClass: {
+              title: classes.swalTitle,
+              content: classes.swalText
+            },
           })
         })
         .finally(() => setIsLoading(false));
