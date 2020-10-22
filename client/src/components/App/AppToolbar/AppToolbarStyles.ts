@@ -6,10 +6,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: 'white',
         backgroundColor: theme.palette.primary.dark
     },
-    logoTitle: {
+    rightSection: {
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
         flexGrow: 1
+    },
+    navButtons: {
+        display: 'flex',
+        flexDirection: 'row',
+        paddingRight: theme.spacing(2),
+        flip: false
     },
     userSection: {
         display: 'flex',
@@ -31,7 +38,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface AppToolbarClasses {
     appBar: string;
-    logoTitle: string;
+    rightSection: string;
+    navButtons: string;
     userSection: string;
     greetUserText: string;
     countyTextField: string;
