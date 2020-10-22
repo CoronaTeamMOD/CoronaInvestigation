@@ -16,6 +16,7 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import FormTitle from 'commons/FormTitle/FormTitle';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
@@ -111,7 +112,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
         <>
             <FormProvider {...methods}>
                 <form id={`form-${id}`} onSubmit={(e) => saveContacted(e)}>
-                    <Typography className={classes.title} variant='body1'><b>טופס תשאול מגעים ({allContactedInteractions.length})</b></Typography>
+                    <FormTitle title={`טופס תשאול מגעים (${allContactedInteractions.length})`} />
                     {
                         allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
                             firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (

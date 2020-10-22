@@ -99,6 +99,7 @@ const useStyles = makeStyles({
         '@media screen and (max-width: 950px)': {
             marginLeft: '5vw',
         },
+        marginRight: '-7vw'
     },
     phoneInput: {
         minWidth: '15vw',

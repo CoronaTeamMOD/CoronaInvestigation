@@ -44,7 +44,7 @@ const FlightsForm = (props: any) => {
       </FormRowWithInput>
 
       <FormRowWithInput fieldName='תאריך טיסה:'>
-        <div className={classes.formRow}>
+        <div className={classes.inputRow}>
           <Typography variant='caption'>מתאריך</Typography>
           <DatePick
             maxDate={new Date()}

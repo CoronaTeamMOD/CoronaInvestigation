@@ -1,26 +1,21 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Collapse, Grid } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchIsIsolationProblem } = props;
     const { control } = useFormContext();
 
     return (
-        <Grid spacing={3} container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                <Grid item xs={2} className={classes.fieldLabel}>
-                    <Typography>
-                        <b>
-                            האם בעייתי לקיים בידוד:
-                        </b>
-                    </Typography>
-                </Grid>
+        <FormRowWithInput fieldName='האם בעייתי לקיים בידוד:'>
+            <>
                 <Grid item xs={2}>
                     <Controller
                         name={ClinicalDetailsFields.IS_ISOLATION_PROBLEM}
@@ -58,7 +53,8 @@ const IsolationProblemFields: React.FC<Props> = (props: Props): JSX.Element => {
                         />
                     </Collapse>
                 </Grid>
-            </Grid>
+            </>
+        </FormRowWithInput>
     );
 };
 

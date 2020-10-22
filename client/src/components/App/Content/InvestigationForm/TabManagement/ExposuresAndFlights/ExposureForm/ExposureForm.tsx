@@ -158,33 +158,37 @@ const ExposureForm = (props: any) => {
           />
         </>
       </FormRowWithInput>
-      <FormRowWithInput fieldName=''>
-        <div className={classes.optionalExposureSources}>
-          {
-            isLoading ?
-              <div className={classes.loadingDiv}>
-                <CircularProgress className={classes.loadingSpinner} size='5vh' />
-              </div>
-            :
-              <div>
-                {
-                  optionalCovidPatients.filter((exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber).map(exposureSource => (
-                    <MenuItem
-                      className={classes.optionalExposureSource}
-                      key={exposureSource.epidemiologyNumber}
-                      value={exposureSource.epidemiologyNumber}
-                      onClick={() => {
-                        setOptionalCovidPatients([]);
-                        handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
-                      }}>
-                      {createExposureSourceOption(exposureSource)}
-                    </MenuItem>
-                  ))
-                }
-              </div>
-          }
-        </div>
-      </FormRowWithInput>
+
+      {
+        (isLoading || optionalCovidPatients?.length > 0) &&
+        <FormRowWithInput fieldName=''>
+          <div className={classes.optionalExposureSources}>
+            {
+              isLoading ?
+                  <div className={classes.loadingDiv}>
+                    <CircularProgress className={classes.loadingSpinner} size='5vh' />
+                  </div>
+                  :
+                  <div>
+                    {
+                      optionalCovidPatients.filter((exposureSource) => exposureSource.epidemiologyNumber !== epidemiologyNumber).map(exposureSource => (
+                          <MenuItem
+                              className={classes.optionalExposureSource}
+                              key={exposureSource.epidemiologyNumber}
+                              value={exposureSource.epidemiologyNumber}
+                              onClick={() => {
+                                  setOptionalCovidPatients([]);
+                                  handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, exposureSource);
+                              }}>
+                              {createExposureSourceOption(exposureSource)}
+                          </MenuItem>
+                      ))
+                    }
+                  </div>
+            }
+          </div>
+        </FormRowWithInput>
+      }
 
       <FormRowWithInput fieldName='תאריך החשיפה:'>
         <DatePick
@@ -206,7 +210,7 @@ const ExposureForm = (props: any) => {
         />
       </FormRowWithInput>
 
-      <PlacesTypesAndSubTypes
+      <PlacesTypesAndSubTypes size='Tab'
         placeTypeName={fieldsNames.placeType}
         placeSubTypeName={fieldsNames.placeSubType}
         placeType={exposureAndFlightsData[fieldsNames.placeType]}
