@@ -182,7 +182,7 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
     });
     graphqlRequest(GET_ALL_USER_TYPES, response.locals)
         .then((result: GetAllUserTypesResponse) => {
-            if (result && result.data && result.data.allUserTypes) {
+            if (result?.data?.allUserTypes) {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
@@ -392,7 +392,10 @@ usersRoute.post('', (request: Request, response: Response) => {
             const users = result.data.allUsers.nodes.map((user: any) => ({
                 id: user.id,
                 fullName: user.fullName,
-                userName: user.userName,
+                phoneNumber: user.phoneNumber,
+                mail: user.mail,
+                identityNumber: user.identityNumber,
+                city: user.cityByCity?.displayName,
                 isActive: user.isActive,
                 languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
                 userType: user.userTypeByUserType.displayName,

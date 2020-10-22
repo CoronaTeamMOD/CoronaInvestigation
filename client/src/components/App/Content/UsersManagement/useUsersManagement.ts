@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 import logger from 'logger/logger'
 import { Service, Severity } from 'models/Logger'
+import SignUpUser from 'models/SignUpUser';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
 
@@ -12,7 +13,7 @@ const useUsersManagementTable = ({ page, rowsPerPage}: useUsersManagementTableIn
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const [users, setUsers] = useState<any>([]);
+    const [users, setUsers] = useState<SignUpUser[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
 
     const fetchUsers = () => {
@@ -27,7 +28,7 @@ const useUsersManagementTable = ({ page, rowsPerPage}: useUsersManagementTableIn
         axios.post('/users', { page: { number: page, size: rowsPerPage } })
             .then(result => {
                 result?.data && setUsers(result.data?.users);
-                result?.data && setTotalCount(result.data?.totalCount);
+                                setTotalCount(result.data?.totalCount);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -75,7 +76,7 @@ interface useUsersManagementTableInCome {
 }
 
 interface useUsersManagementTableOutCome {
-    users: any
+    users: SignUpUser[],
     totalCount: number;
 }
 

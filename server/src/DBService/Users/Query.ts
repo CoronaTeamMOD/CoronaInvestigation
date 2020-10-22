@@ -80,7 +80,13 @@ query usersQuery($offset: Int!, $size: Int!) {
     nodes {
       id
       fullName
-      userName
+      phoneNumber
+      mail
+      identityNumber
+      isActive
+      cityByCity {
+        displayName
+      }
       isActive
       userLanguagesByUserId {
         nodes {
