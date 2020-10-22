@@ -6,6 +6,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
+import InteractedContact from 'models/InteractedContact';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
