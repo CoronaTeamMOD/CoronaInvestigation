@@ -6,9 +6,9 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useStyles from './SignUpStyles'
 import SignUpForm from './SignUpForm/SignUpForm'
 
+const signUpTitle = 'הגדרת משתמש חדש';
 
 const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) => {
-    const signUpTitle = 'הגדרת משתמש חדש';
 
     const classes = useStyles();
 
