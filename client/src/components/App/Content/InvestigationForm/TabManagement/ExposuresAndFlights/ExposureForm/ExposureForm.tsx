@@ -117,8 +117,13 @@ const ExposureForm = (props: any) => {
               step: 'got status 200 but wrong data'
             });
             Swal.fire({
-              title: 'לא ניתן היה לטעון את החולים האפשריים',
+              title: 'לא הצלחנו לטעון את רשימת המאומתים',
+              text: 'שימו לב שהזנתם נתונים תקינים',
               icon: 'error',
+              customClass: {
+                title: classes.swalTitle,
+                content: classes.swalText
+              },
             })
           }
         })
@@ -132,8 +137,13 @@ const ExposureForm = (props: any) => {
             user: userId
           });
           Swal.fire({
-            title: 'לא ניתן היה לטעון את החולים האפשריים',
+            title: 'לא הצלחנו לטעון את רשימת המאומתים',
+            text: 'שימו לב שהזנתם נתונים תקינים',
             icon: 'error',
+            customClass: {
+              title: classes.swalTitle,
+              content: classes.swalText
+            },
           })
         })
         .finally(() => setIsLoading(false));
