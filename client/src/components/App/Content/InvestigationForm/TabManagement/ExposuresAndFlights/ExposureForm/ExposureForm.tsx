@@ -80,7 +80,7 @@ const ExposureForm = (props: any) => {
       {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}</Typography>}
       {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
       {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
-      {(exposureSource.age && exposureSource.age !== -1) && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
+      {(age && age !== -1) && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
       {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
     </>
   }
