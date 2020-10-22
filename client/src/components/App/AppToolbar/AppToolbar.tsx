@@ -18,7 +18,6 @@ const navButtonsWhitelist = {
 const AppToolbar: React.FC = (): JSX.Element => {
     const { user, isActive, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
     const location = useLocation();
-    console.log(location.pathname)
 
     return (
         <AppBar className={classes.appBar} position='static'>
