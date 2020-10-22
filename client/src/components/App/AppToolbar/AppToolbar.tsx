@@ -26,7 +26,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                         (location.pathname === landingPageRoute || location.pathname === usersManagementRoute)
                         ?        
                         <div className={classes.navButtons}>
-                            <Button href={landingPageRoute} size='small' color='inherit' startIcon={<Home />}>עמוד הבית</Button>
+                            <Button href={landingPageRoute} color='inherit' startIcon={<Home />}>עמוד הבית</Button>
                             <Button href={usersManagementRoute} color='inherit' startIcon={<SupervisorAccount />}>ניהול משתמשים</Button>
                         </div>
                         :
