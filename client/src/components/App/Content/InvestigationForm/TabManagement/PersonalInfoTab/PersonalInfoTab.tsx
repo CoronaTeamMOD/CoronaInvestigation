@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem } from '@material-ui/core';
 
@@ -57,6 +57,7 @@ const NO_INSURANCE = 'אף אחד מהנ"ל';
 const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 let roleObj: investigatedPatientRole | undefined;
 const defaultInvestigationId = -1;
+const defaultRole = {id: -1, displayName: ''};
 
 const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles({});
@@ -93,7 +94,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     });
 
     const handleChangeOccupation = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newOccupation = event.target.value
+        const newOccupation = event.target.value;
         setOccupation(newOccupation);
         setSubOccupationName('');
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
@@ -105,6 +106,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }
 
     const data = methods.getValues();
+
+    const roleObj: investigatedPatientRole = useMemo(() => investigatedPatientRoles
+        .find((investigatedPatientRole: investigatedPatientRole) => investigatedPatientRole.id === data.role) || defaultRole, [data.role]);
 
     const institutionComponent = <Controller
         name={PersonalInfoDataContextFields.INSTITUTION_NAME}
@@ -174,9 +178,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [data.city, data.street, data.floor, data.houseNum]);
 
     useEffect(() => {
-        roleObj = investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => investigatedPatientRole.id === data.role);
-        if (roleObj) setRoleInput(roleObj.displayName);
-    }, [data.role]);
+        setRoleInput(roleObj.displayName);
+    }, [roleObj]);
 
     useEffect(() => {
         if (investigationId !== defaultInvestigationId) {
