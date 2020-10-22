@@ -15,7 +15,7 @@ interface SignUpUser {
     [SignUpFields.MAIL]?: string,
     [SignUpFields.COUNTY]?: number,
     [SignUpFields.SOURCE_ORGANIZATION]?: string,
-    [SignUpFields.LANGUAGES]: Language[]
+    [SignUpFields.LANGUAGES]?: Language[]
 }
 
 export default SignUpUser;

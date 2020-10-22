@@ -80,6 +80,7 @@ query usersQuery($offset: Int!, $size: Int!) {
     nodes {
       id
       fullName
+      userName
       phoneNumber
       mail
       identityNumber
