@@ -1,6 +1,5 @@
 import React from 'react';
-import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
+import { AppBar, Button, Toolbar, Typography, Tooltip } from '@material-ui/core';
 import { Home, SupervisorAccount } from '@material-ui/icons';
 import { useLocation } from 'react-router-dom';
 
