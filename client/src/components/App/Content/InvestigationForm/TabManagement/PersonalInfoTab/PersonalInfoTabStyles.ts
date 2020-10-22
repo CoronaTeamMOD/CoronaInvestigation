@@ -126,6 +126,9 @@ const useStyles = makeStyles({
     complexIconOnOccupation: {
         marginTop: '5%',
     },
+    swalText: {
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

@@ -74,13 +74,19 @@ query allLanguages {
 }
 `;
 
-
 export const GET_USERS = gql`
 query usersQuery($offset: Int!, $size: Int!) {
   allUsers(first: $size, offset: $offset) {
     nodes {
       id
-      userName
+      fullName
+      phoneNumber
+      mail
+      identityNumber
+      isActive
+      cityByCity {
+        displayName
+      }
       isActive
       userLanguagesByUserId {
         nodes {
@@ -90,11 +96,25 @@ query usersQuery($offset: Int!, $size: Int!) {
       userTypeByUserType {
         displayName
       }
+      countyByInvestigationGroup {
+        displayName
+      }
       sourceOrganizationBySourceOrganization {
         displayName
       }
     }
+    totalCount
   }
 }
+`;
 
+export const GET_ALL_USER_TYPES = gql`
+query allUserTypes {
+  allUserTypes {
+    nodes {
+      displayName
+    	id
+    }
+  }
+}
 `;
