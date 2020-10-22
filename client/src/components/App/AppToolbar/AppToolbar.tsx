@@ -10,10 +10,15 @@ import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 import useAppToolbar from './useAppToolbar';
 
 const toggleMessage = 'מה הסטטוס שלך?';
+const navButtonsWhitelist = {
+    allowedUserTypes: [UserType.ADMIN, UserType.SUPER_ADMIN],
+    allowedRoutes: [landingPageRoute, usersManagementRoute]
+};
 
 const AppToolbar: React.FC = (): JSX.Element => {
     const { user, isActive, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
     const location = useLocation();
+    console.log(location.pathname)
 
     return (
         <AppBar className={classes.appBar} position='static'>
@@ -22,15 +27,12 @@ const AppToolbar: React.FC = (): JSX.Element => {
                     <img alt='logo' src='./assets/img/logo.png' width={48} height={48} />
                     <Typography variant='h4' >אבן יסוד</Typography>
                     {
-                        (user.userType === UserType.ADMIN || user.userType === UserType.SUPER_ADMIN) &&
-                        (location.pathname === landingPageRoute || location.pathname === usersManagementRoute)
-                        ?        
+                        navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
+                        navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&        
                         <div className={classes.navButtons}>
                             <Button href={landingPageRoute} color='inherit' startIcon={<Home />}>עמוד הבית</Button>
                             <Button href={usersManagementRoute} color='inherit' startIcon={<SupervisorAccount />}>ניהול משתמשים</Button>
                         </div>
-                        :
-                        null
                     }
                 </div>
                 <div className={classes.userSection}>
