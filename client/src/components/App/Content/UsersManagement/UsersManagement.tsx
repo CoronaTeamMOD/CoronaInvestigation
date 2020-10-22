@@ -9,13 +9,14 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders'
 import useStyles from './UsersManagementStyles'
 import useUsersManagementTable from './useUsersManagement';
+import SignUp from '../SignUp/SignUp';
 
 const rowsPerPage: number = 7;
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
 
-    const { users, totalCount } = useUsersManagementTable({ page, rowsPerPage });
+    const { users, totalCount, userDialog, watchUserInfo, handleCloseDialog } = useUsersManagementTable({ page, rowsPerPage });
     
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -37,7 +38,7 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.WATCH: {
                 return (
                     <Tooltip title='צפייה בפרטי המשתמש'>
-                        <IconButton>
+                        <IconButton onClick={() => watchUserInfo(row)}>
                             <PersonPin />
                         </IconButton>
                     </Tooltip>
@@ -89,9 +90,13 @@ const UsersManagement: React.FC = () => {
                 size='large'
                 className={classes.pagination}
             />
+            <SignUp 
+                open={userDialog.isOpen}
+                defaultValue={userDialog.info}
+                handleCloseSignUp={handleCloseDialog}
+            />
         </Grid>
     );
 };
-
 
 export default UsersManagement;

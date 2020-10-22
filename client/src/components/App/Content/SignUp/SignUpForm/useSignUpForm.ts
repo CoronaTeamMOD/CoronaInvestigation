@@ -18,8 +18,7 @@ const UserInitialValues: SignUpUser = {
     [SignUpFields.FULL_NAME] : {
         [SignUpFields.FIRST_NAME]: undefined,
         [SignUpFields.LAST_NAME]: undefined,
-    },
-    [SignUpFields.LANGUAGES]: [],
+    }
 }
 
 const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
@@ -194,7 +193,7 @@ const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
         });
         axios.post('/users/user', newUser)
         .then(() => {
-            handleSaveUser();
+            handleSaveUser && handleSaveUser();
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -234,7 +233,7 @@ interface useSignUpFormInCome {
     setCounties: React.Dispatch<React.SetStateAction<County[]>>;
     setLanguages: React.Dispatch<React.SetStateAction<Language[]>>;
     setSourcesOrganization: React.Dispatch<React.SetStateAction<SourceOrganization[]>>;
-    handleSaveUser: () => void;
+    handleSaveUser?: () => void;
 }
 
 interface useSignUpFormOutCome {

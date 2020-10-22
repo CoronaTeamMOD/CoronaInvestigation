@@ -2,14 +2,17 @@ import React from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Button } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
+import SignUpUser from 'models/SignUpUser';
+import SignUpFields from 'models/enums/SignUpFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './SignUpStyles'
 import SignUpForm from './SignUpForm/SignUpForm'
 
-const signUpTitle = 'הגדרת משתמש חדש'
 
-const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) => {
+const SignUp : React.FC<Props> = ({ open, defaultValue, handleSaveUser, handleCloseSignUp }) => {
+    const signUpTitle = defaultValue ? defaultValue[SignUpFields.MABAR_USER_NAME] : 'הגדרת משתמש חדש';
+
     const classes = useStyles();
 
     return (
@@ -22,23 +25,31 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
             </DialogTitle>
 
             <DialogContent>
-                <SignUpForm handleSaveUser={handleSaveUser}/>
+                <SignUpForm defaultValue={defaultValue} handleSaveUser={handleSaveUser}/>
             </DialogContent>
 
             <DialogActions>
-                <Button 
-                    test-id='cancelSignUpForm'
-                    onClick={handleCloseSignUp}
-                >
-                    ביטול
-                </Button>
-                <PrimaryButton
-                    test-id='signUp'
-                    form='signUp'
-                    type='submit'
-                >
-                    שלח בקשה
+               { defaultValue ? 
+                <PrimaryButton onClick={handleCloseSignUp}>
+                    סגירה
                 </PrimaryButton>
+                :
+                <>
+                    <Button
+                        test-id='cancelSignUpForm'
+                        onClick={handleCloseSignUp}
+                    >
+                        ביטול
+                    </Button>
+                    <PrimaryButton
+                        test-id='signUp'
+                        form='signUp'
+                        type='submit'
+                    >
+                        שלח בקשה
+                    </PrimaryButton>
+                </>
+               } 
             </DialogActions>
         </Dialog>
     )
@@ -46,7 +57,8 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
 
 interface Props {
     open: boolean;
-    handleSaveUser: () => void;
+    defaultValue?: SignUpUser;
+    handleSaveUser?: () => void;
     handleCloseSignUp: () => void;
 }
 

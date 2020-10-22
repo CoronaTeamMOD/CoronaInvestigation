@@ -34,7 +34,7 @@ const COUNTY_LABEL = 'נפה'
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת'
 const LANGUAGE_LABEL = 'שפה'
 
-const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
+const SignUpForm: React.FC<Props> = ({ defaultValue, handleSaveUser }: Props) => {
     const classes = useStyles();
     
     const [counties, setCounties] = useState<County[]>([]);
@@ -48,24 +48,26 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
-        defaultValues: getDefaultValues(),
+        defaultValues: defaultValue ? defaultValue : getDefaultValues(),
         resolver: yupResolver(SignUpSchema)
     })
 
     const GenericAlphabetTextField = (props: any, label: string, placeholder: string) => (
         <AlphabetTextField
+            disabled={Boolean(defaultValue)}
             testId={props.name}
             name={props.name}
             value={props.value}
             onChange={(newValue: string) => props.onChange(newValue as string)}
-            label={label}
-            placeholder={placeholder}
             onBlur={props.onBlur}
+            placeholder={placeholder}
+            label={label}
         />
     )
     
     const GenericNumericTextField = (props: any, label: string, placeholder: string) => (
         <NumericTextField
+            disabled={Boolean(defaultValue)}
             testId={props.name}
             name={props.name}
             value={props.value}
@@ -108,28 +110,44 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                     </Grid>
                 </Grid>
 
-                <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='שם מלא'>
-                            <Controller 
-                                name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
+                { defaultValue ? 
+                    <Grid container justify='flex-start' className={classes.formRow}>
+                        <Grid item xs={8}>
+                            <FormInput fieldName='שם מלא'>
+                                <Controller 
+                                    name={SignUpFields.FULL_NAME}
+                                    control={methods.control}
+                                    render={(props) => (
+                                        GenericAlphabetTextField(props, 'שם מלא', '')
+                                    )}
+                                />
+                            </FormInput>
+                        </Grid>
+                    </Grid>
+                : 
+                    <Grid container justify='flex-start' className={classes.formRow}>
+                        <Grid item xs={8}>
+                            <FormInput fieldName='שם מלא'>
+                                <Controller
+                                    name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
+                                    control={methods.control}
+                                    render={(props) => (
+                                        GenericAlphabetTextField(props, FIRST_NAME_LABEL, 'הכנס שם פרטי...')
+                                    )}
+                                />
+                            </FormInput>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Controller
+                                name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericAlphabetTextField(props, FIRST_NAME_LABEL, 'הכנס שם פרטי...')
+                                    GenericAlphabetTextField(props, LAST_NAME_LABEL, 'הכנס שם משפחה...')
                                 )}
                             />
-                        </FormInput>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Controller 
-                            name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
-                            control={methods.control}
-                            render={(props) => (
-                                GenericAlphabetTextField(props, LAST_NAME_LABEL, 'הכנס שם משפחה...')
-                            )}
-                        />
-                    </Grid>
-                </Grid>
+                }
 
                 <Grid container justify='flex-start' className={classes.formRow}> 
                     <Grid item xs={8}>
@@ -139,8 +157,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={Boolean(defaultValue)}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                        getOptionLabel={(option) => option ? option.value.displayName : option}
+                                        getOptionLabel={(option) => option ? option.value?.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedCity) => {
                                             props.onChange(selectedCity ? selectedCity.id : null)
                                         }}
@@ -197,6 +217,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <TextField 
+                                        disabled={Boolean(defaultValue)}
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={event => props.onChange(event.target.value as string)}
@@ -220,8 +241,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={Boolean(defaultValue)}
                                         options={counties}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedCounty) => {
                                             props.onChange(selectedCounty ? selectedCounty.id : null)
                                         }}
@@ -250,8 +273,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={Boolean(defaultValue)}
                                         options={sourcesOrganization}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedSourceOrganization) =>
                                             props.onChange(selectedSourceOrganization ? 
                                             selectedSourceOrganization.displayName : null)
@@ -281,9 +306,11 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={Boolean(defaultValue)}
                                         multiple
                                         options={languages}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedLanguaegs) => {
                                             props.onChange(selectedLanguaegs);
                                         }}
@@ -311,7 +338,8 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
 }
 
 interface Props {
-    handleSaveUser: () => void;
+    defaultValue?: SignUpUser;
+    handleSaveUser?: () => void;
 }
 
 export default SignUpForm;
