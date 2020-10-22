@@ -18,7 +18,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialo
         <Dialog open={open} maxWidth='sm' fullWidth={true}>
             <DialogTitle>
                 {userInfoTitle}
-                <IconButton test-id='closeSignUpForm' aria-label="close" className={classes.closeButton} onClick={handleCloseDialog}>
+                <IconButton test-id='closeUserInfoDialog' aria-label="close" className={classes.closeButton} onClick={handleCloseDialog}>
                     <Close />
                 </IconButton>
             </DialogTitle>
