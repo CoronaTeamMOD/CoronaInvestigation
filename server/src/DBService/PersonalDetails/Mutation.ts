@@ -17,3 +17,11 @@ mutation updateCovidPatientPersonalInfo($id: Int!, $primaryPhone: String, $addre
     }
 }
 `;
+
+export const CALC_INVESTIGATION_COMPLEXITY = gql`
+mutation calcInvestigationComplexity($epidemiologyNumber: Int!) {
+    calcInvestigationComplexity(input: {epidemiologyNumberValue: $epidemiologyNumber}) {
+      clientMutationId
+    }
+  }
+`;
