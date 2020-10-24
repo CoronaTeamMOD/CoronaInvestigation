@@ -23,3 +23,11 @@ export const UPDATE_INVESTIGATION_END_TIME = gql`
     }
   }
 `;
+
+export const COMMENT = gql`
+  mutation addComment($comment: String, $epidemiologyNumber: Int!) {
+        updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {comment: $comment}, epidemiologyNumber: $epidemiologyNumber}) {
+          clientMutationId
+        }
+  }
+`;

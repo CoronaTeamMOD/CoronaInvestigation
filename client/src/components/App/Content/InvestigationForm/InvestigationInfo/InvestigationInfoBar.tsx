@@ -19,6 +19,7 @@ import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investig
 import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
+import {CommentContextProvider} from "./Context/CommentContext";
 
 export const defaultUser = {
     id: '',
@@ -29,6 +30,7 @@ export const defaultUser = {
 }
 
 const defaultInvestigationStaticInfo = {
+    comment: '',
     startTime: new Date(),
     lastUpdateTime: new Date(),
     investigatingUnit: '',
@@ -65,20 +67,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const noInvestigationError = () => {
-        Swal.fire({
-            icon: 'warning',
-            title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
-            customClass: {
-                title: classes.swalTitle
-            },
-            timer: 1750,
-            showConfirmButton: false
-        });
-
-        timeout(1900).then(() => history.push(landingPageRoute));
-    }
-
     React.useEffect(() => {
         timeout(2000).then(() => {
             let openedEpidemiologyNumber = store.getState().investigation.lastOpenedEpidemiologyNumber;
@@ -86,7 +74,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                 setEpidemiologyNum(openedEpidemiologyNumber);
                 setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
             } else {
-                noInvestigationError();
+                handleInvalidEntrance();
             }
         });
     }, []);
@@ -152,10 +140,14 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
         });
 
         timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
+    };
+
+    const updateComment = (comment: string | null) => {
+        setInvestigationStaticInfo(prevData => ({...prevData, comment}));
     }
 
     return (
-        <>
+        <CommentContextProvider value={{comment:investigationStaticInfo.comment, setComment:updateComment}}>
             <InvestigatedPersonInfo
                 investigatedPatientStaticInfo={investigationStaticInfo.investigatedPatient}
                 currentTab={currentTab}
@@ -165,7 +157,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             <InvestigationMetadata
                 investigationMetaData={investigationStaticInfo}
             />
-        </>
+        </CommentContextProvider>
     );
 };
 
