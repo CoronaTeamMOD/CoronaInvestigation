@@ -11,7 +11,7 @@ app.use((req, res, next) => {
     if(req.headers["x-ms-token-aad-id-token"]!== undefined) {
         req.headers.authorization = req.headers["x-ms-token-aad-id-token"];
     } else {
-        req.headers.authorization = "demo token";
+        req.headers.authorization = "fake token!";
     }
     next();
 })
