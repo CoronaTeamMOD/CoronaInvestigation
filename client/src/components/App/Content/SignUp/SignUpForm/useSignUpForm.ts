@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
-import SignUpFields from 'models/enums/SignUpFields';
 import SignUpUser from 'models/SignUpUser';
 import City from 'models/City'
 import County from 'models/County';
@@ -14,16 +13,11 @@ import logger from 'logger/logger'
 import StoreStateType from 'redux/storeStateType';
 import { setCities } from 'redux/City/cityActionCreators';
 
-const UserInitialValues: SignUpUser = {
-    [SignUpFields.FULL_NAME] : {
-        [SignUpFields.FIRST_NAME]: undefined,
-        [SignUpFields.LAST_NAME]: undefined,
-    }
-}
+const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
-const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
-
-    const { setCounties, setSourcesOrganization, setLanguages, handleSaveUser } = props;
+    const [counties, setCounties] = useState<County[]>([]);
+    const [languages, setLanguages] = useState<Language[]>([]);
+    const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -175,13 +169,6 @@ const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
         fetchLanguages();
     }, [])
 
-    const getDefaultValues = () : SignUpUser => {
-        return {
-            ...UserInitialValues,
-            [SignUpFields.MABAR_USER_NAME]: userId,
-        }
-    }
-
     const createUser = (newUser: SignUpUser) => {
         logger.info({
             service: Service.CLIENT,
@@ -225,19 +212,20 @@ const useSignUp = (props: useSignUpFormInCome) : useSignUpFormOutCome  => {
     }
 
     return {
-        getDefaultValues,
+        counties, 
+        languages,
+        sourcesOrganization,
         createUser
     }
 }
 interface useSignUpFormInCome {
-    setCounties: React.Dispatch<React.SetStateAction<County[]>>;
-    setLanguages: React.Dispatch<React.SetStateAction<Language[]>>;
-    setSourcesOrganization: React.Dispatch<React.SetStateAction<SourceOrganization[]>>;
     handleSaveUser?: () => void;
 }
 
 interface useSignUpFormOutCome {
-    getDefaultValues: () => SignUpUser;
+    counties: County[];
+    languages: Language[];
+    sourcesOrganization: SourceOrganization[]
     createUser: (data: SignUpUser) => void;
 }
 
