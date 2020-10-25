@@ -33,7 +33,7 @@ const AirportInput = (props: any) => {
     });
 
     const handleCountryChange = (selectedCountry: Country | null) => {
-        handleChangeExposureDataAndFlightsField(countryFieldName, selectedCountry?.id);
+        handleChangeExposureDataAndFlightsField(countryFieldName, selectedCountry ? selectedCountry.id : null);
     };
 
     return (
