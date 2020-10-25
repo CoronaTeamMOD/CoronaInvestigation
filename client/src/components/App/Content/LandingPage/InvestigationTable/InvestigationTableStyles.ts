@@ -88,6 +88,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     priorityTableCell: {
         paddingLeft: '0'
+    },
+    selectedInvestigator: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    warningIcon: {
+        color: theme.palette.warning.main,
+        paddingLeft: theme.spacing(1),
+        flip: false
     }
 }));
 
