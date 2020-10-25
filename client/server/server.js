@@ -8,7 +8,9 @@ require('dotenv').config();
 const app = express();
 
 app.use((req, res, next) => {
-    console.log(req.headers);
+    if(req.headers["x-ms-token-aad-id-token"]) {
+        req.headers.authorization = req.headers["x-ms-token-aad-id-token"];
+    }
     next();
 })
 
