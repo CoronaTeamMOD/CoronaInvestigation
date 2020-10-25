@@ -9,10 +9,3 @@ export const setUser = (user: User): void => {
         payload: {user}
     })
 }
-
-export const setToken = (token: string): void => {
-    store.dispatch({
-        type: actionTypes.SET_TOKEN,
-        payload: token
-    })
-}

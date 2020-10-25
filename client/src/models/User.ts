@@ -1,6 +1,5 @@
 interface User {
     id: string;
-    token: string;
     isActive: boolean;
     investigationGroup: number;
     phoneNumber: string;
