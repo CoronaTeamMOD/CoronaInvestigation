@@ -89,7 +89,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
             case TableHeadersNames.investigatorName:
-                const isUnassigned = indexedRow.investigatorName === '';
+                const isUnassigned = indexedRow.investigatorName === 'לא משוייך';
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
                     return (
                         <div className={classes.selectedInvestigator}>
