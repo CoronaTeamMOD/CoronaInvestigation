@@ -18,6 +18,7 @@ import { setInvestigationStatus } from 'redux/Investigation/investigationActionC
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
+import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -29,7 +30,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
-    
+
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -68,6 +69,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
+                    <InvestigationMenu />
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>

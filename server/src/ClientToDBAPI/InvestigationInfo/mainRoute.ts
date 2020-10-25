@@ -6,7 +6,12 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES } from '../../DBService/InvestigationInfo/Query';
-import { UPDATE_INVESTIGATION_STATUS, UPDATE_INVESTIGATION_START_TIME, UPDATE_INVESTIGATION_END_TIME } from '../../DBService/InvestigationInfo/Mutation';
+import {
+    UPDATE_INVESTIGATION_STATUS,
+    UPDATE_INVESTIGATION_START_TIME,
+    UPDATE_INVESTIGATION_END_TIME,
+    COMMENT
+} from '../../DBService/InvestigationInfo/Mutation';
 
 const errorStatusCode = 500;
 
@@ -50,7 +55,48 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
             response.status(errorStatusCode).json({error: 'failed to fetch static info'});
         }
     });
-})
+});
+
+investigationInfo.post('/comment', (request: Request, response: Response) => {
+    const {comment} = request.body;
+    const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
+    const data = { comment, epidemiologyNumber };
+    const info = {
+        user: response.locals.user.id,
+        investigation: epidemiologyNumber,
+        workflow: 'comment on investigation',
+        service: Service.SERVER,
+    };
+
+    logger.info({
+        severity: Severity.LOW,
+        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify(data)}`,
+        ...info
+    });
+
+    return graphqlRequest(COMMENT, response.locals,  data)
+        .then((result) => {
+            if(result?.errors?.length > 0)
+                throw new Error(result.errors[0]);
+
+            logger.info({
+                severity: Severity.LOW,
+                step: `successfully added comment w/ parameters ${JSON.stringify(data)}`,
+                ...info
+            });
+            return response.sendStatus(200);
+        })
+        .catch((error) => {
+            logger.error({
+                severity: Severity.MEDIUM,
+                step: `failed to add comment w/ parameters ${JSON.stringify(data)}
+                error: ${JSON.stringify(error)}
+                `,
+                ...info
+            });
+            return response.sendStatus(500)
+        });
+});
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationMainStatus, investigationSubStatus } = request.body;

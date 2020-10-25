@@ -2,6 +2,7 @@ import StaticUser from './StaticUser';
 import InvestigatedPatientStaticInfo from './InvestigatedPatientStaticInfo';
 
 interface InvestigationInfo {
+    comment: string | null;
     startTime: Date;
     lastUpdateTime: Date;
     investigatingUnit: string;

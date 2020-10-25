@@ -3,6 +3,7 @@ import { gql } from "postgraphile";
 export const GET_INVESTIGATION_INFO = gql`
 query InvestigationStaticDetails($investigationId: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $investigationId) {
+    comment
     startTime
     lastUpdateTime
     investigatingUnit
