@@ -1,6 +1,6 @@
 -- FUNCTION: public.group_investigations_sort(integer, character varying)
 
-DROP FUNCTION public.group_investigations_sort(integer, character varying);
+-- DROP FUNCTION public.group_investigations_sort(integer, character varying);
 
 CREATE OR REPLACE FUNCTION public.group_investigations_sort(
 	investigation_group_id integer,
@@ -18,7 +18,7 @@ RETURN (select
             json_build_object(
                 'epidemiologyNumber', investigationTable.epidemiology_number,
 				'coronaTestDate', investigationTable.corona_test_date,
-				'isComplex', investigationTable.complexity_code <> 2,
+                'isComplex', investigationTable.complexity_code <> 2,
 				'priority', investigationTable.priority,
 				'desk', investigationTable.desk,
 				'investigatedPatientByInvestigatedPatientId', (
@@ -70,10 +70,11 @@ RETURN (select
                         'countyByInvestigationGroup', (
                             select json_build_object (
                                 'id', countiesTable.id,
-                                'displayName', countiesTable.district || '-' || countiesTable.display_name
+                                'displayName', districtsTable.display_name || '-' || countiesTable.display_name
                             )
-                            from public.counties countiesTable
-                            where countiesTable.id = userTable.investigation_group
+                            from public.counties countiesTable, public.districts districtsTable
+                            where countiesTable.id = userTable.investigation_group and 
+							countiesTable.district_id = districtsTable.id
                         )
 					) 
 					from public.user userTable
