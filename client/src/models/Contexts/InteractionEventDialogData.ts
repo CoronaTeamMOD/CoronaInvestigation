@@ -2,7 +2,7 @@ import Contact from 'models/Contact';
 import Address from 'models/Address';
 
 interface InteractionEventDialogData {
-    id?: number;
+    id: number;
     placeType: string;
     startTime: Date;
     endTime: Date;

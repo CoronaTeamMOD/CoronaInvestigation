@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/styles';
 const useStyles = makeStyles({
     spacedOutForm: {
         maxWidth: '100%',
-        paddingTop: '3vh',
     },
     fieldNameNoWrap: {
         whiteSpace: 'nowrap',
@@ -24,8 +23,12 @@ const useStyles = makeStyles({
             marginLeft: '-3vw',
             width: '11.5vw',
         },
-
     },
+    contactFormItem: {
+        display: 'flex',
+        justifyContent: 'center',
+        borderBottom: '2px solid rgba(224,224,224,1)'
+    }
 });
 
 export default useStyles;

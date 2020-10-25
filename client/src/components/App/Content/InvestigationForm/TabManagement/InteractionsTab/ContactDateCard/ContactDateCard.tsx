@@ -12,12 +12,13 @@ import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
-    const { contactDate, interactions, createNewInteractionEvent, onEditClick, onDeleteClick, loadInteractions } = props;
+    const { contactDate, interactions, createNewInteractionEvent,
+        onEditClick, onDeleteClick, loadInteractions, onDeleteContactClick } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
     const classes = useStyles();
-
+    
     return (
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
             <div className={classes.dateInfo}>
@@ -52,6 +53,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     <InteractionCard
                         loadInteractions={loadInteractions}
                         onEditClick={() => onEditClick(interaction)}
+                        onDeleteContactClick={onDeleteContactClick}
                         onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
                 )}
@@ -67,6 +69,7 @@ interface Props {
     onEditClick: (interaction: Interaction) => void;
     onDeleteClick: (contactEventId: number) => void;
     loadInteractions: () => void;
+    onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
 };
 
 export default ContactDateCard;

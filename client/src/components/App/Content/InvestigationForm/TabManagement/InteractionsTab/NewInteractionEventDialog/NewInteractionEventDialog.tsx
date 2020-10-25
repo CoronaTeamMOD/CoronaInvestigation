@@ -12,6 +12,7 @@ import useStyles from './NewInteractionEventDialogStyles';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 
 const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
+    id: -1, 
     placeType: '',
     placeSubType: null,
     investigationId,

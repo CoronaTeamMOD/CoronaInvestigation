@@ -30,7 +30,7 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
-          [InteractionEventContactFields.ID]: yup.string().nullable()
+          [InteractionEventContactFields.ID_NUMBER]: yup.string().nullable()
             .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
             .length(9, 'ת.ז מכילה 9 מספרים בלבד')
             .test('isValid', "ת.ז לא תקינה", id => isIdValid(id))

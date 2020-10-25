@@ -1,9 +1,9 @@
 interface Contact {
-    serialId?: string;
+    serialId: number;
     firstName: string;
     lastName: string;
-    phoneNumber: string;
-    id?: string;
+    phoneNumber?: string;
+    idNumber?: string;
     contactType: number;
     extraInfo?: string;
 }

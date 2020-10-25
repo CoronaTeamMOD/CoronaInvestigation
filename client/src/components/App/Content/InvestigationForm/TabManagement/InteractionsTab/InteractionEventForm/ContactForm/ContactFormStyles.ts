@@ -2,8 +2,9 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     addContactFields: {
+        padding: '2vh 0',
+        width: '-webkit-fill-available',
         height: '14vh',
-        width: '97%',
         '@media screen and (max-height: 900px)': {
             marginBottom: '3vh',
         }
@@ -25,6 +26,9 @@ const useStyles = makeStyles({
     moreContactDetails: {
         width: '40vw',
         margin: '1vh',
+    },
+    deleteIconDiv: {
+        padding: '2vh 0'
     }
 });
 

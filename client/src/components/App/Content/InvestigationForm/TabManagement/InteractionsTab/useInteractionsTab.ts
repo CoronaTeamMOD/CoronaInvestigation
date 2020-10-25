@@ -1,32 +1,35 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import {useSelector} from 'react-redux';
-import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
+import { useSelector } from 'react-redux';
+import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
 
 import axios from 'Utils/axios';
-import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
 import theme from 'styles/theme';
+import logger from 'logger/logger';
+import Contact from 'models/Contact';
 import StoreStateType from 'redux/storeStateType';
+import { Service, Severity } from 'models/Logger';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InteractionsTabStyles';
-import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
+import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 7;
+const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
+const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
 const maxInvestigatedDays: number = 21;
 
 export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-    const {interactions, setInteractions, setAreThereContacts} = parameters;
+    const { interactions, setInteractions, setAreThereContacts } = parameters;
 
-    const {parseAddress} = useGoogleApiAutocomplete();
-    const {alertError} = useCustomSwal();
+    const { parseAddress } = useGoogleApiAutocomplete();
+    const { alertError } = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
@@ -71,7 +74,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             let startInvestigationDate: Date;
             if (doesHaveSymptoms) {
                 if (symptomsStartDate) {
-                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate,  coronaTestDate));
+                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
                     if (TestAndSymptomsInterval > maxInvestigatedDays) {
                         alertError('תאריך תחילת הסימפטומים לא חוקי');
                         return []
@@ -84,7 +87,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
             try {
-                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
+                return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
             } catch (e) {
                 return []
             }
@@ -161,7 +164,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 handleLoadInteractionsError();
-        });
+            });
     }
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
@@ -181,6 +184,16 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 title: classes.swalTitle
             }
         });
+    }
+
+    const handleDeleteFailed = (messageToDisplay: string) => {
+        Swal.fire({
+            title: messageToDisplay,
+            icon: 'error',
+            customClass: {
+                title: classes.swalTitle
+            }
+        })
     }
 
     const handleDeleteContactEvent = (contactEventId: number) => {
@@ -208,7 +221,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 axios.delete('/intersections/deleteContactEvent', {
-                    params: {contactEventId}
+                    params: { contactEventId }
                 }).then(() => {
                     logger.info({
                         service: Service.CLIENT,
@@ -228,29 +241,72 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    handleDeleteEventFailed();
+                    handleDeleteFailed(eventDeleteFailedMsg);
                 })
             }
             ;
         });
-
-        const handleDeleteEventFailed = () => {
-            Swal.fire({
-                title: 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                }
-            })
-        };
     }
+
+    const handleDeleteContactedPerson = (contactedPersonId: number, contactEventId: number) => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'האם אתה בטוח שתרצה למחוק את מגע?',
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+            customClass: {
+                title: classes.swalTitle,
+                content: classes.swalText
+            }
+        }).then((result) => {
+            if (result.value) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Deleting Contacted Person',
+                    step: `launching interaction delete request`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                axios.delete('/intersections/deleteContactedPerson', {
+                    params: { contactedPersonId }
+                }).then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Deleting Contacted Person',
+                        step: `interaction was deleted successfully`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    loadInteractions();
+                }).catch((error) => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Deleting Contacted Person',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    handleDeleteFailed(contactDeleteFailedMsg);
+                })
+            }
+            ;
+        });
+    }
+
 
     return {
         getDatesToInvestigate,
         loadInteractions,
         getCoronaTestDate,
         getClinicalDetailsSymptoms,
-        handleDeleteContactEvent
+        handleDeleteContactEvent,
+        handleDeleteContactedPerson
     }
 };
 

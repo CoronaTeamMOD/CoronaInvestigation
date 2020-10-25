@@ -23,3 +23,11 @@ mutation deleteContactEvent ($contactEventId: Int!) {
   }
 }   
 `;
+
+export const DELETE_CONTCTED_PERSON = gql`
+mutation DeleteContactedPerson($contactedPersonId: Int!) {
+  deleteContactedPersonById(input: {id: $contactedPersonId}) {
+    clientMutationId
+  }
+}
+`;
