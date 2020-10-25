@@ -60,7 +60,7 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     };
 
     return (
-        <Dialog open={true} onClose={onDialogClose} classes={{paper: classes.dialogPaper}}>
+        <Dialog open={open} onClose={onDialogClose} classes={{paper: classes.dialogPaper}}>
             <DialogTitle disableTypography>
                 <Typography variant="h6" className={classes.title}>
                     <CommentIcon/>
