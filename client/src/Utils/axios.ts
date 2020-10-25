@@ -32,7 +32,6 @@ instance.interceptors.request.use(
                 await getNewTokenFromAzureEasyAuth();
             }
         }
-        config.headers.Authorization = store.getState().user.token;
         config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
         activateIsLoading(config);
         return config;
