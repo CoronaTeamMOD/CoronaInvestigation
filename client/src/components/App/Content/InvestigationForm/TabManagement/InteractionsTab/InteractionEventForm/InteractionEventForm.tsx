@@ -82,7 +82,7 @@ const InteractionEventForm: React.FC<Props> = (
   const generatePlacenameByPlaceSubType = (input :string) => {
     if (!placeType) return '';
     if (placeType !== input) {
-      return `${placeType} ${input}`;
+      return `${placeType} ${input}`.replace('/', ' או ');;
     } else {
       return `${placeType}`;
     }
