@@ -26,6 +26,7 @@ import useStyles from './CommentDialogStyles';
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 const DELETE_BUTTON_TEXT = 'מחק';
 const COMMENT_PLACEHOLDER = 'ההערה שלך...';
+const MAX_CHARS_ALLOWED = 200;
 
 const CommentDialog = ({open, handleDialogClose}: Props) => {
     const [commentInput, setCommentInput] = React.useState<string>('');
@@ -97,6 +98,7 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
             <DialogContent className={classes.content}>
                 <TextField multiline fullWidth
+                           inputProps={{ maxLength: MAX_CHARS_ALLOWED }}
                            placeholder={COMMENT_PLACEHOLDER}
                            value={commentInput} onChange={handleInput}
                 />
