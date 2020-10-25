@@ -30,6 +30,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
 
+    const [cityInput, setCityInput] = useState<string>('');
+
     const handleIsolation = (value: boolean) => {
         value ?
             Swal.fire({
@@ -111,19 +113,23 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         </Grid>
                         <Grid item xs={6}>
                             <Autocomplete
-                                className={classes.autocompleteTextField}
-                                options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
-                                getOptionLabel={(option) => option?.value?.displayName || ''}
-                                inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName || ''}
+                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
+                                inputValue={cityInput}
+                                defaultValue={{ id: interactedContact.contactedPersonCity, value: cities.get(interactedContact.contactedPersonCity) }}
                                 onChange={(event, selectedCity) => {
-                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.cityId);
+                                    const newCityInput = cities.get(interactedContact.contactedPersonCity) ? cities.get(interactedContact.contactedPersonCity)?.displayName : '';
+                                    newCityInput && setCityInput(newCityInput || '');
+                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.id);
+                                }}
+                                onInputChange={(event, selectedCityName) => {
+                                    setCityInput(selectedCityName);
                                 }}
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
                                         id={InteractedContactFields.CONTACTED_PERSON_CITY}
                                         placeholder='עיר'
-                                        value={interactedContact.contactedPersonCity}
                                     />
                                 }
                             />
