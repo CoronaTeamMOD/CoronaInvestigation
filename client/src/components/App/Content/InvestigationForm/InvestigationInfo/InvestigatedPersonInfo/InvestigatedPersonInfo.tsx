@@ -18,7 +18,7 @@ import { setInvestigationStatus } from 'redux/Investigation/investigationActionC
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
-import InvestigationMenu from "./InvestigationMenu/InvestigationMenu";
+import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
