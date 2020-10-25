@@ -9,7 +9,7 @@ import { Autocomplete } from '@material-ui/lab';
 import SignUpFields from 'models/enums/SignUpFields'
 import SignUpUser from 'models/SignUpUser';
 import City from 'models/City';
-import CRUD from 'models/enums/CRUD';
+import FormMode from 'models/enums/FormMode';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import NumericTextField from 'commons/NumericTextField/NumericTextField'
 import FormInput from 'commons/FormInput/FormInput'
@@ -48,7 +48,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
     )
 
     const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
-        ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
+    ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
             <NumericTextField
                 disabled={disabled}
                 testId={props.name}
@@ -75,7 +75,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         resolver: yupResolver(SignUpSchema)
     })
     
-    const shouldDisableFields = mode === CRUD.READ ? true : false; 
+    const shouldDisableFields = mode === FormMode.READ ? true : false; 
     
     const onSubmit = (data: SignUpUser) => {
         createUser(data);
@@ -108,7 +108,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                     </Grid>
                 </Grid>
 
-                { mode === CRUD.READ ? 
+                { mode === FormMode.READ ? 
                     <Grid container justify='flex-start' className={classes.formRow}>
                         <Grid item xs={8}>
                             <FormInput fieldName='שם מלא'>
@@ -365,7 +365,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 interface Props {
     defaultValues: SignUpUser;
     handleSaveUser?: () => void;
-    mode: string
+    mode: FormMode
 }
 
 interface GenericAlphabetTextFieldProps {

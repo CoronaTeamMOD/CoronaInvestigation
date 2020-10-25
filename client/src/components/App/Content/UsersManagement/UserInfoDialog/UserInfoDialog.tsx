@@ -4,7 +4,7 @@ import { Close } from '@material-ui/icons';
 
 import SignUpFields from 'models/enums/SignUpFields'
 import SignUpUser from 'models/SignUpUser';
-import CRUD from 'models/enums/CRUD';
+import FormMode from 'models/enums/FormMode';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import SignUpForm from '../../SignUp/SignUpForm/SignUpForm'
@@ -27,7 +27,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialo
             <DialogContent>
                 <SignUpForm 
                     defaultValues={defaultValues}
-                    mode={CRUD.READ}
+                    mode={FormMode.READ}
                 />
             </DialogContent>
 

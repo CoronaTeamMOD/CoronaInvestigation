@@ -5,7 +5,7 @@ import { Close } from '@material-ui/icons';
 
 import SignUpFields from 'models/enums/SignUpFields';
 import SignUpUser from 'models/SignUpUser';
-import CRUD from 'models/enums/CRUD';
+import FormMode from 'models/enums/FormMode';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
 
@@ -45,7 +45,7 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
                 <SignUpForm 
                     defaultValues={defaultValues}
                     handleSaveUser={handleSaveUser}
-                    mode={CRUD.CREATE}
+                    mode={FormMode.CREATE}
                 />
             </DialogContent>
 
