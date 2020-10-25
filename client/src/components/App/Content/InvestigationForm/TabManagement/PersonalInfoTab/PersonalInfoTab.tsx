@@ -100,6 +100,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
         methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
+        methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         if (newOccupation === Occupations.EDUCATION_SYSTEM && personalInfoState.educationOccupationCity) {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
