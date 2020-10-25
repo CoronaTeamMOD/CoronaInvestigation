@@ -60,7 +60,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, onDeleteClick, curr
                             />
                         </FormInput>
                     </Grid>
-                    {/* <Grid item xs={4}>
+                    <Grid item xs={4}>
                         <FormInput fieldName={contactedPersonLastName}>
                             <Controller
                                 name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
@@ -80,7 +80,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, onDeleteClick, curr
                             />
                         </FormInput>
                     </Grid>
-                    <Grid item xs={4}>
+                    {/* <Grid item xs={4}>
                         <FormInput fieldName={contactedPersonPhone}>
                             <Controller
                                 name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
