@@ -135,7 +135,6 @@ const authMiddleware = (
             severity: Severity.LOW
         });
         const token = request.headers.authorization;
-        console.log(token);
         const user = stubUsers[token as keyof typeof stubUsers];
         if (!user) {
             logger.error({
