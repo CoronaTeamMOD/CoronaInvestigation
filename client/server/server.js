@@ -8,12 +8,10 @@ require('dotenv').config();
 const app = express();
 
 app.use((req, res, next) => {
-    console.log("here");
     if(req.headers["x-ms-token-aad-id-token"]!== undefined) {
         req.headers.authorization = req.headers["x-ms-token-aad-id-token"];
     }
     else {
-        console.log("fake");
         req.headers.authorization = "demo token";
     }
     next();
