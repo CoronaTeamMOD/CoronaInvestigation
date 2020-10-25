@@ -45,7 +45,7 @@ const AirportInput = (props: any) => {
                 <AutocompletedField
                     value={country}
                     options={options}
-                    onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue?.id)}
+                    onChange={(e, newValue) => handleChangeExposureDataAndFlightsField(countryFieldName, newValue ? newValue.id : null)}
                     getOptionLabel={(option) => getLabel(option)}
                     filterOptions={filterOptions}
                     label='מדינה'
