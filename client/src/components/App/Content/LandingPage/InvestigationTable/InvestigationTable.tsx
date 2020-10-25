@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge
+    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid
 } from '@material-ui/core';
 import { Refresh, Warning, Close } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +20,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
-import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
 
 export const defaultOrderBy = 'defaultOrder';
@@ -44,7 +44,7 @@ const defaultCounty = {
     displayName: ''
 }
 
-const defaultFilterOptions : FilterTableOption = {mainStatus: [ALL_STATUSES_FILTER_OPTIONS]};
+const defaultFilterOptions : FilterTableOption = {mainStatus: [ALL_STATUSES_FILTER_OPTIONS], investigationDesk: [ALL_DESKS_FILTER_OPTIONS]};
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -64,11 +64,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
+    const [allDesks, setAllDesks] = useState<string[]>([]);
 
     const {
         tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
-    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties, setAllStatuses });
+    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, 
+        setAllCounties, setAllStatuses, setAllDesks });
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
@@ -89,7 +91,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         if (filterOptions !== defaultFilterOptions) {
             filteredRows = filteredRows.filter(row => {
                 const indexedRow : {[index: string]: any} = {...row};
-                return !Object.keys(filterOptions).some(key => !(filterOptions[key].includes(indexedRow[key]) || filterOptions[key].includes(ALL_STATUSES_FILTER_OPTIONS)))
+                return !Object.keys(filterOptions).some(key => !(filterOptions[key].includes(indexedRow[key]) || filterOptions[key].includes(defaultFilterOptions[key][0])))
             })
         }
         setFilteredTableRows(filteredRows);
@@ -254,21 +256,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
+        const newFilterOptions : FilterTableOption = {...filterOptions};
+
         if (selectedStatuses.length === 0) {
-            setFilterOptions(defaultFilterOptions);
+            newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
         } else if (selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
             if (!filterOptions.mainStatus.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-                setFilterOptions(defaultFilterOptions);
+                newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
             } else {
-                const newFilterOptions : FilterTableOption = {...filterOptions};
                 newFilterOptions.mainStatus = selectedStatuses.filter(status => status !== ALL_STATUSES_FILTER_OPTIONS);
-                setFilterOptions(newFilterOptions);
             }
         } else {
-            const newFilterOptions : FilterTableOption = {...filterOptions};
             newFilterOptions.mainStatus = selectedStatuses;
-            setFilterOptions(newFilterOptions);
         }
+        setFilterOptions(newFilterOptions);
+    }
+
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: string[]) => {
+        const newFilterOptions : FilterTableOption = {...filterOptions};
+
+        if (selectedDesks.length === 0) {
+            newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
+        } else if (selectedDesks.includes(ALL_DESKS_FILTER_OPTIONS)) {
+            if (!filterOptions.investigationDesk.includes(ALL_DESKS_FILTER_OPTIONS)) {
+                newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
+            } else {
+                newFilterOptions.investigationDesk = selectedDesks.filter(desk => desk !== ALL_DESKS_FILTER_OPTIONS);
+            }
+        } else {
+            newFilterOptions.investigationDesk = selectedDesks;
+        }
+        setFilterOptions(newFilterOptions);
     }
 
     const filterIconByToggle = () => {
@@ -281,9 +299,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <Typography color='textPrimary' className={classes.welcomeMessage}>
-                {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
-            </Typography>
+            <Grid container justify='flex-start'>
+                <Grid item xs={2}/>
+                <Grid item xs={7}>
+                    <Typography color='textPrimary' className={classes.welcomeMessage}>
+                        {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
+                    </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                    <Card className={classes.filterByDeskCard}>
+                        <Typography>הדסקים בהם הנך צופה כעת:</Typography>
+                        <Autocomplete
+                            classes={{inputRoot: classes.autocompleteInput}}
+                            multiple
+                            options={allDesks}
+                            getOptionLabel={(option) => option}
+                            onChange={onSelectedDesksChange}
+                            value={filterOptions.investigationDesk}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                />
+                            }
+                            renderTags={(tags, tagsProps) => {
+                                const additionalTagsAmount = tags.length - 1;
+                                const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                return tags[0] + additionalDisplay;
+                            }}
+                        />
+                    </Card>
+                </Grid>
+            </Grid>
             <div className={classes.content}>
                 <div className={classes.tableHeaderRow}>
                     <Button
@@ -308,7 +354,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 <Typography>סינון לפי</Typography>
                                 <Typography>סטטוס:</Typography>
                                 <Autocomplete
-                                    classes={{inputRoot: classes.statusesAutocompleteInput}}
+                                    classes={{inputRoot: classes.autocompleteInput}}
                                     multiple
                                     options={allStatuses}
                                     getOptionLabel={(option) => option}

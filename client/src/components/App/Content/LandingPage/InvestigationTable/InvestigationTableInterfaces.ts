@@ -11,6 +11,7 @@ export interface useInvestigationTableParameters {
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+    setAllDesks: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface useInvestigationTableOutcome {
