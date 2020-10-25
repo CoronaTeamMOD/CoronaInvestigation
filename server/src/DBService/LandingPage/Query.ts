@@ -34,7 +34,9 @@ query getAllAvailableCounties {
   allCounties {
     nodes {
       id
-      district
+      districtByDistrictId {
+        displayName
+      }
       displayName
     }
   }
