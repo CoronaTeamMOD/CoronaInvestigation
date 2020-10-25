@@ -32,7 +32,7 @@ const AddressForm: React.FC = (): JSX.Element => {
                                 <Map
                                     name={InteractionEventDialogFields.LOCATION_ADDRESS}
                                     selectedAddress={props.value}
-                                    setSelectedAddress={onGoogleApiLocationTextFieldChange}
+                                    setSelectedAddress={(newSelectedAddress) => props.onChange(newSelectedAddress)}
                                 />
                             )}
                         />
