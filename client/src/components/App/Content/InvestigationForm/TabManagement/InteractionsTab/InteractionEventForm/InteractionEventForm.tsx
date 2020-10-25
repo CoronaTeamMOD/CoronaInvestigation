@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon, Filter } from '@material-ui/icons';
 import { Grid, Typography, Divider, IconButton, Button } from '@material-ui/core';
 import { useForm, FormProvider, Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import _ from 'lodash'
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -47,7 +48,7 @@ const InteractionEventForm: React.FC<Props> = (
     resolver: yupResolver(InteractionEventSchema)
   });
 
-
+  const [arrayToSave, setArrayToSave] = React.useState<any>([]);
   const [contactedPersonIdsToDelete, setContactedPersonIdsToDelete] = React.useState<number[]>([]);
 
   const contacts2 = methods.watch(InteractionEventDialogFields.CONTACTS);
@@ -62,6 +63,13 @@ const InteractionEventForm: React.FC<Props> = (
 
   const classes = useStyles();
   const formClasses = useFormStyles();
+
+
+  React.useEffect(() => {
+    if (arrayToSave.length === 0) {
+      setArrayToSave(contacts)
+    }
+  }, [])
 
   // React.useEffect(() => {
   //   console.log("CONTACTS2: ", contacts2)
@@ -88,7 +96,14 @@ const InteractionEventForm: React.FC<Props> = (
   }
 
   const onSubmit = (data: InteractionEventDialogData) => {
-    console.log("OM SUBMIT: ", data)
+    console.log("ON SUBMIT DATA: ", data)
+    console.log("ON SUBMIT ATS: ", arrayToSave)
+    const b = arrayToSave.map((a: any) => ({
+      firstName: a.firstName,
+      lastName: a.lastName
+    }))
+    console.log("ON SUBMIT B: ",b)
+    console.log("ON SUBMIT DIFF: ", _.differenceWith(data.contacts, b, (a: any, b: any) => a.firstName === b.firstName && a.lastName === b.lastName))
     const interactionDataToSave = convertData(data);
     // console.log("IDTS: ", interactionDataToSave)
     saveIntreactions(interactionDataToSave, contactedPersonIdsToDelete);
@@ -184,6 +199,9 @@ const InteractionEventForm: React.FC<Props> = (
 
   return (
     <FormProvider {...methods}>
+      <Button onClick={() => console.log("ATS: ", arrayToSave)}>
+        CHECK ATS!
+      </Button>
       <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid className={formClasses.form} container justify='flex-start'>
           <PlacesTypesAndSubTypes size='Dialog'

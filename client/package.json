@@ -36,6 +36,7 @@
         "@testing-library/react": "^9.5.0",
         "@testing-library/user-event": "^7.2.1",
         "@types/jwt-decode": "^2.2.1",
+        "@types/lodash": "^4.14.162",
         "axios": "^0.20.0",
         "axios-mock-adapter": "^1.18.2",
         "date-fns": "^2.16.1",
