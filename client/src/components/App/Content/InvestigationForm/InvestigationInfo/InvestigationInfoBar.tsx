@@ -19,7 +19,7 @@ import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investig
 import useStyles from './InvestigationInfoBarStyles';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
-import {CommentContextProvider} from "./Context/CommentContext";
+import {CommentContextProvider} from './Context/CommentContext';
 
 export const defaultUser = {
     id: '',
