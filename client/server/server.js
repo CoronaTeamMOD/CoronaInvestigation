@@ -8,10 +8,7 @@ require('dotenv').config();
 const app = express();
 
 app.use((req, res, next) => {
-    if(req.headers["X-MS-CLIENT-PRINCIPAL-ID"] || req.headers["X-MS-CLIENT-PRINCIPAL-NAME"]) {
-        console.log("X-MS-CLIENT-PRINCIPAL-ID: " + req.headers["X-MS-CLIENT-PRINCIPAL-ID"]);
-        console.log("X-MS-CLIENT-PRINCIPAL-NAME: " + req.headers["X-MS-CLIENT-PRINCIPAL-NAME"]);
-    }
+    console.log(req.headers);
     next();
 })
 
