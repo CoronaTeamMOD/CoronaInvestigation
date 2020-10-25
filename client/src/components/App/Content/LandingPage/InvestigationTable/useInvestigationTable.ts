@@ -19,9 +19,9 @@ import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -65,11 +65,12 @@ export const UNDEFINED_ROW = -1;
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
+export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
 
-    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty } = parameters;
+    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty, setAllStatuses } = parameters;
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -95,6 +96,39 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         setIsLoading(isCurrentlyLoadingInvestigation);
     }, [isCurrentlyLoadingInvestigation])
+
+    useEffect(() => {
+        axios.get('/landingPage/investigationStatuses').
+        then((result) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: 'The investigations statuses were fetched successfully'
+                });
+                const allStatuses : string[] = result.data;
+                allStatuses.push(ALL_STATUSES_FILTER_OPTIONS);
+                setAllStatuses(allStatuses);
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: 'Got 200 status code but results structure isnt as expected'
+                });
+            }
+        })
+        .catch((err) => {
+            fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET statuses request to the DB',
+                step: err
+            });
+        })
+    }, [])
 
     const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
