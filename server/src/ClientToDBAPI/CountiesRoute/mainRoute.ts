@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import {GET_COUNTY_DISPLAY_NAME_BY_USER, GET_ALL_COUNTIES} from '../../DBService/Counties/Query';
+import { GET_COUNTY_DISPLAY_NAME_BY_USER, GET_ALL_COUNTIES } from '../../DBService/Counties/Query';
 import GetAllCountiesResponse from '../../Models/User/GetAllCountiesResponse';
 
 const countiesRoute = Router();
@@ -19,7 +19,12 @@ countiesRoute.get('', (request: Request, response: Response) => {
                     workflow: 'All Counties Query',
                     step: `Queried all counties successfully`,
                 })
-                response.send(result.data.allCounties.nodes);
+                let counties = result.data.allCounties.nodes.map((county: any) => ({
+                    id: county.id,
+                    displayName: county.displayName,
+                    district: county.districtByDistrictId.displayName
+                }));
+                response.send(counties);
             } else {
                 logger.error({
                     service: Service.SERVER,

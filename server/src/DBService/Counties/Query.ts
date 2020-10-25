@@ -1,4 +1,4 @@
-import {gql} from 'postgraphile';
+import { gql } from 'postgraphile';
 
 export const GET_ALL_COUNTIES = gql`
 query allCounties {
@@ -6,7 +6,9 @@ query allCounties {
     nodes {
       id
       displayName,
-      district
+      districtByDistrictId {
+        displayName
+      }
     }
   }
 }
