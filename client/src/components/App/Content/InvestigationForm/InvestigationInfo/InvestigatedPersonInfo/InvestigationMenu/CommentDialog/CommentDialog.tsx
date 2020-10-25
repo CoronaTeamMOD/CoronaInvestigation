@@ -76,7 +76,6 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
     React.useEffect(resetInput , [comment]);
 
-
     const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setCommentInput(event.target.value);
     };
@@ -89,9 +88,8 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     };
 
     const onDialogClose = () => {
-        resetInput();
         handleDialogClose();
-    }
+    };
 
     const handleCommentSave = () => {
         sendComment(commentInput as string, 'שגיאה בשמירת ההערה')
