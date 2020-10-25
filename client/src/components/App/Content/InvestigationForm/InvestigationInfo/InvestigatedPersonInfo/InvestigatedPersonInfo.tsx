@@ -86,13 +86,17 @@ const InvestigatedPersonInfo = (props: Props) => {
             </div>
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
-                    <InfoItemWithIcon testId='age' name='גיל' value={age}
-                        icon={CakeOutlined}
-                    />
+                    {
+                        age && <InfoItemWithIcon testId='age' name='גיל' value={age}
+                            icon={CakeOutlined}
+                        />
+                    }
                     {
                         (age && +age <= maxComplexityAge) && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
                     }
-                    <Divider />
+                    {
+                        age && <Divider />
+                    }
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
                         birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
                     }
