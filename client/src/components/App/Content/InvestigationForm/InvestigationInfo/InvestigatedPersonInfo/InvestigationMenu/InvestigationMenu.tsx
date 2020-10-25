@@ -8,6 +8,9 @@ import {commentContext} from '../../Context/CommentContext';
 
 import useStyles from './InvestigationMenuStyles';
 
+const existingCommentColor = '#91BF7C';
+const noCommentsColor = '#727272';
+
 const InvestigationMenu = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
@@ -39,7 +42,7 @@ const InvestigationMenu = () => {
                 open={open}
                 onClose={handleMenuClose}>
                 <MenuItem className={classes.menuItem} onClick={handleDialogOpen}>
-                    <CommentIcon htmlColor={Boolean(comment) ? '#91BF7C' : 'black'}/>
+                    <CommentIcon htmlColor={comment ? existingCommentColor : noCommentsColor}/>
                     <Typography>
                         הערות על החקירה
                     </Typography>

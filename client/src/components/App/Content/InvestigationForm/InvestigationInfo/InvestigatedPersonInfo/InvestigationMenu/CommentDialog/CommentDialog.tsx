@@ -2,7 +2,6 @@ import React, {useContext} from 'react';
 import {useSelector} from 'react-redux';
 import axios from 'Utils/axios';
 import {
-    createStyles,
     Dialog,
     DialogActions,
     DialogContent,
@@ -13,11 +12,16 @@ import {
 } from '@material-ui/core';
 import CommentIcon from '@material-ui/icons/CommentOutlined';
 import CloseIcon from '@material-ui/icons/Close';
-import useStyles from './CommentDialogStyles';
+
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
+
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import {commentContext} from '../../../Context/CommentContext';
+
+import useStyles from './CommentDialogStyles';
 
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 const DELETE_BUTTON_TEXT = 'מחק';
@@ -40,9 +44,27 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     };
 
     const sendComment = (commentToSend: string | null, errorMessage: string) => {
+        const logInfo = {
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: `POST request add comment to investigation ${epidemiologyNumber}`
+        };
+       
         axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
-            .then(() => setComment(commentToSend))
-            .catch(() => alertError(errorMessage))
+            .then(() => {
+                setComment(commentToSend);
+                logger.info({
+                    ...logInfo,
+                     step: 'Successfully added comment to investigation'
+                 });
+            })
+            .catch(() => {
+                alertError(errorMessage);
+                logger.info({
+                    ...logInfo,
+                     step: 'Error occured in adding comment to investigation'
+                 });
+            })
             .finally(onDialogClose);
     };
 
@@ -81,12 +103,12 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
             </DialogContent>
             <DialogActions>
                 <PrimaryButton width='custom'
-                               disabled={!(Boolean(commentInput) && commentInput !== comment)}
+                               disabled={!(commentInput && commentInput !== comment)}
                                onClick={handleCommentSave}>
                     {SAVE_BUTTON_TEXT}
                 </PrimaryButton>
                 <PrimaryButton width='custom' background='rgb(249, 89, 89)'
-                               disabled={!Boolean(comment)}
+                               disabled={!comment}
                                onClick={handleCommentDelete}>
                     {DELETE_BUTTON_TEXT}
                 </PrimaryButton>
