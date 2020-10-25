@@ -4,8 +4,10 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
+import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_USER_BY_ID, GET_ALL_INVESTIGATION_STATUS } from '../../DBService/LandingPage/Query';
+import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 
-import {GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS} from '../../DBService/LandingPage/Query';
+const errorStatusResponse = 500;
 
 const landingPageRoute = Router();
 
@@ -45,7 +47,7 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
-            response.status(500).send('error in fetching data')
+            response.status(errorStatusResponse).send('error in fetching data')
         }
     })
     .catch(err => {
@@ -57,7 +59,7 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.status(500).send('error in fetching data: ' + err);
+        response.status(errorStatusResponse).send('error in fetching data: ' + err);
     });
 })
 
@@ -97,7 +99,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
                     user: response.locals.user.id,
                     investigation: response.locals.epidemiologynumber
                 });
-                response.status(500).send('error in fetching data')
+                response.status(errorStatusResponse).send('error in fetching data')
             }
         })
         .catch(err => {
@@ -109,7 +111,55 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
-            response.status(500).send('error in fetching data: ' + err)
+            response.status(errorStatusResponse).send('error in fetching data: ' + err)
+        });
+})
+
+landingPageRoute.get('/investigationStatuses', (request: Request, response: Response) => {    
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting Investigations',
+        step: `launching graphql API investigationStatuses request`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    graphqlRequest(GET_ALL_INVESTIGATION_STATUS, response.locals)
+        .then((result: GetAllInvestigationStatuses) => {
+            if (result?.data?.allInvestigationStatuses) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting Investigation statuses',
+                    step: 'got results from the DB',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                })
+                const convertedStatuses: string[] = result.data.allInvestigationStatuses.nodes.map(status => status.displayName);
+                response.send(convertedStatuses);
+            }
+            else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting Investigation statuses',
+                    step: `got error in querying the DB ${JSON.stringify(result)}`,
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
+                response.status(errorStatusResponse).send('error in fetching data')
+            }
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting Investigation statuses',
+                step: `got error in requesting the graphql API ${err}`,
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+            response.status(errorStatusResponse).send('error in fetching data: ' + err)
         });
 })
 

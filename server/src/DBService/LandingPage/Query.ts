@@ -42,3 +42,13 @@ query getAllAvailableCounties {
   }
 }
 `;
+
+export const GET_ALL_INVESTIGATION_STATUS = gql`
+query allInvestigationStatuses {
+  allInvestigationStatuses {
+    nodes {
+      displayName
+    }
+  }
+}
+`;

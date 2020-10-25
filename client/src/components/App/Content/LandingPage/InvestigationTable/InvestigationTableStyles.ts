@@ -39,13 +39,31 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
-    tableHeaderButton: {
+    tableHeaderRow: {
         width: '90vw',  
         display: 'flex',
         justifyContent: 'flex-end'
     },
     sortResetButton: {
         fontWeight: 600
+    },
+    filterTableCard: {
+        width: '40vw',
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        margin: '1vh 0',
+        alignItems: 'center',
+        height: '10vh',
+    },
+    filterButton: {
+        fontWeight: 600,
+        minWidth: '3vw',
+        justifyContent: 'flex-end',
+        direction: 'ltr'
+    },
+    statusesAutocompleteInput: {
+        paddingRight: 'unset' + '!important',
+        width: '22vw'
     },
     activeSortIcon: {
         '&$active': {

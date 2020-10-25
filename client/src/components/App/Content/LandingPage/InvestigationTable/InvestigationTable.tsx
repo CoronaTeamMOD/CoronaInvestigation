@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery,
-    Tooltip
+    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge
 } from '@material-ui/core';
-import { Refresh, Warning } from '@material-ui/icons';
+import { Refresh, Warning, Close } from '@material-ui/icons';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import User from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
+import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
-import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
 
 export const defaultOrderBy = 'defaultOrder';
@@ -42,6 +44,8 @@ const defaultCounty = {
     displayName: ''
 }
 
+const defaultFilterOptions : FilterTableOption = {mainStatus: [ALL_STATUSES_FILTER_OPTIONS]};
+
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
@@ -56,6 +60,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
     const [order, setOrder] = useState<Order>(sortOrders.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
+    const [allStatuses, setAllStatuses] = useState<string[]>([]);
+    const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
+    const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
+    const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
+
+    const {
+        tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
+    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties, setAllStatuses });
+
+    const user = useSelector<StoreStateType, User>(state => state.user);
 
     useEffect(() => {
         if (investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
@@ -69,12 +84,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
     }, [investigatorAutoCompleteClicked]);
 
-    const {
-        tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
-    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, setAllCounties });
+    useEffect(() => {
+        let filteredRows : InvestigationTableRow[] = [...tableRows];
+        if (filterOptions !== defaultFilterOptions) {
+            filteredRows = filteredRows.filter(row => {
+                const indexedRow : {[index: string]: any} = {...row};
+                return !Object.keys(filterOptions).some(key => !(filterOptions[key].includes(indexedRow[key]) || filterOptions[key].includes(ALL_STATUSES_FILTER_OPTIONS)))
+            })
+        }
+        setFilteredTableRows(filteredRows);
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    }, [tableRows, filterOptions])
 
     const CustomPopper = (props: any) => {
         return (<Popper {...props} style={{ width: 350 }} placement='bottom-start' />)
@@ -229,13 +249,49 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         property === defaultOrderBy ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
     };
 
+    const closeFilterRow = () => setShowFilterRow(false);
+
+    const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
+
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
+        if (selectedStatuses.length === 0) {
+            setFilterOptions(defaultFilterOptions);
+        } else if (selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
+            if (!filterOptions.mainStatus.includes(ALL_STATUSES_FILTER_OPTIONS)) {
+                setFilterOptions(defaultFilterOptions);
+            } else {
+                const newFilterOptions : FilterTableOption = {...filterOptions};
+                newFilterOptions.mainStatus = selectedStatuses.filter(status => status !== ALL_STATUSES_FILTER_OPTIONS);
+                setFilterOptions(newFilterOptions);
+            }
+        } else {
+            const newFilterOptions : FilterTableOption = {...filterOptions};
+            newFilterOptions.mainStatus = selectedStatuses;
+            setFilterOptions(newFilterOptions);
+        }
+    }
+
+    const filterIconByToggle = () => {
+        const filterIcon = <FontAwesomeIcon icon={faFilter} style={{fontSize: '15px'}}/>;
+        if (showFilterRow) return <Badge 
+        anchorOrigin={{vertical: 'top',horizontal: 'left',}} variant='dot' badgeContent='' color='error'>{filterIcon}
+        </Badge>
+        return filterIcon
+    }
+
     return (
         <>
             <Typography color='textPrimary' className={classes.welcomeMessage}>
                 {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
             </Typography>
             <div className={classes.content}>
-                <div className={classes.tableHeaderButton}>
+                <div className={classes.tableHeaderRow}>
+                    <Button
+                        color='primary'
+                        className={classes.filterButton}
+                        startIcon={filterIconByToggle()}
+                        onClick={toggleFilterRow}
+                    />
                     <Button
                         color='primary'
                         className={classes.sortResetButton}
@@ -245,6 +301,35 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {resetSortButtonText}
                     </Button>
                 </div>
+                {
+                    <Collapse in={showFilterRow}>
+                        <div className={classes.tableHeaderRow}>
+                            <Card className={classes.filterTableCard}>
+                                <Typography>סינון לפי</Typography>
+                                <Typography>סטטוס:</Typography>
+                                <Autocomplete
+                                    classes={{inputRoot: classes.statusesAutocompleteInput}}
+                                    multiple
+                                    options={allStatuses}
+                                    getOptionLabel={(option) => option}
+                                    onChange={onSelectedStatusesChange}
+                                    value={filterOptions.mainStatus}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                        />
+                                    }
+                                    renderTags={(tags, tagsProps) => {
+                                        const additionalTagsAmount = tags.length - 1;
+                                        const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                        return tags[0] + additionalDisplay;
+                                    }}
+                                />
+                                <IconButton><Close onClick={() => closeFilterRow()}/></IconButton>
+                            </Card>
+                        </div>
+                    </Collapse>
+                }
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
@@ -273,7 +358,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tableRows.map((row: InvestigationTableRow, index: number) => {
+                            {filteredTableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 return (
                                     <TableRow

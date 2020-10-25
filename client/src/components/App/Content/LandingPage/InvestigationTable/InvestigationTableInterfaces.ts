@@ -10,6 +10,7 @@ export interface useInvestigationTableParameters {
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
+    setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface useInvestigationTableOutcome {
