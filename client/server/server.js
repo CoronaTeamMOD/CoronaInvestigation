@@ -10,8 +10,7 @@ const app = express();
 app.use((req, res, next) => {
     if(req.headers["x-ms-token-aad-id-token"]!== undefined) {
         req.headers.authorization = req.headers["x-ms-token-aad-id-token"];
-    }
-    else {
+    } else {
         req.headers.authorization = "demo token";
     }
     next();
