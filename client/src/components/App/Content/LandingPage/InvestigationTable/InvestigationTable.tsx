@@ -4,9 +4,10 @@ import { Autocomplete } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery
+    useMediaQuery,
+    Tooltip
 } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import { Refresh, Warning } from '@material-ui/icons';
 
 import User from 'models/User';
 import County from 'models/County';
@@ -76,81 +77,97 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const CustomPopper = (props: any) => {
-        return (<Popper {...props} style={{width: 350}} placement='bottom-start' />)
+        return (<Popper {...props} style={{ width: 350 }} placement='bottom-start' />)
     }
+
+    const UnassignedWarning = () => (
+        <Tooltip title='לא הוקצה חוקר לחקירה'>
+            <Warning className={classes.warningIcon} />
+        </Tooltip>
+    )
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
             case TableHeadersNames.investigatorName:
+                const isUnassigned = indexedRow.investigatorName === '';
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
                     return (
-                        <Autocomplete
-                            PopperComponent={CustomPopper}
-                            test-id='currentInvetigationUser'
-                            options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.userName}
-                            renderOption={(option, { selected }) => (
-                                option.value ?
-                                    <>
-                                        <div className={classes.fullWidthDiv}>
-                                            <Typography variant='body1' color='textSecondary' className={classes.userNameStyle}>
-                                                <a>
-                                                    {investigatorNameMsg} :
+                        <div className={classes.selectedInvestigator}>
+                            {isUnassigned && <UnassignedWarning />}
+                            <Autocomplete
+                                PopperComponent={CustomPopper}
+                                test-id='currentInvetigationUser'
+                                options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => option.value.userName}
+                                renderOption={(option, { selected }) => (
+                                    option.value ?
+                                        <>
+                                            <div className={classes.fullWidthDiv}>
+                                                <Typography variant='body1' color='textSecondary' className={classes.userNameStyle}>
+                                                    <a>
+                                                        {investigatorNameMsg} :
                                                     <b>
-                                                        {option.value.userName}
-                                                    </b>
-                                                </a>
-                                                {
-                                                    option.value.sourceOrganization ? 
-                                                    option.value.sourceOrganization :
-                                                    hasNoSourceOrganization
-                                                }
-                                                <br></br>
-                                            </Typography>
-                                            <Typography variant='body1' color='textSecondary'>
-                                                <a>
-                                                    {newInvestigationsMsg} :
+                                                            {option.value.userName}
+                                                        </b>
+                                                    </a>
+                                                    {
+                                                        option.value.sourceOrganization ?
+                                                            option.value.sourceOrganization :
+                                                            hasNoSourceOrganization
+                                                    }
+                                                    <br></br>
+                                                </Typography>
+                                                <Typography variant='body1' color='textSecondary'>
+                                                    <a>
+                                                        {newInvestigationsMsg} :
                                                     <b>
-                                                        {option.value.newInvestigationsCount}
-                                                    </b>
-                                                </a>
+                                                            {option.value.newInvestigationsCount}
+                                                        </b>
+                                                    </a>
                                                 &nbsp;&nbsp;
                                                 <a>
-                                                    {activeInvestigationsMsg} :
+                                                        {activeInvestigationsMsg} :
                                                     <b>
-                                                        {option.value.activeInvestigationsCount}
-                                                    </b>
-                                                </a>
-                                            </Typography>
-                                        </div>
-                                    </>
-                                    :
-                                    ''
-                            )}
-                            inputValue={selectedInvestigator.userName}
-                            onChange={(event, newSelectedInvestigator) => {
-                                onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
-                            }}
-                            onInputChange={(event, selectedInvestigatorName) => {
-                                const updatedInvestigator = {
-                                    id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
-                                    userName: selectedInvestigatorName
+                                                            {option.value.activeInvestigationsCount}
+                                                        </b>
+                                                    </a>
+                                                </Typography>
+                                            </div>
+                                        </>
+                                        :
+                                        ''
+                                )}
+                                inputValue={selectedInvestigator.userName}
+                                onChange={(event, newSelectedInvestigator) => {
+                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
+                                }}
+                                onInputChange={(event, selectedInvestigatorName) => {
+                                    const updatedInvestigator = {
+                                        id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                        userName: selectedInvestigatorName
+                                    }
+                                    setSelectedInvestigator(updatedInvestigator);
+                                }}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                        placeholder='חוקר'
+                                    />
                                 }
-                                setSelectedInvestigator(updatedInvestigator);
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    placeholder='חוקר'
-                                />
-                            }
-                            classes={{
-                                option: classes.userSelectOption
-                            }}
-                        />)
+                                classes={{
+                                    option: classes.userSelectOption
+                                }}
+                            />
+                        </div>
+                    )
                 }
                 else {
-                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                    return (
+                        <div className={classes.selectedInvestigator}>
+                            {isUnassigned && <UnassignedWarning />}
+                            {indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        </div>
+                    )
                 }
             case TableHeadersNames.county:
                 if (selectedRow === indexedRow.epidemiologyNumber && countyAutoCompleteClicked) {
@@ -180,7 +197,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
-            case TableHeadersNames.priority: 
+            case TableHeadersNames.priority:
                 let cssClass = '';
                 if (indexedRow.isComplex) {
                     cssClass = classes.priorityWithComplex
@@ -222,7 +239,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Button
                         color='primary'
                         className={classes.sortResetButton}
-                        startIcon={<RefreshIcon />}
+                        startIcon={<Refresh />}
                         onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
                     >
                         {resetSortButtonText}
