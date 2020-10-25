@@ -2,6 +2,7 @@ import React from 'react';
 import * as yup from 'yup';
 
 export interface TypePreventiveTextFieldProps<T> {
+    disabled?: boolean,
     testId?: string,
     name: string,
     value: T | null,

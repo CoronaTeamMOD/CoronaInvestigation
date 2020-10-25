@@ -1,6 +1,7 @@
 import React from 'react';
 
 export interface AlphabetTextFieldProps<T> {
+    disabled?: boolean,
     testId?: string,
     name: string,
     value: T | null,

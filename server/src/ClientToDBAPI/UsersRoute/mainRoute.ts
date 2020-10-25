@@ -416,6 +416,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                 const users = result.data.allUsers.nodes.map((user: any) => ({
                     id: user.id,
                     fullName: user.fullName,
+                    userName: user.userName,
                     phoneNumber: user.phoneNumber,
                     mail: user.mail,
                     identityNumber: user.identityNumber,
@@ -423,7 +424,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                     isActive: user.isActive,
                     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
                     userType: user.userTypeByUserType.displayName,
-                    investigationGroup: user.countyByInvestigationGroup.displayName,
+                    investigationGroup: user.countyByInvestigationGroup?.displayName,
                     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
                 }));
                 response.send({users, totalCount});

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import { useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers';
@@ -9,9 +9,7 @@ import { Autocomplete } from '@material-ui/lab';
 import SignUpFields from 'models/enums/SignUpFields'
 import SignUpUser from 'models/SignUpUser';
 import City from 'models/City';
-import County from 'models/County';
-import SourceOrganization from 'models/SourceOrganization'
-import Language from 'models/Language'
+import FormMode from 'models/enums/FormMode';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import NumericTextField from 'commons/NumericTextField/NumericTextField'
 import FormInput from 'commons/FormInput/FormInput'
@@ -34,48 +32,50 @@ const COUNTY_LABEL = 'נפה'
 const SOURCE_ORGANIZATION_LABEL = 'מסגרת'
 const LANGUAGE_LABEL = 'שפה'
 
-const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
+const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
+    ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
+        <AlphabetTextField
+            disabled={disabled}
+            testId={props.name}
+            name={props.name}
+            value={props.value}
+            onChange={(newValue: string) => props.onChange(newValue as string)}
+            onBlur={props.onBlur}
+            placeholder={placeholder}
+            label={label}
+            className={className}
+        />
+    )
+
+    const GenericNumericTextField : React.FC<GenericNumericTextFieldProps> =
+    ({ props, disabled, label, placeholder, className}: GenericNumericTextFieldProps) => (
+            <NumericTextField
+                disabled={disabled}
+                testId={props.name}
+                name={props.name}
+                value={props.value}
+                onChange={(newValue: string) => props.onChange(newValue)}
+                onBlur={props.onBlur}
+                placeholder={placeholder}
+                label={label}
+                className={className}
+            />
+    )
+
+const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
     const classes = useStyles();
     
-    const [counties, setCounties] = useState<County[]>([]);
-    const [languages, setLanguages] = useState<Language[]>([]);
-    const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
-    
-    const { getDefaultValues, createUser } = useSignUpForm({ setCounties, setSourcesOrganization, setLanguages,
-                                                             handleSaveUser });
+    const { counties, languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     
     const methods = useForm<SignUpUser>({
         mode: 'all',
-        defaultValues: getDefaultValues(),
+        defaultValues: defaultValues,
         resolver: yupResolver(SignUpSchema)
     })
-
-    const GenericAlphabetTextField = (props: any, label: string, placeholder: string) => (
-        <AlphabetTextField
-            testId={props.name}
-            name={props.name}
-            value={props.value}
-            onChange={(newValue: string) => props.onChange(newValue as string)}
-            label={label}
-            placeholder={placeholder}
-            onBlur={props.onBlur}
-        />
-    )
     
-    const GenericNumericTextField = (props: any, label: string, placeholder: string) => (
-        <NumericTextField
-            testId={props.name}
-            name={props.name}
-            value={props.value}
-            onChange={(newValue: string) => props.onChange(newValue)}
-            onBlur={props.onBlur}
-            placeholder={placeholder}
-            label={label}
-            className={classes.textField}
-        />
-    )
+    const shouldDisableFields = mode === FormMode.READ ? true : false; 
     
     const onSubmit = (data: SignUpUser) => {
         createUser(data);
@@ -108,28 +108,59 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                     </Grid>
                 </Grid>
 
-                <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='שם מלא'>
-                            <Controller 
-                                name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
+                { mode === FormMode.READ ? 
+                    <Grid container justify='flex-start' className={classes.formRow}>
+                        <Grid item xs={8}>
+                            <FormInput fieldName='שם מלא'>
+                                <Controller 
+                                    name={SignUpFields.FULL_NAME}
+                                    control={methods.control}
+                                    render={(props) => (
+                                        <GenericAlphabetTextField 
+                                            props={props}
+                                            disabled={shouldDisableFields}
+                                            label='שם מלא'
+                                            className={classes.textField}
+                                        />
+                                    )}
+                                />
+                            </FormInput>
+                        </Grid>
+                    </Grid>
+                : 
+                    <Grid container justify='flex-start' className={classes.formRow}>
+                        <Grid item xs={8}>
+                            <FormInput fieldName='שם מלא'>
+                                <Controller
+                                    name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
+                                    control={methods.control}
+                                    render={(props) => (
+                                        <GenericAlphabetTextField 
+                                            props={props}
+                                            disabled={shouldDisableFields}
+                                            placeholder='הכנס שם פרטי...'
+                                            label={FIRST_NAME_LABEL}
+                                        />
+                                    )}
+                                />
+                            </FormInput>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Controller
+                                name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericAlphabetTextField(props, FIRST_NAME_LABEL, 'הכנס שם פרטי...')
+                                    <GenericAlphabetTextField 
+                                        props={props}
+                                        disabled={shouldDisableFields}
+                                        placeholder='הכנס שם משפחה...'
+                                        label={LAST_NAME_LABEL}
+                                    />
                                 )}
                             />
-                        </FormInput>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Controller 
-                            name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
-                            control={methods.control}
-                            render={(props) => (
-                                GenericAlphabetTextField(props, LAST_NAME_LABEL, 'הכנס שם משפחה...')
-                            )}
-                        />
-                    </Grid>
-                </Grid>
+                }
 
                 <Grid container justify='flex-start' className={classes.formRow}> 
                     <Grid item xs={8}>
@@ -139,8 +170,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={shouldDisableFields}
                                         options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                        getOptionLabel={(option) => option ? option.value.displayName : option}
+                                        getOptionLabel={(option) => option ? option.value?.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedCity) => {
                                             props.onChange(selectedCity ? selectedCity.id : null)
                                         }}
@@ -168,7 +201,13 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.PHONE_NUMBER}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericNumericTextField(props, PHONE_NUMBER_LABEL, 'הכנס מספר טלפון...')
+                                    <GenericNumericTextField 
+                                        props={props}
+                                        disabled={shouldDisableFields}
+                                        placeholder='הכנס מספר טלפון...'
+                                        label={PHONE_NUMBER_LABEL}
+                                        className={classes.textField}
+                                    /> 
                                 )}
                             />
                         </FormInput> 
@@ -182,7 +221,13 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 name={SignUpFields.ID}
                                 control={methods.control}
                                 render={(props) => (
-                                    GenericNumericTextField(props, ID_LABEL, 'הכנס מספר תעודת זהות...')
+                                    <GenericNumericTextField 
+                                        props={props}
+                                        disabled={shouldDisableFields}
+                                        placeholder='הכנס מספר תעודת זהות...'
+                                        label={ID_LABEL}
+                                        className={classes.textField}
+                                    />
                                 )}
                             />
                         </FormInput>
@@ -197,6 +242,7 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <TextField 
+                                        disabled={shouldDisableFields}
                                         test-id={props.name}
                                         value={props.value}
                                         onChange={event => props.onChange(event.target.value as string)}
@@ -220,8 +266,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={shouldDisableFields}
                                         options={counties}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedCounty) => {
                                             props.onChange(selectedCounty ? selectedCounty.id : null)
                                         }}
@@ -250,8 +298,10 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={shouldDisableFields}
                                         options={sourcesOrganization}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedSourceOrganization) =>
                                             props.onChange(selectedSourceOrganization ? 
                                             selectedSourceOrganization.displayName : null)
@@ -281,9 +331,11 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
                                 control={methods.control}
                                 render={(props) => (
                                     <Autocomplete
+                                        disabled={shouldDisableFields}
                                         multiple
                                         options={languages}
                                         getOptionLabel={(option) => option ? option.displayName : option}
+                                        value={props.value}
                                         onChange={(event, selectedLanguaegs) => {
                                             props.onChange(selectedLanguaegs);
                                         }}
@@ -311,7 +363,25 @@ const SignUpForm: React.FC<Props> = ({ handleSaveUser }: Props) => {
 }
 
 interface Props {
-    handleSaveUser: () => void;
+    defaultValues: SignUpUser;
+    handleSaveUser?: () => void;
+    mode: FormMode
+}
+
+interface GenericAlphabetTextFieldProps {
+    props: any;
+    disabled: boolean;
+    label: string;
+    placeholder?: string;
+    className?: string;
+}
+
+interface GenericNumericTextFieldProps {
+    props: any;
+    disabled: boolean;
+    label: string;
+    placeholder: string;
+    className: string;
 }
 
 export default SignUpForm;

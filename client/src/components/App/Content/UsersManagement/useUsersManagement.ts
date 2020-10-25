@@ -5,8 +5,14 @@ import Swal from 'sweetalert2';
 import logger from 'logger/logger'
 import { Service, Severity } from 'models/Logger'
 import SignUpUser from 'models/SignUpUser';
+import SignUpFields from 'models/enums/SignUpFields';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
+
+interface UserDialog {
+    isOpen: boolean,
+    info: SignUpUser
+}
 
 const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : useUsersManagementOutCome => {
 
@@ -15,6 +21,7 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
 
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
+    const [userDialog, setUserDialog] = useState<UserDialog>({isOpen: false, info: {}});
 
     const fetchUsers = () => {
         logger.info({
@@ -63,10 +70,27 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
         fetchUsers();
     }, [page])
     
+    const watchUserInfo = (row: any) => {
+        const userInfoToSet = {
+            ...row,
+            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) =>  {
+                return { displayName: language}
+            }),
+            [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
+            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
+            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
+        };
+        setUserDialog({isOpen: true, info: userInfoToSet});
+    }
+
+    const handleCloseDialog = () => setUserDialog({isOpen: false, info: {}})
 
     return {
         users,
-        totalCount
+        totalCount,
+        userDialog,
+        watchUserInfo,
+        handleCloseDialog
     }
 }
 
@@ -78,6 +102,9 @@ interface useUsersManagementInCome {
 interface useUsersManagementOutCome {
     users: SignUpUser[],
     totalCount: number;
+    userDialog: UserDialog;
+    watchUserInfo: (row: any) => void;
+    handleCloseDialog: () => void;
 }
 
 export default useUsersManagement;
