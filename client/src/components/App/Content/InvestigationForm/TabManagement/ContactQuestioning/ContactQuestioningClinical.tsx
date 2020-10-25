@@ -1,19 +1,19 @@
-import React from 'react';
 import Swal from 'sweetalert2';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { addDays, format } from 'date-fns';
 import { Autocomplete } from '@material-ui/lab';
 import { Avatar, FormControl, Grid, MenuItem, Select, TextField, Typography } from '@material-ui/core';
 
 import City from 'models/City';
-import InteractedContact from 'models/InteractedContact';
 import theme from 'styles/theme';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
+import FieldName from 'commons/FieldName/FieldName';
+import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -28,6 +28,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+
+    const [cityInput, setCityInput] = useState<string>('');
 
     const daysToIsolate = 14;
     const isolationEndDate = addDays(new Date(interactedContact.contactDate), daysToIsolate);
@@ -107,15 +109,20 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                 </Grid>
                 <Grid container item>
                     <Grid container item>
-                        <FieldName xs={6} fieldName='יישוב השהייה בבידוד:'/>
+                        <FieldName xs={6} fieldName='יישוב השהייה בבידוד:' />
                         <Grid item xs={6}>
                             <Autocomplete
-                                className={classes.autocompleteTextField}
-                                options={Array.from(cities, ([cityId, value]) => ({ cityId, value }))}
-                                getOptionLabel={(option) => option?.value?.displayName || ''}
-                                inputValue={cities.get(interactedContact.contactedPersonCity)?.displayName || ''}
+                                options={Array.from(cities, ([id, value]) => ({ id, value }))}
+                                getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
+                                inputValue={cityInput}
+                                defaultValue={{ id: interactedContact.contactedPersonCity, value: cities.get(interactedContact.contactedPersonCity) }}
                                 onChange={(event, selectedCity) => {
-                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.cityId);
+                                    const newCityInput = cities.get(interactedContact.contactedPersonCity) ? cities.get(interactedContact.contactedPersonCity)?.displayName : '';
+                                    newCityInput && setCityInput(newCityInput || '');
+                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.id);
+                                }}
+                                onInputChange={(event, selectedCityName) => {
+                                    setCityInput(selectedCityName);
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -123,7 +130,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                         test-id='contactedPersonCity'
                                         id={InteractedContactFields.CONTACTED_PERSON_CITY}
                                         placeholder='עיר'
-                                        value={interactedContact.contactedPersonCity}
                                     />
                                 }
                             />
