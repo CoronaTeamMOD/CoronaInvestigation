@@ -16,7 +16,7 @@ import Investigator from 'models/Investigator';
 import StoreStateType from 'redux/storeStateType';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
-
+import CommentDisplay from './commentDisplay/commentDisplay';
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
@@ -216,6 +216,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </span>
                     </div>
                 );
+            case TableHeadersNames.comment:
+                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]} />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

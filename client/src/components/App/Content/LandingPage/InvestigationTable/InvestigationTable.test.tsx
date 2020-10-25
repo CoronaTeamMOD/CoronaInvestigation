@@ -28,7 +28,8 @@ describe('investigationTable tests', () => {
                 displayName: 'תל אביב - תל אביב',
                 id: 50,
             },
-            investigationDesk: 'שם דסק'
+            investigationDesk: 'שם דסק',
+            comment: 'הערה'
         };
     });
 
@@ -47,6 +48,7 @@ describe('investigationTable tests', () => {
             newRowData.investigationDesk,
             newRowData.county,
             newRowData.investigator,
+            newRowData.comment,
         );
 
         expect(newRow).toEqual(newRowData);
@@ -66,7 +68,8 @@ describe('investigationTable tests', () => {
             newRowData.city,
             newRowData.investigationDesk,
             newRowData.county,
-            newRowData.investigator
+            newRowData.investigator,
+            newRowData.comment,
         );
 
         expect(newRow).not.toEqual(newRowData);
