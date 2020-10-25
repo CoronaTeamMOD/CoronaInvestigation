@@ -35,6 +35,7 @@ const allCovidPatientFields: CovidPatientFields = {
 
 const minFullNameLengthToSearch = 2;
 const minNumbersLengthToSearch = 4;
+const invalidAge = -1;
 
 const invalidCharRegex = /[^א-ת\da-zA-Z0-9]/;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
@@ -80,7 +81,7 @@ const ExposureForm = (props: any) => {
       {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}</Typography>}
       {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
       {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
-      {age && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
+      {(age && age !== invalidAge) && <Typography className={classes.optionField}>{allCovidPatientFields.age + ': ' + age}</Typography>}
       {address && <Typography className={classes.optionField}>{allCovidPatientFields.address + ': ' + address}</Typography>}
     </>
   }
@@ -117,8 +118,13 @@ const ExposureForm = (props: any) => {
               step: 'got status 200 but wrong data'
             });
             Swal.fire({
-              title: 'לא ניתן היה לטעון את החולים האפשריים',
+              title: 'לא הצלחנו לטעון את רשימת המאומתים',
+              text: 'שימו לב שהזנתם נתונים תקינים',
               icon: 'error',
+              customClass: {
+                title: classes.swalTitle,
+                content: classes.swalText
+              },
             })
           }
         })
@@ -132,8 +138,13 @@ const ExposureForm = (props: any) => {
             user: userId
           });
           Swal.fire({
-            title: 'לא ניתן היה לטעון את החולים האפשריים',
+            title: 'לא הצלחנו לטעון את רשימת המאומתים',
+            text: 'שימו לב שהזנתם נתונים תקינים',
             icon: 'error',
+            customClass: {
+              title: classes.swalTitle,
+              content: classes.swalText
+            },
           })
         })
         .finally(() => setIsLoading(false));
