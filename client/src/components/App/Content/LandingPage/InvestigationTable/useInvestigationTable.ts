@@ -21,7 +21,7 @@ import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
-import { setEpidemiologyNum, setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
@@ -335,7 +335,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         axios.interceptors.request.use(
             (config) => {
-                config.headers.Authorization = user.token;
                 config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
                 setIsLoading(true);
                 activateIsLoading(config);
@@ -354,7 +353,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
-                    config.headers.Authorization = user.token;
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
                     activateIsLoading(config);
                     return config;

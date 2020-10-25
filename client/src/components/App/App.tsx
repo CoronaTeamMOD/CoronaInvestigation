@@ -98,10 +98,8 @@ const App: React.FC = (): JSX.Element => {
             axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
                 .then((response) => {
                     const { data } = response;
-
                     const userId = data[0].user_id.split('@')[0];
                     const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
-                    const userToken = data[0].id_token;
 
                     setUser({
                         investigationGroup: -1,
@@ -110,7 +108,6 @@ const App: React.FC = (): JSX.Element => {
                         serialNumber: 34,
                         id: userId,
                         userName: userName,
-                        token: userToken,
                         activeInvestigationsCount: 0,
                         newInvestigationsCount: 0,
                         userType: userType.INVESTIGATOR,
@@ -121,7 +118,6 @@ const App: React.FC = (): JSX.Element => {
         } else {
             const userId = '7'
             const userName = 'stubuser';
-            const userToken = 'fake token!';
 
             setUser({
                 investigationGroup: -1,
@@ -130,7 +126,6 @@ const App: React.FC = (): JSX.Element => {
                 serialNumber: 34,
                 id: userId,
                 userName: userName,
-                token: userToken,
                 activeInvestigationsCount: 0,
                 newInvestigationsCount: 0,
                 userType: userType.INVESTIGATOR,
