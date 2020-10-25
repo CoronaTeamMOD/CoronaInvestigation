@@ -9,56 +9,15 @@ import {
     DialogTitle,
     IconButton,
     TextField,
-    Theme,
     Typography,
-    withStyles,
-    WithStyles,
 } from '@material-ui/core';
-  import CommentIcon from '@material-ui/icons/CommentOutlined';
+import CommentIcon from '@material-ui/icons/CommentOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import useStyles from './CommentDialogStyles';
-
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import {commentContext} from '../../../Context/CommentContext';
-
-const styles = (theme: Theme) =>
-    createStyles({
-        root: {
-            margin: 0,
-            padding: theme.spacing(2),
-        },
-        title: {
-            display:'flex',
-            alignItems: 'center',
-        },
-        closeButton: {
-            position: 'absolute',
-            right: theme.spacing(1),
-            top: theme.spacing(1),
-            color: theme.palette.grey[500],
-        },
-    });
-
-interface DialogTitleProps extends WithStyles<typeof styles> {
-    children: React.ReactNode;
-    onClose: () => void;
-}
-
-const ClosableDialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-    const { children, classes, onClose, ...other } = props;
-    return (
-        <DialogTitle disableTypography className={classes.root} {...other}>
-            <Typography variant="h6" className={classes.title}>{children}</Typography>
-            {onClose ? (
-                <IconButton className={classes.closeButton} onClick={onClose}>
-                    <CloseIcon />
-                </IconButton>
-            ) : null}
-        </DialogTitle>
-    );
-});
 
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 const DELETE_BUTTON_TEXT = 'מחק';
@@ -74,14 +33,14 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
     const resetInput = () => setCommentInput(comment || '');
 
-    React.useEffect(resetInput , [comment]);
+    React.useEffect(resetInput, [comment]);
 
     const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setCommentInput(event.target.value);
     };
 
-    const sendComment = (commentToSend: string|null, errorMessage: string) => {
-         axios.post('/investigationInfo/comment', {comment:commentToSend, epidemiologyNumber})
+    const sendComment = (commentToSend: string | null, errorMessage: string) => {
+        axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
             .then(() => setComment(commentToSend))
             .catch(() => alertError(errorMessage))
             .finally(onDialogClose);
@@ -101,15 +60,19 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     };
 
     return (
-        <Dialog open={open} onClose={onDialogClose} classes={{paper:classes.dialogPaper}}>
-            <ClosableDialogTitle onClose={onDialogClose}>
-                <>
+        <Dialog open={true} onClose={onDialogClose} classes={{paper: classes.dialogPaper}}>
+            <DialogTitle disableTypography>
+                <Typography variant="h6" className={classes.title}>
                     <CommentIcon/>
-                    <span style={{paddingRight: '1vw'}}>
+                    <span className={classes.titleText}>
                     הוספת הערה על חקירה:
                     </span>
-                </>
-            </ClosableDialogTitle>
+                </Typography>
+                <IconButton className={classes.closeButton} onClick={onDialogClose}>
+                    <CloseIcon/>
+                </IconButton>
+            </DialogTitle>
+
             <DialogContent className={classes.content}>
                 <TextField multiline fullWidth
                            placeholder={COMMENT_PLACEHOLDER}
