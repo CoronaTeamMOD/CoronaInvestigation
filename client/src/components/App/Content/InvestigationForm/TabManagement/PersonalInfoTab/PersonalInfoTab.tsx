@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
-import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem } from '@material-ui/core';
+import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
 
 import City from 'models/City';
@@ -55,7 +55,6 @@ const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
 
 const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
-let roleObj: investigatedPatientRole | undefined;
 const defaultInvestigationId = -1;
 const defaultRole = {id: -1, displayName: ''};
 
@@ -589,38 +588,41 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             {
                                 occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
                                 <>
-                                    <Grid item xs={2}>
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                            control={methods.control}
-                                            render={(props) => (
-                                                <Autocomplete
-                                                    options={Array.from(cities, ([name, value]) => ({name, value}))}
-                                                    getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
-                                                    getOptionSelected={(option) => {
-                                                        return option.value?.displayName === props.value
-                                                    }}
-                                                    value={props.value}
-                                                    onChange={(event, newValue) => {
-                                                        newValue && getEducationSubOccupations(newValue.value.displayName);
-                                                        setSubOccupationName('');
-                                                        props.onChange(newValue ? newValue.value.displayName : '')
-                                                    }}
-                                                    renderInput={(params) =>
-                                                        <TextField
-                                                            {...params}
-                                                            error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
-                                                            label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
-                                                            || 'עיר המצאות המוסד*'}
-                                                            onBlur={props.onBlur}
-                                                            test-id='institutionCity'
-                                                            id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                            placeholder='עיר המצאות המוסד'
-                                                        />}
+                                    {
+                                        occupation === Occupations.EDUCATION_SYSTEM && 
+                                        <Grid item xs={2}>
+                                            <Controller
+                                                name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                control={methods.control}
+                                                render={(props) => (
+                                                    <Autocomplete
+                                                        options={Array.from(cities, ([name, value]) => ({name, value}))}
+                                                        getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
+                                                        getOptionSelected={(option) => {
+                                                            return option.value?.displayName === props.value
+                                                        }}
+                                                        value={props.value}
+                                                        onChange={(event, newValue) => {
+                                                            newValue && getEducationSubOccupations(newValue.value.displayName);
+                                                            setSubOccupationName('');
+                                                            props.onChange(newValue ? newValue.value.displayName : '')
+                                                        }}
+                                                        renderInput={(params) =>
+                                                            <TextField
+                                                                {...params}
+                                                                error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
+                                                                label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
+                                                                || 'עיר המצאות המוסד*'}
+                                                                onBlur={props.onBlur}
+                                                                test-id='institutionCity'
+                                                                id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                                placeholder='עיר המצאות המוסד'
+                                                            />}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                        </Grid>
+                                    }
                                     <Grid item xs={2}>
                                         {institutionComponent}
                                     </Grid>
@@ -659,24 +661,28 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     name={PersonalInfoDataContextFields.EDUCATION_GRADE}
                                                     control={methods.control}
                                                     render={(props) => (
-                                                        <FormControl>
-                                                            <Select
-                                                                name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                                className={props.value && classes.markComplexity}
-                                                                value={props.value}
-                                                                onChange={(event) => props.onChange(event.target.value)}
-                                                            >
-                                                                {
-                                                                    grades.map((grade: string) => (
-                                                                        <MenuItem
-                                                                            key={grade}
-                                                                            value={grade}>
-                                                                            {grade}
-                                                                        </MenuItem>
-                                                                    ))
-                                                                }
-                                                            </Select>
-                                                        </FormControl>
+                                                        <>
+                                                            <FormControl variant='outlined'>
+                                                                <InputLabel>שכבה</InputLabel>
+                                                                <Select
+                                                                    label='שכבה'
+                                                                    name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
+                                                                    value={props.value}
+                                                                    onChange={(event) => props.onChange(event.target.value)}
+                                                                >
+                                                                    {
+                                                                        grades.map((grade: string) => (
+                                                                            <MenuItem
+                                                                                key={grade}
+                                                                                value={grade}>
+                                                                                {grade}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
+                                                                </Select>
+                                                            </FormControl>
+                                                        </>
                                                     )}
                                                 />
                                             </Grid>
@@ -687,11 +693,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     render={(props) => (
                                                         <NumericTextField
                                                             name={PersonalInfoDataContextFields.EDUCATION_CLASS_NUMBER}
-                                                            className={props.value && classes.markComplexity}
+                                                            className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
                                                             value={props.value}
                                                             onChange={(newValue) => props.onChange(newValue)}
                                                             onBlur={props.onBlur}
-                                                            placeholder='כיתה'
+                                                            label='מס כיתה'
                                                         />
                                                     )}
                                                 />

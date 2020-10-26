@@ -129,6 +129,9 @@ const useStyles = makeStyles({
     swalText: {
         fontFamily: 'Assistant',
     },
+    gradeInput: {
+        width: '7vw'
+    }
 });
 
 export default useStyles;
