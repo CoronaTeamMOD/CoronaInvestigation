@@ -1,30 +1,47 @@
 import React, { useState } from 'react';
 import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         IconButton, Tooltip } from '@material-ui/core';
+         IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
+import SortOrder from 'models/enums/SortOrder'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders'
 import useStyles from './UsersManagementStyles'
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog'
+
 const rowsPerPage: number = 7;
+interface CellNameSort {
+    name: string;
+    direction: SortOrder | undefined;
+}
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
+    const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
 
-    const { users, totalCount, userDialog, watchUserInfo, handleCloseDialog } = useUsersManagementTable({ page, rowsPerPage });
+    const { users, totalCount, userDialog, watchUserInfo, handleCloseDialog } = useUsersManagementTable({ page, rowsPerPage, cellNameSort });
     
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
     const classes = useStyles();
+
+    const handleSortOrder = (cellName: string) => {
+        setCellNameSort({
+            name: cellName,
+            direction: cellNameSort.direction === undefined ? SortOrder.asc :
+                       cellNameSort.name !== cellName ? SortOrder.asc :
+                       cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
+        });
+    }
     
     const getTableCell = (row: any, cellName: string) => {
         switch (cellName) {
             case UsersManagementTableHeadersNames.LANGUAGES: {
-                return row[cellName].join(', ')
+                return row[cellName]?.join(', ')
             }
             case UsersManagementTableHeadersNames.USER_STATUS: {
                 return (
@@ -55,11 +72,22 @@ const UsersManagement: React.FC = () => {
                     <TableHead>
                         <TableRow>
                             {
-                                Object.values(UsersManagementTableHeaders).map(cellName => (
-                                    <TableCell>
-                                        {cellName}
-                                    </TableCell>
-                                ))
+                                Object.keys(UsersManagementTableHeaders).map(cellName => {
+                                    const cellNameHeader = get(UsersManagementTableHeaders, cellName);
+                                    return (
+                                        <TableCell>
+                                            <TableSortLabel
+                                                active={cellNameHeader !== UsersManagementTableHeaders.watch &&
+                                                        cellNameHeader !== UsersManagementTableHeaders.languages}
+                                                direction={cellName === cellNameSort.name ? cellNameSort.direction : SortOrder.asc}
+                                                onClick={() => handleSortOrder(cellName)}
+                                                classes={{ root: cellName === cellNameSort.name ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
+                                            >
+                                                {cellNameHeader}
+                                            </TableSortLabel>
+                                        </TableCell>
+                                        )
+                                })
                             }
                         </TableRow>
                     </TableHead>

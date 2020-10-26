@@ -14,6 +14,7 @@ import User from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
+import SortOrder from 'models/enums/SortOrder'
 import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -21,7 +22,7 @@ import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 
 export const defaultOrderBy = 'defaultOrder';
@@ -61,7 +62,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [currCounty, setCurrCounty] = useState<County>(defaultCounty);
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
-    const [order, setOrder] = useState<Order>(sortOrders.asc);
+    const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<string[]>([]);
     const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
@@ -249,8 +250,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
-        const isAsc = orderBy === property && order === sortOrders.asc;
-        const newOrder = isAsc ? sortOrders.desc : sortOrders.asc
+        const isAsc = orderBy === property && order === SortOrder.asc;
+        const newOrder = isAsc ? SortOrder.desc : SortOrder.asc
         setOrder(newOrder);
         setOrderBy(property);
         property === defaultOrderBy ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
@@ -399,7 +400,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 <TableSortLabel
                                                     classes={{ root: key === orderBy ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
                                                     active
-                                                    direction={orderBy === key ? order : sortOrders.asc}
+                                                    direction={orderBy === key ? order : SortOrder.asc}
                                                     onClick={(event: any) => handleRequestSort(event, key)}>
                                                 </TableSortLabel>
                                             }

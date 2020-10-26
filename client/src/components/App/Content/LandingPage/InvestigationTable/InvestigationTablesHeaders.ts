@@ -1,3 +1,5 @@
+import SortOrder from 'models/enums/SortOrder'
+
 export enum TableHeadersNames {
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
@@ -15,13 +17,8 @@ export enum TableHeadersNames {
     comment = 'comment',
 }
 
-export enum sortOrders {
-    asc = 'asc',
-    desc = 'desc'
-}
-
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
-export type Order = sortOrders.asc | sortOrders.desc;
+export type Order = SortOrder.asc | SortOrder.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
 
 export const TableHeaders: IndexedInvestigation = {

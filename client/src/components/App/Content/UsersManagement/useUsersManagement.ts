@@ -6,15 +6,23 @@ import logger from 'logger/logger'
 import { Service, Severity } from 'models/Logger'
 import SignUpUser from 'models/SignUpUser';
 import SignUpFields from 'models/enums/SignUpFields';
+import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+
+import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 
 interface UserDialog {
     isOpen: boolean,
     info: SignUpUser
 }
+interface CellNameSort {
+    name: string;
+    direction: SortOrder | undefined;
+}
 
-const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagementInCome) : useUsersManagementOutCome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -32,7 +40,14 @@ const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): us
             user: userId,
             investigation: epidemiologyNumber
         })
-        axios.post('/users', { page: { number: page, size: rowsPerPage } })
+        axios.post('/users', { 
+            page: {
+                number: page,
+                size: rowsPerPage
+            },
+            orderBy: cellNameSort.direction !== undefined ? 
+                     `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null
+        })
             .then(result => {
                 result?.data && setUsers(result.data?.users);
                 setTotalCount(result.data?.totalCount);
@@ -73,8 +88,8 @@ const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): us
 
     useEffect(() => {
         fetchUsers();
-    }, [page])
-
+    }, [page, cellNameSort])
+    
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
             ...row,
@@ -102,6 +117,7 @@ const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): us
 interface useUsersManagementInCome {
     page: number;
     rowsPerPage: number;
+    cellNameSort: CellNameSort;
 }
 
 interface useUsersManagementOutCome {
