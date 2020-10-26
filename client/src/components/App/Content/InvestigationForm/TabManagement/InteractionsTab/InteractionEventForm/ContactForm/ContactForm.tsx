@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, Grid, InputLabel, MenuItem, Select, Button } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
@@ -26,7 +26,7 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
@@ -48,6 +48,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                         <Controller 
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                             control={control}
+                            defaultValue
                             render={(props) => (
                                 <AlphabetTextField
                                     name={props.name}
@@ -163,6 +164,9 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                     )}
                 />
             </FormInput>
+            <Button onClick={() => myDelete()}>
+                Click Me!
+            </Button>
         </div>
     );
 };
@@ -171,4 +175,5 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
+    myDelete: any
 };
