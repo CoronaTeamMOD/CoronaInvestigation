@@ -11,28 +11,24 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 import useStyles from './AddressFormStyles';
 
 const AddressForm: React.FC = (): JSX.Element => {
-    const { setValue, control } = useFormContext();
+    const { control } = useFormContext();
 
     const formClasses = useFormStyles();
     const additionalClasses = useStyles();
-
-    const onGoogleApiLocationTextFieldChange = (newValue: GeocodeResponse | null) => {
-        setValue(InteractionEventDialogFields.LOCATION_ADDRESS, newValue);
-    };
 
     return (
         <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
             <Grid item xs={4}>
                 <FormInput fieldName='כתובת'>
                     <div className={additionalClasses.addressAutoCompleteField}>
-                    <Controller
+                        <Controller
                             name={InteractionEventDialogFields.LOCATION_ADDRESS}
                             control={control}
                             render={(props) => (
                                 <Map
                                     name={InteractionEventDialogFields.LOCATION_ADDRESS}
                                     selectedAddress={props.value}
-                                    setSelectedAddress={onGoogleApiLocationTextFieldChange}
+                                    setSelectedAddress={(newSelectedAddress) => props.onChange(newSelectedAddress)}
                                 />
                             )}
                         />
