@@ -19,3 +19,12 @@ export const UsersManagementTableHeaders = {
     [UsersManagementTableHeadersNames.USER_STATUS]: 'פעיל/לא פעיל',
     [UsersManagementTableHeadersNames.WATCH]: ''
 }
+
+export const SortOrderTableHeadersNames = {
+    [UsersManagementTableHeadersNames.FULL_NAME]: 'FULL_NAME',
+    [UsersManagementTableHeadersNames.SOURCE_ORGANIZATION]: 'SOURCE_ORGANIZATION',
+    [UsersManagementTableHeadersNames.MABAR_USER_NAME]: 'ID',
+    [UsersManagementTableHeadersNames.COUNTY]: 'INVESTIGATION_GROUP',
+    [UsersManagementTableHeadersNames.USER_TYPE]: 'USER_TYPE',
+    [UsersManagementTableHeadersNames.USER_STATUS]: 'IS_ACTIVE',
+}
