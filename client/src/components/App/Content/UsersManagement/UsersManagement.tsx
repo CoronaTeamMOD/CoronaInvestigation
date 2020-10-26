@@ -4,14 +4,14 @@ import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, Tab
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 
-import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle'
-import SortOrder from 'models/enums/SortOrder'
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
+import SortOrder from 'models/enums/SortOrder';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders'
-import useStyles from './UsersManagementStyles'
+import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
+import useStyles from './UsersManagementStyles';
 import useUsersManagementTable from './useUsersManagement';
-import UserInfoDialog from './UserInfoDialog/UserInfoDialog'
+import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 
 const rowsPerPage: number = 7;
 interface CellNameSort {
@@ -32,9 +32,7 @@ const UsersManagement: React.FC = () => {
     const handleSortOrder = (cellName: string) => {
         setCellNameSort({
             name: cellName,
-            direction: cellNameSort.direction === undefined ? SortOrder.asc :
-                       cellNameSort.name !== cellName ? SortOrder.asc :
-                       cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
+            direction: cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
         });
     }
     
@@ -78,7 +76,9 @@ const UsersManagement: React.FC = () => {
                                         <TableCell>
                                             <TableSortLabel
                                                 active={cellNameHeader !== UsersManagementTableHeaders.watch &&
-                                                        cellNameHeader !== UsersManagementTableHeaders.languages}
+                                                        cellNameHeader !== UsersManagementTableHeaders.languages &&
+                                                        cellNameHeader !== UsersManagementTableHeaders.investigationGroup &&
+                                                        cellNameHeader !== UsersManagementTableHeaders.userType} 
                                                 direction={cellName === cellNameSort.name ? cellNameSort.direction : SortOrder.asc}
                                                 onClick={() => handleSortOrder(cellName)}
                                                 classes={{ root: cellName === cellNameSort.name ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}

@@ -1,4 +1,4 @@
-import SortOrder from 'models/enums/SortOrder'
+import SortOrder from 'models/enums/SortOrder';
 
 export enum TableHeadersNames {
     epidemiologyNumber = 'epidemiologyNumber',
