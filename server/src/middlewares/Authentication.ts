@@ -228,8 +228,8 @@ export const superAdminMiddleWare = (
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
-            workflow: 'Admin validation',
-            step: 'the requested user is admin',
+            workflow: 'Super admin validation',
+            step: 'the requested user is super admin',
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
@@ -238,12 +238,12 @@ export const superAdminMiddleWare = (
         logger.error({
             service: Service.SERVER,
             severity: Severity.MEDIUM,
-            workflow: 'Admin validation',
-            step: 'the user is not admin!',
+            workflow: 'Super admin validation',
+            step: 'the user is not super admin!',
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.status(401).json({ error: "unauthorized non admin user" })
+        response.status(401).json({ error: "unauthorized non super admin user" })
     }
 };
 export default authMiddleware;
