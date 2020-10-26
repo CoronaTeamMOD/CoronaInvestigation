@@ -22,6 +22,7 @@ import CommentDisplay from './commentDisplay/commentDisplay';
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
+import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
@@ -46,6 +47,8 @@ const defaultCounty = {
 
 const defaultFilterOptions : FilterTableOption = {mainStatus: [ALL_STATUSES_FILTER_OPTIONS], investigationDesk: [ALL_DESKS_FILTER_OPTIONS]};
 
+const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
+
 const InvestigationTable: React.FC = (): JSX.Element => {
 
     const classes = useStyles();
@@ -67,7 +70,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allDesks, setAllDesks] = useState<string[]>([]);
 
     const {
-        tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        onCancel, onOk,snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
     } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, 
         setAllCounties, setAllStatuses, setAllDesks });
@@ -440,6 +443,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Table>
                 </TableContainer>
             </div>
+            <RefreshSnackbar isOpen={snackbarOpen}
+                             onClose={onCancel} onOk={onOk}
+                             message={refreshPromptMessage}/>
         </>
     );
 }
