@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
+import Occupations from 'models/enums/Occupations';
 
 const occupationsWithInstitution = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון'];
 const occupationsWithoutExtraInfo = ['מערכת הבריאות', 'מערכת החינוך', 'כוחות הביטחון', 'לא עובד'];
@@ -34,6 +35,11 @@ const schema = yup.object().shape({
         return occupationsWithoutExtraInfo.find(element => element === relevantOccupation) ?
             schema.nullable() :
             schema.nullable().required(requiredText)
+    }),
+    [PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]: yup.string().when('relevantOccupation', (relevantOccupation: any, schema: any) => {
+        return (Occupations.EDUCATION_SYSTEM === relevantOccupation) ?
+            schema.nullable().required(requiredSelectionText) :
+            schema.nullable()
     }),
 });
 
