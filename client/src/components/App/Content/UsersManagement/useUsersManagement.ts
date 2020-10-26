@@ -14,14 +14,14 @@ interface UserDialog {
     info: SignUpUser
 }
 
-const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): useUsersManagementOutCome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [userDialog, setUserDialog] = useState<UserDialog>({isOpen: false, info: {}});
+    const [userDialog, setUserDialog] = useState<UserDialog>({ isOpen: false, info: {} });
 
     const fetchUsers = () => {
         logger.info({
@@ -35,7 +35,7 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
         axios.post('/users', { page: { number: page, size: rowsPerPage } })
             .then(result => {
                 result?.data && setUsers(result.data?.users);
-                                setTotalCount(result.data?.totalCount);
+                setTotalCount(result.data?.totalCount);
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -46,7 +46,12 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
                 });
             })
             .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל משתמשים');
+                if (err.response.status === 401) {
+                    handleFailedRequest('למשתמש אין הרשאות למידע זה');
+                }
+                else {
+                    handleFailedRequest('לא ניתן היה לקבל משתמשים');
+                }
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.HIGH,
@@ -54,36 +59,36 @@ const useUsersManagement = ({ page, rowsPerPage}: useUsersManagementInCome) : us
                     step: 'didnt get results back from the server',
                     user: userId,
                     investigation: epidemiologyNumber
-                });         
+                });
             });
-    
+
     }
 
     const handleFailedRequest = (message: string) => {
         Swal.fire({
-          title: message,
-          icon: 'error',
+            title: message,
+            icon: 'error',
         })
     }
 
     useEffect(() => {
         fetchUsers();
     }, [page])
-    
+
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
             ...row,
-            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) =>  {
-                return { displayName: language}
+            [SignUpFields.LANGUAGES]: row[SignUpFields.LANGUAGES].map((language: string) => {
+                return { displayName: language }
             }),
             [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
-            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
-            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
+            [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] } },
+            [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION] }
         };
-        setUserDialog({isOpen: true, info: userInfoToSet});
+        setUserDialog({ isOpen: true, info: userInfoToSet });
     }
 
-    const handleCloseDialog = () => setUserDialog({isOpen: false, info: {}})
+    const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
 
     return {
         users,
