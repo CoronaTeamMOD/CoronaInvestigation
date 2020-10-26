@@ -3,6 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { NextFunction, Request, Response } from 'express';
 
 import logger from '../Logger/Logger';
+import UserType from '../Models/User/UserType';
 import { Service, Severity } from '../Models/Logger/types';
 
 import { graphqlRequest } from '../GraphqlHTTPRequest';
@@ -194,7 +195,8 @@ export const adminMiddleWare = (
     response: Response,
     next: NextFunction
 ) => {
-    if (response.locals.user.userType > 1) {
+    if (response.locals.user.userType === UserType.ADMIN ||
+        response.locals.user.userType === UserType.SUPER_ADMIN) {
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
@@ -217,4 +219,31 @@ export const adminMiddleWare = (
     }
 };
 
+export const superAdminMiddleWare = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
+    if (response.locals.user.userType === UserType.SUPER_ADMIN) {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Admin validation',
+            step: 'the requested user is admin',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+        return next();
+    } else {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.MEDIUM,
+            workflow: 'Admin validation',
+            step: 'the user is not admin!',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+        response.status(401).json({ error: "unauthorized non admin user" })
+    }
+};
 export default authMiddleware;
