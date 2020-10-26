@@ -397,12 +397,13 @@ usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: 
         step: 'Querying the graphql API',
         user: response.locals.user.id
     });
+    const { page } = request.body;
     graphqlRequest(
         GET_USERS_BY_DISTRICT_ID,
         response.locals,
         {
-            offset: (request.body.page.number - 1) * request.body.page.size,
-            size: request.body.page.size,
+            offset: calculateOffset(page.number, page.size),
+            size: page.size,
             orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
             filter: {
                 countyByInvestigationGroup: {
@@ -458,12 +459,13 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
         step: 'Querying the graphql API',
         user: response.locals.user.id
     });
+    const { page } = request.body;
     graphqlRequest(
         GET_USERS_BY_COUNTY_ID,
         response.locals,
         {
-            offset: (request.body.page.number - 1) * request.body.page.size,
-            size: request.body.page.size,
+            offset: calculateOffset(page.number, page.size),
+            size: page.size,
             orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
             filter: {
                 countyByInvestigationGroup: {
@@ -508,6 +510,8 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
             response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all users`);
         })
 });
+
+const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber - 1) * pageSize);
 
 const toUser = (user: any) => ({
     id: user.id,
