@@ -110,7 +110,7 @@ const ClinicalDetailsSchema = yup.object().shape({
             then: yup.array().of(yup.string()).min(1).required(),
             otherwise: yup.array().of(yup.string())
         }),
-    [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable().required(),
+    [ClinicalDetailsFields.WAS_HOPITALIZED]: yup.boolean().nullable(),
     [ClinicalDetailsFields.HOSPITAL]: yup.string().nullable(),
     [ClinicalDetailsFields.HOSPITALIZATION_START_DATE]: wasHospitilizedStartDateSchema,
     [ClinicalDetailsFields.HOSPITALIZATION_END_DATE]: wasHospitilizedEndDateSchema,
