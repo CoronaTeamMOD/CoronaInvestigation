@@ -15,4 +15,5 @@ export interface useContactQuestioningOutcome {
     changeIdentificationType: (interactedContact: InteractedContact, booleanValue: boolean) => void;
     loadInteractedContacts: () => void;
     saveContactQuestioning: () => Promise<void>;
+    updateCantReachInteractedContact: (interactedContact: InteractedContact, value: any) => void
 };
