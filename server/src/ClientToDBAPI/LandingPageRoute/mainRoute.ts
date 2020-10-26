@@ -79,6 +79,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
     })
     graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, getInvestigationsParameters)
         .then((result: any) => {
+            
             if (result && result.data && result.data.groupInvestigationsSort &&
                 result.data.groupInvestigationsSort.json) {
                 logger.info({
@@ -100,7 +101,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
                     user: response.locals.user.id,
                     investigation: response.locals.epidemiologynumber
                 });
-                response.status(errorStatusResponse).send('error in fetching data')
+                response.send(result)
             }
         })
         .catch(err => {

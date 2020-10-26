@@ -1,3 +1,4 @@
+  
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
@@ -26,7 +27,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
-    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate, getClinicalDetailsSymptoms, handleDeleteContactEvent } =
+    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate,
+        getClinicalDetailsSymptoms, handleDeleteContactEvent, handleDeleteContactedPerson } =
         useInteractionsTab({
             setInteractions,
             interactions,
@@ -68,12 +70,13 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).map(date =>
+                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).reverse().map(date =>
                         <ContactDateCard
                             loadInteractions={loadInteractions}
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                             onDeleteClick={handleDeleteContactEvent}
+                            onDeleteContactClick={handleDeleteContactedPerson}
                             createNewInteractionEvent={() => setNewInteractionEventDate(date)}
                             interactions={interactionsMap.get(date.getTime())}
                             key={date.getTime()}

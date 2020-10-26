@@ -19,6 +19,14 @@ const useStyle = makeStyles({
     },
     divider: {
         margin: '0 2.3vw'
+    },
+    detailsGrid: {
+        padding: '1vh 0'
+    },
+    interactionItem: {
+        display: 'flex',
+        justifyContent: 'center',
+        borderBottom: '2px solid rgba(224,224,224,1)'
     }
 });
 

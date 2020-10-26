@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import Contact from 'models/Contact';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
@@ -17,6 +18,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const saveIntreactions = async (interactionsDataToSave: InteractionEventDialogData) => {
+
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
@@ -33,6 +35,10 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
+          [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave.contacts.map((contact: Contact) => ({
+            ...contact,
+            id: contact.idNumber
+          }))
         })
           .then(() => {
             logger.info({
@@ -68,7 +74,11 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
         axios.post('/intersections/createContactEvent', {
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
-          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
+          [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
+          [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave.contacts.map((contact: Contact) => ({
+            ...contact,
+            id: contact.idNumber
+          }))
         })
           .then(() => {
             logger.info({
