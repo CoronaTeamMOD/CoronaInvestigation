@@ -48,7 +48,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
 
 export const GET_ALL_FAMILY_RELATIONSHIPS = gql`
 query getAllFamilyRelationships {
-  allFamilyRelationships {
+  allFamilyRelationships(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName

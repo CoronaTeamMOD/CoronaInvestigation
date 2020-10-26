@@ -1,8 +1,8 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
 export const GET_ALL_CITIES = gql`
 query getAllCities {
-    allCities {
+    allCities(orderBy: DISPLAY_NAME_ASC) {
       nodes {
         id
         displayName
@@ -14,7 +14,7 @@ query getAllCities {
 export const GET_CITY_STREETS = gql`
 query getCityStreets($id: String!) {
   cityById(id: $id) {
-    streetsByCity {
+    streetsByCity(orderBy: DISPLAY_NAME_ASC) {
       nodes {
         displayName
         id
@@ -25,12 +25,12 @@ query getCityStreets($id: String!) {
 `;
 
 export const GET_ALL_COUNTRIES = gql`
-  query getAllCountries {
-    allCountries {
-      nodes {
-        id
-        displayName
-      }
+query getAllCountries {
+  allCountries(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
     }
   }
+}
 `;
