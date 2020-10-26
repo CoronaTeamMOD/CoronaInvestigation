@@ -78,12 +78,12 @@ query allLanguages {
 `;
 
 export const GET_USERS_BY_DISTRICT_ID = gql`
-query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $districtId: Int!) {
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
   allUsers(
     first: $size, 
     offset: $offset, 
     orderBy: $orderBy,
-    filter: {countyByInvestigationGroup: {districtByDistrictId: {id: {equalTo: $districtId}}}}
+    filter: $filter
   ) {
     nodes {
       id
@@ -121,12 +121,12 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $distric
 `;
 
 export const GET_USERS_BY_COUNTY_ID = gql`
-query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $countyId: Int!) {
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
   allUsers(
     first: $size, 
     offset: $offset, 
     orderBy: $orderBy,
-    filter: {countyByInvestigationGroup: {id: {equalTo: $countyId}}}
+    filter: $filter
   ) {
     nodes {
       id

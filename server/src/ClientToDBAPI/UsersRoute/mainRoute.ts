@@ -404,7 +404,16 @@ usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: 
             offset: (request.body.page.number - 1) * request.body.page.size,
             size: request.body.page.size,
             orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
-            districtId: response.locals.user.countyByInvestigationGroup.districtId
+            filter: {
+                countyByInvestigationGroup: {
+                    districtByDistrictId: {
+                        id: {
+                            equalTo: response.locals.user.countyByInvestigationGroup.districtId
+                        }
+                    }
+                },
+                ...request.body.filter
+            }
         }
     )
         .then((result: any) => {
@@ -470,7 +479,14 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
             offset: (request.body.page.number - 1) * request.body.page.size,
             size: request.body.page.size,
             orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
-            countyId: +response.locals.user.investigationGroup
+            filter: {
+                countyByInvestigationGroup: {
+                    id: {
+                        equalTo: +response.locals.user.investigationGroup
+                    }
+                },
+                ...request.body.filter
+            }
         }
     )
         .then((result: any) => {
