@@ -16,7 +16,7 @@ districtsRoute.get('', (request: Request, response: Response) => {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
-                    workflow: 'All c Query',
+                    workflow: 'All Districts Query',
                     step: `Queried all districts successfully`,
                 })
                 response.send(result.data.allDistricts.nodes);
@@ -25,7 +25,7 @@ districtsRoute.get('', (request: Request, response: Response) => {
                     service: Service.SERVER,
                     severity: Severity.CRITICAL,
                     workflow: 'All Districts Query',
-                    step: `couldnt query all districts due to ${result.errors[0].message}`,
+                    step: `couldnt query all districts due to ${result.errors[0]?.message}`,
                 })
                 response.status(errorStatusCode).send(`Couldn't query all districts`);
             }
