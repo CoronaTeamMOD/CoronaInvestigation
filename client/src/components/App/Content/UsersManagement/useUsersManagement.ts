@@ -40,7 +40,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: userId,
             investigation: epidemiologyNumber
         })
-        axios.post('/users', { 
+        axios.post('/users/district', { 
             page: {
                 number: page,
                 size: rowsPerPage

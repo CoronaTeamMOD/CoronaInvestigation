@@ -77,7 +77,7 @@ query allLanguages {
 }
 `;
 
-export const GET_USERS = gql`
+export const GET_USERS_BY_DISTRICT_ID = gql`
 query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $districtId: Int!) {
   allUsers(
     first: $size, 
@@ -113,6 +113,46 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $distric
       }
       deskByDeskId {
         deskName
+      }
+    }
+    totalCount
+  }
+}
+`;
+
+export const GET_USERS_BY_COUNTY_ID = gql`
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $countyId: Int!) {
+  allUsers(
+    first: $size, 
+    offset: $offset, 
+    orderBy: $orderBy,
+    filter: {countyByInvestigationGroup: {id: {equalTo: $countyId}}}
+  ) {
+    nodes {
+      id
+      fullName
+      userName
+      phoneNumber
+      mail
+      identityNumber
+      isActive
+      cityByCity {
+        displayName
+      }
+      isActive
+      userLanguagesByUserId {
+        nodes {
+          language
+        }
+      }
+      userTypeByUserType {
+        displayName
+      }
+      countyByInvestigationGroup {
+        displayName
+      }
+      sourceOrganizationBySourceOrganization {
+        displayName
       }
     }
     totalCount
