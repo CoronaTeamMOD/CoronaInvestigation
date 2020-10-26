@@ -1,5 +1,3 @@
-import { string } from "yup"
-
 export enum UsersManagementTableHeadersNames {
     FULL_NAME = 'fullName',
     SOURCE_ORGANIZATION = 'sourceOrganization',
