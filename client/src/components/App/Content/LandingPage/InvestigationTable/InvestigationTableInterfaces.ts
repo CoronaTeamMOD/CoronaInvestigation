@@ -24,4 +24,7 @@ export interface useInvestigationTableOutcome {
     onCountyChange: (indexedRow: IndexedInvestigation, newSelectedCountyId: any, currentSelectedCounty: string) => void;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
+    onOk: () => void;
+    onCancel: () => void;
+    snackbarOpen: boolean;
 };

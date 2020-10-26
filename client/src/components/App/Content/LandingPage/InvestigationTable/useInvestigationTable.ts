@@ -28,6 +28,7 @@ import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import usePageRefresh from 'Utils/vendor/usePageRefresh';
 
 const investigationURL = '/investigation';
 
@@ -63,6 +64,7 @@ export const createRowData = (
     comment
 });
 
+const TABLE_REFRESH_INTERVAL = 30;
 export const UNDEFINED_ROW = -1;
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
@@ -73,7 +75,7 @@ export const ALL_DESKS_FILTER_OPTIONS = 'כל הדסקים';
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
 
-    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty, 
+    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks } = parameters;
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
@@ -95,7 +97,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 title: classes.errorAlertTitle
             }
         });
-    }
+    };
 
     const fetchAllDesks = () => {
         axios.get('/landingPage/desks').
@@ -170,6 +172,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     useEffect(() => {
         fetchAllInvestigationStatuses();
         fetchAllDesks();
+
+        startWaiting();
     }, [])
 
     const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
@@ -292,9 +296,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const getFormattedDate = (date: string) => {
         return format(new Date(date), 'dd/MM')
-    }
+    };
 
-    useEffect(() => {
+    const fetchTableData = () => {
         setIsLoading(true);
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
             fetchAllCountyUsers();
@@ -407,6 +411,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     });
                 });
         }
+    };
+
+    const {startWaiting,onCancel, onOk, snackbarOpen} = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
+
+    useEffect(() => {
+        fetchTableData()
     }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
@@ -685,7 +695,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         sortInvestigationTable,
         getUserMapKeyByValue,
         getCountyMapKeyByValue,
-        onCountyChange
+        onCountyChange,
+        onCancel,
+        onOk,
+        snackbarOpen,
     };
 };
 
