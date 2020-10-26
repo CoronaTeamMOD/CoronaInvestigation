@@ -47,7 +47,7 @@ const useUsersManagement = ({ page, rowsPerPage }: useUsersManagementInCome): us
             })
             .catch(err => {
                 if (err.response.status === 401) {
-                    handleFailedRequest('למשתמש אין הרשאות למידע זה');
+                    handleFailedRequest('אין לך הרשאות למידע זה');
                 }
                 else {
                     handleFailedRequest('לא ניתן היה לקבל משתמשים');
