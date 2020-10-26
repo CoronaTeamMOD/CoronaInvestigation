@@ -11,6 +11,7 @@ import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
 import countiesRoute from './CountiesRoute/mainRoute';
+import districtsRoute from './DistrictsRoute/mainRoute'
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
@@ -24,5 +25,6 @@ clientToDBRouter.use('/addressDetails', addressRoute);
 clientToDBRouter.use('/contactedPeople', contactedPeopleRoute);
 clientToDBRouter.use('/users', usersRoute);
 clientToDBRouter.use('/counties', countiesRoute);
+clientToDBRouter.use('/districts', districtsRoute);
 
 export default clientToDBRouter;
