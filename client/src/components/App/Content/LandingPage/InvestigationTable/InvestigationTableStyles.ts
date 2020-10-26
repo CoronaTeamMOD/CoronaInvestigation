@@ -40,9 +40,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontFamily: 'Assistant',
     },
     filterByDeskCard: {
-        margin: '2vh -4vw',
+        margin: '2vh 0',
         padding: '2vh 2vw',
-        width: '21vw'
+        width: '17vw'
     },
     tableHeaderRow: {
         width: '90vw',  
@@ -68,7 +68,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
-        width: '22vw'
+        width: '17vw',
+        fontSize: '1vw'
     },
     activeSortIcon: {
         '&$active': {
