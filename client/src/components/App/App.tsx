@@ -112,6 +112,7 @@ const App: React.FC = (): JSX.Element => {
                         newInvestigationsCount: 0,
                         userType: userType.INVESTIGATOR,
                         sourceOrganization: '',
+                        deskName: '',
                         countyByInvestigationGroup: {
                             districtId: -1
                         }
@@ -133,6 +134,7 @@ const App: React.FC = (): JSX.Element => {
                 newInvestigationsCount: 0,
                 userType: userType.INVESTIGATOR,
                 sourceOrganization: '',
+                deskName: '',
                 countyByInvestigationGroup: {
                     districtId: -1
                 }

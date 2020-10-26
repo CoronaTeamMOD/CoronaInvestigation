@@ -14,6 +14,7 @@ export const initialUserState: User = {
     newInvestigationsCount: 0,
     userType: userType.INVESTIGATOR,
     sourceOrganization: '',
+    deskName: '',
     countyByInvestigationGroup: {
         districtId: -1
     }

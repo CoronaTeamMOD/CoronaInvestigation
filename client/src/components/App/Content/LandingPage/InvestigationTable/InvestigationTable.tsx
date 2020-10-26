@@ -33,6 +33,7 @@ const investigatorNameMsg = 'שם חוקר';
 const newInvestigationsMsg = 'חקירות חדשות';
 const activeInvestigationsMsg = 'חקירות בטיפול';
 const hasNoSourceOrganization = 'לא שויך למסגרת';
+const hasNoDesk = 'לא שויך לדסק';
 const complexInvestigationMessage = 'חקירה מורכבת';
 
 const defaultInvestigator = {
@@ -134,13 +135,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {investigatorNameMsg} :
                                                     <b>
                                                             {option.value.userName}
-                                                        </b>
+                                                    </b>
+                                                        &nbsp;&nbsp;
+                                                        {
+                                                            (option.value.sourceOrganization || option.value.deskName) ?
+                                                                `${option.value.sourceOrganization ? option.value.sourceOrganization : hasNoSourceOrganization},
+                                                                ${option.value.deskName ? option.value.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
+                                                        }
                                                     </a>
-                                                    {
-                                                        option.value.sourceOrganization ?
-                                                            option.value.sourceOrganization :
-                                                            hasNoSourceOrganization
-                                                    }
                                                     <br></br>
                                                 </Typography>
                                                 <Typography variant='body1' color='textSecondary'>
@@ -297,7 +299,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const filterIconByToggle = () => {
         const filterIcon = <FontAwesomeIcon icon={faFilter} style={{fontSize: '15px'}}/>;
-        if (showFilterRow) return <Badge 
+        if (showFilterRow) return <Badge
         anchorOrigin={{vertical: 'top',horizontal: 'left',}} variant='dot' badgeContent='' color='error'>{filterIcon}
         </Badge>
         return filterIcon
