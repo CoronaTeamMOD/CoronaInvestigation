@@ -352,14 +352,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 watchDoesHaveBackgroundDiseases={watchDoesHaveBackgroundDiseases}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <HospitalFields
-                                classes={classes}
-                                watchWasHospitalized={watchWasHospitalized}
-                                watchHospitalizedStartDate={watchHospitalizedStartDate}
-                                watchHospitalizedEndDate={watcHospitalizedEndDate}
-                            />
-                        </Grid>
                         <Grid item xs={12} className={patientGender === Gender.MALE ? classes.hiddenIsPregnant : ''}>
                             <FormRowWithInput fieldName='האם בהריון:'>
                             <Grid item xs={2}>
