@@ -35,7 +35,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
-          contacts: interactionsDataToSave.contacts.map((contact: Contact) => ({
+          [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave.contacts.map((contact: Contact) => ({
             ...contact,
             id: contact.idNumber
           }))
@@ -75,7 +75,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
           ...interactionsDataToSave,
           [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
           [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
-          contacts: interactionsDataToSave.contacts.map((contact: Contact) => ({
+          [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave.contacts.map((contact: Contact) => ({
             ...contact,
             id: contact.idNumber
           }))
