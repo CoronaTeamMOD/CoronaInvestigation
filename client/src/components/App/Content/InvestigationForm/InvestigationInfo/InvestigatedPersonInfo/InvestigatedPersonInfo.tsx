@@ -107,7 +107,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='examinationDate' name='תאריך קבלת תשובה חיובית' value=
+                    <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
                     {
                         format(new Date(props.coronaTestDate), displayDateFormat)
                     }
