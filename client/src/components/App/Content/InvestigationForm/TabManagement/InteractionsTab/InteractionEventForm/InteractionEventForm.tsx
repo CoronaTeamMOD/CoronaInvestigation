@@ -28,7 +28,7 @@ export const defaultContact: Contact = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  id: '',
+  idNumber: '',
   contactType: -1,
 };
 

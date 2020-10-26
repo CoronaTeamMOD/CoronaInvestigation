@@ -1,13 +1,13 @@
 import { Router, Request, Response } from 'express';
 
-import Contact from '../../Models/ContactEvent/Contact';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
-import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT } from '../../DBService/ContactEvent/Mutation';
-import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
+import { Service, Severity } from '../../Models/Logger/types';
+import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query'
+import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
+import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTCTED_PERSON } from '../../DBService/ContactEvent/Mutation';
+import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
 
@@ -64,7 +64,7 @@ const convertDBEvent = (event: ContactEvent) => {
             firstName: personByPersonInfo.firstName,
             lastName: personByPersonInfo.lastName,
             phoneNumber: personByPersonInfo.phoneNumber,
-            id: personByPersonInfo.identificationNumber,
+            idNumber: personByPersonInfo.identificationNumber,
         };
     });
     return {
@@ -179,28 +179,10 @@ const resetEmptyFields = (object: any) => {
     });
 }
 
-const convertEventToDBType = (event: any) => {
-    const deletedContacts : number[] = [];
-    const updatedContacts = event.contacts?.filter((contact: Contact) => { 
-        if (contact.firstName && contact.lastName) {
-            return true;
-        } else {
-            contact.serialId && deletedContacts.push(+contact.serialId);
-            return false;
-        }
-    });
-    updatedContacts?.forEach((contact: Contact) => {
-        contact.id = contact.id ? contact.id : null;
-        contact.phoneNumber = contact.phoneNumber ? contact.phoneNumber : null;
-    })
-    event.contacts = updatedContacts;
-    resetEmptyFields(event);
-    (event.locationAddress) && resetEmptyFields(event.locationAddress);
-    return {...event, deletedContacts};
-}
-
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
-    const newEvent = convertEventToDBType(request.body);
+    const newEvent = {
+        ...request.body,
+    }
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -235,7 +217,9 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
 });
 
 intersectionsRoute.post('/updateContactEvent', (request: Request, response: Response) => {
-    const updatedEvent = convertEventToDBType(request.body);
+    const updatedEvent = {
+        ...request.body,
+    }
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -296,6 +280,41 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
             service: Service.SERVER,
             severity: Severity.LOW,
             workflow: 'Delete Contact Event',
+            step: `got errors approaching the graphql API ${err}`,
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.status(errorStatusCode).send('error in deleting event: ' + err);
+    });
+});
+
+intersectionsRoute.delete('/deleteContactedPerson', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Delete Contacted Person',
+        step: `launcing DB request`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    const contactedPersonId = +request.query.contactedPersonId;
+    graphqlRequest(DELETE_CONTCTED_PERSON, response.locals, {contactedPersonId})
+    .then(result => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Delete Contacted Person',
+            step: 'got response from DB',
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.send(result);
+    })
+    .catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Delete Contacted Person',
             step: `got errors approaching the graphql API ${err}`,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id

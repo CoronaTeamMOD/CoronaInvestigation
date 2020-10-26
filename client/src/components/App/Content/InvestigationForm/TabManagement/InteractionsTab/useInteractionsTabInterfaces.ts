@@ -14,4 +14,5 @@ export interface useInteractionsTabOutcome {
     getCoronaTestDate: (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => void;
     getClinicalDetailsSymptoms: (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean | any>>) => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
+    handleDeleteContactedPerson: (contactedPersonId: number, contactEventId: number) => void;
 };
