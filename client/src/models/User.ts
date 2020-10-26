@@ -9,6 +9,11 @@ interface User {
     activeInvestigationsCount: number;
     userType: number;
     sourceOrganization: string;
+    countyByInvestigationGroup: CountyByInvestigationGroup;
+};
+
+interface CountyByInvestigationGroup {
+    districtId: number
 };
 
 export default User;

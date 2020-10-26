@@ -13,7 +13,10 @@ export const initialUserState: User = {
     activeInvestigationsCount: 0,
     newInvestigationsCount: 0,
     userType: userType.INVESTIGATOR,
-    sourceOrganization: ''
+    sourceOrganization: '',
+    countyByInvestigationGroup: {
+        districtId: -1
+    }
 }
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {

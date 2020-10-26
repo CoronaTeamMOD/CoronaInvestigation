@@ -17,6 +17,9 @@ query GetUser($id: String!) {
       serialNumber
       userName
       userType
+      countyByInvestigationGroup {
+        districtId
+      }
     }
   }   
 `;
