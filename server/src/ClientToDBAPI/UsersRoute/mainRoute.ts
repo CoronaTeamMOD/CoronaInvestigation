@@ -11,8 +11,10 @@ import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizatio
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse'
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
-import { GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
-         GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS, GET_ALL_USER_TYPES } from '../../DBService/Users/Query';
+import {
+    GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
+    GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS, GET_ALL_USER_TYPES
+} from '../../DBService/Users/Query';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
@@ -62,9 +64,9 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
 })
 
 usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
-    const updateIsActiveStatusVariables = { 
-        id: response.locals.user.id, 
-        isActive: request.body.isActive 
+    const updateIsActiveStatusVariables = {
+        id: response.locals.user.id,
+        isActive: request.body.isActive
     }
     logger.info({
         service: Service.SERVER,
@@ -139,9 +141,9 @@ usersRoute.get('/user', (request: Request, response: Response) => {
 });
 
 usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, response: Response) => {
-    const changeInvestigatorVariables = { 
-        epidemiologyNumber: request.body.epidemiologyNumber, 
-        newUser: request.body.user 
+    const changeInvestigatorVariables = {
+        epidemiologyNumber: request.body.epidemiologyNumber,
+        newUser: request.body.user
     };
     logger.info({
         service: Service.SERVER,
@@ -151,25 +153,25 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
         user: response.locals.user.id
     });
     graphqlRequest(UPDATE_INVESTIGATOR, response.locals, changeInvestigatorVariables).then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Switch investigator',
-                step: `investigator have been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
-                user: response.locals.user.id
-            });
-            response.send(result.data)
-        }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Switch investigator',
-                step: `querying the graphql API failed du to ${err}`,
-                investigation: response.locals.epidemiologyNumber,
-                user: response.locals.user.id
-            });
-            response.sendStatus(500);
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Switch investigator',
+            step: `investigator have been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
+            user: response.locals.user.id
         });
+        response.send(result.data)
+    }).catch(err => {
+        logger.error({
+            service: Service.CLIENT,
+            severity: Severity.HIGH,
+            workflow: 'Switch investigator',
+            step: `querying the graphql API failed du to ${err}`,
+            investigation: response.locals.epidemiologyNumber,
+            user: response.locals.user.id
+        });
+        response.sendStatus(500);
+    });
 });
 
 usersRoute.get('/userTypes', (request: Request, response: Response) => {
@@ -192,7 +194,7 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
                 });
                 response.send(result.data.allUserTypes?.nodes)
             } else {
-                 logger.error({
+                logger.error({
                     service: Service.SERVER,
                     severity: Severity.HIGH,
                     workflow: 'Getting user types',
@@ -250,7 +252,7 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
 });
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(GET_ADMINS_OF_COUNTY, response.locals, {requestedCounty: request.body.updatedCounty})
+    graphqlRequest(GET_ADMINS_OF_COUNTY, response.locals, { requestedCounty: request.body.updatedCounty })
         .then((result: any) => {
             let userAdmin = '';
             if (result && result.data && result.data.allUsers) {
@@ -277,7 +279,7 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
                 step: error
             });
             response.status(RESPONSE_ERROR_CODE).send('error while changing county');
-    })
+        })
 })
 
 usersRoute.get('/sourcesOrganization', (request: Request, response: Response) => {
@@ -344,18 +346,18 @@ usersRoute.get('/languages', (request: Request, response: Response) => {
         })
 })
 
-const convertUserToDB = (clientUserInput: any) : User => {
-    return { 
-    ...clientUserInput,
+const convertUserToDB = (clientUserInput: any): User => {
+    return {
+        ...clientUserInput,
         investigationGroup: +clientUserInput.investigationGroup,
-        fullName: clientUserInput.fullName.firstName + ' ' +  clientUserInput.fullName.lastName,
+        fullName: clientUserInput.fullName.firstName + ' ' + clientUserInput.fullName.lastName,
         languages: clientUserInput.languages?.map((language: Language) => language.displayName)
     }
 }
 
 usersRoute.post('/user', (request: Request, response: Response) => {
-    const newUser : User = convertUserToDB(request.body);
-    graphqlRequest(CREATE_USER, response.locals, {input: newUser})
+    const newUser: User = convertUserToDB(request.body);
+    graphqlRequest(CREATE_USER, response.locals, { input: newUser })
         .then((result: CreateUserResponse) => {
             if (result?.data?.createNewUser) {
                 logger.info({
@@ -366,7 +368,7 @@ usersRoute.post('/user', (request: Request, response: Response) => {
                 })
                 response.send(result.data.createNewUser);
             }
-            else  {
+            else {
                 logger.error({
                     service: Service.SERVER,
                     severity: Severity.CRITICAL,
@@ -401,7 +403,7 @@ usersRoute.post('', (request: Request, response: Response) => {
         {
             offset: (request.body.page.number - 1) * request.body.page.size,
             size: request.body.page.size,
-            orderBy: [request.body.orderBy? request.body.orderBy : 'NATURAL']
+            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL']
         }
     )
         .then((result: any) => {
@@ -428,7 +430,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                     investigationGroup: user.countyByInvestigationGroup?.displayName,
                     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
                 }));
-                response.send({users, totalCount});
+                response.send({ users, totalCount });
             } else {
                 logger.error({
                     service: Service.SERVER,
