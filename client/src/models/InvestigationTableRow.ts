@@ -15,6 +15,7 @@ interface InvestigationTableRow {
     investigationDesk: string,
     investigator: Investigator;
     county: County;
+    comment: string;
 };
 
 export default InvestigationTableRow;

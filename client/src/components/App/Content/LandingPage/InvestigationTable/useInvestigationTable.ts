@@ -44,7 +44,8 @@ export const createRowData = (
     city: string,
     investigationDesk: string,
     county: County,
-    investigator: Investigator
+    investigator: Investigator,
+    comment: string,
 ): InvestigationTableRow => ({
     epidemiologyNumber,
     coronaTestDate,
@@ -58,7 +59,8 @@ export const createRowData = (
     city,
     investigationDesk,
     county,
-    investigator
+    investigator,
+    comment
 });
 
 export const UNDEFINED_ROW = -1;
@@ -373,7 +375,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 patientCity ? patientCity.displayName : '',
                                 desk,
                                 county,
-                                { id: user.id, userName: user.userName }
+                                { id: user.id, userName: user.userName },
+                                investigation.comment
                             )
                         });
                         setRows(investigationRows);
@@ -508,7 +511,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
-            [TableHeadersNames.investigationDesk]: row.investigationDesk
+            [TableHeadersNames.investigationDesk]: row.investigationDesk,
+            [TableHeadersNames.comment]: row.comment
         }
     }
 
