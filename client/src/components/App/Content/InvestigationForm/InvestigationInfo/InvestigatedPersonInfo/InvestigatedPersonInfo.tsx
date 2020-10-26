@@ -133,13 +133,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication(isCurrentlyHospitalized)}
-                        icon={Help}
-                    />
-                    {
-                        isCurrentlyHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
-                    }
-                    <Divider />
                     <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
                         icon={Help}
                     />
