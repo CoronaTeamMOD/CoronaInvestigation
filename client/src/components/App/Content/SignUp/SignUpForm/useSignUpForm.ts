@@ -168,14 +168,27 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
-            workflow: 'Fetching desks',
+            workflow: 'Getting desks',
             step: 'launching desks request',
             user: userId,
             investigation: epidemiologyNumber
         });
         axios.get('/desks').then(response => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting Desks',
+                step: 'The desks were fetched successfully'
+            });
             const { data } = response;
             setDesks(data);
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting Desks',
+                step: `got error from the server: ${err}`
+            });
         })
     }
 

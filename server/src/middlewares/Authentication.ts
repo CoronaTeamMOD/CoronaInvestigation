@@ -19,10 +19,6 @@ const stubUsers = {
     'demo token': {
         id: '1',
         name: 'XXXXXX',
-    },
-    'asdasd': {
-        id: 'sss',
-        name: 'sss'
     }
 };
 

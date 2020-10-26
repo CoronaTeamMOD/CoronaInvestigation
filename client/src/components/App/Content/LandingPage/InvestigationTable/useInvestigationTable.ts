@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import User from 'models/User';
+import Desk from 'models/Desk';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
@@ -100,23 +101,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllDesks = () => {
-        axios.get('/landingPage/desks').
+        axios.get('/desks').
         then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
-                    workflow: 'GraphQL GET statuses request to the DB',
+                    workflow: 'Getting Desks',
                     step: 'The desks were fetched successfully'
                 });
-                const alDesks : string[] = result.data;
+                const alDesks : string[] = result.data.map((desk: Desk) => desk.name);
                 alDesks.unshift(ALL_DESKS_FILTER_OPTIONS);
                 setAllDesks(alDesks);
             } else {
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
-                    workflow: 'GraphQL GET statuses request to the DB',
+                    workflow: 'Getting Desks',
                     step: 'Got 200 status code but results structure isnt as expected'
                 });
             }
@@ -126,7 +127,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             logger.error({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
-                workflow: 'GraphQL GET statuses request to the DB',
+                workflow: 'Getting Desks',
                 step: err
             });
         })
