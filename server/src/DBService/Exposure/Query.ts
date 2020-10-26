@@ -1,4 +1,4 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
 export const GET_EXPOSURE_INFO = gql`
 query ExposureByInvestigationId ($investigationId: Int!){

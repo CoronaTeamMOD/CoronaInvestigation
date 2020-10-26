@@ -56,7 +56,7 @@ query getAdminsOfGivenCounty($requestedCounty: Int) {
 }`;
 export const GET_ALL_SOURCE_ORGANIZATION = gql`
 query allSourceOrganizations {
-  allSourceOrganizations {
+  allSourceOrganizations(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       displayName
     }
@@ -66,7 +66,7 @@ query allSourceOrganizations {
 
 export const GET_ALL_LANGUAGES = gql`
 query allLanguages {
-  allLanguages {
+  allLanguages(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       displayName
     }

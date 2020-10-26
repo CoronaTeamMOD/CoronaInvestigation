@@ -7,7 +7,7 @@ query getAllBackgroundDeseases {
         displayName
       }
     }
-  }  
+  }
 `;
 
 export const GET_SYMPTOMS = gql`

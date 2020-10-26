@@ -18,7 +18,7 @@ query getPlacesSubTypesByTypes {
 
 export const GET_ALL_CONTACT_TYPES = gql`
 query getAllContactTypes {
-  allContactTypes {
+  allContactTypes(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName
@@ -137,5 +137,4 @@ query getEventByID($currEventId: Int!) {
       }
   }
 }
-
 `;

@@ -2,7 +2,7 @@ import { gql } from 'postgraphile';
 
 export const GET_OCCUPATIONS = gql`
 query getAllOccupations {
-    allOccupations {
+    allOccupations(orderBy: DISPLAY_NAME_ASC) {
         nodes {
             displayName
         }
@@ -12,7 +12,7 @@ query getAllOccupations {
 
 export const GET_HMOS = gql`
 query getAllHmos {
-    allHmos {
+    allHmos(orderBy: DISPLAY_NAME_ASC) {
         nodes {
             displayName
         }
@@ -61,7 +61,7 @@ query getInvestigatedPatientDetails($id: Int!) {
 
 export const GET_SUB_OCCUPATIONS_BY_OCCUPATION = gql`
 query getSubOccupationsByOccupation($parentOccupation: String!) {
-    allSubOccupations(condition: {parentOccupation: $parentOccupation}) {
+    allSubOccupations(condition: {parentOccupation: $parentOccupation}, orderBy: DISPLAY_NAME_ASC) {
       nodes {
         displayName
         id
@@ -84,7 +84,7 @@ query getEducationSubOccupationsByCity($city: String!) {
 
 export const GET_ALL_INVESTIGATED_PATIENT_ROLES = gql`
 query {
-  allInvestigatedPatientRoles {
+  allInvestigatedPatientRoles(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName

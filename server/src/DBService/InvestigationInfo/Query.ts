@@ -1,4 +1,4 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
 export const GET_INVESTIGATION_INFO = gql`
 query InvestigationStaticDetails($investigationId: Int!) {
@@ -44,7 +44,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
 
 export const GET_SUB_STATUSES = gql`
 query GetAllSubStatuses {
-  allInvestigationSubStatuses {
+  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       displayName
     }
