@@ -425,6 +425,7 @@ usersRoute.post('', (request: Request, response: Response) => {
                     languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
                     userType: user.userTypeByUserType.displayName,
                     investigationGroup: user.countyByInvestigationGroup?.displayName,
+                    desk: user.deskByDeskId?.deskName,
                     sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
                 }));
                 response.send({users, totalCount});

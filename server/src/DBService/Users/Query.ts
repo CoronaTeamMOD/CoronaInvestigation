@@ -39,10 +39,12 @@ query AllGroupUsers($investigationGroup: Int!) {
       }
       userType
       sourceOrganization
+      deskByDeskId {
+        deskName
+      }
     }
   }
 }
-
 `;
 
 export const GET_ADMINS_OF_COUNTY = gql`
@@ -102,6 +104,9 @@ query usersQuery($offset: Int!, $size: Int!) {
       }
       sourceOrganizationBySourceOrganization {
         displayName
+      }
+      deskByDeskId {
+        deskName
       }
     }
     totalCount

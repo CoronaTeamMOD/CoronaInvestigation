@@ -18,7 +18,8 @@ const UserInitialValues: SignUpUser = {
     [SignUpFields.FULL_NAME] : {
         [SignUpFields.FIRST_NAME]: undefined,
         [SignUpFields.LAST_NAME]: undefined,
-    }
+    },
+    [SignUpFields.DESK]: null
 }
 
 const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) => {

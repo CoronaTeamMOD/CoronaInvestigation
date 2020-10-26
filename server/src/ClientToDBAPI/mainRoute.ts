@@ -2,7 +2,9 @@ import { Router } from 'express';
 
 import addressRoute from './Address/mainRoute';
 import usersRoute from './UsersRoute/mainRoute';
+import desksRoute from './DesksRoute/mainRoute';
 import exposureRoute from './ExposureRoute/mainRoute';
+import countiesRoute from './CountiesRoute/mainRoute';
 import authMiddleware from '../middlewares/Authentication';
 import landingPageRoute from './LandingPageRoute/mainRoute';
 import investigationInfo from './InvestigationInfo/mainRoute';
@@ -10,10 +12,10 @@ import contactedPeopleRoute from './ContactedPeople/mainRoute';
 import intersectionsRoute from './IntersectionsRoute/mainRoute';
 import personalDetailsRoute from './PersonalDetailsRoute/mainRoute';
 import clinicalDetailsRoute from './ClinicalDetailsRoute/mainRoute';
-import countiesRoute from './CountiesRoute/mainRoute';
 
 const clientToDBRouter = Router();
 clientToDBRouter.use(authMiddleware);
+clientToDBRouter.use('/desks', desksRoute);
 clientToDBRouter.use('/exposure', exposureRoute);
 clientToDBRouter.use('/landingPage', landingPageRoute);
 clientToDBRouter.use('/intersections', intersectionsRoute);

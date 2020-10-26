@@ -9,6 +9,7 @@ interface User {
     activeInvestigationsCount: number;
     userType: number;
     sourceOrganization: string;
+    deskName: string;
 };
 
 export default User;

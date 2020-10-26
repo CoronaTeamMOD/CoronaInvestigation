@@ -111,13 +111,14 @@ const App: React.FC = (): JSX.Element => {
                         activeInvestigationsCount: 0,
                         newInvestigationsCount: 0,
                         userType: userType.INVESTIGATOR,
-                        sourceOrganization: ''
+                        sourceOrganization: '',
+                        deskName: ''
                     });
                     fetchUser();
                 })
         } else {
-            const userId = '7'
-            const userName = 'stubuser';
+            const userId = 'sss'
+            const userName = 'sss';
 
             setUser({
                 investigationGroup: -1,
@@ -129,7 +130,8 @@ const App: React.FC = (): JSX.Element => {
                 activeInvestigationsCount: 0,
                 newInvestigationsCount: 0,
                 userType: userType.INVESTIGATOR,
-                sourceOrganization: ''
+                sourceOrganization: '',
+                deskName: ''
             });
             fetchUser();
         }
