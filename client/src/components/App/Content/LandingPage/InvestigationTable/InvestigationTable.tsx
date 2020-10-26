@@ -22,7 +22,7 @@ import CommentDisplay from './commentDisplay/commentDisplay';
 import useStyles from './InvestigationTableStyles';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, sortOrders } from './InvestigationTablesHeaders';
-import RefreshSnackbar from 'commons/Snackbar/Snackbar';
+import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
