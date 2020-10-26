@@ -17,6 +17,9 @@ query GetUser($id: String!) {
       serialNumber
       userName
       userType
+      countyByInvestigationGroup {
+        districtId
+      }
     }
   }   
 `;
@@ -74,9 +77,14 @@ query allLanguages {
 }
 `;
 
-export const GET_USERS = gql`
-query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!]) {
-  allUsers(first: $size, offset: $offset, orderBy: $orderBy) {
+export const GET_USERS_BY_DISTRICT_ID = gql`
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
+  allUsers(
+    first: $size, 
+    offset: $offset, 
+    orderBy: $orderBy,
+    filter: $filter
+  ) {
     nodes {
       id
       fullName
@@ -105,6 +113,46 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!]) {
       }
       deskByDeskId {
         deskName
+      }
+    }
+    totalCount
+  }
+}
+`;
+
+export const GET_USERS_BY_COUNTY_ID = gql`
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter: UserFilter!) {
+  allUsers(
+    first: $size, 
+    offset: $offset, 
+    orderBy: $orderBy,
+    filter: $filter
+  ) {
+    nodes {
+      id
+      fullName
+      userName
+      phoneNumber
+      mail
+      identityNumber
+      isActive
+      cityByCity {
+        displayName
+      }
+      isActive
+      userLanguagesByUserId {
+        nodes {
+          language
+        }
+      }
+      userTypeByUserType {
+        displayName
+      }
+      countyByInvestigationGroup {
+        displayName
+      }
+      sourceOrganizationBySourceOrganization {
+        displayName
       }
     }
     totalCount

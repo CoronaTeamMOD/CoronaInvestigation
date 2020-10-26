@@ -10,6 +10,8 @@ import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import User from 'models/User';
+import UserType from 'models/enums/UserType';
 
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 
@@ -22,9 +24,9 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 }
 
-const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagementInCome) : useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagementInCome): useUsersManagementOutCome => {
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const user = useSelector<StoreStateType, User>(state => state.user);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const [users, setUsers] = useState<SignUpUser[]>([]);
@@ -37,16 +39,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             severity: Severity.LOW,
             workflow: 'Fetching users',
             step: 'launching users request',
-            user: userId,
+            user: user.id,
             investigation: epidemiologyNumber
-        })
-        axios.post('/users', { 
+        });
+        const fetchUsersRoute = user.userType === UserType.SUPER_ADMIN ? '/users/district' : '/users/county';
+        axios.post(fetchUsersRoute, {
             page: {
                 number: page,
                 size: rowsPerPage
             },
-            orderBy: cellNameSort.direction !== undefined ? 
-                     `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null
+            orderBy: cellNameSort.direction !== undefined ?
+                `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null
         })
             .then(result => {
                 result?.data && setUsers(result.data?.users);
@@ -56,7 +59,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     severity: Severity.LOW,
                     workflow: 'Fetching users',
                     step: 'got results back from the server',
-                    user: userId,
+                    user: user.id,
                     investigation: epidemiologyNumber
                 });
             })
@@ -72,7 +75,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     severity: Severity.HIGH,
                     workflow: 'Fetching users',
                     step: 'didnt get results back from the server',
-                    user: userId,
+                    user: user.id,
                     investigation: epidemiologyNumber
                 });
             });
@@ -89,7 +92,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     useEffect(() => {
         fetchUsers();
     }, [page, cellNameSort])
-    
+
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
             ...row,

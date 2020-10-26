@@ -4,7 +4,7 @@ import logger from '../../Logger/Logger';
 import User from '../../Models/User/User';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import { adminMiddleWare } from '../../middlewares/Authentication';
+import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
@@ -13,7 +13,7 @@ import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse'
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
-    GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS, GET_ALL_USER_TYPES
+    GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
 } from '../../DBService/Users/Query';
 
 const usersRoute = Router();
@@ -355,7 +355,7 @@ const convertUserToDB = (clientUserInput: any): User => {
     }
 }
 
-usersRoute.post('/user', (request: Request, response: Response) => {
+usersRoute.post('', (request: Request, response: Response) => {
     const newUser: User = convertUserToDB(request.body);
     graphqlRequest(CREATE_USER, response.locals, { input: newUser })
         .then((result: CreateUserResponse) => {
@@ -389,21 +389,32 @@ usersRoute.post('/user', (request: Request, response: Response) => {
         });
 });
 
-usersRoute.post('', (request: Request, response: Response) => {
+usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Getting users',
-        step: 'querying the graphql API',
+        workflow: 'Fetching users by current user district',
+        step: 'Querying the graphql API',
         user: response.locals.user.id
     });
+    const { page } = request.body;
     graphqlRequest(
-        GET_USERS,
+        GET_USERS_BY_DISTRICT_ID,
         response.locals,
         {
-            offset: (request.body.page.number - 1) * request.body.page.size,
-            size: request.body.page.size,
-            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL']
+            offset: calculateOffset(page.number, page.size),
+            size: page.size,
+            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
+            filter: {
+                countyByInvestigationGroup: {
+                    districtByDistrictId: {
+                        id: {
+                            equalTo: response.locals.user.countyByInvestigationGroup.districtId
+                        }
+                    }
+                },
+                ...request.body.filter
+            }
         }
     )
         .then((result: any) => {
@@ -411,33 +422,19 @@ usersRoute.post('', (request: Request, response: Response) => {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
-                    workflow: 'Getting users',
-                    step: 'got users from the DB',
+                    workflow: 'Fetching users by current user district',
+                    step: 'Fetched users from the DB',
                     user: response.locals.user.id
                 });
                 const totalCount = result.data.allUsers.totalCount;
-                const users = result.data.allUsers.nodes.map((user: any) => ({
-                    id: user.id,
-                    fullName: user.fullName,
-                    userName: user.userName,
-                    phoneNumber: user.phoneNumber,
-                    mail: user.mail,
-                    identityNumber: user.identityNumber,
-                    city: user.cityByCity?.displayName,
-                    isActive: user.isActive,
-                    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-                    userType: user.userTypeByUserType.displayName,
-                    investigationGroup: user.countyByInvestigationGroup?.displayName,
-                    desk: user.deskByDeskId?.deskName,
-                    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
-                }));
+                const users = result.data.allUsers.nodes.map(toUser);
                 response.send({ users, totalCount });
             } else {
                 logger.error({
                     service: Service.SERVER,
                     severity: Severity.HIGH,
-                    workflow: 'Getting users',
-                    step: 'didnt get data from the DB',
+                    workflow: 'Fetching users by current user district',
+                    step: 'Didn\'t get data from the DB',
                     user: response.locals.user.id
                 })
                 response.status(RESPONSE_ERROR_CODE).send('Error while trying to get users')
@@ -447,11 +444,89 @@ usersRoute.post('', (request: Request, response: Response) => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.CRITICAL,
-                workflow: 'Getting users',
-                step: `couldnt query all users due to ${err}`,
+                workflow: 'Fetching users by current user district',
+                step: `Couldn\'t query users due to ${err}`,
+            })
+            response.status(RESPONSE_ERROR_CODE).send(`Couldn't query users by current user district`);
+        })
+});
+
+usersRoute.post('/county', adminMiddleWare, (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Fetching users by current user\'s county id',
+        step: 'Querying the graphql API',
+        user: response.locals.user.id
+    });
+    const { page } = request.body;
+    graphqlRequest(
+        GET_USERS_BY_COUNTY_ID,
+        response.locals,
+        {
+            offset: calculateOffset(page.number, page.size),
+            size: page.size,
+            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
+            filter: {
+                countyByInvestigationGroup: {
+                    id: {
+                        equalTo: +response.locals.user.investigationGroup
+                    }
+                },
+                ...request.body.filter
+            }
+        }
+    )
+        .then((result: any) => {
+            if (result?.data?.allUsers) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Fetching users by current user\'s county id',
+                    step: 'Fetched users from the DB',
+                    user: response.locals.user.id
+                });
+                const totalCount = result.data.allUsers.totalCount;
+                const users = result.data.allUsers.nodes.map(toUser);
+                response.send({ users, totalCount });
+            } else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Fetching users by current user\'s county id',
+                    step: 'Didn\'t get data from the DB',
+                    user: response.locals.user.id
+                })
+                response.status(RESPONSE_ERROR_CODE).send('Error while trying to get users by county id')
+            }
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.CRITICAL,
+                workflow: 'Fetching users by current user\'s county id',
+                step: `Couldn\'t query all users due to ${err}`,
             })
             response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all users`);
         })
+});
+
+const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber - 1) * pageSize);
+
+const toUser = (user: any) => ({
+    id: user.id,
+    fullName: user.fullName,
+    userName: user.userName,
+    phoneNumber: user.phoneNumber,
+    mail: user.mail,
+    identityNumber: user.identityNumber,
+    city: user.cityByCity?.displayName,
+    isActive: user.isActive,
+    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
+    userType: user.userTypeByUserType.displayName,
+    desk: user.deskByDeskId?.deskName,
+    investigationGroup: user.countyByInvestigationGroup?.displayName,
+    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });
 
 export default usersRoute;
