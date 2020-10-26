@@ -209,7 +209,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/users/user', newUser)
+        axios.post('/users', newUser)
         .then(() => {
             handleSaveUser && handleSaveUser();
             logger.info({
