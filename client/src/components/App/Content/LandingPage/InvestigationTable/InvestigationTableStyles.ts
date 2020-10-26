@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    filterByDeskCard: {
+        margin: '2vh -4vw',
+        padding: '2vh 2vw',
+        width: '21vw'
+    },
     tableHeaderRow: {
         width: '90vw',  
         display: 'flex',
@@ -61,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'flex-end',
         direction: 'ltr'
     },
-    statusesAutocompleteInput: {
+    autocompleteInput: {
         paddingRight: 'unset' + '!important',
         width: '22vw'
     },

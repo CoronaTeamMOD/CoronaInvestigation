@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
+import GetAllDesks from '../../Models/Desk/GetAllDesks';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_USER_BY_ID, GET_ALL_INVESTIGATION_STATUS } from '../../DBService/LandingPage/Query';
+import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_USER_BY_ID, GET_ALL_INVESTIGATION_STATUS, GET_ALL_DESKS } from '../../DBService/LandingPage/Query';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 
 const errorStatusResponse = 500;
@@ -119,7 +120,7 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Getting Investigations',
+        workflow: 'Getting Investigations statuses',
         step: `launching graphql API investigationStatuses request`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
@@ -155,6 +156,54 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Getting Investigation statuses',
+                step: `got error in requesting the graphql API ${err}`,
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+            response.status(errorStatusResponse).send('error in fetching data: ' + err)
+        });
+})
+
+landingPageRoute.get('/desks', (request: Request, response: Response) => {    
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting desks',
+        step: `launching graphql API desks request`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    graphqlRequest(GET_ALL_DESKS, response.locals)
+        .then((result: GetAllDesks) => {
+            if (result?.data?.allDesks) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting desks',
+                    step: 'got results from the DB',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                })
+                const convertedDesks: string[] = result.data.allDesks.nodes.map(desk => desk.deskName);
+                response.send(convertedDesks);
+            }
+            else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Getting desks',
+                    step: `got error in querying the DB ${JSON.stringify(result)}`,
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
+                response.status(errorStatusResponse).send('error in fetching data')
+            }
+        })
+        .catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting desks',
                 step: `got error in requesting the graphql API ${err}`,
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber

@@ -52,3 +52,13 @@ query allInvestigationStatuses {
   }
 }
 `;
+
+export const GET_ALL_DESKS = gql`
+query allDesks {
+  allDesks {
+    nodes {
+      deskName
+    }
+  }
+}
+`;

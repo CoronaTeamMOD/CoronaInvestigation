@@ -20,7 +20,7 @@ RETURN (select
 				'coronaTestDate', investigationTable.corona_test_date,
                 'isComplex', investigationTable.complexity_code <> 2,
 				'priority', investigationTable.priority,
-				'desk', investigationTable.desk,
+				'desk', 'desk', (select desk_name from public.desks where id = investigationTable.desk),
 				'investigatedPatientByInvestigatedPatientId', (
 					select json_build_object (
 						'covidPatientByCovidPatient', (

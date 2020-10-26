@@ -66,11 +66,13 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
+export const ALL_DESKS_FILTER_OPTIONS = 'כל הדסקים';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
 
-    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty, setAllStatuses } = parameters;
+    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty, 
+        setAllStatuses, setAllDesks } = parameters;
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -93,11 +95,40 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     }
 
-    useEffect(() => {
-        setIsLoading(isCurrentlyLoadingInvestigation);
-    }, [isCurrentlyLoadingInvestigation])
+    const fetchAllDesks = () => {
+        axios.get('/landingPage/desks').
+        then((result) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: 'The desks were fetched successfully'
+                });
+                const alDesks : string[] = result.data;
+                alDesks.unshift(ALL_DESKS_FILTER_OPTIONS);
+                setAllDesks(alDesks);
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: 'Got 200 status code but results structure isnt as expected'
+                });
+            }
+        })
+        .catch((err) => {
+            fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET statuses request to the DB',
+                step: err
+            });
+        })
+    }
 
-    useEffect(() => {
+    const fetchAllInvestigationStatuses = () => {
         axios.get('/landingPage/investigationStatuses').
         then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -108,7 +139,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     step: 'The investigations statuses were fetched successfully'
                 });
                 const allStatuses : string[] = result.data;
-                allStatuses.push(ALL_STATUSES_FILTER_OPTIONS);
+                allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
                 setAllStatuses(allStatuses);
             } else {
                 logger.error({
@@ -128,6 +159,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 step: err
             });
         })
+    }
+
+    useEffect(() => {
+        setIsLoading(isCurrentlyLoadingInvestigation);
+    }, [isCurrentlyLoadingInvestigation])
+
+    useEffect(() => {
+        fetchAllInvestigationStatuses();
+        fetchAllDesks();
     }, [])
 
     const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
