@@ -54,7 +54,7 @@ const INDUSTRY_NAME_LABEL = 'שם התעשייה*';
 const INSTITUTION_NAME_LABEL = 'שם מוסד*';
 const NO_INSURANCE = 'אף אחד מהנ"ל';
 
-const grades = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
+const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'יא', 'יב'];
 const defaultInvestigationId = -1;
 const defaultRole = {id: -1, displayName: ''};
 
@@ -588,38 +588,41 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                             {
                                 occupation === Occupations.EDUCATION_SYSTEM || occupation === Occupations.HEALTH_SYSTEM ?
                                 <>
-                                    <Grid item xs={2}>
-                                        <Controller
-                                            name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                            control={methods.control}
-                                            render={(props) => (
-                                                <Autocomplete
-                                                    options={Array.from(cities, ([name, value]) => ({name, value}))}
-                                                    getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
-                                                    getOptionSelected={(option) => {
-                                                        return option.value?.displayName === props.value
-                                                    }}
-                                                    value={props.value}
-                                                    onChange={(event, newValue) => {
-                                                        newValue && getEducationSubOccupations(newValue.value.displayName);
-                                                        setSubOccupationName('');
-                                                        props.onChange(newValue ? newValue.value.displayName : '')
-                                                    }}
-                                                    renderInput={(params) =>
-                                                        <TextField
-                                                            {...params}
-                                                            error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
-                                                            label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
-                                                            || 'עיר המצאות המוסד*'}
-                                                            onBlur={props.onBlur}
-                                                            test-id='institutionCity'
-                                                            id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
-                                                            placeholder='עיר המצאות המוסד'
-                                                        />}
+                                    {
+                                        occupation === Occupations.EDUCATION_SYSTEM && 
+                                        <Grid item xs={2}>
+                                            <Controller
+                                                name={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                control={methods.control}
+                                                render={(props) => (
+                                                    <Autocomplete
+                                                        options={Array.from(cities, ([name, value]) => ({name, value}))}
+                                                        getOptionLabel={(option) => option.value?.displayName ? option.value?.displayName : props.value}
+                                                        getOptionSelected={(option) => {
+                                                            return option.value?.displayName === props.value
+                                                        }}
+                                                        value={props.value}
+                                                        onChange={(event, newValue) => {
+                                                            newValue && getEducationSubOccupations(newValue.value.displayName);
+                                                            setSubOccupationName('');
+                                                            props.onChange(newValue ? newValue.value.displayName : '')
+                                                        }}
+                                                        renderInput={(params) =>
+                                                            <TextField
+                                                                {...params}
+                                                                error={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]}
+                                                                label={methods.errors[PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY]?.message
+                                                                || 'עיר המצאות המוסד*'}
+                                                                onBlur={props.onBlur}
+                                                                test-id='institutionCity'
+                                                                id={PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY}
+                                                                placeholder='עיר המצאות המוסד'
+                                                            />}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                        </Grid>
+                                    }
                                     <Grid item xs={2}>
                                         {institutionComponent}
                                     </Grid>
