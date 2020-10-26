@@ -14,7 +14,7 @@ import User from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
-import SortOrder from 'models/enums/SortOrder'
+import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -251,7 +251,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const handleRequestSort = (event: any, property: React.SetStateAction<string>) => {
         const isAsc = orderBy === property && order === SortOrder.asc;
-        const newOrder = isAsc ? SortOrder.desc : SortOrder.asc
+        const newOrder = isAsc ? SortOrder.desc : SortOrder.asc;
         setOrder(newOrder);
         setOrderBy(property);
         property === defaultOrderBy ? sortInvestigationTable(property) : sortInvestigationTable(property + newOrder.toLocaleUpperCase());
