@@ -1,36 +1,41 @@
 
-import React from 'react'
-import { useForm, FormProvider, Controller } from 'react-hook-form'
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { yupResolver } from '@hookform/resolvers';
-import { Grid, TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab';
+import { yupResolver } from '@hookform/resolvers';
+import { Grid, TextField } from '@material-ui/core';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
 
-import SignUpFields from 'models/enums/SignUpFields'
-import SignUpUser from 'models/SignUpUser';
 import City from 'models/City';
 import FormMode from 'models/enums/FormMode';
-import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
-import NumericTextField from 'commons/NumericTextField/NumericTextField'
-import FormInput from 'commons/FormInput/FormInput'
+import Desk from 'models/Desk';
+import County from 'models/County';
+import Language from 'models/Language';
+import SignUpUser from 'models/SignUpUser';
 import StoreStateType from 'redux/storeStateType';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import FormInput from 'commons/FormInput/FormInput';
+import SignUpFields from 'models/enums/SignUpFields';
+import SourceOrganization from 'models/SourceOrganization';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
+import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
 import SignUpSchema from './SignUpSchema'
 import useSignUpForm from './useSignUpForm'
 import useStyles from './SignUpFormStyles'
 
 
-const MABAR_USER_NAME = 'שם משתמש מב"ר'
-const FIRST_NAME_LABEL = 'שם פרטי'
-const LAST_NAME_LABEL = 'שם משפחה'
-const CITY_LABEL = 'עיר'
-const PHONE_NUMBER_LABEL = 'מספר טלפון'
-const ID_LABEL = 'תז'
-const MAIL_LABEL = 'מייל'
-const COUNTY_LABEL = 'נפה'
-const SOURCE_ORGANIZATION_LABEL = 'מסגרת'
-const LANGUAGE_LABEL = 'שפה'
+const MABAR_USER_NAME = 'שם משתמש מב"ר';
+const FIRST_NAME_LABEL = 'שם פרטי';
+const LAST_NAME_LABEL = 'שם משפחה';
+const CITY_LABEL = 'עיר';
+const PHONE_NUMBER_LABEL = 'מספר טלפון';
+const ID_LABEL = 'תז';
+const MAIL_LABEL = 'מייל';
+const COUNTY_LABEL = 'נפה';
+const DESK_LABEL = 'דסק';
+const SOURCE_ORGANIZATION_LABEL = 'מסגרת';
+const LANGUAGE_LABEL = 'שפה';
 
 const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> = 
     ({ props, disabled, label, placeholder, className }: GenericAlphabetTextFieldProps) => (
@@ -65,7 +70,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
 const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
     const classes = useStyles();
     
-    const { counties, languages, sourcesOrganization, createUser } = useSignUpForm({ handleSaveUser });
+    const { counties, languages, sourcesOrganization, desks, createUser } = useSignUpForm({ handleSaveUser });
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     
@@ -78,6 +83,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
     const shouldDisableFields = mode === FormMode.READ ? true : false; 
     
     const onSubmit = (data: SignUpUser) => {
+        data = {
+            ...data,
+            desk: data.desk ? data.desk : null
+        };
         createUser(data);
     }
     
@@ -260,7 +269,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 
                 <Grid container justify='flex-start' className={classes.formRow}>
                     <Grid item xs={8}>
-                        <FormInput fieldName='נפה'>
+                        <FormInput fieldName='שיוך ארגוני'>
                             <Controller
                                 name={SignUpFields.COUNTY}
                                 control={methods.control}
@@ -281,12 +290,40 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                                 placeholder='בחר נפה...'
                                                 error={get(methods.errors, props.name)}
                                                 label={get(methods.errors, props.name)?.message || COUNTY_LABEL}
+                                                className={classes.countyField}
                                             />
                                         }
                                     />
                                 )}
                             />
                         </FormInput>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Controller
+                            name={SignUpFields.DESK}
+                            control={methods.control}
+                            render={(props) => (
+                                <Autocomplete
+                                    options={desks}
+                                    disabled={shouldDisableFields}
+                                    value={props.value}
+                                    getOptionLabel={(option) => option ? option.name : option}
+                                    onChange={(event, selectedDesk) => {
+                                        props.onChange(selectedDesk ? selectedDesk.id : null)
+                                    }}
+                                    onBlur={props.onBlur}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                            test-id={props.name}
+                                            placeholder='בחר דסק...'
+                                            error={get(methods.errors, props.name)}
+                                            label={get(methods.errors, props.name)?.message || DESK_LABEL}
+                                        />
+                                    }
+                                />
+                            )}
+                        />
                     </Grid>
                 </Grid>
             

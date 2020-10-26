@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
+import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
+         IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
 
-import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import SortOrder from 'models/enums/SortOrder';
+import { noDeskAssignment } from 'Utils/consts';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
@@ -57,6 +58,9 @@ const UsersManagement: React.FC = () => {
                         </IconButton>
                     </Tooltip>
                 )
+            }
+            case UsersManagementTableHeadersNames.DESK: {
+                return row[cellName] ? row[cellName] : noDeskAssignment
             }
             default: 
                 return row[cellName]
