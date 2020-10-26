@@ -89,7 +89,10 @@ const handleConfidentialAuth = (
             response.locals.user = {
                 ...user,
                 userType: result.data.userById?.userType,
-                investigationGroup: result.data.userById?.investigationGroup
+                investigationGroup: result.data.userById?.investigationGroup,
+                countyByInvestigationGroup: {
+                    districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                }
             };
             return next();
         }).catch(err => {
@@ -173,7 +176,10 @@ const authMiddleware = (
                 response.locals.user = {
                     ...user,
                     userType: result.data.userById?.userType,
-                    investigationGroup: result.data.userById?.investigationGroup
+                    investigationGroup: result.data.userById?.investigationGroup,
+                    countyByInvestigationGroup: {
+                        districtId: result.data.userById?.countyByInvestigationGroup?.districtId
+                    }
                 };
                 return next();
             }).catch(err => {

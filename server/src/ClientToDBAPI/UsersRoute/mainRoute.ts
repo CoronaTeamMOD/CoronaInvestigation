@@ -403,7 +403,8 @@ usersRoute.post('', (request: Request, response: Response) => {
         {
             offset: (request.body.page.number - 1) * request.body.page.size,
             size: request.body.page.size,
-            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL']
+            orderBy: [request.body.orderBy ? request.body.orderBy : 'NATURAL'],
+            districtId: response.locals.user.countyByInvestigationGroup.districtId
         }
     )
         .then((result: any) => {

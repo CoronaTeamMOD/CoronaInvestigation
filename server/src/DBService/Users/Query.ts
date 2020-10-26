@@ -78,8 +78,13 @@ query allLanguages {
 `;
 
 export const GET_USERS = gql`
-query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!]) {
-  allUsers(first: $size, offset: $offset, orderBy: $orderBy) {
+query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $districtId: Int!) {
+  allUsers(
+    first: $size, 
+    offset: $offset, 
+    orderBy: $orderBy,
+    filter: {countyByInvestigationGroup: {districtByDistrictId: {id: {equalTo: $districtId}}}}
+  ) {
     nodes {
       id
       fullName
