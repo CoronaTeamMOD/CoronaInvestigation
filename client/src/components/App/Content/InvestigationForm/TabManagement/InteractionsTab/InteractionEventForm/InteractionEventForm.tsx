@@ -30,6 +30,7 @@ export const defaultContact: Contact = {
   phoneNumber: '',
   idNumber: '',
   contactType: -1,
+  extraInfo: ''
 };
 
 const addContactButton: string = 'הוסף מגע';
@@ -45,6 +46,7 @@ const InteractionEventForm: React.FC<Props> = (
     mode: 'all',
     resolver: yupResolver(InteractionEventSchema)
   });
+  const [idsToDelete, setIdsToDelete] = React.useState<any[]>([]);
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
@@ -76,7 +78,8 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveIntreactions(interactionDataToSave);
+    console.log("IDS: ", idsToDelete)
+    saveIntreactions(interactionDataToSave, idsToDelete);
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {
@@ -205,8 +208,12 @@ const InteractionEventForm: React.FC<Props> = (
                     updatedContactIndex={index}
                     myDelete={() => {
                       console.log("DELETING...: ",index )
+                      let updated = idsToDelete;
+                      updated.push(data.id);
+                      setIdsToDelete(updated)
                       remove(index)
                     }}
+                    currentItem={data}
                   />
                 )
               })

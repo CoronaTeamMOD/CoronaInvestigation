@@ -26,7 +26,7 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete, currentItem }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
@@ -48,7 +48,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                         <Controller 
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                             control={control}
-                            defaultValue
+                            defaultValue={currentItem.firstName}
                             render={(props) => (
                                 <AlphabetTextField
                                     name={props.name}
@@ -68,6 +68,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                         <Controller 
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
                             control={control}
+                            defaultValue={currentItem.lastName}
                             render={(props) => (
                                 <AlphabetTextField
                                     name={props.name}
@@ -87,6 +88,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                         <Controller 
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
                             control={control}
+                            defaultValue={currentItem.phoneNumber}
                             render={(props) => (
                                 <NumericTextField
                                     name={props.name}
@@ -106,6 +108,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                         <Controller 
                             name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
                             control={control}
+                            defaultValue={currentItem.idNumber}
                             render={(props) => (
                                 <NumericTextField
                                     name={props.name}
@@ -126,6 +129,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                                     <Controller 
                                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`}
                                         control={control}
+                                        defaultValue={currentItem.contactType}
                                         render={(props) => (
                                             <Select
                                                 test-id='contactType'
@@ -153,6 +157,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, myDelete }: Props):
                 <Controller 
                     name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
                     control={control}
+                    defaultValue={currentItem.extraInfo}
                     render={(props) => (
                         <AlphanumericTextField
                             name={props.name}
@@ -175,5 +180,6 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
-    myDelete: any
+    myDelete: any;
+    currentItem: any
 };
