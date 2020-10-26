@@ -7,6 +7,7 @@ export default interface User {
     investigationGroup: number;
     phoneNumber: string;
     userType: number;
+    deskName: string;
     serialNumber?: number;
     userName: string;
     fullName: string;
