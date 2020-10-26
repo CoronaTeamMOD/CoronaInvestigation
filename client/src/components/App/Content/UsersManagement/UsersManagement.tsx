@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
+import { Grid, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
+         IconButton, Tooltip, TableSortLabel, Badge, Popover } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
-import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import SortOrder from 'models/enums/SortOrder';
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
+import UsersFilter from './UsersFilter/UsersFilter';
 
 const rowsPerPage: number = 7;
 interface CellNameSort {
@@ -22,8 +25,10 @@ interface CellNameSort {
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const { users, totalCount, userDialog, watchUserInfo, handleCloseDialog } = useUsersManagementTable({ page, rowsPerPage, cellNameSort });
+    const { users, counties, sourcesOrganization, userTypes, languages, totalCount, userDialog, watchUserInfo, handleCloseDialog } = 
+        useUsersManagementTable({ page, rowsPerPage, cellNameSort });
     
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -65,6 +70,41 @@ const UsersManagement: React.FC = () => {
 
     return (
         <Grid className={classes.content}>
+            <Grid container>
+                <TextField />
+                <Tooltip title='סינון'>
+                    <IconButton onClick={(event: any) => setAnchorEl(anchorEl ? null : event.currentTarget)}>
+                        <Badge
+                            invisible={false}
+                            color='primary'
+                            variant='dot'
+                            anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                        >
+                            <FontAwesomeIcon icon={faFilter} />
+                        </Badge>
+                    </IconButton>
+                </Tooltip>
+                <Popover
+                    open={Boolean(anchorEl)}
+                    onClose={() => setAnchorEl(null)}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                    >
+                    <UsersFilter
+                        sourcesOrganization={sourcesOrganization}
+                        languages={languages}
+                        counties={counties}
+                        userTypes={userTypes}
+                    />
+                </Popover>
+            </Grid>
             <TableContainer component={Paper} className={classes.tableContainer}>
                 <Table stickyHeader>
                     <TableHead>
