@@ -3,20 +3,22 @@ import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 import SignUpUser from 'models/SignUpUser';
-import City from 'models/City'
+import City from 'models/City';
 import County from 'models/County';
-import SourceOrganization from 'models/SourceOrganization'
+import Desk from 'models/Desk';
 import Language from 'models/Language';
 import { Service, Severity } from 'models/Logger';
-import axios from 'Utils/axios'
-import logger from 'logger/logger'
+import axios from 'Utils/axios';
+import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
 import { setCities } from 'redux/City/cityActionCreators';
+import SourceOrganization from 'models/SourceOrganization';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
     const [counties, setCounties] = useState<County[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
+    const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
@@ -161,12 +163,28 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 });         
             });
     }
+    
+    const fetchDesks = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Fetching desks',
+            step: 'launching desks request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/desks').then(response => {
+            const { data } = response;
+            setDesks(data);
+        })
+    }
 
     useEffect(() => {
         fetchCities();
         fetchCounties();
         fetchSourcesOrganization();
         fetchLanguages();
+        fetchDesks();
     }, [])
 
     const createUser = (newUser: SignUpUser) => {
@@ -214,6 +232,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     return {
         counties, 
         languages,
+        desks,
         sourcesOrganization,
         createUser
     }
@@ -223,9 +242,10 @@ interface useSignUpFormInCome {
 }
 
 interface useSignUpFormOutCome {
+    desks: Desk[];
     counties: County[];
     languages: Language[];
-    sourcesOrganization: SourceOrganization[]
+    sourcesOrganization: SourceOrganization[];
     createUser: (data: SignUpUser) => void;
 }
 

@@ -8,6 +8,7 @@ enum SignUpFields {
     ID = 'identityNumber',
     MAIL = 'mail',
     COUNTY = 'investigationGroup',
+    DESK = 'desk',
     SOURCE_ORGANIZATION = 'sourceOrganization',
     LANGUAGES = 'languages'
 }

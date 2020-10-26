@@ -6,6 +6,9 @@ const useStyles = makeStyles(() => ({
     },
     textField: {
         width: '15.5vw',
+    },
+    countyField: {
+        width: '11vw'
     }
 }));
 

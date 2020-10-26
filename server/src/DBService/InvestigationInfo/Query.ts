@@ -39,7 +39,6 @@ query InvestigationStaticDetails($investigationId: Int!) {
     }
   }
 }
-
 `;
 
 export const GET_SUB_STATUSES = gql`
