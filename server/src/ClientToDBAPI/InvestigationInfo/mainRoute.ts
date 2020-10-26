@@ -44,16 +44,46 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
 }
 
 investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
+    const baseLog = {
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologyNumber,
+        workflow: `query investigation staticInfo`,
+        service: Service.SERVER,
+    };
+
+    logger.info({
+        severity: Severity.LOW,
+        step: `requesting the graphql API to query investigations staticInfo`,
+        ...baseLog
+    });
+
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
         investigationId: +request.query.investigationId
     })
     .then((result: any) => {
         if (result?.data?.investigationByEpidemiologyNumber) {
             const investigationInfo = result.data.investigationByEpidemiologyNumber;
+            logger.info({
+                severity: Severity.LOW,
+                step: `query investigations staticInfo successfully`,
+                ...baseLog
+            });
             response.send(convertInvestigationInfoFromDB(investigationInfo));
         } else {
+            logger.info({
+                severity: Severity.LOW,
+                step: `failed to fetch static info due to ${JSON.stringify(result)}`,
+                ...baseLog
+            });
             response.status(errorStatusCode).json({error: 'failed to fetch static info'});
         }
+    }).catch((error) => {
+        logger.info({
+            severity: Severity.LOW,
+            step: `failed to fetch static info due to ${error}`,
+            ...baseLog
+        });
+        response.status(errorStatusCode).json({error: 'failed to fetch static info'});
     });
 });
 
