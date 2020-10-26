@@ -426,21 +426,7 @@ usersRoute.post('/district', superAdminMiddleWare, (request: Request, response: 
                     user: response.locals.user.id
                 });
                 const totalCount = result.data.allUsers.totalCount;
-                const users = result.data.allUsers.nodes.map((user: any) => ({
-                    id: user.id,
-                    fullName: user.fullName,
-                    userName: user.userName,
-                    phoneNumber: user.phoneNumber,
-                    mail: user.mail,
-                    identityNumber: user.identityNumber,
-                    city: user.cityByCity?.displayName,
-                    isActive: user.isActive,
-                    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-                    userType: user.userTypeByUserType.displayName,
-                    investigationGroup: user.countyByInvestigationGroup?.displayName,
-                    desk: user.deskByDeskId?.deskName,
-                    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
-                }));
+                const users = result.data.allUsers.nodes.map(toUser);
                 response.send({ users, totalCount });
             } else {
                 logger.error({
@@ -499,20 +485,7 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
                     user: response.locals.user.id
                 });
                 const totalCount = result.data.allUsers.totalCount;
-                const users = result.data.allUsers.nodes.map((user: any) => ({
-                    id: user.id,
-                    fullName: user.fullName,
-                    userName: user.userName,
-                    phoneNumber: user.phoneNumber,
-                    mail: user.mail,
-                    identityNumber: user.identityNumber,
-                    city: user.cityByCity?.displayName,
-                    isActive: user.isActive,
-                    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
-                    userType: user.userTypeByUserType.displayName,
-                    investigationGroup: user.countyByInvestigationGroup?.displayName,
-                    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
-                }));
+                const users = result.data.allUsers.nodes.map(toUser);
                 response.send({ users, totalCount });
             } else {
                 logger.error({
@@ -534,6 +507,22 @@ usersRoute.post('/county', adminMiddleWare, (request: Request, response: Respons
             })
             response.status(RESPONSE_ERROR_CODE).send(`Couldn't query all users`);
         })
+});
+
+const toUser = (user: any) => ({
+    id: user.id,
+    fullName: user.fullName,
+    userName: user.userName,
+    phoneNumber: user.phoneNumber,
+    mail: user.mail,
+    identityNumber: user.identityNumber,
+    city: user.cityByCity?.displayName,
+    isActive: user.isActive,
+    languages: user.userLanguagesByUserId.nodes.map((language: any) => language.language),
+    userType: user.userTypeByUserType.displayName,
+    desk: user.deskByDeskId?.deskName,
+    investigationGroup: user.countyByInvestigationGroup?.displayName,
+    sourceOrganization: user.sourceOrganizationBySourceOrganization?.displayName
 });
 
 export default usersRoute;
