@@ -9,6 +9,7 @@ interface InvestigationRedux {
     lastOpenedEpidemiologyNumber: number;
     isCurrentlyLoading: boolean;
     axiosInterceptorId: number;
+    validationDate: Date;
 }
 
 export default InvestigationRedux;

@@ -6,6 +6,7 @@ export const SET_LAST_OPENED_EPIDEMIOLOGY_NUM = 'SET_LAST_OPENED_EPIDEMIOLOGY_NU
 export const SET_IS_CURRENTLY_LOADING = 'SET_IS_CURRENTLY_LOADING';
 export const SET_AXIOS_INTERCEPTOR_ID = 'SET_AXIOS_INTERCEPTOR_ID';
 export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
+export const SET_VALIDATION_DATE = 'SET_VALIDATION_DATE';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -37,4 +38,10 @@ interface SetInvestigationStatus {
     payload: {investigationStatus: InvestigationStatus}
 }
 
-export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading;
+interface SetValidationStatus {
+    type: typeof SET_VALIDATION_DATE,
+    payload: {validationDate: Date}
+}
+
+
+export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetValidationStatus;

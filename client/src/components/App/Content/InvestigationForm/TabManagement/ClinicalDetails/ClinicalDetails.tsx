@@ -21,7 +21,6 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
-import HospitalFields from './HospitalFields';
 import { useStyles } from './ClinicalDetailsStyles';
 import useClinicalDetails from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
@@ -33,10 +32,12 @@ import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './Bac
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
 
+    const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+
     const methods = useForm({
         mode: 'all',
         defaultValues: initialClinicalDetails,
-        resolver: yupResolver(ClinicalDetailsSchema)
+        resolver: yupResolver(ClinicalDetailsSchema(validationDate))
     });
     
     const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
@@ -118,7 +119,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     icon: 'error'
                 })
             });
-        ClinicalDetailsSchema.isValid(values).then(valid => {
+        ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
             setFormState(epidemiologyNumber, id, valid);
         })
     }

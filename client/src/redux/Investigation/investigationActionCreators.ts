@@ -37,9 +37,17 @@ export const setIsCurrentlyLoading = (isCurrentlyLoading : boolean): void => {
         payload: {isCurrentlyLoading}
     })
 };
+
 export const setInvestigationStatus = (investigationStatus: InvestigationStatus) => {
     store.dispatch({
         type: actionTypes.SET_INVESTIGATION_STATUS,
         payload: { investigationStatus }
+    })
+}
+
+export const setValidationDate = (validationDate: Date) => {
+    store.dispatch({
+        type: actionTypes.SET_VALIDATION_DATE,
+        payload: { validationDate }
     })
 }

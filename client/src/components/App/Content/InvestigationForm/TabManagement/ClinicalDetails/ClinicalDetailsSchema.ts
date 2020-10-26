@@ -7,6 +7,7 @@ const requiredText = 'שדה זה הוא חובה';
 const StartDateAfterEndDateText = 'תאריך ההתחלה צריך להיות מוקדם יותר מתאריך הסיום';
 const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מאוחר יותר מתאריך ההתחלה';
 const futureDateText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
+const endDateBeforeValidationDateText = 'שגיאה: לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
 
 const isInIsolationStartDateSchema = yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
@@ -21,10 +22,14 @@ const isInIsolationStartDateSchema = yup.date().when(
     }
 );
 
-const isInIsolationEndDateSchema = yup.date().when(
+const isInIsolationEndDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
-        then: yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), EndDateBeforeStartDateText).required(requiredText).typeError(requiredText),
+        then: yup.date().when(ClinicalDetailsFields.ISOLATION_END_DATE, (isolationEndDate: Date) => {
+            return validationDate < isolationEndDate ?
+            yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
+            yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
+        }),
         otherwise: yup.date().nullable()
     }
 );
@@ -64,7 +69,7 @@ const backgroundDiseasesMoreInfoSchema = yup.string().nullable().when(
     }
 );
 
-const ClinicalDetailsSchema = yup.object().shape({
+const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
     [ClinicalDetailsFields.ISOLATION_ADDRESS]: yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_CITY]: yup.string().required(requiredText).nullable(),
         [ClinicalDetailsFields.ISOLATION_STREET]: yup.string().nullable(),
@@ -73,7 +78,7 @@ const ClinicalDetailsSchema = yup.object().shape({
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
-    [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema,
+    [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {
