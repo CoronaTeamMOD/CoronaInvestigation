@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Grid, TextField, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         IconButton, Tooltip, TableSortLabel, Badge, Typography, InputAdornment, Collapse } from '@material-ui/core';
+import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
+         IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { PersonPin, Search } from '@material-ui/icons';
+import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
@@ -25,7 +25,6 @@ interface CellNameSort {
 }
 
 const usersManagementTitle = 'ניהול משתמשים';
-const searchUserPlaceHolder = 'חפש שם או שם משתמש...';
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -86,16 +85,6 @@ const UsersManagement: React.FC = () => {
                 </Typography>
             </Grid>
             <Grid container className={classes.filters}>
-                <TextField
-                    placeholder={searchUserPlaceHolder}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="start">
-                                <Search />
-                            </InputAdornment>
-                        ),
-                    }}
-                    className={classes.userFilter} />
                 <Tooltip title='סינון' className={classes.filterIcon}>
                     <IconButton onClick={() => setIsFilterOpen(true)}>
                         <Badge

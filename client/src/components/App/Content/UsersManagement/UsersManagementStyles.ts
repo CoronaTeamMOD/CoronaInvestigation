@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     filters: {
         margin: theme.spacing(2)
     },
-    userFilter: {
-        flip: false,
-        right: '5vw'
-    },
     filterIcon: {
         flip: false,
         position: 'fixed',
