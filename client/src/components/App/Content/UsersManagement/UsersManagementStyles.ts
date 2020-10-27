@@ -32,12 +32,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     icon: {},
     active: {},
     filters: {
-        margin: theme.spacing(2)
-    },
-    filterIcon: {
         flip: false,
-        position: 'fixed',
-        left: '5vw'
+        margin: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginLeft: '10vw'
     },
     header: {
         fontSize: '4vh',

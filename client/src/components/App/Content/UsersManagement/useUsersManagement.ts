@@ -63,16 +63,18 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             filter: filterRules
         })
             .then(result => {
-                result?.data && setUsers(result.data?.users);
-                setTotalCount(result.data?.totalCount);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching users',
-                    step: 'got results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setUsers(result.data?.users);
+                    setTotalCount(result.data?.totalCount);
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching users',
+                        step: 'got results back from the server',
+                        user: user.id,
+                        investigation: epidemiologyNumber
+                    });
+                } 
             })
             .catch(err => {
                 if (err.response.status === 401) {
@@ -104,15 +106,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         })
         axios.get('/users/sourcesOrganization')
             .then(result => {
-                result?.data && setSourcesOrganization(result.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching sourcesOrganization',
-                    step: 'got results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setSourcesOrganization(result.data);
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching sourcesOrganization',
+                        step: 'got results back from the server',
+                        user: user.id,
+                        investigation: epidemiologyNumber
+                    });
+                } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל מסגרות');
@@ -138,15 +142,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         })
         axios.get('/counties')
             .then(result => {
-                result?.data && setCounties(result.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching counties',
-                    step: 'got results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setCounties(result.data);
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching counties',
+                        step: 'got results back from the server',
+                        user: user.id,
+                        investigation: epidemiologyNumber
+                    });
+                }  
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל נפות');
@@ -172,15 +178,18 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         })
         axios.get('/users/userTypes')
             .then(result => {
-                result?.data && setUserTypes(result.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching userTypes',
-                    step: 'got results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });
+                if (result?.data && result.headers['content-type'].includes('application/json'))
+                {
+                    setUserTypes(result.data);
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching userTypes',
+                        step: 'got results back from the server',
+                        user: user.id,
+                        investigation: epidemiologyNumber
+                    });
+                } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל סוגי משתמשים');
@@ -206,15 +215,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         })
         axios.get('/users/languages')
             .then(result => {
-                result?.data && setLanguages(result?.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching languages',
-                    step: 'got results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setLanguages(result?.data);
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Fetching languages',
+                        step: 'got results back from the server',
+                        user: user.id,
+                        investigation: epidemiologyNumber
+                    });
+                } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל שפות');

@@ -11,7 +11,6 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { noDeskAssignment } from 'Utils/consts';
 
-
 import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
 import useUsersManagementTable from './useUsersManagement';
@@ -34,7 +33,6 @@ const UsersManagement: React.FC = () => {
     const { users, counties, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
     useUsersManagementTable({ page, rowsPerPage, cellNameSort });
-
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -85,7 +83,7 @@ const UsersManagement: React.FC = () => {
                 </Typography>
             </Grid>
             <Grid container className={classes.filters}>
-                <Tooltip title='סינון' className={classes.filterIcon}>
+                <Tooltip title='סינון'>
                     <IconButton onClick={() => setIsFilterOpen(true)}>
                         <Badge
                             invisible={isBadgeInVisible}
