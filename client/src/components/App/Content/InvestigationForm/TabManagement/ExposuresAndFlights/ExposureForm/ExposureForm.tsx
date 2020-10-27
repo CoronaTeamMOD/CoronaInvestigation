@@ -12,8 +12,10 @@ import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
+import ExposureFields from 'models/enums/ExposureFields';
 import CovidPatientFields from 'models/CovidPatientFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 
 import useStyles from './ExposureFormStyles';
@@ -61,23 +63,14 @@ const ExposureForm = (props: any) => {
     return fields.join(', ');
   }
 
-  const exposureSourceSearchRegex = React.useMemo(() => {
-    try {
-      return new RegExp(exposureSourceSearch.trimEnd().replace(new RegExp(invalidCharRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
-    } catch {
-      return null;
-    }
-  }, [exposureSourceSearch]);
-
   const minSourceSearchLengthToSearch: number = React.useMemo(
     () => phoneAndIdentityNumberRegex.test(exposureSourceSearch) ? minNumbersLengthToSearch : minFullNameLengthToSearch,
     [exposureSourceSearch]);
 
   const createExposureSourceOption = (exposureSource: CovidPatient) => {
     const { address, age, epidemiologyNumber, fullName, identityNumber, primaryPhone } = exposureSource;
-    if (!exposureSourceSearchRegex) return <></>
     return <>
-      {fullName && <Typography className={[classes.optionField, exposureSourceSearchRegex.test(fullName) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
+      {fullName && <Typography className={[classes.optionField, !phoneAndIdentityNumberRegex.test(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.fullName + ': ' + fullName}</Typography>}
       {epidemiologyNumber && <Typography className={classes.optionField}>{allCovidPatientFields.epidemiologyNumber + ': ' + epidemiologyNumber}</Typography>}
       {identityNumber && <Typography className={[classes.optionField, identityNumber.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.identityNumber + ': ' + identityNumber}</Typography>}
       {primaryPhone && <Typography className={[classes.optionField, primaryPhone.includes(exposureSourceSearch) && classes.searchedField].join(' ')}>{allCovidPatientFields.primaryPhone + ': ' + primaryPhone}</Typography>}
@@ -160,15 +153,15 @@ const ExposureForm = (props: any) => {
     <Grid className={formClasses.form} container justify='flex-start'>
       <FormRowWithInput fieldName='פרטי החולה:'>
         <>
-          <TextField
+          <ExposureSearchTextField
+            name={ExposureFields.exposureSource}
             className={classes.exposureSourceTextFied}
             onChange={(event) => {
-              setExposureSourceSearch(event.target.value);
-              (!event.target.value || !event.target.value.includes(':')) && handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, null);
+              setExposureSourceSearch(event);
+              (!event || !event.includes(':')) && handleChangeExposureDataAndFlightsField(fieldsNames.exposureSource, null);
             }}
             value={exposureSourceSearch}
             test-id='exposureSource'
-            id={fieldsNames.exposureSource}
             placeholder={INSERT_EXPOSURE_SOURCE_SEARCH}
           />
         </>

@@ -113,6 +113,17 @@ const convertCovidPatientsFromDB = (dbBCovidPatients: CovidPatientDBOutput[]) : 
     }))
 }
 
+const filterCovidPatientsByRegex = (searchValue: string, patientsToFilter: CovidPatientDBOutput[]) => {
+    let trimmedSerachValue = searchValue;
+    const lastIndexValue = trimmedSerachValue.length - 1;
+    if (invalidCharsRegex.test(searchValue[lastIndexValue])) {
+        trimmedSerachValue = trimmedSerachValue.slice(0, lastIndexValue);
+    }
+    const complicatedRegex = new RegExp(trimmedSerachValue.replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
+    patientsToFilter = patientsToFilter.filter(patient => complicatedRegex.test(patient.fullName) === true);
+    return patientsToFilter;
+}
+
 exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (request: Request, response: Response) => {
     const searchValue : string = request.params.searchValue || '';
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
@@ -139,8 +150,7 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
                 });
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 if (!isPhoneOrIdentityNumber) {
-                    const complicatedRegex = new RegExp(searchValue.trimRight().replace(new RegExp(invalidCharsRegex, 'g'), '[ -]+[^0-9A-Za-z]*') + '*');
-                    dbBCovidPatients = dbBCovidPatients.filter(patient => complicatedRegex.test(patient.fullName) === true);
+                    dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
                 }
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
