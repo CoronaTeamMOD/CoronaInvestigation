@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import {timeout} from 'Utils/Timeout/Timeout';
+import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
@@ -38,11 +38,11 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             timer: 1750,
             showConfirmButton: false
         })
-        timeout(1500).then(()=> {
+        timeout(1500).then(() => {
             setIsInInvestigation(false);
             window.close();
         });
-};
+    };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
@@ -82,6 +82,10 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                     });
                     investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased(handleInvestigationFinish);
                     investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                    if (investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_DECEASED &&
+                        investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                        handleInvestigationFinish();
+                    }
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -102,8 +106,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         const currentDate = new Date();
         let personAge = currentDate.getFullYear() - birthDate.getFullYear();
         const monthDelta = currentDate.getMonth() - birthDate.getMonth();
-        if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) 
-        {
+        if (monthDelta < 0 || (monthDelta === 0 && currentDate.getDate() < birthDate.getDate())) {
             personAge--;
         }
         return String(personAge);
@@ -119,10 +122,10 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {      
+    const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {
         setInvestigationStatus({
             mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
-            subStatus:  investigationStatus.subStatus
+            subStatus: investigationStatus.subStatus
         })
     };
 

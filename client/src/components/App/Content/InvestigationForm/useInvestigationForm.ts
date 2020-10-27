@@ -289,6 +289,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         });
                         investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased(handleInvestigationFinish);
                         investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                        if (investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_DECEASED &&
+                            investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                            handleInvestigationFinish();
+                        }
                     })
                         .catch((error) => {
                             logger.error({
