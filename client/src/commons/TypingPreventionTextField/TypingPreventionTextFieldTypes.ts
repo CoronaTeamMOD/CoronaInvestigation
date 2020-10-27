@@ -1,5 +1,6 @@
 import React from 'react';
 import * as yup from 'yup';
+import {TextFieldProps} from '@material-ui/core';
 
 export interface TypePreventiveTextFieldProps<T> {
     disabled?: boolean,
@@ -12,6 +13,9 @@ export interface TypePreventiveTextFieldProps<T> {
     placeholder?: string,
     label?: string,
     className?: string,
+    multiline?: TextFieldProps['multiline'];
+    fullWidth?: TextFieldProps['fullWidth'];
+    inputProps?: TextFieldProps['inputProps']
 }
 
 type TypePreventiveTextFieldType = <T>(props: TypePreventiveTextFieldProps<T>) => JSX.Element;

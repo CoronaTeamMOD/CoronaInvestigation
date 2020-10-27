@@ -7,7 +7,6 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField,
     Typography,
 } from '@material-ui/core';
 import CommentIcon from '@material-ui/icons/CommentOutlined';
@@ -22,11 +21,10 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import {commentContext} from '../../../Context/CommentContext';
 
 import useStyles from './CommentDialogStyles';
+import CommentInput from './CommentInput';
 
 const SAVE_BUTTON_TEXT = 'שמור הערה';
 const DELETE_BUTTON_TEXT = 'מחק';
-const COMMENT_PLACEHOLDER = 'ההערה שלך...';
-const MAX_CHARS_ALLOWED = 200;
 
 const CommentDialog = ({open, handleDialogClose}: Props) => {
     const [commentInput, setCommentInput] = React.useState<string>('');
@@ -36,13 +34,9 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const resetInput = () => setCommentInput(comment || '');
+    const resetInput = React.useCallback(() => setCommentInput(comment || ''), [comment]);
 
     React.useEffect(resetInput, [comment]);
-
-    const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setCommentInput(event.target.value);
-    };
 
     const sendComment = (commentToSend: string | null, errorMessage: string) => {
         const logInfo = {
@@ -97,11 +91,7 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
             </DialogTitle>
 
             <DialogContent className={classes.content}>
-                <TextField multiline fullWidth
-                           inputProps={{ maxLength: MAX_CHARS_ALLOWED }}
-                           placeholder={COMMENT_PLACEHOLDER}
-                           value={commentInput} onChange={handleInput}
-                />
+                <CommentInput commentInput={commentInput} handleInput={setCommentInput}/>
             </DialogContent>
             <DialogActions>
                 <PrimaryButton width='custom'
