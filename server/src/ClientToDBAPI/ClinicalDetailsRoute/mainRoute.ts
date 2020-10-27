@@ -349,7 +349,7 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
         });
 });
 
-clinicalDetailsRoute.post('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -388,7 +388,7 @@ clinicalDetailsRoute.post('/isDeceased/:investigatedPatientId/:isDeceased', (req
     });
 });
 
-clinicalDetailsRoute.post('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
