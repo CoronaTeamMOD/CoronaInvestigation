@@ -384,7 +384,7 @@ clinicalDetailsRoute.post('/isDeceased/:investigatedPatientId/:isDeceased', (req
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        response.status(errorStatusCode).send(err);
+        response.status(errorStatusCode).json({message: 'failed to save the is deceased due to ' + err});
     });
 });
 
@@ -424,7 +424,7 @@ clinicalDetailsRoute.post('/isCurrentlyHospitialized/:investigatedPatientId/:isC
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        response.status(errorStatusCode).send(err);
+        response.status(errorStatusCode).json({message: 'failed to save the is currently hospitialized due to ' + err});
     });
 });
 
