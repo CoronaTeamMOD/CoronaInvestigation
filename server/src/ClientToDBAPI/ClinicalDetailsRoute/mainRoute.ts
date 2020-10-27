@@ -11,7 +11,8 @@ import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddress
 import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
 import { calculateInvestigationComplexity } from '../..//Utils/InvestigationComplexity/InvestigationComplexity';
 import {
-    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOPITIALIZED
+    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
+    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED
 } from '../../DBService/ClinicalDetails/Query';
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
@@ -396,7 +397,7 @@ clinicalDetailsRoute.post('/isCurrentlyHospitialized/:investigatedPatientId/:isC
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    graphqlRequest(UPDATE_IS_CURRENTLY_HOPITIALIZED, response.locals, {
+    graphqlRequest(UPDATE_IS_CURRENTLY_HOSPITIALIZED, response.locals, {
         investigatedPatientId: +request.params.investigatedPatientId, isCurrentlyHospitalized: Boolean(request.params.isCurrentlyHospitalized)
     }).then(result => {
         console.log("RES: ", result)

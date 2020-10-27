@@ -12,12 +12,12 @@ import InvestigatedPatient from 'models/InvestigatedPatient';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
-import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 

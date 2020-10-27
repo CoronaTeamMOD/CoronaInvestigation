@@ -1,29 +1,20 @@
-import Swal, { SweetAlertIcon, SweetAlertOptions } from 'sweetalert2';
-
-import useStyles from './ComplexitySwalStyles'
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 const useComplexitySwal = () => {
-    const classes = useStyles();
 
+    const { alertError } = useCustomSwal();
+    
     const complexityErrorAlert = (error: any) => {
         if (error?.response?.data?.message && error.response.data.message.includes('complexity')) {
-            Swal.fire({
-                title: 'לא הצלחנו לחשב את מורכבות החקירה מחדש',
-                text: 'שים לב לשדות סטטוסים, גורם מאבטח ותחום עיסוק',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle,
-                    content: classes.swalText
-                }
-            });
+            alertError(
+                'לא הצלחנו לחשב את מורכבות החקירה מחדש',
+                'שים לב לשדות סטטוסים, גורם מאבטח ותחום עיסוק',
+            );
+
         } else {
-            Swal.fire({
-                title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle,
-                }
-            });
+            alertError(
+                'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות'
+            );
         }
     }
 

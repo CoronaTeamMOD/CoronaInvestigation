@@ -87,11 +87,10 @@ mutation UpdateIsDeceased ($investigatedPatientId: Int!, $isDeceased: Boolean!) 
 }
 `;
 
-export const UPDATE_IS_CURRENTLY_HOPITIALIZED = gql`
+export const UPDATE_IS_CURRENTLY_HOSPITIALIZED = gql`
 mutation UpdatedIsCurrentlyHospitalized($investigatedPatientId: Int!, $isCurrentlyHospitalized: Boolean!) {
   updateInvestigatedPatientById(input: {investigatedPatientPatch: {isCurrentlyHospitalized: $isCurrentlyHospitalized}, id: $investigatedPatientId}) {
     clientMutationId
   }
 }
-
 `;

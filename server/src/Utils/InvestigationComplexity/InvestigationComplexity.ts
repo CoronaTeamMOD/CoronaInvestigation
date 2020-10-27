@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import { CALC_INVESTIGATION_COMPLEXITY } from '../..//DBService/PersonalDetails/Mutation';
+import { CALC_INVESTIGATION_COMPLEXITY } from '../../DBService/PersonalDetails/Mutation';
 
 const errorStatusCode = 500;
 
