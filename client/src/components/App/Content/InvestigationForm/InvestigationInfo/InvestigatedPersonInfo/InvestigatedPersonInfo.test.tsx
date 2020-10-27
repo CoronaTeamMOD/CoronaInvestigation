@@ -74,7 +74,7 @@ describe('investigatedPersonInfo tests', () => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
             customClass: {
-                title: 'makeStyles-swalTitle-9'
+                title: 'makeStyles-swalTitle-12'
             }
         };
 
