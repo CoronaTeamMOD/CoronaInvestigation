@@ -8,12 +8,11 @@ import logger from 'logger/logger';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
-import InvestigatedPatient from 'models/InvestigatedPatient';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
@@ -24,62 +23,26 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     let history = useHistory();
     const classes = useStyles({});
 
-    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
-    const { complexityErrorAlert } = useComplexitySwal();
-
-    const updateIsDeceased = () => {
-        !investigatedPatient.isDeceased && axios.post('/clinicalDetails/isDeceased/'+investigatedPatient.investigatedPatientId + '/'+true)
-        .then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isDeceased',
-                step: `launching isDeceased request succssesfully ${result}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            handleInvestigationFinish();
-        }).catch((error: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isDeceased',
-                step: `launching isDeceased request unsuccssesfully ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            complexityErrorAlert(error);
+    const handleInvestigationFinish = async () => {
+        Swal.fire({
+            icon: 'success',
+            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
+            customClass: {
+                title: classes.swalTitle,
+            },
+            timer: 1750,
+            showConfirmButton: false
         })
-    }
-
-    const updateIsCurrentlyHospitialized = () => {
-        !investigatedPatient.isCurrentlyHospitialized && axios.post('/clinicalDetails/isCurrentlyHospitialized/'+investigatedPatient.investigatedPatientId + '/'+true)
-        .then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isCurrentlyHospitialized',
-                step: `launching isCurrentlyHospitialized request succssesfully ${result}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            handleInvestigationFinish();
-        }).catch((error: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isCurrentlyHospitialized',
-                step: `launching isCurrentlyHospitialized request unsuccssesfully ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            complexityErrorAlert(error);
-        })
-    }
+        timeout(1500).then(()=> {
+            setIsInInvestigation(false);
+            window.close();
+        });
+};
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
@@ -117,8 +80,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased();
-                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized();
+                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased(handleInvestigationFinish);
+                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized(handleInvestigationFinish);
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -132,22 +95,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 })
             };
         });
-    };
-
-    const handleInvestigationFinish = async () => {
-            Swal.fire({
-                icon: 'success',
-                title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
-                customClass: {
-                    title: classes.swalTitle,
-                },
-                timer: 1750,
-                showConfirmButton: false
-            })
-            timeout(1500).then(()=> {
-                setIsInInvestigation(false);
-                window.close();
-            });
     };
 
     const getPersonAge = (birthDate: Date) => {

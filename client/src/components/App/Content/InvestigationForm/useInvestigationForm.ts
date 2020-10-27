@@ -12,23 +12,28 @@ import ContactType from 'models/ContactType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
-import { landingPageRoute } from 'Utils/Routes/Routes';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setCountries } from 'redux/Country/countryActionCreators';
-import InvestigationStatus from 'models/enums/InvestigationMainStatus';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
+import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 import useStyles from './InvestigationFormStyles';
 import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const classes = useStyles({});
     let history = useHistory();
@@ -250,7 +255,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     investigation: epidemiologyNumber
                 });
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus: InvestigationStatus.DONE,
+                    investigationMainStatus: InvestigationMainStatus.DONE,
                     investigationSubStatus: null,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
@@ -282,7 +287,8 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                             user: userId,
                             investigation: epidemiologyNumber
                         });
-                        handleInvestigationFinish()
+                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased(handleInvestigationFinish);
+                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized(handleInvestigationFinish);
                     })
                         .catch((error) => {
                             logger.error({
