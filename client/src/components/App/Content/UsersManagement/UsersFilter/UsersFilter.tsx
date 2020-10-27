@@ -13,7 +13,7 @@ import useStyles from './UsersFilterStyles';
 const activeStatuses: string[] = ['הכל', 'פעיל', 'לא פעיל'];
 const ALL = 'הכל';
 
-const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties, userTypes }: Props ) => {
+const UsersFilter: React.FC<Props> = ({ sourcesOrganization, languages, counties, userTypes }: Props) => {
 
     const classes = useStyles();
 
@@ -29,6 +29,7 @@ const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties
             <FormInput fieldName='מסגרת'>
                 <Autocomplete
                     multiple
+                    className={classes.autoComplete}
                     options={sourcesOrganization}
                     getOptionLabel={(option) => option ? option.displayName : option}
                     renderInput={(params) =>
@@ -46,6 +47,7 @@ const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties
             <FormInput fieldName='שפות'>
                 <Autocomplete
                     multiple
+                    className={classes.autoComplete}
                     options={languages}
                     getOptionLabel={(option) => option ? option.displayName : option}
                     renderInput={(params) =>
@@ -63,6 +65,7 @@ const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties
             <FormInput fieldName='נפות'>
                 <Autocomplete
                     multiple
+                    className={classes.autoComplete}
                     options={counties}
                     getOptionLabel={(option) => option ? option.displayName : option}
                     renderInput={(params) =>
@@ -77,9 +80,10 @@ const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties
                     }}
                 />
             </FormInput>
-            <FormInput fieldName='סוג משתמש'>
+            <FormInput fieldName='סוג משתמש' labelLength={8}>
                 <Autocomplete
                     multiple
+                    className={classes.autoComplete}
                     options={userTypes}
                     getOptionLabel={(option) => option ? option.displayName : option}
                     renderInput={(params) =>
@@ -94,9 +98,10 @@ const UsersFilter:React.FC<Props> = ( { sourcesOrganization, languages, counties
                     }}
                 />
             </FormInput>
-            <FormInput fieldName='פעיל/לא פעיל'>
+            <FormInput fieldName='פעיל/לא פעיל' labelLength={8}>
                 <Autocomplete
                     multiple
+                    className={classes.autoComplete}
                     options={activeStatuses}
                     getOptionLabel={(option) => option ? option : option}
                     renderInput={(params) =>

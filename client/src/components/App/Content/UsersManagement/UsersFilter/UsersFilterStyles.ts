@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    autoComplete: {
+        width: '10vw'
     }
 }));
 
