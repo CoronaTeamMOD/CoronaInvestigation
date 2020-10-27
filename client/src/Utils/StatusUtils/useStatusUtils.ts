@@ -17,7 +17,7 @@ const useStatusUtils = () => {
 
     const updateIsDeceased = (onInvestigationFinish: Function) => {
         if (!investigatedPatient.isDeceased) {
-            axios.post('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
+            axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     logger.info({
                         service: Service.CLIENT,
@@ -47,7 +47,7 @@ const useStatusUtils = () => {
 
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
         if (!investigatedPatient.isCurrentlyHospitialized) {
-            axios.post('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
+            axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
                     logger.info({
                         service: Service.CLIENT,
