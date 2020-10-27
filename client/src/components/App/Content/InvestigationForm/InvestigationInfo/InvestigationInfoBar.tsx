@@ -13,7 +13,7 @@ import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setGender } from 'redux/Gender/GenderActionCreators';
-import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId, setValidationDate } from 'redux/Investigation/investigationActionCreators';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
@@ -100,10 +100,11 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    const investigationInfo = result.data;
+                    const investigationInfo : InvestigationInfo = result.data;
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
+                    setValidationDate(investigationInfo.coronaTestDate)
                     setInvestigationStaticInfo(investigationInfo);
                 }
                 else {
