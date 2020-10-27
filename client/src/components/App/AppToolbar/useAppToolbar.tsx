@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 import StoreStateType from 'redux/storeStateType';
+import { setIsActive } from 'redux/User/userActionCreators';
 import User from 'models/User';
 import axios from 'Utils/axios';
 
@@ -23,7 +24,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
     
-    const [isActive, setIsActive] = React.useState<boolean | null>(null);
+    //const [isActive, setIsActive] = React.useState<boolean | null>(null);
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
@@ -31,7 +32,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             getCountyByUser();
             getUserActivityStatus();
         }
-    }, [user]);
+    }, [user.investigationGroup]);
 
     const getUserActivityStatus = () => {
         logger.info({
@@ -146,7 +147,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
 
     return {
         user,
-        isActive,
+        isActive: user.isActive,
         setUserActivityStatus,
         classes,
         getCountyByUser,

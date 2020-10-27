@@ -1,10 +1,10 @@
 import React from 'react';
-import { AppBar, Button, Toolbar, Typography, Tooltip } from '@material-ui/core';
-import { Home, SupervisorAccount } from '@material-ui/icons';
 import { useLocation } from 'react-router-dom';
+import { Home, SupervisorAccount } from '@material-ui/icons';
+import { AppBar, Button, Toolbar, Typography, Tooltip } from '@material-ui/core';
 
-import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import UserType from 'models/enums/UserType';
+import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
 import useAppToolbar from './useAppToolbar';
