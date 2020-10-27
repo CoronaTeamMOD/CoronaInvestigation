@@ -91,7 +91,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                             watchDoesHaveSymptoms &&
                             <Typography color={errors[ClinicalDetailsFields.SYMPTOMS] ? 'error' : 'initial'}>תסמינים:
                                 (יש
-                                לבחור לפחות סימפטום אחד)</Typography>
+                                לבחור לפחות תסמין אחד)</Typography>
                         }
                         <Grid item container className={classes.smallGrid}>
                             <Controller
@@ -130,8 +130,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 value={props.value}
                                                 onChange={(newValue: string) => props.onChange(newValue)}
                                                 onBlur={props.onBlur}
-                                                placeholder='הזן סימפטום...'
-                                                label='* סימפטום'
+                                                placeholder='הזן תסמין...'
+                                                label='* תסמין'
                                                 className={classes.otherTextField}
                                             />
                                         )}
