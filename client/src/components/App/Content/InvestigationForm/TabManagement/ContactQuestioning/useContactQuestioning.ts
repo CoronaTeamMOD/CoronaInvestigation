@@ -214,7 +214,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
     };
 
-    const updateCantReachInteractedContact = (interactedContact: InteractedContact, value: any) => {
+    const updateCantReachInteractedContact = (interactedContact: InteractedContact, value: boolean) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
         const updatedContactedInteractions = [...allContactedInteractions];
