@@ -116,7 +116,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                     <FormTitle title={`טופס תשאול מגעים (${allContactedInteractions.length})`} />
                     {
                         allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
-                            firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber)).map((interactedContact) => (
+                        firstInteractedContact.phoneNumber ? firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber) : 0).map((interactedContact) => (
                                 <div key={interactedContact.id} className={classes.form}>
                                     <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                         <AccordionSummary
@@ -163,7 +163,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                     <b>שם משפחה:</b> {interactedContact.lastName}
                                                 </Typography>
                                                 <Typography variant='body2'>
-                                                    <b>מספר טלפון:</b> {interactedContact.phoneNumber}
+                                                    <b>מספר טלפון:</b> {interactedContact.phoneNumber ? interactedContact.phoneNumber : 'אין מספר'}
                                                 </Typography>
                                                 <Typography variant='body2'>
                                                     <b>תאריך המגע:</b> {format(new Date(interactedContact.contactDate), 'dd/MM/yyyy')}
