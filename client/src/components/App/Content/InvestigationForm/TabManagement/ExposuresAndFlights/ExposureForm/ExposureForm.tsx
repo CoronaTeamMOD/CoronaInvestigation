@@ -12,6 +12,7 @@ import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
+import ExposureFields from 'models/enums/ExposureFields';
 import CovidPatientFields from 'models/CovidPatientFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
@@ -153,7 +154,7 @@ const ExposureForm = (props: any) => {
       <FormRowWithInput fieldName='פרטי החולה:'>
         <>
           <ExposureSearchTextField
-            name=''
+            name={ExposureFields.exposureSource}
             className={classes.exposureSourceTextFied}
             onChange={(event) => {
               setExposureSourceSearch(event);
