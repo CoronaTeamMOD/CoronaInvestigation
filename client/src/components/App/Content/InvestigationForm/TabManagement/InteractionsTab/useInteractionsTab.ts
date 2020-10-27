@@ -76,7 +76,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 if (symptomsStartDate) {
                     const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
                     if (TestAndSymptomsInterval > maxInvestigatedDays) {
-                        alertError('תאריך תחילת הסימפטומים לא חוקי');
+                        alertError('תאריך תחילת התסמינים לא חוקי');
                         return []
                     }
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
