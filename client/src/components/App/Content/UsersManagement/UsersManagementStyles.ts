@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: 'column',
         alignItems: 'center'
     },
-    tableContainer : {
+    tableContainer: {
         width: '90vw',
         height: '70vh',
     },
@@ -24,13 +24,34 @@ const useStyles = makeStyles((theme: Theme) => ({
     activeSortIcon: {
         '&$active': {
             '&& $icon': {
-              color: theme.palette.primary.dark,
-              fontSize: "x-large"
+                color: theme.palette.primary.dark,
+                fontSize: "x-large"
             }
         }
     },
     icon: {},
     active: {},
+    filters: {
+        margin: theme.spacing(2)
+    },
+    userFilter: {
+        flip: false,
+        right: '5vw'
+    },
+    filterIcon: {
+        flip: false,
+        position: 'fixed',
+        left: '5vw'
+    },
+    header: {
+        fontSize: '4vh',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    filtersContent: {
+        width: '90vw',
+        marginBottom: '2vh'
+    }
 }));
 
 export default useStyles;
