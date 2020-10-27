@@ -156,6 +156,9 @@ query usersQuery($offset: Int!, $size: Int!, $orderBy: [UsersOrderBy!], $filter:
       sourceOrganizationBySourceOrganization {
         displayName
       }
+      deskByDeskId {
+        deskName
+      }
     }
     totalCount
   }
