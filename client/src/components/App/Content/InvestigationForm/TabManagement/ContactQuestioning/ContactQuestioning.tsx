@@ -116,7 +116,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                     <FormTitle title={`טופס תשאול מגעים (${allContactedInteractions.length})`} />
                     {
                         allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
-                            firstInteractedContact.lastName.localeCompare(secondInteractedContact.lastName)).map((interactedContact) => (
+                            firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber)).map((interactedContact) => (
                                 <div key={interactedContact.id} className={classes.form}>
                                     <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                         <AccordionSummary
