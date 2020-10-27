@@ -8,7 +8,7 @@ const useComplexitySwal = () => {
         if (error?.response?.data?.message && error.response.data.message.includes('complexity')) {
             alertError(
                 'לא הצלחנו לחשב את מורכבות החקירה מחדש',
-                'שים לב לשדות סטטוסים, גורם מאבטח ותחום עיסוק',
+                { text: 'שים לב לשדות סטטוסים, גורם מאבטח ותחום עיסוק'},
             );
 
         } else {

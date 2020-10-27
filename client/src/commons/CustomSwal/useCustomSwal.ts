@@ -4,10 +4,9 @@ import useStyles from './CustomSwalStyles';
 const useCustomSwal = () => {
     const classes = useStyles();
 
-    const alert = (title: string, text: string, icon: SweetAlertIcon, options?: SweetAlertOptions) =>
+    const alert = (title: string, icon: SweetAlertIcon, options?: SweetAlertOptions) =>
         Swal.fire({
             title,
-            text,
             icon,
             customClass: {
                 title: classes.swalTitle,
@@ -16,9 +15,9 @@ const useCustomSwal = () => {
             ...options
         });
 
-    const alertError = (title: string, text?: string,  options?: SweetAlertOptions) => alert(title, text ? text : '', 'error', options);
-    const alertWarning = (title: string, text?: string, options?: SweetAlertOptions) => alert(title, text ? text : '', 'warning', options);
-    const alertSuccess = (title: string, text?: string, options?: SweetAlertOptions) => alert(title, text ? text : '', 'success', options);
+    const alertError = (title: string, options?: SweetAlertOptions) => alert(title, 'error', options);
+    const alertWarning = (title: string, options?: SweetAlertOptions) => alert(title, 'warning', options);
+    const alertSuccess = (title: string, options?: SweetAlertOptions) => alert(title, 'success', options);
 
     return {
         alertError,
