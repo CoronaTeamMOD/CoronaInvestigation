@@ -16,53 +16,63 @@ const useStatusUtils = () => {
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const updateIsDeceased = (onInvestigationFinish: Function) => {
-        return !investigatedPatient.isDeceased && axios.post('/clinicalDetails/isDeceased/'+investigatedPatient.investigatedPatientId + '/'+true)
-        .then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isDeceased',
-                step: `launching isDeceased request succssesfully ${result}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+        if (!investigatedPatient.isDeceased) {
+            axios.post('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
+                .then((result: any) => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update isDeceased',
+                        step: `launching isDeceased request succssesfully ${result}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    onInvestigationFinish();
+                }).catch((error: any) => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update isDeceased',
+                        step: `launching isDeceased request unsuccssesfully ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    complexityErrorAlert(error);
+                })
+        }
+        else {
             onInvestigationFinish();
-        }).catch((error: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isDeceased',
-                step: `launching isDeceased request unsuccssesfully ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            complexityErrorAlert(error);
-        })
+        }
     }
 
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
-        !investigatedPatient.isCurrentlyHospitialized && axios.post('/clinicalDetails/isCurrentlyHospitialized/'+investigatedPatient.investigatedPatientId + '/'+true)
-        .then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isCurrentlyHospitialized',
-                step: `launching isCurrentlyHospitialized request succssesfully ${result}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+        if (!investigatedPatient.isCurrentlyHospitialized) {
+            axios.post('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
+                .then((result: any) => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update isCurrentlyHospitialized',
+                        step: `launching isCurrentlyHospitialized request succssesfully ${result}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    onInvestigationFinish();
+                }).catch((error: any) => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update isCurrentlyHospitialized',
+                        step: `launching isCurrentlyHospitialized request unsuccssesfully ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    complexityErrorAlert(error);
+                })
+        }
+        else {
             onInvestigationFinish();
-        }).catch((error: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Update isCurrentlyHospitialized',
-                step: `launching isCurrentlyHospitialized request unsuccssesfully ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            complexityErrorAlert(error);
-        })
+        }
     }
 
     return {

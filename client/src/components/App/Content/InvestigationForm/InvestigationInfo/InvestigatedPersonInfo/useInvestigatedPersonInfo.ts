@@ -80,10 +80,13 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased(handleInvestigationFinish);
-                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                    if (investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_DECEASED &&
-                        investigationStatus.subStatus !== InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                         updateIsDeceased(handleInvestigationFinish);
+                    }
+                    else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                    } 
+                    else {
                         handleInvestigationFinish();
                     }
                 }).catch((error) => {
