@@ -1,15 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
-import StoreStateType from 'redux/storeStateType';
-import { setIsActive } from 'redux/User/userActionCreators';
 import User from 'models/User';
 import axios from 'Utils/axios';
-
-import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
+import { setIsActive } from 'redux/User/userActionCreators';
+
+import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
