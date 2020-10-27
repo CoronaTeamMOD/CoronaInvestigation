@@ -37,7 +37,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     const methods = useForm();
 
-    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts } =
+    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, 
+        loadInteractedContacts, updateCantReachInteractedContact } =
         useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact });
 
     React.useEffect(() => {
@@ -133,7 +134,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                                     <FormControlLabel
                                                         onClick={(event) => event.stopPropagation()}
                                                         onChange={((event: any, checked: boolean) => {
-                                                            updateInteractedContact(interactedContact, InteractedContactFields.CANT_REACH_CONTACT, checked);
+                                                            updateCantReachInteractedContact(interactedContact, checked);
                                                         })}
                                                         control={
                                                             <Checkbox

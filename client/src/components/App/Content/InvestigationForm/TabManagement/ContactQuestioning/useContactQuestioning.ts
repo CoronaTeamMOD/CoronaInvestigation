@@ -214,6 +214,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
     };
 
+    const updateCantReachInteractedContact = (interactedContact: InteractedContact, value: boolean) => {
+        setCurrentInteractedContact(interactedContact);
+        const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
+        const updatedContactedInteractions = [...allContactedInteractions];
+        const updatedContact : InteractedContact = {
+            ...allContactedInteractions[contactIndex],
+            [InteractedContactFields.CANT_REACH_CONTACT]: value,
+            [InteractedContactFields.EXPAND]: value ? false : allContactedInteractions[contactIndex][InteractedContactFields.EXPAND]
+        };
+        setCurrentInteractedContact(updatedContact);
+        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
+        setAllContactedInteractions(updatedContactedInteractions);
+    };
+
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
@@ -238,6 +252,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         changeIdentificationType,
         loadInteractedContacts,
         saveContactQuestioning,
+        updateCantReachInteractedContact
     };
 };
 

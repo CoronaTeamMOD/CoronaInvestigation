@@ -174,12 +174,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             onChange={(event, newSubStatus) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: String(newSubStatus)
+                                                    subStatus: newSubStatus ? String(newSubStatus) : ''
                                                 })
                                             }
                                             }
                                             onInputChange={(event, newSubStatusInput) => {
-                                                setSubStatusInput(newSubStatusInput)
+                                                setSubStatusInput(newSubStatusInput);
                                             }}
                                             renderInput={(params) =>
                                                 <TextField

@@ -198,7 +198,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
 
             if (resultNodes) {
-                setSubStatuses(resultNodes.map((element: any) => element.displayName))
+                setSubStatuses(resultNodes.map((element: any) => element.displayName));
             }
         }).catch((err: any) => {
             logger.error({
