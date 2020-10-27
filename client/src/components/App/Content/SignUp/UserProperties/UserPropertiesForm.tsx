@@ -21,7 +21,7 @@ import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
 import SignUpSchema from './SignUpSchema'
-import useSignUpForm from './useSignUpForm'
+import useSignUpForm from './useUserProperties'
 import useStyles from './SignUpFormStyles'
 
 
@@ -67,7 +67,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
             />
     )
 
-const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Props) => {
+const UserPropertiesForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode, setIsFormValid }: Props) => {
     const classes = useStyles();
     
     const { counties, languages, sourcesOrganization, desks, createUser } = useSignUpForm({ handleSaveUser });
@@ -79,7 +79,13 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         defaultValues: defaultValues,
         resolver: yupResolver(SignUpSchema)
     })
-    
+
+    React.useEffect(() => {
+        if (setIsFormValid) {
+           setIsFormValid(SignUpSchema.isValidSync(methods.getValues()));
+        }
+    },[methods.getValues()])
+
     const shouldDisableFields = mode === FormMode.READ ? true : false; 
     
     const onSubmit = (data: SignUpUser) => {
@@ -402,7 +408,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 interface Props {
     defaultValues: SignUpUser;
     handleSaveUser?: () => void;
-    mode: FormMode
+    setIsFormValid?: React.Dispatch<React.SetStateAction<boolean>>;
+    mode: FormMode;
 }
 
 interface GenericAlphabetTextFieldProps {
@@ -421,5 +428,5 @@ interface GenericNumericTextFieldProps {
     className: string;
 }
 
-export default SignUpForm;
+export default UserPropertiesForm;
 

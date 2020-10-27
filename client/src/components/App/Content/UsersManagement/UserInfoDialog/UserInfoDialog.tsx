@@ -7,7 +7,7 @@ import SignUpUser from 'models/SignUpUser';
 import FormMode from 'models/enums/FormMode';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
-import SignUpForm from '../../SignUp/SignUpForm/SignUpForm'
+import UserPropertiesForm from '../../SignUp/UserProperties/UserPropertiesForm'
 import useStyles from '../../SignUp/SignUpStyles'
 
 const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialog }: Props) => {
@@ -25,7 +25,7 @@ const UserInfoDialog: React.FC<Props> = ({ open, defaultValues, handleCloseDialo
             </DialogTitle>
 
             <DialogContent>
-                <SignUpForm 
+                <UserPropertiesForm 
                     defaultValues={defaultValues}
                     mode={FormMode.READ}
                 />

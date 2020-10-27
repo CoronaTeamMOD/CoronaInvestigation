@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Button } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Button } from '@material-ui/core';
 
 import SignUpFields from 'models/enums/SignUpFields';
 import SignUpUser from 'models/SignUpUser';
@@ -10,7 +10,7 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
 
 import useStyles from './SignUpStyles'
-import SignUpForm from './SignUpForm/SignUpForm'
+import UserPropertiesForm from './UserProperties/UserPropertiesForm';
 
 const signUpTitle = 'הגדרת משתמש חדש';
 
@@ -27,6 +27,8 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
+    const [isFormValid, setIsFormValid] = React.useState<boolean>(false);
+
     const defaultValues : SignUpUser = {
         ...UserInitialValues,
         [SignUpFields.MABAR_USER_NAME]: userId,
@@ -42,9 +44,10 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
             </DialogTitle>
 
             <DialogContent>
-                <SignUpForm 
+                <UserPropertiesForm 
                     defaultValues={defaultValues}
                     handleSaveUser={handleSaveUser}
+                    setIsFormValid={setIsFormValid}
                     mode={FormMode.CREATE}
                 />
             </DialogContent>
@@ -60,6 +63,7 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
                     test-id='signUp'
                     form='signUp'
                     type='submit'
+                    disabled={!isFormValid}
                 >
                     שלח בקשה
                 </PrimaryButton>
