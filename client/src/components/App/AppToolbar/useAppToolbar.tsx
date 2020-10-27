@@ -24,7 +24,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
     
-    //const [isActive, setIsActive] = React.useState<boolean | null>(null);
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
