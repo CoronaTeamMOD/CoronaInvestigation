@@ -9,14 +9,16 @@ const EndDateBeforeStartDateText = 'תאריך הסיום צריך להיות מ
 const futureDateText = 'שגיאה: לא ניתן להכניס תאריך עתידי';
 const endDateBeforeValidationDateText = 'שגיאה: לא ניתן להכניס תאריך אחרי תאריך תחילת מחלה';
 
-const isInIsolationStartDateSchema = yup.date().when(
+const isInIsolationStartDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
         then: yup.date().when(ClinicalDetailsFields.ISOLATION_START_DATE, (isolationStartDate: Date) => {
             const startOfTomorrowDate = startOfTomorrow();
-            return isolationStartDate < startOfTomorrowDate ?
+            return new Date(validationDate) > isolationStartDate ?
+                isolationStartDate < startOfTomorrowDate ?
                 yup.date().max(yup.ref(ClinicalDetailsFields.ISOLATION_END_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
-                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText)
+                yup.date().max(startOfTomorrowDate, futureDateText).required(requiredText).typeError(requiredText) :
+                yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
         }),
         otherwise: yup.date().nullable()
     }
@@ -26,7 +28,7 @@ const isInIsolationEndDateSchema = (validationDate: Date) => yup.date().when(
     ClinicalDetailsFields.IS_IN_ISOLATION, {
         is: true,
         then: yup.date().when(ClinicalDetailsFields.ISOLATION_END_DATE, (isolationEndDate: Date) => {
-            return validationDate < isolationEndDate ?
+            return new Date(validationDate) > isolationEndDate ?
             yup.date().min(yup.ref(ClinicalDetailsFields.ISOLATION_START_DATE), StartDateAfterEndDateText).required(requiredText).typeError(requiredText) :
             yup.date().max(validationDate, endDateBeforeValidationDateText).required(requiredText).typeError(requiredText)
         }),
@@ -77,7 +79,7 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
         [ClinicalDetailsFields.ISOLATION_HOUSE_NUMBER]: yup.string().nullable()
     }).required(),
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(),
-    [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema,
+    [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
