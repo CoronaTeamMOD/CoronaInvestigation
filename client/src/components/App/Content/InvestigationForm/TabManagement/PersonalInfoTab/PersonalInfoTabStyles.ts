@@ -132,6 +132,7 @@ const useStyles = makeStyles({
     gradeInput: {
         width: '7vw'
     }
+
 });
 
 export default useStyles;

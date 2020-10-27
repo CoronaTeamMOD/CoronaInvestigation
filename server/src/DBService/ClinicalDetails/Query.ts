@@ -78,3 +78,20 @@ query getCoronaTestDateOfInvestigation($currInvestigation: Int!) {
   }
 }
 `;
+
+export const UPDATE_IS_DECEASED = gql`
+mutation UpdateIsDeceased ($investigatedPatientId: Int!, $isDeceased: Boolean!) {
+  updateInvestigatedPatientById(input: {investigatedPatientPatch: {isDeceased: $isDeceased}, id: $investigatedPatientId}) {
+    clientMutationId
+  }
+}
+`;
+
+export const UPDATE_IS_CURRENTLY_HOPITIALIZED = gql`
+mutation UpdatedIsCurrentlyHospitalized($investigatedPatientId: Int!, $isCurrentlyHospitalized: Boolean!) {
+  updateInvestigatedPatientById(input: {investigatedPatientPatch: {isCurrentlyHospitalized: $isCurrentlyHospitalized}, id: $investigatedPatientId}) {
+    clientMutationId
+  }
+}
+
+`;

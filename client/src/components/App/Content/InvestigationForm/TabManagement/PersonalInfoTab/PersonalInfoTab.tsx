@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
@@ -6,7 +5,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
-
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -18,7 +16,6 @@ import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
-import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -27,7 +24,9 @@ import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
+import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
@@ -79,7 +78,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+
+    const { complexityErrorAlert } = useComplexitySwal();
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
             setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
@@ -267,25 +268,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                 investigation: investigationId,
                 user: userId
             });
-            if (error?.response?.data?.message && error.response.data.message.includes('complexity')) {
-                Swal.fire({
-                    title: 'לא הצלחנו לחשב את מורכבות החקירה מחדש',
-                    text: 'משהו לא תקין בשדות גורם מבטח או תחום עיסוק',
-                    icon: 'error',
-                    customClass: {
-                        title: classes.swalTitle,
-                        content: classes.swalText
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                    icon: 'error',
-                    customClass: {
-                        title: classes.swalTitle,
-                    }
-                });
-            }
+            complexityErrorAlert(error);
         }) 
         personalInfoValidationSchema.isValid(data).then(valid => {
             setFormState(investigationId, id, valid);

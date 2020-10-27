@@ -50,7 +50,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatientId);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({

@@ -7,13 +7,15 @@ import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/i
 
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import InvestigatedPatient from 'models/InvestigatedPatient';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
-import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
@@ -37,6 +39,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
 
@@ -126,18 +129,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(isDeceased)}
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(( isDeceased || subStatusInput === InvestigationComplexityByStatus.IS_DECEASED ))}
                         icon={Help}
                     />
                     {
-                        isDeceased && <ComplexityIcon tooltipText='המאומת נפטר' />
+                        (isDeceased || subStatusInput === InvestigationComplexityByStatus.IS_DECEASED) && <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication(isCurrentlyHospitalized)}
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || subStatusInput === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED ))}
                         icon={Help}
                     />
                     {
-                        isCurrentlyHospitalized && <ComplexityIcon tooltipText='המאומת מאושפז' />
+                        (isCurrentlyHospitalized || subStatusInput === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) && <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
