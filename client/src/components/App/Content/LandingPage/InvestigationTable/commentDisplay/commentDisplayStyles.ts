@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         boxShadow: theme.shadows[1],
         fontSize: 11,
       },
+    popper: {
+        zIndex: 1,
+    }
 }));
 
 export default useStyles;

@@ -17,7 +17,7 @@ const CommentDisplay = ({comment}: Props) => {
 
     return (
         <ClickAwayListener onClickAway={handleTooltipClose}>
-          <Tooltip classes={{tooltip:classes.lightTooltip}}
+          <Tooltip classes={{tooltip:classes.lightTooltip, popper: classes.popper}}
             PopperProps={{
               disablePortal: true,
               placement: 'bottom-start',
