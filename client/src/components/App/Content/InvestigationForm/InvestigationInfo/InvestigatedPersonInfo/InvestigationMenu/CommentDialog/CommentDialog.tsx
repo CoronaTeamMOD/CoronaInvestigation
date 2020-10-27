@@ -60,10 +60,11 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
                      step: 'Error occured in adding comment to investigation'
                  });
             })
-            .finally(onDialogClose);
+            .finally(handleDialogClose);
     };
 
     const onDialogClose = () => {
+        resetInput();
         handleDialogClose();
     };
 
