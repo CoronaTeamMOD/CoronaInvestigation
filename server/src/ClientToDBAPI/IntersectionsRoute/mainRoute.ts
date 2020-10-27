@@ -288,7 +288,7 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
     });
 });
 
-intersectionsRoute.delete('/deleteContactedPerson', (request: Request, response: Response) => {
+intersectionsRoute.delete('/contactedPerson', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,

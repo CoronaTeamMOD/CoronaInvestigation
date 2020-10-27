@@ -271,7 +271,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                axios.delete('/intersections/deleteContactedPerson', {
+                axios.delete('/intersections/contactedPerson', {
                     params: { contactedPersonId }
                 }).then(() => {
                     logger.info({
