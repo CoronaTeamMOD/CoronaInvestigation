@@ -1,14 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
-import StoreStateType from 'redux/storeStateType';
 import User from 'models/User';
 import axios from 'Utils/axios';
-
-import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
+import { setIsActive } from 'redux/User/userActionCreators';
+
+import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
     setUserActivityStatus: (isActive: boolean) => void;
@@ -23,7 +24,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user);
     const classes = useStyles();
     
-    const [isActive, setIsActive] = React.useState<boolean | null>(null);
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
     React.useEffect(() => {
@@ -31,7 +31,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
             getCountyByUser();
             getUserActivityStatus();
         }
-    }, [user]);
+    }, [user.investigationGroup]);
 
     const getUserActivityStatus = () => {
         logger.info({
@@ -146,7 +146,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
 
     return {
         user,
-        isActive,
+        isActive: user.isActive,
         setUserActivityStatus,
         classes,
         getCountyByUser,

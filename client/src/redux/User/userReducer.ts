@@ -22,7 +22,8 @@ export const initialUserState: User = {
 
 const userReducer = (state = initialUserState, action: Actions.UserAction): User => {
     switch (action.type) {
-        case Actions.SET_USER: return { ...state, ...action.payload.user }
+        case Actions.SET_USER: return { ...state, ...action.payload.user };
+        case Actions.SET_IS_ACTIVE: return { ...state, isActive: action.payload.isActive };
         default: return state;
     }
 }

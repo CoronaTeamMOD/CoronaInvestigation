@@ -9,3 +9,10 @@ export const setUser = (user: User): void => {
         payload: {user}
     })
 }
+
+export const setIsActive = (isActive: boolean) => {
+    store.dispatch({
+        type: actionTypes.SET_IS_ACTIVE,
+        payload: {isActive}
+    });
+}
