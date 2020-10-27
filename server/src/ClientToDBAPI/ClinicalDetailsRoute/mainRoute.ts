@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
-import {graphqlRequest} from '../../GraphqlHTTPRequest';
+import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
@@ -9,14 +9,17 @@ import CreateAddressResponse from '../../Models/Address/CreateAddress';
 import ClinicalDetails from '../../Models/ClinicalDetails/ClinicalDetails';
 import InsertAndGetAddressIdInput from '../../Models/Address/InsertAndGetAddressIdInput';
 import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDateQueryResult';
+import { calculateInvestigationComplexity } from '../..//Utils/InvestigationComplexity/InvestigationComplexity';
 import {
-    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, GET_CORONA_TEST_DATE_OF_PATIENT
+    GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
+    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED
 } from '../../DBService/ClinicalDetails/Query';
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
 } from '../../DBService/ClinicalDetails/Mutation';
 import { GetInvestigatedPatientClinicalDetailsFields } from '../../Models/ClinicalDetails/GetInvestigatedPatientClinicalDetailsFields';
 
+const complexityCalculationMessage = 'patient clinical details by status';
 const clinicalDetailsRoute = Router();
 const errorStatusCode = 500;
 
@@ -113,7 +116,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
-    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,  response.locals, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
+    graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
         (result: GetInvestigatedPatientClinicalDetailsFields) => {
             logger.info({
                 service: Service.SERVER,
@@ -183,7 +186,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    graphqlRequest(UPDATE_INVESTIGATION,  response.locals,requestInvestigation).then(() => {
+    graphqlRequest(UPDATE_INVESTIGATION, response.locals, requestInvestigation).then(() => {
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
@@ -192,7 +195,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        graphqlRequest(ADD_BACKGROUND_DISEASES,  response.locals, investigatedPatientBackgroundDeseases).then(() => {
+        graphqlRequest(ADD_BACKGROUND_DISEASES, response.locals, investigatedPatientBackgroundDeseases).then(() => {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
@@ -269,7 +272,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
     const isolationAddress = request.body.clinicalDetails?.isolationAddress;
-    
+
     if (isolationAddress !== null) {
         const requestAddress: InsertAndGetAddressIdInput = {
             cityValue: isolationAddress?.city ? isolationAddress?.city : null,
@@ -285,7 +288,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         });
-        graphqlRequest(CREATE_ADDRESS,  response.locals, {
+        graphqlRequest(CREATE_ADDRESS, response.locals, {
             input: requestAddress
         }).then((result: CreateAddressResponse) => {
             logger.info({
@@ -321,8 +324,8 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
         step: `launcing DB request with parameter ${request.params.investigationId}`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
-      });
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, {currInvestigation: Number(request.params.investigationId)})
+    });
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, { currInvestigation: Number(request.params.investigationId) })
         .then((result: CoronaTestDateQueryResult) => {
             logger.info({
                 service: Service.SERVER,
@@ -331,7 +334,7 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
                 step: 'got response from DB',
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
-              });
+            });
             response.send(result.data.allInvestigations.nodes[0]);
         }).catch(err => {
             logger.error({
@@ -344,6 +347,85 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
             });
             response.status(errorStatusCode).send(err);
         });
+});
+
+clinicalDetailsRoute.post('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Updating is deceased value',
+        step: `launcing DB request with parameter ${request.params.investigationId}`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    graphqlRequest(UPDATE_IS_DECEASED, response.locals, {
+        investigatedPatientId: +request.params.investigatedPatientId, isDeceased: Boolean(request.params.isDeceased)
+    }).then(result => {
+        if (result.data) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: `Updating is deceased value to ${request.params.isDeceased}`,
+                step: `got response from DB ${result}`,
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            });
+            calculateInvestigationComplexity(request, response, complexityCalculationMessage);
+        }
+        else {
+            return Promise.reject(JSON.stringify(result));
+        }
+    }).catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: `Updating is deceased value to ${request.params.isDeceased}`,
+            step: `got errors approaching the graphql API ${err}`,
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.status(errorStatusCode).send(err);
+    });
+});
+
+clinicalDetailsRoute.post('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Updating is currently hospitalized value',
+        step: `launcing DB request with parameter ${request.params.investigationId}`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    graphqlRequest(UPDATE_IS_CURRENTLY_HOSPITIALIZED, response.locals, {
+        investigatedPatientId: +request.params.investigatedPatientId, isCurrentlyHospitalized: Boolean(request.params.isCurrentlyHospitalized)
+    }).then(result => {
+        console.log("RES: ", result)
+        if (result.data) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: `Updating is currently hospitalized value to ${request.params.isCurrentlyHospitalized}`,
+                step: 'got response from DB',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            });
+            calculateInvestigationComplexity(request, response, complexityCalculationMessage);
+        }
+        else {
+            return Promise.reject(JSON.stringify(result));
+        }
+    }).catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: `Updating is currently hospitalized value to ${request.params.isCurrentlyHospitalized}`,
+            step: `got errors approaching the graphql API ${err}`,
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.status(errorStatusCode).send(err);
+    });
 });
 
 export default clinicalDetailsRoute;

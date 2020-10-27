@@ -24,6 +24,20 @@ export const setInvestigatedPatientId = (investigatedPatientId: number) => {
     })
 };
 
+export const setIsDeceased = (isDeceased: boolean) => {
+    store.dispatch({
+        type: actionTypes.SET_IS_DECEASED,
+        payload: { isDeceased }
+    })
+};
+
+export const setIsCurrentlyHospitialized = (isCurrentlyHospitialized: boolean) => {
+    store.dispatch({
+        type: actionTypes.SET_IS_CURRENTLY_HOSPITIALIZED,
+        payload: { isCurrentlyHospitialized }
+    })
+};
+
 export const setLastOpenedEpidemiologyNum = (lastOpenedEpidemiologyNumber : number): void => {
     store.dispatch({
         type: actionTypes.SET_LAST_OPENED_EPIDEMIOLOGY_NUM,

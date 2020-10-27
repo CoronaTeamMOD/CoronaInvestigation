@@ -8,10 +8,12 @@ import logger from 'logger/logger';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
-import {landingPageRoute} from 'Utils/Routes/Routes';
+import InvestigatedPatient from 'models/InvestigatedPatient';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
@@ -23,7 +25,61 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const classes = useStyles({});
 
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
+    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
+    const { complexityErrorAlert } = useComplexitySwal();
+
+    const updateIsDeceased = () => {
+        !investigatedPatient.isDeceased && axios.post('/clinicalDetails/isDeceased/'+investigatedPatient.investigatedPatientId + '/'+true)
+        .then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Update isDeceased',
+                step: `launching isDeceased request succssesfully ${result}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            handleInvestigationFinish();
+        }).catch((error: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Update isDeceased',
+                step: `launching isDeceased request unsuccssesfully ${error}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            complexityErrorAlert(error);
+        })
+    }
+
+    const updateIsCurrentlyHospitialized = () => {
+        !investigatedPatient.isCurrentlyHospitialized && axios.post('/clinicalDetails/isCurrentlyHospitialized/'+investigatedPatient.investigatedPatientId + '/'+true)
+        .then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Update isCurrentlyHospitialized',
+                step: `launching isCurrentlyHospitialized request succssesfully ${result}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            handleInvestigationFinish();
+        }).catch((error: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Update isCurrentlyHospitialized',
+                step: `launching isCurrentlyHospitialized request unsuccssesfully ${error}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            complexityErrorAlert(error);
+        })
+    }
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         Swal.fire({
@@ -61,7 +117,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    handleInvestigationFinish();
+                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED && updateIsDeceased();
+                    investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED && updateIsCurrentlyHospitialized();
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,

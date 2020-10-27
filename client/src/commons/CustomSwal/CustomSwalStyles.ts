@@ -5,6 +5,9 @@ const useStyles = makeStyles({
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    swalText: {
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

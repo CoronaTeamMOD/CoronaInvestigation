@@ -17,13 +17,14 @@ import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
-import InvestigationTableRow from 'models/InvestigationTableRow';
-import ComplexityIcon from 'commons/ComplexityIcon/ComplexityIcon';
 import CommentDisplay from './commentDisplay/commentDisplay';
-import useStyles from './InvestigationTableStyles';
-import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import InvestigationTableRow from 'models/InvestigationTableRow';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
+import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+
+import useStyles from './InvestigationTableStyles';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';

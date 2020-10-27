@@ -43,10 +43,6 @@ const useStyles = makeStyles({
         alignItems: 'center',
         flex: 5,
     },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
     containerGrid: {
         maxWidth: '100vw',
     },
@@ -58,7 +54,11 @@ const useStyles = makeStyles({
     },
     subStatusSelect: {
         width: '12vw'
-    }
+    },
+    swalTitle: {
+        fontSize: '1.5vw',
+        fontFamily: 'Assistant',
+    },
 });
 
 export default useStyles;

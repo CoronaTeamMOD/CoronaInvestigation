@@ -4,12 +4,13 @@ import useStyles from './CustomSwalStyles';
 const useCustomSwal = () => {
     const classes = useStyles();
 
-    const alert = (title: string,icon: SweetAlertIcon, options?: SweetAlertOptions) =>
+    const alert = (title: string, icon: SweetAlertIcon, options?: SweetAlertOptions) =>
         Swal.fire({
             title,
             icon,
             customClass: {
-                title: classes.swalTitle
+                title: classes.swalTitle,
+                content: classes.swalText
             },
             ...options
         });

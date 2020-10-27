@@ -13,13 +13,13 @@ import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setGender } from 'redux/Gender/GenderActionCreators';
-import { setInvestigatedPatientId, setValidationDate } from 'redux/Investigation/investigationActionCreators';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
+import {CommentContextProvider} from './Context/CommentContext';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
-import {CommentContextProvider} from './Context/CommentContext';
 
 export const defaultUser = {
     id: '',
@@ -102,6 +102,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     });
                     const investigationInfo : InvestigationInfo = result.data;
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
+                    setIsDeceased(investigationInfo.investigatedPatient.isDeceased);
+                    setIsCurrentlyHospitialized(investigationInfo.investigatedPatient.isCurrentlyHospitalized);
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
                     setValidationDate(investigationInfo.coronaTestDate)
