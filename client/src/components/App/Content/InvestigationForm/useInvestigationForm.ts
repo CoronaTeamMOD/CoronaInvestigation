@@ -1,7 +1,6 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -21,6 +20,7 @@ import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigationFormStyles';
 import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
@@ -36,7 +36,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const classes = useStyles({});
-    let history = useHistory();
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const initializeTabShow = () => {
@@ -310,6 +309,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
         );
         timeout(LandingPageTimer).then(() => {
+            setIsInInvestigation(false);
             window.close();
         });
     };
