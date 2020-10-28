@@ -5,9 +5,9 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType';
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import { GetContactEventResponse, ContactEvent, GetContactEventByIdResponse } from '../../Models/ContactEvent/GetContactEvent';
+import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACTED_PERSON } from '../../DBService/ContactEvent/Mutation';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_FULL_CONTACT_EVENT_BY_ID, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query';
+import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
 
@@ -139,45 +139,6 @@ intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, resp
         response.status(errorStatusCode).send('error in fetching data: ' + err);
     });
 });
-
-intersectionsRoute.get('/contactEventById/:eventId', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Getting Contact Event By Event ID',
-        step: `launcing DB request`,
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    });
-    graphqlRequest(GET_FULL_CONTACT_EVENT_BY_ID, response.locals,{ currEventId: Number(request.params.eventId)})
-        .then((result: GetContactEventByIdResponse) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting Contact Event By Event ID',
-                step: 'got response from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
-            response.send(convertDBEvent(result.data.contactEventById));
-    }).catch((err) => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Getting Contact Event By Event ID',
-            step: `got errors approaching the graphql API ${err}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
-        response.status(errorStatusCode).send('error in fetching data: ' + err);
-    });
-});
-
-const resetEmptyFields = (object: any) => {
-    Object.keys(object).forEach(key => {
-        if (object[key] === '') object[key] = null;
-    });
-}
 
 intersectionsRoute.post('/createContactEvent', (request: Request, response: Response) => {
     const newEvent = {
