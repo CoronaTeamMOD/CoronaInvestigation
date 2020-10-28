@@ -10,8 +10,7 @@ import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
-    COMMENT,
-    FINISH_INVESTIGATION_UPDATE
+    COMMENT
 } from '../../DBService/InvestigationInfo/Mutation';
 
 const errorStatusCode = 500;
