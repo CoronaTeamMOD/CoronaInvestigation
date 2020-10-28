@@ -310,16 +310,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <Grid container justify='flex-start'>
-                <Grid item xs={2}/>
-                <Grid item xs={7}>
+            <Grid className={classes.title} container alignItems='center' justify='space-between'>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={8}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
                     </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2} >
                     <Card className={classes.filterByDeskCard}>
-                        <Typography>הדסקים בהם הנך צופה כעת:</Typography>
+                        <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
                         <Autocomplete
                             classes={{inputRoot: classes.autocompleteInput}}
                             multiple
