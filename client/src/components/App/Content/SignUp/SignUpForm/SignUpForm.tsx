@@ -365,6 +365,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 render={(props) => (
                                     <Autocomplete
                                         disabled={shouldDisableFields}
+                                        disableCloseOnSelect
                                         multiple
                                         options={languages}
                                         getOptionLabel={(option) => option ? option.displayName : option}

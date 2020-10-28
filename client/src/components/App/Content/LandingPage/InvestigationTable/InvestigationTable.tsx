@@ -322,6 +322,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
                         <Autocomplete
                             classes={{inputRoot: classes.autocompleteInput}}
+                            disableCloseOnSelect
                             multiple
                             options={allDesks}
                             getOptionLabel={(option) => option}
@@ -366,6 +367,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 <Typography>סטטוס:</Typography>
                                 <Autocomplete
                                     classes={{inputRoot: classes.autocompleteInput}}
+                                    disableCloseOnSelect
                                     multiple
                                     options={allStatuses}
                                     getOptionLabel={(option) => option}

@@ -1,17 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { TextField, IconButton } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
 import { Close } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
+import { TextField, IconButton } from '@material-ui/core';
 
-import SourceOrganization from 'models/SourceOrganization';
 import County from 'models/County';
+import Language from 'models/Language';
 import UserTypeModel from 'models/UserType';
 import UserTypeEnum from 'models/enums/UserType';
-import Language from 'models/Language';
+import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import StoreStateType from 'redux/storeStateType'
+import SourceOrganization from 'models/SourceOrganization';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 import useStyles from './UsersFilterStyles';
 import FilterCreators from './FilterCreators'
@@ -25,6 +25,7 @@ interface GenericAutoCompleteProps {
     options: SourceOrganization[] | Language[] | County[] | UserTypeModel[] | activeStatus[];
     handleChange: (selectedValues: any) => void;
     className: string;
+    inputRootClass?: string;
 }
 
 const activeStatuses: activeStatus[] = [
@@ -39,15 +40,17 @@ const activeStatuses: activeStatus[] = [
 ];
 
 const GenericAutoComplete: React.FC<GenericAutoCompleteProps> = (props: GenericAutoCompleteProps) => {
-    const {options, handleChange, className} = props
+    const { options, handleChange, className, inputRootClass } = props
 
     return (
         <Autocomplete
+            disableCloseOnSelect
             multiple
             options={options}
             getOptionLabel={(option: any) => option ? option.displayName : option}
             onChange={(event, selectedValues) => handleChange(selectedValues)}
             className={className}
+            classes={{inputRoot: inputRootClass}}
             renderInput={(params) =>
                 <TextField
                     {...params}
@@ -83,6 +86,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
             <FormInput fieldName='שפות'>
                 <GenericAutoComplete 
                     options={languages}
+                    inputRootClass={classes.autocompleteInput}
                     handleChange={(languages) => handleFilterChange(get(FilterCreators, 'LANGUAGES').create(
                         languages.map((language : Language) => language.displayName)))
                     }
