@@ -3,16 +3,21 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     content: {
-        height: '84vh',
+        height: '80vh',
         backgroundColor: '#F3F6FB',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    title: {
+        margin: 'auto',
+        height: '14vh',
+        width: '90vw',
     },
     tableContainer : {
         width: '90vw',
-        height: '70vh',
+        marginBottom: '5vh'
     },
     welcomeMessage: {
         fontSize: '4vh',
@@ -40,25 +45,27 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontFamily: 'Assistant',
     },
     filterByDeskCard: {
-        margin: '2vh 0',
-        padding: '2vh 2vw',
-        width: '17vw'
+        padding: '1vh 1vw',
+        width: '13vw',
+        borderRadius: 15,
+        left: 0
+    },
+    deskFilterTitle: {
+        fontSize: '1.2vw',
     },
     tableHeaderRow: {
         width: '90vw',  
-        display: 'flex',
-        justifyContent: 'flex-end'
     },
     sortResetButton: {
         fontWeight: 600
     },
     filterTableCard: {
-        width: '40vw',
+        width: '30vw',
         display: 'flex',
         justifyContent: 'space-evenly',
         margin: '1vh 0',
         alignItems: 'center',
-        height: '10vh',
+        height: '8vh',
     },
     filterButton: {
         fontWeight: 600,
@@ -68,7 +75,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
-        width: '17vw',
+        padding: '1vh 0', 
+        width: '12vw',
         fontSize: '1vw'
     },
     activeSortIcon: {

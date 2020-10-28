@@ -310,16 +310,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <Grid container justify='flex-start'>
-                <Grid item xs={2}/>
-                <Grid item xs={7}>
+            <Grid className={classes.title} container alignItems='center' justify='space-between'>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={8}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
                     </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2} >
                     <Card className={classes.filterByDeskCard}>
-                        <Typography>הדסקים בהם הנך צופה כעת:</Typography>
+                        <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
                         <Autocomplete
                             classes={{inputRoot: classes.autocompleteInput}}
                             multiple
@@ -341,8 +341,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Card>
                 </Grid>
             </Grid>
-            <div className={classes.content}>
-                <div className={classes.tableHeaderRow}>
+            <Grid className={classes.content}>
+                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
                     <Button
                         color='primary'
                         className={classes.filterButton}
@@ -357,10 +357,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     >
                         {resetSortButtonText}
                     </Button>
-                </div>
+                </Grid>
+                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
                 {
                     <Collapse in={showFilterRow}>
-                        <div className={classes.tableHeaderRow}>
                             <Card className={classes.filterTableCard}>
                                 <Typography>סינון לפי</Typography>
                                 <Typography>סטטוס:</Typography>
@@ -376,7 +376,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {...params}
                                         />
                                     }
-                                    renderTags={(tags, tagsProps) => {
+                                    renderTags={(tags) => {
                                         const additionalTagsAmount = tags.length - 1;
                                         const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
                                         return tags[0] + additionalDisplay;
@@ -384,9 +384,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 />
                                 <IconButton><Close onClick={() => closeFilterRow()}/></IconButton>
                             </Card>
-                        </div>
                     </Collapse>
                 }
+                </Grid>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
@@ -448,7 +448,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </div>
+            </Grid>
             <RefreshSnackbar isOpen={snackbarOpen}
                              onClose={onCancel} onOk={onOk}
                              message={refreshPromptMessage}/>
