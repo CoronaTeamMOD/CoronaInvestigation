@@ -9,9 +9,14 @@ const useStyles = makeStyles({
         whiteSpace: 'nowrap',
     },
     newContactFieldsContainer: {
+        display: 'flex',
+        flexDirection: 'column',
         overflowY: 'auto',
         height: '37vh',
         paddingRight: '0.5vw'
+    },
+    contactedPersonContainer: {
+        paddingBottom: '3vh'
     },
     contactDate: {
         '@media screen and (min-width: 1870px)': {
