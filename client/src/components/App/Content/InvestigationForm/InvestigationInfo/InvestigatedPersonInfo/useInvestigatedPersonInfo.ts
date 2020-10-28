@@ -128,7 +128,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {
         setInvestigationStatus({
             mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
-            subStatus: investigationStatus.subStatus
+            subStatus: cannotCompleteInvestigation ? investigationStatus.subStatus : ''
         })
     };
 
