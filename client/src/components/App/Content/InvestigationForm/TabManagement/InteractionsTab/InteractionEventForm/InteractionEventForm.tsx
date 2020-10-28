@@ -52,7 +52,7 @@ const InteractionEventForm: React.FC<Props> = (
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
 
-  const { fields, append } = useFieldArray<Contact>({control: methods.control, name: InteractionEventDialogFields.CONTACTS});
+  const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
 
   const classes = useStyles();
@@ -70,7 +70,7 @@ const InteractionEventForm: React.FC<Props> = (
         methods.setValue(fieldName, newDate);
       }
     } else {
-        methods.setError(fieldName, { type: 'manual', message: 'שעה לא תקינה'});
+      methods.setError(fieldName, { type: 'manual', message: 'שעה לא תקינה' });
     }
   }
 
@@ -79,7 +79,7 @@ const InteractionEventForm: React.FC<Props> = (
     saveIntreactions(interactionDataToSave);
   }
 
-  const generatePlacenameByPlaceSubType = (input :string) => {
+  const generatePlacenameByPlaceSubType = (input: string) => {
     if (!placeType) return '';
     if (placeType !== input) {
       return `${placeType} ${input}`.replace('/', ' או ');
@@ -90,7 +90,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
-    return  {
+    return {
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
@@ -105,7 +105,7 @@ const InteractionEventForm: React.FC<Props> = (
           } else {
             return contact
           }
-      })
+        })
     }
   }
 
@@ -120,108 +120,110 @@ const InteractionEventForm: React.FC<Props> = (
   };
 
   return (
-      <FormProvider {...methods}>
-        <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
-          <Grid className={formClasses.form} container justify='flex-start'>
-            <PlacesTypesAndSubTypes size='Dialog'
-              placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
-              placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
-              placeType={placeType}
-              placeSubType={placeSubType}
-              onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
-              onPlaceSubTypeChange={onPlaceSubtypeChange}
-            />
+    <FormProvider {...methods}>
+      <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
+        <Grid className={formClasses.form} container justify='flex-start'>
+          <PlacesTypesAndSubTypes size='Dialog'
+            placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
+            placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
+            placeType={placeType}
+            placeSubType={placeSubType}
+            onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
+            onPlaceSubTypeChange={onPlaceSubtypeChange}
+          />
 
-            <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType}/>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
-              <Grid item xs={6}>
-                <FormInput fieldName='משעה'>
-                  <Controller
-                    name={InteractionEventDialogFields.START_TIME}
-                    control={methods.control}
-                    render={(props) => (
-                      <TimePick
-                        testId='contactLocationStartTime'
-                        value={props.value}
-                        onChange={(newTime: Date) =>
-                          handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
-                        }
-                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
-                        error={get(methods.errors, props.name)}
-                      />
-                    )}
-                  />
-                </FormInput>
-              </Grid>
-              <Grid item xs={6}>
-                <FormInput fieldName='עד שעה'>
-                  <Controller
-                    name={InteractionEventDialogFields.END_TIME}
-                    control={methods.control}
-                    render={(props) => (
-                      <TimePick
-                        testId='contactLocationEndTime'
-                        value={props.value}
-                        onChange={(newTime: Date) =>
-                          handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
-                        }
-                        labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
-                        error={get(methods.errors, props.name)}
-                      />
-                    )}
-                  />
-                </FormInput>
-              </Grid>
-            </Grid>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
-              <FormInput fieldName='האם מותר להחצנה'>
+          <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType} />
+          <Grid className={formClasses.formRow} container justify='flex-start'>
+            <Grid item xs={6}>
+              <FormInput fieldName='משעה'>
                 <Controller
-                  name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                  name={InteractionEventDialogFields.START_TIME}
                   control={methods.control}
                   render={(props) => (
-                    <Toggle
-                      test-id='allowExternalization'
+                    <TimePick
+                      testId='contactLocationStartTime'
                       value={props.value}
-                      onChange={(event, value: boolean) => props.onChange(value as boolean)}
-                      className={formClasses.formToggle}
+                      onChange={(newTime: Date) =>
+                        handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                      }
+                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
+                      error={get(methods.errors, props.name)}
+                    />
+                  )}
+                />
+              </FormInput>
+            </Grid>
+            <Grid item xs={6}>
+              <FormInput fieldName='עד שעה'>
+                <Controller
+                  name={InteractionEventDialogFields.END_TIME}
+                  control={methods.control}
+                  render={(props) => (
+                    <TimePick
+                      testId='contactLocationEndTime'
+                      value={props.value}
+                      onChange={(newTime: Date) =>
+                        handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                      }
+                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
+                      error={get(methods.errors, props.name)}
                     />
                   )}
                 />
               </FormInput>
             </Grid>
           </Grid>
-          <Divider light={true} />
-          <Grid
-            container
-            className={formClasses.form + ' ' + classes.spacedOutForm}
-          >
-            <div className={classes.newContactFieldsContainer}>
-              {
-                contacts.map((contact, index: number) => (
+          <Grid className={formClasses.formRow} container justify='flex-start'>
+            <FormInput fieldName='האם מותר להחצנה'>
+              <Controller
+                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                control={methods.control}
+                render={(props) => (
+                  <Toggle
+                    test-id='allowExternalization'
+                    value={props.value}
+                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                    className={formClasses.formToggle}
+                  />
+                )}
+              />
+            </FormInput>
+          </Grid>
+        </Grid>
+        <Divider light={true} />
+        <Grid
+          container
+          className={formClasses.form + ' ' + classes.spacedOutForm}
+        >
+          <div className={classes.newContactFieldsContainer}>
+            {
+              contacts.map((contact, index: number) => (
+                <Grid key={index} item className={classes.contactedPersonContainer}>
                   <ContactForm
                     key={index}
                     updatedContactIndex={index}
                   />
-                ))
-              }
-              <Grid item>
-                <IconButton
-                  test-id='addContact'
-                  onClick={() => append(defaultContact)}
-                >
-                  <AddCircleIcon color='primary' />
-                </IconButton>
-                <Typography
-                  variant='caption'
-                  className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}
-                >
-                  {addContactButton}
-                </Typography>
-              </Grid>
-            </div>
-          </Grid>
-        </form>
-      </FormProvider>
+                </Grid>
+              ))
+            }
+            <Grid item>
+              <IconButton
+                test-id='addContact'
+                onClick={() => append(defaultContact)}
+              >
+                <AddCircleIcon color='primary' />
+              </IconButton>
+              <Typography
+                variant='caption'
+                className={formClasses.fieldName + ' ' + classes.fieldNameNoWrap}
+              >
+                {addContactButton}
+              </Typography>
+            </Grid>
+          </div>
+        </Grid>
+      </form>
+    </FormProvider>
   );
 };
 
