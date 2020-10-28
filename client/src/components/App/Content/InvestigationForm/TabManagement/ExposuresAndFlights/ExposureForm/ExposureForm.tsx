@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Grid, MenuItem, TextField, Typography } from '@material-ui/core';
+import { CircularProgress, Grid, MenuItem, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
@@ -39,7 +39,6 @@ const minFullNameLengthToSearch = 2;
 const minNumbersLengthToSearch = 4;
 const invalidAge = -1;
 
-const invalidCharRegex = /[^א-ת\da-zA-Z0-9]/;
 const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
-import { Card, Collapse, IconButton, Typography, Grid, Divider, Button } from '@material-ui/core';
+import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
 import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';

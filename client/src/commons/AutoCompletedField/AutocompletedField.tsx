@@ -16,7 +16,7 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         constOptions = false,
         label,
         placeholder,
-        className, filterOptions = (x: any) => x,
+        filterOptions = (x: any) => x,
         noOptionsMessage = defaultNoOptionsMessage
     } = props;
     const classes = useStyles();

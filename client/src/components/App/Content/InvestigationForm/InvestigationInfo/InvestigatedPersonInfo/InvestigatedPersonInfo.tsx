@@ -1,5 +1,5 @@
+import React from 'react';
 import { format } from 'date-fns';
-import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
@@ -7,7 +7,6 @@ import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/i
 
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
-import InvestigatedPatient from 'models/InvestigatedPatient';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';

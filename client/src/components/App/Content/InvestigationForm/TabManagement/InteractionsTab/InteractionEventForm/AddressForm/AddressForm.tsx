@@ -5,7 +5,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 import Map from 'commons/Map/Map';
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import { GeocodeResponse } from 'commons/LocationInputField/LocationInput';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './AddressFormStyles';

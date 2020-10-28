@@ -6,7 +6,6 @@ import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import Contact from 'models/Contact';
 import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
