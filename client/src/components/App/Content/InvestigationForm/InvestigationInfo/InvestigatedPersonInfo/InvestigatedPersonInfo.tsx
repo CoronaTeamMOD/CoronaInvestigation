@@ -85,9 +85,9 @@ const InvestigatedPersonInfo = (props: Props) => {
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
                     {
-                        age &&
+                        age !== null &&
                         <>
-                            <InfoItemWithIcon testId='age' name='גיל' value={age} icon={CakeOutlined} />
+                            <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
                             {
                                 +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
                             }
