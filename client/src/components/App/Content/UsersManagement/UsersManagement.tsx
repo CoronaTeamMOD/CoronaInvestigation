@@ -25,6 +25,10 @@ interface CellNameSort {
 
 const usersManagementTitle = 'ניהול משתמשים';
 
+const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
+                                       UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
+                                       UsersManagementTableHeadersNames.DESK];
+
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
@@ -39,10 +43,13 @@ const UsersManagement: React.FC = () => {
     const classes = useStyles();
 
     const handleSortOrder = (cellName: string) => {
-        setCellNameSort({
-            name: cellName,
-            direction: cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
-        });
+        if (!notActiveSortFields.includes(cellName)) {
+            setCellNameSort({
+                name: cellName,
+                direction: cellNameSort.name !== cellName ? SortOrder.asc :
+                           cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
+            });
+        }
     }
 
     const getTableCell = (row: any, cellName: string) => {
@@ -114,19 +121,16 @@ const UsersManagement: React.FC = () => {
                         <TableRow>
                             {
                                 Object.keys(UsersManagementTableHeaders).map(cellName => {
-                                    const cellNameHeader = get(UsersManagementTableHeaders, cellName);
                                     return (
                                         <TableCell>
                                             <TableSortLabel
-                                                active={cellNameHeader !== UsersManagementTableHeaders.watch &&
-                                                    cellNameHeader !== UsersManagementTableHeaders.languages &&
-                                                    cellNameHeader !== UsersManagementTableHeaders.investigationGroup &&
-                                                    cellNameHeader !== UsersManagementTableHeaders.userType}
+                                                active={!notActiveSortFields.includes(cellName)}
+                                                hideSortIcon
                                                 direction={cellName === cellNameSort.name ? cellNameSort.direction : SortOrder.asc}
                                                 onClick={() => handleSortOrder(cellName)}
                                                 classes={{ root: cellName === cellNameSort.name ? classes.activeSortIcon : '', icon: classes.icon, active: classes.active }}
                                             >
-                                                {cellNameHeader}
+                                                {get(UsersManagementTableHeaders, cellName)}
                                             </TableSortLabel>
                                         </TableCell>
                                     )
