@@ -177,9 +177,8 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
                                                     subStatus: newSubStatus ? String(newSubStatus) : ''
-                                                })
-                                            }
-                                            }
+                                                });
+                                            }}
                                             onInputChange={(event, newSubStatusInput) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
