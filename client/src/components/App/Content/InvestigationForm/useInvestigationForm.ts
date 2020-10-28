@@ -275,40 +275,15 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    axios.post('/investigationInfo/updateInvestigationEndTime', {
-                        investigationEndTime: new Date(),
-                        epidemiologyNumber
-                    }).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Ending Investigation',
-                            step: `update investigation end time request was successful`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                            updateIsDeceased(handleInvestigationFinish);
-                        }
-                        else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                            updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                        }
-                        else {
-                            handleInvestigationFinish();
-                        }
-                    })
-                        .catch((error) => {
-                            logger.error({
-                                service: Service.CLIENT,
-                                severity: Severity.HIGH,
-                                workflow: 'Ending Investigation',
-                                step: `got errors in server result: ${error}`,
-                                user: userId,
-                                investigation: epidemiologyNumber
-                            });
-                            handleInvestigationFinishFailed()
-                        })
-                }).catch((error) => {
+                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                        updateIsDeceased(handleInvestigationFinish);
+                    }
+                    else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                    }
+                    else {
+                        handleInvestigationFinish();
+                    }}).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.HIGH,
