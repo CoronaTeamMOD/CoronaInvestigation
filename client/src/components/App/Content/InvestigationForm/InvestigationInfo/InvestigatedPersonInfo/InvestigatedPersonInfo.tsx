@@ -39,13 +39,10 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
 
     const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
-
-    const [subStatusInput, setSubStatusInput] = useState<string>(investigationStatus.subStatus);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
@@ -63,10 +60,6 @@ const InvestigatedPersonInfo = (props: Props) => {
     };
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
-
-    React.useEffect(() => {
-        setSubStatusInput(investigationStatus.subStatus)
-    }, [investigationStatus]);
 
     return (
         <Paper className={classes.paper}>
@@ -129,18 +122,24 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(( isDeceased || subStatusInput === InvestigationComplexityByStatus.IS_DECEASED ))}
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(( isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED ))}
                         icon={Help}
                     />
                     {
-                        (isDeceased || subStatusInput === InvestigationComplexityByStatus.IS_DECEASED) && <ComplexityIcon tooltipText='המאומת נפטר' />
+                        (isDeceased ||
+                        (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE && 
+                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) && 
+                        <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || subStatusInput === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED ))}
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED ))}
                         icon={Help}
                     />
                     {
-                        (isCurrentlyHospitalized || subStatusInput === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) && <ComplexityIcon tooltipText='המאומת מאושפז' />
+                        (isCurrentlyHospitalized ||
+                        (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) && 
+                        <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
                     <Divider />
                     <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
@@ -173,16 +172,18 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             test-id='currentSubStatus'
                                             options={subStatuses}
                                             getOptionLabel={(option) => option}
-                                            inputValue={subStatusInput}
+                                            inputValue={investigationStatus.subStatus}
                                             onChange={(event, newSubStatus) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
                                                     subStatus: newSubStatus ? String(newSubStatus) : ''
-                                                })
-                                            }
-                                            }
+                                                });
+                                            }}
                                             onInputChange={(event, newSubStatusInput) => {
-                                                setSubStatusInput(newSubStatusInput);
+                                                setInvestigationStatus({
+                                                    mainStatus: investigationStatus.mainStatus,
+                                                    subStatus: newSubStatusInput
+                                                });
                                             }}
                                             renderInput={(params) =>
                                                 <TextField
