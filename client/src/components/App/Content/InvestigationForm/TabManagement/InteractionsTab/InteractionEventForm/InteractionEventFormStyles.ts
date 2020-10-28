@@ -16,7 +16,7 @@ const useStyles = makeStyles({
         paddingRight: '0.5vw'
     },
     contactedPersonContainer: {
-        paddingBottom: '3vh'
+        paddingBottom: '2%'
     },
     contactDate: {
         '@media screen and (min-width: 1870px)': {
