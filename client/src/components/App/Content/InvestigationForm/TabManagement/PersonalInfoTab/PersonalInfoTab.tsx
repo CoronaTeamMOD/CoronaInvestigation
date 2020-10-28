@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
 import City from 'models/City';

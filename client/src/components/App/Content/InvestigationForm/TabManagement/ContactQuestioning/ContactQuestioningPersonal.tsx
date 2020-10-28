@@ -4,14 +4,14 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import FieldName from 'commons/FieldName/FieldName';
 
 import useStyles from './ContactQuestioningStyles';
-import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {

@@ -7,17 +7,17 @@ import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventi
 const maxLengthErrorMessage = 'השדה יכול להכיל 10 מספרים בלבד';
 const alphabeticErrorMessage = 'השדה יכול להכיל מספרים בלבד';
 
-const stringAlphabet = yup
-  .string()
-  .matches(/^[0-9]*$/, alphabeticErrorMessage)
-  .max(10, maxLengthErrorMessage);
-
+const stringAlphabet = yup.string().matches(/^[0-9]*$/, alphabeticErrorMessage).max(10, maxLengthErrorMessage);
 
 const NumericTextField: NumericTextFieldType = (props) => {
+
+  const { value, ...other } = props;
+
   return (
     <TypePreventiveTextField
-        {...props}
-        validationSchema={stringAlphabet}
+      value={value || ''}
+      validationSchema={stringAlphabet}
+      {...other}
     />
   );
 };
