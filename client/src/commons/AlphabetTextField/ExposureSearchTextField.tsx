@@ -4,8 +4,8 @@ import * as yup from 'yup';
 import AlphbetTextFieldType from './AlphabetTextFieldTypes';
 import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventionTextField';
 
-const errorMessage = 'השדה יכול להכיל רק אותיות';
-const maxLengthErrorMessage = 'השדה יכול להכיל 50 אותיות בלבד';
+const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים, מקף ורווח';
+const maxLengthErrorMessage = 'השדה יכול להכיל 100 תווים בלבד';
 
 const stringAlphabet = yup
   .string()
