@@ -675,7 +675,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
-            (getFormattedDate(rows[rowIndex].coronaTestDate) !== getFormattedDate(rows[rowIndex + 1].coronaTestDate))) {
+            rows[rowIndex]?.coronaTestDate &&
+            (getFormattedDate(rows[rowIndex]?.coronaTestDate) !== getFormattedDate(rows[rowIndex + 1]?.coronaTestDate))) {
             classNames.push(classes.rowBorder)
         }
 
