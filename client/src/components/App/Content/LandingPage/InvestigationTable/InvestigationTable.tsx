@@ -341,8 +341,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Card>
                 </Grid>
             </Grid>
-            <div className={classes.content}>
-                <div className={classes.tableHeaderRow}>
+            <Grid className={classes.content}>
+                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
                     <Button
                         color='primary'
                         className={classes.filterButton}
@@ -357,10 +357,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     >
                         {resetSortButtonText}
                     </Button>
-                </div>
+                </Grid>
+                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
                 {
                     <Collapse in={showFilterRow}>
-                        <div className={classes.tableHeaderRow}>
                             <Card className={classes.filterTableCard}>
                                 <Typography>סינון לפי</Typography>
                                 <Typography>סטטוס:</Typography>
@@ -376,7 +376,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {...params}
                                         />
                                     }
-                                    renderTags={(tags, tagsProps) => {
+                                    renderTags={(tags) => {
                                         const additionalTagsAmount = tags.length - 1;
                                         const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
                                         return tags[0] + additionalDisplay;
@@ -384,9 +384,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 />
                                 <IconButton><Close onClick={() => closeFilterRow()}/></IconButton>
                             </Card>
-                        </div>
                     </Collapse>
                 }
+                </Grid>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
@@ -448,7 +448,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </div>
+            </Grid>
             <RefreshSnackbar isOpen={snackbarOpen}
                              onClose={onCancel} onOk={onOk}
                              message={refreshPromptMessage}/>

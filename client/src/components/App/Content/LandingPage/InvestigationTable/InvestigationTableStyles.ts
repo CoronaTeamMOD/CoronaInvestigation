@@ -6,9 +6,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '80vh',
         backgroundColor: '#F3F6FB',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     title: {
         margin: 'auto',
@@ -55,19 +55,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableHeaderRow: {
         width: '90vw',  
-        display: 'flex',
-        justifyContent: 'flex-end'
     },
     sortResetButton: {
         fontWeight: 600
     },
     filterTableCard: {
-        width: '40vw',
+        width: '30vw',
         display: 'flex',
         justifyContent: 'space-evenly',
         margin: '1vh 0',
         alignItems: 'center',
-        height: '10vh',
+        height: '8vh',
     },
     filterButton: {
         fontWeight: 600,
