@@ -120,6 +120,13 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
 
 ContactedPeopleRoute.post('/excel', async (request: Request, response: Response) => {
     const {contactEvent, contacts} = request.body;
+    logger.info({
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: `Saving execl to DB`,
+        step: 'Starting excel parsing',
+        user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+    });
     const getIdFromResult = (result: any) => result?.nodes.length > 0 ? parseInt(result.nodes[0].id) : null;
     const parsedContactsPromises = contacts.map(async (contactedPerson: InteractedContact) => {
         const parsingVariables = {
@@ -129,6 +136,13 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         };
 
         try {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: `Saving execl to DB (TRY clause)`,
+                step: `Launching GraphQL Request GET_FOREIGN_KEYS_BY_NAMES, with variables: ${JSON.stringify(parsingVariables)}`,
+                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+            });
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
 
             const {allCities, allContactTypes, allFamilyRelationships} = parsedForeignKeys.data;
@@ -144,6 +158,13 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 familyRelationship,
             };
         } catch (e) {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: `Saving execl to DB (CATCH clause)`,
+                step:  `caught error ${e} from try clause`,
+                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+            });
             console.error(e);
             return {
                 ...contactedPerson,
@@ -161,13 +182,34 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         unSavedContacts: JSON.stringify(parsedContacts),
     };
 
+    logger.info({
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: `Saving execl to DB - update contacts graphQL request`,
+        step:  `Launching GraphQL Request UPDATE_LIST_OF_CONTACTS, with variables: ${JSON.stringify(mutationVariables)}`,
+        user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+    });
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
         .then((result: any) => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: `Saving execl to DB graphql request result`,
+                step:  `Got graphQL result: ${JSON.stringify(result)}`,
+                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+            });
             const hasErrors = result?.errors?.length > 0;
             const status = hasErrors ? 500 : 200;
             return response.sendStatus(status);
         })
         .catch(error => {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: `Saving execl to DB graphql request catch`,
+                step:  `Got graphQL error: ${JSON.stringify(error)}`,
+                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+            });
             console.error(error);
             return response.sendStatus(500);
         })
