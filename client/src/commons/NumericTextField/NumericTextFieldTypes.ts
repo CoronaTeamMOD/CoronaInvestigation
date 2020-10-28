@@ -14,4 +14,5 @@ export interface NumericTextFieldProps<T> {
 }
 
 type NumericTextFieldType = <T>(props: NumericTextFieldProps<T>) => JSX.Element;
+
 export default NumericTextFieldType;

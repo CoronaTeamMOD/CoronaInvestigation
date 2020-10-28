@@ -1,6 +1,6 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Grid, Typography } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';

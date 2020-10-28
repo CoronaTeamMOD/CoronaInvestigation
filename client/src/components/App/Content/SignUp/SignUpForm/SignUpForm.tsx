@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -7,22 +7,18 @@ import { Grid, TextField } from '@material-ui/core';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 
 import City from 'models/City';
-import FormMode from 'models/enums/FormMode';
-import Desk from 'models/Desk';
-import County from 'models/County';
-import Language from 'models/Language';
 import SignUpUser from 'models/SignUpUser';
+import FormMode from 'models/enums/FormMode';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import SignUpFields from 'models/enums/SignUpFields';
-import SourceOrganization from 'models/SourceOrganization';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 
-import SignUpSchema from './SignUpSchema'
-import useSignUpForm from './useSignUpForm'
-import useStyles from './SignUpFormStyles'
+import SignUpSchema from './SignUpSchema';
+import useStyles from './SignUpFormStyles';
+import useSignUpForm from './useSignUpForm';
 
 
 const MABAR_USER_NAME = 'שם משתמש מב"ר';
@@ -58,7 +54,7 @@ const GenericAlphabetTextField : React.FC<GenericAlphabetTextFieldProps> =
                 disabled={disabled}
                 testId={props.name}
                 name={props.name}
-                value={props.value}
+                value={props.value || ''}
                 onChange={(newValue: string) => props.onChange(newValue)}
                 onBlur={props.onBlur}
                 placeholder={placeholder}
@@ -402,7 +398,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
 interface Props {
     defaultValues: SignUpUser;
     handleSaveUser?: () => void;
-    mode: FormMode
+    mode: FormMode;
 }
 
 interface GenericAlphabetTextFieldProps {
@@ -422,4 +418,3 @@ interface GenericNumericTextFieldProps {
 }
 
 export default SignUpForm;
-
