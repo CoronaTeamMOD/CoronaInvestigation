@@ -237,11 +237,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         cssClass = classes.priorityWithoutComplexSmall;
                     }
                 }
+
                 return (
                     <div className={classes.priorityCell}>
                         {indexedRow.isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />}
                         <span className={cssClass}>
-                            {indexedRow[cellName as keyof typeof TableHeadersNames]}
+                            {indexedRow[cellName as keyof typeof TableHeadersNames] || 'אין עדיפות'}
                         </span>
                     </div>
                 );
