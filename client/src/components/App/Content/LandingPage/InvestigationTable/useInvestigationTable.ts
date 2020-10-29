@@ -16,6 +16,7 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import axios, { activateIsLoading } from 'Utils/axios';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
+import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -29,7 +30,6 @@ import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import usePageRefresh from 'Utils/vendor/usePageRefresh';
 
 const investigationURL = '/investigation';
 
@@ -620,7 +620,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
         Swal.fire({
             icon: 'warning',
-            title: `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.county}</b> בדסק <b>${newSelectedCounty.value.displayName}</b>?</p>`,
+            title: `<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`,
             showCancelButton: true,
             cancelButtonText: 'לא',
             cancelButtonColor: theme.palette.error.main,
