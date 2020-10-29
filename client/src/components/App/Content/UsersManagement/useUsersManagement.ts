@@ -280,7 +280,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
 
     useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, filterRules, user.use])
+    }, [page, cellNameSort, filterRules, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
