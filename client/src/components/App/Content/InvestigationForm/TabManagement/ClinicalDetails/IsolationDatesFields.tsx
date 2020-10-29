@@ -1,6 +1,6 @@
 import React from 'react';
+import { Collapse, Grid } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';

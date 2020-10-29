@@ -39,7 +39,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
   const methods = useForm();
 
-  const { fieldName } = useFormStyles();
   const { fieldContainer } = useFormStyles();
   const classes = useStyles();
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
-import { Card, Typography, IconButton, Collapse, Button } from '@material-ui/core';
+import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 
 import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';

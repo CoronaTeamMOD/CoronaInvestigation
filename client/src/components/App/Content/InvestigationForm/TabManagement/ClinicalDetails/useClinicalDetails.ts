@@ -200,16 +200,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     };
 
-    const getSymptomsList = (patientClinicalDetails: any) => {
-        const symptoms: string[] = patientClinicalDetails.investigatedPatientSymptomsByInvestigationId.nodes.map((symptom: any) => symptom.symptomName);
-        return symptoms;
-    }
-
-    const getBackgroundDiseasesList = (clinicalDetails: any) => {
-        const backgroundDiseases: string[] = clinicalDetails.backgroundDiseases.nodes.map((backgroundDeseas: any) => backgroundDeseas.backgroundDeseasName);
-        return backgroundDiseases;
-    }
-
     const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) : Promise<void> => {
         return axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: {...clinicalDetails, epidemiologyNumber, investigatedPatientId}}));
     }

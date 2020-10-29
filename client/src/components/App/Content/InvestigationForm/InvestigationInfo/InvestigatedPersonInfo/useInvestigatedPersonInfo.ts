@@ -1,6 +1,5 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
@@ -20,7 +19,6 @@ import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterface
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
-    let history = useHistory();
     const classes = useStyles({});
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();

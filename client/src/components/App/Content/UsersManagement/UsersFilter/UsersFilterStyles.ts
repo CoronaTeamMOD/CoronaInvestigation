@@ -11,7 +11,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     autoComplete: {
         width: '10vw'
-    }
+    },
+    autocompleteInput: {
+        paddingRight: 'unset' + '!important',
+        width: '13vw',
+    },
 }));
 
 export default useStyles;
