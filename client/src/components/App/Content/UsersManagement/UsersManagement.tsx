@@ -103,7 +103,7 @@ const UsersManagement: React.FC = () => {
                     </IconButton>
                 </Tooltip>
             </Grid>
-            <Collapse in={isFilterOpen}>
+            <Collapse in={isFilterOpen}  style={{minHeight: 'unset'}}>
                 <Paper className={classes.filtersContent}>
                     <UsersFilter
                         sourcesOrganization={sourcesOrganization}
