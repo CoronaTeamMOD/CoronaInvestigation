@@ -37,12 +37,44 @@ const App: React.FC = (): JSX.Element => {
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
 
-    const handleCloseSignUp = () => setIsSignUpOpen(false);
+    useEffect(() => {
+        initUser();
+    }, []);
+
+    const initUser = async () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'login to the app',
+            step: 'before environment condition'
+        })
+
+        if (notInLocalEnv()) {
+            const { protocol, hostname } = window.location;
+            const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
+            const userId = data[0].user_id.split('@')[0];
+            const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
+            fetchUser(userId, userName);
+        } else {
+            const userId = '7'
+            const userName = 'stubuser';
+            fetchUser(userId, userName);
+        }
+    };
+
+    const notInLocalEnv = () => (
+        process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
+        process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
+        process.env.REACT_APP_ENVIRONMENT === Environment.TEST
+    );
+
 
     const handleSaveUser = () => {
         handleCloseSignUp();
         fetchUser(user.id, user.userName);
-    }
+    };
+
+    const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const fetchUser = (userId: string, userName: string) => {
         logger.info({
@@ -90,37 +122,6 @@ const App: React.FC = (): JSX.Element => {
             })
         })
     }
-
-    useEffect(() => {
-        initUser();
-    }, []);
-
-    const initUser = async () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'login to the app',
-            step: 'before environment condition'
-        })
-
-        if (notInLocalEnv()) {
-            const { protocol, hostname } = window.location;
-            const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
-            const userId = data[0].user_id.split('@')[0];
-            const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
-            fetchUser(userId, userName);
-        } else {
-            const userId = '7'
-            const userName = 'stubuser';
-            fetchUser(userId, userName);
-        }
-    };
-
-    const notInLocalEnv = () => (
-        process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
-        process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
-        process.env.REACT_APP_ENVIRONMENT === Environment.TEST
-    );
 
     return (
         <>
