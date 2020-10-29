@@ -183,7 +183,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [data.city, data.street, data.floor, data.houseNum]);
 
     useEffect(() => {
-        if(data.role != undefined ){
+        if(data.role){
             setRoleObj(    
                 investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => 
                 investigatedPatientRole.id === data.role)??defaultRole
