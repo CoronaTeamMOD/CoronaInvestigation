@@ -10,11 +10,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     autoComplete: {
-        width: '10vw'
+       width: '10vw'
     },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
-        width: '13vw',
+        width: '11vw',
     },
 }));
 
