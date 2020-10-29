@@ -43,6 +43,14 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const user = useSelector<StoreStateType, User>(state => state.user);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+    const getUsersRoute = () => {
+        switch (user.userType) {
+            case UserTypeEnum.ADMIN: return '/users/county';
+            case UserTypeEnum.SUPER_ADMIN: return '/users/district';
+            default: return '';
+        }
+    }
+
     const fetchUsers = () => {
         logger.info({
             service: Service.CLIENT,
@@ -52,47 +60,48 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        const fetchUsersRoute = user.userType === UserTypeEnum.SUPER_ADMIN ? '/users/district' : '/users/county';
-        axios.post(fetchUsersRoute, {
-            page: {
-                number: page,
-                size: rowsPerPage
-            },
-            orderBy: cellNameSort.direction !== undefined ? 
-                     `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null,
-            filter: filterRules
-        })
-            .then(result => {
-                if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setUsers(result.data?.users);
-                    setTotalCount(result.data?.totalCount);
-                    logger.info({
+        const fetchUsersRoute = getUsersRoute(); 
+        if (fetchUsersRoute !== '') {
+            axios.post(fetchUsersRoute, {
+                page: {
+                    number: page,
+                    size: rowsPerPage
+                },
+                orderBy: cellNameSort.direction !== undefined ? 
+                         `${get(SortOrderTableHeadersNames, cellNameSort.name)}_${cellNameSort.direction?.toUpperCase()}` : null,
+                filter: filterRules
+            })
+                .then(result => {
+                    if (result?.data && result.headers['content-type'].includes('application/json')) {
+                        setUsers(result.data?.users);
+                        setTotalCount(result.data?.totalCount);
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Fetching users',
+                            step: 'got results back from the server',
+                            user: user.id,
+                            investigation: epidemiologyNumber
+                        });
+                    } 
+                })
+                .catch(err => {
+                    if (err.response.status === 401) {
+                        handleFailedRequest('אין לך הרשאות למידע זה');
+                    }
+                    else {
+                        handleFailedRequest('לא ניתן היה לקבל משתמשים');
+                    }
+                    logger.error({
                         service: Service.CLIENT,
-                        severity: Severity.LOW,
+                        severity: Severity.HIGH,
                         workflow: 'Fetching users',
-                        step: 'got results back from the server',
+                        step: 'didnt get results back from the server',
                         user: user.id,
                         investigation: epidemiologyNumber
                     });
-                } 
-            })
-            .catch(err => {
-                if (err.response.status === 401) {
-                    handleFailedRequest('אין לך הרשאות למידע זה');
-                }
-                else {
-                    handleFailedRequest('לא ניתן היה לקבל משתמשים');
-                }
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching users',
-                    step: 'didnt get results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
                 });
-            });
-
+        }
     }
 
     const fetchSourcesOrganization = () => {
@@ -271,7 +280,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
 
     useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, filterRules])
+    }, [page, cellNameSort, filterRules, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
