@@ -45,7 +45,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
 
     const getUsersRoute = () => {
         switch (user.userType) {
-            case UserTypeEnum.INVESTIGATOR: return '';
             case UserTypeEnum.ADMIN: return '/users/county';
             case UserTypeEnum.SUPER_ADMIN: return '/users/district';
             default: return '';
@@ -281,7 +280,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
 
     useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, filterRules, user.userType])
+    }, [page, cellNameSort, filterRules, user.use])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
