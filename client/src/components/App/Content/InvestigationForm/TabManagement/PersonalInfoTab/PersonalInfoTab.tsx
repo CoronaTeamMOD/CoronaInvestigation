@@ -183,11 +183,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [data.city, data.street, data.floor, data.houseNum]);
 
     useEffect(() => {
-        setRoleObj(    
-        investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => 
-        investigatedPatientRole.id === data.role)??defaultRole
-        );
-    }, [investigatedPatientRoles,data]);
+        if(data.role != undefined ){
+            setRoleObj(    
+                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => 
+                investigatedPatientRole.id === data.role)??defaultRole
+                );
+        }
+
+    }, [investigatedPatientRoles,data.role]);
 
 
     useEffect(() => {
