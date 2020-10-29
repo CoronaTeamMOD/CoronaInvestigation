@@ -9,8 +9,6 @@ export interface useClinicalDetailsIncome {
     setIsolationCityName: React.Dispatch<React.SetStateAction<string>>;
     setIsolationStreetName: React.Dispatch<React.SetStateAction<string>>;
     setStreetsInCity: React.Dispatch<React.SetStateAction<Street[]>>;
-    initialDBClinicalDetails: ClinicalDetailsData;
-    setInitialDBClinicalDetails: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>;
 };
 
 export interface useClinicalDetailsOutcome {

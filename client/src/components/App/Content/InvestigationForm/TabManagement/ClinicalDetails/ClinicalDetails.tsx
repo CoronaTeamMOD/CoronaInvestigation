@@ -16,13 +16,12 @@ import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import { useStyles } from './ClinicalDetailsStyles';
-import useClinicalDetails from './useClinicalDetails';
+import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
@@ -40,7 +39,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         resolver: yupResolver(ClinicalDetailsSchema(validationDate))
     });
     
-    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
@@ -54,9 +52,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
-        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
-        setInitialDBClinicalDetails
-    });
+            setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -134,8 +130,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchDoesHaveBackgroundDiseases = methods.watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
-    const watchHospitalizedStartDate = methods.watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
-    const watcHospitalizedEndDate = methods.watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
 
     React.useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);

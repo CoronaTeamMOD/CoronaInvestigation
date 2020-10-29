@@ -7,9 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
-import { ClinicalDetailsDataContextProvider, ClinicalDetailsDataAndSet, initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
         initialExposuresAndFlightsData, ExposureAndFlightsDetailsAndSet} from 'commons/Contexts/ExposuresAndFlights';
 
@@ -37,14 +35,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
-    const [clinicalDetailsData, setClinicalDetailsData] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
-
-    const clinicalDetailsVariables: ClinicalDetailsDataAndSet = React.useMemo(() => ({
-        clinicalDetailsData,
-        setClinicalDetailsData
-    }),
-        [clinicalDetailsData, setClinicalDetailsData]
-    );
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -106,31 +96,29 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     return (
         <div className={classes.content}>
             <ExposureAndFlightsContextProvider value={exposuresAndFlightsVariables}>
-                    <ClinicalDetailsDataContextProvider value={clinicalDetailsVariables}>
-                        <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
-                            <InvestigationInfoBar
+                <StartInvestigationDateVariablesProvider value={startInvestigationDateVariables}>
+                    <InvestigationInfoBar
+                        currentTab = {currentTab}
+                    />
+                        <div className={classes.interactiveForm}>
+                            <TabManagement
+                                areThereContacts = {areThereContacts}
+                                setAreThereContacts = {setAreThereContacts}
                                 currentTab = {currentTab}
+                                moveToNextTab = {moveToNextTab}
+                                setNextTab = {setNextTab}
                             />
-                                <div className={classes.interactiveForm}>
-                                    <TabManagement
-                                        areThereContacts = {areThereContacts}
-                                        setAreThereContacts = {setAreThereContacts}
-                                        currentTab = {currentTab}
-                                        moveToNextTab = {moveToNextTab}
-                                        setNextTab = {setNextTab}
-                                    />
-                                    <div className={classes.buttonSection}>
-                                        <PrimaryButton 
-                                            type="submit"
-                                            form={`form-${currentTab}`}
-                                            test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
-                                            onClick={handleNextPageClick}>
-                                        {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
-                                        </PrimaryButton>
-                                    </div>
-                                </div>
-                        </StartInvestigationDateVariablesProvider>
-                    </ClinicalDetailsDataContextProvider>
+                            <div className={classes.buttonSection}>
+                                <PrimaryButton 
+                                    type="submit"
+                                    form={`form-${currentTab}`}
+                                    test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
+                                    onClick={handleNextPageClick}>
+                                {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
+                                </PrimaryButton>
+                            </div>
+                        </div>
+                </StartInvestigationDateVariablesProvider>
             </ExposureAndFlightsContextProvider>
 
             <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>

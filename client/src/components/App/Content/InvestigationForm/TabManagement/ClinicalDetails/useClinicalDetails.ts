@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import Street from 'models/Street';
-import logger from 'logger/logger';
-import DBAddress from 'models/DBAddress';
+import DBAddress, { initDBAddress } from 'models/DBAddress';
 import { Service, Severity } from 'models/Logger';
+import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 
@@ -13,12 +13,31 @@ import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinic
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
+export const initialClinicalDetails: ClinicalDetailsData = {
+    isolationStartDate: null,
+    isolationEndDate: null,
+    isolationAddress: initDBAddress,
+    isInIsolation: false,
+    isIsolationProblem: false,
+    isIsolationProblemMoreInfo: '',
+    symptomsStartDate: null,
+    symptoms: [],
+    doesHaveBackgroundDiseases: false,
+    backgroundDeseases: [],
+    hospital: '',
+    hospitalizationStartDate: null,
+    hospitalizationEndDate: null,
+    isSymptomsStartDateUnknown: false,
+    doesHaveSymptoms: false,
+    wasHospitalized: false,
+    isPregnant: false,
+    otherSymptomsMoreInfo: '',
+    otherBackgroundDiseasesMoreInfo: ''
+};
+
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const {
-        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
-        setInitialDBClinicalDetails
-    } = parameters;
+    const { setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
@@ -161,7 +180,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         patientAddress = address;
                     }
                     const initialDBClinicalDetailsToSet = {
-                        ...initialDBClinicalDetails,
+                        ...initialClinicalDetails,
                         isPregnant: Boolean(patientClinicalDetails.isPregnant),
                         backgroundDeseases: patientClinicalDetails.backgroundDiseases,
                         doesHaveBackgroundDiseases: Boolean(patientClinicalDetails.doesHaveBackgroundDiseases),
@@ -185,7 +204,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                         otherBackgroundDiseasesMoreInfo: patientClinicalDetails.otherBackgroundDiseasesMoreInfo !== null ?
                         patientClinicalDetails.otherBackgroundDiseasesMoreInfo : '',
                     }
-                    setInitialDBClinicalDetails(initialDBClinicalDetailsToSet);
                     reset(initialDBClinicalDetailsToSet);
                     trigger();
                 } else {

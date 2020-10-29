@@ -1,4 +1,3 @@
-import { ClinicalDetailsDataAndSet } from 'commons/Contexts/ClinicalDetailsContext';
 import { ExposureAndFlightsDetailsAndSet } from 'commons/Contexts/ExposuresAndFlights';
 
 export interface useInvestigationFormOutcome {
@@ -9,6 +8,5 @@ export interface useInvestigationFormOutcome {
 };
 
 export interface useInvestigationFormParameters {
-    clinicalDetailsVariables: ClinicalDetailsDataAndSet;
     exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet;
 };
