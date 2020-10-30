@@ -1,7 +1,8 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware')
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { request } = require('http');
 
 require('dotenv').config();
 
@@ -9,6 +10,7 @@ const app = express();
 
 app.use((req, res, next) => {
     if(req.headers["x-ms-token-aad-id-token"]!== undefined) {
+        console.log(req.headers);
         req.headers.authorization = req.headers["x-ms-token-aad-id-token"];
     } else {
         req.headers.authorization = "fake token!";
