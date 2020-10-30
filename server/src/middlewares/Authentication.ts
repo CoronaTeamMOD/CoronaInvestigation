@@ -1,5 +1,3 @@
-// @ts-ignore
-import jwt_decode from 'jwt-decode';
 import { NextFunction, Request, Response } from 'express';
 
 import logger from '../Logger/Logger';
@@ -27,67 +25,48 @@ const handleConfidentialAuth = (
     response: Response,
     next: NextFunction
 ) => {
-    const token = request.headers.authorization;
-    if (!token) {
+    const userUpn = request.headers.authorization;
+
+    if (!userUpn) {
         logger.error({
             service: Service.SERVER,
             severity: Severity.MEDIUM,
             workflow: 'Authentication',
-            step: 'got no token at all'
+            step: 'got no user at all'
         })
         return response.status(401).json({ error: "unauthorized prod user" });
     }
 
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Authentication',
-        step: 'decoding the azure recived JWT token'
-    });
-    try {
-        const decoded = jwt_decode(token);
-        const user = {
-            id: (decoded[process.env.CLIENT_ID_FIELD] as string).split('@')[0],
-            name: decoded.name,
-        };
-
-        if (!user || !user.name || !user.id) {
-            logger.warning({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Authentication',
-                step: 'got unauthorized token'
-            })
-            return response.status(403).json({ error: "forbidden prod user" });
-        }
+        const userId =  userUpn.split('@')[0];
 
         logger.info({
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Authentication',
-            step: `authorized azure token successfully! got user: ${JSON.stringify(user)}`
+            step: `authorized azure upn successfully! got user: ${JSON.stringify(userId)}`
         });
 
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
             workflow: 'Authentication',
-            step: `request to the graphql API with parameters: ${user.id}`,
-            user: user.id,
+            step: `request to the graphql API with parameters: ${userId}`,
+            user: userId,
             investigation: +request.headers.epidemiologynumber
         });
 
-        graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
+        graphqlRequest(GET_USER_BY_ID, response.locals, { id: userId }).then((result: any) => {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: 'Authentication',
                 step: 'fetched user by id successfully',
-                user: user.id,
+                user: userId,
                 investigation: +request.headers.epidemiologynumber
             });
             response.locals.user = {
-                ...user,
+                id: userId,
+                name: result.data.userById?.userName,
                 userType: result.data.userById?.userType,
                 investigationGroup: result.data.userById?.investigationGroup,
                 countyByInvestigationGroup: {
@@ -101,20 +80,10 @@ const handleConfidentialAuth = (
                 severity: Severity.HIGH,
                 workflow: 'Authentication',
                 step: `error in requesting the graphql API: ${err}`,
-                user: user.id,
+                user: userId,
             });
             response.sendStatus(500);
         });;
-
-    } catch (error) {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.CRITICAL,
-            workflow: 'Authentication',
-            step: `error in decoding the recived token: ${token}`
-        });
-        return response.status(403).json({ error: 'unauthenticated user token' });
-    }
 }
 
 const authMiddleware = (
@@ -127,7 +96,7 @@ const authMiddleware = (
         logger.info({
             service: Service.SERVER,
             workflow: 'Authentication',
-            step: 'authenticating with the azure recived JWT token',
+            step: 'authenticating with the azure recived upn',
             severity: Severity.LOW
         });
         return handleConfidentialAuth(request, response, next);
@@ -135,7 +104,7 @@ const authMiddleware = (
         logger.info({
             service: Service.SERVER,
             workflow: 'Authentication',
-            step: 'authenticating with the stubuser recived token',
+            step: 'authenticating with the stubuser recived upn',
             severity: Severity.LOW
         });
         const token = request.headers.authorization;
@@ -145,7 +114,7 @@ const authMiddleware = (
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Authentication',
-                step: `fake user doesn't exist got the token: ${token}`
+                step: `fake user doesn't exist got the upn: ${token}`
             })
             return response.status(401).json({ error: "unauthorized noauth user" });
         } else {
