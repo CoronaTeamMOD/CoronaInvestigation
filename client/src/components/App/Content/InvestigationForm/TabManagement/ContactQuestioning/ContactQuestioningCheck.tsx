@@ -30,7 +30,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <Toggle
                             test-id='doesFeelGood'
                             value={interactedContact.doesFeelGood}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_FEEL_GOOD, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_FEEL_GOOD, booleanValue)}
                         />
                     </Grid>
                 </Grid>
@@ -40,7 +40,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <Toggle
                             test-id='doesHaveBackgroundDiseases'
                             value={interactedContact.doesHaveBackgroundDiseases}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_HAVE_BACKGROUND_DISEASES, booleanValue)}
                         />
                     </Grid>
                 </Grid>
@@ -50,7 +50,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <Toggle
                             test-id='doesLiveWithConfirmed'
                             value={interactedContact.doesLiveWithConfirmed}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_LIVE_WITH_CONFIRMED, booleanValue)}
                         />
                     </Grid>
                 </Grid>
@@ -60,7 +60,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <Toggle
                             test-id='repeatingOccuranceWithConfirmed'
                             value={interactedContact.repeatingOccuranceWithConfirmed}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.REPEATING_OCCURANCE_WITH_CONFIRMED, booleanValue)}
                         />
                     </Grid>
                 </Grid>
@@ -70,7 +70,7 @@ const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => 
                         <Toggle
                             test-id='doesWorkWithCrowd'
                             value={interactedContact.doesWorkWithCrowd}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_WORK_WITH_CROWD, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_WORK_WITH_CROWD, booleanValue)}
                         />
                     </Grid>
                 </Grid>

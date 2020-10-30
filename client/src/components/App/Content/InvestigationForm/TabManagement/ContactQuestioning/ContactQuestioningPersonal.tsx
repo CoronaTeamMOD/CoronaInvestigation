@@ -37,7 +37,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             firstOption='ת.ז'
                             secondOption='דרכון'
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
-                            onChange={(event, value) => changeIdentificationType(interactedContact, value)}
+                            onChange={(event, value) => value !== null && changeIdentificationType(interactedContact, value)}
                         />
                     </Grid>
                     <FieldName fieldName='מספר תעודה:'/>
