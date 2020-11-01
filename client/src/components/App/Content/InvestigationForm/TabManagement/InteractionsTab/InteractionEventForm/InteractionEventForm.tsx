@@ -181,24 +181,25 @@ const InteractionEventForm: React.FC<Props> = (
               </FormInput>
             </Grid>
           </Grid>
-          {<Collapse in={!memoIsPrivatePlace}> <Grid className={formClasses.formRow} container justify='flex-start'>
-             <FormInput fieldName='האם מותר להחצנה'>
-              <Controller
-                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
-                control={methods.control}
-                render={(props) => (
-                  <Toggle
-                    test-id='allowExternalization'
-                    value={props.value && !memoIsPrivatePlace} 
-                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
-                    className={formClasses.formToggle}
-                  />
-                )}
-              />
-            </FormInput>
-          </Grid>
+          <Collapse in={!memoIsPrivatePlace}> 
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+              <FormInput fieldName='האם מותר להחצנה'>
+                <Controller
+                  name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                  control={methods.control}
+                  render={(props) => (
+                    <Toggle
+                      test-id='allowExternalization'
+                      value={props.value} 
+                      onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                      className={formClasses.formToggle}
+                    />
+                  )}
+                />
+              </FormInput>
+            </Grid>
           </Collapse>
-          }
+
         </Grid>
         <Divider light={true} />
         <Grid
