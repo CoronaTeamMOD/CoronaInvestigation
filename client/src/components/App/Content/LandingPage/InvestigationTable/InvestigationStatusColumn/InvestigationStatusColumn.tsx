@@ -1,5 +1,4 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import logger from 'logger/logger';
 import { useSelector } from 'react-redux';
 import { LockOpen } from '@material-ui/icons';
@@ -8,15 +7,18 @@ import { Tooltip, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import { Service, Severity } from 'models/Logger';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 
 import useStyles from './InvestigationStatusColumnStyles';
 
 const InvestigationStatusColumn = (props: Props) => {
 
+    const { investigationStatus, epidemiologyNumber, moveToTheInvestigationForm } = props;
+    
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const { investigationStatus, epidemiologyNumber, moveToTheInvestigationForm } = props;
+    const { alertError } = useCustomSwal();
 
     const classes = useStyles();
 
@@ -46,13 +48,7 @@ const InvestigationStatusColumn = (props: Props) => {
                 user: userId,
                 investigation: epidemiologyNumber
             });
-            Swal.fire({
-                title: 'לא ניתן לפתוח את החקירה מחדש',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                }
-            })
+            alertError('לא ניתן לפתוח את החקירה מחדש');
         })
     }
 

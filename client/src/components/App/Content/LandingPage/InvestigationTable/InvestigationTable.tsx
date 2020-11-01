@@ -255,9 +255,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
                 return <InvestigationStatusColumn 
-                investigationStatus={investigationStatus} 
-                epidemiologyNumber={epidemiologyNumber}
-                moveToTheInvestigationForm={moveToTheInvestigationForm}
+                    investigationStatus={investigationStatus} 
+                    epidemiologyNumber={epidemiologyNumber}
+                    moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]

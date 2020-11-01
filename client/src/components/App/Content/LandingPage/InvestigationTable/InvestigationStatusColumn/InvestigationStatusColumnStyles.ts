@@ -8,10 +8,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     openInvestigatonIcon: {
         margin: '0 0.5vw'
     },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
 }));
 
 export default useStyles;
