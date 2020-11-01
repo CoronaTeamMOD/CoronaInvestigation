@@ -90,7 +90,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                                 <NumericTextField
                                     name={props.name}
                                     value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue)}
+                                    onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
                                     onBlur={props.onBlur}
                                     label={PHONE_NUMBER_LABEL}
                                 />
