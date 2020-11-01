@@ -4,6 +4,7 @@ import { subDays, differenceInCalendarDays } from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import ContactStatus from 'models/ContactStatus';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
@@ -13,7 +14,7 @@ import {useContactQuestioningOutcome, useContactQuestioningParameters} from './C
 import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact} = parameters;
+    const { setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact, setFamilyRelationships, contactStatuses, setContactStatuses } = parameters;
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -136,6 +137,90 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         })
     }
 
+    const loadFamilyRelationships = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting family relationships',
+            step: 'launching server request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/contactedPeople/familyRelationships').then((result: any) => {
+            if (result?.data?.data?.allFamilyRelationships) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting family relationships',
+                    step: 'got respond from the server that has data',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow: 'Getting family relationships',
+                    step: 'got respond from the server without data',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting family relationships',
+                step: `got the following error from the server: ${err}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+        });
+    }
+
+    const loadContactStatuses = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Getting contact statuses',
+            step: 'launching server request',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.get('/contactedPeople/contactStatuses').then((result: any) => {
+            if (result?.data?.data?.allContactStatuses) {
+                logger.info({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Getting contact statuses',
+                    step: 'got respond from the server that has data',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                setContactStatuses(result?.data?.data?.allContactStatuses?.nodes);
+            } else {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow: 'Getting contact statuses',
+                    step: 'got respond from the server without data',
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Getting contact statuses',
+                step: `got the following error from the server: ${err}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+        });
+    }
+
     const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
         let interactedContacts: InteractedContact[] = [];
         logger.info({
@@ -171,7 +256,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             contactDate: contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
                             contactType: contact.contactType,
-                            cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
+                            contactStatus: contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === contact.contactStatus) as ContactStatus,
                             extraInfo: contact.extraInfo,
                             relationship: contact.relationship,
                             familyRelationship: contact.familyRelationship,
@@ -214,20 +299,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
     };
 
-    const updateCantReachInteractedContact = (interactedContact: InteractedContact, value: boolean) => {
-        setCurrentInteractedContact(interactedContact);
-        const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
-        const updatedContactedInteractions = [...allContactedInteractions];
-        const updatedContact : InteractedContact = {
-            ...allContactedInteractions[contactIndex],
-            [InteractedContactFields.CANT_REACH_CONTACT]: value,
-            [InteractedContactFields.EXPAND]: value ? false : allContactedInteractions[contactIndex][InteractedContactFields.EXPAND]
-        };
-        setCurrentInteractedContact(updatedContact);
-        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
-        setAllContactedInteractions(updatedContactedInteractions);
-    };
-
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
         setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
@@ -252,7 +323,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         changeIdentificationType,
         loadInteractedContacts,
         saveContactQuestioning,
-        updateCantReachInteractedContact
+        loadFamilyRelationships,
+        loadContactStatuses,
     };
 };
 

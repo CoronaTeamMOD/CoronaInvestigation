@@ -1,4 +1,5 @@
 import Person from './Person';
+import ContactStatus from './ContactStatus';
 import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
 
@@ -9,7 +10,7 @@ interface InteractedContact extends Person {
     contactType: ContactType;
     extraInfo: string;
     birthDate: Date;
-    cantReachContact: boolean;
+    contactStatus: ContactStatus;
     relationship: string;
     familyRelationship: number;
     occupation: Occupations;
