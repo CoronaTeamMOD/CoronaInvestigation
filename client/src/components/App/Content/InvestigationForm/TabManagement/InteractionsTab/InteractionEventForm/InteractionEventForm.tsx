@@ -88,8 +88,13 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
-  const isPrivatePlace: boolean = React.useMemo(
-    () =>  placeType ==='בית פרטי', [placeType]);
+  const memoIsPrivatePlace: boolean = React.useMemo(() => {
+    const isPrivatePlace = placeType === 'בית פרטי';
+    if (isPrivatePlace) {
+      methods.setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, false);
+    }
+    return isPrivatePlace;
+  }, [placeType]);
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
@@ -176,7 +181,7 @@ const InteractionEventForm: React.FC<Props> = (
               </FormInput>
             </Grid>
           </Grid>
-          {<Collapse in={!isPrivatePlace}> <Grid className={formClasses.formRow} container justify='flex-start'>
+          {<Collapse in={!memoIsPrivatePlace}> <Grid className={formClasses.formRow} container justify='flex-start'>
              <FormInput fieldName='האם מותר להחצנה'>
               <Controller
                 name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
@@ -184,7 +189,7 @@ const InteractionEventForm: React.FC<Props> = (
                 render={(props) => (
                   <Toggle
                     test-id='allowExternalization'
-                    value={props.value && !isPrivatePlace} 
+                    value={props.value && !memoIsPrivatePlace} 
                     onChange={(event, value: boolean) => props.onChange(value as boolean)}
                     className={formClasses.formToggle}
                   />
