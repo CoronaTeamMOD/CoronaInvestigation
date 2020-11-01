@@ -31,7 +31,6 @@ interface SetIsCurrentlyHospitialized {
     payload: {isCurrentlyHospitialized: boolean}
 }
 
-
 interface SetLastOpenedEpidemiologyNum {
     type: typeof SET_LAST_OPENED_EPIDEMIOLOGY_NUM,
     payload: {lastOpenedEpidemiologyNumber: number}
@@ -61,7 +60,6 @@ interface SetEndTime {
     type: typeof SET_END_TIME,
     payload: {endTime: Date | null}
 }
-
 
 export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
  | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus | SetEndTime;
