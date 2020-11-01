@@ -1,6 +1,7 @@
-import React from 'react'
-import {Tooltip, ClickAwayListener, IconButton} from '@material-ui/core'
-import {Comment} from '@material-ui/icons'
+import React from 'react';
+import {Comment} from '@material-ui/icons';
+import {Tooltip, ClickAwayListener, IconButton} from '@material-ui/core';
+
 import useStyles from './commentDisplayStyles';
 
 const noCommentMessage = 'אין הערה';

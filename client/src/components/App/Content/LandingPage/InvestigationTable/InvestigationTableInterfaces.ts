@@ -27,4 +27,5 @@ export interface useInvestigationTableOutcome {
     onOk: () => void;
     onCancel: () => void;
     snackbarOpen: boolean;
+    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 };

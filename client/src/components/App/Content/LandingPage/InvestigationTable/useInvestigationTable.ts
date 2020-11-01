@@ -701,6 +701,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onCancel,
         onOk,
         snackbarOpen,
+        moveToTheInvestigationForm
     };
 };
 
