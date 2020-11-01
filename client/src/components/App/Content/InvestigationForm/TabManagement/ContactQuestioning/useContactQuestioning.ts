@@ -4,6 +4,7 @@ import { subDays, differenceInCalendarDays } from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import ContactStatus from 'models/ContactStatus';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
