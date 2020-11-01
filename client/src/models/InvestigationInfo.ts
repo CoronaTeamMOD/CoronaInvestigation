@@ -11,6 +11,7 @@ interface InvestigationInfo {
     investigatedPatientId: number;
     userByCreator: StaticUser;
     userByLastUpdator: StaticUser;
+    endTime: Date | null;
 }
 
 export default InvestigationInfo;

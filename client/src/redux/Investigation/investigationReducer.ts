@@ -19,7 +19,8 @@ const initialState: InvestigationRedux = {
     lastOpenedEpidemiologyNumber: defaultEpidemiologyNumber,
     isCurrentlyLoading: false,
     axiosInterceptorId: -1,
-    validationDate: new Date()
+    validationDate: new Date(),
+    endTime: null
 }
 
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
@@ -33,6 +34,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return {...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber}
         case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
         case Actions.SET_VALIDATION_DATE: return { ...state, validationDate: action.payload.validationDate }
+        case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
         default: return state;
     }
 }

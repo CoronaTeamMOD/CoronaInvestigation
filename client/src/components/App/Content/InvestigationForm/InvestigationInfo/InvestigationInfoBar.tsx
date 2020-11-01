@@ -14,7 +14,7 @@ import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
-import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './InvestigationInfoBarStyles';
 import {CommentContextProvider} from './Context/CommentContext';
@@ -34,6 +34,7 @@ const defaultInvestigationStaticInfo = {
     startTime: new Date(),
     lastUpdateTime: new Date(),
     investigatingUnit: '',
+    endTime: null,
     investigatedPatient: {
         isDeceased: false,
         additionalPhoneNumber: '',
@@ -106,7 +107,8 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setIsCurrentlyHospitialized(investigationInfo.investigatedPatient.isCurrentlyHospitalized);
                     const gender = investigationInfo.investigatedPatient.gender;
                     setGender(gender ? gender : '');
-                    setValidationDate(investigationInfo.coronaTestDate)
+                    setValidationDate(investigationInfo.coronaTestDate);
+                    setEndTime(investigationInfo.endTime);
                     setInvestigationStaticInfo(investigationInfo);
                 }
                 else {
