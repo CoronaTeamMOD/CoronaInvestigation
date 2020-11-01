@@ -1,9 +1,9 @@
 import React from 'react';
 
-import InteractedContact from 'models/InteractedContact';
-import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 import useExcel from 'Utils/vendor/useExcel';
-import {isObjectEmpty} from "Utils/vendor/underscoreReplacement";
+import InteractedContact from 'models/InteractedContact';
+import {isObjectEmpty} from 'Utils/vendor/underscoreReplacement';
+import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
 
 type ParseCallback = (data:InteractedContact[]) => void;
 type FailCallback = (error?:Error|string) => void;
@@ -31,7 +31,6 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         doesHaveBackgroundDiseases: parseBooleanAnswer,
         doesFeelGood: parseBooleanAnswer,
         repeatingOccuranceWithConfirmed: parseBooleanAnswer,
-        cantReachContact: parseBooleanAnswer,
         doesWorkWithCrowd: parseBooleanAnswer,
         doesNeedHelpInIsolation: parseBooleanAnswer,
         doesLiveWithConfirmed: parseBooleanAnswer,
@@ -43,12 +42,12 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         (Object.keys(ContactedPersonFieldMapper) as (keyof typeof ContactedPersonFieldMapper)[])
         .find(englishName => ContactedPersonFieldMapper[englishName] === hebrewName);
 
-    const parseRow = (row:ContactedPersonExcel) => {
+    const parseRow = (row: ContactedPersonExcel) => {
         const parsedObj: InteractedContact | {} = {};
         (Object.keys(row) as (keyof ContactedPersonExcel)[])
             .forEach(hebrewColumnName => {
                 const englishFieldName: keyof ContactedPersonExcel | undefined = getEnglishNameByHebrew(hebrewColumnName);
-                if(!englishFieldName) return;
+                if (!englishFieldName) return;
                 const value = row[hebrewColumnName as keyof typeof row];
                 const parsingFunc = constParsingFunctions[englishFieldName];
                 (parsedObj as any)[englishFieldName] = parsingFunc ? parsingFunc(value) : value

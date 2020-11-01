@@ -1,26 +1,27 @@
-import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form'
 import { format } from 'date-fns';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ExpandMore } from '@material-ui/icons';
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Divider, FormControlLabel, Grid, Typography } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, TextField, Typography } from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import ContactType from 'models/ContactType';
+import ContactStatus from 'models/ContactStatus';
 import { Severity, Service } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
+import InteractedContactFields from 'models/enums/InteractedContact';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import FormTitle from 'commons/FormTitle/FormTitle';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
-import InteractedContactFields from 'models/enums/InteractedContact';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
@@ -34,55 +35,21 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
     const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
     const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
+    const [contactStatuses, setContactStatuses] = React.useState<ContactStatus[]>([]);
+    const [contactStatusInput, setContactStatusInput] = React.useState<string>();
 
     const methods = useForm();
 
-    const { saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, 
-        loadInteractedContacts, updateCantReachInteractedContact } =
-        useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact });
+    const {
+        saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
+        loadFamilyRelationships, loadContactStatuses,
+    } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact, setFamilyRelationships, contactStatuses, setContactStatuses });
 
-    React.useEffect(() => {
+    useEffect(() => {
         loadInteractedContacts();
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Getting family relationships',
-            step: 'launching server request',
-            user: userId,
-            investigation: investigationId
-        });
-        axios.get('/contactedPeople/familyRelationships').then((result: any) => {
-            if (result?.data?.data?.allFamilyRelationships) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting family relationships',
-                    step: 'got respond from the server that has data',
-                    user: userId,
-                    investigation: investigationId
-                });
-                setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
-            } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow: 'Getting family relationships',
-                    step: 'got respond from the server without data',
-                    user: userId,
-                    investigation: investigationId
-                });
-            }
-        }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting family relationships',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: investigationId
-            });
-        });
-    },[]);
+        loadFamilyRelationships();
+        loadContactStatuses();
+    }, []);
 
     const saveContacted = (e: React.ChangeEvent<{}>) => {
         e.preventDefault();
@@ -131,19 +98,24 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                         >
                                             <Grid item xs={2} container>
                                                 <Grid item xs={6} container>
-                                                    <FormControlLabel
-                                                        onClick={(event) => event.stopPropagation()}
-                                                        onChange={((event: any, checked: boolean) => {
-                                                            updateCantReachInteractedContact(interactedContact, checked);
-                                                        })}
-                                                        control={
-                                                            <Checkbox
-                                                                test-id='noAnswer'
-                                                                color='primary'
-                                                                checked={currentInteractedContact?.id === interactedContact.id ? currentInteractedContact?.cantReachContact : interactedContact.cantReachContact}
+                                                    <Autocomplete
+                                                        options={contactStatuses}
+                                                        getOptionLabel={(option) => option.displayName}
+                                                        inputValue={contactStatusInput}
+                                                        value={interactedContact.contactStatus}
+                                                        onChange={(event, selectedStatus) => {
+                                                            updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus);
+                                                        }}
+                                                        onInputChange={(event, newContactStatus) => {
+                                                            setContactStatusInput(newContactStatus);
+                                                        }}
+                                                        renderInput={(params) =>
+                                                            <TextField
+                                                                {...params}
+                                                                placeholder='סטטוס'
+                                                                onClick={(event) => event.stopPropagation()}
                                                             />
                                                         }
-                                                        label='אין מענה'
                                                     />
                                                 </Grid>
                                                 <Grid container item xs={2}>
