@@ -142,7 +142,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Toggle
                             test-id='doesNeedHelpInIsolation'
                             value={interactedContact.doesNeedHelpInIsolation}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
                         />
                     </Grid>
                 </Grid>

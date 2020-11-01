@@ -17,6 +17,7 @@ const AlphabetTextField: AlphbetTextFieldType = (props) => {
   return (
     <TypePreventiveTextField
         {...props}
+        value={props.value || ''}
         validationSchema={stringAlphabet}
     />
   );
