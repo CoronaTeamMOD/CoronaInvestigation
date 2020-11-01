@@ -191,7 +191,6 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
-            
           </Grid>
           </Collapse>
           }
