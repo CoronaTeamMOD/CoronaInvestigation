@@ -31,6 +31,25 @@ type AuthenticationReturn = [{
 
 const userNameClaimType = 'name';
 
+const notInLocalEnv = () => (
+    process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
+    process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
+    process.env.REACT_APP_ENVIRONMENT === Environment.TEST
+);
+
+const getAuthUserData = async () => {
+    const { protocol, hostname } = window.location;
+    const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
+    const userId = data[0].user_id.split('@')[0];
+    const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
+    return { userId, userName };
+};
+
+const getStubAuthUserData = () => ({
+    userId: '7',
+    userName: 'stubuser'
+});
+
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
@@ -49,25 +68,9 @@ const App: React.FC = (): JSX.Element => {
             step: 'before environment condition'
         })
 
-        if (notInLocalEnv()) {
-            const { protocol, hostname } = window.location;
-            const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
-            const userId = data[0].user_id.split('@')[0];
-            const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
-            fetchUser(userId, userName);
-        } else {
-            const userId = '7'
-            const userName = 'stubuser';
-            fetchUser(userId, userName);
-        }
+        const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
+        fetchUser(userId, userName);
     };
-
-    const notInLocalEnv = () => (
-        process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
-        process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
-        process.env.REACT_APP_ENVIRONMENT === Environment.TEST
-    );
-
 
     const handleSaveUser = () => {
         handleCloseSignUp();
