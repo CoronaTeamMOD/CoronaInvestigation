@@ -1,16 +1,16 @@
 import React from 'react';
+import Swal from 'sweetalert2';
+import logger from 'logger/logger';
+import { useSelector } from 'react-redux';
 import { LockOpen } from '@material-ui/icons';
+import StoreStateType from 'redux/storeStateType';
 import { Tooltip, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import { Service, Severity } from 'models/Logger';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 
 import useStyles from './InvestigationStatusColumnStyles';
-import { Service, Severity } from 'models/Logger';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
-import logger from 'logger/logger';
-import Swal from 'sweetalert2';
 
 const InvestigationStatusColumn = (props: Props) => {
 
