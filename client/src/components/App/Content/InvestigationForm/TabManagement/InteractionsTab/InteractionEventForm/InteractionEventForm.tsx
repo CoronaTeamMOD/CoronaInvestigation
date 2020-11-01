@@ -3,7 +3,7 @@ import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-for
 import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
-import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
+import { Grid, Typography, Divider, IconButton, Collapse } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -47,6 +47,7 @@ const InteractionEventForm: React.FC<Props> = (
   });
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
+  
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
   const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
@@ -87,6 +88,9 @@ const InteractionEventForm: React.FC<Props> = (
       return `${placeType}`;
     }
   };
+
+  const isPrivatePlace: boolean = React.useMemo(
+    () =>  placeType ==='בית פרטי', [placeType]);
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
@@ -173,22 +177,25 @@ const InteractionEventForm: React.FC<Props> = (
               </FormInput>
             </Grid>
           </Grid>
-          <Grid className={formClasses.formRow} container justify='flex-start'>
-            <FormInput fieldName='האם מותר להחצנה'>
+          {<Collapse in={!isPrivatePlace}> <Grid className={formClasses.formRow} container justify='flex-start'>
+             <FormInput fieldName='האם מותר להחצנה'>
               <Controller
                 name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
                 control={methods.control}
                 render={(props) => (
                   <Toggle
                     test-id='allowExternalization'
-                    value={props.value}
+                    value={props.value && !isPrivatePlace} 
                     onChange={(event, value: boolean) => props.onChange(value as boolean)}
                     className={formClasses.formToggle}
                   />
                 )}
               />
             </FormInput>
+            
           </Grid>
+          </Collapse>
+          }
         </Grid>
         <Divider light={true} />
         <Grid
