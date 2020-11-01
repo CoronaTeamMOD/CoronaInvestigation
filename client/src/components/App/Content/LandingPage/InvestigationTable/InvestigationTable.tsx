@@ -23,6 +23,7 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
+import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 
@@ -75,7 +76,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk,snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
+        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles,
+        moveToTheInvestigationForm
     } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, 
         setAllCounties, setAllStatuses, setAllDesks });
 
@@ -249,6 +251,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 );
             case TableHeadersNames.comment:
                 return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]} />
+            case TableHeadersNames.investigationStatus:
+                const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
+                const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
+                return <InvestigationStatusColumn 
+                investigationStatus={investigationStatus} 
+                epidemiologyNumber={epidemiologyNumber}
+                moveToTheInvestigationForm={moveToTheInvestigationForm}
+                />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

@@ -187,6 +187,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigation: epidemiologyNumberVal
         })
         setIsInInvestigation(true);
+        console.log(epidemiologyNumberVal, defaultEpidemiologyNumber, epidemiologyNumberVal !== defaultEpidemiologyNumber)
         epidemiologyNumberVal !== defaultEpidemiologyNumber && window.open(investigationURL);
         setIsCurrentlyLoading(true);
         timeout(15000).then(() => {
@@ -701,6 +702,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onCancel,
         onOk,
         snackbarOpen,
+        moveToTheInvestigationForm
     };
 };
 

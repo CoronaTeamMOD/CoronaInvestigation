@@ -129,49 +129,51 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
 });
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
-    const {investigationMainStatus, investigationSubStatus} = request.body;
+    const {investigationMainStatus, investigationSubStatus, epidemiologyNumber} = request.body;
     const currentWorkflow = investigationMainStatus === InvestigationMainStatus.DONE ? 'Ending Investigation' : 'Investigation click';
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
         workflow: currentWorkflow,
         step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify({
-            epidemiologyNumber: response.locals.epidemiologynumber,
+            epidemiologyNumber,
             status: investigationMainStatus
         })}`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, {
-        epidemiologyNumber: parseInt(response.locals.epidemiologynumber),
+        epidemiologyNumber,
         investigationStatus: investigationMainStatus,
         investigationSubStatus: investigationSubStatus
     })
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: currentWorkflow,
-                step: 'the investigation status was updated successfully',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologynumber
-            });
-            if (investigationMainStatus === InvestigationMainStatus.DONE) {
+            if (result?.data && !result.errors) {
                 logger.info({
-                    service: Service.CLIENT,
+                    service: Service.SERVER,
                     severity: Severity.LOW,
-                    workflow: 'Ending Investigation',
-                    step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
-                        epidemiologyNumber: response.locals.epidemiologynumber,
-                        investigationEndTime: new Date()
-                    })}`,
+                    workflow: currentWorkflow,
+                    step: 'the investigation status was updated successfully',
                     user: response.locals.user.id,
                     investigation: response.locals.epidemiologynumber
                 });
-                graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
-                    epidemiologyNumber: parseInt(response.locals.epidemiologynumber),
-                    investigationEndTime: new Date()
-                })
+                if (investigationMainStatus === InvestigationMainStatus.DONE) {
+                    const investigationEndTime = new Date();
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Ending Investigation',
+                        step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
+                            epidemiologyNumber: response.locals.epidemiologynumber,
+                            investigationEndTime
+                        })}`,
+                        user: response.locals.user.id,
+                        investigation: response.locals.epidemiologynumber
+                    });
+                    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
+                        epidemiologyNumber: parseInt(response.locals.epidemiologynumber),
+                        investigationEndTime
+                    })
                     .then((result: any) => {
                         logger.info({
                             service: Service.CLIENT,
@@ -181,19 +183,31 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                             user: response.locals.user.id,
                             investigation: response.locals.epidemiologynumber
                         });
-                        response.send(result)
+                        response.send({message: 'updated the investigation status and end time successfully'});
                     }).catch(err => {
                         logger.error({
                             service: Service.CLIENT,
                             severity: Severity.LOW,
                             workflow: 'Ending Investigation',
-                            step: `got error from the DB in the request to update end time: ${err}`,
+                            step: `failed to update the investigation end time due to: ${err}`,
                             user: response.locals.user.id,
                             investigation: response.locals.epidemiologynumber
                         });
-                });
+                        response.status(errorStatusCode).json({message: 'failed to update the investigation end time'});
+                    });
+                } else {
+                    response.send({message: 'updated the investigation status successfully'});
+                }
             } else {
-                response.send(result)
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: currentWorkflow,
+                    step: `failed to update investigation status due to: ${JSON.stringify(result)}`,
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologyNumber
+                });
+                response.status(errorStatusCode).json({message: 'failed to update investigation status'});
             }
         })
         .catch(err => {
@@ -201,10 +215,11 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: currentWorkflow,
-                step: `the investigation status failed to update due to: ${err}`,
+                step: `failed to update investigation status due to: ${err}`,
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologyNumber
             });
+            response.status(errorStatusCode).json({message: 'failed to update investigation status'});
         });
 })
 
