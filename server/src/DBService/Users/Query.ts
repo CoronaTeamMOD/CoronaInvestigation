@@ -34,10 +34,10 @@ query AllGroupUsers($investigationGroup: Int!) {
       serialNumber
       userName
       investigationGroup
-      newInvestigationsCount: investigationsByLastUpdator(filter: {investigationStatus: {equalTo: "חדשה"}}) {
+      newInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: "חדשה"}}) {
         totalCount
       }
-      activeInvestigationsCount: investigationsByLastUpdator(filter: {investigationStatus: {equalTo: "בטיפול"}}) {
+      activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: "בטיפול"}}) {
         totalCount
       }
       userType
