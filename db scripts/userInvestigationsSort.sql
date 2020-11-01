@@ -126,8 +126,6 @@ RETURN (select
 from public.investigation investigationTable
 where (
 	investigationTable.creator = user_id
-	AND
-	investigationTable.investigation_status != 'טופלה'
 ));
 END;
 $BODY$;
