@@ -47,7 +47,6 @@ const InteractionEventForm: React.FC<Props> = (
   });
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
-  
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
   const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
