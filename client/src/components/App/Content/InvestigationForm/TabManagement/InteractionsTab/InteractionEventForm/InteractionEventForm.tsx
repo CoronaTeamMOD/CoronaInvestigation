@@ -3,7 +3,7 @@ import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-for
 import { isValid } from 'date-fns';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
-import { Grid, Typography, Divider, IconButton } from '@material-ui/core';
+import { Grid, Typography, Divider, IconButton, Collapse } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -87,6 +87,14 @@ const InteractionEventForm: React.FC<Props> = (
       return `${placeType}`;
     }
   };
+
+  const memoIsPrivatePlace: boolean = React.useMemo(() => {
+    const isPrivatePlace = placeType === 'בית פרטי';
+    if (isPrivatePlace) {
+      methods.setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, false);
+    }
+    return isPrivatePlace;
+  }, [placeType]);
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
@@ -173,22 +181,25 @@ const InteractionEventForm: React.FC<Props> = (
               </FormInput>
             </Grid>
           </Grid>
-          <Grid className={formClasses.formRow} container justify='flex-start'>
-            <FormInput fieldName='האם מותר להחצנה'>
-              <Controller
-                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
-                control={methods.control}
-                render={(props) => (
-                  <Toggle
-                    test-id='allowExternalization'
-                    value={props.value}
-                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
-                    className={formClasses.formToggle}
-                  />
-                )}
-              />
-            </FormInput>
-          </Grid>
+          <Collapse in={!memoIsPrivatePlace}> 
+            <Grid className={formClasses.formRow} container justify='flex-start'>
+              <FormInput fieldName='האם מותר להחצנה'>
+                <Controller
+                  name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                  control={methods.control}
+                  render={(props) => (
+                    <Toggle
+                      test-id='allowExternalization'
+                      value={props.value} 
+                      onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                      className={formClasses.formToggle}
+                    />
+                  )}
+                />
+              </FormInput>
+            </Grid>
+          </Collapse>
+
         </Grid>
         <Divider light={true} />
         <Grid
