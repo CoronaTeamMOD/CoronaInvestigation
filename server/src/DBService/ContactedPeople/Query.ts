@@ -41,6 +41,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       cantReachContact
       doesWorkWithCrowd
       doesNeedIsolation
+      contactStatus
     }
   }
 }
@@ -49,6 +50,17 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
 export const GET_ALL_FAMILY_RELATIONSHIPS = gql`
 query getAllFamilyRelationships {
   allFamilyRelationships(orderBy: DISPLAY_NAME_ASC) {
+    nodes {
+      id
+      displayName
+    }
+  }
+}
+`;
+
+export const GET_ALL_CONTACT_STATUSES = gql`
+query getAllContactStatuses {
+  allContactStatuses(orderBy: DISPLAY_NAME_ASC) {
     nodes {
       id
       displayName

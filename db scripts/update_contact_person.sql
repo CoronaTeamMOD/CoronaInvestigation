@@ -77,8 +77,8 @@ begin
 				  
 			person_id := currval('person_id_seq');
 			INSERT INTO public.contacted_person
-			(person_info, contact_event,extra_info, contact_type)
-			VALUES(person_id, contact_event_id,extraInfo, contactType);
+			(person_info, contact_event,extra_info, contact_type, contact_status)
+			VALUES(person_id, contact_event_id,extraInfo, contactType, 1);
 	    end if;
 	end loop;
 end;

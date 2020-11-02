@@ -5,12 +5,13 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity, Service } from '../../Models/Logger/types';
 import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
 import {
+    GET_ALL_CONTACT_STATUSES,
     GET_ALL_FAMILY_RELATIONSHIPS,
     GET_AMOUNT_OF_CONTACTED_PEOPLE,
     GET_CONTACTED_PEOPLE,
     GET_FOREIGN_KEYS_BY_NAMES
 } from '../../DBService/ContactedPeople/Query';
-import InteractedContact from "../../Models/ContactedPerson/ContactedPerson";
+import InteractedContact from '../../Models/ContactedPerson/ContactedPerson';
 
 const ContactedPeopleRoute = Router();
 
@@ -42,7 +43,52 @@ ContactedPeopleRoute.get('/familyRelationships', (request: Request, response: Re
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-    })
+        response.sendStatus(500);
+    });
+});
+
+ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting contact statuses',
+        step: 'launching graphql API request',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    graphqlRequest(GET_ALL_CONTACT_STATUSES, response.locals).then((result: any) => {
+        if (result?.data?.allContactStatuses?.nodes) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Getting contact statuses',
+                step: 'got respond from the DB',
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+            response.send(result?.data?.allContactStatuses?.nodes);
+        } else {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting contact statuses',
+                step: `got error from the graphql API ${result.errors[0].message ? result.errors[0].message : JSON.stringify(result)}`,
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+            response.status(500).json({ error: 'failed to fetch contact statuses' });
+        }
+    }).catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Getting contact statuses',
+            step: `got error from the graphql API ${err}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+        response.status(500).json({ error: 'failed to fetch contact statuses' });
+    });
 });
 
 ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) =>
