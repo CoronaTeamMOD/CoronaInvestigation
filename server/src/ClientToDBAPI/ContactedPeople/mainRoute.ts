@@ -91,6 +91,37 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
+ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Getting contact statuses',
+        step: 'launching graphql API request',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    graphqlRequest(GET_ALL_CONTACT_STATUSES, response.locals).then((result: any) => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'Getting contact statuses',
+            step: 'got respond from the DB',
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+        response.send(result)
+    }).catch(err => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Getting contact statuses',
+            step: `got error from the graphql API ${err}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        });
+    })
+});
+
 ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) =>
     graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, {investigationId: parseInt(request.params.investigationId)})
         .then((result: any) => response.send(result))
@@ -179,6 +210,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             city: contactedPerson.contactedPersonCity || '',
             contactType: contactedPerson.contactType || '',
             familyRelationship: contactedPerson.familyRelationship || '',
+            contactStatus: contactedPerson.contactStatus || ''
         };
 
         try {
@@ -191,10 +223,11 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             });
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
 
-            const {allCities, allContactTypes, allFamilyRelationships} = parsedForeignKeys.data;
+            const {allCities, allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
             const contactedPersonCity = getIdFromResult(allCities),
                 contactType = getIdFromResult(allContactTypes),
-                familyRelationship = getIdFromResult(allFamilyRelationships);
+                familyRelationship = getIdFromResult(allFamilyRelationships),
+                contactStatus = getIdFromResult(allContactStatuses);
 
             return {
                 ...contactedPerson,
@@ -202,6 +235,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 contactedPersonCity,
                 contactType,
                 familyRelationship,
+                contactStatus
             };
         } catch (e) {
             logger.error({
@@ -218,6 +252,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 contactedPersonCity: null,
                 contactType: null,
                 familyRelationship: null,
+                contactStatus: null
             }
         }
 

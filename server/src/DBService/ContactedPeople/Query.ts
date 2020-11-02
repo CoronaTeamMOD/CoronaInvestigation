@@ -70,7 +70,7 @@ query getAllContactStatuses {
 `;
 
 export const GET_FOREIGN_KEYS_BY_NAMES = gql`
-query getContactedPersonForeignIds($city: String!, $contactType:String!, $familyRelationship:String!) {
+query getContactedPersonForeignIds($city: String!, $contactType:String!, $familyRelationship:String!, $contactStatus:String!) {
   allCities(condition: {displayName: $city}, first: 1) {
     nodes {
       id
@@ -82,6 +82,11 @@ query getContactedPersonForeignIds($city: String!, $contactType:String!, $family
     }
   }
    allFamilyRelationships(condition: {displayName: $familyRelationship}, first: 1) {
+    nodes {
+      id
+    }
+  }
+  allContactStatuses(condition: {displayName: $contactStatus}, first: 1) {
     nodes {
       id
     }
