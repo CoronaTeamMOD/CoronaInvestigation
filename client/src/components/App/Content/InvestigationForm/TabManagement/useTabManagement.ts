@@ -24,7 +24,8 @@ const useTabManagement = () => {
             if (areTabsNotValid) {
                 alertError('חלק מן השדות אינם תקינים, נא מלא אותם מחדש ונסה שוב.', {
                     text: 'שים לב שלא עברת בחלק מהטאבים'
-                })
+                });
+                setNextTab(currentTab);
             } else {
                 setCurrentTab(nextTab.current as number);
             }
