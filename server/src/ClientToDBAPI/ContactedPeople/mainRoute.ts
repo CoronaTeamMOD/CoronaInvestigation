@@ -14,8 +14,6 @@ import {
 import InteractedContact from '../../Models/ContactedPerson/ContactedPerson';
 import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 
-require('dotenv').config();
-
 const DONE_CONTACT = 5;
 
 const ContactedPeopleRoute = Router();
@@ -158,29 +156,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
                 step: 'got response from DB',
                 user: response.locals.user.id,investigation: epidemiologyNumber
             });
-            if (isThereDoneContact && (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test')) {
-                sendSavedInvestigationToIntegration(epidemiologyNumber)
-                .then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow,
-                        step: 'sent the epidemiology number to integration successfully',
-                        user: response.locals.user.id,
-                        investigation: epidemiologyNumber
-                    });
-                })
-                .catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow,
-                        step: `failed to send investigation to integration due to: ${error}`,
-                        user: response.locals.user.id,
-                        investigation: epidemiologyNumber
-                    });
-                })
-            }
+            isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
             response.send(result);
         })
         .catch(error => {

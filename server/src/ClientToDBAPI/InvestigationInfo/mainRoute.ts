@@ -14,8 +14,6 @@ import {
     COMMENT
 } from '../../DBService/InvestigationInfo/Mutation';
 
-require('dotenv').config();
-
 const errorStatusCode = 500;
 
 const investigationInfo = Router();
@@ -186,29 +184,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                             user: response.locals.user.id,
                             investigation: epidemiologyNumber
                         });
-                        if (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test') {
-                            sendSavedInvestigationToIntegration(epidemiologyNumber)
-                            .then(() => {
-                                logger.info({
-                                    service: Service.CLIENT,
-                                    severity: Severity.LOW,
-                                    workflow: 'Ending Investigation',
-                                    step: 'sent the epidemiology number to integration successfully',
-                                    user: response.locals.user.id,
-                                    investigation: epidemiologyNumber
-                                });
-                            })
-                            .catch((error) => {
-                                logger.error({
-                                    service: Service.CLIENT,
-                                    severity: Severity.HIGH,
-                                    workflow: 'Ending Investigation',
-                                    step: `failed to send investigation to integration due to: ${error}`,
-                                    user: response.locals.user.id,
-                                    investigation: epidemiologyNumber
-                                });
-                            })
-                        }
+                        sendSavedInvestigationToIntegration(epidemiologyNumber, 'Ending Investigation', response.locals.user.id);
                         response.send({message: 'updated the investigation status and end time successfully'});
                     }).catch(err => {
                         logger.error({
