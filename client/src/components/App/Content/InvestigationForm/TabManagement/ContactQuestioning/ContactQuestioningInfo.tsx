@@ -26,7 +26,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <Grid item xs={3} container>
                 <div className={classes.reachContact}>
-                    <Grid item xs={9} container>
+                    <Grid item xs={8} container>
                         <Autocomplete
                             className={classes.statusAutoComplete}
                             options={contactStatuses}
