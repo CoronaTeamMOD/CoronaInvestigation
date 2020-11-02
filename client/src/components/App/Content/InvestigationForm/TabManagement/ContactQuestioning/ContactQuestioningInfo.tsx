@@ -1,7 +1,7 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { differenceInYears, format } from 'date-fns';
 import { Divider, Grid, TextField, Typography } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
@@ -18,8 +18,6 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
-
-    const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
 
     return (
         <>
