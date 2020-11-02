@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useState, useRef, RefObject } from 'react';
 
+import TabId from 'models/enums/TabId';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
-import { CONTACTS_QUESTIONING_TAB_ID, PERSONAL_INFO_TAB_ID, CLINICAL_DETAILS_TAB_ID, EXPOSURES_TAB_ID } from './TabManagement';
-
-const exportToMabarTabs = [CONTACTS_QUESTIONING_TAB_ID];
-const validTabsBeforeExport = [PERSONAL_INFO_TAB_ID, CLINICAL_DETAILS_TAB_ID, EXPOSURES_TAB_ID]
+const exportToMabarTabs = [TabId.CONTACTS_QUESTIONING];
+const validTabsBeforeExport = [TabId.PERSONAL_INFO, TabId.CLINICAL_DETAILS, TabId.EXPOSURES]
 
 const useTabManagement = () => {
 
