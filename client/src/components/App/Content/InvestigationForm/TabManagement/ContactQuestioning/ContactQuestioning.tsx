@@ -44,8 +44,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
         loadContactStatuses();
     }, []);
 
-    const saveContacted = (e: React.ChangeEvent<{}>) => {
-        e.preventDefault();
+    const saveContacted = (event: React.ChangeEvent<{}>) => {
+        event.preventDefault();
         setFormState(investigationId, id, true);
         saveContactQuestioning().then(() => {
             logger.info({

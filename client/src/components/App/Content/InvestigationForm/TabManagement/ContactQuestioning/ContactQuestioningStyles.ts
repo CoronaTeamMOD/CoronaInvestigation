@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: '1vh',
     },
     reachContact: {
-        width: '18vw',
+        width: '17vw',
         display: 'flex',
         flexDirection: 'row',
     },
