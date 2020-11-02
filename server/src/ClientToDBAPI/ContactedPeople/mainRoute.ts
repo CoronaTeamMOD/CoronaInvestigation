@@ -12,6 +12,11 @@ import {
     GET_FOREIGN_KEYS_BY_NAMES
 } from '../../DBService/ContactedPeople/Query';
 import InteractedContact from '../../Models/ContactedPerson/ContactedPerson';
+import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
+
+require('dotenv').config();
+
+const DONE_CONTACT = 5;
 
 const ContactedPeopleRoute = Router();
 
@@ -133,30 +138,56 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
 });
 
 ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Response) => {
+    const epidemiologyNumber = +response.locals.epidemiologynumber;
+    const isThereDoneContact = request.body.unSavedContacts.contacts.some((contact : InteractedContact) => contact.contactStatus === DONE_CONTACT);
     const isSingleContact = request.body.unSavedContacts?.contacts.length === 1;
+    const workflow = `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`;
     logger.info({
         service: Service.CLIENT,
         severity: Severity.LOW,
-        workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+        workflow,
         step: `launching graphql API request with parameter: ${JSON.stringify(request.body)}`,
-        user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+        user: response.locals.user.id,investigation: epidemiologyNumber
     });
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
-                workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+                workflow,
                 step: 'got response from DB',
-                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+                user: response.locals.user.id,investigation: epidemiologyNumber
             });
-            response.send(result)
+            if (isThereDoneContact && (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test')) {
+                sendSavedInvestigationToIntegration(epidemiologyNumber)
+                .then(() => {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow,
+                        step: 'sent the epidemiology number to integration successfully',
+                        user: response.locals.user.id,
+                        investigation: epidemiologyNumber
+                    });
+                })
+                .catch((error) => {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow,
+                        step: `failed to send investigation to integration due to: ${error}`,
+                        user: response.locals.user.id,
+                        investigation: epidemiologyNumber
+                    });
+                })
+            }
+            response.send(result);
         })
         .catch(error => {
             logger.error({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
-                workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+                workflow,
                 step: `got error from DB from graphql API: ${error}`,
                 user: response.locals.user.id,investigation: response.locals.epidemiologynumber
             });
