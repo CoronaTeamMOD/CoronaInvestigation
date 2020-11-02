@@ -187,7 +187,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             investigation: epidemiologyNumber
         });
         axios.get('/contactedPeople/contactStatuses').then((result: any) => {
-            if (result?.data?.data?.allContactStatuses) {
+            if (result?.data) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -196,7 +196,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                setContactStatuses(result?.data?.data?.allContactStatuses?.nodes);
+                setContactStatuses(result.data);
             } else {
                 logger.warn({
                     service: Service.CLIENT,
