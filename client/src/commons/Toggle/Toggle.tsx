@@ -1,5 +1,5 @@
 import React from 'react';
-import { ToggleButtonGroup, ToggleButton, ToggleButtonGroupProps } from '@material-ui/lab';
+import {ToggleButtonGroup, ToggleButton, ToggleButtonGroupProps, ToggleButtonProps} from '@material-ui/lab';
 
 import theme from 'styles/theme';
 
@@ -16,12 +16,14 @@ const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <ToggleButtonGroup value={value} exclusive {...rest}>
-            <ToggleButton className={classes.toggle} 
+            <ToggleButton className={classes.toggle}
+                          disabled={props.disabled}
                 style={!value ? activeButtonStyle : {}}
                 value={false}>
                 {firstOption ? firstOption : 'לא'}
             </ToggleButton>
             <ToggleButton className={classes.toggle}
+                          disabled={props.disabled}
                 style={value ? activeButtonStyle : {}}
                 value={true}>
                 {secondOption ? secondOption : 'כן'}
@@ -35,4 +37,5 @@ export default Toggle;
 interface Props extends ToggleButtonGroupProps {
     firstOption?: string;
     secondOption?: string;
+    disabled?: ToggleButtonProps['disabled'];
 };

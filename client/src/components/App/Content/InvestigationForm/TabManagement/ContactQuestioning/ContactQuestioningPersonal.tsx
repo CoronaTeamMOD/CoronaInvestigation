@@ -13,11 +13,13 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
+    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
 
     const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
     const contactAge = interactedContact.birthDate && !isNaN(age as number) ? age === 0 ? '0' : age : null;
@@ -33,6 +35,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName fieldName='תעודה מזהה:'/>
                     <Grid item xs={3}>
                         <Toggle
+                            disabled={isFieldDisabled}
                             test-id='identificationType'
                             firstOption='ת.ז'
                             secondOption='דרכון'
@@ -43,6 +46,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName fieldName='מספר תעודה:'/>
                     <Grid item xs={3}>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             testId='identificationNumber'
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             value={interactedContact.identificationNumber}
@@ -57,6 +61,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item alignItems='center'>
                     <FieldName xs={5} fieldName='תאריך לידה:'/>
                      <DatePick
+                         disabled={isFieldDisabled}
                          testId='contactBirthDate'
                          maxDate={new Date()}
                             useBigCalender={false}
@@ -69,6 +74,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <FieldName xs={5} fieldName='גיל:'/>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             name='age'
                             testId='contactAge'
                             value={contactAge}
@@ -79,6 +85,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL}/>
                      <NumericTextField
+                         disabled={isFieldDisabled}
                          testId='additionalPhoneNumber'
                          name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             value={interactedContact.additionalPhoneNumber}
