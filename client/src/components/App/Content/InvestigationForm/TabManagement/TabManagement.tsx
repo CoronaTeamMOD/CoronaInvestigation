@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
+import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
 import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
@@ -27,26 +28,26 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         setAreThereContacts
     } = tabManagementProps;
 
-    const lastTabId = 4;
+    const lastTabId = TabId.CONTACTS_QUESTIONING;
 
     const tabs: TabObj[] = [
         {
-            id: 0,
+            id: TabId.PERSONAL_INFO,
             name: orderedTabsNames[0],
             displayComponent: <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>
         },
         {
-            id: 1,
+            id: TabId.CLINICAL_DETAILS,
             name: orderedTabsNames[1],
             displayComponent: <ClinicalDetails id={1} onSubmit={moveToNextTab}/>
         },
         {
-            id: 2,
+            id: TabId.EXPOSURES,
             name: orderedTabsNames[2],
             displayComponent: <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>
         },
         {
-            id: 3,
+            id: TabId.INTERACTIONS,
             name: orderedTabsNames[3],
             displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
         },
