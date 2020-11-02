@@ -103,7 +103,7 @@ ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request
 ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, response: Response) => {
     const getContactsQueryVariables = { investigationId: parseInt(request.params.investigationId) }
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Getting contacts',
         step: `launching server request with parameter ${JSON.stringify(getContactsQueryVariables)}`,
@@ -141,7 +141,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
     const isSingleContact = request.body.unSavedContacts?.contacts.length === 1;
     const workflow = `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`;
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow,
         step: `launching graphql API request with parameter: ${JSON.stringify(request.body)}`,
@@ -150,7 +150,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow,
                 step: 'got response from DB',
@@ -161,7 +161,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
         })
         .catch(error => {
             logger.error({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow,
                 step: `got error from DB from graphql API: ${error}`,
@@ -174,7 +174,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
 ContactedPeopleRoute.post('/excel', async (request: Request, response: Response) => {
     const {contactEvent, contacts} = request.body;
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: `Saving execl to DB`,
         step: 'Starting excel parsing',
@@ -191,7 +191,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
 
         try {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: `Saving execl to DB (TRY clause)`,
                 step: `Launching GraphQL Request GET_FOREIGN_KEYS_BY_NAMES, with variables: ${JSON.stringify(parsingVariables)}`,
@@ -215,7 +215,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             };
         } catch (e) {
             logger.error({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: `Saving execl to DB (CATCH clause)`,
                 step:  `caught error ${e} from try clause`,
@@ -240,7 +240,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     };
 
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: `Saving execl to DB - update contacts graphQL request`,
         step:  `Launching GraphQL Request UPDATE_LIST_OF_CONTACTS, with variables: ${JSON.stringify(mutationVariables)}`,
@@ -249,7 +249,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
         .then((result: any) => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: `Saving execl to DB graphql request result`,
                 step:  `Got graphQL result: ${JSON.stringify(result)}`,
@@ -261,7 +261,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         })
         .catch(error => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: `Saving execl to DB graphql request catch`,
                 step:  `Got graphQL error: ${JSON.stringify(error)}`,

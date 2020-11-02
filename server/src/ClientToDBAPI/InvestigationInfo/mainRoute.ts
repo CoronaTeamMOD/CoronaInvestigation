@@ -161,7 +161,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
                     const investigationEndTime = new Date();
                     logger.info({
-                        service: Service.CLIENT,
+                        service: Service.SERVER,
                         severity: Severity.LOW,
                         workflow: 'Ending Investigation',
                         step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
@@ -177,7 +177,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     })
                     .then(() => {
                         logger.info({
-                            service: Service.CLIENT,
+                            service: Service.SERVER,
                             severity: Severity.LOW,
                             workflow: 'Ending Investigation',
                             step: 'got respond from the DB in the request to update end time',
@@ -188,7 +188,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                         response.send({message: 'updated the investigation status and end time successfully'});
                     }).catch(err => {
                         logger.error({
-                            service: Service.CLIENT,
+                            service: Service.SERVER,
                             severity: Severity.HIGH,
                             workflow: 'Ending Investigation',
                             step: `failed to update the investigation end time due to: ${err}`,

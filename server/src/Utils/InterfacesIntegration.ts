@@ -13,7 +13,7 @@ export const sendSavedInvestigationToIntegration = (epidemiologyNumber: number, 
             }
         }).then(() => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow,
                 step: 'sent the epidemiology number to integration successfully',
@@ -22,7 +22,7 @@ export const sendSavedInvestigationToIntegration = (epidemiologyNumber: number, 
             });
         }).catch((error) => {
             logger.error({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow,
                 step: `failed to send investigation to integration due to: ${error}`,
