@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
+import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -20,6 +22,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     } = props;
     const { control, errors } = useFormContext();
 
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
+
     return (
         <>
             <FormRowWithInput fieldName='האם יש תסמינים:'>
@@ -29,6 +33,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         control={control}
                         render={(props) => (
                             <Toggle
+                                disabled={wasInvestigationReopend}
                                 test-id='areThereSymptoms'
                                 value={props.value}
                                 onChange={(e, value) => {
@@ -53,6 +58,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     <CustomCheckbox
                                         testId='unkownSymptomsDate'
                                         checkboxElements={[{
+                                            disabled:wasInvestigationReopend,
                                             value: props.value,
                                             labelText: 'תאריך התחלת תסמינים לא ידוע',
                                             checked: props.value,
@@ -72,6 +78,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         control={control}
                                         render={(props) => (
                                             <DatePick
+                                                disabled={wasInvestigationReopend}
                                                 onBlur={props.onBlur}
                                                 maxDate={new Date()}
                                                 testId='symptomsStartDate'

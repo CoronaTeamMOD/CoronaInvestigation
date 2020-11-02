@@ -9,10 +9,11 @@ import { useStyles } from './DatePickStyles';
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate } = props;
+  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate, disabled } = props;
 
   return (
     <KeyboardDatePicker
+      disabled={disabled}
       error={error}
       test-id={props.testId}
       autoOk

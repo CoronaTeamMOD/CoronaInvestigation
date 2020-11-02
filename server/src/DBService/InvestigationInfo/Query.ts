@@ -7,6 +7,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
     startTime
     lastUpdateTime
     investigatingUnit
+    endTime
     investigatedPatientByInvestigatedPatientId {
       covidPatientByCovidPatient {
         identityNumber
