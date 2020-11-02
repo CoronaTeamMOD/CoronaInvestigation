@@ -15,15 +15,16 @@ import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
-import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
-import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import Desk from 'models/Desk';
+import StoreStateType from 'redux/storeStateType';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
+import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
@@ -64,6 +65,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
     const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
     const [countyAutoCompleteClicked, setCountyAutoCompleteClicked] = useState<boolean>(false);
+    const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
     const [currCounty, setCurrCounty] = useState<County>(defaultCounty);
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
@@ -73,7 +75,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
-    const [allDesks, setAllDesks] = useState<string[]>([]);
+    const [allDesks, setAllDesks] = useState<Desk[]>([]);
 
     const {
         onCancel, onOk,snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
@@ -85,18 +87,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     useEffect(() => {
-        if (investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
-            setInvestigatorAutoCompleteClicked(false);
-        }
-    }, [countyAutoCompleteClicked]);
-
-    useEffect(() => {
-        if (countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
-            setCountyAutoCompleteClicked(false);
-        }
-    }, [investigatorAutoCompleteClicked]);
-
-    useEffect(() => {
         let filteredRows : InvestigationTableRow[] = [...tableRows];
         if (filterOptions !== defaultFilterOptions) {
             filteredRows = filteredRows.filter(row => {
@@ -105,8 +95,34 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             })
         }
         setFilteredTableRows(filteredRows);
-
     }, [tableRows, filterOptions])
+    
+    const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
+        switch(key) {
+            case TableHeadersNames.investigatorName: {
+                event.stopPropagation();
+                setInvestigatorAutoCompleteClicked(true);
+                setCountyAutoCompleteClicked(false);
+                setDeskAutoCompleteClicked(false);
+                break;
+            }
+            case TableHeadersNames.county: {
+                event.stopPropagation();
+                setCountyAutoCompleteClicked(true);
+                setInvestigatorAutoCompleteClicked(false);
+                setDeskAutoCompleteClicked(false);
+                break;
+            }
+            case TableHeadersNames.investigationDesk: {
+                event.stopPropagation();
+                setDeskAutoCompleteClicked(true);
+                setInvestigatorAutoCompleteClicked(false);
+                setCountyAutoCompleteClicked(false);
+                break;
+            }
+        }
+        setSelectedRow(epidemiologyNumber);
+    }
 
     const CustomPopper = (props: any) => {
         return (<Popper {...props} style={{ width: 350 }} placement='bottom-start' />)
@@ -230,7 +246,30 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
-            case TableHeadersNames.priority:
+            case TableHeadersNames.investigationDesk: 
+                if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked) {
+                    return (
+                        <Autocomplete
+                                options={allDesks.map((desk: Desk) => desk.deskName)}
+                                getOptionLabel={(option) => option}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                        placeholder='דסק'
+                                    />
+                                }
+                                renderTags={(tags) => {
+                                    const additionalTagsAmount = tags.length - 1;
+                                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                    return tags[0] + additionalDisplay;
+                                }}
+                            />
+                    )
+                }
+                else {
+                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                }
+            case TableHeadersNames.priority: 
                 let cssClass = '';
                 if (indexedRow.isComplex) {
                     cssClass = classes.priorityWithComplex
@@ -335,16 +374,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Card className={classes.filterByDeskCard}>
                         <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
                         <Autocomplete
-                            classes={{inputRoot: classes.autocompleteInput}}
                             disableCloseOnSelect
                             multiple
-                            options={allDesks}
+                            options={allDesks.map((desk: Desk) => desk.deskName)}
                             getOptionLabel={(option) => option}
                             onChange={onSelectedDesksChange}
                             value={filterOptions.investigationDesk}
                             renderInput={(params) =>
                                 <TextField
-                                    {...params}
+                                {...params}
                                 />
                             }
                             renderTags={(tags) => {
@@ -352,6 +390,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
                                 return tags[0] + additionalDisplay;
                             }}
+                            classes={{inputRoot: classes.autocompleteInput}}
                         />
                     </Card>
                 </Grid>
@@ -444,14 +483,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
                                                     className={getTableCellStyles(index, key).join(' ')}
-                                                    onClick={(event: any) => {
-                                                        if (key === TableHeadersNames.investigatorName || key === TableHeadersNames.county) {
-                                                            event.stopPropagation();
-                                                            key === TableHeadersNames.county ? setCountyAutoCompleteClicked(true) :
-                                                                setInvestigatorAutoCompleteClicked(true);
-                                                            setSelectedRow(indexedRow.epidemiologyNumber);
-                                                        }
-                                                    }}
+                                                    onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                 >
                                                     {
                                                         getTableCell(key, indexedRow)
