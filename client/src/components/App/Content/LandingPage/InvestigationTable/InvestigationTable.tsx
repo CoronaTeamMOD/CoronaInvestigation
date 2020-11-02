@@ -20,6 +20,7 @@ import FilterTableOption from 'models/FilterTableOption';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
@@ -318,6 +319,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         return filterIcon
     }
 
+    const isInvestigationRowClickable = (investigation: InvestigationTableRow) =>
+        !(user.userType === userType.INVESTIGATOR && investigation.mainStatus === InvestigationMainStatus.DONE)
+
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
@@ -343,7 +347,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     {...params}
                                 />
                             }
-                            renderTags={(tags, tagsProps) => {
+                            renderTags={(tags) => {
                                 const additionalTagsAmount = tags.length - 1;
                                 const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
                                 return tags[0] + additionalDisplay;
@@ -429,11 +433,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <TableBody>
                             {filteredTableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
+                                const isRowClickable = isInvestigationRowClickable(row);
                                 return (
                                     <TableRow
                                         key={indexedRow.epidemiologyNumber}
-                                        className={classes.investigationRow}
-                                        onClick={() => onInvestigationRowClick(indexedRow)}
+                                        className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                        onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
                                     >
                                         {
                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
