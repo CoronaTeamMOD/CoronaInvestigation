@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     investigationRow: {
         textDecoration: 'none',
+    },
+    clickableInvestigationRow: {
         cursor: 'pointer'
     },
     columnBorder: {

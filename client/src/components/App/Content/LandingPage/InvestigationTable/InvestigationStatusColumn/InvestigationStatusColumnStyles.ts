@@ -6,7 +6,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex'
     },
     openInvestigatonIcon: {
-        margin: '0 0.5vw'
+        margin: '0 0.5vw',
+        cursor: 'pointer'
     },
 }));
 
