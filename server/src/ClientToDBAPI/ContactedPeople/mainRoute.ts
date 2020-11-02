@@ -12,6 +12,9 @@ import {
     GET_FOREIGN_KEYS_BY_NAMES
 } from '../../DBService/ContactedPeople/Query';
 import InteractedContact from '../../Models/ContactedPerson/ContactedPerson';
+import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
+
+const DONE_CONTACT = 5;
 
 const ContactedPeopleRoute = Router();
 
@@ -100,7 +103,7 @@ ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request
 ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, response: Response) => {
     const getContactsQueryVariables = { investigationId: parseInt(request.params.investigationId) }
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Getting contacts',
         step: `launching server request with parameter ${JSON.stringify(getContactsQueryVariables)}`,
@@ -133,30 +136,34 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
 });
 
 ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Response) => {
+    const epidemiologyNumber = +response.locals.epidemiologynumber;
+    const isThereDoneContact = request.body.unSavedContacts.contacts.some((contact : InteractedContact) => contact.contactStatus === DONE_CONTACT);
     const isSingleContact = request.body.unSavedContacts?.contacts.length === 1;
+    const workflow = `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`;
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+        workflow,
         step: `launching graphql API request with parameter: ${JSON.stringify(request.body)}`,
-        user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+        user: response.locals.user.id,investigation: epidemiologyNumber
     });
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+                workflow,
                 step: 'got response from DB',
-                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+                user: response.locals.user.id,investigation: epidemiologyNumber
             });
-            response.send(result)
+            isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
+            response.send(result);
         })
         .catch(error => {
             logger.error({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
+                workflow,
                 step: `got error from DB from graphql API: ${error}`,
                 user: response.locals.user.id,investigation: response.locals.epidemiologynumber
             });
@@ -167,7 +174,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
 ContactedPeopleRoute.post('/excel', async (request: Request, response: Response) => {
     const {contactEvent, contacts} = request.body;
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: `Saving execl to DB`,
         step: 'Starting excel parsing',
@@ -184,7 +191,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
 
         try {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: `Saving execl to DB (TRY clause)`,
                 step: `Launching GraphQL Request GET_FOREIGN_KEYS_BY_NAMES, with variables: ${JSON.stringify(parsingVariables)}`,
@@ -208,7 +215,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             };
         } catch (e) {
             logger.error({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: `Saving execl to DB (CATCH clause)`,
                 step:  `caught error ${e} from try clause`,
@@ -233,7 +240,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     };
 
     logger.info({
-        service: Service.CLIENT,
+        service: Service.SERVER,
         severity: Severity.LOW,
         workflow: `Saving execl to DB - update contacts graphQL request`,
         step:  `Launching GraphQL Request UPDATE_LIST_OF_CONTACTS, with variables: ${JSON.stringify(mutationVariables)}`,
@@ -242,7 +249,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
         .then((result: any) => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: `Saving execl to DB graphql request result`,
                 step:  `Got graphQL result: ${JSON.stringify(result)}`,
@@ -254,7 +261,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         })
         .catch(error => {
             logger.info({
-                service: Service.CLIENT,
+                service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: `Saving execl to DB graphql request catch`,
                 step:  `Got graphQL error: ${JSON.stringify(error)}`,

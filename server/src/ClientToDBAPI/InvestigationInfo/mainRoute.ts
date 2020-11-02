@@ -5,6 +5,7 @@ import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import {Service, Severity} from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
+import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 import {GET_INVESTIGATION_INFO, GET_SUB_STATUSES} from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -160,34 +161,35 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
                     const investigationEndTime = new Date();
                     logger.info({
-                        service: Service.CLIENT,
+                        service: Service.SERVER,
                         severity: Severity.LOW,
                         workflow: 'Ending Investigation',
                         step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
-                            epidemiologyNumber: epidemiologyNumber,
+                            epidemiologyNumber,
                             investigationEndTime
                         })}`,
                         user: response.locals.user.id,
                         investigation: epidemiologyNumber
                     });
                     graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
-                        epidemiologyNumber: epidemiologyNumber,
+                        epidemiologyNumber,
                         investigationEndTime
                     })
-                    .then((result: any) => {
+                    .then(() => {
                         logger.info({
-                            service: Service.CLIENT,
+                            service: Service.SERVER,
                             severity: Severity.LOW,
                             workflow: 'Ending Investigation',
                             step: 'got respond from the DB in the request to update end time',
                             user: response.locals.user.id,
                             investigation: epidemiologyNumber
                         });
+                        sendSavedInvestigationToIntegration(epidemiologyNumber, 'Ending Investigation', response.locals.user.id);
                         response.send({message: 'updated the investigation status and end time successfully'});
                     }).catch(err => {
                         logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
+                            service: Service.SERVER,
+                            severity: Severity.HIGH,
                             workflow: 'Ending Investigation',
                             step: `failed to update the investigation end time due to: ${err}`,
                             user: response.locals.user.id,
@@ -281,7 +283,7 @@ investigationInfo.get('/subStatuses', (request: Request, response: Response) => 
         .catch((err: any) => {
             logger.error({
                 service: Service.SERVER,
-                severity: Severity.LOW,
+                severity: Severity.HIGH,
                 workflow: 'GraphQL GET subStatuses request to the DB',
                 step: `graphqlResult CATCH fail ${err}`
             });

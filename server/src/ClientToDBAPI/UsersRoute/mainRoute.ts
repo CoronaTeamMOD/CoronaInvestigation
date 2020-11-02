@@ -163,7 +163,7 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
         response.send(result.data)
     }).catch(err => {
         logger.error({
-            service: Service.CLIENT,
+            service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Switch investigator',
             step: `querying the graphql API failed du to ${err}`,
