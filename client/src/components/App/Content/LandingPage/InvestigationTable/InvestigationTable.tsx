@@ -319,8 +319,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         return filterIcon
     }
 
-    const isInvestigationRowClickable = (investigation: InvestigationTableRow) =>
-        !(user.userType === userType.INVESTIGATOR && investigation.mainStatus === InvestigationMainStatus.DONE)
+    const isInvestigationRowClickable = (investigationStatus: string) =>
+        !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
 
     return (
         <>
@@ -433,7 +433,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <TableBody>
                             {filteredTableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
-                                const isRowClickable = isInvestigationRowClickable(row);
+                                const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 return (
                                     <TableRow
                                         key={indexedRow.epidemiologyNumber}
