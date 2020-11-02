@@ -5,6 +5,7 @@ import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import {Service, Severity} from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
+import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 import {GET_INVESTIGATION_INFO, GET_SUB_STATUSES} from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -12,6 +13,8 @@ import {
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT
 } from '../../DBService/InvestigationInfo/Mutation';
+
+require('dotenv').config();
 
 const errorStatusCode = 500;
 
@@ -164,17 +167,17 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                         severity: Severity.LOW,
                         workflow: 'Ending Investigation',
                         step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
-                            epidemiologyNumber: epidemiologyNumber,
+                            epidemiologyNumber,
                             investigationEndTime
                         })}`,
                         user: response.locals.user.id,
                         investigation: epidemiologyNumber
                     });
                     graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
-                        epidemiologyNumber: epidemiologyNumber,
+                        epidemiologyNumber,
                         investigationEndTime
                     })
-                    .then((result: any) => {
+                    .then(() => {
                         logger.info({
                             service: Service.CLIENT,
                             severity: Severity.LOW,
@@ -183,11 +186,34 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                             user: response.locals.user.id,
                             investigation: epidemiologyNumber
                         });
+                        if (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test') {
+                            sendSavedInvestigationToIntegration(epidemiologyNumber)
+                            .then(() => {
+                                logger.info({
+                                    service: Service.CLIENT,
+                                    severity: Severity.LOW,
+                                    workflow: 'Ending Investigation',
+                                    step: 'sent the epidemiology number to integration successfully',
+                                    user: response.locals.user.id,
+                                    investigation: epidemiologyNumber
+                                });
+                            })
+                            .catch((error) => {
+                                logger.error({
+                                    service: Service.CLIENT,
+                                    severity: Severity.HIGH,
+                                    workflow: 'Ending Investigation',
+                                    step: `failed to send investigation to integration due to: ${error}`,
+                                    user: response.locals.user.id,
+                                    investigation: epidemiologyNumber
+                                });
+                            })
+                        }
                         response.send({message: 'updated the investigation status and end time successfully'});
                     }).catch(err => {
                         logger.error({
                             service: Service.CLIENT,
-                            severity: Severity.LOW,
+                            severity: Severity.HIGH,
                             workflow: 'Ending Investigation',
                             step: `failed to update the investigation end time due to: ${err}`,
                             user: response.locals.user.id,
@@ -281,7 +307,7 @@ investigationInfo.get('/subStatuses', (request: Request, response: Response) => 
         .catch((err: any) => {
             logger.error({
                 service: Service.SERVER,
-                severity: Severity.LOW,
+                severity: Severity.HIGH,
                 workflow: 'GraphQL GET subStatuses request to the DB',
                 step: `graphqlResult CATCH fail ${err}`
             });

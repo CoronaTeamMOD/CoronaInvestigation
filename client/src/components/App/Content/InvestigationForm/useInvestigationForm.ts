@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
@@ -13,6 +12,7 @@ import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setCountries } from 'redux/Country/countryActionCreators';
@@ -29,6 +29,8 @@ import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+
+    const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -232,17 +234,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             user: userId,
             investigation: epidemiologyNumber
         });
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
+        alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle
-            }
+            confirmButtonText: 'כן, המשך'
         }).then((result) => {
             if (result.value) {
                 logger.info({
@@ -291,34 +288,21 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    handleInvestigationFinishFailed();
+                    alertError('לא ניתן היה לסיים את החקירה');
                 })
             };
         });
     };
 
     const handleInvestigationFinish = () => {
-        Swal.fire({
-            icon: 'success',
-            title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
-            customClass: {
-                title: classes.swalTitle
-            },
+        alertSuccess('החקירה הסתיימה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
-        }
-        );
+        });
         timeout(LandingPageTimer).then(() => {
             setIsInInvestigation(false);
             window.close();
         });
-    };
-
-    const handleInvestigationFinishFailed = () => {
-        Swal.fire({
-            title: 'לא ניתן היה לסיים את החקירה',
-            icon: 'error',
-        })
     };
 
     return {
