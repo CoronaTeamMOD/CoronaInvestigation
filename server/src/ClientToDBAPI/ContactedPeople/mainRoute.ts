@@ -109,7 +109,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.send(result)
+        response.send(result?.data?.allContactStatuses?.nodes);
     }).catch(err => {
         logger.error({
             service: Service.SERVER,
