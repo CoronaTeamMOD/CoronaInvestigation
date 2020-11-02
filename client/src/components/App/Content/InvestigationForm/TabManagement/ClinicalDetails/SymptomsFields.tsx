@@ -22,8 +22,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     } = props;
     const { control, errors } = useFormContext();
 
-    const endTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
-    const wasInvestigationReopend = endTime !== null;
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
     return (
         <>
