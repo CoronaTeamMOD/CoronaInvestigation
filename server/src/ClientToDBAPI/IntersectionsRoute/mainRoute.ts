@@ -7,7 +7,10 @@ import { GetContactTypeResponse } from '../../Models/ContactEvent/GetContactType
 import { GetPlaceSubTypesByTypesResposne, PlacesSubTypesByTypes } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import { GetContactEventResponse, ContactEvent } from '../../Models/ContactEvent/GetContactEvent';
 import { EDIT_CONTACT_EVENT, CREATE_CONTACT_EVENT, DELETE_CONTACT_EVENT, DELETE_CONTACTED_PERSON } from '../../DBService/ContactEvent/Mutation';
-import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, GET_LOACTIONS_SUB_TYPES_BY_TYPES, GET_ALL_CONTACT_TYPES } from '../../DBService/ContactEvent/Query';
+import { GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID,
+    GET_LOACTIONS_SUB_TYPES_BY_TYPES,
+    GET_ALL_CONTACT_TYPES,
+    GET_DUPLICATE_CONTACTED_PERSONS } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
 
@@ -152,7 +155,9 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
+    let areThereDuplicateIds: boolean = false;
+    graphqlRequest(GET_DUPLICATE_CONTACTED_PERSONS, response.locals, {})
+    areThereDuplicateIds ? graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
     .then(result => {
         logger.info({
             service: Service.SERVER,
@@ -185,7 +190,7 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
         service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Update Contact Event',
-        step: `launcing DB request`,
+        step: `launching DB request`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });

@@ -84,3 +84,12 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
 }
 `;
 
+export const GET_DUPLICATE_CONTACTED_PERSONS = gql`
+query getDuplicateContactEvent($epidemiologyNumber: Int!, $idNumber: String!) {
+  allContactEvents(filter: {investigationByInvestigationId: {epidemiologyNumber: {equalTo: $epidemiologyNumber}}, contactedPeopleByContactEvent: {some: {personByPersonInfo: {identificationNumber: {equalTo: $idNumber}}}}}) {
+    nodes {
+      id
+    }
+  }
+}
+`;

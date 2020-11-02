@@ -38,7 +38,7 @@ const InteractionEventForm: React.FC<Props> = (
   { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
 ): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const [placeSubtypeName, setPlaceSubtypeName] = React.useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -50,7 +50,7 @@ const InteractionEventForm: React.FC<Props> = (
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
   const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
-  const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
+  const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
 
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
@@ -74,9 +74,11 @@ const InteractionEventForm: React.FC<Props> = (
     }
   }
 
+
+
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveIntreactions(interactionDataToSave);
+    saveInteractions(interactionDataToSave);
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {
@@ -163,7 +165,7 @@ const InteractionEventForm: React.FC<Props> = (
                       testId='contactLocationEndTime'
                       value={props.value}
                       onChange={(newTime: Date) =>
-                        handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                        handleTimeChange(newTime, interactionEndTime, InteractionEventDialogFields.END_TIME)
                       }
                       labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                       error={get(methods.errors, props.name)}

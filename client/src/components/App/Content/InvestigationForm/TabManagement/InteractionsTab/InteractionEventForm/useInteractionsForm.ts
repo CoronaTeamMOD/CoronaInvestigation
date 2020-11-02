@@ -17,8 +17,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const saveIntreactions = async (interactionsDataToSave: InteractionEventDialogData) => {
-
+    const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
       const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ? 
             await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
 
@@ -115,7 +114,7 @@ const useInteractionsForm = (props : useInteractionFormIncome): useInteractionFo
     }
 
     return {
-        saveIntreactions
+        saveInteractions: saveInteractions
     }
 };
 
@@ -126,7 +125,7 @@ interface useInteractionFormIncome {
 }
 
 interface useInteractionFormOutcome {
-  saveIntreactions: (interactionsData: InteractionEventDialogData) => void;
+  saveInteractions: (interactionsData: InteractionEventDialogData) => void;
 }
 
 export default useInteractionsForm;
