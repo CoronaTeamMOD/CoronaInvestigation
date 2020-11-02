@@ -76,6 +76,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
+            response.status(500).json({ error: 'failed to fetch contact statuses' });
         }
     }).catch(err => {
         logger.error({
@@ -86,7 +87,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.status(500).json({ error: 'failed to fetch personal details' });
+        response.status(500).json({ error: 'failed to fetch contact statuses' });
     });
 });
 
