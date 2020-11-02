@@ -91,37 +91,6 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
     });
 });
 
-ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Getting contact statuses',
-        step: 'launching graphql API request',
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    });
-    graphqlRequest(GET_ALL_CONTACT_STATUSES, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Getting contact statuses',
-            step: 'got respond from the DB',
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
-        });
-        response.send(result?.data?.allContactStatuses?.nodes);
-    }).catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Getting contact statuses',
-            step: `got error from the graphql API ${err}`,
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
-        });
-    })
-});
-
 ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) =>
     graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, {investigationId: parseInt(request.params.investigationId)})
         .then((result: any) => response.send(result))
