@@ -4,7 +4,6 @@ import { subDays, differenceInCalendarDays } from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import ContactStatus from 'models/ContactStatus';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
@@ -14,13 +13,12 @@ import {useContactQuestioningOutcome, useContactQuestioningParameters} from './C
 import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact, setFamilyRelationships, contactStatuses, setContactStatuses } = parameters;
+    const { setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, contactStatuses, setContactStatuses } = parameters;
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const saveContact = (interactedContact: InteractedContact) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
         const contacts = [interactedContact];
         const contactsSavingVariable = {
             unSavedContacts: {contacts}
@@ -256,7 +254,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             contactDate: contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
                             contactType: contact.contactType,
-                            contactStatus: contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === contact.contactStatus) as ContactStatus,
+                            contactStatus: contact.contactStatus,
                             extraInfo: contact.extraInfo,
                             relationship: contact.relationship,
                             familyRelationship: contact.familyRelationship,
@@ -269,7 +267,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
                             doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
                             doesNeedIsolation: contact.doesNeedIsolation ? contact.doesNeedIsolation : false,
-                            expand: false,
                         }
                     )
                 });
@@ -300,14 +297,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
-        setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
         const updatedContactedInteractions = [...allContactedInteractions];
-        const updatedContact : InteractedContact = {
+        const updatedContact: InteractedContact = {
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
-        setCurrentInteractedContact(updatedContact);
+
         updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
         setAllContactedInteractions(updatedContactedInteractions);
     };

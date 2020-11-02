@@ -1,26 +1,22 @@
-import { format } from 'date-fns';
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ExpandMore } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, TextField, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid } from '@material-ui/core';
 
 import logger from 'logger/logger';
-import ContactType from 'models/ContactType';
 import ContactStatus from 'models/ContactStatus';
 import { Severity, Service } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
-import InteractedContactFields from 'models/enums/InteractedContact';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactQuestioningStyles';
+import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
@@ -30,20 +26,17 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
-    const [allContactedInteractions, setAllContactedInteractions] = React.useState<InteractedContact[]>([]);
-    const [currentInteractedContact, setCurrentInteractedContact] = React.useState<InteractedContact>();
-    const [familyRelationships, setFamilyRelationships] = React.useState<FamilyRelationship[]>([]);
-    const [contactStatuses, setContactStatuses] = React.useState<ContactStatus[]>([]);
-    const [contactStatusInput, setContactStatusInput] = React.useState<string>();
+    const [allContactedInteractions, setAllContactedInteractions] = useState<InteractedContact[]>([]);
+    const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
+    const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
 
     const methods = useForm();
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
         loadFamilyRelationships, loadContactStatuses,
-    } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact, setFamilyRelationships, contactStatuses, setContactStatuses });
+    } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, contactStatuses, setContactStatuses });
 
     useEffect(() => {
         loadInteractedContacts();
@@ -85,74 +78,19 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                         allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
                         firstInteractedContact.phoneNumber ? firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber) : 0).map((interactedContact) => (
                                 <div key={interactedContact.id} className={classes.form}>
-                                    <Accordion expanded={interactedContact.expand} className={classes.accordion} style={{ borderRadius: '3vw'}}>
+                                    <Accordion className={classes.accordion} style={{ borderRadius: '3vw'}}>
                                         <AccordionSummary
                                             test-id='contactLocation'
                                             expandIcon={<ExpandMore />}
-                                            onClick={() => {
-                                                updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, !interactedContact.expand);
-                                            }}
                                             aria-controls='panel1a-content'
                                             id='panel1a-header'
                                             dir='ltr'
                                         >
-                                            <Grid item xs={2} container>
-                                                <Grid item xs={6} container>
-                                                    <Autocomplete
-                                                        options={contactStatuses}
-                                                        getOptionLabel={(option) => option.displayName}
-                                                        inputValue={contactStatusInput}
-                                                        value={interactedContact.contactStatus}
-                                                        onChange={(event, selectedStatus) => {
-                                                            updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus);
-                                                        }}
-                                                        onInputChange={(event, newContactStatus) => {
-                                                            setContactStatusInput(newContactStatus);
-                                                        }}
-                                                        renderInput={(params) =>
-                                                            <TextField
-                                                                {...params}
-                                                                placeholder='סטטוס'
-                                                                onClick={(event) => event.stopPropagation()}
-                                                            />
-                                                        }
-                                                    />
-                                                </Grid>
-                                                <Grid container item xs={2}>
-                                                    <span onClick={(event) => event.stopPropagation()}>
-                                                        <PhoneDial
-                                                            phoneNumber={interactedContact.phoneNumber}
-                                                        />
-                                                    </span>
-                                                </Grid>
-                                                <Divider variant='fullWidth' orientation='vertical' flexItem />
-                                            </Grid>
-                                            <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-between'>
-                                                <Typography variant='body2'>
-                                                    <b>שם פרטי:</b> {interactedContact.firstName}
-                                                </Typography>
-                                                <Typography variant='body2'>
-                                                    <b>שם משפחה:</b> {interactedContact.lastName}
-                                                </Typography>
-                                                <Typography variant='body2'>
-                                                    <b>מספר טלפון:</b> {interactedContact.phoneNumber ? interactedContact.phoneNumber : 'אין מספר'}
-                                                </Typography>
-                                                <Typography variant='body2'>
-                                                    <b>תאריך המגע:</b> {format(new Date(interactedContact.contactDate), 'dd/MM/yyyy')}
-                                                </Typography>
-                                                {
-                                                    interactedContact.contactType &&
-                                                    <Typography variant='body2'>
-                                                        <b>סוג מגע:</b> {contactTypes.get(+interactedContact.contactType)?.displayName}
-                                                    </Typography>
-                                                }
-                                                {
-                                                    interactedContact.extraInfo &&
-                                                    <Typography variant='body2'>
-                                                        <b>פירוט אופי המגע:</b> {interactedContact.extraInfo}
-                                                    </Typography>
-                                                }
-                                            </Grid>
+                                            <ContactQuestioningInfo
+                                                interactedContact={interactedContact}
+                                                updateInteractedContact={updateInteractedContact}
+                                                contactStatuses={contactStatuses}
+                                            />
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <Grid container justify='space-evenly'>

@@ -6,7 +6,6 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 export interface useContactQuestioningParameters {
-    setCurrentInteractedContact: Dispatch<SetStateAction<InteractedContact | undefined>>;
     allContactedInteractions: InteractedContact[];
     setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
