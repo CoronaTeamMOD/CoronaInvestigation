@@ -165,6 +165,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             city: contactedPerson.contactedPersonCity || '',
             contactType: contactedPerson.contactType || '',
             familyRelationship: contactedPerson.familyRelationship || '',
+            contactStatus: contactedPerson.contactStatus || ''
         };
 
         try {
@@ -177,10 +178,11 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
             });
             const parsedForeignKeys = await graphqlRequest(GET_FOREIGN_KEYS_BY_NAMES, response.locals, parsingVariables)
 
-            const {allCities, allContactTypes, allFamilyRelationships} = parsedForeignKeys.data;
+            const {allCities, allContactTypes, allFamilyRelationships, allContactStatuses} = parsedForeignKeys.data;
             const contactedPersonCity = getIdFromResult(allCities),
                 contactType = getIdFromResult(allContactTypes),
-                familyRelationship = getIdFromResult(allFamilyRelationships);
+                familyRelationship = getIdFromResult(allFamilyRelationships),
+                contactStatus = getIdFromResult(allContactStatuses);
 
             return {
                 ...contactedPerson,
@@ -188,6 +190,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 contactedPersonCity,
                 contactType,
                 familyRelationship,
+                contactStatus
             };
         } catch (e) {
             logger.error({
@@ -204,6 +207,7 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 contactedPersonCity: null,
                 contactType: null,
                 familyRelationship: null,
+                contactStatus: null
             }
         }
 
