@@ -1,5 +1,4 @@
 import Person from './Person';
-import ContactStatus from './ContactStatus';
 import ContactType from './enums/ContactType';
 import Occupations from './enums/Occupations';
 
