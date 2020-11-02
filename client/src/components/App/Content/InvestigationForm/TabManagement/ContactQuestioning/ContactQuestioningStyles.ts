@@ -42,7 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     menuItem: {
         minHeight: '3vh'
-    }
+    },
+    statusAutoComplete: {
+        width: '10.5vw',
+        direction: 'rtl',
+        marginTop: '0.8vh',
+    },
+    reachContact: {
+        width: '13vw',
+        display: 'flex',
+        flexDirection: 'row',
+    },
 }));
 
 export default useStyles;

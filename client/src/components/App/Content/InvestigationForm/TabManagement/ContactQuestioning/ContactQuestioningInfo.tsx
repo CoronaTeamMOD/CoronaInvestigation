@@ -11,7 +11,10 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
+import useStyles from './ContactQuestioningStyles';
+
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
+    const classes = useStyles({});
     
     const { interactedContact, updateInteractedContact, contactStatuses } = props;
     
@@ -22,34 +25,37 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <>
             <Grid item xs={2} container>
-                <Grid item xs={6} container>
-                    <Autocomplete
-                        options={contactStatuses}
-                        getOptionLabel={(option) => option.displayName}
-                        inputValue={contactStatusInput}
-                        value={contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus)}
-                        onChange={(event, selectedStatus) => {
-                            updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
-                        }}
-                        onInputChange={(event, newContactStatus) => {
-                            setContactStatusInput(newContactStatus);
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                placeholder='סטטוס'
-                                onClick={(event) => event.stopPropagation()}
-                            />
-                        }
-                    />
-                </Grid>
-                <Grid container item xs={2}>
-                    <span onClick={(event) => event.stopPropagation()}>
-                        <PhoneDial
-                            phoneNumber={interactedContact.phoneNumber}
+                <div className={classes.reachContact}>
+                    <Grid item xs={8} container>
+                        <Autocomplete
+                            className={classes.statusAutoComplete}
+                            options={contactStatuses}
+                            getOptionLabel={(option) => option.displayName}
+                            inputValue={contactStatusInput}
+                            value={contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus)}
+                            onChange={(event, selectedStatus) => {
+                                updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                            }}
+                            onInputChange={(event, newContactStatus) => {
+                                setContactStatusInput(newContactStatus);
+                            }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    placeholder='סטטוס'
+                                    onClick={(event) => event.stopPropagation()}
+                                />
+                            }
                         />
-                    </span>
-                </Grid>
+                    </Grid>
+                    <Grid container item xs={2}>
+                        <span onClick={(event) => event.stopPropagation()}>
+                            <PhoneDial
+                                phoneNumber={interactedContact.phoneNumber}
+                            />
+                        </span>
+                    </Grid>
+                </div>
                 <Divider variant='fullWidth' orientation='vertical' flexItem />
             </Grid>
             <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-between'>
