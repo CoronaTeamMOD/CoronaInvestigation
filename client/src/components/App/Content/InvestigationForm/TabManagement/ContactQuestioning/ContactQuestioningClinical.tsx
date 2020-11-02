@@ -16,6 +16,7 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import useStyles from './ContactQuestioningStyles';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -28,6 +29,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
 
     const [cityInput, setCityInput] = useState<string>('');
 
@@ -70,6 +72,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
+                                    disabled={isFieldDisabled}
                                     test-id='familyRelationshipSelect'
                                     name={InteractedContactFields.FAMILY_RELATIONSHIP}
                                     placeholder='קרבה משפחתית'
@@ -97,6 +100,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={6} fieldName='קשר:'/>
                     <Grid item xs={6}>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             testId='relationship'
                             name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
@@ -112,6 +116,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <FieldName xs={6} fieldName='יישוב השהייה בבידוד:' />
                         <Grid item xs={6}>
                             <Autocomplete
+                                disabled={isFieldDisabled}
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
                                 inputValue={cityInput}
@@ -140,6 +145,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='האם נדרש סיוע עבור מקום בידוד?'/>
                         <Toggle
+                            disabled={isFieldDisabled}
                             test-id='doesNeedHelpInIsolation'
                             value={interactedContact.doesNeedHelpInIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
@@ -150,6 +156,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
+                            disabled={isFieldDisabled}
                             test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
@@ -161,6 +168,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
                     <Grid item xs={6}>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             testId='isolationEndDate'
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}
