@@ -43,7 +43,8 @@ ContactedPeopleRoute.get('/familyRelationships', (request: Request, response: Re
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-    })
+        response.sendStatus(500);
+    });
 });
 
 ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Response) => {
@@ -74,7 +75,8 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-    })
+        response.sendStatus(500);
+    });
 });
 
 ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) =>
