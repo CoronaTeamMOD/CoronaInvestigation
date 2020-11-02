@@ -57,15 +57,26 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
         investigation: response.locals.epidemiologynumber
     });
     graphqlRequest(GET_ALL_CONTACT_STATUSES, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Getting contact statuses',
-            step: 'got respond from the DB',
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
-        });
-        response.send(result?.data?.allContactStatuses?.nodes);
+        if (result?.data?.allContactStatuses?.nodes) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Getting contact statuses',
+                step: 'got respond from the DB',
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+            response.send(result?.data?.allContactStatuses?.nodes);
+        } else {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Getting contact statuses',
+                step: `got error from the graphql API ${JSON.stringify(result)}`,
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologynumber
+            });
+        }
     }).catch(err => {
         logger.error({
             service: Service.SERVER,
@@ -75,7 +86,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.sendStatus(500);
+        response.status(500).json({ error: 'failed to fetch personal details' });
     });
 });
 

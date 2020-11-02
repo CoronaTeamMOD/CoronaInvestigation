@@ -187,7 +187,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             investigation: epidemiologyNumber
         });
         axios.get('/contactedPeople/contactStatuses').then((result: any) => {
-            if (result?.data) {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
