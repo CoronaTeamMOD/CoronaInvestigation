@@ -8,7 +8,7 @@ interface InteractedContact extends Person {
     contactType: ContactType;
     extraInfo: string;
     birthDate: Date;
-    cantReachContact: boolean;
+    contactStatus: string;
     relationship: string;
     familyRelationship: number;
     occupation: string;
