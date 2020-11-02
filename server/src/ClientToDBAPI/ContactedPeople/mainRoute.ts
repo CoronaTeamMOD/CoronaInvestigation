@@ -72,7 +72,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Getting contact statuses',
-                step: `got error from the graphql API ${JSON.stringify(result)}`,
+                step: `got error from the graphql API ${result.errors[0].message ? result.errors[0].message : JSON.stringify(result)}`,
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
