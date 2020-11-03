@@ -694,7 +694,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     })).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
-                            severity: Severity.LOW,
+                            severity: Severity.HIGH,
                             workflow: 'GraphQL POST request to the DB',
                             step: error
                         });
