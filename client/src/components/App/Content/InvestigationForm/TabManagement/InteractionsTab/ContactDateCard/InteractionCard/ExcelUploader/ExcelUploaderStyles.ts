@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center'
     },
     logo: {
-        width: '2vw'
+        width: '3vw'
     },
     hiddenFileInput: {
         width: '0.1px',

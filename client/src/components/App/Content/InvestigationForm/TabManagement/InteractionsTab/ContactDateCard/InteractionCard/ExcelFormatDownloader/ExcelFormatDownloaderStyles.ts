@@ -12,7 +12,7 @@ const useStyle = makeStyles({
         width: '9vw'
     },
     logo: {
-        width: '2vw'
+        width: '3vw'
     },
 });
 

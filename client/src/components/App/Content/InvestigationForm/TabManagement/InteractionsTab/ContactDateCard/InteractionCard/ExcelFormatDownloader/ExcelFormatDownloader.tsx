@@ -10,7 +10,7 @@ const ExcelFormatDownloader: React.FC = (): JSX.Element => {
 
     return (
         <Button className={[classes.button, isScreenWide ? classes.wideScreenButton : classes.smallScreenButton].join(' ')} href='./assets/contactFormat.xlsx'>
-            <img src='./assets/img/uploadExcel.png' className={classes.logo} alt='excel downloader' />
+            <img src='./assets/img/downloadExcel.png' className={classes.logo} alt='excel downloader' />
             <Typography>
                 הורד פורמט
             </Typography>
