@@ -1,6 +1,6 @@
 interface Desk {
     id: number;
-    name: string;
+    deskName: string;
 }
 
 export default Desk;

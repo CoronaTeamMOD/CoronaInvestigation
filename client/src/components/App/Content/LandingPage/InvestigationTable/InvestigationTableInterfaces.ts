@@ -2,6 +2,7 @@ import User from 'models/User';
 import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import Desk from 'models/Desk';
 
 import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
 
@@ -11,7 +12,7 @@ export interface useInvestigationTableParameters {
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
-    setAllDesks: React.Dispatch<React.SetStateAction<string[]>>;
+    setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
 }
 
 export interface useInvestigationTableOutcome {

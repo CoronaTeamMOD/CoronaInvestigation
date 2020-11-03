@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import User from 'models/User';
-import Desk from 'models/Desk';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
@@ -100,37 +99,35 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     };
 
-    const fetchAllDesks = () => {
-        axios.get('/desks').
-        then((result) => {
-            if (result?.data && result.headers['content-type'].includes('application/json')) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting Desks',
-                    step: 'The desks were fetched successfully'
-                });
-                const alDesks : string[] = result.data.map((desk: Desk) => desk.name);
-                alDesks.unshift(ALL_DESKS_FILTER_OPTIONS);
-                setAllDesks(alDesks);
-            } else {
+    const fetchAllDesksByCountyId = () => {
+        axios.get('/desks/county')
+            .then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Getting Desks by county id',
+                        step: 'The desks were fetched successfully'
+                    });
+                    setAllDesks(result.data);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Getting Desks',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Getting Desks',
-                    step: 'Got 200 status code but results structure isnt as expected'
+                    step: err
                 });
-            }
-        })
-        .catch((err) => {
-            fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Desks',
-                step: err
-            });
-        })
+            })
     }
 
     const fetchAllInvestigationStatuses = () => {
@@ -172,8 +169,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         fetchAllInvestigationStatuses();
-        fetchAllDesks();
-
+        fetchAllDesksByCountyId();
         startWaiting();
     }, [])
 
