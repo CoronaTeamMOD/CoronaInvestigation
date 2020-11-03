@@ -25,7 +25,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
     const checkForDuplicateIdsInContactEvent = (currContacts: Contact[]) => {
         const allIdentificationNumbers = currContacts.map((contact) => contact.idNumber);
         return allIdentificationNumbers.some((idNumber, idNumberIndex) => {
-            return allIdentificationNumbers.indexOf(idNumber) !== idNumberIndex
+            return allIdentificationNumbers.indexOf(idNumber) !== idNumberIndex && idNumber !== undefined
         });
     }
 

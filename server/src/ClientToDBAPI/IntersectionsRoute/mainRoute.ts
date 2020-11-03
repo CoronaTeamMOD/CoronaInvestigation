@@ -189,7 +189,7 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
     });
     graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
         .then(result => {
-            if (result.data.updateContactEventFunction) {
+            if (result?.data?.updateContactEventFunction) {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
@@ -230,7 +230,7 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
     });
     graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {event: JSON.stringify(updatedEvent)})
         .then(result => {
-            if(result.data.updateContactEventFunction) {
+            if(result?.data?.updateContactEventFunction) {
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
