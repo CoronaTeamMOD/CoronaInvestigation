@@ -135,7 +135,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                setIsolationSources(result.data.allIsolationSources.nodes);
+                setIsolationSources(result.data);
             } else {
                 logger.warn({
                     service: Service.CLIENT,
