@@ -1,7 +1,7 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { Home, SupervisorAccount } from '@material-ui/icons';
-import { NavLink } from 'react-router-dom';
 import { AppBar, Button, Toolbar, Typography, Tooltip } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
