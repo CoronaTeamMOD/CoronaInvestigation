@@ -82,7 +82,7 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
             </Collapse>
             <Collapse in={watchIsInIsolation}>
                 <FormRowWithInput fieldName='מקור עדכון על הצורך בבידוד:'>
-                    <Grid item xs={5}>
+                    <Grid item xs={4}>
                         <Controller
                             name={ClinicalDetailsFields.ISOLATION_SOURCE}
                             control={control}
