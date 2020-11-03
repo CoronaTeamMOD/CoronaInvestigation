@@ -193,6 +193,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
         wasHospitalized: clinicalDetails.wasHospitalized,
         otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
+        isolationSource: clinicalDetails.isolationSource,
         isolationAddress
     }
     const investigatedPatientBackgroundDeseases = {

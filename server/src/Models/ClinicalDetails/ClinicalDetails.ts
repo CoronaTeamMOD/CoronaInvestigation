@@ -19,6 +19,7 @@ interface ClinicalDetails {
     doesHaveBackgroundDiseases: boolean;
     otherSymptomsMoreInfo: string;
     otherBackgroundDiseasesMoreInfo: string;
+    isolationSource: number | null;
 };
 
 export default ClinicalDetails;

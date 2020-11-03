@@ -49,6 +49,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
     symptomsStartTime
     isolationStartTime
     isolationEndTime
+    isolationSource
     isIsolationProblem
     isInIsolation
     isIsolationProblemMoreInfo
