@@ -271,7 +271,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Saving personal details tab',
-                    step: `got error from server: ${error.response.data}`,
+                    step: `got error from server: ${error}`,
                     investigation: investigationId,
                     user: userId
                 });
