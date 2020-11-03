@@ -662,8 +662,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
-                workflow: 'Switch County',
-                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.value)}`,
+                workflow: 'Switch Desk',
+                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`,
                 user: user.id
             })
             Swal.fire({

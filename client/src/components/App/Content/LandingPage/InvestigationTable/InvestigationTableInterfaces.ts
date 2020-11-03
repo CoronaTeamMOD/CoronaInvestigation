@@ -23,7 +23,7 @@ export interface useInvestigationTableOutcome {
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;
     onCountyChange: (indexedRow: IndexedInvestigation, newSelectedCountyId: any, currentSelectedCounty: string) => void;
-    onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDeskId: any, currentSelectedDesk: string) => void;
+    onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: any, currentSelectedDesk: string) => void;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
