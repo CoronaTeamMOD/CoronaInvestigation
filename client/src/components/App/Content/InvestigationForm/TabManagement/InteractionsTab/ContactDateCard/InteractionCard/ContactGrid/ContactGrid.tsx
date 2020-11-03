@@ -9,7 +9,6 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 
-import useContactFields from 'Utils/vendor/useContactFields';
 import useStyles from './ContactGridStyles';
 
 const contactedPersonPhone: string = 'מספר טלפון';
@@ -21,16 +20,15 @@ const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המג
 
 const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { contact, onDeleteContactClick, eventId } = props;
+    const { contact, onDeleteContactClick, eventId, isContactComplete } = props;
 
     const formClasses = useFormStyles();
     const classes = useStyles();
 
-    const {isFieldDisabled} = useContactFields(contact.contactStatus);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
-        isFieldDisabled ?
+        isContactComplete ?
             <Tooltip title='המגע בסטטוס הושלם'>
                 <span>{children}</span>
             </Tooltip>
@@ -95,7 +93,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <div className={classes.deleteIconDiv}>
                 <CompletedQuestioningTooltip>
-                    <IconButton disabled={isFieldDisabled} test-id='deleteContactLocation' onClick={() => {
+                    <IconButton disabled={isContactComplete} test-id='deleteContactLocation' onClick={() => {
                         contact.serialId && onDeleteContactClick(
                             contact.serialId,
                             eventId
@@ -114,5 +112,6 @@ export default ContactGrid;
 interface Props {
     contact: Contact;
     onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
-    eventId: number
+    eventId: number;
+    isContactComplete: boolean;
 }
