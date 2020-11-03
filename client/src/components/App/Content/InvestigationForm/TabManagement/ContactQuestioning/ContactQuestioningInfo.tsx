@@ -38,6 +38,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             value={contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus)}
                             onChange={(event, selectedStatus) => {
                                 updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                                event.stopPropagation();
                             }}
                             onInputChange={(event, newContactStatus) => {
                                 setContactStatusInput(newContactStatus);
