@@ -126,7 +126,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber
         });
         axios.get('/clinicalDetails/isolationSources').then(result => {
-            if (result?.data && result.data) {
+            if (result?.data) {
                 logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,

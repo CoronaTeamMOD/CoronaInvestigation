@@ -6,10 +6,9 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import IsolationSource from 'models/IsolationSource';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
-import FormInput from 'commons/FormInput/FormInput';
-import IsolationSource from 'models/IsolationSource';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources } = props;

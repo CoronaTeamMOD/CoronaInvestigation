@@ -105,7 +105,7 @@ clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Respo
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
         })
-        response.send(result.data.allIsolationSources.nodes)
+        response.send(result?.data?.allIsolationSources?.nodes)
     }).catch(error => {
         logger.error({
             service: Service.SERVER,
