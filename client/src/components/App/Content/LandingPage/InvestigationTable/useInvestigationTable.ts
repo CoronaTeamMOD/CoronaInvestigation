@@ -132,35 +132,35 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const fetchAllInvestigationStatuses = () => {
         axios.get('/landingPage/investigationStatuses').
-        then((result) => {
-            if (result?.data && result.headers['content-type'].includes('application/json')) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL GET statuses request to the DB',
-                    step: 'The investigations statuses were fetched successfully'
-                });
-                const allStatuses : string[] = result.data;
-                allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
-                setAllStatuses(allStatuses);
-            } else {
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'The investigations statuses were fetched successfully'
+                    });
+                    const allStatuses: string[] = result.data;
+                    allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
+                    setAllStatuses(allStatuses);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'GraphQL GET statuses request to the DB',
-                    step: 'Got 200 status code but results structure isnt as expected'
+                    step: err
                 });
-            }
-        })
-        .catch((err) => {
-            fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL GET statuses request to the DB',
-                step: err
-            });
-        })
+            })
     }
 
     useEffect(() => {
@@ -213,8 +213,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
-        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount || 
-            fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
+        fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
     const fetchAllCountyUsers = () => {
         logger.info({
@@ -350,36 +350,36 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
-                          .filter((investigation: any) => 
-                            investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                            investigation?.userByCreator)
-                          .map((investigation: any) => {
-                              const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                              const desk = investigation.desk;
-                              const covidPatient = patient.covidPatientByCovidPatient;
-                              const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                              const user = investigation.userByCreator;
-                              const county = user ? user.countyByInvestigationGroup : '';
-                              const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
-                                  investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                  '';
-                            return createRowData(
-                                investigation.epidemiologyNumber,
-                                investigation.coronaTestDate,
-                                investigation.isComplex,
-                                investigation.priority,
-                                investigation.investigationStatusByInvestigationStatus.displayName,
-                                subStatus,
-                                covidPatient.fullName,
-                                covidPatient.primaryPhone,
-                                covidPatient.age,
-                                patientCity ? patientCity.displayName : '',
-                                desk,
-                                county,
-                                { id: user.id, userName: user.userName },
-                                investigation.comment
-                            )
-                        });
+                            .filter((investigation: any) =>
+                                investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                investigation?.userByCreator)
+                            .map((investigation: any) => {
+                                const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                const desk = investigation.desk;
+                                const covidPatient = patient.covidPatientByCovidPatient;
+                                const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                const user = investigation.userByCreator;
+                                const county = user ? user.countyByInvestigationGroup : '';
+                                const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                    investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                    '';
+                                return createRowData(
+                                    investigation.epidemiologyNumber,
+                                    investigation.coronaTestDate,
+                                    investigation.isComplex,
+                                    investigation.priority,
+                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    subStatus,
+                                    covidPatient.fullName,
+                                    covidPatient.primaryPhone,
+                                    covidPatient.age,
+                                    patientCity ? patientCity.displayName : '',
+                                    desk,
+                                    county,
+                                    { id: user.id, userName: user.userName },
+                                    investigation.comment
+                                )
+                            });
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
@@ -410,7 +410,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const {startWaiting,onCancel, onOk, snackbarOpen} = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
+    const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
     useEffect(() => {
         fetchTableData()
@@ -649,10 +649,62 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
-
                 setSelectedRow(UNDEFINED_ROW);
             }
         })
+    }
+
+    const onDeskChange = (indexedRow: IndexedInvestigation, newSelectedDesk: any) => {
+        const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk.deskName}</b>?</p>`;
+        const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk.deskName}</b>?</p>`;
+
+        if (selectedInvestigator && newSelectedDesk.deskName !== '' && newSelectedDesk.deskName !== indexedRow.investigationDesk) {
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Switch Desk',
+                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`,
+                user: user.id
+            })
+            Swal.fire({
+                icon: 'warning',
+                title: indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle,
+                showCancelButton: true,
+                cancelButtonText: 'לא',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+                customClass: {
+                    title: classes.swalTitle,
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post('/landingPage/changeDesk', {
+                        epidemiologyNumber: indexedRow.epidemiologyNumber,
+                        updatedDesk: newSelectedDesk.id,
+                    }).then(() => timeout(1900).then(() => {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'GraphQL POST request to the DB',
+                            step: 'changed the desk successfully'
+                        });
+                        setSelectedRow(UNDEFINED_ROW);
+                        setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
+                    })).catch((error) => {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.HIGH,
+                            workflow: 'GraphQL POST request to the DB',
+                            step: error
+                        });
+                        fireSwalError(UPDATE_ERROR_TITLE);
+                    })
+                } else if (result.isDismissed) {
+                    setSelectedRow(UNDEFINED_ROW);
+                }
+            })
+        }
     }
 
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
@@ -697,7 +749,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onCancel,
         onOk,
         snackbarOpen,
-        moveToTheInvestigationForm
+        moveToTheInvestigationForm,
+        onDeskChange
     };
 };
 

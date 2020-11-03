@@ -7,15 +7,16 @@ import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_USER_BY_ID, GET_ALL_INVESTIGATION_STATUS, GET_ALL_DESKS } from '../../DBService/LandingPage/Query';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
+import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
 
 const errorStatusResponse = 500;
 
 const landingPageRoute = Router();
 
 landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Response) => {
-    const getInvestigationsParameters = { 
-        userId: response.locals.user.id, 
-        orderBy: request.params.orderBy 
+    const getInvestigationsParameters = {
+        userId: response.locals.user.id,
+        orderBy: request.params.orderBy
     };
     logger.info({
         service: Service.SERVER,
@@ -26,49 +27,49 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
         investigation: response.locals.epidemiologynumber
     })
     graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, getInvestigationsParameters)
-    .then((result: any) => {
-        if (result && result.data && result.data.userInvestigationsSort &&
-            result.data.userInvestigationsSort.json) {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting Investigations',
-                step: 'got investigations from the DB',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologynumber
-            });
-            response.send(JSON.parse(result.data.userInvestigationsSort.json))
-        }
-        else {
+        .then((result: any) => {
+            if (result && result.data && result.data.userInvestigationsSort &&
+                result.data.userInvestigationsSort.json) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting Investigations',
+                    step: 'got investigations from the DB',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
+                response.send(JSON.parse(result.data.userInvestigationsSort.json))
+            }
+            else {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Getting Investigations',
+                    step: `got errors in querying the investigations from the DB ${JSON.stringify(result)}`,
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologynumber
+                });
+                response.status(errorStatusResponse).send('error in fetching data')
+            }
+        })
+        .catch(err => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: 'Getting Investigations',
-                step: `got errors in querying the investigations from the DB ${JSON.stringify(result)}`,
+                step: `got errors in request to graphql API ${err}`,
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
-            response.status(errorStatusResponse).send('error in fetching data')
-        }
-    })
-    .catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Getting Investigations',
-            step: `got errors in request to graphql API ${err}`,
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
+            response.status(errorStatusResponse).send('error in fetching data: ' + err);
         });
-        response.status(errorStatusResponse).send('error in fetching data: ' + err);
-    });
 })
 
-landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request: Request, response: Response) => {    
-    const getInvestigationsParameters = { 
-        investigationGroupId: +response.locals.user.investigationGroup, 
-        orderBy: request.params.orderBy  
-    };   
+landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request: Request, response: Response) => {
+    const getInvestigationsParameters = {
+        investigationGroupId: +response.locals.user.investigationGroup,
+        orderBy: request.params.orderBy
+    };
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -79,7 +80,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
     })
     graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, getInvestigationsParameters)
         .then((result: any) => {
-            
+
             if (result && result.data && result.data.groupInvestigationsSort &&
                 result.data.groupInvestigationsSort.json) {
                 logger.info({
@@ -117,7 +118,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
         });
 })
 
-landingPageRoute.get('/investigationStatuses', (request: Request, response: Response) => {    
+landingPageRoute.get('/investigationStatuses', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -162,6 +163,42 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
                 investigation: response.locals.epidemiologynumber
             });
             response.status(errorStatusResponse).send('error in fetching data: ' + err)
+        });
+})
+
+landingPageRoute.post('/changeDesk', (request: Request, response: Response) => {
+    const changeDeskIdVariables = {
+        epidemiologyNumber: request.body.epidemiologyNumber,
+        updatedDesk: request.body.updatedDesk
+    };
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Change desk id',
+        step: `launching graphql API desks request`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    graphqlRequest(CHANGE_DESK_ID, response.locals, changeDeskIdVariables)
+        .then((result: any) => {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Change desk id',
+                step: `desk id has been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
+                user: response.locals.user.id
+            });
+            response.send(result.data)
+        }).catch(err => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Change desk id',
+                step: `querying the graphql API failed du to ${err}`,
+                investigation: response.locals.epidemiologyNumber,
+                user: response.locals.user.id
+            });
+            response.sendStatus(500);
         });
 })
 
