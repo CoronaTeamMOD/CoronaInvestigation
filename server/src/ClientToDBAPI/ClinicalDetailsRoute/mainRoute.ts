@@ -97,15 +97,26 @@ clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Respo
         user: response.locals.user.id
     })
     graphqlRequest(GET_ISOLATION_SOURCES, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Isolation Source',
-            step: 'got response from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
-        response.send(result?.data?.allIsolationSources?.nodes)
+        if(result?.data) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Fetching Isolation Source',
+                step: 'got response from DB',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            })
+            response.send(result?.data?.allIsolationSources?.nodes)
+        } else {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Fetching Isolation Source',
+                step: `couldnt query isolation sources due to ${result?.errors[0]?.message}`,
+                user: response.locals.user.id
+            });
+            response.sendStatus(errorStatusCode);
+        }
     }).catch(error => {
         logger.error({
             service: Service.SERVER,
