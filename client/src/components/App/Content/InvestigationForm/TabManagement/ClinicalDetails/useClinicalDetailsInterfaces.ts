@@ -2,6 +2,7 @@ import React from 'react';
 
 import Street from 'models/Street';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import IsolationSource from 'models/IsolationSource';
 
 export interface useClinicalDetailsIncome {
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -18,4 +19,5 @@ export interface useClinicalDetailsOutcome {
     ) => void;
     getStreetByCity: (cityId: string) => void;
     saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => Promise<void>;
+    isolationSources: IsolationSource[];
 };

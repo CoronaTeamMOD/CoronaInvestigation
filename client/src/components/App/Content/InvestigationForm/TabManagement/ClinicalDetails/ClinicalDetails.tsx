@@ -51,7 +51,7 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = useClinicalDetails({
             setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });
 
     const handleSymptomCheck = (
@@ -199,7 +199,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 classes={classes} 
                                 watchIsInIsolation={watchIsInIsolation} 
                                 watchIsolationStartDate={watchIsolationStartDate} 
-                                watchIsolationEndDate={watchIsolationEndDate} 
+                                watchIsolationEndDate={watchIsolationEndDate}
+                                isolationSources={isolationSources}
                             />
                         </Grid>
                         <Grid item xs={12}>

@@ -13,6 +13,7 @@ interface Investigation {
     epidemiologyNumber: number;
     isolationAddress: number | null;
     otherSymptomsMoreInfo: string;
+    isolationSource: number | null;
 };
 
 export default Investigation;

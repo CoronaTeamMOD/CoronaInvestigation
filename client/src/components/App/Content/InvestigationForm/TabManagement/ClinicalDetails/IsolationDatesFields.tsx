@@ -1,23 +1,24 @@
 import React from 'react';
-import { Collapse, Grid } from '@material-ui/core';
+import { Collapse, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import IsolationSource from 'models/IsolationSource';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
 const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate } = props;
-    const { control, errors, trigger} = useFormContext();
+    const { classes, watchIsInIsolation, watchIsolationStartDate, watchIsolationEndDate, isolationSources } = props;
+    const { control, errors, trigger } = useFormContext();
 
     React.useEffect(() => {
         trigger(ClinicalDetailsFields.ISOLATION_START_DATE);
         trigger(ClinicalDetailsFields.ISOLATION_END_DATE);
     }, [watchIsolationStartDate, watchIsolationEndDate]);
-    
+
     return (
         <>
             <FormRowWithInput fieldName='האם שהה בבידוד לפני ביצוע הבדיקה:'>
@@ -78,6 +79,37 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                     />
                 </Grid>
             </Collapse>
+            <Collapse in={watchIsInIsolation}>
+                <FormRowWithInput fieldName='מקור עדכון על הצורך בבידוד:'>
+                    <Grid item xs={4}>
+                        <Controller
+                            name={ClinicalDetailsFields.ISOLATION_SOURCE}
+                            control={control}
+                            render={(props) => (
+                                <FormControl error={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? true : false} variant='outlined' fullWidth>
+                                    <InputLabel shrink={!!props.value}>בחר אחת מהאופציות</InputLabel>
+                                    <Select
+                                        label={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? errors[ClinicalDetailsFields.ISOLATION_SOURCE].message : '* בחר אחת מהאופציות'}
+                                        name={ClinicalDetailsFields.ISOLATION_SOURCE}
+                                        value={props.value === null? '' : props.value}
+                                        onChange={(event) => props.onChange(event.target.value === ''? null : event.target.value)}
+                                    >
+                                        {
+                                            isolationSources.map((isolationSource: IsolationSource) => (
+                                                <MenuItem
+                                                    key={isolationSource.id}
+                                                    value={isolationSource.id}>
+                                                    {isolationSource.description}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                            )}
+                        />
+                    </Grid>
+                </FormRowWithInput>
+            </Collapse>
         </>
     );
 };
@@ -87,6 +119,7 @@ interface Props {
     watchIsInIsolation: boolean;
     watchIsolationStartDate: Date;
     watchIsolationEndDate: Date;
+    isolationSources: IsolationSource[];
 };
 
 export default IsolationDatesFields;

@@ -12,7 +12,7 @@ import CoronaTestDateQueryResult from '../../Models/ClinicalDetails/CoronaTestDa
 import { calculateInvestigationComplexity } from '../..//Utils/InvestigationComplexity/InvestigationComplexity';
 import {
     GET_SYMPTOMS, GET_BACKGROUND_DISEASES, GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER,
-    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED
+    GET_CORONA_TEST_DATE_OF_PATIENT, UPDATE_IS_DECEASED, UPDATE_IS_CURRENTLY_HOSPITIALIZED, GET_ISOLATION_SOURCES
 } from '../../DBService/ClinicalDetails/Query';
 import {
     ADD_BACKGROUND_DISEASES, ADD_SYMPTOMS, UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, UPDATE_INVESTIGATION
@@ -79,6 +79,49 @@ clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Re
             service: Service.SERVER,
             severity: Severity.HIGH,
             workflow: 'Fetching Background Diseases',
+            step: `got error when approaching the graphql API: ${error}`,
+            investigation: response.locals.epidemiologynumber,
+            user: response.locals.user.id
+        });
+        response.sendStatus(errorStatusCode);
+    });
+});
+
+clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Response) => {
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'Fetching Isolation Source',
+        step: 'start DB request',
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    })
+    graphqlRequest(GET_ISOLATION_SOURCES, response.locals).then((result: any) => {
+        if(result?.data) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Fetching Isolation Source',
+                step: 'got response from DB',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            })
+            response.send(result?.data?.allIsolationSources?.nodes)
+        } else {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Fetching Isolation Source',
+                step: `couldnt query isolation sources due to ${result?.errors[0]?.message}`,
+                user: response.locals.user.id
+            });
+            response.sendStatus(errorStatusCode);
+        }
+    }).catch(error => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.HIGH,
+            workflow: 'Fetching Isolation Source',
             step: `got error when approaching the graphql API: ${error}`,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
@@ -161,6 +204,7 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         doesHaveSymptoms: clinicalDetails.doesHaveSymptoms,
         wasHospitalized: clinicalDetails.wasHospitalized,
         otherSymptomsMoreInfo: clinicalDetails.otherSymptomsMoreInfo,
+        isolationSource: clinicalDetails.isolationSource,
         isolationAddress
     }
     const investigatedPatientBackgroundDeseases = {
