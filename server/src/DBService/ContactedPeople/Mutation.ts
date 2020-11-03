@@ -7,3 +7,11 @@ mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
   }
 }
 `;
+
+export const CHECK_FOR_DUPLICATE_CONTACTED_PERSON_IDS = gql`
+mutation checkForExistingIds($currInvestigationId: Int!) {
+  checkForDuplicateIds(input: {currinvestigationid: $currInvestigationId}) {
+    boolean
+  }
+}
+`;

@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { subDays, differenceInCalendarDays } from 'date-fns';
@@ -6,17 +7,31 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
+import { duplicateIdsErrorMsg } from './ContactQuestioning'
 import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const { setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses } = parameters;
-
+    const { alertWarning } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const handleDuplicateIdsError = () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Create Interaction',
+            step: 'Didnt save interactions due to duplicate ids',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        alertWarning('שים לב, נמצא מספר זיהוי שכבר קיים בחקירה, אנא בצע את השינויים הדרושים');
+    }
 
     const saveContact = (interactedContact: InteractedContact) => {
         const contacts = [interactedContact];
@@ -41,14 +56,18 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 investigation: epidemiologyNumber
             });
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving single contact',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            })
+            if (err.response.data === duplicateIdsErrorMsg) {
+                handleDuplicateIdsError();
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving single contact',
+                    step: `got the following error from the server: ${err}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                })
+            }
         });
     };
 
@@ -321,6 +340,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
+        handleDuplicateIdsError
     };
 };
 
