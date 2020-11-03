@@ -5,7 +5,7 @@ import GetAllDesks from '../../Models/Desk/GetAllDesks';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_USER_BY_ID, GET_ALL_INVESTIGATION_STATUS, GET_ALL_DESKS } from '../../DBService/LandingPage/Query';
+import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS, GET_ALL_DESKS } from '../../DBService/LandingPage/Query';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
 
@@ -166,7 +166,7 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
         });
 })
 
-landingPageRoute.post('/changeDesk', (request: Request, response: Response) => {
+landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, response: Response) => {
     const changeDeskIdVariables = {
         epidemiologyNumber: request.body.epidemiologyNumber,
         updatedDesk: request.body.updatedDesk

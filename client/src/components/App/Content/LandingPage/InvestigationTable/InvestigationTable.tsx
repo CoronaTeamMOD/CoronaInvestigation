@@ -249,7 +249,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
                 }
             case TableHeadersNames.investigationDesk:
-                if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked) {
+                if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
+                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN)) {
                     return (
                         <Autocomplete
                             options={allDesks}
