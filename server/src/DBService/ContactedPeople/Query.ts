@@ -38,7 +38,6 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesNeedHelpInIsolation
       repeatingOccuranceWithConfirmed
       doesLiveWithConfirmed
-      cantReachContact
       doesWorkWithCrowd
       doesNeedIsolation
       contactStatus
