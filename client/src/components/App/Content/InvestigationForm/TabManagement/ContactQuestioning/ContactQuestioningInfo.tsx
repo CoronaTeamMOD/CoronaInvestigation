@@ -9,6 +9,7 @@ import ContactStatus from 'models/ContactStatus';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
+import useContactFields from 'Utils/vendor/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
@@ -21,6 +22,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
+    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
 
     return (
         <>
@@ -28,6 +30,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 <div className={classes.reachContact}>
                     <Grid item xs={8} container>
                         <Autocomplete
+                            disabled={isFieldDisabled}
                             className={classes.statusAutoComplete}
                             options={contactStatuses}
                             getOptionLabel={(option) => option.displayName}
