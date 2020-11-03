@@ -33,6 +33,26 @@ const useStyles = makeStyles((theme: Theme) => ({
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
+    },
+    menuIcon: {
+        color: 'white',
+        marginRight: theme.spacing(1)
+    },
+    menuTypo: {
+        color: 'white',
+        fontStyle: '',
+        fontFamily: 'Assistant',
+        marginRight: theme.spacing(2)
+    },
+    menuItem: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        textDecoration: 'none'
+    },
+    activeItem: {
+        textDecoration: 'underline',
+        textDecorationColor: 'white'
     }
 }));
 
@@ -44,6 +64,10 @@ export interface AppToolbarClasses {
     greetUserText: string;
     countyTextField: string;
     swalTitle: string;
+    menuIcon: string;
+    menuTypo: string;
+    menuItem: string;
+    activeItem: string;
 }
 
 export default useStyles;
