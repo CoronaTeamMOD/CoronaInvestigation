@@ -1,9 +1,10 @@
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(() => ({
-    button: {
+    uploadButton: {
         display:'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: 'auto'
     },
     logo: {
         width: '3vw'

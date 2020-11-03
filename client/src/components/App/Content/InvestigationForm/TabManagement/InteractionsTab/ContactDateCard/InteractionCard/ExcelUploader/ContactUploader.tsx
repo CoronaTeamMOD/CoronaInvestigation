@@ -76,7 +76,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
 
     return (
         <>
-            <Button className={classes.button} onClick={onButtonClick}>
+            <Button className={classes.uploadButton} onClick={onButtonClick}>
                 <img className={classes.logo} src='./assets/img/uploadExcel.png' alt='excel'/>
                 <Typography variant='body2'>
                     טען אקסל

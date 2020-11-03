@@ -113,11 +113,11 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                 <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                             </Typography>
                         </Grid>
-                        <Grid item xs={1}>
-                            <ExcelFormatDownloader />
-                        </Grid>
-                        <Grid item xs={1}>
-                            {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions} />}
+                        <Grid item xs={12}>
+                            <div className={classes.excelControllers}>
+                                <ExcelFormatDownloader />
+                                {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions} />}
+                            </div>
                         </Grid>
                         {interaction.contacts.map(person => (
                             <Grid item xs={12} className={classes.interactionItem}>
