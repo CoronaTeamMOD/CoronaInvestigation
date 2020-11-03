@@ -38,7 +38,7 @@ const InteractionEventForm: React.FC<Props> = (
   { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
 ): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -76,7 +76,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveIntreactions(interactionDataToSave);
+    saveInteractions(interactionDataToSave);
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {

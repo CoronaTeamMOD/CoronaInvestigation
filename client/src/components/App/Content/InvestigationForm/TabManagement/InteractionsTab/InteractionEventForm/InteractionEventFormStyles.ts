@@ -29,8 +29,10 @@ const useStyles = makeStyles({
             marginLeft: '-3vw',
             width: '11.5vw',
         },
-
     },
+    duplicateIdsError: {
+        zIndex: 1300,
+    }
 });
 
 export default useStyles;

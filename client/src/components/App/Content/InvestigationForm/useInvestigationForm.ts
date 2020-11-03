@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import {useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -7,29 +7,31 @@ import logger from 'logger/logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
-import { timeout } from 'Utils/Timeout/Timeout';
+import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
-import { setCities } from 'redux/City/cityActionCreators';
+import {Service, Severity} from 'models/Logger';
+import {defaultEpidemiologyNumber} from 'Utils/consts';
+import {setCities} from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import { InvestigationStatus } from 'models/InvestigationStatus';
-import { setCountries } from 'redux/Country/countryActionCreators';
+import {InvestigationStatus} from 'models/InvestigationStatus';
+import {setCountries} from 'redux/Country/countryActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
-import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
+import {setContactType} from 'redux/ContactType/contactTypeActionCreators';
+import {setSubStatuses} from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
-import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
-import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import useStyles from './InvestigationFormStyles';
+import {useInvestigationFormOutcome} from './InvestigationFormInterfaces';
+import {LandingPageTimer, defaultUser} from './InvestigationInfo/InvestigationInfoBar';
+import {duplicateIdsErrorMsg} from './TabManagement/ContactQuestioning/ContactQuestioning';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
-    const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+    const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
 
-    const { alertError, alertWarning, alertSuccess } = useCustomSwal();
+    const {alertError, alertWarning, alertSuccess} = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -215,12 +217,13 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     useEffect(() => {
-        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id)
-        fetchCities();
-        fetchCountries();
-        fetchContactTypes();
-        fetchSubStatuses();
-        initializeTabShow();
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+            fetchCities();
+            fetchCountries();
+            fetchContactTypes();
+            fetchSubStatuses();
+            initializeTabShow();
+        }
     }, [epidemiologyNumber, userId]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
@@ -271,22 +274,33 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     });
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         updateIsDeceased(handleInvestigationFinish);
-                    }
-                    else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                    } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
                         updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                    }
-                    else {
+                    } else {
                         handleInvestigationFinish();
-                    }}).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Ending Investigation',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
-                    alertError('לא ניתן היה לסיים את החקירה');
+                    }
+                }).catch((error) => {
+                    if (error.response.data === duplicateIdsErrorMsg) {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Ending Investigation',
+                            step: `found duplicate ids in the investigation and can't finish it`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                        alertWarning('נמצאו מספרי זיהוי זהים בחקירה, אנא בצע את השינויים המתאימים');
+                    } else {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.HIGH,
+                            workflow: 'Ending Investigation',
+                            step: `got errors in server result: ${error}`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                        alertError('לא ניתן היה לסיים את החקירה');
+                    }
                 })
             };
         });

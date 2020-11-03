@@ -21,9 +21,10 @@ import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
+export const duplicateIdsErrorMsg = 'found duplicate identification numbers';
+
 const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
     const classes = useStyles();
-
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -35,7 +36,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses,
+        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError
     } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses });
 
     useEffect(() => {
@@ -58,14 +59,18 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
             });
             onSubmit();
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving all contacts',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: investigationId
-            });
+            if(err.response.data === duplicateIdsErrorMsg) {
+                handleDuplicateIdsError();
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving all contacts',
+                    step: `got the following error from the server: ${err}`,
+                    user: userId,
+                    investigation: investigationId
+                });
+            }
         });
     }
 
