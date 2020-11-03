@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
@@ -9,7 +8,6 @@ export interface useContactQuestioningParameters {
     allContactedInteractions: InteractedContact[];
     setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
-    contactStatuses: ContactStatus[];
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
 };
 

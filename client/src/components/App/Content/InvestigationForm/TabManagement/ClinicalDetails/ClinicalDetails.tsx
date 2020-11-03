@@ -1,5 +1,5 @@
-import React from 'react';
 import Swal from 'sweetalert2';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -15,17 +15,17 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import { useStyles } from './ClinicalDetailsStyles';
-import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
+import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
 const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
@@ -131,24 +131,24 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsInIsolation === false) {
             methods.setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
             methods.setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
         }
     }, [watchIsInIsolation]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsIsolationProblem === false) {
             methods.setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
         }
     }, [watchIsIsolationProblem]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchDoesHaveSymptoms === false) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS, []);
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
@@ -156,32 +156,32 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }, [watchDoesHaveSymptoms]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!watchSymptoms.includes(otherSymptomFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
         }
     }, [watchSymptoms]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsSymptomsDateUnknown) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
         }
     }, [watchIsSymptomsDateUnknown])
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchDoesHaveBackgroundDiseases === false) {
             methods.setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
     }, [watchDoesHaveBackgroundDiseases]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
     }, [watchBackgroundDiseases]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchWasHospitalized === false) {
             methods.setValue(ClinicalDetailsFields.HOSPITAL, '');
             methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);

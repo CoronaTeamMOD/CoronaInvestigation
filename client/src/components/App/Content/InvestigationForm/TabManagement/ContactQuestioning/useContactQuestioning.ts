@@ -4,7 +4,6 @@ import { subDays, differenceInCalendarDays } from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import ContactStatus from 'models/ContactStatus';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
@@ -14,7 +13,7 @@ import {useContactQuestioningOutcome, useContactQuestioningParameters} from './C
 import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, contactStatuses, setContactStatuses } = parameters;
+    const { setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses } = parameters;
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);

@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { Home, SupervisorAccount } from '@material-ui/icons';
-import { AppBar, Button, Toolbar, Typography, Tooltip } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Tooltip } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
 import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
