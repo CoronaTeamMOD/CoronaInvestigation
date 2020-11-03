@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     menuTypo: {
         color: 'white',
-        fontStyle: '',
         fontFamily: 'Assistant',
         marginRight: theme.spacing(2)
     },
