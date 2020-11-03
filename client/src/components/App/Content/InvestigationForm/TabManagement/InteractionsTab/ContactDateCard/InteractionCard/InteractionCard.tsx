@@ -16,6 +16,7 @@ import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
 import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
 import MedicalLocationGrid from './PlacesAdditionalGrids/MedicalLocationGrid';
 import DefaultPlaceEventGrid from './PlacesAdditionalGrids/DefaultPlaceEventGrid';
+import ExcelFormatDownloader from './ExcelFormatDownloader/ExcelFormatDownloader';
 import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
@@ -111,6 +112,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             <Typography>
                                 <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                             </Typography>
+                            <ExcelFormatDownloader />
                             {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions} />}
                         </Grid>
                         {interaction.contacts.map(person => (
