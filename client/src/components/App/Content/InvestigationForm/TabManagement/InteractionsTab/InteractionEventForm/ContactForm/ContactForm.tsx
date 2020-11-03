@@ -10,12 +10,12 @@ import FormInput from 'commons/FormInput/FormInput';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import useContactFields from 'Utils/vendor/useContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractedContact from 'models/InteractedContact';
 
 import useStyles from './ContactFormStyles';
-import useContactFields from 'Utils/vendor/useContactFields';
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';
