@@ -5,7 +5,10 @@ import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material
 
 import { timeFormat } from 'Utils/displayUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import Contact from 'models/Contact';
+
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 import ContactGrid from './ContactGrid/ContactGrid';
 import ContactUploader from './ExcelUploader/ContactUploader';
@@ -28,6 +31,10 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
 
+    const {getDisabledFields} = useContactFields();
+    const completedContacts = getDisabledFields(interaction.contacts);
+    const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
+
     return (
         <Card className={classes.container}>
             <div className={[classes.rowAlignment, classes.spaceBetween].join(' ')}>
@@ -45,7 +52,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     <IconButton test-id={'editContactLocation'} onClick={onEditClick}>
                         <Edit />
                     </IconButton>
-                    <IconButton test-id={'deleteContactLocation'} onClick={onDeleteClick}>
+                    <IconButton test-id={'deleteContactLocation'}
+                                disabled={completedContacts?.length > 0}
+                                onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
                 </div>
@@ -107,6 +116,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         {interaction.contacts.map(person => (
                             <Grid item xs={12} className={classes.interactionItem}>
                                 <ContactGrid
+                                    isContactComplete={isFieldDisabled(person.serialId)}
                                     contact={person}
                                     onDeleteContactClick={onDeleteContactClick}
                                     eventId={interaction.id ? interaction.id : -1}
