@@ -10,8 +10,10 @@ import FormInput from 'commons/FormInput/FormInput';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import useContactFields from 'Utils/vendor/useContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
+import InteractedContact from 'models/InteractedContact';
 
 import useStyles from './ContactFormStyles';
 
@@ -26,14 +28,15 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
     const formClasses = useFormStyles();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-    
+    const { isFieldDisabled } = useContactFields(contactStatus);
+
     useEffect(() => {
         const values = getValues();
         const contactContactType: number = values.contacts[updatedContactIndex]?.contactType ? values.contacts[updatedContactIndex]?.contactType : Array.from(contactTypes.keys())[0];
@@ -50,6 +53,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <AlphabetTextField
+                                    disabled={isFieldDisabled}
                                     name={props.name}
                                     key='contactedPersonFirstName'
                                     value={props.value}
@@ -69,6 +73,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <AlphabetTextField
+                                    disabled={isFieldDisabled}
                                     name={props.name}
                                     key='contactedPersonLastName'
                                     value={props.value}
@@ -88,6 +93,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <NumericTextField
+                                    disabled={isFieldDisabled}
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
@@ -107,6 +113,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                             control={control}
                             render={(props) => (
                                 <NumericTextField
+                                    disabled={isFieldDisabled}
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
@@ -122,11 +129,12 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                         <FormControl fullWidth>
                             <div className={classes.newContactField}>
                                 <InputLabel>{contactTypeName}</InputLabel>
-                                    <Controller 
+                                    <Controller
                                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`}
                                         control={control}
                                         render={(props) => (
                                             <Select
+                                                disabled={isFieldDisabled}
                                                 test-id='contactType'
                                                 defaultValue={Array.from(contactTypes.keys())[0]}
                                                 value={props.value}
@@ -154,6 +162,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex }: Props): JSX.Eleme
                     control={control}
                     render={(props) => (
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             name={props.name}
                             value={props.value}
                             onChange={(newValue: string) => props.onChange(newValue as string)}
@@ -171,4 +180,5 @@ export default ContactForm;
 
 interface Props {
     updatedContactIndex: number;
+    contactStatus?: InteractedContact['contactStatus'];
 };

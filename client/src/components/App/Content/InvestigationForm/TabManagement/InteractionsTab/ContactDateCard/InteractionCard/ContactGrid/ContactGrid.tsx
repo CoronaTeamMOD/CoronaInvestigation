@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
-import { Grid, Typography, IconButton } from '@material-ui/core';
+import {Grid, Typography, IconButton, Tooltip} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import ContactType from 'models/ContactType';
@@ -9,6 +9,7 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 
+import useContactFields from 'Utils/vendor/useContactFields';
 import useStyles from './ContactGridStyles';
 
 const contactedPersonPhone: string = 'מספר טלפון';
@@ -25,7 +26,16 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const formClasses = useFormStyles();
     const classes = useStyles();
 
+    const {isFieldDisabled} = useContactFields(contact.contactStatus);
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
+
+    const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
+        isFieldDisabled ?
+            <Tooltip title='המגע בסטטוס הושלם'>
+                <span>{children}</span>
+            </Tooltip>
+            : children
+    );
 
     return (
         <>
@@ -84,14 +94,16 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
             </Grid>
             <div className={classes.deleteIconDiv}>
-                <IconButton test-id='deleteContactLocation' onClick={() => {
-                    contact.serialId && onDeleteContactClick(
-                        contact.serialId,
-                        eventId
-                    )
-                }}>
-                    <Delete />
-                </IconButton>
+                <CompletedQuestioningTooltip>
+                    <IconButton disabled={isFieldDisabled} test-id='deleteContactLocation' onClick={() => {
+                        contact.serialId && onDeleteContactClick(
+                            contact.serialId,
+                            eventId
+                        )
+                    }}>
+                        <Delete/>
+                    </IconButton>
+                </CompletedQuestioningTooltip>
             </div>
         </>
     );

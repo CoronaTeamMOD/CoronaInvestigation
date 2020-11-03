@@ -68,6 +68,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
         nodes {
           id
           contactEvent
+          contactStatus
           contactType
           extraInfo
           personByPersonInfo {

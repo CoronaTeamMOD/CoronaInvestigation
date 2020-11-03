@@ -214,6 +214,7 @@ const InteractionEventForm: React.FC<Props> = (
                   <ContactForm
                     key={index}
                     updatedContactIndex={index}
+                    contactStatus={contact.contactStatus}
                   />
                 </Grid>
               ))
