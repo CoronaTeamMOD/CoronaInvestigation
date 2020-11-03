@@ -84,11 +84,11 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                 <FormInput fieldName='מקור עדכון על הצורך בבידוד' labelLength={2}>
                     <Grid item xs={5}>
                         <Controller
-                            name={ClinicalDetailsFields.ISOLATION_END_DATE}
+                            name={ClinicalDetailsFields.ISOLATION_SOURCE}
                             control={control}
                             render={(props) => (
                                 <FormControl variant='outlined' fullWidth>
-                                    <InputLabel>בחר אחת מהאופציות</InputLabel>
+                                    <InputLabel shrink={!!props.value}>בחר אחת מהאופציות</InputLabel>
                                     <Select
                                         label='בחר אחת מהאופציות'
                                         name={ClinicalDetailsFields.ISOLATION_SOURCE}

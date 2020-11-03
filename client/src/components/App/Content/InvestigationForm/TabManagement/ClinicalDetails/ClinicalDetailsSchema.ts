@@ -81,6 +81,13 @@ const ClinicalDetailsSchema = (validationDate: Date) => yup.object().shape({
     [ClinicalDetailsFields.IS_IN_ISOLATION]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.ISOLATION_START_DATE]: isInIsolationStartDateSchema(validationDate),
     [ClinicalDetailsFields.ISOLATION_END_DATE]: isInIsolationEndDateSchema(validationDate),
+    [ClinicalDetailsFields.ISOLATION_SOURCE]: yup.number().when(
+        ClinicalDetailsFields.IS_IN_ISOLATION, {
+            is: true,
+            then: yup.number().required(),
+            otherwise: yup.number()
+        }
+    ),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM]: yup.boolean().nullable().required(),
     [ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO]: yup.string().when(
         ClinicalDetailsFields.IS_ISOLATION_PROBLEM, {

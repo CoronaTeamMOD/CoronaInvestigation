@@ -17,6 +17,7 @@ export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
     isolationEndDate: null,
+    isolationSource: null,
     isolationAddress: initDBAddress,
     isInIsolation: false,
     isIsolationProblem: false,
@@ -236,6 +237,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             patientClinicalDetails.isIsolationProblemMoreInfo : '',
                         isolationStartDate: convertDate(patientClinicalDetails.isolationStartTime),
                         isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
+                        isolationSource: patientClinicalDetails.isolationSource !== null?
+                            patientClinicalDetails.isolationSource : '',
                         symptoms: patientClinicalDetails.symptoms,
                         symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartTime),
                         isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,
