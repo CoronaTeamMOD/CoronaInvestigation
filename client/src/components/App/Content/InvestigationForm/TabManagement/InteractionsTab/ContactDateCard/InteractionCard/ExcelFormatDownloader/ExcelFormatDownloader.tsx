@@ -7,8 +7,10 @@ const ExcelFormatDownloader: React.FC = (): JSX.Element => {
 
     const classes = useStyle();
 
+    const EXCEL_FORMAL_LOCATION = './assets/contactFormat.xlsx';
+
     return (
-        <Button className={classes.downloadButton} href='./assets/contactFormat.xlsx'>
+        <Button className={classes.downloadButton} href={EXCEL_FORMAL_LOCATION}>
             <img src='./assets/img/downloadExcel.png' className={classes.logo} alt='excel downloader' />
             <Typography className={classes.downloadText}>
                 הורד פורמט
