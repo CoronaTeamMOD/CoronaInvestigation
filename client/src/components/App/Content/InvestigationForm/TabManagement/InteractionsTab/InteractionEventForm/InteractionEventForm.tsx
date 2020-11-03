@@ -1,8 +1,8 @@
-import React from 'react';
-import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { isValid } from 'date-fns';
+import React, { useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
+import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
 import { Grid, Typography, Divider, IconButton, Collapse } from '@material-ui/core';
 
 import Contact from 'models/Contact';
@@ -39,7 +39,7 @@ const InteractionEventForm: React.FC<Props> = (
 ): JSX.Element => {
 
   const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
-  const [placeSubtypeName, setPlaceSubtypeName] = React.useState<string>('');
+  const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
     mode: 'all',
@@ -88,7 +88,7 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
-  const memoIsPrivatePlace: boolean = React.useMemo(() => {
+  const memoIsPrivatePlace: boolean = useMemo(() => {
     const isPrivatePlace = placeType === 'בית פרטי';
     
     if (isPrivatePlace) {

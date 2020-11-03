@@ -13,7 +13,6 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
-import InteractedContactFields from 'models/enums/InteractedContact';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactQuestioningStyles';
@@ -37,7 +36,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
         loadFamilyRelationships, loadContactStatuses,
-    } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, contactStatuses, setContactStatuses });
+    } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses });
 
     useEffect(() => {
         loadInteractedContacts();

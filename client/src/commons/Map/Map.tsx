@@ -1,15 +1,15 @@
 import React from 'react';
 // @ts-ignore
-import GoogleMap from "google-map-react";
+import GoogleMap from 'google-map-react';
 import LocationInput, {
     GeocodeResponse,
     GoogleApiPlace
-} from "../LocationInputField/LocationInput";
+} from '../LocationInputField/LocationInput';
 
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-import injectScript from "commons/LocationInputField/useGoogleScriptInjector";
-import useGoogleGeocoder from "commons/LocationInputField/useGoogleGeocoder";
-import useDBParser from "Utils/vendor/useDBParsing";
+import useDBParser from 'Utils/vendor/useDBParsing';
+import useGoogleGeocoder from 'commons/LocationInputField/useGoogleGeocoder';
+import injectScript from 'commons/LocationInputField/useGoogleScriptInjector';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 interface MapProps {
     height?: number | string;
@@ -73,8 +73,8 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
             if (placeData) {
                 const {geometry: {location : {lat,lng}, viewport}}= placeData;
                 const newLocation = {
-                    lng: typeof lng === "function" ? lng() : (lng as number),
-                    lat: typeof lat === "function" ? lat() : (lat as number),
+                    lng: typeof lng === 'function' ? lng() : (lng as number),
+                    lat: typeof lat === 'function' ? lat() : (lat as number),
                 };
 
                 setMarkerPosition(newLocation);

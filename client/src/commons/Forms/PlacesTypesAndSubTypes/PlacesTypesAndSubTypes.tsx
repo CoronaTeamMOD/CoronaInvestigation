@@ -104,7 +104,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                             <TextField
                                                 {...params}
                                                 error={errors && errors[placeTypeName]}
-                                                label={errors && errors[placeTypeName]?.message || placeTypeDisplayName}
+                                                label={(errors && errors[placeTypeName]?.message) || placeTypeDisplayName}
                                                 test-id='placeType'
                                             />
                                         }
@@ -145,7 +145,7 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                                 <TextField
                                                     {...params}
                                                     error={errors && errors[placeSubTypeName]}
-                                                    label={errors && errors[placeSubTypeName]?.message || placeSubTypeDisplayName}
+                                                    label={(errors && errors[placeSubTypeName]?.message) || placeSubTypeDisplayName}
                                                     test-id='placeSubType'
                                                 />
                                             }

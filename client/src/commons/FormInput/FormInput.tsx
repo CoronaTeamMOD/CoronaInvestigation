@@ -27,5 +27,5 @@ export default FormInput;
 interface Props extends TypographyProps {
     fieldName: string;
     children: JSX.Element | JSX.Element[];
-    labelLength?: "auto" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
+    labelLength?: 'auto' | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
 };
