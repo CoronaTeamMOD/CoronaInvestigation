@@ -2,7 +2,7 @@ import React from 'react';
 import InteractedContact from 'models/InteractedContact';
 import Contact from 'models/Contact';
 
-const COMPLETE_STATUS = 5;
+export const COMPLETE_STATUS = 5;
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
 
