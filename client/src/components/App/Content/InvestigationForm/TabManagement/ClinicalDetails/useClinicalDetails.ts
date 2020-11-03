@@ -237,8 +237,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                             patientClinicalDetails.isIsolationProblemMoreInfo : '',
                         isolationStartDate: convertDate(patientClinicalDetails.isolationStartTime),
                         isolationEndDate: convertDate(patientClinicalDetails.isolationEndTime),
-                        isolationSource: patientClinicalDetails.isolationSource !== null?
-                            patientClinicalDetails.isolationSource : '',
+                        isolationSource: patientClinicalDetails.isolationSource,
                         symptoms: patientClinicalDetails.symptoms,
                         symptomsStartDate: convertDate(patientClinicalDetails.symptomsStartTime),
                         isSymptomsStartDateUnknown: patientClinicalDetails.symptomsStartTime === null,

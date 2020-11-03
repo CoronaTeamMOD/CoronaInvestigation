@@ -87,13 +87,13 @@ const IsolationDatesFields: React.FC<Props> = (props: Props): JSX.Element => {
                             name={ClinicalDetailsFields.ISOLATION_SOURCE}
                             control={control}
                             render={(props) => (
-                                <FormControl variant='outlined' fullWidth>
+                                <FormControl error={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? true : false} variant='outlined' fullWidth>
                                     <InputLabel shrink={!!props.value}>בחר אחת מהאופציות</InputLabel>
                                     <Select
-                                        label='בחר אחת מהאופציות'
+                                        label={errors[ClinicalDetailsFields.ISOLATION_SOURCE]? errors[ClinicalDetailsFields.ISOLATION_SOURCE].message : '* בחר אחת מהאופציות'}
                                         name={ClinicalDetailsFields.ISOLATION_SOURCE}
-                                        value={props.value}
-                                        onChange={(event) => props.onChange(event.target.value)}
+                                        value={props.value === null? '' : props.value}
+                                        onChange={(event) => props.onChange(event.target.value === ''? null : event.target.value)}
                                     >
                                         {
                                             isolationSources.map((isolationSource: IsolationSource) => (
