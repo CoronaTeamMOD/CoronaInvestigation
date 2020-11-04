@@ -6,7 +6,7 @@ require('dotenv').config();
 
 export const sendSavedInvestigationToIntegration = (epidemiologyNumber: number, workflow: string, userId: string) =>
 {
-    if (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test') {
+    if (process.env.ENVIRONMENT === 'prod' || process.env.ENVIRONMENT === 'test' || (process.env.ENVIRONMENT === 'dev' && process.env.INTERFACES_INTEGRATION_API !== undefined)) {
         httpRequest(process.env.INTERFACES_INTEGRATION_API, 'POST', {
             variables: {
                 idARR: [epidemiologyNumber]
