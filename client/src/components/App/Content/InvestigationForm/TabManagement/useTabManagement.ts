@@ -16,10 +16,10 @@ const useTabManagement = () => {
     const nextTab: RefObject<number> = useRef<number>(0);
     const epidemiologyNumber = useSelector<StoreStateType, number>(store => store.investigation.epidemiologyNumber);
     const currentInvestigationValidations = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
-    
+
     useEffect(() => {
         if (currentInvestigationValidations !== undefined) {
-            const areTabsNotValid: boolean = validTabsBeforeExport.some(tabId => !currentInvestigationValidations[tabId]);
+            const areTabsNotValid: boolean = validTabsBeforeExport.some(tabId => currentInvestigationValidations && !currentInvestigationValidations[tabId]);
             if (exportToMabarTabs.includes(nextTab.current as number)) {
                 if (areTabsNotValid) {
                     alertError('חלק מן השדות אינם תקינים, נא מלא אותם מחדש ונסה שוב.', {

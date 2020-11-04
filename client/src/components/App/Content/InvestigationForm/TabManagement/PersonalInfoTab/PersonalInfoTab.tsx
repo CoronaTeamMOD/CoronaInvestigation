@@ -250,6 +250,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             investigation: investigationId,
             user: userId
         })
+
+        personalInfoValidationSchema.isValid(data).then(valid => {
+            setFormState(investigationId, id, valid);
+        });
         axios.post('/personalDetails/updatePersonalDetails',
             {
                 id: investigatedPatientId,
@@ -276,9 +280,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 });
                 complexityErrorAlert(error);
             })
-        personalInfoValidationSchema.isValid(data).then(valid => {
-            setFormState(investigationId, id, valid);
-        })
     }
 
     return (

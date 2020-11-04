@@ -89,6 +89,9 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
             investigation: epidemiologyNumber,
             user: userId
         })
+        ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
+            setFormState(epidemiologyNumber, id, valid);
+        })
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
             .then(() => {
                 logger.info({
@@ -114,9 +117,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     icon: 'error'
                 })
             });
-        ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
-            setFormState(epidemiologyNumber, id, valid);
-        })
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
