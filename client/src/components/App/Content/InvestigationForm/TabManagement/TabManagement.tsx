@@ -22,7 +22,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
 
     const {
         currentTab,
-        moveToNextTab,
         setNextTab,
         areThereContacts,
         setAreThereContacts
@@ -34,27 +33,27 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         {
             id: TabId.PERSONAL_INFO,
             name: orderedTabsNames[0],
-            displayComponent: <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>
+            displayComponent: <PersonalInfoTab id={0}/>
         },
         {
             id: TabId.CLINICAL_DETAILS,
             name: orderedTabsNames[1],
-            displayComponent: <ClinicalDetails id={1} onSubmit={moveToNextTab}/>
+            displayComponent: <ClinicalDetails id={1}/>
         },
         {
             id: TabId.EXPOSURES,
             name: orderedTabsNames[2],
-            displayComponent: <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>
+            displayComponent: <ExposuresAndFlights id={2}/>
         },
         {
             id: TabId.INTERACTIONS,
             name: orderedTabsNames[3],
-            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
+            displayComponent: <InteractionsTab id={3} setAreThereContacts={setAreThereContacts}/>
         },
         {
             id: lastTabId,
             name: orderedTabsNames[4],
-            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+            displayComponent: <ContactQuestioning id={4} />
         }
     ];
 
@@ -117,7 +116,6 @@ export default TabManagement;
 interface Props {
     areThereContacts: boolean;
     currentTab: number;
-    moveToNextTab: () => void;
     setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };

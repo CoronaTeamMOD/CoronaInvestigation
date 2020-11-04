@@ -28,7 +28,7 @@ import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
-const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
@@ -99,7 +99,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     investigation: epidemiologyNumber,
                     user: userId
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
@@ -378,7 +377,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: () => void;
 }
 
 export default ClinicalDetails;

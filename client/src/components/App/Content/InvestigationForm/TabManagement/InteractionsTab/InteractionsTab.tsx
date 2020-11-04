@@ -15,7 +15,7 @@ import EditInteractionEventDialog from './EditInteractionEventDialog/EditInterac
 
 const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { id, onSubmit, setAreThereContacts } = props;
+    const { id, setAreThereContacts } = props;
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -63,7 +63,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormState(investigationId, id, true);
-        onSubmit();
     }
     
     return (
@@ -106,7 +105,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     id: number;
-    onSubmit: () => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

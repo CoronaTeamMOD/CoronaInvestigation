@@ -14,7 +14,7 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import useContactFields, { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
@@ -24,7 +24,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 export const duplicateIdsErrorMsg = 'found duplicate identification numbers';
 
-const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
@@ -60,7 +60,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                 user: userId,
                 investigation: investigationId
             });
-            onSubmit();
         }).catch(err => {
             if(err.response.data === duplicateIdsErrorMsg) {
                 handleDuplicateIdsError();
@@ -142,7 +141,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
 interface Props {
     id: number;
-    onSubmit: () => void;
 }
 
 export default ContactQuestioning;
