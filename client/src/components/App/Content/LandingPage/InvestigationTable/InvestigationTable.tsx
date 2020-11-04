@@ -27,7 +27,7 @@ import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
-import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
@@ -52,9 +52,10 @@ const defaultCounty = {
     displayName: ''
 }
 
-const defaultFilterOptions: FilterTableOption = { mainStatus: [ALL_STATUSES_FILTER_OPTIONS], investigationDesk: [ALL_DESKS_FILTER_OPTIONS] };
+const defaultFilterOptions: FilterTableOption = { mainStatus: [], investigationDesk: [] };
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
+const unassignedToDesk = 'לא שוייך לדסק';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -89,13 +90,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     useEffect(() => {
-        let filteredRows: InvestigationTableRow[] = [...tableRows];
-        if (filterOptions !== defaultFilterOptions) {
-            filteredRows = filteredRows.filter(row => {
-                const indexedRow: { [index: string]: any } = { ...row };
-                return !Object.keys(filterOptions).some(key => !(filterOptions[key].includes(indexedRow[key]) || filterOptions[key].includes(defaultFilterOptions[key][0])))
-            })
-        }
+        const filteredRows = tableRows.filter(row => {
+            return (
+                (filterOptions.mainStatus.includes(row.mainStatus) || filterOptions.mainStatus.length === 0) &&
+                (filterOptions.investigationDesk.map((desk: Desk) => desk.deskName).includes(row.investigationDesk) || filterOptions.investigationDesk.length === 0)
+            );
+        })
         setFilteredTableRows(filteredRows);
     }, [tableRows, filterOptions])
 
@@ -136,6 +136,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
+    const getFilteredUsersOfCurrentCounty = () : {id: string, value: User}[] => {
+        const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
+        return allUsersOfCountyArray.filter(({id, value}) => {
+
+            // We always display users without desks
+            if(!value.deskByDeskId) {
+                return true;
+            }
+
+            return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+        });
+    }
+
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
             case TableHeadersNames.investigatorName:
@@ -147,7 +160,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <Autocomplete
                                 PopperComponent={CustomPopper}
                                 test-id='currentInvetigationUser'
-                                options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
+                                options={getFilteredUsersOfCurrentCounty()}
                                 getOptionLabel={(option) => option.value.userName}
                                 renderOption={(option, { selected }) => (
                                     option.value ?
@@ -193,11 +206,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
-                                    const updatedInvestigator = {
-                                        id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
-                                        userName: selectedInvestigatorName
+                                    if (event.type !== 'blur') {
+                                        const updatedInvestigator = {
+                                            id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                            userName: selectedInvestigatorName
+                                        }
+                                        setSelectedInvestigator(updatedInvestigator);
                                     }
-                                    setSelectedInvestigator(updatedInvestigator);
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -231,11 +246,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
                             }}
                             onInputChange={(event, selectedCounty) => {
-                                const updatedCounty: County = {
-                                    id: getCountyMapKeyByValue(allCounties, selectedCounty),
-                                    displayName: selectedCounty
+                                if (event.type !== 'blur') {
+                                    const updatedCounty: County = {
+                                        id: getCountyMapKeyByValue(allCounties, selectedCounty),
+                                        displayName: selectedCounty
+                                    }
+                                    setCurrCounty(updatedCounty);
                                 }
-                                setCurrCounty(updatedCounty);
                             }}
                             renderInput={(params) =>
                                 <TextField
@@ -273,7 +290,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     )
                 }
                 else {
-                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames]; 
+                    return deskValue ? deskValue : unassignedToDesk 
                 }
             case TableHeadersNames.priority:
                 let cssClass = '';
@@ -325,31 +343,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
         const newFilterOptions: FilterTableOption = { ...filterOptions };
 
-        if (selectedStatuses.length === 0) {
-            newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
-        } else if (selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-            if (!filterOptions.mainStatus.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-                newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
-            } else {
-                newFilterOptions.mainStatus = selectedStatuses.filter(status => status !== ALL_STATUSES_FILTER_OPTIONS);
-            }
+        if (selectedStatuses.length === 0 || selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
+            newFilterOptions.mainStatus = [];
         } else {
             newFilterOptions.mainStatus = selectedStatuses;
         }
         setFilterOptions(newFilterOptions);
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: string[]) => {
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
         const newFilterOptions: FilterTableOption = { ...filterOptions };
 
         if (selectedDesks.length === 0) {
-            newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
-        } else if (selectedDesks.includes(ALL_DESKS_FILTER_OPTIONS)) {
-            if (!filterOptions.investigationDesk.includes(ALL_DESKS_FILTER_OPTIONS)) {
-                newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
-            } else {
-                newFilterOptions.investigationDesk = selectedDesks.filter(desk => desk !== ALL_DESKS_FILTER_OPTIONS);
-            }
+            newFilterOptions.investigationDesk = [];
         } else {
             newFilterOptions.investigationDesk = selectedDesks;
         }
@@ -382,8 +388,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <Autocomplete
                             disableCloseOnSelect
                             multiple
-                            options={allDesks.map((desk: Desk) => desk.deskName)}
-                            getOptionLabel={(option) => option}
+                            options={allDesks}
+                            getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
                             value={filterOptions.investigationDesk}
                             renderInput={(params) =>
@@ -391,10 +397,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     {...params}
                                 />
                             }
-                            renderTags={(tags) => {
+                            renderTags={(tags: Desk[]) => {
                                 const additionalTagsAmount = tags.length - 1;
                                 const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                return tags[0] + additionalDisplay;
+                                return tags[0].deskName + additionalDisplay;
                             }}
                             classes={{ inputRoot: classes.autocompleteInput }}
                         />

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
+import { handleDBErrors } from '../IntersectionsRoute/mainRoute'
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity, Service } from '../../Models/Logger/types';
 import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
@@ -17,6 +18,7 @@ import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesInteg
 const DONE_CONTACT = 5;
 
 const ContactedPeopleRoute = Router();
+const errorStatusCode = 500;
 
 ContactedPeopleRoute.get('/familyRelationships', (request: Request, response: Response) => {
     logger.info({
@@ -79,7 +81,7 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
-            response.status(500).json({ error: 'failed to fetch contact statuses' });
+            response.status(errorStatusCode).json({ error: 'failed to fetch contact statuses' });
         }
     }).catch(err => {
         logger.error({
@@ -90,14 +92,14 @@ ContactedPeopleRoute.get('/contactStatuses', (request: Request, response: Respon
             user: response.locals.user.id,
             investigation: response.locals.epidemiologynumber
         });
-        response.status(500).json({ error: 'failed to fetch contact statuses' });
+        response.status(errorStatusCode).json({ error: 'failed to fetch contact statuses' });
     });
 });
 
 ContactedPeopleRoute.get('/amountOfContacts/:investigationId', (request: Request, response: Response) =>
     graphqlRequest(GET_AMOUNT_OF_CONTACTED_PEOPLE, response.locals, {investigationId: parseInt(request.params.investigationId)})
         .then((result: any) => response.send(result))
-        .catch(error => response.status(500).json({error: 'failed to fetch contacted people amount'}))
+        .catch(error => response.status(errorStatusCode).json({error: 'failed to fetch contacted people amount'}))
 );
 
 ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, response: Response) => {
@@ -131,7 +133,7 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologynumber
             });
-            response.status(500).json({error: 'failed to fetch contacted people'})
+            response.status(errorStatusCode).json({error: 'failed to fetch contacted people'})
         })
 });
 
@@ -143,21 +145,25 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow,
+        workflow: `Saving ${isSingleContact ? 'single': 'all'} contact${isSingleContact ? '' : 's'}`,
         step: `launching graphql API request with parameter: ${JSON.stringify(request.body)}`,
-        user: response.locals.user.id,investigation: epidemiologyNumber
+        user: response.locals.user.id,investigation: response.locals.epidemiologynumber
     });
     graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, { unSavedContacts: JSON.stringify(request.body)})
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow,
-                step: 'got response from DB',
-                user: response.locals.user.id,investigation: epidemiologyNumber
-            });
-            isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
-            response.send(result);
+            if(result.data.updateContactPersons) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow,
+                    step: 'got response from DB',
+                    user: response.locals.user.id,investigation: epidemiologyNumber
+                });
+                isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
+                response.send(result);
+            } else if(result.errors) {
+                handleDBErrors(response, result.errors[0]);
+            }
         })
         .catch(error => {
             logger.error({
@@ -167,7 +173,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
                 step: `got error from DB from graphql API: ${error}`,
                 user: response.locals.user.id,investigation: response.locals.epidemiologynumber
             });
-            response.status(500).json({error: 'failed to save all the contacts'})
+            response.status(errorStatusCode).json({error: 'failed to save all the contacts'});
         })
 });
 

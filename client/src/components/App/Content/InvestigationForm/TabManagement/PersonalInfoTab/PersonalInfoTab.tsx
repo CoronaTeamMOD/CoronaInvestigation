@@ -56,7 +56,7 @@ const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
-const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
     const occupationsStateContext = useContext(occupationsContext);
@@ -264,7 +264,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     investigation: investigationId,
                     user: userId
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
@@ -380,10 +379,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             onInputChange={(event, selectedInsuranceCompany) => {
-                                                setInsuranceCompany(selectedInsuranceCompany);
-                                                if (selectedInsuranceCompany === '') {
-                                                    props.onChange('');
-                                                    methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                if (event.type !== 'blur') {
+                                                    setInsuranceCompany(selectedInsuranceCompany);
+                                                    if (selectedInsuranceCompany === '') {
+                                                        props.onChange('');
+                                                        methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                    }
                                                 }
                                             }}
                                             className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
@@ -632,7 +633,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             props.onChange(selectedRole?.id as number);
                                                         }}
                                                         onInputChange={(event, newRoleInput) => {
-                                                            setRoleInput(newRoleInput);
+                                                            if (event.type !== 'blur') {
+                                                                setRoleInput(newRoleInput);
+                                                            }
                                                         }}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -731,7 +734,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: any;
 };
 
 export default PersonalInfoTab;

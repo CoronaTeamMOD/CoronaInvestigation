@@ -28,7 +28,7 @@ import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
-const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
@@ -99,7 +99,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     investigation: epidemiologyNumber,
                     user: userId
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
@@ -225,11 +224,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     }
                                                 }}
                                                 onInputChange={(event, selectedCityName) => {
-                                                    setIsolationCityName(selectedCityName);
-                                                    if (selectedCityName === '') {
-                                                        setStreetsInCity([]);
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event.type !== 'blur') {
+                                                        setIsolationCityName(selectedCityName);
+                                                        if (selectedCityName === '') {
+                                                            setStreetsInCity([]);
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>
@@ -261,10 +262,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 filterOptions={streetFilterOptions}
                                                 onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                                 onInputChange={(event, selectedStreetName) => {
-                                                    setIsolationStreetName(selectedStreetName);
-                                                    if (selectedStreetName === '') {
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event.type !== 'blur') {
+                                                        setIsolationStreetName(selectedStreetName);
+                                                        if (selectedStreetName === '') {
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>
@@ -378,7 +381,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: () => void;
 }
 
 export default ClinicalDetails;

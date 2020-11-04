@@ -1,5 +1,8 @@
+import Desk from "./Desk";
+
 interface FilterTableOption {
-    [type: string]: string[]
+    mainStatus: string[];
+    investigationDesk: Desk[];
 }
 
 export default FilterTableOption;

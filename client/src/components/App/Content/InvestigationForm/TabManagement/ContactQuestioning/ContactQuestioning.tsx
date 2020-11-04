@@ -14,6 +14,7 @@ import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
@@ -21,9 +22,10 @@ import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
-const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
-    const classes = useStyles();
+export const duplicateIdsErrorMsg = 'found duplicate identification numbers';
 
+const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
+    const classes = useStyles();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -31,11 +33,13 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
 
+    const { shouldDisable } = useContactFields();
+
     const methods = useForm();
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses,
+        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError
     } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses });
 
     useEffect(() => {
@@ -56,16 +60,19 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                 user: userId,
                 investigation: investigationId
             });
-            onSubmit();
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving all contacts',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: investigationId
-            });
+            if(err.response.data === duplicateIdsErrorMsg) {
+                handleDuplicateIdsError();
+            } else {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving all contacts',
+                    step: `got the following error from the server: ${err}`,
+                    user: userId,
+                    investigation: investigationId
+                });
+            }
         });
     }
 
@@ -113,6 +120,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                             </Grid>
                                         </AccordionDetails>
                                         <PrimaryButton
+                                            disabled={shouldDisable(interactedContact.contactStatus)}
                                             test-id='saveContact'
                                             style={{ marginRight: '1.5vw' }}
                                             onClick={() => {
@@ -133,7 +141,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
 
 interface Props {
     id: number;
-    onSubmit: () => void;
 }
 
 export default ContactQuestioning;

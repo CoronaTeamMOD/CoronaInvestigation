@@ -38,7 +38,7 @@ const InteractionEventForm: React.FC<Props> = (
   { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
 ): JSX.Element => {
 
-  const { saveIntreactions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -76,7 +76,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveIntreactions(interactionDataToSave);
+    saveInteractions(interactionDataToSave);
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {
@@ -103,8 +103,8 @@ const InteractionEventForm: React.FC<Props> = (
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
-      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
-        ?.map((contact: Contact, index: number) => {
+      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]?
+        data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
           if (serialId) {
             return {
@@ -114,7 +114,7 @@ const InteractionEventForm: React.FC<Props> = (
           } else {
             return contact
           }
-        })
+        }) : []
     }
   }
 

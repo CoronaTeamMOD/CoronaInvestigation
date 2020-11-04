@@ -70,7 +70,6 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
-export const ALL_DESKS_FILTER_OPTIONS = 'כל הדסקים';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
@@ -689,8 +688,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             workflow: 'GraphQL POST request to the DB',
                             step: 'changed the desk successfully'
                         });
+                        setRows(rows.map((investigation: InvestigationTableRow) => (
+                            investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                                {
+                                    ...investigation,
+                                    investigationDesk: newSelectedDesk.deskName
+                                }
+                                : investigation
+                        )));
                         setSelectedRow(UNDEFINED_ROW);
-                        setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                     })).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,

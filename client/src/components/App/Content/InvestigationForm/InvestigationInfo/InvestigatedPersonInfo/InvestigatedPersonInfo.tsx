@@ -179,10 +179,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 });
                                             }}
                                             onInputChange={(event, newSubStatusInput) => {
-                                                setInvestigationStatus({
-                                                    mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatusInput
-                                                });
+                                                if (event.type !== 'blur') {
+                                                    setInvestigationStatus({
+                                                        mainStatus: investigationStatus.mainStatus,
+                                                        subStatus: newSubStatusInput
+                                                    });
+                                                }
                                             }}
                                             renderInput={(params) =>
                                                 <TextField

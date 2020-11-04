@@ -43,6 +43,7 @@ query AllGroupUsers($investigationGroup: Int!) {
       userType
       sourceOrganization
       deskByDeskId {
+        id
         deskName
       }
     }

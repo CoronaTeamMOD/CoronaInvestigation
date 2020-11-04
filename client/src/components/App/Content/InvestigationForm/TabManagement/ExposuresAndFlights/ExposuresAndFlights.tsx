@@ -28,7 +28,7 @@ const addFlightButton: string = 'הוסף טיסה לחול';
 
 const defaultDestinationCountryCode = '900';
 
-const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
   const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
   const { parseAddress } = useGoogleApiAutocomplete();
@@ -196,7 +196,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
           investigation: investigationId,
           user: userId
       });
-      onSubmit();
     })
     .catch((error) => {
       logger.error({
@@ -329,7 +328,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id, onSubmit }: Props): JSX.Ele
 
 interface Props {
   id: number;
-  onSubmit: () => void;
 }
 
 export default ExposuresAndFlights;

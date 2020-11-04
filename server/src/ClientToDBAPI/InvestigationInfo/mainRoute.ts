@@ -5,6 +5,7 @@ import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import {Service, Severity} from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
+import { CHECK_FOR_DUPLICATE_CONTACTED_PERSON_IDS } from '../../DBService/ContactedPeople/Mutation';
 import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 import {GET_INVESTIGATION_INFO, GET_SUB_STATUSES} from '../../DBService/InvestigationInfo/Query';
 import {
@@ -159,44 +160,50 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     investigation: epidemiologyNumber
                 });
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
-                    const investigationEndTime = new Date();
-                    logger.info({
-                        service: Service.SERVER,
-                        severity: Severity.LOW,
-                        workflow: 'Ending Investigation',
-                        step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
-                            epidemiologyNumber,
-                            investigationEndTime
-                        })}`,
-                        user: response.locals.user.id,
-                        investigation: epidemiologyNumber
-                    });
-                    graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
-                        epidemiologyNumber,
-                        investigationEndTime
+                    graphqlRequest(CHECK_FOR_DUPLICATE_CONTACTED_PERSON_IDS, response.locals, { currInvestigationId: epidemiologyNumber}).then((result) => {
+                        if(!result?.checkForDuplicateIds?.boolean) {
+                            const investigationEndTime = new Date();
+                            logger.info({
+                                service: Service.SERVER,
+                                severity: Severity.LOW,
+                                workflow: 'Ending Investigation',
+                                step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
+                                    epidemiologyNumber,
+                                    investigationEndTime
+                                })}`,
+                                user: response.locals.user.id,
+                                investigation: epidemiologyNumber
+                            });
+                            graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
+                                epidemiologyNumber,
+                                investigationEndTime
+                            })
+                            .then(() => {
+                                logger.info({
+                                    service: Service.SERVER,
+                                    severity: Severity.LOW,
+                                    workflow: 'Ending Investigation',
+                                    step: 'got respond from the DB in the request to update end time',
+                                    user: response.locals.user.id,
+                                    investigation: epidemiologyNumber
+                                });
+                                sendSavedInvestigationToIntegration(epidemiologyNumber, 'Ending Investigation', response.locals.user.id);
+                                response.send({message: 'updated the investigation status and end time successfully'});
+                            }).catch(err => {
+                                logger.error({
+                                    service: Service.SERVER,
+                                    severity: Severity.HIGH,
+                                    workflow: 'Ending Investigation',
+                                    step: `failed to update the investigation end time due to: ${err}`,
+                                    user: response.locals.user.id,
+                                    investigation: epidemiologyNumber
+                                });
+                                response.status(errorStatusCode).json({message: 'failed to update the investigation end time'});
+                            });
+                        } else {
+                            response.status(errorStatusCode).json({message: 'found duplicate ids'});
+                        }
                     })
-                    .then(() => {
-                        logger.info({
-                            service: Service.SERVER,
-                            severity: Severity.LOW,
-                            workflow: 'Ending Investigation',
-                            step: 'got respond from the DB in the request to update end time',
-                            user: response.locals.user.id,
-                            investigation: epidemiologyNumber
-                        });
-                        sendSavedInvestigationToIntegration(epidemiologyNumber, 'Ending Investigation', response.locals.user.id);
-                        response.send({message: 'updated the investigation status and end time successfully'});
-                    }).catch(err => {
-                        logger.error({
-                            service: Service.SERVER,
-                            severity: Severity.HIGH,
-                            workflow: 'Ending Investigation',
-                            step: `failed to update the investigation end time due to: ${err}`,
-                            user: response.locals.user.id,
-                            investigation: epidemiologyNumber
-                        });
-                        response.status(errorStatusCode).json({message: 'failed to update the investigation end time'});
-                    });
                 } else {
                     response.send({message: 'updated the investigation status successfully'});
                 }
