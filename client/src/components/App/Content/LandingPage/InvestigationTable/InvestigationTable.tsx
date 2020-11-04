@@ -27,7 +27,7 @@ import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
-import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
@@ -337,7 +337,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
         const newFilterOptions: FilterTableOption = { ...filterOptions };
 
-        if (selectedStatuses.length === 0 || selectedStatuses.includes('הכל')) {
+        if (selectedStatuses.length === 0 || selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
             newFilterOptions.mainStatus = [];
         } else {
             newFilterOptions.mainStatus = selectedStatuses;
