@@ -48,7 +48,7 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
             onChange={onChange}
             renderInput={inputElement}
             onInputChange={(event, value, reason) => {
-                if (event.type !== 'blur' && onInputChange) {
+                if (event?.type !== 'blur' && onInputChange) {
                     onInputChange(event, value, reason);
                 }
             }}

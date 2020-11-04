@@ -127,7 +127,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.id);
                                 }}
                                 onInputChange={(event, selectedCityName) => {
-                                    if (event.type !== 'blur') {
+                                    if (event?.type !== 'blur') {
                                         setCityInput(selectedCityName);
                                     }
                                 }}
