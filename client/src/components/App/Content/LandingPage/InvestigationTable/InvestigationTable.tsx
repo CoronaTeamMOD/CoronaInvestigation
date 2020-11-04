@@ -135,6 +135,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
+    const getFilteredUsersOfCurrentCounty = () : {id: string, value: User}[] => {
+        const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
+        return allUsersOfCountyArray.filter(({id, value}) => {
+
+            // We always display users without desks
+            if(!value.deskByDeskId) {
+                return true;
+            }
+
+            return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+        });
+    }
+
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
             case TableHeadersNames.investigatorName:
@@ -146,7 +159,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <Autocomplete
                                 PopperComponent={CustomPopper}
                                 test-id='currentInvetigationUser'
-                                options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
+                                options={getFilteredUsersOfCurrentCounty()}
                                 getOptionLabel={(option) => option.value.userName}
                                 renderOption={(option, { selected }) => (
                                     option.value ?

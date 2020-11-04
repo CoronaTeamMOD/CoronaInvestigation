@@ -1,3 +1,5 @@
+import Desk from "./Desk";
+
 interface User {
     id: string;
     isActive: boolean;
@@ -11,6 +13,7 @@ interface User {
     sourceOrganization: string;
     deskName: string;
     countyByInvestigationGroup: CountyByInvestigationGroup;
+    deskByDeskId?: Desk;
 };
 
 interface CountyByInvestigationGroup {
