@@ -50,7 +50,6 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                     if (interactedContact.identificationNumber !== '') {
                         axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
                             .then((result) => {
-                                console.log(result);
                                 foundDuplicateIds = result.data;
                             });
                     }
