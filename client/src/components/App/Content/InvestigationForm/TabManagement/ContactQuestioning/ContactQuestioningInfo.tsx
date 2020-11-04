@@ -65,7 +65,9 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             value={contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus)}
                             onChange={changeContactStatus}
                             onInputChange={(event, newContactStatus) => {
-                                setContactStatusInput(newContactStatus);
+                                if (event.type !== 'blur') {
+                                    setContactStatusInput(newContactStatus);
+                                }
                             }}
                             renderInput={(params) =>
                                 <TextField

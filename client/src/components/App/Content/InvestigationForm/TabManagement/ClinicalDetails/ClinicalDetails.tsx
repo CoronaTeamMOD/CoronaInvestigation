@@ -225,11 +225,13 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     }
                                                 }}
                                                 onInputChange={(event, selectedCityName) => {
-                                                    setIsolationCityName(selectedCityName);
-                                                    if (selectedCityName === '') {
-                                                        setStreetsInCity([]);
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event.type !== 'blur') {
+                                                        setIsolationCityName(selectedCityName);
+                                                        if (selectedCityName === '') {
+                                                            setStreetsInCity([]);
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>
@@ -261,10 +263,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 filterOptions={streetFilterOptions}
                                                 onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                                 onInputChange={(event, selectedStreetName) => {
-                                                    setIsolationStreetName(selectedStreetName);
-                                                    if (selectedStreetName === '') {
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event.type !== 'blur') {
+                                                        setIsolationStreetName(selectedStreetName);
+                                                        if (selectedStreetName === '') {
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>

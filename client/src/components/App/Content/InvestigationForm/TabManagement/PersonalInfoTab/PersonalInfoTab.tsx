@@ -380,10 +380,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             onInputChange={(event, selectedInsuranceCompany) => {
-                                                setInsuranceCompany(selectedInsuranceCompany);
-                                                if (selectedInsuranceCompany === '') {
-                                                    props.onChange('');
-                                                    methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                if (event.type !== 'blur') {
+                                                    setInsuranceCompany(selectedInsuranceCompany);
+                                                    if (selectedInsuranceCompany === '') {
+                                                        props.onChange('');
+                                                        methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                    }
                                                 }
                                             }}
                                             className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
@@ -632,7 +634,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             props.onChange(selectedRole?.id as number);
                                                         }}
                                                         onInputChange={(event, newRoleInput) => {
-                                                            setRoleInput(newRoleInput);
+                                                            if (event.type !== 'blur') {
+                                                                setRoleInput(newRoleInput);
+                                                            }
                                                         }}
                                                         renderInput={(params) =>
                                                             <TextField
