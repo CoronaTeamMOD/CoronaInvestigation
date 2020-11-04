@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useState, useRef, RefObject } from 'react';
+import { useState, useRef, RefObject, useEffect } from 'react';
 
 import TabId from 'models/enums/TabId';
 import StoreStateType from 'redux/storeStateType';
@@ -16,22 +16,24 @@ const useTabManagement = () => {
     const nextTab: RefObject<number> = useRef<number>(0);
     const epidemiologyNumber = useSelector<StoreStateType, number>(store => store.investigation.epidemiologyNumber);
     const currentInvestigationValidations = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
-
-    const moveToNextTab = () => {
-        const areTabsNotValid: boolean = validTabsBeforeExport.some(tabId => !currentInvestigationValidations[tabId]);
-        if (exportToMabarTabs.includes(nextTab.current as number)) {
-            if (areTabsNotValid) {
-                alertError('חלק מן השדות אינם תקינים, נא מלא אותם מחדש ונסה שוב.', {
-                    text: 'שים לב שלא עברת בחלק מהטאבים'
-                });
-                setNextTab(currentTab);
+    
+    useEffect(() => {
+        if (currentInvestigationValidations !== undefined) {
+            const areTabsNotValid: boolean = validTabsBeforeExport.some(tabId => !currentInvestigationValidations[tabId]);
+            if (exportToMabarTabs.includes(nextTab.current as number)) {
+                if (areTabsNotValid) {
+                    alertError('חלק מן השדות אינם תקינים, נא מלא אותם מחדש ונסה שוב.', {
+                        text: 'שים לב שלא עברת בחלק מהטאבים'
+                    });
+                    setNextTab(currentTab);
+                } else {
+                    setCurrentTab(nextTab.current as number);
+                }
             } else {
                 setCurrentTab(nextTab.current as number);
             }
-        } else {
-            setCurrentTab(nextTab.current as number);
         }
-    }
+    }, [currentInvestigationValidations])
 
     const setNextTab = (nextTabId: number) => {
         //@ts-ignore
@@ -40,7 +42,6 @@ const useTabManagement = () => {
 
     return {
         currentTab,
-        moveToNextTab,
         setCurrentTab,
         setNextTab
     }

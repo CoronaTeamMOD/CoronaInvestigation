@@ -56,7 +56,7 @@ const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
-const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
     const occupationsStateContext = useContext(occupationsContext);
@@ -264,7 +264,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     investigation: investigationId,
                     user: userId
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
@@ -731,7 +730,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: any;
 };
 
 export default PersonalInfoTab;

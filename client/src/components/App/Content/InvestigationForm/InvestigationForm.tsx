@@ -59,7 +59,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const { confirmFinishInvestigation, areThereContacts, setAreThereContacts } = useInvestigationForm();
     const {
         currentTab,
-        moveToNextTab,
         setNextTab
     } = useTabManagement();
 
@@ -102,11 +101,10 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                     />
                         <div className={classes.interactiveForm}>
                             <TabManagement
-                                areThereContacts = {areThereContacts}
-                                setAreThereContacts = {setAreThereContacts}
-                                currentTab = {currentTab}
-                                moveToNextTab = {moveToNextTab}
-                                setNextTab = {setNextTab}
+                                areThereContacts={areThereContacts}
+                                setAreThereContacts={setAreThereContacts}
+                                currentTab={currentTab}
+                                setNextTab={setNextTab}
                             />
                             <div className={classes.buttonSection}>
                                 <PrimaryButton 
