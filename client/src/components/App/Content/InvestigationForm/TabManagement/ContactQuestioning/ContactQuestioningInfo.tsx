@@ -1,8 +1,8 @@
 import React from 'react';
-import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
-import { Divider, Grid, TextField, Typography } from '@material-ui/core';
+import {format} from 'date-fns';
+import {useSelector} from 'react-redux';
+import {Autocomplete} from '@material-ui/lab';
+import {Divider, Grid, TextField, Typography} from '@material-ui/core';
 
 import theme from 'styles/theme';
 import ContactType from 'models/ContactType';
@@ -12,21 +12,27 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import useContactFields, { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
+import useContactFields, {COMPLETE_STATUS} from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
+import axios from "../../../../../../Utils/axios";
 
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
-    
-    const { interactedContact, updateInteractedContact, contactStatuses } = props;
 
-    const { alertWarning } = useCustomSwal();
+    const {interactedContact, updateInteractedContact, contactStatuses} = props;
+
+    const {alertWarning} = useCustomSwal();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-    
+
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
-    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
+    const {isFieldDisabled} = useContactFields(interactedContact.contactStatus);
+
+    const setPreviousContactStatus = () => {
+        const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
+        setContactStatusInput(previousStatusName?.displayName || '');
+    }
 
     const changeContactStatus = (event: React.ChangeEvent<{}>, selectedStatus: ContactStatus | null) => {
         event.stopPropagation();
@@ -40,10 +46,19 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                    let foundDuplicateIds: boolean = true;
+                    axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
+                        .then((result) => {
+                            foundDuplicateIds = result.data;
+                        });
+                    if(foundDuplicateIds) {
+                        alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
+                        setPreviousContactStatus();
+                    } else {
+                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
+                    }
                 } else {
-                    const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
-                    setContactStatusInput(previousStatusName?.displayName || '');
+                    setPreviousContactStatus();
                 }
             });
         } else {
@@ -84,7 +99,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                         </span>
                     </Grid>
                 </div>
-                <Divider variant='fullWidth' orientation='vertical' flexItem />
+                <Divider variant='fullWidth' orientation='vertical' flexItem/>
             </Grid>
             <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-between'>
                 <Typography variant='body2'>

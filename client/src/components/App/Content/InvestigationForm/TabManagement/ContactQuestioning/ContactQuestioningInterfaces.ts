@@ -19,5 +19,5 @@ export interface useContactQuestioningOutcome {
     saveContactQuestioning: () => Promise<void>;
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
-    handleDuplicateIdsError: () => void;
+    handleDuplicateIdsError: (duplicateIdentificationNumber: string) => void;
 };

@@ -22,11 +22,11 @@ import {
 } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
-const duplicatesErrorMsg = 'found duplicate identification numbers';
+const duplicatesErrorMsg = 'found duplicate ids';
 const intersectionsRoute = Router();
 
 export const handleDBErrors = (response: Response, errorMsg: string) => {
-    if(errorMsg === duplicatesErrorMsg) {
+    if(errorMsg.includes(duplicatesErrorMsg)) {
         logger.error({
                 service: Service.SERVER,
                 severity: Severity.LOW,
@@ -45,7 +45,7 @@ export const handleDBErrors = (response: Response, errorMsg: string) => {
             user: response.locals.user.id
         });
     }
-    response.status(errorStatusCode).send(duplicatesErrorMsg);
+    response.status(errorStatusCode).send(errorMsg);
 }
 
 intersectionsRoute.get('/', (request: Request, response: Response) => {
@@ -200,7 +200,7 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
                 });
                 response.send(result)
             } else if(result.errors) {
-                handleDBErrors(response, result.errors[0])
+                handleDBErrors(response, result.errors[0].message)
             }
         })
         .catch(err => {
@@ -241,7 +241,7 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
                 });
                 response.send(result);
             } else if(result.errors) {
-                handleDBErrors(response, result.errors[0])
+                handleDBErrors(response, result.errors[0].message)
             }
         })
         .catch(err => {
