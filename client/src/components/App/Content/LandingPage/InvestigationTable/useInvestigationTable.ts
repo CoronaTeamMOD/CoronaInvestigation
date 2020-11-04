@@ -688,8 +688,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             workflow: 'GraphQL POST request to the DB',
                             step: 'changed the desk successfully'
                         });
+                        setRows(rows.map((investigation: InvestigationTableRow) => (
+                            investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                                {
+                                    ...investigation,
+                                    investigationDesk: newSelectedDesk.deskName
+                                }
+                                : investigation
+                        )));
                         setSelectedRow(UNDEFINED_ROW);
-                        setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                     })).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
