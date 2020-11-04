@@ -69,8 +69,7 @@ export const UNDEFINED_ROW = -1;
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
-export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
-export const ALL_DESKS_FILTER_OPTIONS = 'כל הדסקים';
+const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
