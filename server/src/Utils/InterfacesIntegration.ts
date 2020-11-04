@@ -23,9 +23,7 @@ export const sendSavedInvestigationToIntegration = (epidemiologyNumber: number, 
             investigation: epidemiologyNumber
         });
         httpRequest(process.env.INTERFACES_INTEGRATION_API, 'POST', {
-            variables: {
-                idARR: [epidemiologyNumber]
-            }
+            idARR: [epidemiologyNumber]
         }).then(() => {
             logger.info({
                 service: Service.SERVER,
