@@ -116,7 +116,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                             </Grid>
                                         </AccordionDetails>
                                         <PrimaryButton
-                                            disabled={isSaveContactDiabled(interactedContact.contactStatus)}
+                                            disabled={isSaveContactDisabled(interactedContact.contactStatus)}
                                             test-id='saveContact'
                                             style={{ marginRight: '1.5vw' }}
                                             onClick={() => {
