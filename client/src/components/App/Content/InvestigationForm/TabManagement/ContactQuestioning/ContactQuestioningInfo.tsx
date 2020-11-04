@@ -4,13 +4,15 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Divider, Grid, TextField, Typography } from '@material-ui/core';
 
+import theme from 'styles/theme';
 import ContactType from 'models/ContactType';
 import ContactStatus from 'models/ContactStatus';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import useContactFields, { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
 
@@ -18,11 +20,36 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
     
     const { interactedContact, updateInteractedContact, contactStatuses } = props;
-    
+
+    const { alertWarning } = useCustomSwal();
+
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
     const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
+
+    const changeContactStatus = (event: React.ChangeEvent<{}>, selectedStatus: ContactStatus | null) => {
+        event.stopPropagation();
+        if (selectedStatus?.id === COMPLETE_STATUS) {
+            alertWarning('האם אתה בטוח שתרצה להעביר את המגע לסטטוס הושלם?', {
+                text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך'
+            }).then((result) => {
+                if (result.value) {
+                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                } else {
+                    const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
+                    setContactStatusInput(previousStatusName?.displayName || '');
+                }
+            });
+        } else {
+            updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+        }
+    }
 
     return (
         <>
@@ -36,10 +63,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             getOptionLabel={(option) => option.displayName}
                             inputValue={contactStatusInput}
                             value={contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus)}
-                            onChange={(event, selectedStatus) => {
-                                updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
-                                event.stopPropagation();
-                            }}
+                            onChange={changeContactStatus}
                             onInputChange={(event, newContactStatus) => {
                                 setContactStatusInput(newContactStatus);
                             }}
