@@ -206,7 +206,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
-                                    if (event.type !== 'blur') {
+                                    if (event?.type !== 'blur') {
                                         const updatedInvestigator = {
                                             id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
                                             userName: selectedInvestigatorName
@@ -246,7 +246,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
                             }}
                             onInputChange={(event, selectedCounty) => {
-                                if (event.type !== 'blur') {
+                                if (event?.type !== 'blur') {
                                     const updatedCounty: County = {
                                         id: getCountyMapKeyByValue(allCounties, selectedCounty),
                                         displayName: selectedCounty
