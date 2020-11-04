@@ -55,6 +55,7 @@ const defaultCounty = {
 const defaultFilterOptions: FilterTableOption = { mainStatus: [ALL_STATUSES_FILTER_OPTIONS], investigationDesk: [ALL_DESKS_FILTER_OPTIONS] };
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
+const unassignedToDesk = 'לא שוייך לדסק';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -273,7 +274,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     )
                 }
                 else {
-                    return indexedRow[cellName as keyof typeof TableHeadersNames]
+                    return indexedRow[cellName as keyof typeof TableHeadersNames] ? 
+                           indexedRow[cellName as keyof typeof TableHeadersNames] : unassignedToDesk 
                 }
             case TableHeadersNames.priority:
                 let cssClass = '';
