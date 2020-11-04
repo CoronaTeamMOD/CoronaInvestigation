@@ -274,8 +274,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     )
                 }
                 else {
-                    return indexedRow[cellName as keyof typeof TableHeadersNames] ? 
-                           indexedRow[cellName as keyof typeof TableHeadersNames] : unassignedToDesk 
+                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames]; 
+                    return deskValue ? deskValue : unassignedToDesk 
                 }
             case TableHeadersNames.priority:
                 let cssClass = '';
