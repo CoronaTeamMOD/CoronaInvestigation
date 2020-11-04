@@ -103,8 +103,8 @@ const InteractionEventForm: React.FC<Props> = (
       ...data,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
-      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]
-        ?.map((contact: Contact, index: number) => {
+      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]?
+        data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
           if (serialId) {
             return {
@@ -114,7 +114,7 @@ const InteractionEventForm: React.FC<Props> = (
           } else {
             return contact
           }
-        })
+        }) : []
     }
   }
 
