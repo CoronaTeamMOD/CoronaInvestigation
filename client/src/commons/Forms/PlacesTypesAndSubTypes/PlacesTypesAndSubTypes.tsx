@@ -97,7 +97,9 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                             onPlaceTypeChange(chosenPlaceType as string)
                                         }}
                                         onInputChange={(event, chosenPlaceType: string) => {
-                                            handlePlaceTypeInputChange(chosenPlaceType);
+                                            if (event.type !== 'blur') {
+                                                handlePlaceTypeInputChange(chosenPlaceType);
+                                            }
                                         }}
                                         placeholder={placeTypeDisplayName}
                                         renderInput={(params) =>
@@ -137,7 +139,9 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onPlaceSubTypeChange(chosenPlaceSubType ? chosenPlaceSubType : null)
                                             }
                                             onInputChange={(event, placeSubTypeInput) => {
-                                                handleSubTypeInputChange(placeSubTypeInput);
+                                                if (event.type !== 'blur') {
+                                                    handleSubTypeInputChange(placeSubTypeInput);
+                                                }
                                             }}
                                             onBlur={props.onBlur}
                                             placeholder={placeSubTypeDisplayName}

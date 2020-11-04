@@ -206,11 +206,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
-                                    const updatedInvestigator = {
-                                        id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
-                                        userName: selectedInvestigatorName
+                                    if (event.type !== 'blur') {
+                                        const updatedInvestigator = {
+                                            id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                            userName: selectedInvestigatorName
+                                        }
+                                        setSelectedInvestigator(updatedInvestigator);
                                     }
-                                    setSelectedInvestigator(updatedInvestigator);
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -244,11 +246,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
                             }}
                             onInputChange={(event, selectedCounty) => {
-                                const updatedCounty: County = {
-                                    id: getCountyMapKeyByValue(allCounties, selectedCounty),
-                                    displayName: selectedCounty
+                                if (event.type !== 'blur') {
+                                    const updatedCounty: County = {
+                                        id: getCountyMapKeyByValue(allCounties, selectedCounty),
+                                        displayName: selectedCounty
+                                    }
+                                    setCurrCounty(updatedCounty);
                                 }
-                                setCurrCounty(updatedCounty);
                             }}
                             renderInput={(params) =>
                                 <TextField

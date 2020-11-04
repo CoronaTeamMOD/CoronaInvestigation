@@ -47,7 +47,11 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
             getOptionLabel={props.getOptionLabel || genericLabel}
             onChange={onChange}
             renderInput={inputElement}
-            onInputChange={onInputChange}
+            onInputChange={(event, value, reason) => {
+                if (event.type !== 'blur' && onInputChange) {
+                    onInputChange(event, value, reason);
+                }
+            }}
         />
     );
 };
