@@ -22,7 +22,7 @@ import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
 
-export const duplicateIdsErrorMsg = 'found duplicate identification numbers';
+export const duplicateIdsErrorMsg = 'found duplicate ids';
 
 const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
@@ -61,8 +61,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 investigation: investigationId
             });
         }).catch(err => {
-            if(err.response.data === duplicateIdsErrorMsg) {
-                handleDuplicateIdsError();
+            if(err.response.data.includes(duplicateIdsErrorMsg)) {
+                handleDuplicateIdsError(err.response.data.split(':')[1]);
             } else {
                 logger.error({
                     service: Service.CLIENT,
