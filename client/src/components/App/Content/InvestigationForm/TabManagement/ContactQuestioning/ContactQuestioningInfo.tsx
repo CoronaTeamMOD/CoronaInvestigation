@@ -4,6 +4,7 @@ import {useSelector} from 'react-redux';
 import {Autocomplete} from '@material-ui/lab';
 import {Divider, Grid, TextField, Typography} from '@material-ui/core';
 
+import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ContactType from 'models/ContactType';
 import ContactStatus from 'models/ContactStatus';
@@ -15,7 +16,6 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import useContactFields, {COMPLETE_STATUS} from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
-import axios from "../../../../../../Utils/axios";
 
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
@@ -46,16 +46,19 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    let foundDuplicateIds: boolean = true;
-                    axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
-                        .then((result) => {
-                            foundDuplicateIds = result.data;
-                        });
-                    if(foundDuplicateIds) {
+                    let foundDuplicateIds: boolean = false;
+                    if (interactedContact.identificationNumber !== '') {
+                        axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
+                            .then((result) => {
+                                console.log(result);
+                                foundDuplicateIds = result.data;
+                            });
+                    }
+                    if (!foundDuplicateIds) {
+                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
+                    } else {
                         alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
                         setPreviousContactStatus();
-                    } else {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
                     }
                 } else {
                     setPreviousContactStatus();
