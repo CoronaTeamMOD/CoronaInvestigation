@@ -13,8 +13,8 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactQuestioning from './useContactQuestioning';
 import { setFormState } from 'redux/Form/formActionCreators';
-import { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import useContactFields, { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
@@ -31,6 +31,8 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
     const [allContactedInteractions, setAllContactedInteractions] = useState<InteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
+
+    const { shouldDisable } = useContactFields();
 
     const methods = useForm();
 
@@ -69,8 +71,6 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
             });
         });
     }
-
-    const isSaveContactDisabled = (status: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
 
     return (
         <>
@@ -116,7 +116,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
                                             </Grid>
                                         </AccordionDetails>
                                         <PrimaryButton
-                                            disabled={isSaveContactDisabled(interactedContact.contactStatus)}
+                                            disabled={shouldDisable(interactedContact.contactStatus)}
                                             test-id='saveContact'
                                             style={{ marginRight: '1.5vw' }}
                                             onClick={() => {

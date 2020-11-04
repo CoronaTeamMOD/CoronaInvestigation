@@ -14,7 +14,8 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
 
     return {
         isFieldDisabled,
-        getDisabledFields
+        getDisabledFields,
+        shouldDisable
     }
 };
 
