@@ -70,7 +70,7 @@ const ContactQuestioning: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Eleme
         });
     }
 
-    const isSaveContactDiabled = (status: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
+    const isSaveContactDisabled = (status: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
 
     return (
         <>
