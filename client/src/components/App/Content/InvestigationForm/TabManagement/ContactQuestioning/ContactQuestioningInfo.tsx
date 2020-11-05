@@ -20,7 +20,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses} = props;
+    const {interactedContact, updateInteractedContact, contactStatuses, saveContact} = props;
 
     const {alertWarning} = useCustomSwal();
 
@@ -54,7 +54,8 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             });
                     }
                     if (!foundDuplicateIds) {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
+                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                        saveContact({...interactedContact, contactStatus: selectedStatus?.id});
                     } else {
                         alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
                         setPreviousContactStatus();
@@ -63,8 +64,9 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                     setPreviousContactStatus();
                 }
             });
-        } else {
+        } else if (selectedStatus?.id) {
             updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+            saveContact({...interactedContact, contactStatus: selectedStatus?.id});
         }
     }
 
@@ -141,4 +143,5 @@ interface Props {
     interactedContact: InteractedContact;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
+    saveContact: (interactedContact: InteractedContact) => void;
 };

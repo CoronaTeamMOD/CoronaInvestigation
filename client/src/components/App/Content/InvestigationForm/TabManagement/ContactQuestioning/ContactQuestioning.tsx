@@ -97,6 +97,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 interactedContact={interactedContact}
                                                 updateInteractedContact={updateInteractedContact}
                                                 contactStatuses={contactStatuses}
+                                                saveContact={saveContact}
                                             />
                                         </AccordionSummary>
                                         <AccordionDetails>
