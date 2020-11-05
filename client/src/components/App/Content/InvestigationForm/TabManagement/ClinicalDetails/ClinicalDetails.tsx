@@ -224,7 +224,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                     }
                                                 }}
                                                 onInputChange={(event, selectedCityName) => {
-                                                    if (event.type !== 'blur') {
+                                                    if (event?.type !== 'blur') {
                                                         setIsolationCityName(selectedCityName);
                                                         if (selectedCityName === '') {
                                                             setStreetsInCity([]);
@@ -262,7 +262,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 filterOptions={streetFilterOptions}
                                                 onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                                 onInputChange={(event, selectedStreetName) => {
-                                                    if (event.type !== 'blur') {
+                                                    if (event?.type !== 'blur') {
                                                         setIsolationStreetName(selectedStreetName);
                                                         if (selectedStreetName === '') {
                                                             props.onChange('');

@@ -5,7 +5,7 @@ import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
 import {Service, Severity} from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { CHECK_FOR_DUPLICATE_CONTACTED_PERSON_IDS } from '../../DBService/ContactedPeople/Mutation';
+import { CHECK_FOR_DUPLICATE_IDS } from '../../DBService/ContactedPeople/Mutation';
 import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
 import {GET_INVESTIGATION_INFO, GET_SUB_STATUSES} from '../../DBService/InvestigationInfo/Query';
 import {
@@ -160,7 +160,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     investigation: epidemiologyNumber
                 });
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
-                    graphqlRequest(CHECK_FOR_DUPLICATE_CONTACTED_PERSON_IDS, response.locals, { currInvestigationId: epidemiologyNumber}).then((result) => {
+                    graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, { currInvestigationId: epidemiologyNumber}).then((result) => {
                         if(!result?.checkForDuplicateIds?.boolean) {
                             const investigationEndTime = new Date();
                             logger.info({

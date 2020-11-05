@@ -119,7 +119,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                     inputValue={subOccupationName}
                     onInputChange={(event, newValue) => {
-                        if (event && event.type !== 'blur') {
+                        if (event?.type !== 'blur') {
                             setSubOccupationName(newValue)
                         }
                     }}
@@ -379,7 +379,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             onInputChange={(event, selectedInsuranceCompany) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     setInsuranceCompany(selectedInsuranceCompany);
                                                     if (selectedInsuranceCompany === '') {
                                                         props.onChange('');
@@ -423,7 +423,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             inputValue={cityName}
                                             filterOptions={cityFilterOptions}
                                             onInputChange={(event, newInputValue) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     methods.setValue(PersonalInfoDataContextFields.STREET, '')
                                                     setStreetName('')
                                                     setCityName(newInputValue);
@@ -467,7 +467,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             getOptionSelected={(option) => option.id === props.value}
                                             inputValue={streetName}
                                             onInputChange={(event, newInputValue) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     setStreetName(newInputValue);
                                                     if (newInputValue === '') {
                                                         methods.setValue(PersonalInfoDataContextFields.STREET, '')
@@ -633,7 +633,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                             props.onChange(selectedRole?.id as number);
                                                         }}
                                                         onInputChange={(event, newRoleInput) => {
-                                                            if (event.type !== 'blur') {
+                                                            if (event?.type !== 'blur') {
                                                                 setRoleInput(newRoleInput);
                                                             }
                                                         }}

@@ -29,7 +29,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         });
     }
 
-    const handleDuplicatesError = () => {
+    const handleDuplicatesError = (duplicateIdNumber: string) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -39,7 +39,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             investigation: epidemiologyNumber
         });
         Swal.fire({
-            title: 'שים לב, נמצא מספר זיהוי שכבר קיים בחקירה, אנא בצע את השינויים הדרושים',
+            title: 'שים לב, מספר זיהוי ' + duplicateIdNumber + ' כבר נמצא בחקירה, אנא בצע את השינויים הנדרשים',
             icon: 'info',
             customClass: {
                 container: classes.duplicateIdsError,
@@ -84,8 +84,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     loadInteractions();
                     closeEditDialog();
                 }).catch((error) => {
-                    if (error.response.data === duplicateIdsErrorMsg) {
-                        handleDuplicatesError();
+                    if (error.response.data.includes(duplicateIdsErrorMsg)) {
+                        handleDuplicatesError(error.response.data.split(':')[1]);
                     } else {
                         logger.error({
                             service: Service.CLIENT,
@@ -120,8 +120,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     closeNewDialog()
                 })
                     .catch((error) => {
-                        if (error.response.data === duplicateIdsErrorMsg) {
-                            handleDuplicatesError();
+                        if (error.response.data.includes(duplicateIdsErrorMsg)) {
+                            handleDuplicatesError(error.response.data.split(':')[1]);
                         } else {
                             logger.error({
                                 service: Service.CLIENT,

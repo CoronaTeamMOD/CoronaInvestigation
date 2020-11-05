@@ -179,7 +179,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 });
                                             }}
                                             onInputChange={(event, newSubStatusInput) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     setInvestigationStatus({
                                                         mainStatus: investigationStatus.mainStatus,
                                                         subStatus: newSubStatusInput

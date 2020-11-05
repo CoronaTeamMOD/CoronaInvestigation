@@ -1,27 +1,31 @@
-import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { subDays, differenceInCalendarDays } from 'date-fns';
+import {differenceInCalendarDays, subDays} from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import { duplicateIdsErrorMsg } from './ContactQuestioning'
-import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
+import {duplicateIdsErrorMsg} from './ContactQuestioning'
+import {
+    convertDate,
+    nonSymptomaticPatient,
+    symptomsWithKnownStartDate,
+    symptomsWithUnknownStartDate,
+} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const { setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses } = parameters;
-    const { alertWarning } = useCustomSwal();
+    const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    const {alertWarning} = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const handleDuplicateIdsError = () => {
+    const handleDuplicateIdsError = (duplicateIdentificationNumber: string) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -30,7 +34,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             user: userId,
             investigation: epidemiologyNumber
         });
-        alertWarning('שים לב, נמצא מספר זיהוי שכבר קיים בחקירה, אנא בצע את השינויים הדרושים');
+        alertWarning(`שים לב, מספר זיהוי ${duplicateIdentificationNumber} כבר קיים בחקירה! אנא בצע את השינויים הנדרשים`);
     }
 
     const saveContact = (interactedContact: InteractedContact) => {
@@ -56,8 +60,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 investigation: epidemiologyNumber
             });
         }).catch(err => {
-            if (err.response.data === duplicateIdsErrorMsg) {
-                handleDuplicateIdsError();
+            if (err.response.data.includes(duplicateIdsErrorMsg)) {
+                handleDuplicateIdsError(err.response.data.split(':')[1]);
             } else {
                 logger.error({
                     service: Service.CLIENT,
@@ -303,7 +307,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
                 differenceInCalendarDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
             ))
-        }).catch((err) =>{
+        }).catch((err) => {
             logger.error({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -322,7 +326,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
-
         updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
         setAllContactedInteractions(updatedContactedInteractions);
     };
