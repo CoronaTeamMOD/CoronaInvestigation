@@ -119,7 +119,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     getOptionLabel={(option) => option.subOccupation + (option.street ? ('/' + option.street) : '')}
                     inputValue={subOccupationName}
                     onInputChange={(event, newValue) => {
-                        if (event?.type !== 'blur') {
+                        if (event && event.type !== 'blur') {
                             setSubOccupationName(newValue)
                         }
                     }}
