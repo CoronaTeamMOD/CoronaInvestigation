@@ -149,6 +149,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     )
 
     const convertToDBData = (): PersonalInfoDbData => {
+        const data = methods.getValues();
         return {
             phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
             additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
@@ -651,34 +652,31 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                             roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM &&
                                             <>
                                                 <Grid item xs={1}>
-                                                    <Controller
-                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                        control={methods.control}
-                                                        render={(props) => (
-                                                            <>
-                                                                <FormControl variant='outlined'>
-                                                                    <InputLabel>שכבה</InputLabel>
-                                                                    <Select
-                                                                        label='שכבה'
-                                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                                        className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
-                                                                        value={props.value}
-                                                                        onChange={(event) => props.onChange(event.target.value)}
-                                                                    >
-                                                                        {
-                                                                            grades.map((grade: string) => (
-                                                                                <MenuItem
-                                                                                    key={grade}
-                                                                                    value={grade}>
-                                                                                    {grade}
-                                                                                </MenuItem>
-                                                                            ))
-                                                                        }
-                                                                    </Select>
-                                                                </FormControl>
-                                                            </>
-                                                        )}
-                                                    />
+                                                    <FormControl variant='outlined'>
+                                                        <InputLabel>שכבה</InputLabel>
+                                                        <Controller
+                                                            name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                            control={methods.control}
+                                                            render={(props) => (
+                                                                <Select
+                                                                    label='שכבה'
+                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
+                                                                    value={props.value}
+                                                                    onChange={(event) => props.onChange(event.target.value)}
+                                                                >
+                                                                    {
+                                                                        grades.map((grade: string) => (
+                                                                            <MenuItem
+                                                                                key={grade}
+                                                                                value={grade}>
+                                                                                {grade}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
+                                                                </Select>
+                                                            )}
+                                                            />
+                                                    </FormControl>
                                                 </Grid>
                                                 <Grid item xs={1}>
                                                     <Controller
