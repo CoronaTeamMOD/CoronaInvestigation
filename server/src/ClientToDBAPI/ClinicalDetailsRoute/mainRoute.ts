@@ -23,7 +23,7 @@ const complexityCalculationMessage = 'patient clinical details by status';
 const clinicalDetailsRoute = Router();
 const errorStatusCode = 500;
 
-clinicalDetailsRoute.post('/symptoms', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/symptoms', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -55,7 +55,7 @@ clinicalDetailsRoute.post('/symptoms', (request: Request, response: Response) =>
     });
 });
 
-clinicalDetailsRoute.post('/backgroundDiseases', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/backgroundDiseases', (request: Request, response: Response) => {
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
