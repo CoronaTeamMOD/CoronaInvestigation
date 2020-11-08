@@ -268,7 +268,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 logger.info({
                     ...logInfo,
                     severity: Severity.LOW,
-                    step: `saved personal details successfully  ${isInvestigationNew && 'and updating status to new'}`,
+                    step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                 });
 
                 if (isInvestigationNew) {
