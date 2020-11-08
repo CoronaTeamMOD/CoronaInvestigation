@@ -54,6 +54,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                             .then((result) => {
                                 if (!result.data) {
                                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                                    saveContact({...interactedContact, contactStatus: selectedStatus?.id});
                                 } else if (result.data) {
                                     alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
                                     setPreviousContactStatus();
