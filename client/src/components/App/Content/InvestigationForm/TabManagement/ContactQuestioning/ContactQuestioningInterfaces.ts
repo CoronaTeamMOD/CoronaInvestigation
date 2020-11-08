@@ -21,4 +21,5 @@ export interface useContactQuestioningOutcome {
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
     handleDuplicateIdsError: (duplicateIdentificationNumber: string) => void;
+    checkForDuplicateIds: (idToCheck: string) => number;
 };
