@@ -61,7 +61,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/clinicalDetails/symptoms', {}).then(result => {
+        axios.get('/clinicalDetails/symptoms').then(result => {
             if (result && result.data && result.data.data) {
                 logger.info({
                     service: Service.CLIENT,
@@ -93,7 +93,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/clinicalDetails/backgroundDiseases', {}).then(result => {
+        axios.get('/clinicalDetails/backgroundDiseases').then(result => {
             if (result?.data && result.data.data) {
                 logger.info({
                     service: Service.CLIENT,
