@@ -22,12 +22,14 @@ import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
+import {setInvestigationStatus, setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import {InvestigationStatus} from 'models/InvestigationStatus';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -79,6 +81,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const { complexityErrorAlert } = useComplexitySwal();
 
@@ -185,8 +188,8 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     useEffect(() => {
         if(data.role){
-            setRoleObj(    
-                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => 
+            setRoleObj(
+                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) =>
                 investigatedPatientRole.id === data.role)??defaultRole
                 );
         }
@@ -242,38 +245,62 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
-        event.preventDefault();
-        logger.info({
+        const logInfo = {
             service: Service.CLIENT,
-            severity: Severity.LOW,
             workflow: 'Saving personal details tab',
-            step: 'launching the server request',
             investigation: investigationId,
             user: userId
-        })
+        };
+
+        event.preventDefault();
+        logger.info({
+            ...logInfo,
+            severity: Severity.LOW,
+            step: 'launching the server request',
+        });
         axios.post('/personalDetails/updatePersonalDetails',
             {
                 id: investigatedPatientId,
                 personalInfoData,
             })
             .then(() => {
+                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatus.NEW;
                 logger.info({
-                    service: Service.CLIENT,
+                    ...logInfo,
                     severity: Severity.LOW,
-                    workflow: 'Saving personal details tab',
-                    step: 'saved personal details successfully',
-                    investigation: investigationId,
-                    user: userId
+                    step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                 });
+
+                if (isInvestigationNew) {
+                    const activeInvestigationStatus = {
+                        mainStatus: InvestigationMainStatus.IN_PROCESS,
+                        subStatus: ''
+                    }
+                    axios.post('/investigationInfo/updateInvestigationStatus', {
+                        investigationMainStatus: activeInvestigationStatus.mainStatus,
+                        investigationSubStatus: activeInvestigationStatus.subStatus,
+                        epidemiologyNumber: investigationId
+                    })
+                        .then(() => {
+                            setInvestigationStatus(activeInvestigationStatus);
+                            logger.info({
+                                ...logInfo,
+                                severity: Severity.LOW,
+                                step: `Investigation status successfully updates to be in process`,
+                            })
+                        })
+                        .catch((error) => logger.error({
+                            ...logInfo,
+                            severity: Severity.HIGH,
+                            step: `got errors updating status: ${error}`,
+                        }))
+                }
             })
             .catch((error) => {
                 logger.error({
-                    service: Service.CLIENT,
+                    ...logInfo,
                     severity: Severity.LOW,
-                    workflow: 'Saving personal details tab',
                     step: `got error from server: ${error}`,
-                    investigation: investigationId,
-                    user: userId
                 });
                 complexityErrorAlert(error);
             })
