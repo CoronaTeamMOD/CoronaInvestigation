@@ -49,7 +49,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                     if (interactedContact.identificationNumber !== '') {
                         axios.post('/contactedPeople/checkDuplicates', {
                             currIdNumber: interactedContact.identificationNumber,
-                            personId: interactedContact.id
+                            interactedContactId: interactedContact.id
                         })
                             .then((result) => {
                                 if (!result.data) {

@@ -9,8 +9,8 @@ export const UPDATE_LIST_OF_CONTACTS = gql`
 `;
 
 export const CHECK_FOR_DUPLICATE_IDS = gql`
-    mutation checkForExistingIds($currInvestigationId: Int!, $idToCheck: String!, $personId: Int!) {
-        checkDuplicatesIds(input: {curridentificationnumber: $idToCheck, investigationid: $currInvestigationId, interactedcontactid: $personId}) {
+    mutation checkForExistingIds($currInvestigationId: Int!, $idToCheck: String!, $interactedContactId: Int!) {
+        checkDuplicatesIds(input: {curridentificationnumber: $idToCheck, investigationid: $currInvestigationId, interactedcontactid: $interactedContactId}) {
             boolean
         }
     }
