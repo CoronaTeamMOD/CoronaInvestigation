@@ -45,7 +45,7 @@ export const handleDBErrors = (response: Response, errorMsg: string) => {
             user: response.locals.user.id
         });
     }
-    response.status(errorStatusCode).send(errorMsg);
+    response.send(errorMsg);
 }
 
 intersectionsRoute.get('/', (request: Request, response: Response) => {
