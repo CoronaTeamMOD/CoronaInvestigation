@@ -19,7 +19,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
     
-    const { interactedContact, updateInteractedContact, contactStatuses } = props;
+    const { interactedContact, updateInteractedContact, contactStatuses,checkDuplicateIdNumber } = props;
 
     const { alertWarning } = useCustomSwal();
 
@@ -35,11 +35,15 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 text: 'לאחר העברת המגע, לא תהיה אפשרות לערוך שינויים',
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
+                cancelButtonColor: theme.palette.error.main, 
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
-                if (result.value) {
+                if (result.value) { 
+                   let existsDuplicatedIdNumberContact = checkDuplicateIdNumber(interactedContact);
+                    if(existsDuplicatedIdNumberContact){
+                        //to do - show alert and exit
+                    }    
                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
                 } else {
                     const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
@@ -122,4 +126,5 @@ interface Props {
     interactedContact: InteractedContact;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
+    checkDuplicateIdNumber?:(interactedContact: InteractedContact)=>InteractedContact|undefined;
 };

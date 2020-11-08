@@ -39,7 +39,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError
+        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError,checkDuplicateIdNumber
     } = useContactQuestioning({ setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses });
 
     useEffect(() => {
@@ -97,6 +97,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 interactedContact={interactedContact}
                                                 updateInteractedContact={updateInteractedContact}
                                                 contactStatuses={contactStatuses}
+                                                checkDuplicateIdNumber={checkDuplicateIdNumber}
                                             />
                                         </AccordionSummary>
                                         <AccordionDetails>

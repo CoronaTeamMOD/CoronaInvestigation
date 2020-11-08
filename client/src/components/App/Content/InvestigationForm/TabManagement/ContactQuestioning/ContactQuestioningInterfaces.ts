@@ -20,4 +20,5 @@ export interface useContactQuestioningOutcome {
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
     handleDuplicateIdsError: () => void;
+    checkDuplicateIdNumber: (interactedContact: InteractedContact)=>InteractedContact|undefined
 };

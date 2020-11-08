@@ -327,10 +327,37 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         setAllContactedInteractions(updatedContactedInteractions);
     };
 
+
     const changeIdentificationType = (interactedContact: InteractedContact, value: boolean) => {
         const newIdentificationType = value ? IdentificationTypes.PASSPORT : IdentificationTypes.ID;
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
+
+    // const checkDuplicateIdNumber =(interactedContact: InteractedContact): InteractedContact|undefined=>{
+      
+    //     let contact =  allContactedInteractions.find(x=>x.identificationNumber === interactedContact.identificationNumber &&
+    //         x.identificationType === interactedContact.identificationNumber &&
+    //         x.id !== interactedContact.id)
+    //         return contact;
+            
+    // }
+
+    const checkDuplicateIdNumber =(interactedContact: InteractedContact): InteractedContact=>{
+      
+        let contactIndex = allContactedInteractions.findIndex(x=>x.identificationNumber === interactedContact.identificationNumber &&
+            x.identificationType === interactedContact.identificationType &&
+            x.id !== interactedContact.id)
+        if(contactIndex >=0)
+        {
+            return allContactedInteractions[contactIndex];
+
+        }
+        else{
+                return <InteractedContact>{}};
+        }
+
+            
+    }
 
     return {
         saveContact,
@@ -340,7 +367,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
-        handleDuplicateIdsError
+        handleDuplicateIdsError,
+        checkDuplicateIdNumber
     };
 };
 
