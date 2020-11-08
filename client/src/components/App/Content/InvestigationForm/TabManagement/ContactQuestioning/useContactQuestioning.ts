@@ -18,6 +18,7 @@ import {
     symptomsWithKnownStartDate,
     symptomsWithUnknownStartDate,
 } from '../InteractionsTab/useInteractionsTab';
+import {AxiosResponse} from "axios";
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
@@ -75,7 +76,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         });
     };
 
-    const saveContactQuestioning = (): Promise<void> => {
+    const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
         const contacts = allContactedInteractions;
         const contactsSavingVariable = {
             unSavedContacts: {contacts}
