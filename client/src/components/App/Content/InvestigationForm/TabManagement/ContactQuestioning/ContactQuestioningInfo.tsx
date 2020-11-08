@@ -46,7 +46,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    if (checkForDuplicateIds(interactedContact.identificationNumber) === -1 || interactedContact.identificationNumber === '') {
+                    if (checkForDuplicateIds(interactedContact.identificationNumber, interactedContact.id) === -1) {
                         updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
                     } else {
                         alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
@@ -137,5 +137,5 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => void;
-    checkForDuplicateIds: (idToCheck: string) => number;
+    checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => number;
 };
