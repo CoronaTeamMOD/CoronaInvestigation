@@ -288,7 +288,7 @@ ContactedPeopleRoute.post('/checkDuplicates', (request, response) => {
         investigation: response.locals.epidemiologynumber
     });
     graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, {currInvestigationId: parseInt(response.locals.epidemiologynumber),
-        idToCheck: request.body.currIdNumber}).then((result) => {
+        idToCheck: request.body.currIdNumber, interactedContactId: request.body.interactedContactId}).then((result) => {
         logger.info({
             service: Service.SERVER,
             severity: Severity.LOW,
