@@ -338,7 +338,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const checkForDuplicateIds = (idToCheck: string, interactedContactId: number) => {
         return allContactedInteractions.findIndex((contact) => contact.identificationNumber === idToCheck
-            && contact.id !== interactedContactId && idToCheck !== '');
+            && contact.id !== interactedContactId && (idToCheck !== '' && idToCheck !== null));
     }
 
     return {
