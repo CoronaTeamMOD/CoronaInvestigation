@@ -51,28 +51,28 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then(() => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving single contact',
-                step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-        }).catch(err => {
-            if (err.response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(err.response.data.split(':')[1]);
-            } else {
-                logger.error({
+        axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
+            if (response.data?.data?.updateContactPersons) {
+                logger.info({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Saving single contact',
-                    step: `got the following error from the server: ${err}`,
+                    step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
                     user: userId,
                     investigation: epidemiologyNumber
-                })
+                });
+            } else if (response.data.includes(duplicateIdsErrorMsg)) {
+                handleDuplicateIdsError(response.data.split(':')[1]);
             }
+        }).catch(err => {
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving single contact',
+                step: `got the following error from the server: ${err}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            })
         });
     };
 
