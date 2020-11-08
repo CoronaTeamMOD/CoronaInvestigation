@@ -107,7 +107,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                axios.post('/intersections/createContactEvent', parsedData).then(() => {
+                axios.post('/intersections/createContactEvent', parsedData).then((response) => {
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -116,8 +116,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                    loadInteractions()
-                    closeNewDialog()
+                    loadInteractions();
+                    closeNewDialog();
                 })
                     .catch((error) => {
                         if (error.response.data.includes(duplicateIdsErrorMsg)) {

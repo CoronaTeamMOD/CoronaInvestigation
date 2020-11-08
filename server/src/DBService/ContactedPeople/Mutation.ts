@@ -1,18 +1,17 @@
-import { gql } from 'postgraphile';
+import {gql} from 'postgraphile';
 
 export const UPDATE_LIST_OF_CONTACTS = gql`
-mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
-  updateContactPersons(input: {contactedPersons: $unSavedContacts}) {
-    clientMutationId
-  }
-}
+    mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
+        updateContactPersons(input: {contactedPersons: $unSavedContacts}) {
+            clientMutationId
+        }
+    }
 `;
 
 export const CHECK_FOR_DUPLICATE_IDS = gql`
-mutation checkForExistingIds($currInvestigationId: Int!, $idToCheck: String!) {
-  checkDuplicatesIds(input: {curridentificationnumber: $idToCheck, investigationid: $currInvestigationId}) {
-    boolean
-  }
-}
-
+    mutation checkForExistingIds($currInvestigationId: Int!, $idToCheck: String!, $personId: Int!) {
+        checkDuplicatesIds(input: {curridentificationnumber: $idToCheck, investigationid: $currInvestigationId, interactedcontactid: $personId}) {
+            boolean
+        }
+    }
 `;

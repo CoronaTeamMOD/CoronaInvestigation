@@ -46,19 +46,21 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    let foundDuplicateIds: boolean = false;
                     if (interactedContact.identificationNumber !== '') {
-                        axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
+                        axios.post('/contactedPeople/checkDuplicates', {
+                            currIdNumber: interactedContact.identificationNumber,
+                            personId: interactedContact.id
+                        })
                             .then((result) => {
-                                foundDuplicateIds = result.data;
+                                if (!result.data) {
+                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                                } else if (result.data) {
+                                    alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
+                                    setPreviousContactStatus();
+                                }
                             });
-                    }
-                    if (!foundDuplicateIds) {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
-                        saveContact({...interactedContact, contactStatus: selectedStatus?.id});
                     } else {
-                        alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
-                        setPreviousContactStatus();
+                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
                     }
                 } else {
                     setPreviousContactStatus();
