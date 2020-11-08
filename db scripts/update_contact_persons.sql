@@ -36,10 +36,7 @@ additionalPhoneNumber varchar;
 personId int4;
 contactEvent int4;
 begin 
-
-	
 	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
-	
 	contactPersonArr :=(
 					select  array_agg(p_data.value)
 					from json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
@@ -81,6 +78,20 @@ begin
 		select nullif((contactedPerson->'contactStatus')::text,'null')::int4 into contactStatus;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
+	if identificationNumber is not null then
+			raise notice 'check exists %', identificationNumber;
+			if exists (select  1
+				from public.contacted_person cp
+				join person p on cp.person_info = p.id join contact_event ce on ce.id = cp.contact_event
+				where ce.investigation_id = (
+						select ce.investigation_id
+						from  contact_event ce
+						where ce.id = contactEvent) and  p.identification_number = identificationNumber and p.identification_number is not null
+				group by p.identification_number
+				having count(p.identification_number) > 1) then
+					raise exception 'found duplicate ids:%', identificationnumber;
+			end if;
+		end if;		
 	if contactedPersonId is not null then
 	    	/*update person and contacted person */
  		raise notice 'update contacted person %', contactedPersonId;
@@ -96,7 +107,7 @@ begin
 			does_need_help_in_isolation =doesNeedHelpInIsolation ,
 			repeating_occurance_with_confirmed =repeatingOccuranceWithConfirmed ,
 			does_live_with_confirmed  =doesLiveWithConfirmed ,
-			contact_status = contactStatus,
+			contact_status =contactStatus ,
 			does_work_with_crowd = doesWorkWithCrowd,
 			relationship=	personRelationship 
 			where id = contactedPersonId ;

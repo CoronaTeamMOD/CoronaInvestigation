@@ -25,12 +25,12 @@ const errorStatusCode = 500;
 const duplicatesErrorMsg = 'found duplicate ids';
 const intersectionsRoute = Router();
 
-export const handleDBErrors = (response: Response, errorMsg: string) => {
+export const handleDBErrors = (response: Response, errorMsg: string, workflow: string) => {
     if(errorMsg.includes(duplicatesErrorMsg)) {
         logger.error({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'Create Contact Event',
+                workflow,
                 step: `found duplicate ids`,
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
@@ -39,7 +39,7 @@ export const handleDBErrors = (response: Response, errorMsg: string) => {
         logger.error({
             service: Service.SERVER,
             severity: Severity.LOW,
-            workflow: 'Create Contact Event',
+            workflow,
             step: `got errors approaching the graphql API ${errorMsg}`,
             investigation: response.locals.epidemiologynumber,
             user: response.locals.user.id
@@ -179,10 +179,12 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
     const newEvent = {
         ...request.body,
     }
+    const workflow = 'Create Contact Event';
+
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Create Contact Event',
+        workflow,
         step: `launching DB request`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
@@ -193,21 +195,21 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
-                    workflow: 'Create Contact Event',
+                    workflow,
                     step: 'got response from DB',
                     investigation: response.locals.epidemiologynumber,
                     user: response.locals.user.id
                 });
                 response.send(result)
             } else if(result.errors) {
-                handleDBErrors(response, result.errors[0].message)
+                handleDBErrors(response, result.errors[0].message, workflow)
             }
         })
         .catch(err => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'Create Contact Event',
+                workflow,
                 step: `got errors approaching the graphql API ${err}`,
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id
@@ -220,10 +222,12 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
     const updatedEvent = {
         ...request.body,
     }
+    const workflow = 'Update Contact Event';
+
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'Update Contact Event',
+        workflow,
         step: `launching DB request`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
@@ -234,21 +238,21 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
                 logger.info({
                     service: Service.SERVER,
                     severity: Severity.LOW,
-                    workflow: 'Update Contact Event',
+                    workflow,
                     step: 'got response from DB',
                     investigation: response.locals.epidemiologynumber,
                     user: response.locals.user.id
                 });
                 response.send(result);
             } else if(result.errors) {
-                handleDBErrors(response, result.errors[0].message)
+                handleDBErrors(response, result.errors[0].message, workflow)
             }
         })
         .catch(err => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'Update Contact Event',
+                workflow,
                 step: `got errors approaching the graphql API ${err}`,
                 investigation: response.locals.epidemiologynumber,
                 user: response.locals.user.id

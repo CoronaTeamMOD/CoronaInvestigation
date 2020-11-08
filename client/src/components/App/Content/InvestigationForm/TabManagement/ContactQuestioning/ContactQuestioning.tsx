@@ -1,3 +1,4 @@
+import {AxiosResponse} from 'axios';
 import {useSelector} from 'react-redux';
 import {ExpandMore} from '@material-ui/icons';
 import React, {useEffect, useState} from 'react';
@@ -11,17 +12,17 @@ import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
-import useContactQuestioning from './useContactQuestioning';
 import {setFormState} from 'redux/Form/formActionCreators';
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useContactFields from 'Utils/vendor/useContactFields';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactQuestioningStyles';
+import useContactQuestioning from './useContactQuestioning';
 import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
-import {AxiosResponse} from "axios";
 
 export const duplicateIdsErrorMsg = 'found duplicate ids';
 
@@ -29,6 +30,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     const classes = useStyles();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const { handleDuplicateIdsError } = useDuplicateContactId();
 
     const [allContactedInteractions, setAllContactedInteractions] = useState<InteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
@@ -40,7 +42,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError, checkForDuplicateIds
+        loadFamilyRelationships, loadContactStatuses, checkForDuplicateIds
     } = useContactQuestioning({
         setAllContactedInteractions,
         allContactedInteractions,
@@ -68,7 +70,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                     investigation: investigationId
                 });
             } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(response.data.split(':')[1]);
+                handleDuplicateIdsError(response.data.split(':')[1], userId, investigationId);
             }
         }).catch(err => {
             logger.error({

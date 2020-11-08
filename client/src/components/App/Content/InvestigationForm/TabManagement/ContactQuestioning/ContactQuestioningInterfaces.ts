@@ -20,6 +20,5 @@ export interface useContactQuestioningOutcome {
     saveContactQuestioning: () => Promise<AxiosResponse<any>>;
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
-    handleDuplicateIdsError: (duplicateIdentificationNumber: string) => void;
     checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => number;
 };

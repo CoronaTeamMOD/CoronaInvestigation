@@ -8,6 +8,7 @@ import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
@@ -26,6 +27,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const buttonRef = React.useRef<HTMLInputElement>(null);
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
     const {onFileSelect} = useContactExcel(setData, onFail);
+    const { handleDuplicateIdsError } = useDuplicateContactId();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
@@ -49,16 +51,20 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                 user: userId
             })
             axios.post('/contactedPeople/excel', {contactEvent, contacts})
-                .then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Saving Contacted People Excel',
-                        step: 'contacted people excel was saved successfully',
-                        investigation: epidemiologyNumber,
-                        user: userId
-                    })
-                    onSave();
+                .then((result) => {
+                    if (result.data.includes(duplicateIdsErrorMsg)) {
+                        handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);
+                    } else {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Saving Contacted People Excel',
+                            step: 'contacted people excel was saved successfully',
+                            investigation: epidemiologyNumber,
+                            user: userId
+                        })
+                        onSave();
+                    }
                 })
                 .catch(error => {
                     logger.error({
