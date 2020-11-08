@@ -20,7 +20,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses, saveContact} = props;
+    const {interactedContact, updateInteractedContact, contactStatuses, saveContact, checkForDuplicateIds} = props;
 
     const {alertWarning} = useCustomSwal();
 
@@ -46,22 +46,12 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    if (interactedContact.identificationNumber !== '') {
-                        axios.post('/contactedPeople/checkDuplicates', {
-                            currIdNumber: interactedContact.identificationNumber,
-                            interactedContactId: interactedContact.id
-                        })
-                            .then((result) => {
-                                if (!result.data) {
-                                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
-                                    saveContact({...interactedContact, contactStatus: selectedStatus?.id});
-                                } else if (result.data) {
-                                    alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
-                                    setPreviousContactStatus();
-                                }
-                            });
+                    if (checkForDuplicateIds(interactedContact.identificationNumber) === -1 || interactedContact.identificationNumber === '') {
+                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
                     } else {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                        alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
+                        setPreviousContactStatus();
+
                     }
                 } else {
                     setPreviousContactStatus();
@@ -147,4 +137,5 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => void;
+    checkForDuplicateIds: (idToCheck: string) => number;
 };

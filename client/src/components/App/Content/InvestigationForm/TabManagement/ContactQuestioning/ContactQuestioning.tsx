@@ -40,7 +40,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError
+        loadFamilyRelationships, loadContactStatuses, handleDuplicateIdsError, checkForDuplicateIds
     } = useContactQuestioning({
         setAllContactedInteractions,
         allContactedInteractions,
@@ -104,6 +104,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                                             updateInteractedContact={updateInteractedContact}
                                             contactStatuses={contactStatuses}
                                             saveContact={saveContact}
+                                            checkForDuplicateIds={checkForDuplicateIds}
                                         />
                                     </AccordionSummary>
                                     <AccordionDetails>

@@ -336,6 +336,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
+    const checkForDuplicateIds = (idToCheck: string) => {
+        return allContactedInteractions.findIndex((contact) => contact.identificationNumber === idToCheck);
+    }
+
     return {
         saveContact,
         updateInteractedContact,
@@ -344,7 +348,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
-        handleDuplicateIdsError
+        handleDuplicateIdsError,
+        checkForDuplicateIds
     };
 };
 
