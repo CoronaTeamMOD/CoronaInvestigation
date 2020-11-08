@@ -9,11 +9,11 @@ const useDuplicateContactId = () => {
     const {alertWarning} = useCustomSwal();
 
     const handleDuplicateIdsError = (duplicateIdentificationNumber: string, userId: string, epidemiologyNumber: number) => {
-        logger.info({
+        logger.error({
             service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Create Interaction',
-            step: 'Didnt save interactions due to duplicate ids',
+            severity: Severity.MEDIUM,
+            workflow: 'Create/Update contacts',
+            step: 'Didnt save contacts due to duplicate ids',
             user: userId,
             investigation: epidemiologyNumber
         });
