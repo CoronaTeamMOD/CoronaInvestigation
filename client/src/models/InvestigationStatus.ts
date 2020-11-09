@@ -1,4 +1,4 @@
 export interface InvestigationStatus {
     mainStatus: string;
-    subStatus: string;
+    subStatus: string | null;
 }
