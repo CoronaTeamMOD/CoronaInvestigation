@@ -316,14 +316,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
-                return <div className={classes.infoIcon}>
-                    <InvestigationStatusColumn
-                        investigationStatus={investigationStatus}
-                        investigationSubStatus={indexedRow.investigationSubStatus}
-                        epidemiologyNumber={epidemiologyNumber}
-                        moveToTheInvestigationForm={moveToTheInvestigationForm}
-                    />
-                </div>
+                return <InvestigationStatusColumn
+                    investigationStatus={investigationStatus}
+                    investigationSubStatus={indexedRow.investigationSubStatus}
+                    epidemiologyNumber={epidemiologyNumber}
+                    moveToTheInvestigationForm={moveToTheInvestigationForm}
+                />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }

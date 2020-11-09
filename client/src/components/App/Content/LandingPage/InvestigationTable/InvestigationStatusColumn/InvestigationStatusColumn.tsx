@@ -2,8 +2,8 @@ import React from 'react';
 import logger from 'logger/logger';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { InfoOutlined, LockOpen } from '@material-ui/icons';
 import { Tooltip, Typography } from '@material-ui/core';
+import { InfoOutlined, LockOpen } from '@material-ui/icons';
 
 import axios from 'Utils/axios';
 import { Service, Severity } from 'models/Logger';
