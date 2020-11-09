@@ -79,7 +79,7 @@ begin
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
 	if identificationNumber is not null then
-			raise notice 'check exists %', identificationNumber;
+			maxDuplicateIds := case when contactedPersonId is null then 0 else 1 end;
 			if exists (select  1
 				from public.contacted_person cp
 				join person p on cp.person_info = p.id join contact_event ce on ce.id = cp.contact_event
@@ -88,7 +88,7 @@ begin
 						from  contact_event ce
 						where ce.id = contactEvent) and  p.identification_number = identificationNumber and p.identification_number is not null
 				group by p.identification_number
-				having count(p.identification_number) > 1) then
+				having count(p.identification_number) > maxDuplicateIds) then
 					raise exception 'found duplicate ids:%', identificationnumber;
 			end if;
 		end if;		
