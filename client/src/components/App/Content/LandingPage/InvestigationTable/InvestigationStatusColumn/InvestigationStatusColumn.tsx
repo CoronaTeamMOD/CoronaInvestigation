@@ -1,8 +1,8 @@
 import React from 'react';
 import logger from 'logger/logger';
 import { useSelector } from 'react-redux';
-import { LockOpen } from '@material-ui/icons';
 import StoreStateType from 'redux/storeStateType';
+import { InfoOutlined, LockOpen } from '@material-ui/icons';
 import { Tooltip, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
@@ -14,7 +14,7 @@ import useStyles from './InvestigationStatusColumnStyles';
 
 const InvestigationStatusColumn = (props: Props) => {
 
-    const { investigationStatus, epidemiologyNumber, moveToTheInvestigationForm } = props;
+    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, } = props;
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
@@ -54,11 +54,27 @@ const InvestigationStatusColumn = (props: Props) => {
 
     return (
         <div className={classes.columnWrapper}>
+            {
+                investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus &&
+                <Typography>{investigationSubStatus + '/'}</Typography>
+            }
             <Typography>{investigationStatus}</Typography>
             {
                 investigationStatus === InvestigationMainStatus.DONE &&
                 <Tooltip title='פתיחת חקירה' placement='top' arrow>
                     <LockOpen className={classes.openInvestigatonIcon} onClick={onIconClicked} color='primary' />
+                </Tooltip>
+            }
+            {
+                investigationStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                <Tooltip title={investigationSubStatus}>
+                    <InfoOutlined fontSize='small' color='error' />
+                </Tooltip>
+            }
+            {
+                investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason &&
+                <Tooltip title={statusReason}>
+                    <InfoOutlined fontSize='small' color='error' />
                 </Tooltip>
             }
         </div>
@@ -67,6 +83,8 @@ const InvestigationStatusColumn = (props: Props) => {
 
 interface Props {
     investigationStatus: string | null;
+    investigationSubStatus: string;
+    statusReason?: string;
     epidemiologyNumber: number;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 }
