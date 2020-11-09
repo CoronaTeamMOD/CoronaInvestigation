@@ -14,8 +14,8 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import {setFormState} from 'redux/Form/formActionCreators';
 import useContactFields from 'Utils/vendor/useContactFields';
-import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
 import useStyles from './ContactQuestioningStyles';
 import useContactQuestioning from './useContactQuestioning';
@@ -23,8 +23,6 @@ import ContactQuestioningInfo from './ContactQuestioningInfo';
 import ContactQuestioningCheck from './ContactQuestioningCheck';
 import ContactQuestioningPersonal from './ContactQuestioningPersonal';
 import ContactQuestioningClinical from './ContactQuestioningClinical';
-
-export const duplicateIdsErrorMsg = 'found duplicate ids';
 
 const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     const classes = useStyles();
