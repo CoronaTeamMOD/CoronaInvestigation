@@ -32,12 +32,6 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
     };
 
     const placeSubTypeObj: PlaceSubType = placeSubTypeById(placeSubType);
-    
-    useEffect(() => {
-        if (Object.keys(placesSubTypesByTypes).length > 0 && !placeType) {
-            onPlaceTypeChange(Object.keys(placesSubTypesByTypes)[0]);
-        }
-    }, [placesSubTypesByTypes]);
 
     useEffect(() => {
         if (placesSubTypesByTypes[placeType]) {
