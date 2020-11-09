@@ -1,3 +1,4 @@
+import {AxiosResponse} from 'axios';
 import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import {differenceInCalendarDays, subDays} from 'date-fns';
@@ -6,37 +7,23 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import {duplicateIdsErrorMsg} from './ContactQuestioning'
 import {
     convertDate,
     nonSymptomaticPatient,
     symptomsWithKnownStartDate,
     symptomsWithUnknownStartDate,
 } from '../InteractionsTab/useInteractionsTab';
-import {AxiosResponse} from "axios";
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
-    const {alertWarning} = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
-    const handleDuplicateIdsError = (duplicateIdentificationNumber: string) => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Create Interaction',
-            step: 'Didnt save interactions due to duplicate ids',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        alertWarning(`שים לב, מספר זיהוי ${duplicateIdentificationNumber} כבר קיים בחקירה! אנא בצע את השינויים הנדרשים`);
-    }
+    const { handleDuplicateIdsError } = useDuplicateContactId();
 
     const saveContact = (interactedContact: InteractedContact) => {
         const contacts = [interactedContact];
@@ -62,7 +49,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     investigation: epidemiologyNumber
                 });
             } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(response.data.split(':')[1]);
+                handleDuplicateIdsError(response.data.split(':')[1], userId, epidemiologyNumber);
             }
         }).catch(err => {
             logger.error({
@@ -337,7 +324,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     };
 
     const checkForDuplicateIds = (idToCheck: string, interactedContactId: number) => {
-        return allContactedInteractions.findIndex((contact) => !idToCheck && contact.identificationNumber === idToCheck
+        return allContactedInteractions.findIndex((contact) => contact.identificationNumber === idToCheck
             && contact.id !== interactedContactId);
     }
 
@@ -349,7 +336,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
-        handleDuplicateIdsError,
         checkForDuplicateIds
     };
 };

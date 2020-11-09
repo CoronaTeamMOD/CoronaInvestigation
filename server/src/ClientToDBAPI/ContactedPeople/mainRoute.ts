@@ -19,6 +19,7 @@ const DONE_CONTACT = 5;
 
 const ContactedPeopleRoute = Router();
 const errorStatusCode = 500;
+const validStatusCode = 200;
 
 ContactedPeopleRoute.get('/familyRelationships', (request: Request, response: Response) => {
     logger.info({
@@ -162,7 +163,7 @@ ContactedPeopleRoute.post('/interactedContacts', (request: Request, response: Re
                 isThereDoneContact && sendSavedInvestigationToIntegration(epidemiologyNumber, workflow, response.locals.user.id);
                 response.send(result);
             } else if(result.errors) {
-                handleDBErrors(response, result.errors[0].message);
+                handleDBErrors(response, result.errors[0].message, workflow);
             }
         })
         .catch(error => {
@@ -254,16 +255,18 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
     });
     return graphqlRequest(UPDATE_LIST_OF_CONTACTS, response.locals, mutationVariables)
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: `Saving execl to DB graphql request result`,
-                step:  `Got graphQL result: ${JSON.stringify(result)}`,
-                user: response.locals.user.id,investigation: response.locals.epidemiologynumber
-            });
-            const hasErrors = result?.errors?.length > 0;
-            const status = hasErrors ? 500 : 200;
-            return response.sendStatus(status);
+            if(result?.data?.updateContactPersons) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: `Saving execl to DB graphql request result`,
+                    step:  `Got graphQL result: ${JSON.stringify(result)}`,
+                    user: response.locals.user.id,investigation: response.locals.epidemiologynumber
+                });
+                response.sendStatus(validStatusCode);
+            } else if(result.errors) {
+                handleDBErrors(response, result.errors[0].message, 'Saving execl to DB');
+            }
         })
         .catch(error => {
             logger.info({
@@ -273,7 +276,6 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
                 step:  `Got graphQL error: ${JSON.stringify(error)}`,
                 user: response.locals.user.id,investigation: response.locals.epidemiologynumber
             });
-            console.error(error);
             return response.sendStatus(500);
         })
 });
