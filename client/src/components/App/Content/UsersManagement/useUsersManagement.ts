@@ -291,6 +291,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             [SignUpFields.COUNTY]: { displayName: row[SignUpFields.COUNTY] },
             [SignUpFields.DESK]: { name: row[SignUpFields.DESK] },
             [SignUpFields.CITY]: { value: { displayName: row[SignUpFields.CITY] }},
+            [SignUpFields.FULL_NAME]: row[SignUpFields.FULL_NAME] || row[SignUpFields.USER_NAME],
             [SignUpFields.SOURCE_ORGANIZATION]: { displayName: row[SignUpFields.SOURCE_ORGANIZATION]}
         };
         setUserDialog({ isOpen: true, info: userInfoToSet });
