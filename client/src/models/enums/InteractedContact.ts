@@ -18,6 +18,9 @@ enum InteractedContactFields {
     DOES_LIVE_WITH_CONFIRMED = 'doesLiveWithConfirmed',
     DOES_WORK_WITH_CROWD = 'doesWorkWithCrowd',
     DOES_NEED_ISOLATION = 'doesNeedIsolation',
+    FIRST_NAME = 'firstName',
+    LAST_NAME = 'lastName',
+    PHONE_NUMBER = 'phoneNumber',
 };
 
 export default InteractedContactFields;
