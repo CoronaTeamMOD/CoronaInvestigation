@@ -10,7 +10,7 @@ import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse'
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse'
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -259,7 +259,7 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
                 const activeUsers = result.data.allUsers.nodes.filter((user: UserAdminResponse) => user.isActive);
                 activeUsers.length > 0 ? userAdmin = activeUsers[0].id : userAdmin = result.data.allUsers[0].id;
             }
-            graphqlRequest(UPDATE_INVESTIGATOR, response.locals, {
+            graphqlRequest(UPDATE_COUNTY_BY_USER, response.locals, {
                 epidemiologyNumber: request.body.epidemiologyNumber,
                 newUser: userAdmin
             }).then((result: any) => response.send(result.data)).catch((error) => {
