@@ -8,11 +8,11 @@ import {Service, Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import useSwalStyles from 'commons/CustomSwal/CustomSwalStyles';
+import { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './InteractionEventFormStyles';
-import {duplicateIdsErrorMsg} from '../../ContactQuestioning/ContactQuestioning';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
         const classes = useStyles();
