@@ -1,7 +1,7 @@
 enum ContactType {
     TIGHT = 'הדוק',
     NOT_TIGHT = 'לא הדוק',
-    UNKNOWN = 'לא ידוע'
+    UNKNOWN = 'אופציונלי'
 }
 
 export default ContactType;
