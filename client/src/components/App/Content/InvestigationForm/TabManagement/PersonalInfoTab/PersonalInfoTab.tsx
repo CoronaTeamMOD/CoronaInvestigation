@@ -274,7 +274,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 if (isInvestigationNew) {
                     const activeInvestigationStatus = {
                         mainStatus: InvestigationMainStatus.IN_PROCESS,
-                        subStatus: ''
+                        subStatus: null
                     }
                     axios.post('/investigationInfo/updateInvestigationStatus', {
                         investigationMainStatus: activeInvestigationStatus.mainStatus,
