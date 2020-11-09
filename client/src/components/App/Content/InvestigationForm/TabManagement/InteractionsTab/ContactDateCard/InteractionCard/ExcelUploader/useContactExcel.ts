@@ -89,6 +89,8 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             console.error('error loading file:', e);
             failCallback && failCallback(e);
         }
+
+        event.target.value = '';
     };
 
     return {

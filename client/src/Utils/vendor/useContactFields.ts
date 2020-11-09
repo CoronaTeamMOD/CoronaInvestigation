@@ -45,7 +45,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         let message = 'שים לב, ';
 
         if(emptyFields.length > 0) {
-            const fieldWord = `לא מילאת את ${emptyFields.length > 1 ? 'שדה ' : 'שדות '}`;
+            const fieldWord = `לא מילאת את ${emptyFields.length > 1 ? 'שדות ' : 'שדה '}`;
             const emptyFieldProblem = emptyFields.map(fieldName => ContactedPersonFieldMapper[fieldName as keyof typeof ContactedPersonFieldMapper]);
             message = message.concat(fieldWord.concat(emptyFieldProblem.join(', ')));
             if(isLooseContact)

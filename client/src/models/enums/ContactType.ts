@@ -1,6 +1,6 @@
 enum ContactType {
-    TIGHT = 'מגע הדוק',
-    NOT_TIGHT = 'מגע לא הדוק',
+    TIGHT = 'הדוק',
+    NOT_TIGHT = 'לא הדוק',
     UNKNOWN = 'לא ידוע'
 }
 
