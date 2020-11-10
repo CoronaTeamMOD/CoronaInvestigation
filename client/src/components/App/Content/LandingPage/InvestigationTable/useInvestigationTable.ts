@@ -641,7 +641,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     });
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
-                })).catch((error) => {
+                })).then(() => {
+                    axios.post('/investigationInfo/updateInvestigationStatus', {
+                        investigationMainStatus: indexedRow.investigationStatus,
+                        investigationSubStatus: 'העברת חקירה',
+                        epidemiologyNumber: indexedRow.epidemiologyNumber
+                    })
+                }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -700,7 +706,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 : investigation
                         )));
                         setSelectedRow(UNDEFINED_ROW);
-                    })).catch((error) => {
+                    })).then(() => {
+                            axios.post('/investigationInfo/updateInvestigationStatus', {
+                                investigationMainStatus: indexedRow.investigationStatus,
+                                investigationSubStatus: 'העברת חקירה',
+                                epidemiologyNumber: indexedRow.epidemiologyNumber
+                            })
+                        }).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
                             severity: Severity.HIGH,
@@ -759,7 +771,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onOk,
         snackbarOpen,
         moveToTheInvestigationForm,
-        onDeskChange
+        onDeskChange,
     };
 };
 
