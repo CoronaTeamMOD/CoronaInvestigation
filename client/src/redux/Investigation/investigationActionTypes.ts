@@ -10,6 +10,7 @@ export const SET_AXIOS_INTERCEPTOR_ID = 'SET_AXIOS_INTERCEPTOR_ID';
 export const SET_INVESTIGATION_STATUS = 'SET_INVESTIGATION_STATUS';
 export const SET_VALIDATION_DATE = 'SET_VALIDATION_DATE';
 export const SET_END_TIME = 'SET_END_TIME';
+export const SET_CREATOR = 'SET_CREATOR';
 
 interface SetEpidemiologyNum {
     type: typeof SET_EPIDEMIOLOGY_NUM,
@@ -61,5 +62,10 @@ interface SetEndTime {
     payload: {endTime: Date | null}
 }
 
+interface SetCreator {
+    type: typeof SET_CREATOR,
+    payload: {creator: string}
+}
+
 export type InvestigationAction = SetEpidemiologyNum | SetInvestigationStatus | SetInvestigatedPatientId | SetAxiosInterceptorId
- | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus | SetEndTime;
+ | SetLastOpenedEpidemiologyNum | SetIsCurrentlyLoading | SetIsDeceased | SetIsCurrentlyHospitialized | SetValidationStatus | SetEndTime | SetCreator;

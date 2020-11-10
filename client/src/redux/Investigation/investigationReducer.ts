@@ -35,6 +35,7 @@ const investigationReducer = (state = initialState, action: Actions.Investigatio
         case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
         case Actions.SET_VALIDATION_DATE: return { ...state, validationDate: action.payload.validationDate }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }
+        case Actions.SET_CREATOR: return  { ...state, creator: action.payload.creator }
         default: return state;
     }
 }

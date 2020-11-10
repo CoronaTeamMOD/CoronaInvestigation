@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import User from 'models/User';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import userType from 'models/enums/UserType';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
@@ -98,7 +97,9 @@ const App: React.FC = (): JSX.Element => {
                 })
                 const userFromDB = result.data.userById;
                 setUser({
-                    ...userFromDB
+                    ...userFromDB,
+                    id: userId,
+                    userName
                 });
             } else {
                 logger.warn({

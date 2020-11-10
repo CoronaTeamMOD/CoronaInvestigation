@@ -5,6 +5,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
+import User from 'models/User';
+import userType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
@@ -36,12 +38,13 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
+    const currUser = useSelector<StoreStateType, User>(state => state.user);
+    const investigationCreator = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
-
-    const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck } = useInvestigatedPersonInfo();
+    const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
@@ -179,7 +182,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                                 });
                                             }}
                                             onInputChange={(event, newSubStatusInput) => {
-                                                if (event?.type !== 'blur') {
+                                                if (event?.type !== 'blur' && shouldUpdateInvestigationStatus()) {
                                                     setInvestigationStatus({
                                                         mainStatus: investigationStatus.mainStatus,
                                                         subStatus: newSubStatusInput
