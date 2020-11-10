@@ -13,6 +13,7 @@ export enum TableHeadersNames {
     investigatorName = 'investigatorName',
     investigationStatus = 'investigationStatus',
     investigationSubStatus = 'investigationSubStatus',
+    statusReason = 'statusReason',
     investigationDesk = 'investigationDesk',
     comment = 'comment',
 }
@@ -34,6 +35,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.county]: 'נפה מבצעת',
     [TableHeadersNames.investigationStatus]: 'סטטוס ביצוע',
     [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף',
+    [TableHeadersNames.statusReason]: 'סיבה לסטטוס בטיפול',
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
     [TableHeadersNames.comment]: ' '
 }
@@ -79,6 +81,7 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.county]: false,
     [TableHeadersNames.investigationStatus]: true,
     [TableHeadersNames.investigationSubStatus]: false,
+    [TableHeadersNames.statusReason]: false,
     [TableHeadersNames.investigationDesk]: false,
     [TableHeadersNames.comment]: false
 }

@@ -16,6 +16,7 @@ interface InvestigationTableRow {
     investigator: Investigator;
     county: County;
     comment: string;
+    statusReason: string;
 };
 
 export default InvestigationTableRow;
