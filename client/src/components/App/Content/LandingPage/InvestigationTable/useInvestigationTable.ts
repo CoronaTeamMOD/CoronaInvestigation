@@ -20,7 +20,7 @@ import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
@@ -448,7 +448,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setInvestigationStatus({
             mainStatus: investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
-        })
+        });
+        const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
+        indexOfInvestigationObject !== -1 &&
+            setCreator(rows[indexOfInvestigationObject].investigator.id);
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
             logger.info({
                 service: Service.CLIENT,

@@ -34,6 +34,7 @@ import {InvestigationStatus} from 'models/InvestigationStatus';
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
+import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -89,6 +90,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
         setStreets, occupationsStateContext, setInsuranceCompany, setInvestigatedPatientRoles,
     });
+    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const methods = useForm({
         mode: 'all',
@@ -272,28 +274,30 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 });
 
                 if (isInvestigationNew) {
-                    const activeInvestigationStatus = {
-                        mainStatus: InvestigationMainStatus.IN_PROCESS,
-                        subStatus: null
-                    }
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationMainStatus: activeInvestigationStatus.mainStatus,
-                        investigationSubStatus: activeInvestigationStatus.subStatus,
-                        epidemiologyNumber: investigationId
-                    })
-                        .then(() => {
-                            setInvestigationStatus(activeInvestigationStatus);
-                            logger.info({
-                                ...logInfo,
-                                severity: Severity.LOW,
-                                step: `Investigation status successfully updates to be in process`,
-                            })
+                    if(shouldUpdateInvestigationStatus()) {
+                        const activeInvestigationStatus = {
+                            mainStatus: InvestigationMainStatus.IN_PROCESS,
+                            subStatus: null
+                        }
+                        axios.post('/investigationInfo/updateInvestigationStatus', {
+                            investigationMainStatus: activeInvestigationStatus.mainStatus,
+                            investigationSubStatus: activeInvestigationStatus.subStatus,
+                            epidemiologyNumber: investigationId
                         })
-                        .catch((error) => logger.error({
-                            ...logInfo,
-                            severity: Severity.HIGH,
-                            step: `got errors updating status: ${error}`,
-                        }))
+                            .then(() => {
+                                setInvestigationStatus(activeInvestigationStatus);
+                                logger.info({
+                                    ...logInfo,
+                                    severity: Severity.LOW,
+                                    step: `Investigation status successfully updates to be in process`,
+                                })
+                            })
+                            .catch((error) => logger.error({
+                                ...logInfo,
+                                severity: Severity.HIGH,
+                                step: `got errors updating status: ${error}`,
+                            }))
+                    }
                 }
             })
             .catch((error) => {

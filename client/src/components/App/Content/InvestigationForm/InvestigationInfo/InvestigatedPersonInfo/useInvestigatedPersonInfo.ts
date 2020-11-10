@@ -1,29 +1,32 @@
 import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import { timeout } from 'Utils/Timeout/Timeout';
+import userType from 'models/enums/UserType';
+import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import {Service, Severity} from 'models/Logger';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import { InvestigationStatus } from 'models/InvestigationStatus';
+import {InvestigationStatus} from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import {setInvestigationStatus} from 'redux/Investigation/investigationActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import useStyles from './InvestigatedPersonInfoStyles';
-import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
+import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const classes = useStyles({});
 
-    const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+    const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
+    const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const handleInvestigationFinish = async () => {
@@ -65,40 +68,41 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                     investigation: epidemiologyNumber
                 });
                 const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
-                axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus: investigationStatus.mainStatus,
-                    investigationSubStatus: subStatus,
-                    epidemiologyNumber: epidemiologyNumber
-                }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update Investigation Status',
-                        step: `update investigation status request was successful`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
-                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                         updateIsDeceased(handleInvestigationFinish);
-                    }
-                    else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                    } 
-                    else {
-                        handleInvestigationFinish();
-                    }
-                }).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update Investigation Status',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
-                    handleUnfinishedInvestigationFailed();
-                })
-            };
+                if (shouldUpdateInvestigationStatus()) {
+                    axios.post('/investigationInfo/updateInvestigationStatus', {
+                        investigationMainStatus: investigationStatus.mainStatus,
+                        investigationSubStatus: subStatus,
+                        epidemiologyNumber: epidemiologyNumber
+                    }).then(() => {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `update investigation status request was successful`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                    }).catch((error) => {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `got errors in server result: ${error}`,
+                            user: userId,
+                            investigation: epidemiologyNumber
+                        });
+                        handleUnfinishedInvestigationFailed();
+                    })
+                }
+                if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                    updateIsDeceased(handleInvestigationFinish);
+                } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                    updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                } else {
+                    handleInvestigationFinish();
+                }
+            }
+            ;
         });
     };
 
@@ -130,10 +134,20 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
+    const shouldUpdateInvestigationStatus = () => {
+        let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
+        if (!shouldStatusUpdate) {
+            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === currInvestigatorId
+                && userRole === userType.ADMIN || userRole === userType.SUPER_ADMIN);
+        }
+        return shouldStatusUpdate;
+    }
+
     return {
         confirmExitUnfinishedInvestigation,
         handleCannotCompleteInvestigationCheck,
         getPersonAge,
+        shouldUpdateInvestigationStatus
     }
 };
 

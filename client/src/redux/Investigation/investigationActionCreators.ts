@@ -72,3 +72,10 @@ export const setEndTime = (endTime: Date | null) => {
         payload: { endTime }
     })
 }
+
+export const setCreator = (creator: string) => {
+    store.dispatch({
+        type: actionTypes.SET_CREATOR,
+        payload: { creator }
+    })
+}
