@@ -27,8 +27,15 @@ import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigatio
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
-import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
+import {
+    TableHeadersNames,
+    IndexedInvestigation,
+    IndexedInvestigationData,
+    investigatorIdPropertyName
+} from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import useInvestigatedPersonInfo
+    from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
 
@@ -78,6 +85,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks } = parameters;
+    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -419,7 +427,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchTableData()
     }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
 
-    const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+    const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const logInfo = {
             service: Service.CLIENT,
             workflow: 'Investigation click',
@@ -456,7 +464,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
+        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
             logger.info({
                 ...logInfo,
                 severity: Severity.LOW,
@@ -516,7 +524,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
+    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
@@ -527,6 +535,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
+            [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.statusReason]: row.statusReason,
