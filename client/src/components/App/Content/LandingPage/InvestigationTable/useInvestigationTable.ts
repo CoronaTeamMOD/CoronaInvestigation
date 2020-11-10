@@ -536,8 +536,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const changeSubStatusToTransfered = (indexedRow: IndexedInvestigation) => {
-        axios.post('/investigationInfo/updateInvestigationStatus', {
+    const changeSubStatusToTransfered = (indexedRow: IndexedInvestigation): Promise<void> => {
+        return axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: indexedRow.investigationStatus,
             investigationSubStatus: transferedSubStatus,
             epidemiologyNumber: indexedRow.epidemiologyNumber
@@ -592,7 +592,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             : investigation
                     )))
                 })).then(() => {
-                    changeSubStatusToTransfered(indexedRow);
+                    changeSubStatusToTransfered(indexedRow).then(() => {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `update investigation status request was successful`,
+                            user: user.id,
+                            investigation: epidemiologyNumber
+                        });
+                    }).catch((error) => {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `got errors in server result: ${error}`,
+                            user: user.id,
+                            investigation: epidemiologyNumber
+                        });
+                    })
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -653,7 +671,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 })).then(() => {
-                    changeSubStatusToTransfered(indexedRow);
+                    changeSubStatusToTransfered(indexedRow).then(() => {
+                        logger.info({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `update investigation status request was successful`,
+                            user: user.id,
+                            investigation: epidemiologyNumber
+                        });
+                    }).catch((error) => {
+                        logger.error({
+                            service: Service.CLIENT,
+                            severity: Severity.LOW,
+                            workflow: 'Update Investigation Status',
+                            step: `got errors in server result: ${error}`,
+                            user: user.id,
+                            investigation: epidemiologyNumber
+                        });
+                    })
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -714,7 +750,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )));
                         setSelectedRow(UNDEFINED_ROW);
                     })).then(() => {
-                        changeSubStatusToTransfered(indexedRow);
+                        changeSubStatusToTransfered(indexedRow).then(() => {
+                            logger.info({
+                                service: Service.CLIENT,
+                                severity: Severity.LOW,
+                                workflow: 'Update Investigation Status',
+                                step: `update investigation status request was successful`,
+                                user: user.id,
+                                investigation: epidemiologyNumber
+                            });
+                        }).catch((error) => {
+                            logger.error({
+                                service: Service.CLIENT,
+                                severity: Severity.LOW,
+                                workflow: 'Update Investigation Status',
+                                step: `got errors in server result: ${error}`,
+                                user: user.id,
+                                investigation: epidemiologyNumber
+                            });
+                        })
                     }).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
