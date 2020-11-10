@@ -1,11 +1,16 @@
 import React from 'react';
 
 import useExcel from 'Utils/vendor/useExcel';
-import InteractedContact from 'models/InteractedContact';
 import {isObjectEmpty} from 'Utils/vendor/underscoreReplacement';
-import {booleanAnswers, ContactedPersonExcel, ContactedPersonFieldMapper} from 'models/enums/contactQuestioningExcelFields';
+import {
+    booleanAnswers,
+    ContactedPersonExcel,
+    ContactedPersonFieldMapper,
+    ExcelRow,
+    ParsedExcelRow
+} from 'models/enums/contactQuestioningExcelFields';
 
-type ParseCallback = (data:InteractedContact[]) => void;
+type ParseCallback = (data: ParsedExcelRow[]) => void;
 type FailCallback = (error?:Error|string) => void;
 
 const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallback) => {
@@ -42,8 +47,8 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
         (Object.keys(ContactedPersonFieldMapper) as (keyof typeof ContactedPersonFieldMapper)[])
         .find(englishName => ContactedPersonFieldMapper[englishName] === hebrewName);
 
-    const parseRow = (row: ContactedPersonExcel) => {
-        const parsedObj: InteractedContact | {} = {};
+    const parseRow = (row: ExcelRow) => {
+        const parsedObj: ParsedExcelRow | {} = {};
         (Object.keys(row) as (keyof ContactedPersonExcel)[])
             .forEach(hebrewColumnName => {
                 const englishFieldName: keyof ContactedPersonExcel | undefined = getEnglishNameByHebrew(hebrewColumnName);
@@ -53,7 +58,7 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
                 (parsedObj as any)[englishFieldName] = parsingFunc ? parsingFunc(value) : value
             });
 
-        return parsedObj as InteractedContact;
+        return {...parsedObj, rowNum: row.__rowNum__} as ParsedExcelRow;
     };
 
     const parseContactsWorkbook = (isAsBinaryString: boolean) =>  (event: ProgressEvent<FileReader>) => {
@@ -64,7 +69,7 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             const workbook = read(fileData, {type: isAsBinaryString ? 'binary' : 'array', cellDates:true});
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             setIsWorkbookDate1904 (!!(workbook?.Workbook?.WBProps?.date1904));
-            const sheetJson = sheet_to_json<ContactedPersonExcel>(sheet);
+            const sheetJson = sheet_to_json<ExcelRow>(sheet);
             const parsedData = sheetJson.map(parseRow).filter(row => !isObjectEmpty(row));
             parseCallback(parsedData);
         } catch (e) {
@@ -89,6 +94,8 @@ const useContactExcel = (parseCallback: ParseCallback, failCallback?: FailCallba
             console.error('error loading file:', e);
             failCallback && failCallback(e);
         }
+
+        event.target.value = '';
     };
 
     return {

@@ -32,3 +32,11 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
 };
 
 export type ContactedPersonExcel =  { [K in keyof Omit<InteractedContact, 'id'|'contactEvent'>]: string };
+
+export interface ExcelRow extends ContactedPersonExcel {
+    __rowNum__: number;
+};
+
+export interface ParsedExcelRow extends InteractedContact {
+    rowNum: number;
+};

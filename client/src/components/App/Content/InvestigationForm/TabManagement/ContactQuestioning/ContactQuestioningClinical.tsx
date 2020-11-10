@@ -14,6 +14,7 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './ContactQuestioningStyles';
 import useContactFields from 'Utils/vendor/useContactFields';
@@ -29,7 +30,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
-    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
+    const {alertError} = useCustomSwal();
+    const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
 
     const [cityInput, setCityInput] = useState<string>('');
 
@@ -38,25 +40,31 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
     const handleIsolation = (value: boolean) => {
-        value ?
-            Swal.fire({
-                icon: 'warning',
-                title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך',
-                customClass: {
-                    title: classes.swalTitle
-                }
-            }).then((result) => {
-                if (result.value) {
-                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
-                }
-            })
-        :
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
+        const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
+        const validation = validateContact(contactWithIsolationRequirement);
+        if(!validation.valid) {
+            alertError(validation.error)
+        } else {
+            value ?
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
+                    showCancelButton: true,
+                    cancelButtonText: 'בטל',
+                    cancelButtonColor: theme.palette.error.main,
+                    confirmButtonColor: theme.palette.primary.main,
+                    confirmButtonText: 'כן, המשך',
+                    customClass: {
+                        title: classes.swalTitle
+                    }
+                }).then((result) => {
+                    if (result.value) {
+                        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
+                    }
+                })
+                :
+                updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
+        }
     };
 
     return (

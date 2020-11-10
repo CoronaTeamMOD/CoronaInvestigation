@@ -9,9 +9,11 @@ import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
+import useContactFields from 'Utils/vendor/useContactFields';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
+import {ParsedExcelRow} from 'models/enums/contactQuestioningExcelFields';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
@@ -23,7 +25,8 @@ interface ExcelUploaderProps {
 }
 const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const {alertError} = useCustomSwal();
-    const [data, setData] = React.useState<InteractedContact[] | undefined>();
+    const {validateContact} = useContactFields();
+    const [data, setData] = React.useState<ParsedExcelRow[] | undefined>();
     const buttonRef = React.useRef<HTMLInputElement>(null);
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
     const {onFileSelect} = useContactExcel(setData, onFail);
@@ -40,43 +43,65 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
 
     const onButtonClick = () => buttonRef?.current?.click();
 
-    const saveDataInFile = (contacts?: InteractedContact[]) => {
+    const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
         if(contacts && contacts.length > 0) {
-            logger.info({
+            const logInfo = {
                 service: Service.CLIENT,
-                severity: Severity.LOW,
                 workflow: 'Saving Contacted People Excel',
-                step: 'launching saving contacted people excel request',
                 investigation: epidemiologyNumber,
                 user: userId
-            })
-            axios.post('/contactedPeople/excel', {contactEvent, contacts})
-                .then((result) => {
-                    if (result.data.includes(duplicateIdsErrorMsg)) {
-                        handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);
-                    } else {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Saving Contacted People Excel',
-                            step: 'contacted people excel was saved successfully',
-                            investigation: epidemiologyNumber,
-                            user: userId
-                        })
-                        onSave();
-                    }
-                })
-                .catch(error => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Saving Contacted People Excel',
-                        step: `got error from server: ${error}`,
-                        investigation: epidemiologyNumber,
-                        user: userId
+            };
+
+            logger.info({
+                ...logInfo,
+                severity: Severity.LOW,
+                step: 'launching saving contacted people excel request',
+            });
+
+            const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
+                const validationInfo = validateContact(contact);
+
+                if (!validationInfo.valid) {
+                    const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);
+                    aggregatedArr.push(error);
+                }
+                return aggregatedArr;
+            }, []);
+
+            if(validationErrors.length > 0) {
+                alertError(validationErrors.join("\r\n"));
+                logger.error({
+                    ...logInfo,
+                    severity: Severity.HIGH,
+                    step: `failed to upload excel, validation errors on data: ${validationErrors.join(',')}`,
+                });
+            } else {
+                const contactsData = contacts.map(contact => {
+                    const {rowNum, ...contactData} = contact;
+                    return contactData;
+                });
+                axios.post('/contactedPeople/excel', {contactEvent, contacts: contactsData})
+                    .then((result) => {
+                        if (result.data.includes(duplicateIdsErrorMsg)) {
+                            handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);
+                        } else {
+                            logger.info({
+                                ...logInfo,
+                                severity: Severity.LOW,
+                                step: 'contacted people excel was saved successfully',
+                            })
+                            onSave();
+                        }
                     })
-                    alertError('שגיאה בשמירת הנתונים');
-                })
+                    .catch(error => {
+                        logger.error({
+                            ...logInfo,
+                            severity: Severity.LOW,
+                            step: `got error from server: ${error}`,
+                        });
+                        alertError('שגיאה בשמירת הנתונים');
+                    })
+            }
         }
     };
 
