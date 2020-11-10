@@ -132,7 +132,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.warning.main,
         paddingLeft: theme.spacing(1),
         flip: false
-    }
+    },
 }));
 
 export default useStyles;

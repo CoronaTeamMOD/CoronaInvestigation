@@ -47,6 +47,7 @@ export const createRowData = (
     county: County,
     investigator: Investigator,
     comment: string,
+    statusReason: string,
 ): InvestigationTableRow => ({
     epidemiologyNumber,
     coronaTestDate,
@@ -61,7 +62,8 @@ export const createRowData = (
     investigationDesk,
     county,
     investigator,
-    comment
+    comment,
+    statusReason,
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -362,6 +364,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
+                                const statusReason = investigation.statusReason
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -376,7 +379,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     desk,
                                     county,
                                     { id: user.id, userName: user.userName },
-                                    investigation.comment
+                                    investigation.comment,
+                                    statusReason,
                                 )
                             });
                         setRows(investigationRows);
@@ -514,6 +518,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.investigatorName]: row.investigator.userName,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
+            [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
             [TableHeadersNames.comment]: row.comment

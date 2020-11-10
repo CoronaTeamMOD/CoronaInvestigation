@@ -2,14 +2,14 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import {
-    Paper, Table, TableRow, TableBody, TableCell, Typography,
-    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid
+    Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField,
+    TableSortLabel, Button, Popper, useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid
 } from '@material-ui/core';
-import { Refresh, Warning, Close } from '@material-ui/icons';
+import { Refresh, Warning, Close, InfoOutlined } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Desk from 'models/Desk';
 import User from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
@@ -17,7 +17,6 @@ import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
-import Desk from 'models/Desk';
 import StoreStateType from 'redux/storeStateType';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -26,8 +25,8 @@ import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/Compl
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
@@ -319,6 +318,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
                 return <InvestigationStatusColumn
                     investigationStatus={investigationStatus}
+                    investigationSubStatus={indexedRow.investigationSubStatus}
+                    statusReason={indexedRow.statusReason}
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
@@ -407,7 +408,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
-                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
+                <Grid container justify='flex-end' className={classes.tableHeaderRow}>
                     <Button
                         color='primary'
                         className={classes.filterButton}
@@ -423,7 +424,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {resetSortButtonText}
                     </Button>
                 </Grid>
-                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
+                <Grid container justify='flex-end' className={classes.tableHeaderRow}>
                     {
                         <Collapse in={showFilterRow}>
                             <Card className={classes.filterTableCard}>
