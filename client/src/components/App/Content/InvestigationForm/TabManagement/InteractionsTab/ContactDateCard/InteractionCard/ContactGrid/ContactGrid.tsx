@@ -26,6 +26,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -93,7 +94,10 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <div className={classes.deleteIconDiv}>
                 <CompletedQuestioningTooltip>
-                    <IconButton disabled={isContactComplete} test-id='deleteContactLocation' onClick={() => {
+                    <IconButton 
+                        disabled={isContactComplete || wasInvestigationReopend}
+                        test-id='deleteContactLocation' 
+                        onClick={() => {
                         contact.serialId && onDeleteContactClick(
                             contact.serialId,
                             eventId

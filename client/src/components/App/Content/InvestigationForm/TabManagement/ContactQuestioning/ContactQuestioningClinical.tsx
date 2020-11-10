@@ -28,6 +28,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const classes = useStyles();
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
     const {alertError} = useCustomSwal();
@@ -166,7 +167,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
-                            disabled={isFieldDisabled}
+                            disabled={isFieldDisabled || (wasInvestigationReopend && interactedContact.doesNeedIsolation)}
                             test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
