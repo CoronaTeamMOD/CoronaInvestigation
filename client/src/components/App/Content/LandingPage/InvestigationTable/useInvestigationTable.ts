@@ -72,6 +72,7 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
+const transferedSubStatus = 'העברת חקירה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
@@ -644,7 +645,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 })).then(() => {
                     axios.post('/investigationInfo/updateInvestigationStatus', {
                         investigationMainStatus: indexedRow.investigationStatus,
-                        investigationSubStatus: 'העברת חקירה',
+                        investigationSubStatus: transferedSubStatus,
                         epidemiologyNumber: indexedRow.epidemiologyNumber
                     })
                 }).catch((error) => {
@@ -709,7 +710,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     })).then(() => {
                             axios.post('/investigationInfo/updateInvestigationStatus', {
                                 investigationMainStatus: indexedRow.investigationStatus,
-                                investigationSubStatus: 'העברת חקירה',
+                                investigationSubStatus: transferedSubStatus,
                                 epidemiologyNumber: indexedRow.epidemiologyNumber
                             })
                         }).catch((error) => {
