@@ -62,19 +62,19 @@ const InvestigationStatusColumn = (props: Props) => {
             {
                 investigationStatus === InvestigationMainStatus.DONE &&
                 <Tooltip title='פתיחת חקירה' placement='top' arrow>
-                    <LockOpen className={classes.openInvestigatonIcon} onClick={onIconClicked} color='primary' />
+                    <LockOpen className={classes.investigatonIcon} onClick={onIconClicked} color='primary' />
                 </Tooltip>
             }
             {
                 investigationStatus === InvestigationMainStatus.CANT_COMPLETE &&
                 <Tooltip title={investigationSubStatus}>
-                    <InfoOutlined fontSize='small' color='error' />
+                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='error' />
                 </Tooltip>
             }
             {
                 investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason &&
                 <Tooltip title={statusReason}>
-                    <InfoOutlined fontSize='small' color='error' />
+                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='error' />
                 </Tooltip>
             }
         </div>

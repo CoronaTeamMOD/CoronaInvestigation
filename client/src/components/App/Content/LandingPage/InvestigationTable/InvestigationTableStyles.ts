@@ -133,10 +133,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingLeft: theme.spacing(1),
         flip: false
     },
-    infoIcon: {
-        display: 'flex',
-        flexDirection: 'row',
-    },
 }));
 
 export default useStyles;
