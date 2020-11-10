@@ -583,7 +583,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             }
                             : investigation
                     )))
-                })).catch((error) => {
+                })).then(() => {
+                    axios.post('/investigationInfo/updateInvestigationStatus', {
+                        investigationMainStatus: indexedRow.investigationStatus,
+                        investigationSubStatus: transferedSubStatus,
+                        epidemiologyNumber: indexedRow.epidemiologyNumber
+                    })
+                }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
