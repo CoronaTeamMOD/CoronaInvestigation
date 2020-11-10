@@ -84,7 +84,7 @@ const InvestigationStatusColumn = (props: Props) => {
 interface Props {
     investigationStatus: string | null;
     investigationSubStatus: string;
-    statusReason?: string;
+    statusReason: string;
     epidemiologyNumber: number;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 }

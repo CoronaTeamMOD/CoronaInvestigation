@@ -319,6 +319,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return <InvestigationStatusColumn
                     investigationStatus={investigationStatus}
                     investigationSubStatus={indexedRow.investigationSubStatus}
+                    statusReason={indexedRow.statusReason}
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />

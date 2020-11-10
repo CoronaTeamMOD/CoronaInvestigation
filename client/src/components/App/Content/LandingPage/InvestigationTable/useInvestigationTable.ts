@@ -364,6 +364,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
+                                const statusReason = 'a'
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -379,7 +380,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     county,
                                     { id: user.id, userName: user.userName },
                                     investigation.comment,
-                                    investigation.statusReason,
+                                    statusReason,
                                 )
                             });
                         setRows(investigationRows);
