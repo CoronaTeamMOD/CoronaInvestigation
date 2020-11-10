@@ -174,7 +174,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             test-id='currentSubStatus'
                                             options={subStatuses}
                                             getOptionLabel={(option) => option}
-                                            inputValue={investigationStatus.subStatus as string | undefined}
+                                            inputValue={investigationStatus.subStatus || '' as string | undefined}
                                             onChange={(event, newSubStatus) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
