@@ -13,6 +13,7 @@ import useContactFields from 'Utils/vendor/useContactFields';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
+import {ParsedExcelRow} from 'models/enums/contactQuestioningExcelFields';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
@@ -25,7 +26,7 @@ interface ExcelUploaderProps {
 const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     const {alertError} = useCustomSwal();
     const {validateContact} = useContactFields();
-    const [data, setData] = React.useState<InteractedContact[] | undefined>();
+    const [data, setData] = React.useState<ParsedExcelRow[] | undefined>();
     const buttonRef = React.useRef<HTMLInputElement>(null);
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
     const {onFileSelect} = useContactExcel(setData, onFail);
@@ -42,7 +43,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
 
     const onButtonClick = () => buttonRef?.current?.click();
 
-    const saveDataInFile = (contacts?: InteractedContact[]) => {
+    const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
         if(contacts && contacts.length > 0) {
             const logInfo = {
                 service: Service.CLIENT,
@@ -57,11 +58,14 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                 step: 'launching saving contacted people excel request',
             });
 
-            const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact, index) => {
+            const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
+                if(!contact.doesNeedIsolation)
+                    return aggregatedArr;
+
                 const validationInfo = validateContact(contact);
 
                 if (!validationInfo.valid) {
-                    const error = `שגיאה בשורה ${index + 1}: `.concat(validationInfo.error);
+                    const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);
                     aggregatedArr.push(error);
                 }
                 return aggregatedArr;
@@ -75,7 +79,11 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                     step: `failed to upload excel, validation errors on data: ${validationErrors.join(',')}`,
                 });
             } else {
-                axios.post('/contactedPeople/excel', {contactEvent, contacts})
+                const contactsData = contacts.map(contact => {
+                    const {rowNum, ...contactData} = contact;
+                    return contactData;
+                });
+                axios.post('/contactedPeople/excel', {contactEvent, contacts: contactsData})
                     .then((result) => {
                         if (result.data.includes(duplicateIdsErrorMsg)) {
                             handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);

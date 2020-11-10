@@ -4,7 +4,7 @@ const useStyles = makeStyles({
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
-        maxHeight: '40vh',
+        maxHeight: '30vh',
         overflowY: 'scroll'
     },
     swalText: {
