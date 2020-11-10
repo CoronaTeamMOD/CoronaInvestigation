@@ -220,6 +220,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                     props.onChange(selectedCity ? selectedCity.id : '')
                                                     if (selectedCity?.id && selectedCity.id !== props.value) {
                                                         setIsolationStreetName('');
+                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                                         getStreetByCity(selectedCity.id);
                                                     }
                                                 }}
