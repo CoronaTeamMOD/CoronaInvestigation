@@ -74,7 +74,7 @@ const InvestigationStatusColumn = (props: Props) => {
             {
                 investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason &&
                 <Tooltip title={statusReason}>
-                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='error' />
+                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='primary' />
                 </Tooltip>
             }
         </div>
