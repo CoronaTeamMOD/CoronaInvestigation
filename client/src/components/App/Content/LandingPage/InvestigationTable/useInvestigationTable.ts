@@ -536,6 +536,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
+    const changeSubStatusToTransfered = (indexedRow: IndexedInvestigation) => {
+        axios.post('/investigationInfo/updateInvestigationStatus', {
+            investigationMainStatus: indexedRow.investigationStatus,
+            investigationSubStatus: transferedSubStatus,
+            epidemiologyNumber: indexedRow.epidemiologyNumber
+        })
+    }
+
     const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
             logger.info({
@@ -584,11 +592,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             : investigation
                     )))
                 })).then(() => {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationMainStatus: indexedRow.investigationStatus,
-                        investigationSubStatus: transferedSubStatus,
-                        epidemiologyNumber: indexedRow.epidemiologyNumber
-                    })
+                    changeSubStatusToTransfered(indexedRow);
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -649,11 +653,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 })).then(() => {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationMainStatus: indexedRow.investigationStatus,
-                        investigationSubStatus: transferedSubStatus,
-                        epidemiologyNumber: indexedRow.epidemiologyNumber
-                    })
+                    changeSubStatusToTransfered(indexedRow);
                 }).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
@@ -714,12 +714,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )));
                         setSelectedRow(UNDEFINED_ROW);
                     })).then(() => {
-                            axios.post('/investigationInfo/updateInvestigationStatus', {
-                                investigationMainStatus: indexedRow.investigationStatus,
-                                investigationSubStatus: transferedSubStatus,
-                                epidemiologyNumber: indexedRow.epidemiologyNumber
-                            })
-                        }).catch((error) => {
+                        changeSubStatusToTransfered(indexedRow);
+                    }).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
                             severity: Severity.HIGH,
