@@ -40,7 +40,8 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
     const handleIsolation = (value: boolean) => {
-        const validation = validateContact(interactedContact);
+        const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: true};
+        const validation = validateContact(contactWithIsolationRequirement);
         if(!validation.valid) {
             alertError(validation.error)
         } else {

@@ -59,9 +59,6 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
             });
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                if(!contact.doesNeedIsolation)
-                    return aggregatedArr;
-
                 const validationInfo = validateContact(contact);
 
                 if (!validationInfo.valid) {

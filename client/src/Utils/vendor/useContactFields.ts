@@ -26,19 +26,25 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         return contacts.filter((contact) => shouldDisable(contact.contactStatus));
     };
 
-    const mandatoryFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
+    const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
         InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
         InteractedContactFields.LAST_NAME];
 
-    const validateContact = (contact:  any): validValidation | invalidValidation => {
-        const emptyFieldNames = mandatoryFields.filter(mandatoryField => !Boolean(contact[mandatoryField as keyof Contact]));
-        const isLooseContact = typeof contact.contactType === "number"
-            ? contact.contactType !== STRICT_CONTACT_TYPE
-            : contact.contactType !== ContactType.TIGHT;
+    const validateContact = (contact: InteractedContact): validValidation | invalidValidation => {
+        if(!contact.doesNeedIsolation) {
+            return {valid: true};
+        } else {
+            const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>
+                !Boolean(contact[mandatoryField as keyof InteractedContact])
+            );
+            const isLooseContact = typeof contact.contactType === "number"
+                ? contact.contactType !== STRICT_CONTACT_TYPE
+                : contact.contactType !== ContactType.TIGHT;
 
-        if (emptyFieldNames.length > 0 || isLooseContact)
-            return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact)};
-        else return {valid: true};
+            if (emptyFieldNames.length > 0 || isLooseContact)
+                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact)};
+            else return {valid: true};
+        }
     };
 
     const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean) => {
