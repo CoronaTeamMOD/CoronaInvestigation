@@ -646,7 +646,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 severity: Severity.LOW,
                 workflow: 'Switch County',
                 step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`,
-                user: user.id
+                user: user.id,
+                investigation: +indexedRow.epidemiologyNumber
             })
         Swal.fire({
             icon: 'warning',
@@ -668,8 +669,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: 'changed the county successfully'
+                        workflow: 'County change GraphQL POST request to the DB',
+                        step: 'Changed the county successfully',
+                        user: user.id,
+                        investigation: +indexedRow.epidemiologyNumber
                     });
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
@@ -697,8 +700,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     logger.error({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: error
+                        workflow: 'County change GraphQL POST request to the DB',
+                        step: error,
+                        user: user.id,
+                        investigation: +indexedRow.epidemiologyNumber
                     });
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })

@@ -252,34 +252,40 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
 });
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {
-    graphqlRequest(GET_ADMINS_OF_COUNTY, response.locals, { requestedCounty: request.body.updatedCounty })
-        .then((result: any) => {
-            let userAdmin = '';
-            if (result && result.data && result.data.allUsers) {
-                const activeUsers = result.data.allUsers.nodes.filter((user: UserAdminResponse) => user.isActive);
-                activeUsers.length > 0 ? userAdmin = activeUsers[0].id : userAdmin = result.data.allUsers[0].id;
-            }
-            graphqlRequest(UPDATE_COUNTY_BY_USER, response.locals, {
-                epidemiologyNumber: request.body.epidemiologyNumber,
-                newUser: userAdmin
-            }).then((result: any) => response.send(result.data)).catch((error) => {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL POST request to the DB',
-                    step: error
-                });
-                response.status(RESPONSE_ERROR_CODE).send('error while changing county');
-            });
-        }).catch((error) => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'GraphQL POST request to the DB',
-                step: error
-            });
-            response.status(RESPONSE_ERROR_CODE).send('error while changing county');
-        })
+    let userAdmin = 'admin.group' + request.body.updatedCounty;
+
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow: 'GraphQL request to the change the investigation county',
+        step: `post with parameters ${JSON.stringify({ epidemiologyNumber: request.body.epidemiologyNumber, newUser: userAdmin })}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologyNumber,
+    });
+
+    graphqlRequest(UPDATE_COUNTY_BY_USER, response.locals, {
+        epidemiologyNumber: request.body.epidemiologyNumber,
+        newUser: userAdmin
+    }).then((result: any) => {
+        logger.info({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'GraphQL request to the change the investigation county',
+            step: `The investigation county changed successfully`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologyNumber,
+        });
+        response.send({message: 'The county has changed successfully'});
+    }).catch((error) => {
+        logger.error({
+            service: Service.SERVER,
+            severity: Severity.LOW,
+            workflow: 'GraphQL POST request to Db - change county',
+            step: error,
+            investigation: response.locals.epidemiologyNumber,
+        });
+        response.status(RESPONSE_ERROR_CODE).send('error while changing county');
+    });
 })
 
 usersRoute.get('/sourcesOrganization', (request: Request, response: Response) => {
