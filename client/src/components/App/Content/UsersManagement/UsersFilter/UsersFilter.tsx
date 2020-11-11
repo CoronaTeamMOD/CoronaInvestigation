@@ -123,8 +123,8 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                     className={classes.autoComplete}
                 />
             </FormInput>
-            <IconButton>
-                <Close onClick={handleCloseFitler}/>
+            <IconButton onClick={handleCloseFitler}>
+                <Close/>
             </IconButton>
         </div>
     );
