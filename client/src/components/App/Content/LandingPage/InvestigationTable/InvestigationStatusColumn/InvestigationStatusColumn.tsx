@@ -27,6 +27,7 @@ const InvestigationStatusColumn = (props: Props) => {
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
             investigationSubStatus: null,
+            statusReason: null,
             epidemiologyNumber
         }).then(() => {
             logger.info({
@@ -39,17 +40,17 @@ const InvestigationStatusColumn = (props: Props) => {
             });
             moveToTheInvestigationForm(epidemiologyNumber);
         })
-        .catch((error) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Ending Investigation',
-                step: `got errors in server result: ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            alertError('לא ניתן לפתוח את החקירה מחדש');
-        })
+            .catch((error) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Ending Investigation',
+                    step: `got errors in server result: ${error}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                alertError('לא ניתן לפתוח את החקירה מחדש');
+            })
     }
 
     return (

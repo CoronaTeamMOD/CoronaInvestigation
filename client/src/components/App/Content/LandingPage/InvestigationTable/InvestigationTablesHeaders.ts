@@ -23,7 +23,7 @@ export enum TableHeadersNames {
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
 export interface IndexedInvestigationData extends IndexedInvestigation {[investigatorIdPropertyName]: string;}
 export type Order = SortOrder.asc | SortOrder.desc;
-export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
+export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
@@ -40,7 +40,8 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף',
     [TableHeadersNames.statusReason]: 'סיבה לסטטוס בטיפול',
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
-    [TableHeadersNames.comment]: ' '
+    [TableHeadersNames.comment]: ' ',
+    [TableHeadersNames.statusReason]: ''
 }
 
 export const adminCols: string[] = [
@@ -86,5 +87,6 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.investigationSubStatus]: false,
     [TableHeadersNames.statusReason]: false,
     [TableHeadersNames.investigationDesk]: false,
-    [TableHeadersNames.comment]: false
+    [TableHeadersNames.comment]: false,
+    [TableHeadersNames.statusReason]: false,
 }

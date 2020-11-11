@@ -29,7 +29,7 @@ import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOpt
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import {InvestigationStatus} from 'models/InvestigationStatus';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -188,14 +188,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }, [data.city, data.street, data.floor, data.houseNum]);
 
     useEffect(() => {
-        if(data.role){
+        if (data.role) {
             setRoleObj(
                 investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) =>
-                investigatedPatientRole.id === data.role)??defaultRole
-                );
+                    investigatedPatientRole.id === data.role) ?? defaultRole
+            );
         }
 
-    }, [investigatedPatientRoles,data.role]);
+    }, [investigatedPatientRoles, data.role]);
 
 
     useEffect(() => {
@@ -678,7 +678,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                                     }
                                                                 </Select>
                                                             )}
-                                                            />
+                                                        />
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={1}>

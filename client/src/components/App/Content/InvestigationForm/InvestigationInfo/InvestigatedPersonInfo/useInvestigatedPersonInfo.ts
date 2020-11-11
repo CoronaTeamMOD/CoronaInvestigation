@@ -68,10 +68,12 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                     investigation: epidemiologyNumber
                 });
                 const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
+                const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
                 if (shouldUpdateInvestigationStatus()) {
                     axios.post('/investigationInfo/updateInvestigationStatus', {
                         investigationMainStatus: investigationStatus.mainStatus,
                         investigationSubStatus: subStatus,
+                        statusReason: statusReason,
                         epidemiologyNumber: epidemiologyNumber
                     }).then(() => {
                         logger.info({
@@ -130,7 +132,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {
         setInvestigationStatus({
             mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
-            subStatus: cannotCompleteInvestigation ? investigationStatus.subStatus : ''
+            subStatus: cannotCompleteInvestigation ? investigationStatus.subStatus : null,
+            statusReason: cannotCompleteInvestigation ? investigationStatus.statusReason : null,
         })
     };
 
