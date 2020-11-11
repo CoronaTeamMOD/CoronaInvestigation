@@ -376,8 +376,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const counterDescription = (): string => {
         const adminMessage = `, מתוכן ${filteredTableRows.filter(x => x.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
-        const message: string = `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
-        return message;
+        return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+      
     }
     return (
         <>
