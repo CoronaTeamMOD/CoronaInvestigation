@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
@@ -374,11 +374,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const isInvestigationRowClickable = (investigationStatus: string) =>
         !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
 
-    const counterDescription = (): string => {
+    const counterDescription: string = useMemo(() => {
         const adminMessage = `, מתוכן ${filteredTableRows.filter(filteredRow => filteredRow.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
         return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
-      
-    }
+ 
+      }, [filteredTableRows]);
+    
+    
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
@@ -417,7 +419,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 <div className={classes.tableHeaderRow}>
 
                     <Typography color='primary' className={classes.counterLabel} >
-                        {counterDescription()}
+                        {counterDescription}
                     </Typography>
                     <Box justifyContent='flex-end'>
                         <Button
