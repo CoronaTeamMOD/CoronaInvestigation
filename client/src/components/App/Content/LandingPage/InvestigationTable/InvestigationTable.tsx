@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import {
-    Paper, Table, TableRow, TableBody, TableCell, Typography, TableHead, TableContainer, TextField,
-    TableSortLabel, Button, Popper, useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid
+    Paper, Table, TableRow, TableBody, TableCell, Typography,
+    TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
+    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Box
 } from '@material-ui/core';
 import { Refresh, Warning, Close, InfoOutlined } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -373,6 +374,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const isInvestigationRowClickable = (investigationStatus: string) =>
         !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
 
+    const counterDescription = (): string => {
+        const adminMessage = `, מתוכן ${filteredTableRows.filter(x => x.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
+        const message: string = `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+        return message;
+    }
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
@@ -408,23 +414,29 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
-                <Grid container justify='flex-end' className={classes.tableHeaderRow}>
-                    <Button
-                        color='primary'
-                        className={classes.filterButton}
-                        startIcon={filterIconByToggle()}
-                        onClick={toggleFilterRow}
-                    />
-                    <Button
-                        color='primary'
-                        className={classes.sortResetButton}
-                        startIcon={<Refresh />}
-                        onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-                    >
-                        {resetSortButtonText}
-                    </Button>
-                </Grid>
-                <Grid container justify='flex-end' className={classes.tableHeaderRow}>
+                <div className={classes.tableHeaderRow}>
+
+                    <Typography color='primary' className={classes.counterLabel} >
+                        {counterDescription()}
+                    </Typography>
+                    <Box justifyContent='flex-end'>
+                        <Button
+                            color='primary'
+                            className={classes.filterButton}
+                            startIcon={filterIconByToggle()}
+                            onClick={toggleFilterRow}
+                        />
+                        <Button
+                            color='primary'
+                            className={classes.sortResetButton}
+                            startIcon={<Refresh />}
+                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                        >
+                            {resetSortButtonText}
+                        </Button>
+                    </Box>
+                </div>
+                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
                     {
                         <Collapse in={showFilterRow}>
                             <Card className={classes.filterTableCard}>
