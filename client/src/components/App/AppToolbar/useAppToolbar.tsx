@@ -12,7 +12,8 @@ import { setIsActive } from 'redux/User/userActionCreators';
 import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
-    setUserActivityStatus: (isActive: boolean) => void;
+    logout: () => void;
+    setUserActivityStatus: (isActive: boolean) => Promise<any>;
     getCountyByUser: () => void;
     classes: AppToolbarClasses;
     user: User;
@@ -75,14 +76,19 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         });
     }
 
-    const setUserActivityStatus = (isActive: boolean) => {
+    const logout = async () => {
+        await setUserActivityStatus(false);
+        window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout`;
+    }
+
+    const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
             workflow: 'GraphQL request to the DB',
             step: 'started is user active updating'
         });
-        axios.post('users/updateIsUserActive', {
+        return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
             if(result.data)
@@ -147,6 +153,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     return {
         user,
         isActive: user.isActive,
+        logout,
         setUserActivityStatus,
         classes,
         getCountyByUser,

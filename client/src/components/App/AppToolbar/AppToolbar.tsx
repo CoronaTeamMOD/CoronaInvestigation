@@ -17,7 +17,7 @@ const navButtonsWhitelist = {
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-  const { user, isActive, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
+  const { user, isActive, logout, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
   const location = useLocation();
 
   return (
@@ -52,7 +52,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             </Tooltip>
           }
           <Tooltip title='התנתקות מהמערכת' arrow>
-            <IconButton color='inherit' href={`${window.location.protocol}//${window.location.hostname}/.auth/logout`}>
+            <IconButton color='inherit' onClick={logout}>
               <ExitToApp />
             </IconButton>
           </Tooltip>
