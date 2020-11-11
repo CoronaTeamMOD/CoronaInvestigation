@@ -22,7 +22,7 @@ import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import {setInvestigationStatus, setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
+import {setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
