@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
+import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -28,13 +29,23 @@ const displayDateFormat = 'dd/MM/yyyy';
 const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
-const statusLabel = 'סטטוס'
+const statusLabel = 'סטטוס';
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
 
+    const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
+    const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
+    const requiredMessage = 'שדה זה הינו שדה חובה';
+    const validationSchema = yup
+        .string()
+        .required(requiredMessage)
+        .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage)
+        .max(50, maxLengthErrorMessage);
+
+    const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
@@ -169,12 +180,25 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         value={investigationStatus.statusReason}
-                                        onChange={(event: any) => {
-                                            setInvestigationStatus({
-                                                mainStatus: investigationStatus.mainStatus,
-                                                subStatus: investigationStatus.subStatus,
-                                                statusReason: event.target.value
-                                            });
+                                        required={investigationStatus.subStatus === 'העברת חקירה'}
+                                        error={statusReasonError ? true : false}
+                                        label={statusReasonError ? statusReasonError[0] : ''}
+                                        onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+                                            const newStatusReason: string = event.target.value ? event.target.value : '';
+                                            const isValid = validationSchema.isValidSync(newStatusReason);
+                                            try {
+                                                await validationSchema.validateSync(newStatusReason);
+                                                setStatusReasonError(null)
+                                            } catch (err) {
+                                                setStatusReasonError(err.errors)
+                                            }
+                                            if (isValid || newStatusReason === '') {
+                                                setInvestigationStatus({
+                                                    mainStatus: investigationStatus.mainStatus,
+                                                    subStatus: investigationStatus.subStatus,
+                                                    statusReason: newStatusReason
+                                                });
+                                            }
                                         }}
                                     />
                                 </Grid>
