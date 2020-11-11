@@ -57,7 +57,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     }, []);
 
     const saveContacted = (event: React.ChangeEvent<{}>) => {
-        event.preventDefault();
+        event.preventDefault()
         if(checkAllContactsForDuplicateIds()) {
             setFormState(investigationId, id, true);
             saveContactQuestioning().then((response: AxiosResponse<any>) => {

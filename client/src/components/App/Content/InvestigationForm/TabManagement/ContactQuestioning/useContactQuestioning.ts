@@ -341,7 +341,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const checkAllContactsForDuplicateIds = () => {
-        const allIdentificationNumbersToCheck = allContactedInteractions.filter(currContact => Boolean(currContact.identificationNumber));
+        const allIdentificationNumbers = allContactedInteractions.map(currContact => currContact.identificationNumber);
+        const allIdentificationNumbersToCheck = allIdentificationNumbers.filter(id => Boolean(id));
         return (new Set(allIdentificationNumbersToCheck)).size === allIdentificationNumbersToCheck.length;
     }
 
