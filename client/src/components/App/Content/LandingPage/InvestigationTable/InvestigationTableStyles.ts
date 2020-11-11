@@ -57,6 +57,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableHeaderRow: {
         width: '90vw',  
+        alignItems: 'center',    
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        display: 'flex'
     },
     sortResetButton: {
         fontWeight: 600
@@ -133,6 +137,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingLeft: theme.spacing(1),
         flip: false
     },
+    counterLabel:{ 
+     fontWeight: 600
+    }
 }));
 
 export default useStyles;
