@@ -23,9 +23,10 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
         const checkForDuplicateIdsInContactEvent = (currContacts: Contact[]) => {
-            const allIdentificationNumbers = currContacts.map((contact) => contact.idNumber);
+            const allIdentificationNumbers = currContacts.map((contact) => contact.idNumber)
+            .filter((contact) => contact);
             return allIdentificationNumbers.some((idNumber, idNumberIndex) => {
-                return allIdentificationNumbers.indexOf(idNumber) !== idNumberIndex && idNumber !== undefined
+                return allIdentificationNumbers.indexOf(idNumber) !== idNumberIndex
             });
         }
 
