@@ -14,6 +14,7 @@ import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import {setFormState} from 'redux/Form/formActionCreators';
 import useContactFields from 'Utils/vendor/useContactFields';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
@@ -26,6 +27,7 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     const classes = useStyles();
+    const { alertWarning } = useCustomSwal();
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const { handleDuplicateIdsError } = useDuplicateContactId();
@@ -40,7 +42,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses, checkForDuplicateIds
+        loadFamilyRelationships, loadContactStatuses, checkForSpecificDuplicateIds, checkAllContactsForDuplicateIds
     } = useContactQuestioning({
         setAllContactedInteractions,
         allContactedInteractions,
@@ -56,30 +58,34 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const saveContacted = (event: React.ChangeEvent<{}>) => {
         event.preventDefault();
-        setFormState(investigationId, id, true);
-        saveContactQuestioning().then((response: AxiosResponse<any>) => {
-            if (response.data?.data?.updateContactPersons) {
-                logger.info({
+        if(checkAllContactsForDuplicateIds()) {
+            setFormState(investigationId, id, true);
+            saveContactQuestioning().then((response: AxiosResponse<any>) => {
+                if (response.data?.data?.updateContactPersons) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving all contacts',
+                        step: 'got respond from the server',
+                        user: userId,
+                        investigation: investigationId
+                    });
+                } else if (response.data.includes(duplicateIdsErrorMsg)) {
+                    handleDuplicateIdsError(response.data.split(':')[1], userId, investigationId);
+                }
+            }).catch(err => {
+                logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Saving all contacts',
-                    step: 'got respond from the server',
+                    step: `got the following error from the server: ${err}`,
                     user: userId,
                     investigation: investigationId
                 });
-            } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(response.data.split(':')[1], userId, investigationId);
-            }
-        }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving all contacts',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: investigationId
             });
-        });
+        } else {
+            alertWarning('שים לב! נמצאו מספרי זיהוי זהים! אנא בצע את השינויים הנדרשים');
+        }
     }
 
     return (
@@ -104,7 +110,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                                             updateInteractedContact={updateInteractedContact}
                                             contactStatuses={contactStatuses}
                                             saveContact={saveContact}
-                                            checkForDuplicateIds={checkForDuplicateIds}
+                                            checkForDuplicateIds={checkForSpecificDuplicateIds}
                                         />
                                     </AccordionSummary>
                                     <AccordionDetails>
