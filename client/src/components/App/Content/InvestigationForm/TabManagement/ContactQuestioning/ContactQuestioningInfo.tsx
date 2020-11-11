@@ -4,7 +4,6 @@ import {useSelector} from 'react-redux';
 import {Autocomplete} from '@material-ui/lab';
 import {Divider, Grid, TextField, Typography} from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ContactType from 'models/ContactType';
 import ContactStatus from 'models/ContactStatus';
@@ -46,7 +45,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    if (!interactedContact.identificationNumber || checkForDuplicateIds(interactedContact.identificationNumber, interactedContact.id) === -1) {
+                    if (!interactedContact.identificationNumber || checkForDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
                         updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
                         saveContact({...interactedContact, contactStatus: selectedStatus?.id});
                     } else {
@@ -138,5 +137,5 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => void;
-    checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => number;
-};
+    checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => boolean;
+}

@@ -38,30 +38,38 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
-            if (response.data?.data?.updateContactPersons) {
-                logger.info({
+        if(!checkForSpecificDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
+            interactedContact.identificationNumber = '';
+            const changedInteractedContact = allContactedInteractions.findIndex(currContact => currContact.id === interactedContact.id);
+            allContactedInteractions.splice(changedInteractedContact, 1, interactedContact);
+            setAllContactedInteractions(allContactedInteractions);
+            handleDuplicateIdsError(interactedContact.identificationNumber, userId, epidemiologyNumber);
+        } else {
+            axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
+                if (response.data?.data?.updateContactPersons) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving single contact',
+                        step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                } else if (response.data.includes(duplicateIdsErrorMsg)) {
+                    handleDuplicateIdsError(response.data.split(':')[1], userId, epidemiologyNumber);
+                }
+            }).catch(err => {
+                logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Saving single contact',
-                    step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                    step: `got the following error from the server: ${err}`,
                     user: userId,
                     investigation: epidemiologyNumber
-                });
-            } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(response.data.split(':')[1], userId, epidemiologyNumber);
-            }
-        }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving single contact',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            })
-        });
-    };
+                })
+            });
+        }
+    }
 
     const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
         const contacts = allContactedInteractions;
@@ -323,9 +331,18 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
-    const checkForDuplicateIds = (idToCheck: string, interactedContactId: number) => {
-        return allContactedInteractions.findIndex((contact) => contact.identificationNumber === idToCheck
-            && contact.id !== interactedContactId);
+    const checkForSpecificDuplicateIds = (identificationNumberToCheck: string, interactedContactId: number) => {
+        if(Boolean(identificationNumberToCheck)) {
+            return (allContactedInteractions.findIndex((contact) => contact.identificationNumber === identificationNumberToCheck
+                && contact.id !== interactedContactId) === -1);
+        } else {
+            return !Boolean(identificationNumberToCheck)
+        }
+    }
+
+    const checkAllContactsForDuplicateIds = () => {
+        const allIdentificationNumbersToCheck = allContactedInteractions.filter(currContact => Boolean(currContact.identificationNumber));
+        return (new Set(allIdentificationNumbersToCheck)).size === allIdentificationNumbersToCheck.length;
     }
 
     return {
@@ -336,7 +353,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
-        checkForDuplicateIds
+        checkForSpecificDuplicateIds,
+        checkAllContactsForDuplicateIds
     };
 };
 

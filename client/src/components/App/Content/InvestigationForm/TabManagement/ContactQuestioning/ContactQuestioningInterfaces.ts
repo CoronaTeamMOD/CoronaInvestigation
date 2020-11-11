@@ -10,7 +10,7 @@ export interface useContactQuestioningParameters {
     setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
-};
+}
 
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => void;
@@ -20,5 +20,6 @@ export interface useContactQuestioningOutcome {
     saveContactQuestioning: () => Promise<AxiosResponse<any>>;
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
-    checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => number;
-};
+    checkForSpecificDuplicateIds: (idToCheck: string, interactedContactId: number) => boolean;
+    checkAllContactsForDuplicateIds: () => boolean;
+}
