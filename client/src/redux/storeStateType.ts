@@ -15,6 +15,7 @@ export default interface StoreStateType {
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
     subStatuses: string[];
-    formsValidations: {[key: number] : (boolean | null)[]};
+    statuses: string[];
+    formsValidations: { [key: number]: (boolean | null)[] };
     address: DBAddress;
 };

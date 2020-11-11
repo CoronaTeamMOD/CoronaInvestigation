@@ -1,13 +1,12 @@
-import {differenceInYears} from 'date-fns';
-import {Router, Request, Response} from 'express';
+import { differenceInYears } from 'date-fns';
+import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
-import {graphqlRequest} from '../../GraphqlHTTPRequest';
-import {Service, Severity} from '../../Models/Logger/types';
+import { graphqlRequest } from '../../GraphqlHTTPRequest';
+import { Service, Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { CHECK_FOR_DUPLICATE_IDS } from '../../DBService/ContactedPeople/Mutation';
-import { sendSavedInvestigationToIntegration } from '../../Utils/InterfacesIntegration';
-import {GET_INVESTIGATION_INFO, GET_SUB_STATUSES} from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES, GET_SUB_STATUSES_BY_STATUS, GET_STATUSES } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
@@ -77,22 +76,22 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
                     step: `failed to fetch static info due to ${JSON.stringify(result)}`,
                     ...baseLog
                 });
-                response.status(errorStatusCode).json({error: 'failed to fetch static info'});
+                response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
             }
         }).catch((error) => {
-        logger.info({
-            severity: Severity.LOW,
-            step: `failed to fetch static info due to ${error}`,
-            ...baseLog
+            logger.info({
+                severity: Severity.LOW,
+                step: `failed to fetch static info due to ${error}`,
+                ...baseLog
+            });
+            response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
         });
-        response.status(errorStatusCode).json({error: 'failed to fetch static info'});
-    });
 });
 
 investigationInfo.post('/comment', (request: Request, response: Response) => {
-    const {comment} = request.body;
+    const { comment } = request.body;
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
-    const data = {comment, epidemiologyNumber};
+    const data = { comment, epidemiologyNumber };
     const info = {
         user: response.locals.user.id,
         investigation: epidemiologyNumber,
@@ -131,7 +130,7 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
 });
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
-    const {investigationMainStatus, investigationSubStatus, epidemiologyNumber} = request.body;
+    const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
     const currentWorkflow = investigationMainStatus === InvestigationMainStatus.DONE ? 'Ending Investigation' : 'Investigation click';
     logger.info({
         service: Service.SERVER,
@@ -147,7 +146,8 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, {
         epidemiologyNumber,
         investigationStatus: investigationMainStatus,
-        investigationSubStatus: investigationSubStatus
+        investigationSubStatus: investigationSubStatus,
+        statusReason: statusReason
     })
         .then((result: any) => {
             if (result?.data && !result.errors) {
@@ -160,8 +160,8 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     investigation: epidemiologyNumber
                 });
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
-                    graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, { currInvestigationId: epidemiologyNumber}).then((result) => {
-                        if(!result?.checkForDuplicateIds?.boolean) {
+                    graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, { currInvestigationId: epidemiologyNumber }).then((result) => {
+                        if (!result?.checkForDuplicateIds?.boolean) {
                             const investigationEndTime = new Date();
                             logger.info({
                                 service: Service.SERVER,
@@ -178,33 +178,33 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                                 epidemiologyNumber,
                                 investigationEndTime
                             })
-                            .then(() => {
-                                logger.info({
-                                    service: Service.SERVER,
-                                    severity: Severity.LOW,
-                                    workflow: 'Ending Investigation',
-                                    step: 'got respond from the DB in the request to update end time',
-                                    user: response.locals.user.id,
-                                    investigation: epidemiologyNumber
+                                .then(() => {
+                                    logger.info({
+                                        service: Service.SERVER,
+                                        severity: Severity.LOW,
+                                        workflow: 'Ending Investigation',
+                                        step: 'got respond from the DB in the request to update end time',
+                                        user: response.locals.user.id,
+                                        investigation: epidemiologyNumber
+                                    });
+                                    response.send({ message: 'updated the investigation status and end time successfully' });
+                                }).catch(err => {
+                                    logger.error({
+                                        service: Service.SERVER,
+                                        severity: Severity.HIGH,
+                                        workflow: 'Ending Investigation',
+                                        step: `failed to update the investigation end time due to: ${err}`,
+                                        user: response.locals.user.id,
+                                        investigation: epidemiologyNumber
+                                    });
+                                    response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
                                 });
-                                response.send({message: 'updated the investigation status and end time successfully'});
-                            }).catch(err => {
-                                logger.error({
-                                    service: Service.SERVER,
-                                    severity: Severity.HIGH,
-                                    workflow: 'Ending Investigation',
-                                    step: `failed to update the investigation end time due to: ${err}`,
-                                    user: response.locals.user.id,
-                                    investigation: epidemiologyNumber
-                                });
-                                response.status(errorStatusCode).json({message: 'failed to update the investigation end time'});
-                            });
                         } else {
-                            response.status(errorStatusCode).json({message: 'found duplicate ids'});
+                            response.status(errorStatusCode).json({ message: 'found duplicate ids' });
                         }
                     })
                 } else {
-                    response.send({message: 'updated the investigation status successfully'});
+                    response.send({ message: 'updated the investigation status successfully' });
                 }
             } else {
                 logger.error({
@@ -215,7 +215,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     user: response.locals.user.id,
                     investigation: epidemiologyNumber
                 });
-                response.status(errorStatusCode).json({message: 'failed to update investigation status'});
+                response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
             }
         })
         .catch(err => {
@@ -227,12 +227,12 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                 user: response.locals.user.id,
                 investigation: epidemiologyNumber
             });
-            response.status(errorStatusCode).json({message: 'failed to update investigation status'});
+            response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
         });
 })
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
-    const {epidemiologyNumber, investigationStartTime} = request.body;
+    const { epidemiologyNumber, investigationStartTime } = request.body;
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -271,10 +271,9 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
         });
 });
 
-investigationInfo.get('/subStatuses', (request: Request, response: Response) => {
-    graphqlRequest(GET_SUB_STATUSES, response.locals, {
-        investigationGroupId: +response.locals.user.group,
-        orderBy: request.query.orderBy
+investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response: Response) => {
+    graphqlRequest(GET_SUB_STATUSES_BY_STATUS, response.locals, {
+        parentStatus: request.params.parentStatus
     })
         .then((result: any) => {
             logger.info({
@@ -291,6 +290,29 @@ investigationInfo.get('/subStatuses', (request: Request, response: Response) => 
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'GraphQL GET subStatuses request to the DB',
+                step: `graphqlResult CATCH fail ${err}`
+            });
+            response.status(errorStatusCode).send('error in fetching data: ' + err)
+        });
+});
+
+investigationInfo.get('/statuses', (request: Request, response: Response) => {
+    graphqlRequest(GET_STATUSES, response.locals, {})
+        .then((result: any) => {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'GraphQL GET Statuses request to the DB',
+                step: 'graphqlResult THEN succsses'
+            });
+
+            response.send(result)
+        })
+        .catch((err: any) => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'GraphQL GET Statuses request to the DB',
                 step: `graphqlResult CATCH fail ${err}`
             });
             response.status(errorStatusCode).send('error in fetching data: ' + err)

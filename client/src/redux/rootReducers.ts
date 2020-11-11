@@ -1,5 +1,5 @@
 import { withReduxStateSync } from 'redux-state-sync';
-import {combineReducers, Reducer, CombinedState, AnyAction} from 'redux';
+import { combineReducers, Reducer, CombinedState, AnyAction } from 'redux';
 
 import formReducer from './Form/formReducer';
 import cityReducer from './City/cityReducer';
@@ -9,6 +9,7 @@ import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import addressReducer from './Address/AddressReducer';
 import isLoadingReducer from './IsLoading/isLoadingReducer';
+import statusesReducer from './Status/statusesReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import subStatusesReducer from './SubStatuses/subStatusesReducer';
 import investigationReducer from './Investigation/investigationReducer';
@@ -23,6 +24,7 @@ export default withReduxStateSync(combineReducers<StoreStateType>({
      cities: cityReducer,
      countries: countryReducer,
      contactTypes: contactTypeReducer,
+     statuses: statusesReducer,
      subStatuses: subStatusesReducer,
      formsValidations: formReducer,
      address: addressReducer,
