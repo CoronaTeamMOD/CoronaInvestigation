@@ -10,7 +10,7 @@ import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { closeEditDialog, eventToEdit, isOpen, loadInteractions } = props;
+    const { closeEditDialog, eventToEdit, isOpen, loadInteractions, checkForDuplicateInteractions } = props;
     
     const classes = useStyles();
     
@@ -25,6 +25,7 @@ const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element 
                         loadInteractions={loadInteractions}
                         closeEditDialog={closeEditDialog}
                         closeNewDialog={()=>{}}
+                        checkForDuplicateInteractions={checkForDuplicateInteractions}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
@@ -53,4 +54,5 @@ export interface Props {
     eventToEdit: InteractionEventDialogData;
     closeEditDialog: () => void;
     loadInteractions: () => void;
+    checkForDuplicateInteractions: (idToCheck: string, contactId: number) => boolean;
 };

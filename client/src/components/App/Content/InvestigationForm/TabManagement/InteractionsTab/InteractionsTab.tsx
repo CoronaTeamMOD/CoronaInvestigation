@@ -28,7 +28,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const { getDatesToInvestigate, loadInteractions, getCoronaTestDate,
-        getClinicalDetailsSymptoms, handleDeleteContactEvent, handleDeleteContactedPerson } =
+        getClinicalDetailsSymptoms, handleDeleteContactEvent, handleDeleteContactedPerson, checkForDuplicateInteractions } =
         useInteractionsTab({
             setInteractions,
             interactions,
@@ -88,6 +88,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
                         loadInteractions={loadInteractions}
+                        checkForDuplicateInteractions={checkForDuplicateInteractions}
                     />
                 }
                 {
@@ -96,6 +97,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
                         loadInteractions={loadInteractions}
+                        checkForDuplicateInteractions={checkForDuplicateInteractions}
                     />
                 }
             </form>

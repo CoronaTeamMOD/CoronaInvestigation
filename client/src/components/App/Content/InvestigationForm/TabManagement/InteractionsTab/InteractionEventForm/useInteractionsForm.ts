@@ -17,17 +17,27 @@ import useStyles from './InteractionEventFormStyles';
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
         const classes = useStyles();
         const swalClasses = useSwalStyles();
-        const {loadInteractions, closeNewDialog, closeEditDialog} = props;
+        const {loadInteractions, closeNewDialog, closeEditDialog, checkForDuplicateInteractions} = props;
         const {parseLocation} = useDBParser();
         const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
         const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
+        // This one only checks inside the contact event itself
         const checkForDuplicateIdsInContactEvent = (currContacts: Contact[]) => {
             const allIdentificationNumbers = currContacts.map((contact) => contact.idNumber)
             .filter((contact) => contact);
             return allIdentificationNumbers.some((idNumber, idNumberIndex) => {
                 return allIdentificationNumbers.indexOf(idNumber) !== idNumberIndex
             });
+        }
+
+        const checkIdsForAllInvestigation = (currContacts: Contact[]) => {
+            currContacts.forEach(contact => {
+                if(!checkForDuplicateInteractions(contact.idNumber ? contact.idNumber : '', contact.serialId ? contact.serialId : 0)) {
+                    return false;
+                }
+            });
+            return true;
         }
 
         const handleDuplicatesError = (duplicateIdNumber: string) => {
@@ -50,9 +60,8 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             });
         }
 
-
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
-            if (!checkForDuplicateIdsInContactEvent(interactionsDataToSave.contacts)) {
+            if (!checkForDuplicateIdsInContactEvent(interactionsDataToSave.contacts) && !checkIdsForAllInvestigation(interactionsDataToSave.contacts)) {
                 const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ?
                     await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
                 const parsedData = {
@@ -177,6 +186,7 @@ interface useInteractionFormIncome {
     loadInteractions: () => void;
     closeNewDialog: () => void;
     closeEditDialog: () => void;
+    checkForDuplicateInteractions: (idToCheck: string, contactId: number) => boolean;
 }
 
 interface useInteractionFormOutcome {

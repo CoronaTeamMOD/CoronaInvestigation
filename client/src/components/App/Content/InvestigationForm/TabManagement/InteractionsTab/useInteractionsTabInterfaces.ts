@@ -15,4 +15,5 @@ export interface useInteractionsTabOutcome {
     getClinicalDetailsSymptoms: (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean | any>>) => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
     handleDeleteContactedPerson: (contactedPersonId: number, contactEventId: number) => void;
+    checkForDuplicateInteractions: (idToCheck: string, contactId: number) => boolean;
 };

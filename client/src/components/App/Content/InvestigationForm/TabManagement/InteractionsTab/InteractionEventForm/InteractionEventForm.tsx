@@ -35,10 +35,10 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
+  { interactionData, loadInteractions, closeNewDialog, closeEditDialog, checkForDuplicateInteractions}: Props
 ): JSX.Element => {
 
-  const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+  const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog, checkForDuplicateInteractions });
   const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -247,4 +247,5 @@ interface Props {
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
+  checkForDuplicateInteractions: (idToCheck: string, contactId: number) => boolean;
 };

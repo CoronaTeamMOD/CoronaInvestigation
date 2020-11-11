@@ -26,7 +26,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { interactionDate, closeNewDialog, isOpen, loadInteractions } = props;
+    const { interactionDate, closeNewDialog, isOpen, loadInteractions, checkForDuplicateInteractions } = props;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
@@ -43,6 +43,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                         loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
                         closeEditDialog={()=>{}}
+                        checkForDuplicateInteractions={checkForDuplicateInteractions}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
@@ -72,4 +73,5 @@ export interface Props {
     interactionDate: Date;
     closeNewDialog: () => void;
     loadInteractions: () => void;
+    checkForDuplicateInteractions: (idToCheck: string, contactId: number) => boolean;
 }

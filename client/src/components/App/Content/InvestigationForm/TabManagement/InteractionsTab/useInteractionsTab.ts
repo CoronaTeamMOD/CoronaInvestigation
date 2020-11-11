@@ -1,19 +1,20 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
-import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
+import {useSelector} from 'react-redux';
+import {subDays, eachDayOfInterval, differenceInDays} from 'date-fns';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
+import Contact from 'models/Contact';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import {Service, Severity} from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import useStyles from './InteractionsTabStyles';
-import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
+import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
@@ -25,15 +26,28 @@ const maxInvestigatedDays: number = 21;
 export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-    const { interactions, setInteractions, setAreThereContacts } = parameters;
+    const {interactions, setInteractions, setAreThereContacts} = parameters;
 
-    const { parseAddress } = useGoogleApiAutocomplete();
-    const { alertError } = useCustomSwal();
+    const {parseAddress} = useGoogleApiAutocomplete();
+    const {alertError} = useCustomSwal();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const classes = useStyles({});
+
+    const checkForDuplicateInteractions = (idToCheck: string, contactId: number) => {
+        let allContactsInInvestigation: Contact[] = [];
+        interactions.forEach(interaction => {
+            interaction.contacts.forEach(contact => allContactsInInvestigation.push(contact));
+        });
+        if (Boolean(idToCheck)) {
+            return (allContactsInInvestigation.findIndex((contact) => contact.idNumber === idToCheck
+                && contact.serialId !== contactId) === -1);
+        } else {
+            return !Boolean(idToCheck)
+        }
+    }
 
     const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
         logger.info({
@@ -79,14 +93,13 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                         return []
                     }
                     startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
-                }
-                else
+                } else
                     startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
             } else {
                 startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
             try {
-                return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
+                return eachDayOfInterval({start: startInvestigationDate, end: endInvestigationDate});
             } catch (e) {
                 return []
             }
@@ -154,16 +167,16 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 setAreThereContacts(numberOfContactedPeople > 0);
                 setInteractions(allInteractions);
             }).catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching Interactions',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                handleLoadInteractionsError();
+            logger.error({
+                service: Service.CLIENT,
+                severity: Severity.HIGH,
+                workflow: 'Fetching Interactions',
+                step: `got errors in server result: ${error}`,
+                user: userId,
+                investigation: epidemiologyNumber
             });
+            handleLoadInteractionsError();
+        });
     }
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
@@ -220,7 +233,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 axios.delete('/intersections/deleteContactEvent', {
-                    params: { contactEventId }
+                    params: {contactEventId}
                 }).then(() => {
                     logger.info({
                         service: Service.CLIENT,
@@ -271,7 +284,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     investigation: epidemiologyNumber
                 });
                 axios.delete('/intersections/contactedPerson', {
-                    params: { contactedPersonId }
+                    params: {contactedPersonId}
                 }).then(() => {
                     logger.info({
                         service: Service.CLIENT,
@@ -305,7 +318,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         getCoronaTestDate,
         getClinicalDetailsSymptoms,
         handleDeleteContactEvent,
-        handleDeleteContactedPerson
+        handleDeleteContactedPerson,
+        checkForDuplicateInteractions
     }
 };
 
