@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
@@ -39,11 +39,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
     const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
     const requiredMessage = 'שדה זה הינו שדה חובה';
-    const validationSchema = yup
-        .string()
-        .required(requiredMessage)
-        .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage)
-        .max(50, maxLengthErrorMessage);
+    const transferInvestigation = 'העברת חקירה';
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
@@ -58,7 +54,16 @@ const InvestigatedPersonInfo = (props: Props) => {
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
-    const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+
+    const validationSchema = investigationStatus.subStatus === transferInvestigation ? 
+    yup.string().required(requiredMessage).matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage) :
+    yup.string().matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage);
+
+    const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+
+    useEffect(()=>{
+        validateStatusReason(investigationStatus.subStatus? investigationStatus.subStatus : '')
+    },[investigationStatus.subStatus])
     const permittedStatuses = statuses.filter((status: string) => {
         if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
             && status === InvestigationMainStatus.NEW) {
@@ -81,6 +86,14 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
+    const validateStatusReason = async (newStatusReason : string) => {
+        try {
+            await validationSchema.validateSync(newStatusReason);
+            setStatusReasonError(null)
+        } catch (err) {
+            setStatusReasonError(err.errors)
+        }
+    }
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
 
     return (
@@ -180,18 +193,13 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         value={investigationStatus.statusReason}
-                                        required={investigationStatus.subStatus === 'העברת חקירה'}
+                                        required={investigationStatus.subStatus === transferInvestigation}
                                         error={statusReasonError ? true : false}
                                         label={statusReasonError ? statusReasonError[0] : ''}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value ? event.target.value : '';
                                             const isValid = validationSchema.isValidSync(newStatusReason);
-                                            try {
-                                                await validationSchema.validateSync(newStatusReason);
-                                                setStatusReasonError(null)
-                                            } catch (err) {
-                                                setStatusReasonError(err.errors)
-                                            }
+                                            validateStatusReason(newStatusReason)
                                             if (isValid || newStatusReason === '') {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
@@ -289,14 +297,16 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             onChange={(event, newSubStatus) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatus ? String(newSubStatus) : ''
+                                                    subStatus: newSubStatus ? String(newSubStatus) : '',
+                                                    statusReason: ''
                                                 });
                                             }}
                                             onInputChange={(event, newSubStatusInput) => {
                                                 if (event?.type !== 'blur' && shouldUpdateInvestigationStatus()) {
                                                     setInvestigationStatus({
                                                         mainStatus: investigationStatus.mainStatus,
-                                                        subStatus: newSubStatusInput
+                                                        subStatus: newSubStatusInput,
+                                                        statusReason: ''
                                                     });
                                                 }
                                             }}
