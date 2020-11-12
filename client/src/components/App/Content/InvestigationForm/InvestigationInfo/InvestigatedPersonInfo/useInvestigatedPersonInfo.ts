@@ -8,6 +8,7 @@ import userType from 'models/enums/UserType';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import {Service, Severity} from 'models/Logger';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import {InvestigationStatus} from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -23,11 +24,13 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const classes = useStyles({});
 
     const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
+    const { alertWarning } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const transferedSubStatus = 'נדרשת העברה';
 
     const handleInvestigationFinish = async () => {
         Swal.fire({
@@ -46,64 +49,69 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
-            }
-        }).then((result) => {
-            if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Update Investigation Status',
-                    step: `launching investigation status request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
-                if (shouldUpdateInvestigationStatus()) {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationMainStatus: investigationStatus.mainStatus,
-                        investigationSubStatus: subStatus,
-                        epidemiologyNumber: epidemiologyNumber
-                    }).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Status',
-                            step: `update investigation status request was successful`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Status',
-                            step: `got errors in server result: ${error}`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        handleUnfinishedInvestigationFailed();
-                    })
+        if(investigationStatus.subStatus === transferedSubStatus && !investigationStatus.statusReason) {
+            alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'הבנתי, המשך'
+            });
+        }
+        else {
+            alertWarning('האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?', {
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך'
+            }).then((result) => {
+                if (result.value) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation Status',
+                        step: `launching investigation status request`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
+                    const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
+                    if (shouldUpdateInvestigationStatus()) {
+                        axios.post('/investigationInfo/updateInvestigationStatus', {
+                            investigationMainStatus: investigationStatus.mainStatus,
+                            investigationSubStatus: subStatus,
+                            statusReason: statusReason,
+                            epidemiologyNumber: epidemiologyNumber
+                        }).then(() => {
+                            logger.info({
+                                service: Service.CLIENT,
+                                severity: Severity.LOW,
+                                workflow: 'Update Investigation Status',
+                                step: `update investigation status request was successful`,
+                                user: userId,
+                                investigation: epidemiologyNumber
+                            });
+                        }).catch((error) => {
+                            logger.error({
+                                service: Service.CLIENT,
+                                severity: Severity.HIGH,
+                                workflow: 'Update Investigation Status',
+                                step: `got errors in server result: ${error}`,
+                                user: userId,
+                                investigation: epidemiologyNumber
+                            });
+                            handleUnfinishedInvestigationFailed();
+                        })
+                    }
+                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                        updateIsDeceased(handleInvestigationFinish);
+                    } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                    } else {
+                        handleInvestigationFinish();
+                    }
                 }
-                if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                    updateIsDeceased(handleInvestigationFinish);
-                } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                    updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                } else {
-                    handleInvestigationFinish();
-                }
-            }
-            ;
-        });
+                ;
+            });
+        }
     };
 
     const getPersonAge = (birthDate: Date) => {
@@ -127,25 +135,19 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {
-        setInvestigationStatus({
-            mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
-            subStatus: cannotCompleteInvestigation ? investigationStatus.subStatus : ''
-        })
-    };
-
     const shouldUpdateInvestigationStatus = (investigationInvestigator? : string) => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck);
+            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatus.NEW ? 
+            (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
+            true;
         }
         return shouldStatusUpdate;
     };
 
     return {
         confirmExitUnfinishedInvestigation,
-        handleCannotCompleteInvestigationCheck,
         getPersonAge,
         shouldUpdateInvestigationStatus
     }

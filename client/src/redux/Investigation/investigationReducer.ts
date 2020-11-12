@@ -7,7 +7,8 @@ const initialState: InvestigationRedux = {
     epidemiologyNumber: defaultEpidemiologyNumber,
     investigationStatus: {
         mainStatus: '',
-        subStatus: ''
+        subStatus: '',
+        statusReason: ''
     },
     investigatedPatient: {
         investigatedPatientId: -1,
@@ -26,12 +27,12 @@ const initialState: InvestigationRedux = {
 const investigationReducer = (state = initialState, action: Actions.InvestigationAction): InvestigationRedux => {
     switch (action.type) {
         case Actions.SET_EPIDEMIOLOGY_NUM: return { ...state, epidemiologyNumber: action.payload.epidemiologyNumber }
-        case Actions.SET_INVESTIGATED_PATIENT_ID: return { ...state, investigatedPatient: { ...state.investigatedPatient, investigatedPatientId: action.payload.investigatedPatientId }}
-        case Actions.SET_IS_DECEASED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isDeceased: action.payload.isDeceased }}
-        case Actions.SET_IS_CURRENTLY_HOSPITIALIZED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isCurrentlyHospitialized: action.payload.isCurrentlyHospitialized }}
+        case Actions.SET_INVESTIGATED_PATIENT_ID: return { ...state, investigatedPatient: { ...state.investigatedPatient, investigatedPatientId: action.payload.investigatedPatientId } }
+        case Actions.SET_IS_DECEASED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isDeceased: action.payload.isDeceased } }
+        case Actions.SET_IS_CURRENTLY_HOSPITIALIZED: return { ...state, investigatedPatient: { ...state.investigatedPatient, isCurrentlyHospitialized: action.payload.isCurrentlyHospitialized } }
         case Actions.SET_AXIOS_INTERCEPTOR_ID: return { ...state, axiosInterceptorId: action.payload.axiosInterceptorId }
-        case Actions.SET_IS_CURRENTLY_LOADING: return {...state, isCurrentlyLoading: action.payload.isCurrentlyLoading}
-        case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return {...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber}
+        case Actions.SET_IS_CURRENTLY_LOADING: return { ...state, isCurrentlyLoading: action.payload.isCurrentlyLoading }
+        case Actions.SET_LAST_OPENED_EPIDEMIOLOGY_NUM: return { ...state, lastOpenedEpidemiologyNumber: action.payload.lastOpenedEpidemiologyNumber }
         case Actions.SET_INVESTIGATION_STATUS: return { ...state, investigationStatus: action.payload.investigationStatus }
         case Actions.SET_VALIDATION_DATE: return { ...state, validationDate: action.payload.validationDate }
         case Actions.SET_END_TIME: return { ...state, endTime: action.payload.endTime }

@@ -79,7 +79,7 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
-const transferedSubStatus = 'העברת חקירה';
+const transferedSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
@@ -370,10 +370,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
                                 const user = investigation.userByCreator;
                                 const county = user ? user.countyByInvestigationGroup : '';
+                                const statusReason = user ? investigation.statusReason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
-                                const statusReason = investigation.statusReason
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -490,6 +490,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         setInvestigationStatus({
                             mainStatus: InvestigationMainStatus.IN_PROCESS,
                             subStatus: null,
+                            statusReason: null
                         });
                         logger.info({
                             ...logInfo,
@@ -520,6 +521,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             setInvestigationStatus({
                 mainStatus: investigationRow.investigationStatus,
                 subStatus: investigationRow.investigationSubStatus,
+                statusReason: investigationRow.statusReason
             });
             moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
         }
@@ -542,7 +544,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
-            [TableHeadersNames.comment]: row.comment
+            [TableHeadersNames.comment]: row.comment,
+            [TableHeadersNames.statusReason]: row.statusReason
         }
     }
 
@@ -560,6 +563,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: indexedRow.investigationStatus,
             investigationSubStatus: transferedSubStatus,
+            statusReason: null,
             epidemiologyNumber: indexedRow.epidemiologyNumber
         })
     }

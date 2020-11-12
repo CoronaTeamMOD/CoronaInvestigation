@@ -1,5 +1,5 @@
-import {useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 import City from 'models/City';
 import axios from 'Utils/axios';
@@ -7,30 +7,31 @@ import logger from 'logger/logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
 import ContactType from 'models/ContactType';
-import {timeout} from 'Utils/Timeout/Timeout';
+import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import {Service, Severity} from 'models/Logger';
-import {defaultEpidemiologyNumber} from 'Utils/consts';
-import {setCities} from 'redux/City/cityActionCreators';
+import { Service, Severity } from 'models/Logger';
+import { defaultEpidemiologyNumber } from 'Utils/consts';
+import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import {InvestigationStatus} from 'models/InvestigationStatus';
-import {setCountries} from 'redux/Country/countryActionCreators';
+import { InvestigationStatus } from 'models/InvestigationStatus';
+import { setStatuses } from 'redux/Status/statusesActionCreators';
+import { setCountries } from 'redux/Country/countryActionCreators';
 import { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import {setContactType} from 'redux/ContactType/contactTypeActionCreators';
-import {setSubStatuses} from 'redux/SubStatuses/subStatusesActionCreators';
+import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
+import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
-import {useInvestigationFormOutcome} from './InvestigationFormInterfaces';
-import {LandingPageTimer, defaultUser} from './InvestigationInfo/InvestigationInfoBar';
+import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
-    const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
+    const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
 
-    const {alertError, alertWarning, alertSuccess} = useCustomSwal();
+    const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
@@ -183,7 +184,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             });
     };
 
-    const fetchSubStatuses = () => {
+    const fetchSubStatusesByStatus = (parentStatus: string) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -192,7 +193,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.get('/investigationInfo/subStatuses').then((result: any) => {
+        axios.get('/investigationInfo/subStatuses/' + parentStatus).then((result: any) => {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -215,15 +216,53 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         });
     };
 
+    const fetchStatuses = () => {
+        axios.get('/landingPage/investigationStatuses').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'The investigations statuses were fetched successfully'
+                    });
+                    const allStatuses: string[] = result.data;
+                    setStatuses(allStatuses);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: err
+                });
+            })
+    };
+
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
             fetchCountries();
             fetchContactTypes();
-            fetchSubStatuses();
+            fetchSubStatusesByStatus(investigationStatus.mainStatus);
+            fetchStatuses();
             initializeTabShow();
         }
     }, [epidemiologyNumber, userId]);
+
+    useEffect(() => {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+            fetchSubStatusesByStatus(investigationStatus.mainStatus);
+        }
+    }, [investigationStatus.mainStatus]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number) => {
         logger.info({
@@ -253,6 +292,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus: InvestigationMainStatus.DONE,
                     investigationSubStatus: null,
+                    statusReason: null,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
                     logger.info({

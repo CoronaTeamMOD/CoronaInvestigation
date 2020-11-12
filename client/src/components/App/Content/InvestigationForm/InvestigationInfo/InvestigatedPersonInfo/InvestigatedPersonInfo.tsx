@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
+import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
-import User from 'models/User';
-import userType from 'models/enums/UserType';
+import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -28,24 +27,49 @@ const displayDateFormat = 'dd/MM/yyyy';
 const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
+const statusLabel = 'סטטוס';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
+const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
+const requiredMessage = 'שדה זה הינו שדה חובה';
+const transferInvestigation = 'נדרשת העברה';
+const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe0-9\s]*$/
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
 
+    const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
-    const currUser = useSelector<StoreStateType, User>(state => state.user);
-    const investigationCreator = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const statuses = useSelector<StoreStateType, string[]>(state => state.statuses);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
-    const { confirmExitUnfinishedInvestigation, handleCannotCompleteInvestigationCheck, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+    const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
+    const validationSchema = investigationStatus.subStatus === transferInvestigation ? 
+    yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+    yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
+
+    const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+
+    useEffect(()=> {
+        if (investigationStatus.subStatus !== transferInvestigation) {
+            validateStatusReason(investigationStatus.statusReason)
+        }
+    },[investigationStatus.subStatus])
+    const permittedStatuses = statuses.filter((status: string) => {
+        if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
+            && status === InvestigationMainStatus.NEW && !wasInvestigationReopend) {
+            return true;
+        }
+        return (status !== InvestigationMainStatus.DONE && status !== InvestigationMainStatus.NEW)
+    })
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
             confirmExitUnfinishedInvestigation(epidemiologyNumber);
@@ -61,6 +85,14 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
+    const validateStatusReason = async (newStatusReason : string | null) => {
+        try {
+            await validationSchema.validateSync(newStatusReason);
+            setStatusReasonError(null)
+        } catch (err) {
+            setStatusReasonError(err.errors)
+        }
+    }
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
 
     return (
@@ -77,12 +109,114 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(event) => { handleLeaveInvestigationClick(event) }}
+                    onClick={(event) => { 
+                        handleLeaveInvestigationClick(event); 
+                        validateStatusReason(investigationStatus.statusReason)}}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
                     {leaveInvestigationMessage}
                 </PrimaryButton>
+            </div>
+            <div className={classes.managementControllers}>
+                <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                    <Grid item xs={12} className={classes.fieldLabel}>
+                        <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
+                            <b><bdi>{statusLabel}</bdi>: </b>
+                            <Grid item className={classes.statusSelectGrid}>
+                                <Autocomplete
+                                    className={classes.statusSelect}
+                                    test-id='currentStatus'
+                                    options={permittedStatuses}
+                                    getOptionLabel={(option) => option}
+                                    inputValue={investigationStatus.mainStatus as string | undefined}
+                                    onChange={(event, newStatus) => {
+                                        if (newStatus) {
+                                            setInvestigationStatus({
+                                                mainStatus: newStatus,
+                                                subStatus: '',
+                                                statusReason: ''
+                                            });
+                                        }
+                                    }}
+                                    onInputChange={(event, newStatusInput) => {
+                                        if (event?.type !== 'blur') {
+                                            setInvestigationStatus({
+                                                mainStatus: newStatusInput,
+                                                subStatus: '',
+                                                statusReason: ''
+                                            });
+                                        }
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                            placeholder='סטטוס'
+                                        />
+                                    }
+                                />
+                            </Grid>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
+                                investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
+                                <Grid item className={classes.statusSelectGrid}>
+                                    <Autocomplete
+                                        className={classes.subStatusSelect}
+                                        test-id='currentSubStatus'
+                                        options={subStatuses}
+                                        getOptionLabel={(option) => option}
+                                        inputValue={investigationStatus.subStatus as string | undefined}
+                                        onChange={(event, newSubStatus) => {
+                                            setInvestigationStatus({
+                                                mainStatus: investigationStatus.mainStatus,
+                                                subStatus: newSubStatus ? String(newSubStatus) : null,
+                                                statusReason: ''
+                                            });
+                                        }}
+                                        onInputChange={(event, newSubStatusInput) => {
+                                            if (event?.type !== 'blur') {
+                                                setInvestigationStatus({
+                                                    mainStatus: investigationStatus.mainStatus,
+                                                    subStatus: newSubStatusInput,
+                                                    statusReason: ''
+                                                });
+                                            }
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
+                                                placeholder='סיבה'
+                                            />
+                                        }
+                                    />
+                                </Grid>
+                            </Collapse>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
+                                <Grid item className={classes.statusSelectGrid}>
+                                    <TextField
+                                        className={classes.subStatusSelect}
+                                        value={investigationStatus.statusReason}
+                                        required={investigationStatus.subStatus === transferInvestigation}
+                                        placeholder='פירוט'
+                                        error={statusReasonError ? true : false}
+                                        label={statusReasonError ? statusReasonError[0] : ''}
+                                        onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+                                            const newStatusReason: string = event.target.value;
+                                            const isValid = validationSchema.isValidSync(newStatusReason);
+                                            validateStatusReason(newStatusReason)
+                                            if (isValid || newStatusReason === '') {
+                                                setInvestigationStatus({
+                                                    mainStatus: investigationStatus.mainStatus,
+                                                    subStatus: investigationStatus.subStatus,
+                                                    statusReason: newStatusReason
+                                                });
+                                            }
+                                        }}
+                                    />
+                                </Grid>
+                            </Collapse>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
             <div className={classes.informationBar}>
                 <div className={classes.additionalInfo}>
@@ -106,9 +240,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                     }
                     <Divider />
                     <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
-                    {
-                        format(new Date(props.coronaTestDate), displayDateFormat)
-                    }
+                        {
+                            format(new Date(props.coronaTestDate), displayDateFormat)
+                        }
                         icon={EventOutlined}
                     />
                     <Divider />
@@ -124,23 +258,23 @@ const InvestigatedPersonInfo = (props: Props) => {
                         icon={Help}
                     />
                     <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication(( isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED ))}
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
                         icon={Help}
                     />
                     {
                         (isDeceased ||
-                        (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE && 
-                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) && 
+                            (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                                investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
                         <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
                     <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED ))}
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
                         icon={Help}
                     />
                     {
                         (isCurrentlyHospitalized ||
-                        (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
-                        investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) && 
+                            (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                                investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
                         <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }
                     <Divider />
@@ -155,18 +289,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                         <Grid item xs={12} className={classes.fieldLabel}>
                             <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                <Grid item xs={7} className={classes.fieldLabel}>
-                                    <CustomCheckbox
-                                        testId='cannotCompleteInvestigation'
-                                        checkboxElements={[
-                                            {
-                                                checked: investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE,
-                                                labelText: 'לא ניתן להשלים חקירה',
-                                                onChange: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => handleCannotCompleteInvestigationCheck(checked))
-                                            }
-                                        ]}
-                                    />
-                                </Grid>
                                 <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE}>
                                     <Grid item xs={5} className={classes.fieldLabel}>
                                         <Autocomplete
@@ -178,14 +300,16 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             onChange={(event, newSubStatus) => {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatus ? String(newSubStatus) : ''
+                                                    subStatus: newSubStatus ? String(newSubStatus) : '',
+                                                    statusReason: ''
                                                 });
                                             }}
                                             onInputChange={(event, newSubStatusInput) => {
                                                 if (event?.type !== 'blur' && shouldUpdateInvestigationStatus()) {
                                                     setInvestigationStatus({
                                                         mainStatus: investigationStatus.mainStatus,
-                                                        subStatus: newSubStatusInput
+                                                        subStatus: newSubStatusInput,
+                                                        statusReason: ''
                                                     });
                                                 }
                                             }}
