@@ -88,6 +88,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
                 {
@@ -96,6 +97,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
             </form>
