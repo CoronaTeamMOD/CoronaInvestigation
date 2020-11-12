@@ -73,6 +73,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
         height: '8vh',
     },
+    filterTableRow: {
+        width: '90vw',  
+        alignItems: 'center',    
+        justifyContent: 'flex-end',
+        display: 'flex'
+    },
     filterButton: {
         fontWeight: 600,
         minWidth: '3vw',
