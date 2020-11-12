@@ -270,7 +270,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     severity: Severity.LOW,
                     step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                 });
-
                 if (isInvestigationNew) {
                     const activeInvestigationStatus = {
                         mainStatus: InvestigationMainStatus.IN_PROCESS,
@@ -295,6 +294,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             step: `got errors updating status: ${error}`,
                         }))
                 }
+                personalInfoValidationSchema.isValid(data).then(valid => {
+                    setFormState(investigationId, id, valid);
+                })
             })
             .catch((error) => {
                 logger.error({
@@ -304,9 +306,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 });
                 complexityErrorAlert(error);
             })
-        personalInfoValidationSchema.isValid(data).then(valid => {
-            setFormState(investigationId, id, valid);
-        })
     }
 
     return (
