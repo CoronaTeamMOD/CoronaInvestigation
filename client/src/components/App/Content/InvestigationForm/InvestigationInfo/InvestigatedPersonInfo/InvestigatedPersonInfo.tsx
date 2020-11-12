@@ -54,8 +54,8 @@ const InvestigatedPersonInfo = (props: Props) => {
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
     const validationSchema = investigationStatus.subStatus === transferInvestigation ? 
-    yup.string().required(requiredMessage).matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage) :
-    yup.string().matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage);
+    yup.string().required(requiredMessage).matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+    yup.string().matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 

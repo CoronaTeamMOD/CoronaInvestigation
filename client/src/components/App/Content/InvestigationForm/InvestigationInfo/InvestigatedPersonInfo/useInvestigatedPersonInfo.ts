@@ -156,8 +156,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            investigationStatus.mainStatus === InvestigationMainStatus.NEW ? 
-            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
+            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatus.NEW ? 
+            (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
             true;
         }
         return shouldStatusUpdate;
