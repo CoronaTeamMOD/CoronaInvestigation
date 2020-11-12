@@ -438,35 +438,33 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Button>
                     </Box>
                 </div>
-                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
-                    {
-                        <Collapse in={showFilterRow}>
-                            <Card className={classes.filterTableCard}>
-                                <Typography>סינון לפי</Typography>
-                                <Typography>סטטוס:</Typography>
-                                <Autocomplete
-                                    classes={{ inputRoot: classes.autocompleteInput }}
-                                    disableCloseOnSelect
-                                    multiple
-                                    options={allStatuses}
-                                    getOptionLabel={(option) => option}
-                                    onChange={onSelectedStatusesChange}
-                                    value={filterOptions.mainStatus}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                        />
-                                    }
-                                    renderTags={(tags) => {
-                                        const additionalTagsAmount = tags.length - 1;
-                                        const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                        return tags[0] + additionalDisplay;
-                                    }}
-                                />
-                                <IconButton><Close onClick={() => closeFilterRow()} /></IconButton>
-                            </Card>
-                        </Collapse>
-                    }
+                <Grid container justify="flex-end" className={classes.filterTableRow}>
+                    <Collapse in={showFilterRow}>
+                        <Card className={classes.filterTableCard}>
+                            <Typography>סינון לפי</Typography>
+                            <Typography>סטטוס:</Typography>
+                            <Autocomplete
+                                classes={{ inputRoot: classes.autocompleteInput }}
+                                disableCloseOnSelect
+                                multiple
+                                options={allStatuses}
+                                getOptionLabel={(option) => option}
+                                onChange={onSelectedStatusesChange}
+                                value={filterOptions.mainStatus}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                    />
+                                }
+                                renderTags={(tags) => {
+                                    const additionalTagsAmount = tags.length - 1;
+                                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                    return tags[0] + additionalDisplay;
+                                }}
+                            />
+                            <IconButton><Close onClick={() => closeFilterRow()} /></IconButton>
+                        </Card>
+                    </Collapse>
                 </Grid>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
