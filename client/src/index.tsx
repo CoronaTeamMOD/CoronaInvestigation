@@ -18,8 +18,8 @@ import App from './components/App/App';
 import axios from 'axios';
 
 axios.defaults.baseURL = '/db';
-axios.defaults.headers.common['content-type'] = 'text/plain';
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers['content-type'] = 'text/plain';
+axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
 
 axios.interceptors.request.use(
     async (config) => {
