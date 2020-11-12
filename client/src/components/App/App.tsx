@@ -1,14 +1,15 @@
 import { config } from 'dotenv';
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import User from 'models/User';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
@@ -86,6 +87,7 @@ const App: React.FC = (): JSX.Element => {
             step: 'launch request to the server',
             user: user.id
         });
+        setIsLoading(true);
         axios.get(`/users/user`).then((result: any) => {
             if (result && result.data.userById) {
                 logger.info({
@@ -116,6 +118,8 @@ const App: React.FC = (): JSX.Element => {
                 });
                 setIsSignUpOpen(true);
             }
+
+            setIsLoading(false);
         }).catch(err => {
             logger.error({
                 service: Service.CLIENT,
@@ -123,7 +127,8 @@ const App: React.FC = (): JSX.Element => {
                 workflow: 'Getting user details',
                 step: `got error from the server: ${err}`,
                 user: user.id
-            })
+            });
+            setIsLoading(false);
         })
     }
 
