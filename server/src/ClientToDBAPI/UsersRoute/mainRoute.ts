@@ -267,15 +267,28 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
         epidemiologyNumber: request.body.epidemiologyNumber,
         newUser: userAdmin
     }).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'GraphQL request to the change the investigation county',
-            step: `The investigation county changed successfully`,
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologyNumber,
-        });
-        response.send({message: 'The county has changed successfully'});
+        console.log(result);
+        if (result?.data && !result?.errors) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'GraphQL request to the change the investigation county',
+                step: `The investigation county changed successfully`,
+                user: response.locals.user.id,
+                investigation: response.locals.epidemiologyNumber,
+            });
+            response.send({message: 'The county has changed successfully'});
+        } else {
+            const errorMessage = result?.errors[0]?.message || '';
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'GraphQL POST request to Db - change county',
+                step: `The graphql mutation to chage county failed ${errorMessage && ('due to ' + errorMessage)}`,
+                investigation: response.locals.epidemiologyNumber,
+            });
+            response.status(RESPONSE_ERROR_CODE).send('error while changing county');
+        }
     }).catch((error) => {
         logger.error({
             service: Service.SERVER,

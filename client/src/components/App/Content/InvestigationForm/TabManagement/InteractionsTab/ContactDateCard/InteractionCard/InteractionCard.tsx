@@ -1,16 +1,18 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
-import { timeFormat } from 'Utils/displayUtils';
-import Interaction from 'models/Contexts/InteractionEventDialogData';
 import Contact from 'models/Contact';
+import { timeFormat } from 'Utils/displayUtils';
+import StoreStateType from 'redux/storeStateType';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
+import useStyles from './InteractionCardStyles';
+import ContactGrid from './ContactGrid/ContactGrid';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import useContactFields from 'Utils/vendor/useContactFields';
-
-import ContactGrid from './ContactGrid/ContactGrid';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
 import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
@@ -21,8 +23,6 @@ import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
-import useStyles from './InteractionCardStyles';
-
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
@@ -31,6 +31,8 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
+
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
     const {getDisabledFields} = useContactFields();
     const completedContacts = getDisabledFields(interaction.contacts);
@@ -54,7 +56,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         <Edit />
                     </IconButton>
                     <IconButton test-id={'deleteContactLocation'}
-                                disabled={completedContacts?.length > 0}
+                                disabled={completedContacts?.length > 0 || wasInvestigationReopend}
                                 onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
