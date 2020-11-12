@@ -120,7 +120,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                 <ContactUploader 
                                     contactEvent={interaction.id}
                                     onSave={props.loadInteractions}
-                                    allInteractions = {allInteractions}
+                                    allInteractions={allInteractions}
                                 />}
                             </div>
                         </Grid>

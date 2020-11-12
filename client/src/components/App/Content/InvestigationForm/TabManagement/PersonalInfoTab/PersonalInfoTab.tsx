@@ -294,9 +294,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                             step: `got errors updating status: ${error}`,
                         }))
                 }
-                personalInfoValidationSchema.isValid(data).then(valid => {
-                    setFormState(investigationId, id, valid);
-                })
             })
             .catch((error) => {
                 logger.error({
@@ -305,6 +302,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     step: `got error from server: ${error}`,
                 });
                 complexityErrorAlert(error);
+            })
+            .finally(() => { 
+                personalInfoValidationSchema.isValid(data).then(valid => {
+                    setFormState(investigationId, id, valid);
+                })
             })
     }
 

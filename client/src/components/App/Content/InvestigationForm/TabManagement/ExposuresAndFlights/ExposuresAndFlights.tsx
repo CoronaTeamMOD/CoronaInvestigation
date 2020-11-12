@@ -186,7 +186,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
       investigation: investigationId,
       user: userId
   })
-    saveExposureAndFlightData().then(() => {
+    saveExposureAndFlightData()
+    .then(() => {
       logger.info({
           service: Service.CLIENT,
           severity: Severity.LOW,
@@ -195,7 +196,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           investigation: investigationId,
           user: userId
       });
-      setFormState(investigationId, id, true);
     })
     .catch((error) => {
       logger.error({
@@ -209,8 +209,9 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
       Swal.fire({
           title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
           icon: 'error'
-      });
+      })
     })
+    .finally(() => setFormState(investigationId, id, true))
   }
 
   return (

@@ -26,17 +26,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
-    const { checkDuplicateIds, handleDuplicateIdsError } = useDuplicateContactId();
+    const { checkDuplicateIds } = useDuplicateContactId();
 
     const saveContact = (interactedContact: InteractedContact) : boolean => {
-        const isDuplicateId = allContactedInteractions.some((contact: InteractedContact) => 
-            contact.id !== interactedContact.id &&
-            interactedContact.identificationNumber !== '' && 
-            interactedContact.identificationNumber !== null &&
-            contact.identificationNumber === interactedContact.identificationNumber);
-        if (isDuplicateId) {
-            handleDuplicateIdsError([interactedContact.identificationNumber]);
-            return false;
+        if (checkDuplicateIds([ ...allContactedInteractions, interactedContact]
+            .map((contact: InteractedContact) => contact.identificationNumber))) {
+                return false;
         } else {
             const contacts = [interactedContact];
             const contactsSavingVariable = {
@@ -96,7 +91,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 }
             ).then((response: AxiosResponse<any>) => {
                 if (response.data?.data?.updateContactPersons) {
-                    setFormState(epidemiologyNumber, id, true);
                     logger.info({
                         service: Service.CLIENT,
                         severity: Severity.LOW,
@@ -115,7 +109,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-            });
+            })
+            .finally(() => setFormState(epidemiologyNumber, id, true))
         }
     };
 

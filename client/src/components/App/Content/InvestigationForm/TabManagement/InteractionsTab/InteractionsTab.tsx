@@ -71,7 +71,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 {
                     getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).reverse().map(date =>
                         <ContactDateCard
-                            allInteractions = {interactions}
+                            allInteractions={interactions}
                             loadInteractions={loadInteractions}
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}

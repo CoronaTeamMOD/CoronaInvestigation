@@ -99,9 +99,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     investigation: epidemiologyNumber,
                     user: userId
                 });
-                ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
             })
             .catch((error) => {
                 logger.error({
@@ -116,7 +113,12 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                     icon: 'error'
                 })
-            });
+            })
+            .finally(() => {
+                ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
