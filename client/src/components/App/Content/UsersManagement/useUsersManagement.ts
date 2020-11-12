@@ -15,8 +15,8 @@ import UserTypeEnum from 'models/enums/UserType';
 import Language from 'models/Language';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
-import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-
+import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import {UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 
 interface UserDialog {
@@ -51,6 +51,14 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         }
     }
 
+    const fillEmptyfullName= (users: any[]):SignUpUser[]=>{
+        users.forEach(user=> {
+            if(!Boolean(user.fullName)){
+                user.fullName = user[UsersManagementTableHeadersNames.USER_NAME];
+            }
+        })
+        return users;
+    } 
     const fetchUsers = () => {
         logger.info({
             service: Service.CLIENT,
@@ -73,7 +81,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             })
                 .then(result => {
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
-                        setUsers(result.data?.users);
+                        setUsers(fillEmptyfullName(result.data?.users));
                         setTotalCount(result.data?.totalCount);
                         logger.info({
                             service: Service.CLIENT,
