@@ -132,9 +132,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const watchAddress = methods.watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
 
     useEffect(() => {
-        if (watchAddress?.city) {
-            getStreetByCity(watchAddress.city);
-        }
+        watchAddress.city && getStreetByCity(watchAddress.city);
     }, [watchAddress?.city]);
 
     useEffect(() => {
