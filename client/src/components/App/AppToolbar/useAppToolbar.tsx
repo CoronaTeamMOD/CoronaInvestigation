@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 import User from 'models/User';
-import axios from 'Utils/axios';
+import axios from 'axios';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
