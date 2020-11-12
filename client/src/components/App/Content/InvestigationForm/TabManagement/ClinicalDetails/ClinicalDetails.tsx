@@ -129,6 +129,11 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const watchDoesHaveBackgroundDiseases = methods.watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
+    const watchAddress = methods.watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
+
+    useEffect(() => {
+        watchAddress.city && getStreetByCity(watchAddress.city);
+    }, [watchAddress?.city]);
 
     useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);
