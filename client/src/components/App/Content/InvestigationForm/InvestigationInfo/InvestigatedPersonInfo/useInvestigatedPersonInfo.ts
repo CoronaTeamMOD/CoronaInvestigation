@@ -8,6 +8,7 @@ import userType from 'models/enums/UserType';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import {Service, Severity} from 'models/Logger';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import {InvestigationStatus} from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -23,6 +24,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const classes = useStyles({});
 
     const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
+    const { alertWarning } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
@@ -47,30 +49,16 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
-        if(investigationStatus.subStatus === transferedSubStatus && 
-            (!investigationStatus.statusReason || investigationStatus.statusReason === '')) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'שים לב, כדי לצאת מחקירה יש להזין שדה פירוט',
-                    confirmButtonColor: theme.palette.primary.main,
-                    confirmButtonText: 'הבנתי, המשך',
-                    customClass: {
-                        title: classes.swalTitle,
-                    }
-                })
+        if(investigationStatus.subStatus === transferedSubStatus && !investigationStatus.statusReason) {
+                alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט');
             }
         else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
+            alertWarning('האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?', {
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
                 cancelButtonColor: theme.palette.error.main,
                 confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך',
-                customClass: {
-                    title: classes.swalTitle,
-                }
+                confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
                     logger.info({
@@ -101,7 +89,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                         }).catch((error) => {
                             logger.error({
                                 service: Service.CLIENT,
-                                severity: Severity.LOW,
+                                severity: Severity.HIGH,
                                 workflow: 'Update Investigation Status',
                                 step: `got errors in server result: ${error}`,
                                 user: userId,
@@ -144,14 +132,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const handleCannotCompleteInvestigationCheck = (cannotCompleteInvestigation: boolean) => {
-        setInvestigationStatus({
-            mainStatus: cannotCompleteInvestigation ? InvestigationMainStatus.CANT_COMPLETE : InvestigationMainStatus.IN_PROCESS,
-            subStatus: cannotCompleteInvestigation ? investigationStatus.subStatus : null,
-            statusReason: cannotCompleteInvestigation ? investigationStatus.statusReason : null,
-        })
-    };
-
     const shouldUpdateInvestigationStatus = (investigationInvestigator? : string) => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
@@ -165,7 +145,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     return {
         confirmExitUnfinishedInvestigation,
-        handleCannotCompleteInvestigationCheck,
         getPersonAge,
         shouldUpdateInvestigationStatus
     }

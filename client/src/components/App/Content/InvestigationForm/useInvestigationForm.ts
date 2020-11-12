@@ -240,7 +240,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }).catch((err: any) => {
             logger.error({
                 service: Service.CLIENT,
-                severity: Severity.LOW,
+                severity: Severity.HIGH,
                 workflow: 'Fetching Statuses',
                 step: `error DB response ${JSON.stringify(err)}`,
             });

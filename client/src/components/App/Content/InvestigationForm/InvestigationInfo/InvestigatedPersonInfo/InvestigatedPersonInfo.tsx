@@ -6,7 +6,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
-import User from 'models/User';
+import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import { InvestigationStatus } from 'models/InvestigationStatus';
@@ -21,7 +21,6 @@ import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
 import InvestigationMenu from './InvestigationMenu/InvestigationMenu';
-import UserType from 'models/enums/UserType';
 
 const leaveInvestigationMessage = 'צא מחקירה';
 const displayDateFormat = 'dd/MM/yyyy';
@@ -29,16 +28,16 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const statusLabel = 'סטטוס';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
+const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
+const requiredMessage = 'שדה זה הינו שדה חובה';
+const transferInvestigation = 'נדרשת העברה';
+const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe0-9\s]*$/
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
 
     const classes = useStyles();
-
-    const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-    const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
-    const requiredMessage = 'שדה זה הינו שדה חובה';
-    const transferInvestigation = 'נדרשת העברה';
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
@@ -54,8 +53,8 @@ const InvestigatedPersonInfo = (props: Props) => {
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
     const validationSchema = investigationStatus.subStatus === transferInvestigation ? 
-    yup.string().required(requiredMessage).matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-    yup.string().matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage).max(50, maxLengthErrorMessage).nullable();
+    yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+    yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
@@ -63,7 +62,6 @@ const InvestigatedPersonInfo = (props: Props) => {
         if (investigationStatus.subStatus !== transferInvestigation) {
             validateStatusReason(investigationStatus.statusReason)
         }
-        console.log(wasInvestigationReopend)
     },[investigationStatus.subStatus])
     const permittedStatuses = statuses.filter((status: string) => {
         if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
