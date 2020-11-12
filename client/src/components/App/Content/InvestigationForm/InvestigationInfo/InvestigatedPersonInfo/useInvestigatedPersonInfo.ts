@@ -50,8 +50,11 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         if(investigationStatus.subStatus === transferedSubStatus && !investigationStatus.statusReason) {
-                alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט');
-            }
+            alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'הבנתי, המשך'
+            });
+        }
         else {
             alertWarning('האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?', {
                 showCancelButton: true,
