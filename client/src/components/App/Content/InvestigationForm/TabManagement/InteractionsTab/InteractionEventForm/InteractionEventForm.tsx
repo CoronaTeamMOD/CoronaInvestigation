@@ -79,21 +79,23 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    let allContactsIds: IdToCheck[] = [];
-    let newIds: IdToCheck[] = [];
-    interactions.forEach((interaction: InteractionEventDialogData) => {
-        interaction[InteractionEventDialogFields.CONTACTS].forEach((contact: Contact) => 
-          allContactsIds.push({ 
-            id: contact[InteractionEventContactFields.ID], 
-            serialId: contact[InteractionEventContactFields.SERIAL_ID]
-          }));
-    });
-    interactionDataToSave[InteractionEventDialogFields.CONTACTS].forEach((contact: Contact) => {
-      newIds.push({
+
+    const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
+    .flat()
+    .map((contact) => { 
+      return ({
         id: contact[InteractionEventContactFields.ID], 
         serialId: contact[InteractionEventContactFields.SERIAL_ID]
       })
     });
+    
+    const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
+      return({
+        id: contact[InteractionEventContactFields.ID], 
+        serialId: contact[InteractionEventContactFields.SERIAL_ID]
+      })
+    });
+
     const contactsIdsToCheck: IdToCheck[] = allContactsIds.concat(newIds);
     if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
       saveInteractions(interactionDataToSave);
