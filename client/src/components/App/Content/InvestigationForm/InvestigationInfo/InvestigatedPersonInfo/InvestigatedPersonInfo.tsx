@@ -194,6 +194,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <TextField
                                         value={investigationStatus.statusReason}
                                         required={investigationStatus.subStatus === transferInvestigation}
+                                        placeholder='פירוט'
                                         error={statusReasonError ? true : false}
                                         label={statusReasonError ? statusReasonError[0] : ''}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
