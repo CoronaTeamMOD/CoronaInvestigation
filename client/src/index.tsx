@@ -9,13 +9,13 @@ import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import heLocale from 'date-fns/locale/he';
+import axios from 'axios';
 
 import './index.css';
 import './styles/fonts.css';
 import theme from './styles/theme';
 import { store } from './redux/store';
 import App from './components/App/App';
-import axios from 'axios';
 
 axios.defaults.baseURL = '/db';
 axios.defaults.headers['content-type'] = 'text/plain';

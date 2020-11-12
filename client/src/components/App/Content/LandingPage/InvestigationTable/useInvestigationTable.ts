@@ -2,6 +2,7 @@ import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import User from 'models/User';
 import theme from 'styles/theme';
@@ -14,7 +15,6 @@ import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { activateIsLoading } from 'Utils/axios';
-import axios from 'axios';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
