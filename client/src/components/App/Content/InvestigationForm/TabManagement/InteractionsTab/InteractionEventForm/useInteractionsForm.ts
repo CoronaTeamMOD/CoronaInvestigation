@@ -54,7 +54,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 }).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
-                            severity: Severity.LOW,
+                            severity: Severity.HIGH,
                             workflow: 'Update Interaction',
                             step: `got error from server: ${error}`,
                             investigation: epidemiologyNumber,

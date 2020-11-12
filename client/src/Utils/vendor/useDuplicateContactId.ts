@@ -19,18 +19,22 @@ const useDuplicateContactId = () => {
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const checkDuplicateIds = (idsToCheck: string[]) => {
-        const trimmedIds: string[] = idsToCheck.filter((id: string) => id !== null && id !== '');
+        const trimmedIds: string[] = idsToCheck.filter((id: string) => id);
         const duplicateIds: string[] = trimmedIds.filter((id: string, index: number) => trimmedIds.indexOf(id) !== index);
-        if (duplicateIds.length > 0) {
-            handleDuplicateIdsError(duplicateIds);
+        const distinctDuplicateIds = duplicateIds.filter((id1, index) => duplicateIds.findIndex(id2 => id1 === id2) === index)
+        if (distinctDuplicateIds.length > 0) {
+            handleDuplicateIdsError(distinctDuplicateIds);
             return true;
         } else {
             return false;
         }
     }
 
+    // This function does the same as the function above, but it also check the serialId
+    // It prevent from alerting when I tried to edit the same interaction with the same id - 
+    // It will treat it as the same id and not as two different ids
     const checkDuplicateIdsForInteractions = (idsToCheck: IdToCheck[]) => {
-        const trimmedIds = idsToCheck.filter((id: IdToCheck) => id.id !== undefined && id.id !== null && id.id !== '');
+        const trimmedIds = idsToCheck.filter((id: IdToCheck) => id);
         const duplicateIds = trimmedIds.filter((id, index: number) => 
             trimmedIds.findIndex((IdToCheck) => IdToCheck.id === id.id && IdToCheck.serialId !== id.serialId) !== -1);
         const distinctDuplicateIds = duplicateIds.filter((id1, index) => duplicateIds.findIndex(id2 => id1.id === id2.id) === index)
