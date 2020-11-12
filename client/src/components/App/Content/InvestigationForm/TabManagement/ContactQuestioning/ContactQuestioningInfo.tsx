@@ -19,7 +19,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses, saveContact, checkForDuplicateIds} = props;
+    const {interactedContact, updateInteractedContact, contactStatuses, saveContact} = props;
 
     const {alertWarning} = useCustomSwal();
 
@@ -30,6 +30,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
 
     const setPreviousContactStatus = () => {
         const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
+        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, previousStatusName?.id);
         setContactStatusInput(previousStatusName?.displayName || '');
     }
 
@@ -45,17 +46,9 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    if (!interactedContact.identificationNumber || checkForDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
-                        saveContact({...interactedContact, contactStatus: selectedStatus?.id});
-                    } else {
-                        alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
-                        setPreviousContactStatus();
-
-                    }
-                } else {
-                    setPreviousContactStatus();
-                }
+                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                    !saveContact({...interactedContact, contactStatus: selectedStatus?.id}) && setPreviousContactStatus()
+                } 
             });
         } else if (selectedStatus?.id) {
             updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
@@ -136,6 +129,6 @@ interface Props {
     interactedContact: InteractedContact;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
-    saveContact: (interactedContact: InteractedContact) => void;
+    saveContact: (interactedContact: InteractedContact) => boolean;
     checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => boolean;
 }

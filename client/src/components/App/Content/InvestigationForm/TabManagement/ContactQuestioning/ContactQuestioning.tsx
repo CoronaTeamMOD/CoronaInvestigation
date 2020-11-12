@@ -5,18 +5,12 @@ import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {Accordion, AccordionDetails, AccordionSummary, Divider, Grid} from '@material-ui/core';
 
-import logger from 'logger/logger';
 import ContactStatus from 'models/ContactStatus';
-import {Severity, Service} from 'models/Logger';
-import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
-import {setFormState} from 'redux/Form/formActionCreators';
 import useContactFields from 'Utils/vendor/useContactFields';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
 import useStyles from './ContactQuestioningStyles';
 import useContactQuestioning from './useContactQuestioning';
@@ -27,10 +21,6 @@ import ContactQuestioningClinical from './ContactQuestioningClinical';
 
 const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     const classes = useStyles();
-    const { alertWarning } = useCustomSwal();
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
-    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const { handleDuplicateIdsError } = useDuplicateContactId();
 
     const [allContactedInteractions, setAllContactedInteractions] = useState<InteractedContact[]>([]);
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
@@ -42,8 +32,9 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const {
         saveContactQuestioning, saveContact, updateInteractedContact, changeIdentificationType, loadInteractedContacts,
-        loadFamilyRelationships, loadContactStatuses, checkForSpecificDuplicateIds, checkAllContactsForDuplicateIds
+        loadFamilyRelationships, loadContactStatuses, checkForSpecificDuplicateIds
     } = useContactQuestioning({
+        id,
         setAllContactedInteractions,
         allContactedInteractions,
         setFamilyRelationships,
@@ -58,34 +49,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
 
     const saveContacted = (event: React.ChangeEvent<{}>) => {
         event.preventDefault();
-        if(checkAllContactsForDuplicateIds()) {
-            setFormState(investigationId, id, true);
-            saveContactQuestioning().then((response: AxiosResponse<any>) => {
-                if (response.data?.data?.updateContactPersons) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Saving all contacts',
-                        step: 'got respond from the server',
-                        user: userId,
-                        investigation: investigationId
-                    });
-                } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                    handleDuplicateIdsError(response.data.split(':')[1], userId, investigationId);
-                }
-            }).catch(err => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Saving all contacts',
-                    step: `got the following error from the server: ${err}`,
-                    user: userId,
-                    investigation: investigationId
-                });
-            });
-        } else {
-            alertWarning('שים לב! נמצאו מספרי זיהוי זהים! אנא בצע את השינויים הנדרשים');
-        }
+        saveContactQuestioning();
     }
 
     return (

@@ -53,7 +53,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
             axios.post('/contactedPeople/excel', {contactEvent, contacts})
                 .then((result) => {
                     if (result.data.includes(duplicateIdsErrorMsg)) {
-                        handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);
+                        handleDuplicateIdsError(result.data.split(':')[1]);
                     } else {
                         logger.info({
                             service: Service.CLIENT,
