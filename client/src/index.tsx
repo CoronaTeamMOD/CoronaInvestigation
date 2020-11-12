@@ -15,6 +15,19 @@ import './styles/fonts.css';
 import theme from './styles/theme';
 import { store } from './redux/store';
 import App from './components/App/App';
+import axios from 'axios';
+
+axios.defaults.baseURL = '/db';
+axios.defaults.headers.common['content-type'] = 'text/plain';
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+
+axios.interceptors.request.use(
+    async (config) => {
+        config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
+        return config;
+    }, 
+    (error) => Promise.reject(error)
+);
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 ReactDOM.render(
