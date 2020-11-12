@@ -24,8 +24,9 @@ interface ExcelUploaderProps {
     allInteractions: Interaction[];
 }
 const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderProps) => {
+    const COMPLETE_CONTACT_QUESTIONING_STATUS = 'הושלם התחקור';
     const existingContacts = allInteractions.map(interaction => interaction.contacts).flat();
-    const existingContactsIds : string[] = existingContacts.map(contact => contact.idNumber).filter(id => id !== null && id !== '') as string[];
+    const existingContactsIds : string[] = existingContacts.map(contact => contact.idNumber).filter(id => id) as string[];
     const {alertError} = useCustomSwal();
     const [data, setData] = React.useState<InteractedContact[] | undefined>();
     const buttonRef = React.useRef<HTMLInputElement>(null);
@@ -55,8 +56,8 @@ const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderP
                 user: userId
             })
             const excelContactsIds = contacts.map((contact) => contact.identificationNumber)
-                                             .filter(id => id !== null && id !== '');
-            if(contacts.some((contact) => contact.contactStatus == 'הושלם התחקור')) {
+                                             .filter(id => id);
+            if(contacts.some((contact) => contact.contactStatus == COMPLETE_CONTACT_QUESTIONING_STATUS)) {
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -67,8 +68,7 @@ const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderP
                 })
                 alertError('לא ניתן לטעון מגע בסטטוס הושלם התחקור, שנו סטטוס זה ונסו שוב');
             }
-            else {
-                if(!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
+            else if(!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
                     axios.post('/contactedPeople/excel', {contactEvent, contacts})
                         .then((result) => {
                                 logger.info({
@@ -84,7 +84,7 @@ const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderP
                         .catch(error => {
                             logger.error({
                                 service: Service.CLIENT,
-                                severity: Severity.LOW,
+                                severity: Severity.HIGH,
                                 workflow: 'Saving Contacted People Excel',
                                 step: `got error from server: ${error}`,
                                 investigation: epidemiologyNumber,
@@ -93,7 +93,6 @@ const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderP
                             alertError('שגיאה בשמירת הנתונים');
                         })
                 }
-            }
         }
     };
 
