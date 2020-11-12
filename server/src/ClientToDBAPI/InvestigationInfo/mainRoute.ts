@@ -6,7 +6,7 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { CHECK_FOR_DUPLICATE_IDS } from '../../DBService/ContactedPeople/Mutation';
-import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES, GET_SUB_STATUSES_BY_STATUS, GET_STATUSES } from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
@@ -290,29 +290,6 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'GraphQL GET subStatuses request to the DB',
-                step: `graphqlResult CATCH fail ${err}`
-            });
-            response.status(errorStatusCode).send('error in fetching data: ' + err)
-        });
-});
-
-investigationInfo.get('/statuses', (request: Request, response: Response) => {
-    graphqlRequest(GET_STATUSES, response.locals)
-        .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'GraphQL GET Statuses request to the DB',
-                step: 'graphqlResult THEN succsses'
-            });
-
-            response.send(result)
-        })
-        .catch((err: any) => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'GraphQL GET Statuses request to the DB',
                 step: `graphqlResult CATCH fail ${err}`
             });
             response.status(errorStatusCode).send('error in fetching data: ' + err)

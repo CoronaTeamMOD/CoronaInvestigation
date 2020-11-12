@@ -217,34 +217,34 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchStatuses = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching Statuses',
-            step: `launching sub statuses request`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        axios.get('/investigationInfo/statuses').then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Fetching Statuses',
-                step: `recieved DB response ${JSON.stringify(result)}`,
-            });
-            const resultNodes = result?.data?.data?.allInvestigationStatuses?.nodes;
-
-            if (resultNodes) {
-                setStatuses(resultNodes.map((element: any) => element.displayName));
-            }
-        }).catch((err: any) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Fetching Statuses',
-                step: `error DB response ${JSON.stringify(err)}`,
-            });
-        });
+        axios.get('/landingPage/investigationStatuses').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'The investigations statuses were fetched successfully'
+                    });
+                    const allStatuses: string[] = result.data;
+                    setStatuses(allStatuses);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'GraphQL GET statuses request to the DB',
+                    step: err
+                });
+            })
     };
 
     useEffect(() => {

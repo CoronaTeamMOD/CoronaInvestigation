@@ -62,12 +62,3 @@ query GetAllSubStatuses($parentStatus: String!) {
 }
 `;
 
-export const GET_STATUSES = gql`
-query GetAllSubStatuses {
-  allInvestigationStatuses {
-    nodes {
-      displayName
-    }
-  }
-}
-`;
