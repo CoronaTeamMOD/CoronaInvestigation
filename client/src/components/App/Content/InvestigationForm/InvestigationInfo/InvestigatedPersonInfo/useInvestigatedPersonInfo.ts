@@ -28,7 +28,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const transferedSubStatus = 'העברת חקירה';
+    const transferedSubStatus = 'נדרשת העברה';
 
     const handleInvestigationFinish = async () => {
         Swal.fire({

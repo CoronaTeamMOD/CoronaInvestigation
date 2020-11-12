@@ -3,11 +3,10 @@ import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import { Collapse, Grid, Typography, Paper, TextField, InputLabel } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
 import User from 'models/User';
-import userType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import { InvestigationStatus } from 'models/InvestigationStatus';
@@ -39,15 +38,13 @@ const InvestigatedPersonInfo = (props: Props) => {
     const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
     const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
     const requiredMessage = 'שדה זה הינו שדה חובה';
-    const transferInvestigation = 'העברת חקירה';
+    const transferInvestigation = 'נדרשת העברה';
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
 
-    const currUser = useSelector<StoreStateType, User>(state => state.user);
-    const investigationCreator = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     const statuses = useSelector<StoreStateType, string[]>(state => state.statuses);
@@ -61,8 +58,10 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
-    useEffect(()=>{
-        validateStatusReason(investigationStatus.subStatus? investigationStatus.subStatus : '')
+    useEffect(()=> {
+        if (investigationStatus.subStatus !== transferInvestigation) {
+            validateStatusReason(investigationStatus.statusReason)
+        }
     },[investigationStatus.subStatus])
     const permittedStatuses = statuses.filter((status: string) => {
         if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
@@ -86,7 +85,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
-    const validateStatusReason = async (newStatusReason : string) => {
+    const validateStatusReason = async (newStatusReason : string | null) => {
         try {
             await validationSchema.validateSync(newStatusReason);
             setStatusReasonError(null)
@@ -110,7 +109,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(event) => { handleLeaveInvestigationClick(event) }}
+                    onClick={(event) => { 
+                        handleLeaveInvestigationClick(event); 
+                        validateStatusReason(investigationStatus.statusReason)}}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
@@ -192,13 +193,14 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
+                                        className={classes.subStatusSelect}
                                         value={investigationStatus.statusReason}
                                         required={investigationStatus.subStatus === transferInvestigation}
                                         placeholder='פירוט'
                                         error={statusReasonError ? true : false}
                                         label={statusReasonError ? statusReasonError[0] : ''}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                                            const newStatusReason: string = event.target.value ? event.target.value : '';
+                                            const newStatusReason: string = event.target.value;
                                             const isValid = validationSchema.isValidSync(newStatusReason);
                                             validateStatusReason(newStatusReason)
                                             if (isValid || newStatusReason === '') {
