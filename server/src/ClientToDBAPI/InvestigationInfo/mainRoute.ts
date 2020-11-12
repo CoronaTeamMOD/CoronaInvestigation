@@ -297,7 +297,7 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
 });
 
 investigationInfo.get('/statuses', (request: Request, response: Response) => {
-    graphqlRequest(GET_STATUSES, response.locals, {})
+    graphqlRequest(GET_STATUSES, response.locals)
         .then((result: any) => {
             logger.info({
                 service: Service.SERVER,
