@@ -35,7 +35,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             interactedContact.identificationNumber !== null &&
             contact.identificationNumber === interactedContact.identificationNumber);
         if (isDuplicateId) {
-            handleDuplicateIdsError(interactedContact.identificationNumber);
+            handleDuplicateIdsError([interactedContact.identificationNumber]);
             return false;
         } else {
             const contacts = [interactedContact];

@@ -12,6 +12,7 @@ import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId'
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
@@ -35,10 +36,12 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  { interactionData, loadInteractions, closeNewDialog, closeEditDialog, }: Props
+  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog }: Props
 ): JSX.Element => {
 
   const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+  const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
+
   const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
   const methods = useForm<InteractionEventDialogData>({
     defaultValues: interactionData,
@@ -76,7 +79,25 @@ const InteractionEventForm: React.FC<Props> = (
 
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
-    saveInteractions(interactionDataToSave);
+    let allContactsIds: IdToCheck[] = [];
+    let newIds: IdToCheck[] = [];
+    interactions.forEach((interaction: InteractionEventDialogData) => {
+        interaction[InteractionEventDialogFields.CONTACTS].forEach((contact: Contact) => 
+          allContactsIds.push({ 
+            id: contact[InteractionEventContactFields.ID], 
+            serialId: contact[InteractionEventContactFields.SERIAL_ID]
+          }));
+    });
+    interactionDataToSave[InteractionEventDialogFields.CONTACTS].forEach((contact: Contact) => {
+      newIds.push({
+        id: contact[InteractionEventContactFields.ID], 
+        serialId: contact[InteractionEventContactFields.SERIAL_ID]
+      })
+    });
+    const contactsIdsToCheck: IdToCheck[] = allContactsIds.concat(newIds);
+    if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
+      saveInteractions(interactionDataToSave);
+    }
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {
@@ -243,6 +264,7 @@ const InteractionEventForm: React.FC<Props> = (
 export default InteractionEventForm;
 
 interface Props {
+  interactions: InteractionEventDialogData[];
   interactionData?: InteractionEventDialogData;
   loadInteractions: () => void;
   closeNewDialog: () => void;
