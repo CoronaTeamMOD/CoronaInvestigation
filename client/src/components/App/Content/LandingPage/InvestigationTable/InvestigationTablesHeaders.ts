@@ -1,5 +1,7 @@
 import SortOrder from 'models/enums/SortOrder';
 
+export const investigatorIdPropertyName = 'investigatorId';
+
 export enum TableHeadersNames {
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
@@ -19,6 +21,7 @@ export enum TableHeadersNames {
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
+export interface IndexedInvestigationData extends IndexedInvestigation {[investigatorIdPropertyName]: string;}
 export type Order = SortOrder.asc | SortOrder.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
 

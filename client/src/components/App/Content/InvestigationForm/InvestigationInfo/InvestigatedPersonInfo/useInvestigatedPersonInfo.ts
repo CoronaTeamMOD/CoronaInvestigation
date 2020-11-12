@@ -134,14 +134,14 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         })
     };
 
-    const shouldUpdateInvestigationStatus = () => {
+    const shouldUpdateInvestigationStatus = (investigationInvestigator? : string) => {
+        const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === currInvestigatorId
-                && userRole === userType.ADMIN || userRole === userType.SUPER_ADMIN);
+            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck);
         }
         return shouldStatusUpdate;
-    }
+    };
 
     return {
         confirmExitUnfinishedInvestigation,

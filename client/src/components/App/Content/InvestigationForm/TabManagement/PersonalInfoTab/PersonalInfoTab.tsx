@@ -22,7 +22,7 @@ import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import {setInvestigationStatus, setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
+import {setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
@@ -90,7 +90,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
         setStreets, occupationsStateContext, setInsuranceCompany, setInvestigatedPatientRoles,
     });
-    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const methods = useForm({
         mode: 'all',
@@ -272,33 +271,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     severity: Severity.LOW,
                     step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                 });
-
-                if (isInvestigationNew) {
-                    if(shouldUpdateInvestigationStatus()) {
-                        const activeInvestigationStatus = {
-                            mainStatus: InvestigationMainStatus.IN_PROCESS,
-                            subStatus: null
-                        }
-                        axios.post('/investigationInfo/updateInvestigationStatus', {
-                            investigationMainStatus: activeInvestigationStatus.mainStatus,
-                            investigationSubStatus: activeInvestigationStatus.subStatus,
-                            epidemiologyNumber: investigationId
-                        })
-                            .then(() => {
-                                setInvestigationStatus(activeInvestigationStatus);
-                                logger.info({
-                                    ...logInfo,
-                                    severity: Severity.LOW,
-                                    step: `Investigation status successfully updates to be in process`,
-                                })
-                            })
-                            .catch((error) => logger.error({
-                                ...logInfo,
-                                severity: Severity.HIGH,
-                                step: `got errors updating status: ${error}`,
-                            }))
-                    }
-                }
             })
             .catch((error) => {
                 logger.error({

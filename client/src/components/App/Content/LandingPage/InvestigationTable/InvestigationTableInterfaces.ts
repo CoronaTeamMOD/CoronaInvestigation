@@ -4,7 +4,7 @@ import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import Desk from 'models/Desk';
 
-import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
+import { IndexedInvestigation, IndexedInvestigationData} from './InvestigationTablesHeaders';
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
@@ -17,8 +17,8 @@ export interface useInvestigationTableParameters {
 
 export interface useInvestigationTableOutcome {
     tableRows: InvestigationTableRow[];
-    onInvestigationRowClick: (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => void;
-    convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof typeof TableHeadersNames]: any };
+    onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
+    convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;

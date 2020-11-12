@@ -27,8 +27,15 @@ import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigatio
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
-import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
+import {
+    TableHeadersNames,
+    IndexedInvestigation,
+    IndexedInvestigationData,
+    investigatorIdPropertyName
+} from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import useInvestigatedPersonInfo
+    from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
 
@@ -79,6 +86,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks } = parameters;
+    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -420,7 +428,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchTableData()
     }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
 
-    const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+    const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+        const logInfo = {
+            service: Service.CLIENT,
+            workflow: 'Investigation click',
+            investigation: investigationRow.epidemiologyNumber,
+            user: user.id
+        };
+
         axios.interceptors.request.use(
             (config) => {
                 config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -432,13 +447,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         );
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
                 step: 'the clicked investigation is not the first one',
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
-            })
+            });
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -450,66 +462,70 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             setAxiosInterceptorId(newInterceptor);
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
-        setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus,
-            subStatus: investigationRow.investigationSubStatus
-        });
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
+        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
                 step: 'the user clicked a new investigation',
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
             })
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
-            }).then(() => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Investigation click',
-                    step: 'updated investigation start time now sending request to update status',
-                    investigation: investigationRow.epidemiologyNumber,
-                    user: user.id
-                });
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Investigation click',
-                    step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                    investigation: investigationRow.epidemiologyNumber,
-                    user: user.id
-                });
-                moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-            }).catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL POST request to the DB',
-                    step: error
-                });
-                fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
             })
+                .then(async () => {
+                    logger.info({
+                        ...logInfo,
+                        severity: Severity.LOW,
+                        step: 'updated investigation start time now sending request to update status',
+                    });
+                    try {
+                        await axios.post('/investigationInfo/updateInvestigationStatus', {
+                            investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
+                            investigationSubStatus: null,
+                            epidemiologyNumber: investigationRow.epidemiologyNumber
+                        });
+                        setInvestigationStatus({
+                            mainStatus: InvestigationMainStatus.IN_PROCESS,
+                            subStatus: null,
+                        });
+                        logger.info({
+                            ...logInfo,
+                            severity: Severity.LOW,
+                            step: `Updated new investigation to have "in process" status and entered the investigation,
+                             investigated person: ${investigationRow.fullName}, 
+                             investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
+                        });
+                        moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
+                    } catch (e) {
+                        throw new Error('failed to update investigation status with error' + JSON.stringify(e))
+                    }
+                })
+                .catch((error) => {
+                    logger.error({
+                        ...logInfo,
+                        severity: Severity.HIGH,
+                        step: error
+                    });
+                    fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
+                })
         } else {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
                 step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
-            })
+            });
+            setInvestigationStatus({
+                mainStatus: investigationRow.investigationStatus,
+                subStatus: investigationRow.investigationSubStatus,
+            });
             moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
         }
     }
 
-    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
+    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
@@ -520,6 +536,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
+            [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.statusReason]: row.statusReason,
