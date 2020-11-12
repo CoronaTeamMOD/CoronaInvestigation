@@ -109,7 +109,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             }).catch(err => {
                 logger.error({
                     service: Service.CLIENT,
-                    severity: Severity.LOW,
+                    severity: Severity.HIGH,
                     workflow: 'Saving all contacts',
                     step: `got the following error from the server: ${err}`,
                     user: userId,
