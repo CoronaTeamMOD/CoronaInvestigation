@@ -1,9 +1,9 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 import User from 'models/User';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
