@@ -563,6 +563,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: indexedRow.investigationStatus,
             investigationSubStatus: transferedSubStatus,
+            statusReason: null,
             epidemiologyNumber: indexedRow.epidemiologyNumber
         })
     }

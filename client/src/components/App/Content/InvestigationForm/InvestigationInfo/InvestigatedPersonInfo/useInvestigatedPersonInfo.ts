@@ -28,6 +28,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    const transferedSubStatus = 'העברת חקירה';
 
     const handleInvestigationFinish = async () => {
         Swal.fire({
@@ -46,66 +47,80 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
-            showCancelButton: true,
-            cancelButtonText: 'בטל',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
+        if(investigationStatus.subStatus === transferedSubStatus && 
+            (!investigationStatus.statusReason || investigationStatus.statusReason === '')) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'שים לב, כדי לצאת מחקירה יש להזין שדה פירוט',
+                    confirmButtonColor: theme.palette.primary.main,
+                    confirmButtonText: 'הבנתי, המשך',
+                    customClass: {
+                        title: classes.swalTitle,
+                    }
+                })
             }
-        }).then((result) => {
-            if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Update Investigation Status',
-                    step: `launching investigation status request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
-                const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
-                if (shouldUpdateInvestigationStatus()) {
-                    axios.post('/investigationInfo/updateInvestigationStatus', {
-                        investigationMainStatus: investigationStatus.mainStatus,
-                        investigationSubStatus: subStatus,
-                        statusReason: statusReason,
-                        epidemiologyNumber: epidemiologyNumber
-                    }).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Status',
-                            step: `update investigation status request was successful`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Status',
-                            step: `got errors in server result: ${error}`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        handleUnfinishedInvestigationFailed();
-                    })
+        else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?',
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+                customClass: {
+                    title: classes.swalTitle,
                 }
-                if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
-                    updateIsDeceased(handleInvestigationFinish);
-                } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
-                    updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                } else {
-                    handleInvestigationFinish();
+            }).then((result) => {
+                if (result.value) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Update Investigation Status',
+                        step: `launching investigation status request`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
+                    const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
+                    if (shouldUpdateInvestigationStatus()) {
+                        axios.post('/investigationInfo/updateInvestigationStatus', {
+                            investigationMainStatus: investigationStatus.mainStatus,
+                            investigationSubStatus: subStatus,
+                            statusReason: statusReason,
+                            epidemiologyNumber: epidemiologyNumber
+                        }).then(() => {
+                            logger.info({
+                                service: Service.CLIENT,
+                                severity: Severity.LOW,
+                                workflow: 'Update Investigation Status',
+                                step: `update investigation status request was successful`,
+                                user: userId,
+                                investigation: epidemiologyNumber
+                            });
+                        }).catch((error) => {
+                            logger.error({
+                                service: Service.CLIENT,
+                                severity: Severity.LOW,
+                                workflow: 'Update Investigation Status',
+                                step: `got errors in server result: ${error}`,
+                                user: userId,
+                                investigation: epidemiologyNumber
+                            });
+                            handleUnfinishedInvestigationFailed();
+                        })
+                    }
+                    if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
+                        updateIsDeceased(handleInvestigationFinish);
+                    } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                        updateIsCurrentlyHospitialized(handleInvestigationFinish);
+                    } else {
+                        handleInvestigationFinish();
+                    }
                 }
-            }
-            ;
-        });
+                ;
+            });
+        }
     };
 
     const getPersonAge = (birthDate: Date) => {
@@ -141,7 +156,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck);
+            investigationStatus.mainStatus === InvestigationMainStatus.NEW ? 
+            shouldStatusUpdate = (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
+            true;
         }
         return shouldStatusUpdate;
     };
