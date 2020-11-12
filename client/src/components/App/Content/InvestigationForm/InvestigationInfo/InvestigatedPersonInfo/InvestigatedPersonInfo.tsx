@@ -44,6 +44,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
+    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
@@ -62,13 +63,14 @@ const InvestigatedPersonInfo = (props: Props) => {
         if (investigationStatus.subStatus !== transferInvestigation) {
             validateStatusReason(investigationStatus.statusReason)
         }
+        console.log(wasInvestigationReopend)
     },[investigationStatus.subStatus])
     const permittedStatuses = statuses.filter((status: string) => {
         if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
-            && status === InvestigationMainStatus.NEW) {
-            return true
+            && status === InvestigationMainStatus.NEW && !wasInvestigationReopend) {
+            return true;
         }
-        return status !== InvestigationMainStatus.DONE
+        return (status !== InvestigationMainStatus.DONE && status !== InvestigationMainStatus.NEW)
     })
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
