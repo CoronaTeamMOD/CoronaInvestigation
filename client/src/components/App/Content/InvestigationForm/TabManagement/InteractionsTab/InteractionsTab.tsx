@@ -71,6 +71,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 {
                     getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).reverse().map(date =>
                         <ContactDateCard
+                            allInteractions={interactions}
                             loadInteractions={loadInteractions}
                             contactDate={date}
                             onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
@@ -88,6 +89,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
                 {
@@ -96,6 +98,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
             </form>

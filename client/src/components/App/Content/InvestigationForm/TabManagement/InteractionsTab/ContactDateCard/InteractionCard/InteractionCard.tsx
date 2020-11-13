@@ -28,7 +28,7 @@ const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, rel
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
-    const { interaction, onEditClick, onDeleteClick, onDeleteContactClick } = props;
+    const { interaction, allInteractions, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
 
@@ -116,7 +116,12 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         <Grid item xs={12}>
                             <div className={classes.excelControllers}>
                                 <ExcelFormatDownloader />
-                                {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions} />}
+                                {interaction.id && 
+                                <ContactUploader 
+                                    contactEvent={interaction.id}
+                                    onSave={props.loadInteractions}
+                                    allInteractions={allInteractions}
+                                />}
                             </div>
                         </Grid>
                         {interaction.contacts.map(person => (
@@ -137,6 +142,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 };
 
 interface Props {
+    allInteractions: Interaction[];
     interaction: Interaction;
     onEditClick: () => void;
     onDeleteClick: () => void;

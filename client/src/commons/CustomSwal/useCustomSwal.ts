@@ -10,7 +10,8 @@ const useCustomSwal = () => {
             icon,
             customClass: {
                 title: classes.swalTitle,
-                content: classes.swalText
+                content: classes.swalText,
+                container: classes.container
             },
             ...options
         });

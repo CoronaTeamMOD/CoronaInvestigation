@@ -9,7 +9,8 @@ import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import {setFormState} from 'redux/Form/formActionCreators';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
 import {
@@ -20,31 +21,30 @@ import {
 } from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const { handleDuplicateIdsError } = useDuplicateContactId();
+    
+    const { checkDuplicateIds } = useDuplicateContactId();
 
-    const saveContact = (interactedContact: InteractedContact) => {
-        const contacts = [interactedContact];
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving single contact',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        if(!checkForSpecificDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
-            interactedContact.identificationNumber = '';
-            const changedInteractedContact = allContactedInteractions.findIndex(currContact => currContact.id === interactedContact.id);
-            allContactedInteractions.splice(changedInteractedContact, 1, interactedContact);
-            setAllContactedInteractions(allContactedInteractions);
-            handleDuplicateIdsError(interactedContact.identificationNumber, userId, epidemiologyNumber);
+    const saveContact = (interactedContact: InteractedContact) : boolean => {
+        if (checkDuplicateIds([ ...allContactedInteractions, interactedContact]
+            .map((contact: InteractedContact) => contact.identificationNumber))) {
+                return false;
         } else {
+            const contacts = [interactedContact];
+            const contactsSavingVariable = {
+                unSavedContacts: { contacts }
+            }
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving single contact',
+                step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            }) 
             axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
                 if (response.data?.data?.updateContactPersons) {
                     logger.info({
@@ -55,9 +55,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                         user: userId,
                         investigation: epidemiologyNumber
                     });
-                } else if (response.data.includes(duplicateIdsErrorMsg)) {
-                    handleDuplicateIdsError(response.data.split(':')[1], userId, epidemiologyNumber);
-                }
+                } 
             }).catch(err => {
                 logger.error({
                     service: Service.CLIENT,
@@ -68,27 +66,52 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     investigation: epidemiologyNumber
                 })
             });
+            return true;
         }
     }
 
-    const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
-        const contacts = allContactedInteractions;
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving all contacts',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        return axios.post('/contactedPeople/interactedContacts',
-            {
+    const saveContactQuestioning = () => {
+        const isDuplicateId = checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))
+        if (!isDuplicateId) {
+            const contacts = allContactedInteractions;
+            const contactsSavingVariable = {
                 unSavedContacts: {contacts}
             }
-        );
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving all contacts',
+                step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            axios.post('/contactedPeople/interactedContacts',
+                {
+                    unSavedContacts: {contacts}
+                }
+            ).then((response: AxiosResponse<any>) => {
+                if (response.data?.data?.updateContactPersons) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving all contacts',
+                        step: 'got respond from the server',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                }
+            }).catch(err => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Saving all contacts',
+                    step: `got the following error from the server: ${err}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            })
+            .finally(() => setFormState(epidemiologyNumber, id, true))
+        }
     };
 
     const calculateEarliestDateToInvestigate = (coronaTestDate: Date | null, symptomsStartTime: Date | null, doesHaveSymptoms: boolean): Date => {
