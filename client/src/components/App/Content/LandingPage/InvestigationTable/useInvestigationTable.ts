@@ -446,9 +446,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
         setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ?
-                InvestigationMainStatus.IN_PROCESS :
-                investigationRow.investigationStatus,
+            mainStatus: investigationRow.investigationStatus,
             subStatus: investigationRow.investigationSubStatus
         })
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
@@ -456,7 +454,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 service: Service.CLIENT,
                 severity: Severity.LOW,
                 workflow: 'Investigation click',
-                step: 'the user clicked a new investigation, updating status in the DB',
+                step: 'the user clicked a new investigation',
                 investigation: investigationRow.epidemiologyNumber,
                 user: user.id
             })

@@ -187,7 +187,6 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                                     user: response.locals.user.id,
                                     investigation: epidemiologyNumber
                                 });
-                                sendSavedInvestigationToIntegration(epidemiologyNumber, 'Ending Investigation', response.locals.user.id);
                                 response.send({message: 'updated the investigation status and end time successfully'});
                             }).catch(err => {
                                 logger.error({

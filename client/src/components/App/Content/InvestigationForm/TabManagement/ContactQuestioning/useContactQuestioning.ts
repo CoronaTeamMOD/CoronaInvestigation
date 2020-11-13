@@ -1,3 +1,4 @@
+import {AxiosResponse} from 'axios';
 import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import {differenceInCalendarDays, subDays} from 'date-fns';
@@ -6,12 +7,12 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import {setFormState} from 'redux/Form/formActionCreators';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import {duplicateIdsErrorMsg} from './ContactQuestioning'
 import {
     convertDate,
     nonSymptomaticPatient,
@@ -20,37 +21,22 @@ import {
 } from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
-    const {alertWarning} = useCustomSwal();
+    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    
+    const { checkDuplicateIds } = useDuplicateContactId();
 
-    const handleDuplicateIdsError = (duplicateIdentificationNumber: string) => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Create Interaction',
-            step: 'Didnt save interactions due to duplicate ids',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        alertWarning(`שים לב, מספר זיהוי ${duplicateIdentificationNumber} כבר קיים בחקירה! אנא בצע את השינויים הנדרשים`);
-    }
-
-    const saveContact = (interactedContact: InteractedContact) => {
-        const contacts = [interactedContact];
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving single contact',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then(() => {
+    const saveContact = (interactedContact: InteractedContact) : boolean => {
+        if (checkDuplicateIds(allContactedInteractions
+            .map((contact: InteractedContact) => contact.identificationNumber))) {
+                return false;
+        } else {
+            const contacts = [interactedContact];
+            const contactsSavingVariable = {
+                unSavedContacts: { contacts }
+            }
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,
@@ -58,11 +44,19 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
                 user: userId,
                 investigation: epidemiologyNumber
-            });
-        }).catch(err => {
-            if (err.response.data.includes(duplicateIdsErrorMsg)) {
-                handleDuplicateIdsError(err.response.data.split(':')[1]);
-            } else {
+            }) 
+            axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
+                if (response.data?.data?.updateContactPersons) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving single contact',
+                        step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                } 
+            }).catch(err => {
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
@@ -71,28 +65,53 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     user: userId,
                     investigation: epidemiologyNumber
                 })
-            }
-        });
-    };
-
-    const saveContactQuestioning = (): Promise<void> => {
-        const contacts = allContactedInteractions;
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
+            });
+            return true;
         }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving all contacts',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        return axios.post('/contactedPeople/interactedContacts',
-            {
+    }
+
+    const saveContactQuestioning = () => {
+        const isDuplicateId = checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))
+        if (!isDuplicateId) {
+            const contacts = allContactedInteractions;
+            const contactsSavingVariable = {
                 unSavedContacts: {contacts}
             }
-        );
+            logger.info({
+                service: Service.CLIENT,
+                severity: Severity.LOW,
+                workflow: 'Saving all contacts',
+                step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            axios.post('/contactedPeople/interactedContacts',
+                {
+                    unSavedContacts: {contacts}
+                }
+            ).then((response: AxiosResponse<any>) => {
+                if (response.data?.data?.updateContactPersons) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Saving all contacts',
+                        step: 'got respond from the server',
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                }
+            }).catch(err => {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.HIGH,
+                    workflow: 'Saving all contacts',
+                    step: `got the following error from the server: ${err}`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+            })
+            .finally(() => setFormState(epidemiologyNumber, id, true))
+        }
     };
 
     const calculateEarliestDateToInvestigate = (coronaTestDate: Date | null, symptomsStartTime: Date | null, doesHaveSymptoms: boolean): Date => {
@@ -335,6 +354,20 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
+    const checkForSpecificDuplicateIds = (identificationNumberToCheck: string, interactedContactId: number) => {
+        if(Boolean(identificationNumberToCheck)) {
+            return (allContactedInteractions.findIndex((contact) => contact.identificationNumber === identificationNumberToCheck
+                && contact.id !== interactedContactId) === -1);
+        } else {
+            return !Boolean(identificationNumberToCheck)
+        }
+    }
+
+    const checkAllContactsForDuplicateIds = () => {
+        const allIdentificationNumbersToCheck = allContactedInteractions.filter(currContact => Boolean(currContact.identificationNumber));
+        return (new Set(allIdentificationNumbersToCheck)).size === allIdentificationNumbersToCheck.length;
+    }
+
     return {
         saveContact,
         updateInteractedContact,
@@ -343,7 +376,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         saveContactQuestioning,
         loadFamilyRelationships,
         loadContactStatuses,
-        handleDuplicateIdsError
+        checkForSpecificDuplicateIds,
+        checkAllContactsForDuplicateIds
     };
 };
 

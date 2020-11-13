@@ -1,5 +1,6 @@
 export enum UsersManagementTableHeadersNames {
     FULL_NAME = 'fullName',
+    USER_NAME = 'userName',
     SOURCE_ORGANIZATION = 'sourceOrganization',
     LANGUAGES = 'languages',
     MABAR_USER_NAME = 'id',

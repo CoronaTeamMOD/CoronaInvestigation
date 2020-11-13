@@ -5,9 +5,7 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
-import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -15,8 +13,7 @@ import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-
-export const orderedTabsNames : string[] = [TabNames.PERSONAL_INFO, TabNames.CLINICAL_DETAILS, TabNames.EXPOSURES_AND_FLIGHTS, TabNames.INTERACTIONS, TabNames.CONTACT_QUESTIONING];
+import { orderedTabsNames } from './useTabManagement'
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
@@ -26,8 +23,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         areThereContacts,
         setAreThereContacts
     } = tabManagementProps;
-
-    const lastTabId = TabId.CONTACTS_QUESTIONING;
 
     const tabs: TabObj[] = [
         {
@@ -51,7 +46,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             displayComponent: <InteractionsTab id={3} setAreThereContacts={setAreThereContacts}/>
         },
         {
-            id: lastTabId,
+            id: TabId.CONTACTS_QUESTIONING,
             name: orderedTabsNames[4],
             displayComponent: <ContactQuestioning id={4} />
         }
@@ -77,9 +72,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId];
     }
     
-    useEffect(() => {
-        !areThereContacts && setFormState(investigationId, lastTabId, true);
-    }, [areThereContacts]);
+
 
     return (
         <Card className={classes.card}>
@@ -90,7 +83,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab: TabObj) =>
-                        !(tab.id === lastTabId && !areThereContacts) &&
+                        !(tab.id === TabId.CONTACTS_QUESTIONING && !areThereContacts) &&
                         <StyledTab
                             // @ts-ignore
                             type='submit'

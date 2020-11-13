@@ -136,17 +136,16 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
-    const getFilteredUsersOfCurrentCounty = () : {id: string, value: User}[] => {
+    const getFilteredUsersOfCurrentCounty = (): { id: string, value: User }[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
-        return allUsersOfCountyArray.filter(({id, value}) => {
-
-            // We always display users without desks
-            if(!value.deskByDeskId) {
-                return true;
-            }
-
-            return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
-        });
+        return filterOptions.investigationDesk.length === 0 ?
+            allUsersOfCountyArray :
+            allUsersOfCountyArray.filter(({ id, value }) => {
+                if (!value.deskByDeskId) {
+                    return false;
+                }
+                return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+            });
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
@@ -176,7 +175,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {
                                                             (option.value.sourceOrganization || option.value.deskName) ?
                                                                 `${option.value.sourceOrganization ? option.value.sourceOrganization : hasNoSourceOrganization},
-                                                                ${option.value.deskName ? option.value.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
+                                                                ${option.value.deskByDeskId?.deskName ? option.value.deskByDeskId?.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
                                                         }
                                                     </a>
                                                     <br></br>
@@ -290,8 +289,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     )
                 }
                 else {
-                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames]; 
-                    return deskValue ? deskValue : unassignedToDesk 
+                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames];
+                    return deskValue ? deskValue : unassignedToDesk
                 }
             case TableHeadersNames.priority:
                 let cssClass = '';

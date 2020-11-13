@@ -1,11 +1,11 @@
-import React from 'react';
-import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
+import { useSelector } from 'react-redux';
+import { setFormState } from 'redux/Form/formActionCreators';
+
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
@@ -13,21 +13,16 @@ import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
 
 import useStyles from './InvestigationFormStyles';
 import useInvestigationForm from './useInvestigationForm';
-import useTabManagement from './TabManagement/useTabManagement';
+import useTabManagement ,{ LAST_TAB_ID } from './TabManagement/useTabManagement';
 import InvestigationInfoBar from './InvestigationInfo/InvestigationInfoBar';
-import TabManagement, { orderedTabsNames } from './TabManagement/TabManagement';
+import TabManagement from './TabManagement/TabManagement';
 import { StartInvestigationDateVariablesProvider } from './StartInvestiationDateVariables/StartInvestigationDateVariables';
 
-export const LAST_TAB_ID = 4;
 const END_INVESTIGATION = 'סיים חקירה';
 const CONTINUE_TO_NEXT_TAB = 'המשך לשלב הבא';
 
 const InvestigationForm: React.FC = (): JSX.Element => {
     const classes = useStyles({});
-
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const formsValidations = useSelector<StoreStateType, (boolean | null)[]>((state) => state.formsValidations[investigationId]);
 
     const [showSnackbar, setShowSnackbar] = React.useState<boolean>(false);
     const [exposureDate, setExposureDate] = React.useState<Date>();
@@ -35,6 +30,9 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [symptomsStartDate, setSymptomsStartDate] = React.useState<Date>();
     const [hasSymptoms, setHasSymptoms] = React.useState<boolean>(false);
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
+    const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
+    const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -56,41 +54,20 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         [exposureDate, symptomsStartDate, hasSymptoms, endInvestigationDate, setSymptomsStartDate, setExposureDate, setHasSymptoms, setEndInvestigationDate]
     );
 
-    const { confirmFinishInvestigation, areThereContacts, setAreThereContacts } = useInvestigationForm();
+    const { areThereContacts, setAreThereContacts } = useInvestigationForm();
     const {
         currentTab,
-        setNextTab
-    } = useTabManagement();
+        setNextTab,
+    } = useTabManagement({lastTabDisplayedId});
 
-    const lastTabDisplayedId = areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;
+    useEffect(() => {
+        console.log('lastTabDisplayedId:' + lastTabDisplayedId);
+    }, [lastTabDisplayedId]);
 
-    const isInvestigationValid = () => {
-        return !(formsValidations.slice(0, lastTabDisplayedId + 1).some((formValidation) => !formValidation));
-    }
-
-    const handleNextPageClick = () => {
-        if(currentTab === lastTabDisplayedId) { 
-            if(isInvestigationValid()) {
-                confirmFinishInvestigation(epidemiologyNumber);
-            } else {
-                const displayedForms = [...formsValidations];
-                if (!areThereContacts) displayedForms.splice(orderedTabsNames.findIndex(tabName => tabName === TabNames.CONTACT_QUESTIONING), 1);
-                const didAnyTabsWasntChecked = displayedForms.some(form => form === null);
-                Swal.fire({
-                    icon: 'error',
-                    text: didAnyTabsWasntChecked ? 'שים לב שלא עברת בחלק מהטאבים' : '',
-                    title: 'חלק מן השדות אינם תקניים, נא מלא אותם מחדש ונסה שוב.',
-                    customClass: {
-                        title:classes.swalTitle,
-                        content: classes.swalText
-                    },
-
-                });
-            }
-        } else {
-            setNextTab(currentTab + 1);
-        }
-    }
+    useEffect(() => {
+        setLastTabDisplayedId(areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1);
+        !areThereContacts && setFormState(investigationId, LAST_TAB_ID, true);
+    }, [areThereContacts]);
 
     return (
         <div className={classes.content}>
@@ -111,7 +88,8 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                                     type="submit"
                                     form={`form-${currentTab}`}
                                     test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
-                                    onClick={handleNextPageClick}>
+                                    onClick={() => setNextTab(currentTab + 1)}                                    
+                                >
                                 {currentTab === lastTabDisplayedId ? END_INVESTIGATION : CONTINUE_TO_NEXT_TAB}
                                 </PrimaryButton>
                             </div>

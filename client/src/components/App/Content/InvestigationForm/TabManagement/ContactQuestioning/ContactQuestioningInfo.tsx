@@ -4,7 +4,6 @@ import {useSelector} from 'react-redux';
 import {Autocomplete} from '@material-ui/lab';
 import {Divider, Grid, TextField, Typography} from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import ContactType from 'models/ContactType';
 import ContactStatus from 'models/ContactStatus';
@@ -20,7 +19,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses} = props;
+    const {interactedContact, updateInteractedContact, contactStatuses, saveContact} = props;
 
     const {alertWarning} = useCustomSwal();
 
@@ -31,6 +30,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
 
     const setPreviousContactStatus = () => {
         const previousStatusName = contactStatuses.find((contactStatus: ContactStatus) => contactStatus.id === interactedContact.contactStatus);
+        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, previousStatusName?.id);
         setContactStatusInput(previousStatusName?.displayName || '');
     }
 
@@ -46,25 +46,13 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    let foundDuplicateIds: boolean = false;
-                    if (interactedContact.identificationNumber !== '') {
-                        axios.post('/contactedPeople/checkDuplicates', {currIdNumber: interactedContact.identificationNumber})
-                            .then((result) => {
-                                foundDuplicateIds = result.data;
-                            });
-                    }
-                    if (!foundDuplicateIds) {
-                        updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id)
-                    } else {
-                        alertWarning(`שים לב, מספר זיהוי ${interactedContact.identificationNumber} חוזר על עצמו, אנא בצע את השינויים הנדרשים`);
-                        setPreviousContactStatus();
-                    }
-                } else {
-                    setPreviousContactStatus();
-                }
+                    updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+                    !saveContact({...interactedContact, contactStatus: selectedStatus?.id}) && setPreviousContactStatus()
+                } 
             });
-        } else {
+        } else if (selectedStatus?.id) {
             updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
+            saveContact({...interactedContact, contactStatus: selectedStatus?.id});
         }
     }
 
@@ -141,4 +129,6 @@ interface Props {
     interactedContact: InteractedContact;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
-};
+    saveContact: (interactedContact: InteractedContact) => boolean;
+    checkForDuplicateIds: (idToCheck: string, interactedContactId: number) => boolean;
+}

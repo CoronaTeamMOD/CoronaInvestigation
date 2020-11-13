@@ -16,16 +16,15 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import {InvestigationStatus} from 'models/InvestigationStatus';
 import {setCountries} from 'redux/Country/countryActionCreators';
+import { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import {setContactType} from 'redux/ContactType/contactTypeActionCreators';
 import {setSubStatuses} from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
-import useStyles from './InvestigationFormStyles';
 import {useInvestigationFormOutcome} from './InvestigationFormInterfaces';
 import {LandingPageTimer, defaultUser} from './InvestigationInfo/InvestigationInfoBar';
-import {duplicateIdsErrorMsg} from './TabManagement/ContactQuestioning/ContactQuestioning';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 

@@ -123,27 +123,21 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 </Grid>
                                             ))
                                         }
+                                        <Grid item xs={6} key={otherSymptomFieldName}>
+                                            <CustomCheckbox
+                                                key={otherSymptomFieldName}
+                                                checkboxElements={[{
+                                                    key: otherSymptomFieldName,
+                                                    value: otherSymptomFieldName,
+                                                    labelText: otherSymptomFieldName,
+                                                    checked: props.value.includes(otherSymptomFieldName),
+                                                    onChange: () => handleSymptomCheck(otherSymptomFieldName, props.onChange, props.value)
+                                                }]}
+                                            />
+                                        </Grid>
                                     </>
                                 )}
                             />
-                            <Grid item xs={6} key={otherSymptomFieldName}>
-                                <Controller
-                                    name={ClinicalDetailsFields.SYMPTOMS}
-                                    control={control}
-                                    render={(props) => (
-                                        <CustomCheckbox
-                                            key={otherSymptomFieldName}
-                                            checkboxElements={[{
-                                                key: otherSymptomFieldName,
-                                                value: otherSymptomFieldName,
-                                                labelText: otherSymptomFieldName,
-                                                checked: props.value.includes(otherSymptomFieldName),
-                                                onChange: () => handleSymptomCheck(otherSymptomFieldName, props.onChange, props.value)
-                                            }]}
-                                        />
-                                    )}
-                                />
-                            </Grid>
                             <Collapse in={watchSymptoms.includes(otherSymptomFieldName)}>
                                 <Grid item xs={2}>
                                     <Controller

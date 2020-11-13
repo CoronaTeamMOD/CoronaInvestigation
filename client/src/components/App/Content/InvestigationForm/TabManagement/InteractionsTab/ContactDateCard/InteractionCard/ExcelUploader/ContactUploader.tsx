@@ -7,7 +7,9 @@ import {Button, Typography} from '@material-ui/core';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
@@ -17,10 +19,14 @@ const fileEndings = [
 ].map((suffix) => `.${suffix}`).join(',');
 
 interface ExcelUploaderProps {
-    contactEvent:number;
+    contactEvent: number;
     onSave: () => void;
+    allInteractions: Interaction[];
 }
-const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
+const ContactUploader = ({contactEvent, onSave, allInteractions} :ExcelUploaderProps) => {
+    const COMPLETE_CONTACT_QUESTIONING_STATUS = 'הושלם התחקור';
+    const existingContacts = allInteractions.map(interaction => interaction.contacts).flat();
+    const existingContactsIds : string[] = existingContacts.map(contact => contact.idNumber).filter(id => id) as string[];
     const {alertError} = useCustomSwal();
     const [data, setData] = React.useState<InteractedContact[] | undefined>();
     const buttonRef = React.useRef<HTMLInputElement>(null);
@@ -35,9 +41,10 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
     React.useEffect(() => {
         saveDataInFile(data)
     }, [data]);
+    const { checkDuplicateIds } = useDuplicateContactId();
 
     const onButtonClick = () => buttonRef?.current?.click();
-
+    
     const saveDataInFile = (contacts?: InteractedContact[]) => {
         if(contacts && contacts.length > 0) {
             logger.info({
@@ -48,29 +55,44 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                 investigation: epidemiologyNumber,
                 user: userId
             })
-            axios.post('/contactedPeople/excel', {contactEvent, contacts})
-                .then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Saving Contacted People Excel',
-                        step: 'contacted people excel was saved successfully',
-                        investigation: epidemiologyNumber,
-                        user: userId
-                    })
-                    onSave();
+            const excelContactsIds = contacts.map((contact) => contact.identificationNumber)
+                                             .filter(id => id);
+            if(contacts.some((contact) => contact.contactStatus == COMPLETE_CONTACT_QUESTIONING_STATUS)) {
+                logger.error({
+                    service: Service.CLIENT,
+                    severity: Severity.LOW,
+                    workflow: 'Saving Contacted People Excel',
+                    step: `trying to save excel with complete status contact`,
+                    investigation: epidemiologyNumber,
+                    user: userId
                 })
-                .catch(error => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Saving Contacted People Excel',
-                        step: `got error from server: ${error}`,
-                        investigation: epidemiologyNumber,
-                        user: userId
-                    })
-                    alertError('שגיאה בשמירת הנתונים');
-                })
+                alertError('לא ניתן לטעון מגע בסטטוס הושלם התחקור, שנו סטטוס זה ונסו שוב');
+            }
+            else if(!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
+                    axios.post('/contactedPeople/excel', {contactEvent, contacts})
+                        .then((result) => {
+                                logger.info({
+                                    service: Service.CLIENT,
+                                    severity: Severity.LOW,
+                                    workflow: 'Saving Contacted People Excel',
+                                    step: 'contacted people excel was saved successfully',
+                                    investigation: epidemiologyNumber,
+                                    user: userId
+                                })
+                                onSave();
+                        })
+                        .catch(error => {
+                            logger.error({
+                                service: Service.CLIENT,
+                                severity: Severity.HIGH,
+                                workflow: 'Saving Contacted People Excel',
+                                step: `got error from server: ${error}`,
+                                investigation: epidemiologyNumber,
+                                user: userId
+                            })
+                            alertError('שגיאה בשמירת הנתונים');
+                        })
+                }
         }
     };
 

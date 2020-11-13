@@ -4,9 +4,9 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mate
 
 import Contact from 'models/Contact';
 import { initAddress } from 'models/Address';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import StoreStateType from 'redux/storeStateType';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './NewInteractionEventDialogStyles';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
@@ -26,7 +26,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
-    const { interactionDate, closeNewDialog, isOpen, loadInteractions } = props;
+    const { interactionDate, closeNewDialog, isOpen, loadInteractions, interactions } = props;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
@@ -38,7 +38,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm 
+                    <InteractionEventForm
+                        interactions={interactions}
                         interactionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
                         loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
@@ -72,4 +73,5 @@ export interface Props {
     interactionDate: Date;
     closeNewDialog: () => void;
     loadInteractions: () => void;
+    interactions: InteractionEventDialogData[];
 }
