@@ -34,12 +34,11 @@ const useDuplicateContactId = () => {
     // It prevent from alerting when I tried to edit the same interaction with the same id - 
     // It will treat it as the same id and not as two different ids
     const checkDuplicateIdsForInteractions = (idsToCheck: IdToCheck[]) => {
-        const trimmedIds = idsToCheck.filter((id: IdToCheck) => id);
+        const trimmedIds = idsToCheck.filter((id: IdToCheck) => id.id);
         const duplicateIds = trimmedIds.filter((id, index: number) => 
             trimmedIds.findIndex((IdToCheck) => IdToCheck.id === id.id && IdToCheck.serialId !== id.serialId) !== -1);
-        const distinctDuplicateIds = duplicateIds.filter((id1, index) => duplicateIds.findIndex(id2 => id1.id === id2.id) === index)
-        if (distinctDuplicateIds.length > 0) {
-            handleDuplicateIdsError(distinctDuplicateIds.map(id => id.id));
+        if (duplicateIds.length > 0) {
+            handleDuplicateIdsError(Array.from(new Set(duplicateIds.map(id => id.id))));
             return true;
         } else {
             return false;
