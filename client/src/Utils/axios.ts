@@ -38,6 +38,7 @@ instance.interceptors.response.use(
         return config;
     }, 
     (error) => {
+        pendingRequestsCount--;
         if (pendingRequestsCount === 0) {
             setIsLoading(false);
         }
