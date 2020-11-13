@@ -11,19 +11,17 @@ import useInvestigationForm from '../useInvestigationForm'
 export const orderedTabsNames : string[] = [TabNames.PERSONAL_INFO, TabNames.CLINICAL_DETAILS, TabNames.EXPOSURES_AND_FLIGHTS, TabNames.INTERACTIONS, TabNames.CONTACT_QUESTIONING];
 const exportToMabarTabs = [TabId.CONTACTS_QUESTIONING];
 const validTabsBeforeExport = [TabId.PERSONAL_INFO, TabId.CLINICAL_DETAILS, TabId.EXPOSURES]
-const LAST_TAB_ID = 4;
+export const LAST_TAB_ID = 4;
 
-const useTabManagement = () => {
+const useTabManagement = ({lastTabDisplayedId}: {lastTabDisplayedId: number}) => {
 
     const { alertError } = useCustomSwal();
     const { confirmFinishInvestigation, areThereContacts } = useInvestigationForm();
-
-    const lastTabDisplayedId = areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1;
-
     const [currentTab, setCurrentTab] = useState<number>(0);
     const nextTab: RefObject<number> = useRef<number>(0);
     const epidemiologyNumber = useSelector<StoreStateType, number>(store => store.investigation.epidemiologyNumber);
     const tabsValidations = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
+
 
     useEffect(() => {
         if (tabsValidations !== undefined) {
@@ -65,7 +63,6 @@ const useTabManagement = () => {
         currentTab,
         setCurrentTab,
         setNextTab,
-        lastTabDisplayedId
     }
 }
 
