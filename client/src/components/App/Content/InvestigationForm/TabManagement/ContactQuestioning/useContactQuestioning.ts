@@ -29,7 +29,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const { checkDuplicateIds } = useDuplicateContactId();
 
     const saveContact = (interactedContact: InteractedContact) : boolean => {
-        if (checkDuplicateIds([ ...allContactedInteractions, interactedContact]
+        if (checkDuplicateIds(allContactedInteractions
             .map((contact: InteractedContact) => contact.identificationNumber))) {
                 return false;
         } else {
