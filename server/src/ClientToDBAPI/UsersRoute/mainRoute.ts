@@ -267,7 +267,6 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
         epidemiologyNumber: request.body.epidemiologyNumber,
         newUser: userAdmin
     }).then((result: any) => {
-        console.log(result);
         if (result?.data && !result?.errors) {
             logger.info({
                 service: Service.SERVER,
