@@ -11,11 +11,12 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import { noDeskAssignment } from 'Utils/consts';
 
-import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import useStyles from './UsersManagementStyles';
 import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
+import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
+
 
 const rowsPerPage: number = 7;
 interface CellNameSort {
@@ -77,9 +78,7 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.DESK: {
                 return row[cellName] ? row[cellName] : noDeskAssignment
             }
-            case UsersManagementTableHeadersNames.FULL_NAME: {
-                return row[cellName] || row[UsersManagementTableHeadersNames.USER_NAME]
-            }
+           
             default: 
                 return row[cellName]
         }

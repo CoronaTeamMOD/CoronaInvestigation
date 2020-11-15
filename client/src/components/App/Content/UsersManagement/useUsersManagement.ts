@@ -15,8 +15,8 @@ import UserTypeEnum from 'models/enums/UserType';
 import Language from 'models/Language';
 import StoreStateType from 'redux/storeStateType'
 import axios from 'Utils/axios'
-import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
-import {UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
+import { UsersManagementTableHeaders, UsersManagementTableHeadersNames } from './UsersManagementTableHeaders';
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
 
 interface UserDialog {
@@ -51,10 +51,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         }
     }
 
-    const fillEmptyfullName= (users: any[]):SignUpUser[]=>{
+    const fillEmptyfullName = (users: any[]):SignUpUser[] => {
         users.forEach(user=> {
-            if(!Boolean(user.fullName)){
-                user.fullName = user[UsersManagementTableHeadersNames.USER_NAME];
+            if(!user.fullName){
+                user.fullName = user.userName;
             }
         })
         return users;
