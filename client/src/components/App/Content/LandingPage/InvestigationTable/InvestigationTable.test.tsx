@@ -10,6 +10,7 @@ describe('investigationTable tests', () => {
     beforeAll(() => {
 
         newRowData = {
+            isChecked: false,
             epidemiologyNumber: 111,
             mainStatus: 'חדש',
             subStatus: 'חדש2',
@@ -35,6 +36,7 @@ describe('investigationTable tests', () => {
 
     it('should create correctly tableRow Object', async () => {
         const newRow = createRowData(
+            newRowData.isChecked,
             newRowData.epidemiologyNumber,
             newRowData.coronaTestDate,
             newRowData.isComplex,
@@ -56,6 +58,7 @@ describe('investigationTable tests', () => {
 
     it('should not create correctly tableRow Object', async () => {
         const newRow = createRowData(
+            newRowData.isChecked,
             newRowData.epidemiologyNumber,
             newRowData.coronaTestDate,
             newRowData.isComplex,

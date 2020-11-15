@@ -8,6 +8,7 @@ import { IndexedInvestigation, IndexedInvestigationData} from './InvestigationTa
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
+    checkedRowsIds: number[];
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
@@ -19,6 +20,7 @@ export interface useInvestigationTableOutcome {
     tableRows: InvestigationTableRow[];
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
+    setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;

@@ -1,7 +1,7 @@
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
         height: '80vh',
         backgroundColor: '#F3F6FB',
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableContainer : {
         width: '90vw',
+        height: isWide ? '67vh' : '61vh',
         marginBottom: '5vh'
     },
     welcomeMessage: {
@@ -144,7 +145,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         flip: false
     },
     counterLabel:{ 
-     fontWeight: 600
+        fontWeight: 600
+    },
+    checkedRow: {
+        backgroundColor: 'rgb(202, 222, 234)'
     }
 }));
 

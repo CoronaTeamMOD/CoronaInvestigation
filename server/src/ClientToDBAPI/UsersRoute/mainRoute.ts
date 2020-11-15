@@ -2,14 +2,14 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import User from '../../Models/User/User';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
-import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
+import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
 import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
+import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
-import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse'
+import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
 import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
@@ -141,26 +141,39 @@ usersRoute.get('/user', (request: Request, response: Response) => {
 });
 
 usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, response: Response) => {
-    const changeInvestigatorVariables = {
-        epidemiologyNumber: request.body.epidemiologyNumber,
-        newUser: request.body.user
-    };
+    const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
+    const newUser: number = request.body.user;
+    const transferReason: number = request.body.transferReason;
+
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
         workflow: 'Switch investigator',
-        step: `querying the graphql API with parameters ${JSON.stringify(changeInvestigatorVariables)}`,
+        step: `querying the graphql API with parameters ${JSON.stringify(request.body)}`,
         user: response.locals.user.id
     });
-    graphqlRequest(UPDATE_INVESTIGATOR, response.locals, changeInvestigatorVariables).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Switch investigator',
-            step: `investigator have been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
-            user: response.locals.user.id
-        });
-        response.send(result.data)
+    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(UPDATE_INVESTIGATOR, response.locals, 
+        {epidemiologyNumber, newUser, transferReason})))
+    .then((results: any[]) => {
+        if (areAllResultsValid(results)) {
+            logger.info({
+                service: Service.SERVER,
+                severity: Severity.LOW,
+                workflow: 'Switch investigator',
+                step: `investigator have been changed in the DB, investigations: ${epidemiologyNumbers}`,
+                user: response.locals.user.id
+            });
+            response.send(results[0]?.data || '');
+        } else {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Switch investigator',
+                step: `desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`,
+                user: response.locals.user.id
+            });
+            response.sendStatus(500);
+        }
     }).catch(err => {
         logger.error({
             service: Service.SERVER,

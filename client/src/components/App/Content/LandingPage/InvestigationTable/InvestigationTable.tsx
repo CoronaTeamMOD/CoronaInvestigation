@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Box
+    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
+    Slide, Box
 } from '@material-ui/core';
 import { Refresh, Warning, Close, InfoOutlined } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -19,12 +20,14 @@ import SortOrder from 'models/enums/SortOrder';
 import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import StoreStateType from 'redux/storeStateType';
+import InvestigatorOption from 'models/InvestigatorOption';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
+import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
@@ -59,9 +62,10 @@ const unassignedToDesk = 'לא שוייך לדסק';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
-    const classes = useStyles();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
+    const classes = useStyles(isScreenWide)();
 
+    const [checkedRowsIds, setCheckedRowsIds] = useState<number[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
     const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
@@ -81,10 +85,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm
+        moveToTheInvestigationForm, setTableRows
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty,
-        setAllCounties, setAllStatuses, setAllDesks
+        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user);
@@ -97,6 +101,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             );
         })
         setFilteredTableRows(filteredRows);
+        setCheckedRowsIds([]);
     }, [tableRows, filterOptions])
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
@@ -124,6 +129,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         }
         setSelectedRow(epidemiologyNumber);
+        setCheckedRowsIds([]);
     }
 
     const CustomPopper = (props: any) => {
@@ -136,7 +142,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
-    const getFilteredUsersOfCurrentCounty = (): { id: string, value: User }[] => {
+    const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
         return filterOptions.investigationDesk.length === 0 ?
             allUsersOfCountyArray :
@@ -324,6 +330,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
+            case TableHeadersNames.multipleCheck:
+                return (
+                    <Checkbox onClick={(event) => {
+                        event.stopPropagation(); 
+                        markRow(indexedRow.epidemiologyNumber);
+                    }} color='primary' checked={checkedRowsIds.includes(indexedRow.epidemiologyNumber)} />
+                )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
@@ -340,6 +353,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const closeFilterRow = () => setShowFilterRow(false);
 
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
+
+    const markRow = (epiNumber: number) => {
+        const epiNumberIndex = checkedRowsIds.findIndex(checkedRow => epiNumber === checkedRow);
+        if (epiNumberIndex !== -1) {
+            setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epiNumber));
+        } else {
+            setCheckedRowsIds([...checkedRowsIds, epiNumber]);
+        }
+    }
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
         const newFilterOptions: FilterTableOption = { ...filterOptions };
@@ -522,6 +544,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Table>
                 </TableContainer>
             </Grid>
+            {/* <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit> */}
+                {checkedRowsIds.length > 0 && 
+                    <InvestigationTableFooter 
+                        allInvestigators={getFilteredUsersOfCurrentCounty()} 
+                        checkedRowsIds={checkedRowsIds} 
+                        allDesks={allDesks}
+                        onClose={() => setCheckedRowsIds([])}
+                        tableRows={tableRows}
+                        setTableRows={setTableRows}
+                    />
+                } 
+            {/* </Slide> */}
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
                 message={refreshPromptMessage} />

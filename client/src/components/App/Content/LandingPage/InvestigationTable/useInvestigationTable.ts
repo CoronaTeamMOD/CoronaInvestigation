@@ -57,6 +57,7 @@ export const createRowData = (
     comment: string,
     statusReason: string,
 ): InvestigationTableRow => ({
+    isChecked: false,
     epidemiologyNumber,
     coronaTestDate,
     isComplex,
@@ -83,11 +84,12 @@ export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
 const transferedSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const classes = useStyle();
-
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks } = parameters;
+        setAllStatuses, setAllDesks, checkedRowsIds } = parameters;
+    
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+
+    const classes = useStyle(false)();
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -427,7 +429,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         fetchTableData()
-    }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
+    }, [user.id, user, orderBy, isInInvestigations]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const logInfo = {
@@ -530,6 +532,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
+            [TableHeadersNames.multipleCheck]: row.isChecked,
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
             [TableHeadersNames.isComplex]: row.isComplex,
@@ -600,7 +603,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     user: user.id
                 })
                 axios.post('/users/changeInvestigator', {
-                    epidemiologyNumber: indexedRow.epidemiologyNumber,
+                    epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                     user: newSelectedInvestigator.id
                 }
                 ).then(() => timeout(1900).then(() => {
@@ -761,7 +764,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios.post('/landingPage/changeDesk', {
-                        epidemiologyNumber: indexedRow.epidemiologyNumber,
+                        epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                         updatedDesk: newSelectedDesk.id,
                     }).then(() => timeout(1900).then(() => {
                         logger.info({
@@ -828,7 +831,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
             classNames.push(classes.epiNumberCell);
         }
-
+        if (checkedRowsIds.includes(rows[rowIndex].epidemiologyNumber)) {
+            classNames.push(classes.checkedRow);
+        }
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&
@@ -846,6 +851,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     return {
         tableRows: rows,
+        setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
         onInvestigatorChange,

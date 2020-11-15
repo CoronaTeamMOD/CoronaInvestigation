@@ -27,7 +27,7 @@ export enum Environment {
 
 export interface MethodsLogMessage {
     user?: string;
-    investigation?: number;
+    investigation?: number | string;
     workflow: string;
     step: string;
     service: Service;
