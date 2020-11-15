@@ -322,6 +322,7 @@ investigationInfo.post('/updateInvestigationTransfer', (request: Request, respon
                     user: response.locals.user.id,
                     investigation: response.locals.epidemiologyNumber
                 });
+                response.send(result);
             } else {
                 logger.info({
                     service: Service.SERVER,
