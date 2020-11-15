@@ -1,68 +1,145 @@
-const placeTypesCodesHierarchy = {
+import BusEventForm
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/BusEventForm';
+import TrainEventForm
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TrainEventForm';
+import FlightEventForm
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/FlightEventForm';
+import SchoolEventForm
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+import HospitalEventForm
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+
+export interface FormOptions {
+    code: number | string;
+    hasAddress: boolean;
+    isNamedLocation:  boolean;
+    isBusiness:  boolean;
+    isTransportation:  boolean;
+    extraFields?: React.FC<any>[];
+    nameFieldLabel?: string;
+}
+
+export interface SubplaceConfig extends Partial<FormOptions> {
+    code: number;
+}
+
+export interface FormConfig extends FormOptions {
+    code: string;
+    subTypesCodes?: {[subtypeKey: string]: SubplaceConfig}
+}
+
+export const defaultOptions: Omit<FormOptions, 'code'> = {
+    hasAddress: true,
+    isNamedLocation: true,
+    isBusiness: true,
+    isTransportation: false,
+};
+
+export const getOptionsByPlaceAndSubplaceType = (placeTypeCode: string, subplaceTypeCode: number | null) => {
+    const placeConfig = Object.values(placeTypesCodesHierarchy).find(placeTypeConfig => placeTypeConfig.code === placeTypeCode);
+    if(!placeConfig)
+        return defaultOptions;
+    const subPlaceConfig = placeConfig.subTypesCodes &&
+        Object.values(placeConfig.subTypesCodes)
+            .find(subtype => subtype.code === subplaceTypeCode);
+    return  {...placeConfig, ...subPlaceConfig};
+};
+
+type places = 'privateHouse' | 'office' | 'transportation' | 'school' | 'medical' | 'religion' | 'geriatric' | 'otherPublicPlaces';
+
+const placeTypesCodesHierarchy: Record<places, FormConfig> = {
     privateHouse: {
         code: 'בית פרטי',
-        subTypesCodes: {
-            investigatedPersonHouse: 9,
-        }
+        ...defaultOptions,
+        isNamedLocation: false,
+        isBusiness: false,
     },
     office: {
         code: 'משרד',
-        subTypesCodes: {
-        }
+        nameFieldLabel: 'שם המשרד',
+        ...defaultOptions,
     },
     transportation: {
         code: 'תחבורה',
+        hasAddress: false,
+        isNamedLocation: false,
+        isBusiness: false,
+        isTransportation: true,
         subTypesCodes: {
-            bus: 1,
-            train: 85,
-            flight: 38,
-            organizedTransport: 31,
+            bus: {
+                code:1,
+                extraFields: [BusEventForm, TrainEventForm],
+            },
+            train: {
+                code: 85,
+                extraFields: [TrainEventForm]
+            },
+            flight: {
+                code: 38,
+                extraFields: [FlightEventForm]
+            },
+            organizedTransport: {
+                code: 31,
+                isBusiness: true,
+            },
         }
     },
     school: {
         code: 'מוסד חינוכי',
+        extraFields: [SchoolEventForm],
+        ...defaultOptions,
         subTypesCodes: {
-            elementarySchool: 15,
-            highSchool: 127,
+            elementarySchool: {
+                code: 15,
+            },
+            highSchool: {
+                code: 127
+            }
         }
     },
     medical: {
         code: 'מוסד רפואי',
+        ...defaultOptions,
         subTypesCodes: {
-            hospital: 122,
+            hospital: {
+                code: 122,
+                nameFieldLabel: 'שם בית חולים',
+                extraFields: [HospitalEventForm],
+            }
         }
     },
     religion: {
         code: 'אתר דת',
-        subTypesCodes: {
-        }
+        ...defaultOptions,
     },
     geriatric: {
         code: 'מוסד גריאטרי',
-        subTypesCodes: {
-        }
+        ...defaultOptions,
     },
     otherPublicPlaces: {
         code: 'מקומות ציבוריים נוספים',
+        ...defaultOptions,
         subTypesCodes: {
-            eventsHall: 2,
-            stadium: 5,
-            amphitheater: 6,
-            hotel: 12,
-            pool: 22,
-            gardenEvents: 24,
-            gym: 32,
-            beach: 33,
-            shops: 35,
-            sportsHall: 44,
-            sportsField: 45,
-            museumOrGallery: 47,
-            restaurantAndCoffeeShop: 59,
-            other: 64,
-            super: 70,
-            publicPark: 77,
-            bar: 79,
-            zoo: 288,
+            publicPark: {
+                code: 77,
+                isBusiness: false,
+            },
+            zoo: {
+                code: 288,
+                isBusiness: false,
+            },
+            stadium: {
+                code: 5,
+                isBusiness: false,
+            } ,
+            amphitheater: {
+                code: 6,
+                isBusiness: false,
+            },
+            beach: {
+                code: 33,
+                isBusiness: false,
+            },
         }
     },
 }

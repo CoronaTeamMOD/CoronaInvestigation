@@ -25,8 +25,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
             <Grid container className={formClasses.formRow}>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactFirstNameField}>
+                <FormInput xs={4} fieldName={businessContactFirstNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             control={control}
@@ -40,10 +39,8 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactLastNameField}>
+                </FormInput>
+                <FormInput xs={4} fieldName={businessContactLastNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             control={control}
@@ -57,10 +54,8 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactNumField}>
+                </FormInput>
+                <FormInput xs={4} fieldName={businessContactNumField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER}
                             control={control}
@@ -73,8 +68,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
+                </FormInput>
             </Grid>
         </div>
     );

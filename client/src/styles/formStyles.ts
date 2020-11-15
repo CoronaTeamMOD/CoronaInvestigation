@@ -9,10 +9,6 @@ const useStyles = makeStyles({
         fontWeight: 'bold',
         marginRight: '1vw',
     },
-    formField: {
-        display: 'flex',
-        alignItems: 'center'
-    },
     formRow: {
         display: 'flex',
         margin: '1vh 0',
@@ -40,12 +36,6 @@ const useStyles = makeStyles({
     selectPlaceType: {
         width: '10vw',
         marginLeft: '2vw',
-    },
-    formTypesSelect: {
-        '@media screen and (max-width: 1400px)': {
-            marginLeft: '-3vw',
-        },
-        marginLeft: '-4vw',
     },
     fieldContainer: {
         display: 'flex',

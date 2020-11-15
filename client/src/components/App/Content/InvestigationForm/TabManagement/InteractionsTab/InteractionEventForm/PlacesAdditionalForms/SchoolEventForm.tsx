@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form'
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import AddressForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/AddressForm/AddressForm';
-import BusinessContactForm from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/BusinessContactForm/BusinessContactForm';
-
 
 export const elementarySchoolGrades = [
     'א',
@@ -29,46 +25,29 @@ export const highSchoolGrades = [
     'יב',
 ]
 
-const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
-
-const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.Element => {
-    const { control, setValue } = useFormContext();    
+const SchoolEventForm: React.FC = (): JSX.Element => {
+    const { control, setValue, watch } = useFormContext();
 
     const formClasses = useFormStyles();
     
     const [grades, setGrades] = useState<string[]>([]);
-
+    // @ts-ignore
+    const { elementarySchool, highSchool } = placeTypesCodesHierarchy.school.subTypesCodes;
+    const placeSubType = watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
     React.useEffect(() => {
         let gradesOptions : string[] = [];
-        if (placeSubType === elementarySchool) gradesOptions = elementarySchoolGrades;
-        else if (placeSubType === highSchool) gradesOptions = highSchoolGrades;
-        if (placeSubType && !grade) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
+        if (placeSubType === elementarySchool.code) gradesOptions = elementarySchoolGrades;
+        else if (placeSubType === highSchool.code) gradesOptions = highSchoolGrades;
+        if (placeSubType) setValue(InteractionEventDialogFields.GRADE, gradesOptions[0]);
         setGrades(gradesOptions);
-    }, [placeSubType])
+    }, [placeSubType]);
 
     return (
         <>
-            <div className={formClasses.formRow}>
-                <Grid item xs={2}>
-                    <FormInput fieldName='שם המוסד'>
-                        <Controller 
-                            name={InteractionEventDialogFields.PLACE_NAME}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur} 
-                                />
-                            )}
-                        />
-                    </FormInput>
-                </Grid>
                 {
                     grades.length > 0 &&
-                    <Grid item xs={2}>
-                        <FormInput fieldName='כיתה'>
+                    <div className={formClasses.formRow}>
+                        <FormInput xs={2} fieldName='כיתה'>
                             <FormControl fullWidth>
                                 <InputLabel>כיתה</InputLabel>
                                 <Controller 
@@ -92,19 +71,11 @@ const SchoolEventForm: React.FC<Props> = ({ placeSubType, grade }: Props): JSX.E
                                     )}
                                 /> 
                             </FormControl>
-                        </FormInput>
-                    </Grid>
+                    </FormInput>
+                    </div>
                 }
-            </div>
-            <AddressForm />
-            <BusinessContactForm/>
         </>
     );
 };
-
-interface Props {
-    placeSubType: number;
-    grade: string;
-}
 
 export default SchoolEventForm;

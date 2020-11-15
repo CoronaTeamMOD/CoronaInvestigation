@@ -17,23 +17,19 @@ const BusinessContactGrid : React.FC<Props> = (props: Props) : JSX.Element => {
         <>
             <Grid container className={formClasses.formRow}>
                 {   (interaction.contactPersonFirstName &&  interaction.contactPersonLastName) &&
-                    <Grid item xs={6}>
-                        <FormInput fieldName={businessContactFirstNameField}>
+                        <FormInput xs={6} fieldName={businessContactFirstNameField}>
                             <Typography variant='caption'>
                                 {`${interaction.contactPersonFirstName} ${interaction.contactPersonLastName}`}
                             </Typography>
                         </FormInput>
-                    </Grid>
                 }
                 {
                     (interaction.contactPersonPhoneNumber && interaction.contactPersonPhoneNumber) &&
-                    <Grid item xs={6}>
-                        <FormInput fieldName={businessContactNumField}>
+                        <FormInput xs={6} fieldName={businessContactNumField}>
                             <Typography variant='caption'>
                                 {interaction.contactPersonPhoneNumber}
                             </Typography>
                         </FormInput>
-                    </Grid>
                 }
             </Grid>
         </>

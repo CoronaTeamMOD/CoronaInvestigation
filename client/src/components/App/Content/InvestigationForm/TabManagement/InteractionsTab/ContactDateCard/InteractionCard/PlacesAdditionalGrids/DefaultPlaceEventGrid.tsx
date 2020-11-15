@@ -13,13 +13,11 @@ const DefaultPlaceEventGrid : React.FC<Props> = (props: Props) : JSX.Element => 
 
     return (
         <>
-            <Grid item xs={6}>
-                <FormInput fieldName='שם המוסד'>
-                    <Typography variant='caption'>
-                        {interaction.placeName}
-                    </Typography>
-                </FormInput>
-            </Grid>
+            <FormInput xs={6} fieldName='שם המוסד'>
+                <Typography variant='caption'>
+                    {interaction.placeName}
+                </Typography>
+            </FormInput>
             <AddressGrid interaction={interaction}/>
             <BusinessContactGrid interaction={interaction}/>
         </>
