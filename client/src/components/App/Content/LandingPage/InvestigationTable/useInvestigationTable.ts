@@ -56,7 +56,7 @@ export const createRowData = (
     investigator: Investigator,
     comment: string,
     statusReason: string,
-    transfered: boolean,
+    wasInvestigationTransferred: boolean,
 ): InvestigationTableRow => ({
     epidemiologyNumber,
     coronaTestDate,
@@ -73,7 +73,7 @@ export const createRowData = (
     investigator,
     comment,
     statusReason,
-    transfered,
+    wasInvestigationTransferred,
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -82,7 +82,7 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
-export const transferedSubStatus = 'נדרשת העברה';
+export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const classes = useStyle();
@@ -374,7 +374,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const user = investigation.userByCreator;
                                 const county = user ? user.countyByInvestigationGroup : '';
                                 const statusReason = user ? investigation.statusReason : '';
-                                const transfered = investigation.transfered;
+                                const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
@@ -394,7 +394,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     { id: user.id, userName: user.userName },
                                     investigation.comment,
                                     statusReason,
-                                    transfered,
+                                    wasInvestigationTransferred,
                                 )
                             });
                         setRows(investigationRows);
@@ -551,7 +551,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
             [TableHeadersNames.comment]: row.comment,
             [TableHeadersNames.statusReason]: row.statusReason,
-            [TableHeadersNames.transfered]: row.transfered,
+            [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
         }
     }
 
@@ -565,7 +565,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const changeInvestigationToTransfered = (indexedRow: IndexedInvestigation): Promise<void> => {
+    const changeInvestigationToTransferred = (indexedRow: IndexedInvestigation): Promise<void> => {
         return axios.post('/investigationInfo/updateInvestigationTransfer', {
             epidemiologyNumber: indexedRow.epidemiologyNumber
         });
@@ -619,7 +619,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             : investigation
                     )))
                 })).then(() => {
-                    changeInvestigationToTransfered(indexedRow).then(() => {
+                    changeInvestigationToTransferred(indexedRow).then(() => {
                         logger.info({
                             service: Service.CLIENT,
                             severity: Severity.LOW,
@@ -701,7 +701,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 })).then(() => {
-                    changeInvestigationToTransfered(indexedRow).then(() => {
+                    changeInvestigationToTransferred(indexedRow).then(() => {
                         logger.info({
                             service: Service.CLIENT,
                             severity: Severity.LOW,
@@ -713,7 +713,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     }).catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
-                            severity: Severity.LOW,
+                            severity: Severity.HIGH,
                             workflow: 'Update Investigation Transfered',
                             step: `got errors in server result: ${error}`,
                             user: user.id,
@@ -782,7 +782,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )));
                         setSelectedRow(UNDEFINED_ROW);
                     })).then(() => {
-                        changeInvestigationToTransfered(indexedRow).then(() => {
+                        changeInvestigationToTransferred(indexedRow).then(() => {
                             logger.info({
                                 service: Service.CLIENT,
                                 severity: Severity.LOW,
@@ -794,7 +794,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }).catch((error) => {
                             logger.error({
                                 service: Service.CLIENT,
-                                severity: Severity.LOW,
+                                severity: Severity.HIGH,
                                 workflow: 'Update Investigation Transfered',
                                 step: `got errors in server result: ${error}`,
                                 user: user.id,

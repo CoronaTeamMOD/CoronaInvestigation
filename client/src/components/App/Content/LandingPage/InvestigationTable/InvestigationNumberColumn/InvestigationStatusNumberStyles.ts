@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     columnWrapper: {
         display: 'flex'
     },
-    transferedIcon: {
+    transferredIcon: {
         fontSize: '20px',
         margin: '0.2vh 0.5vw',
         cursor: 'pointer',

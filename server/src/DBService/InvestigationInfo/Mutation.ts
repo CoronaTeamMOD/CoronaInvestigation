@@ -34,7 +34,7 @@ export const COMMENT = gql`
 
 export const UPDATE_INVESTIGATION_TRANSFER = gql`
 mutation UpdateInvestigationStatus($epidemiologyNumber: Int!) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {transfered: true}, epidemiologyNumber: $epidemiologyNumber}) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}) {
     clientMutationId
   }
 }

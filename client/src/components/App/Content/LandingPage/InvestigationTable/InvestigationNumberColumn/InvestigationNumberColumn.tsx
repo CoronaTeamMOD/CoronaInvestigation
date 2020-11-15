@@ -7,23 +7,25 @@ import useStyles from './InvestigationStatusNumberStyles';
 
 const InvestigationNumberColumn = (props: Props) => {
 
-    const { wasInvestigationTransfered, epidemiologyNumber } = props;
+    const { wasInvestigationTransferred, epidemiologyNumber } = props;
 
     const classes = useStyles();
+
+    console.log(wasInvestigationTransferred)
 
     return (
         <div className={classes.columnWrapper}>
             <Typography>{epidemiologyNumber}</Typography>
             {
-                wasInvestigationTransfered &&
-                <FontAwesomeIcon icon={faReplyAll} className={classes.transferedIcon} />
+                wasInvestigationTransferred &&
+                <FontAwesomeIcon icon={faReplyAll} className={classes.transferredIcon} />
             }
         </div>
     )
 }
 
 interface Props {
-    wasInvestigationTransfered: boolean;
+    wasInvestigationTransferred: boolean;
     epidemiologyNumber: number;
 };
 

@@ -17,7 +17,7 @@ interface InvestigationTableRow {
     county: County;
     comment: string;
     statusReason: string;
-    transfered: boolean;
+    wasInvestigationTransferred: boolean;
 };
 
 export default InvestigationTableRow;

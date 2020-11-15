@@ -18,7 +18,7 @@ export enum TableHeadersNames {
     statusReason = 'statusReason',
     investigationDesk = 'investigationDesk',
     comment = 'comment',
-    transfered = 'transfered',
+    wasInvestigationTransferred = 'wasInvestigationTransferred',
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
@@ -43,7 +43,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
     [TableHeadersNames.comment]: ' ',
     [TableHeadersNames.statusReason]: '',
-    [TableHeadersNames.transfered]: '',
+    [TableHeadersNames.wasInvestigationTransferred]: '',
 }
 
 export const adminCols: string[] = [
@@ -91,5 +91,5 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.investigationDesk]: false,
     [TableHeadersNames.comment]: false,
     [TableHeadersNames.statusReason]: false,
-    [TableHeadersNames.transfered]: false,
+    [TableHeadersNames.wasInvestigationTransferred]: false,
 }
