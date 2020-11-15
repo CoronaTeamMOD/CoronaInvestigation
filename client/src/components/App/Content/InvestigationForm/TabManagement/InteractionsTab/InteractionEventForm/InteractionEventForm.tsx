@@ -135,7 +135,7 @@ const InteractionEventForm: React.FC<Props> = (
     hasAddress,
     isNamedLocation,
     isBusiness,
-    nameFieldLabel = '',
+    nameFieldLabel = undefined,
     extraFields = [],
   } = formConfig;
 
