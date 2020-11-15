@@ -288,47 +288,6 @@ const InvestigatedPersonInfo = (props: Props) => {
                         isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
                     }
                 </div>
-                <div className={classes.managementControllers}>
-                    <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                        <Grid item xs={12} className={classes.fieldLabel}>
-                            <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                                <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE}>
-                                    <Grid item xs={5} className={classes.fieldLabel}>
-                                        <Autocomplete
-                                            className={classes.subStatusSelect}
-                                            test-id='currentSubStatus'
-                                            options={subStatuses}
-                                            getOptionLabel={(option) => option}
-                                            inputValue={investigationStatus.subStatus || ''}
-                                            onChange={(event, newSubStatus) => {
-                                                setInvestigationStatus({
-                                                    mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatus ? String(newSubStatus) : '',
-                                                    statusReason: ''
-                                                });
-                                            }}
-                                            onInputChange={(event, newSubStatusInput) => {
-                                                if (event?.type !== 'blur' && shouldUpdateInvestigationStatus()) {
-                                                    setInvestigationStatus({
-                                                        mainStatus: investigationStatus.mainStatus,
-                                                        subStatus: newSubStatusInput,
-                                                        statusReason: ''
-                                                    });
-                                                }
-                                            }}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    placeholder='סיבה'
-                                                />
-                                            }
-                                        />
-                                    </Grid>
-                                </Collapse>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </div>
             </div>
         </Paper>
     );
