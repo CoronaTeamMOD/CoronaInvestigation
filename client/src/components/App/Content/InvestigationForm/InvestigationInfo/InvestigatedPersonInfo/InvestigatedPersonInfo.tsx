@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useEffect } from 'react';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
+import React, { ChangeEvent, useEffect } from 'react';
 import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
@@ -16,6 +16,7 @@ import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo'
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
+import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
@@ -52,14 +53,14 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
-    const validationSchema = investigationStatus.subStatus === transferInvestigation ? 
+    const validationSchema = investigationStatus.subStatus === transferredSubStatus ? 
     yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
     yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     useEffect(()=> {
-        if (investigationStatus.subStatus !== transferInvestigation) {
+        if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
         }
     },[investigationStatus.subStatus])
@@ -197,7 +198,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <TextField
                                         className={classes.subStatusSelect}
                                         value={investigationStatus.statusReason}
-                                        required={investigationStatus.subStatus === transferInvestigation}
+                                        required={investigationStatus.subStatus === transferredSubStatus}
                                         placeholder='פירוט'
                                         error={statusReasonError ? true : false}
                                         label={statusReasonError ? statusReasonError[0] : ''}

@@ -12,9 +12,9 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import {InvestigationStatus} from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import {setInvestigationStatus} from 'redux/Investigation/investigationActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
@@ -30,7 +30,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const transferedSubStatus = 'נדרשת העברה';
 
     const handleInvestigationFinish = async () => {
         Swal.fire({
@@ -49,7 +48,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
-        if(investigationStatus.subStatus === transferedSubStatus && !investigationStatus.statusReason) {
+        if(investigationStatus.subStatus === transferredSubStatus && !investigationStatus.statusReason) {
             alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'הבנתי, המשך'

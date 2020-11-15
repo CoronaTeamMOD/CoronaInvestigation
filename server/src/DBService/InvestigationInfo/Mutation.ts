@@ -1,4 +1,4 @@
-import { gql } from "postgraphile";
+import { gql } from 'postgraphile';
 
 export const UPDATE_INVESTIGATION_STATUS = gql`
 mutation UpdateInvestigationStatus($epidemiologyNumber: Int!, $investigationStatus: String!, $investigationSubStatus: String, $statusReason: String) {
@@ -30,4 +30,12 @@ export const COMMENT = gql`
           clientMutationId
         }
   }
+`;
+
+export const UPDATE_INVESTIGATION_TRANSFER = gql`
+mutation UpdateInvestigationStatus($epidemiologyNumber: Int!) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}) {
+    clientMutationId
+  }
+}
 `;

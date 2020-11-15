@@ -11,10 +11,11 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 
 import useStyles from './InvestigationStatusColumnStyles';
+import { transferredSubStatus } from '../useInvestigationTable';
 
 const InvestigationStatusColumn = (props: Props) => {
 
-    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, } = props;
+    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, wasInvestigationTransferred } = props;
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
@@ -56,8 +57,12 @@ const InvestigationStatusColumn = (props: Props) => {
     return (
         <div className={classes.columnWrapper}>
             {
-                investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus &&
+                (investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus) &&
                 <Typography>{investigationSubStatus + '/'}</Typography>
+            }
+            {
+                (investigationStatus === InvestigationMainStatus.IN_PROCESS && wasInvestigationTransferred) &&
+                <Typography>{transferredSubStatus + '/'}</Typography>
             }
             <Typography>{investigationStatus}</Typography>
             {
@@ -73,7 +78,7 @@ const InvestigationStatusColumn = (props: Props) => {
                 </Tooltip>
             }
             {
-                investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason &&
+                (investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason) &&
                 <Tooltip title={statusReason}>
                     <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='primary' />
                 </Tooltip>
@@ -86,8 +91,9 @@ interface Props {
     investigationStatus: string | null;
     investigationSubStatus: string;
     statusReason: string;
+    wasInvestigationTransferred: boolean;
     epidemiologyNumber: number;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
-}
+};
 
 export default InvestigationStatusColumn;
