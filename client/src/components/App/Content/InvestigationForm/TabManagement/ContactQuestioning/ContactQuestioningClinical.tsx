@@ -46,9 +46,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const handleIsolation = (value: boolean) => {
         const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
-        const validation = validateContact(contactWithIsolationRequirement, true);
-        if(!validation.valid) {
-            alertError(validation.error)
+        const contactValidation = validateContact(contactWithIsolationRequirement, true);
+        if(!contactValidation.valid) {
+            alertError(contactValidation.error)
         } else {
             value ?
                 Swal.fire({

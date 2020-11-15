@@ -7,6 +7,7 @@ import ContactType from 'models/enums/ContactType';
 
 export const COMPLETE_STATUS = 5;
 export const STRICT_CONTACT_TYPE = 1;
+const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
 
 interface validValidation {
     valid:true;
@@ -26,7 +27,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         return contacts.filter((contact) => shouldDisable(contact.contactStatus));
     };
 
-    const checkIsLooseContact = (contactType: number | string) =>  typeof contactType === "number"
+    const checkIsLooseContact = (contactType: number | string) =>  typeof contactType === 'number'
         ? contactType !== STRICT_CONTACT_TYPE
         : contactType !== ContactType.TIGHT;
 
@@ -72,7 +73,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
 
         if(!isIsolationCheck) return emptyFieldsString;
 
-        return message.concat(emptyFieldsString).concat(' ולכן לא ניתן להקים דיווח בידוד');
+        return message.concat(emptyFieldsString).concat(isolationErrorMessageEnd);
     };
 
     return {

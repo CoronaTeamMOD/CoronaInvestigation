@@ -21,6 +21,8 @@ import {
     symptomsWithUnknownStartDate,
 } from '../InteractionsTab/useInteractionsTab';
 
+const contactsSaveErrorMessageStart = 'לא ניתן לשמור את המגעים הבאים:';
+
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     
     const {setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
@@ -113,7 +115,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         }, []);
 
         if(validationErrors.length > 0) {
-            alertError("לא ניתן לשמור את המגעים הבאים: \r\n".concat(validationErrors.join("\r\n")));
+            alertError(contactsSaveErrorMessageStart + "\r\n".concat(validationErrors.join("\r\n")));
         }
 
         const contactsSavingVariable = {
