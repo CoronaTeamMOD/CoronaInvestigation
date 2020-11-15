@@ -58,20 +58,16 @@ const InvestigatedPersonInfo = (props: Props) => {
     yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
     yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
-    const { confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
 
     useEffect(()=> {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
         }
-    },[investigationStatus.subStatus])
-    const permittedStatuses = statuses.filter((status: string) => {
-        if ((userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN)
-            && status === InvestigationMainStatus.NEW && !wasInvestigationReopend) {
-            return true;
-        }
-        return (status !== InvestigationMainStatus.DONE && status !== InvestigationMainStatus.NEW)
-    })
+    },[investigationStatus.subStatus]);
+
+    const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
+
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
             confirmExitUnfinishedInvestigation(epidemiologyNumber);
@@ -95,7 +91,15 @@ const InvestigatedPersonInfo = (props: Props) => {
             setStatusReasonError(err.errors)
         }
     }
+
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
+
+    const isStatusDisable = (status: string) => {
+        if (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) {
+            return status === InvestigationMainStatus.NEW && wasInvestigationReopend 
+        }
+        return status === InvestigationMainStatus.NEW;
+    };
 
     return (
         <Paper className={classes.paper}>
@@ -134,6 +138,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     options={permittedStatuses}
                                     getOptionLabel={(option) => option}
                                     inputValue={investigationStatus.mainStatus as string | undefined}
+                                    getOptionDisabled={option => isStatusDisable(option)}
                                     onChange={(event, newStatus) => {
                                         if (newStatus) {
                                             setInvestigationStatus({
