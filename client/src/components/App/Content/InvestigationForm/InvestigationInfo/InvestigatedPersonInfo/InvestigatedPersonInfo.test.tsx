@@ -76,6 +76,7 @@ describe('investigatedPersonInfo tests', () => {
             customClass: {
                 content: "makeStyles-swalText-16",
                 title: "makeStyles-swalTitle-15",
+                container: "makeStyles-container-15"
             }
         };
 
