@@ -241,7 +241,7 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
             } else {
                 logger.info({
                     service: Service.SERVER,
-                    severity: Severity.LOW,
+                    severity: Severity.HIGH,
                     workflow: 'Getting group users',
                     step: 'didnt get group users from the DB',
                     user: response.locals.user.id
@@ -253,11 +253,12 @@ usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response)
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {
     let userAdmin = 'admin.group' + request.body.updatedCounty;
+    const workflow = 'GraphQL request to the change the investigation county';
 
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
-        workflow: 'GraphQL request to the change the investigation county',
+        workflow,
         step: `post with parameters ${JSON.stringify({ epidemiologyNumber: request.body.epidemiologyNumber, newUser: userAdmin })}`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologyNumber,
@@ -271,7 +272,7 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
-                workflow: 'GraphQL request to the change the investigation county',
+                workflow,
                 step: `The investigation county changed successfully`,
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologyNumber,
@@ -281,8 +282,8 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
             const errorMessage = result?.errors[0]?.message || '';
             logger.error({
                 service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'GraphQL POST request to Db - change county',
+                severity: Severity.HIGH,
+                workflow,
                 step: `The graphql mutation to chage county failed ${errorMessage && ('due to ' + errorMessage)}`,
                 investigation: response.locals.epidemiologyNumber,
             });
@@ -291,8 +292,8 @@ usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: R
     }).catch((error) => {
         logger.error({
             service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'GraphQL POST request to Db - change county',
+            severity: Severity.HIGH,
+            workflow,
             step: error,
             investigation: response.locals.epidemiologyNumber,
         });
