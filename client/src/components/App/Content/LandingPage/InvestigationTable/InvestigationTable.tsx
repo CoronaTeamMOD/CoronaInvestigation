@@ -6,7 +6,7 @@ import {
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Box
 } from '@material-ui/core';
-import { Refresh, Warning, Close, InfoOutlined } from '@material-ui/icons';
+import { Refresh, Warning, Close } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -16,9 +16,9 @@ import County from 'models/County';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
+import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
-import StoreStateType from 'redux/storeStateType';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
@@ -26,6 +26,7 @@ import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/Compl
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
+import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 
@@ -150,6 +151,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
+            case TableHeadersNames.epidemiologyNumber:
+                return <InvestigationNumberColumn
+                    transfered={indexedRow.transfered}
+                    epidemiologyNumber={indexedRow.epidemiologyNumber}
+                />
             case TableHeadersNames.investigatorName:
                 const isUnassigned = indexedRow.investigatorName === 'לא משויך';
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
@@ -321,6 +327,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     investigationStatus={investigationStatus}
                     investigationSubStatus={indexedRow.investigationSubStatus}
                     statusReason={indexedRow.statusReason}
+                    transfered={indexedRow.transfered}
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
