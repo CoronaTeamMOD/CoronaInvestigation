@@ -3,6 +3,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { store } from 'redux/store';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
+let pendingRequestsCount = 0;
+
 const instance = axios.create({
     baseURL: '/db',
     headers: {
@@ -14,6 +16,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
     async (config) => {
         config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
+        pendingRequestsCount++;
         activateIsLoading(config);
         return config;
     }, 
@@ -21,16 +24,24 @@ instance.interceptors.request.use(
 );
 
 export const activateIsLoading = (config: AxiosRequestConfig) => {
-    !config.url?.includes('/optionalExposureSources') && setIsLoading(true);
+    if (!config.url?.includes('/optionalExposureSources') && pendingRequestsCount === 1) {
+        setIsLoading(true);  
+    } 
 }
 
 instance.interceptors.response.use(
     (config) => {
-        setIsLoading(false);
+        pendingRequestsCount--;
+        if (pendingRequestsCount === 0) {
+            setIsLoading(false);
+        }
         return config;
     }, 
     (error) => {
-        setIsLoading(false);
+        pendingRequestsCount--;
+        if (pendingRequestsCount === 0) {
+            setIsLoading(false);
+        }
         return Promise.reject(error);
     }
 );
