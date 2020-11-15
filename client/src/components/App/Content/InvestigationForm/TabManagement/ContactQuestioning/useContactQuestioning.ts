@@ -98,7 +98,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
         const workflow = 'Saving all contacts';
 
-        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((aggregatedArr, contact) => {
+        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((previous, contact) => {
             const validationInfo = validateContact(contact, ValidationReason.SAVE_CONTACT);
 
             if (!validationInfo.valid) {
@@ -111,11 +111,15 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     investigation: epidemiologyNumber
                 });
                 const error = `${contact.firstName} ${contact.lastName}: `.concat(validationInfo.error);
-                aggregatedArr.errorMessages.push(error);
-            } else {
-                aggregatedArr.validContacts.push(contact);
+                return {
+                    errorMessages: [...previous.errorMessages, error],
+                    validContacts: previous.validContacts
+                }
             }
-            return aggregatedArr;
+            return {
+                errorMessages: previous.errorMessages,
+                validContacts: [...previous.validContacts, contact]
+            }
         }, {validContacts: [], errorMessages: []});
 
         if(errorMessages.length > 0) {
