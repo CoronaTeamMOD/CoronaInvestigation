@@ -29,10 +29,10 @@ const yes = 'כן';
 const no = 'לא';
 const statusLabel = 'סטטוס';
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
-const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
+const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
 const transferInvestigation = 'נדרשת העברה';
-const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe0-9\s]*$/
+const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
