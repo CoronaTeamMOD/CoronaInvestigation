@@ -8,9 +8,9 @@ import logger from 'logger/logger';
 import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import useContactFields from 'Utils/vendor/useContactFields';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
 import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
@@ -20,6 +20,11 @@ import {
     symptomsWithKnownStartDate,
     symptomsWithUnknownStartDate,
 } from '../InteractionsTab/useInteractionsTab';
+
+interface ContactsValidationDevision {
+    validContacts: InteractedContact[], 
+    errorMessages: string[]
+}
 
 const contactsSaveErrorMessageStart = 'לא ניתן לשמור את המגעים הבאים:';
 
@@ -35,7 +40,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const { alertError } = useCustomSwal();
 
     const saveContact = (interactedContact: InteractedContact) => {
-        const validationInfo = validateContact(interactedContact, false);
+        const validationInfo = validateContact(interactedContact, ValidationReason.SAVE_CONTACT);
         if (!validationInfo.valid) {
             logger.warn({
                 service: Service.CLIENT,
@@ -92,10 +97,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
 
     const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
         const workflow = 'Saving all contacts';
-        const isolationValidContacts : InteractedContact[] = [];
 
-        const validationErrors = allContactedInteractions.reduce<string[]>((aggregatedArr, contact) => {
-            const validationInfo = validateContact(contact, false);
+        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((aggregatedArr, contact) => {
+            const validationInfo = validateContact(contact, ValidationReason.SAVE_CONTACT);
 
             if (!validationInfo.valid) {
                 logger.warn({
@@ -107,19 +111,19 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                     investigation: epidemiologyNumber
                 });
                 const error = `${contact.firstName} ${contact.lastName}: `.concat(validationInfo.error);
-                aggregatedArr.push(error);
+                aggregatedArr.errorMessages.push(error);
             } else {
-                isolationValidContacts.push(contact);
+                aggregatedArr.validContacts.push(contact);
             }
             return aggregatedArr;
-        }, []);
+        }, {validContacts: [], errorMessages: []});
 
-        if(validationErrors.length > 0) {
-            alertError(contactsSaveErrorMessageStart + "\r\n".concat(validationErrors.join("\r\n")));
+        if(errorMessages.length > 0) {
+            alertError(contactsSaveErrorMessageStart + "\r\n".concat(errorMessages.join("\r\n")));
         }
 
         const contactsSavingVariable = {
-            unSavedContacts: {contacts: isolationValidContacts}
+            unSavedContacts: {contacts: validContacts}
         }
         
         logger.info({

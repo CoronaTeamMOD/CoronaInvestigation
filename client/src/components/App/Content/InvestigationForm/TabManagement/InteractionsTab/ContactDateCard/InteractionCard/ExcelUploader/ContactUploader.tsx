@@ -1,15 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
+import {Button, Typography} from '@material-ui/core';
 
 import axios from 'Utils/axios';
-import {Button, Typography} from '@material-ui/core';
 import logger from 'logger/logger';
 import { Service, Severity } from 'models/Logger';
-import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
 import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
-import useContactFields from 'Utils/vendor/useContactFields';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
@@ -59,7 +58,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
             });
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                const validationInfo = validateContact(contact, true);
+                const validationInfo = validateContact(contact, ValidationReason.HANDLE_ISOLATION);
 
                 if (!validationInfo.valid) {
                     const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);

@@ -13,7 +13,7 @@ import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
@@ -46,7 +46,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const handleIsolation = (value: boolean) => {
         const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
-        const contactValidation = validateContact(contactWithIsolationRequirement, true);
+        const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
         if(!contactValidation.valid) {
             alertError(contactValidation.error)
         } else {

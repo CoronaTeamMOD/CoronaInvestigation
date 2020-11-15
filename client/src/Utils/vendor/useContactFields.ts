@@ -18,6 +18,11 @@ interface invalidValidation {
     error: string;
 }
 
+export enum ValidationReason {
+    HANDLE_ISOLATION,
+    SAVE_CONTACT
+}
+
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
 
@@ -35,7 +40,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
         InteractedContactFields.LAST_NAME];
 
-    const validateContact = (contact: InteractedContact, isIsolationCheck: boolean): validValidation | invalidValidation => {
+    const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
         if(!contact.doesNeedIsolation) {
             return {valid: true};
         } else {
@@ -45,7 +50,7 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
             const isLooseContact = checkIsLooseContact(contact.contactType);
 
             if (emptyFieldNames.length > 0 || isLooseContact)
-                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact, isIsolationCheck)};
+                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact, validationReason)};
             else return {valid: true};
         }
     };
@@ -67,13 +72,13 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         return message;
     }
 
-    const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean, isIsolationCheck: boolean) => {
+    const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean, validationReason: ValidationReason) => {
         let message = 'שים לב, ';
         const emptyFieldsString = buildEmptyFieldsString(emptyFields, isLooseContact);
 
-        if(!isIsolationCheck) return emptyFieldsString;
+        if(validationReason === ValidationReason.HANDLE_ISOLATION) return message.concat(emptyFieldsString).concat(isolationErrorMessageEnd);
 
-        return message.concat(emptyFieldsString).concat(isolationErrorMessageEnd);
+        return emptyFieldsString;
     };
 
     return {
