@@ -13,13 +13,11 @@ const AddressGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='כתובת'>
+                <FormInput xs={6} fieldName='כתובת'>
                         <Typography variant='caption'>
                             {interaction.locationAddress ? interaction.locationAddress.description : 'לא הוזן מיקום'}
                         </Typography>
-                    </FormInput>
-                </Grid>
+                </FormInput>
                 <Grid item xs={6}/>
             </Grid>
         </>

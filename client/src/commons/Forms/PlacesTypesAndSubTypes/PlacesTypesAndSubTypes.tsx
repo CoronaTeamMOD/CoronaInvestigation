@@ -69,10 +69,10 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
 
     return (
         <Grid className={isTabForm ? '' : formClasses.formRow} container justify='flex-start'>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
                 <InputWrapperComp fieldName={placeTypeDisplayName}>
-                    <Grid item xs={8}>
-                        <FormControl className={formClasses.formTypesSelect}
+                    <Grid item xs={7}>
+                        <FormControl
                                      disabled={Object.keys(placesSubTypesByTypes).length === 0}
                                      fullWidth
                         >
@@ -113,9 +113,9 @@ const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             {
                 placesSubTypesByTypes[placeType] && placesSubTypesByTypes[placeType].length > 1 &&
-                <Grid item xs={4}>
-                    <InputWrapperComp fieldName={placeSubTypeDisplayName}>
-                        <Grid item xs={9}>
+                <Grid item xs={6}>
+                    <InputWrapperComp fieldName={placeSubTypeDisplayName} labelLength={2}>
+                        <Grid item xs={8}>
                             <FormControl
                                 fullWidth
                             >

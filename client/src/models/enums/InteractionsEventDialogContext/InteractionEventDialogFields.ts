@@ -7,6 +7,7 @@ enum InteractionEventDialogFields {
     EXTERNALIZATION_APPROVAL = 'externalizationApproval',
     INVESTIGATION_ID = 'investigationId',
     PLACE_NAME = 'placeName',
+    PLACE_DESCRIPTION = 'placeDescription',
     LOCATION_ADDRESS = 'locationAddress',
     BUS_LINE = 'busLine',
     AIR_LINE = 'airline',

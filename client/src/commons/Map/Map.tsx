@@ -22,8 +22,8 @@ interface MapProps {
 const defaultMapPosition = { lng: 35.217018, lat: 31.771959 };
 const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
-const DEFAULT_MAP_HEIGHT = '40vh';
-const DEFAULT_MAP_WIDTH = '55vw';
+const DEFAULT_MAP_HEIGHT = '20vh';
+const DEFAULT_MAP_WIDTH = '30vw';
 const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { requestDetailsFromLocation } = useGoogleGeocoder();
@@ -113,17 +113,19 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
 
     const height = props.height || DEFAULT_MAP_HEIGHT;
     const width = props.width || DEFAULT_MAP_WIDTH;
-    return <div style={{height, width, padding: '5vh 0 10vh 0'}}>
+    return <div style={{display: 'flex', flexDirection: 'column', alignItems:'center', padding: '3vh 0'}}>
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
         />
+        <div style={{height, width}}>
         <GoogleMap googleMapLoader={injectScript}
                    zoom={zoom} center={mapPosition}
                    yesIWantToUseGoogleMapApiInternals
                    onGoogleApiLoaded={handleApiLoaded}
                    onClick={onMarkerDragEnd}
         />
+        </div>
     </div>;
 };
 

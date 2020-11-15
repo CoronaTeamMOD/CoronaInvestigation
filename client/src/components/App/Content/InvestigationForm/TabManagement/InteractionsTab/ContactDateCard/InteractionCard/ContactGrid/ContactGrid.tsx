@@ -43,56 +43,44 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <Grid className={formClasses.formRow + ' ' + classes.fullWidthGrid} container justify='flex-start' key='addContactFields'>
                 <Grid item xs={12} className={formClasses.formRow}>
-                    <Grid item xs={3}>
-                        <FormInput fieldName={contactedPersonFirstName}>
+                    <FormInput xs={3} fieldName={contactedPersonFirstName}>
+                        <Typography variant='caption'>
+                            {contact.firstName}
+                        </Typography>
+                    </FormInput>
+                    <FormInput xs={3} fieldName={contactedPersonLastName}>
+                        <Typography variant='caption'>
+                            {contact.lastName}
+                        </Typography>
+                    </FormInput>
+                    {
+                        contact.phoneNumber && <FormInput xs={3} fieldName={contactedPersonPhone}>
                             <Typography variant='caption'>
-                                {contact.firstName}
+                                {contact.phoneNumber}
                             </Typography>
                         </FormInput>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormInput fieldName={contactedPersonLastName}>
+                    }
+                    {
+                        contact.idNumber && <FormInput xs={3} fieldName={contactedPersonID}>
                             <Typography variant='caption'>
-                                {contact.lastName}
+                                {contact.idNumber}
                             </Typography>
                         </FormInput>
-                    </Grid>
-                    <Grid item xs={3}>
-                        {
-                            contact.phoneNumber && <FormInput fieldName={contactedPersonPhone}>
-                                <Typography variant='caption'>
-                                    {contact.phoneNumber}
-                                </Typography>
-                            </FormInput>
-                        }
-                    </Grid>
-                    <Grid item xs={3}>
-                        {
-                            contact.idNumber && <FormInput fieldName={contactedPersonID}>
-                                <Typography variant='caption'>
-                                    {contact.idNumber}
-                                </Typography>
-                            </FormInput>
-                        }
-                    </Grid>
+                    }
                 </Grid>
                 <Grid item xs={12} className={formClasses.formRow}>
-                    <Grid item xs={3}>
-                        <FormInput fieldName={contactType}>
+                    <FormInput xs={3} fieldName={contactType}>
+                        <Typography variant='caption'>
+                            {contactTypes.get(+contact.contactType)?.displayName}
+                        </Typography>
+                    </FormInput>
+                    {
+                        contact.extraInfo && <FormInput xs={9} fieldName={contactTypeMoreDetails}>
                             <Typography variant='caption'>
-                                {contactTypes.get(+contact.contactType)?.displayName}
+                                {contact.extraInfo}
                             </Typography>
                         </FormInput>
-                    </Grid>
-                    <Grid item xs={9}>
-                        {
-                            contact.extraInfo && <FormInput fieldName={contactTypeMoreDetails}>
-                                <Typography variant='caption'>
-                                    {contact.extraInfo}
-                                </Typography>
-                            </FormInput>
-                        }
-                    </Grid>
+                    }
                 </Grid>
             </Grid>
             <div className={classes.deleteIconDiv}>

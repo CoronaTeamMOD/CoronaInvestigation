@@ -8,6 +8,7 @@ import TrainEventGrid from './TrainEventGrid';
 import FlightEventGrid from './FlightEventGrid';
 import OrganizedTransportEventGrid from './OrganizedTransportEventGrid';
 
+// @ts-ignore
 const { bus, train, flight, organizedTransport } = placeTypesCodesHierarchy.transportation.subTypesCodes;
 
 const TransportationEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
@@ -17,19 +18,19 @@ const TransportationEventGrid : React.FC<Props> = (props: Props) : JSX.Element =
     return (
         <>
             {
-                interaction.placeSubType === bus &&
+                interaction.placeSubType === bus.code &&
                 <BusEventGrid interaction={interaction}/>
             }
             {
-                interaction.placeSubType === train &&
+                interaction.placeSubType === train.code &&
                 <TrainEventGrid interaction={interaction}/>                        
             }
             {
-                interaction.placeSubType === flight &&
+                interaction.placeSubType === flight.code &&
                 <FlightEventGrid interaction={interaction}/>                    
             }
             {
-                interaction.placeSubType === organizedTransport &&
+                interaction.placeSubType === organizedTransport.code &&
                 <OrganizedTransportEventGrid  interaction={interaction}/>
             }
         </>

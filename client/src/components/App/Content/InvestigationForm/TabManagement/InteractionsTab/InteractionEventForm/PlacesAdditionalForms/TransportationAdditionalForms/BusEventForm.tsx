@@ -24,8 +24,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
-                    <FormInput fieldName='קו'>
+                    <FormInput xs={2} className={classes.mainTextItem} fieldName='קו'>
                         <Controller 
                             name={InteractionEventDialogFields.BUS_LINE}
                             control={control}
@@ -39,9 +38,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={2} className={classes.secondaryTextItem}>
-                    <FormInput fieldName='חברה'>
+                    <FormInput xs={2} className={classes.secondaryTextItem} fieldName='חברה'>
                         <Controller 
                             name={InteractionEventDialogFields.BUS_COMPANY}
                             control={control}
@@ -55,11 +52,9 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={4} className={classes.mainTextItem}>
-                    <FormInput fieldName='עיר מוצא'>
+                    <FormInput xs={4} className={classes.mainTextItem} fieldName='עיר מוצא'>
                         <Controller 
                             name={InteractionEventDialogFields.CITY_ORIGIN}
                             control={control}
@@ -84,9 +79,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />  
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='תחנת עליה'>
+                    <FormInput xs={4} fieldName='תחנת עליה'>
                         <Controller 
                             name={InteractionEventDialogFields.BOARDING_STATION}
                             control={control}
@@ -100,11 +93,9 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
             </div>
             <div className={formClasses.formRow}>
-                <Grid item xs={4} className={classes.mainTextItem}>
-                    <FormInput fieldName='עיר יעד'>
+                <FormInput xs={4} className={classes.mainTextItem} fieldName='עיר יעד'>
                     <Controller 
                             name={InteractionEventDialogFields.CITY_DESTINATION}
                             control={control}
@@ -129,9 +120,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='תחנת ירידה'>
+                    <FormInput xs={4} fieldName='תחנת ירידה'>
                         <Controller 
                             name={InteractionEventDialogFields.END_STATION}
                             control={control}
@@ -145,7 +134,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
             </div>
         </>
     );

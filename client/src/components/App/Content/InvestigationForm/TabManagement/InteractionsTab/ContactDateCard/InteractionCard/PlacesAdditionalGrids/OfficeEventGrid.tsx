@@ -16,7 +16,7 @@ const OfficeEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <FormInput fieldName='שם המשרד'>
+                <FormInput xs={12} fieldName='שם המשרד'>
                     <Typography variant='caption'>
                         {interaction.placeName}
                     </Typography>

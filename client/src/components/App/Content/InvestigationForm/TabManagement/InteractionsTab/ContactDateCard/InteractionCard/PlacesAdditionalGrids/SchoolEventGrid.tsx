@@ -18,23 +18,19 @@ const SchoolEventGrid: React.FC<Props> = (props: Props): JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='שם המוסד'>
-                        <Typography variant='caption'>
-                            {interaction.placeName}
-                        </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
+                <FormInput xs={6} fieldName='שם המוסד'>
+                    <Typography variant='caption'>
+                        {interaction.placeName}
+                    </Typography>
+                </FormInput>
                     {
                         interaction.grade &&
-                        <FormInput fieldName='כיתה'>
+                        <FormInput xs={6} fieldName='כיתה'>
                             <Typography variant='caption'>
                                 {interaction.grade}
                             </Typography>
                         </FormInput>
                     }
-                </Grid>
             </Grid>
             <AddressGrid interaction={interaction} />
             <BusinessContactGrid interaction={interaction}/>

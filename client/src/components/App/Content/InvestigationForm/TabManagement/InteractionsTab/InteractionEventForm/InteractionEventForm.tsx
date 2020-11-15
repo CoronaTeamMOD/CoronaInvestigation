@@ -13,13 +13,15 @@ import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId'
+import  {getOptionsByPlaceAndSubplaceType} from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
-
-import PlaceTypeForm from './PlaceTypeForm';
+import AddressForm from './AddressForm/AddressForm';
+import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
+import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
@@ -52,12 +54,12 @@ const InteractionEventForm: React.FC<Props> = (
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
-  const grade = methods.watch(InteractionEventDialogFields.GRADE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
 
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
+  const formConfig = React.useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);
 
   const classes = useStyles();
   const formClasses = useFormStyles();
@@ -113,7 +115,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const memoIsPrivatePlace: boolean = useMemo(() => {
     const isPrivatePlace = placeType === 'בית פרטי';
-    
+
     if (isPrivatePlace) {
       methods.setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, false);
     }
@@ -151,6 +153,14 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
+  const {
+    hasAddress,
+    isNamedLocation,
+    isBusiness,
+    nameFieldLabel = '',
+    extraFields = [],
+  } = formConfig;
+
   return (
     <FormProvider {...methods}>
       <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
@@ -164,57 +174,69 @@ const InteractionEventForm: React.FC<Props> = (
             onPlaceSubTypeChange={onPlaceSubtypeChange}
           />
 
-          <PlaceTypeForm grade={grade} placeType={placeType} placeSubType={placeSubType} />
           <Grid className={formClasses.formRow} container justify='flex-start'>
-            <Grid item xs={6}>
-              <FormInput fieldName='משעה'>
+              <FormInput xs={5} fieldName='משעה'>
                 <Controller
-                  name={InteractionEventDialogFields.START_TIME}
-                  control={methods.control}
-                  render={(props) => (
-                    <TimePick
-                      testId='contactLocationStartTime'
-                      value={props.value}
-                      onChange={(newTime: Date) =>
-                        handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
-                      }
-                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
-                      error={get(methods.errors, props.name)}
-                    />
-                  )}
+                    name={InteractionEventDialogFields.START_TIME}
+                    control={methods.control}
+                    render={(props) => (
+                        <TimePick
+                            testId='contactLocationStartTime'
+                            value={props.value}
+                            onChange={(newTime: Date) =>
+                                handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                            }
+                            labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
+                            error={get(methods.errors, props.name)}
+                        />
+                    )}
                 />
               </FormInput>
-            </Grid>
-            <Grid item xs={6}>
-              <FormInput fieldName='עד שעה'>
+              <FormInput xs={4} fieldName='עד שעה'>
                 <Controller
-                  name={InteractionEventDialogFields.END_TIME}
-                  control={methods.control}
-                  render={(props) => (
-                    <TimePick
-                      testId='contactLocationEndTime'
-                      value={props.value}
-                      onChange={(newTime: Date) =>
-                        handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
-                      }
-                      labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
-                      error={get(methods.errors, props.name)}
-                    />
-                  )}
+                    name={InteractionEventDialogFields.END_TIME}
+                    control={methods.control}
+                    render={(props) => (
+                        <TimePick
+                            testId='contactLocationEndTime'
+                            value={props.value}
+                            onChange={(newTime: Date) =>
+                                handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                            }
+                            labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
+                            error={get(methods.errors, props.name)}
+                        />
+                    )}
                 />
               </FormInput>
-            </Grid>
           </Grid>
-          <Collapse in={!memoIsPrivatePlace}> 
+
+          <Collapse in={hasAddress}>
+            <AddressForm/>
+          </Collapse>
+
+          <Collapse in={isNamedLocation}>
+            <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
+          </Collapse>
+
+          <Collapse in={!!extraFields}>
+            {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
+          </Collapse>
+
+          <Collapse in={isBusiness}>
+            <BusinessContactForm/>
+          </Collapse>
+
+          <Collapse in={!memoIsPrivatePlace}>
             <Grid className={formClasses.formRow} container justify='flex-start'>
-              <FormInput fieldName='האם מותר להחצנה'>
+              <FormInput xs={12} fieldName='האם מותר להחצנה'>
                 <Controller
                   name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
                   control={methods.control}
                   render={(props) => (
                     <Toggle
                       test-id='allowExternalization'
-                      value={props.value} 
+                      value={props.value}
                       onChange={(event, value: boolean) => props.onChange(value as boolean)}
                       className={formClasses.formToggle}
                     />
@@ -223,7 +245,7 @@ const InteractionEventForm: React.FC<Props> = (
               </FormInput>
             </Grid>
           </Collapse>
-          
+
         </Grid>
         <Divider light={true} />
         <Grid
