@@ -5,6 +5,7 @@ AS $function$declare
 --Event variables:
 placeType varchar;
 placeName varchar;
+placeDescription varchar;
 investigationId int4;
 locationAddress varchar;
 startTime timestamp;
@@ -58,6 +59,7 @@ begin
 	end if;
 	select nullif((input_data->'placeType')::text,'null') as val into placeType;
 	select nullif((input_data->'placeName')::text,'null') as val into placeName;
+	select nullif((input_data->'placeDescription')::text,'null') as val into placeDescription;
 	investigationId :=(select value::text::int4 from json_each(input_data) where key='investigationId') ;
 	select nullif((input_data->'locationAddress')::text,'null') as val into locationAddress;
 	startTime:= (select value::text::timestamp  from json_each(input_data) where key='startTime');
@@ -135,6 +137,7 @@ if curr_event is null then
 		startTime,
 		endTime,
 		trim(placeName,'"'),
+		trim(placeDescription, '"'),
 	    trim(placeType,'"'),
 		placeSubType,
 		trim(locationAddress,'"'),
@@ -172,7 +175,8 @@ else
 	allows_hamagen_data=allow_hamagen, 
 	start_time=startTime, 
 	end_time=endTime, 
-	place_name=trim(placeName,'"'), 
+	place_name=trim(placeName,'"'),
+	place_description = trim(placeDescription, '"'),
 	bus_line=trim(busLine,'"'), 
 	train_line=trim(trainLine,'"'), 
 	bus_company=trim(busCompany,'"'),
