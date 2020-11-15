@@ -1,45 +1,54 @@
 import React from 'react';
+import { Button, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
-import {Button, Typography} from '@material-ui/core';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
+import StoreStateType from 'redux/storeStateType';
 import { Service, Severity } from 'models/Logger';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
+import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
+import axios from 'Utils/axios';
 import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
-import useDuplicateContactId, { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
-import {ParsedExcelRow} from 'models/enums/contactQuestioningExcelFields';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
 ].map((suffix) => `.${suffix}`).join(',');
 
 interface ExcelUploaderProps {
-    contactEvent:number;
+    contactEvent: number;
     onSave: () => void;
+    allInteractions: Interaction[];
 }
-const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
-    const {alertError} = useCustomSwal();
-    const {validateContact} = useContactFields();
-    const [data, setData] = React.useState<ParsedExcelRow[] | undefined>();
-    const buttonRef = React.useRef<HTMLInputElement>(null);
-    const onFail = () => alertError('שגיאה בטעינת הקובץ');
-    const {onFileSelect} = useContactExcel(setData, onFail);
-    const { handleDuplicateIdsError } = useDuplicateContactId();
 
+const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploaderProps) => {
+    const [data, setData] = React.useState<ParsedExcelRow[] | undefined>();
+    
+    const buttonRef = React.useRef<HTMLInputElement>(null);
+    
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    
+    const existingContacts = allInteractions.flatMap(interaction => interaction.contacts);
+    const existingContactsIds: string[] = existingContacts.map(contact => contact.idNumber).filter(id => id) as string[];
+    
+    const onFail = () => alertError('שגיאה בטעינת הקובץ');
 
+    const { onFileSelect } = useContactExcel(setData, onFail);
+    const { alertError } = useCustomSwal();
+    const { validateContact } = useContactFields();
+    const { checkDuplicateIds  } = useDuplicateContactId();
+    
     const classes = useStyles();
-
+    
     React.useEffect(() => {
         saveDataInFile(data)
     }, [data]);
-
+    
     const onButtonClick = () => buttonRef?.current?.click();
 
     const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
@@ -58,7 +67,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
             });
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                const validationInfo = validateContact(contact, ValidationReason.HANDLE_ISOLATION);
+                const validationInfo = validateContact(contact, ValidationReason.EXCEL_LOADING);
 
                 if (!validationInfo.valid) {
                     const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);
@@ -76,30 +85,30 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
                 });
             } else {
                 const contactsData = contacts.map(contact => {
-                    const {rowNum, ...contactData} = contact;
+                    const { rowNum, ...contactData } = contact;
                     return contactData;
                 });
-                axios.post('/contactedPeople/excel', {contactEvent, contacts: contactsData})
-                    .then((result) => {
-                        if (result.data.includes(duplicateIdsErrorMsg)) {
-                            handleDuplicateIdsError(result.data.split(':')[1], userId, epidemiologyNumber);
-                        } else {
+                const excelContactsIds = contacts.map((contact) => contact.identificationNumber)
+                                                 .filter(id => id);
+                if (!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
+                    axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
+                        .then(() => {
                             logger.info({
                                 ...logInfo,
                                 severity: Severity.LOW,
                                 step: 'contacted people excel was saved successfully',
                             })
                             onSave();
-                        }
-                    })
-                    .catch(error => {
-                        logger.error({
-                            ...logInfo,
-                            severity: Severity.LOW,
-                            step: `got error from server: ${error}`,
-                        });
-                        alertError('שגיאה בשמירת הנתונים');
-                    })
+                        })
+                        .catch(error => {
+                            logger.error({
+                                ...logInfo,
+                                severity: Severity.LOW,
+                                step: `got error from server: ${error}`,
+                            });
+                            alertError('שגיאה בשמירת הנתונים');
+                        })
+                }
             }
         }
     };
