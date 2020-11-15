@@ -122,7 +122,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                 <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                     <Grid item xs={12} className={classes.fieldLabel}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
-                            <b><bdi>{statusLabel}</bdi>: </b>
+                            <Typography>
+                                <b><bdi>{statusLabel}</bdi>: </b>
+                            </Typography>
                             <Grid item className={classes.statusSelectGrid}>
                                 <Autocomplete
                                     className={classes.statusSelect}
