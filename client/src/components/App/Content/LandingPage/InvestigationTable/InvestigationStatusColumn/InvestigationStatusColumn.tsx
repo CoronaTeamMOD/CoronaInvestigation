@@ -15,7 +15,7 @@ import { transferedSubStatus } from '../useInvestigationTable';
 
 const InvestigationStatusColumn = (props: Props) => {
 
-    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, transfered } = props;
+    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, wasInvestigationTransfered } = props;
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
@@ -61,7 +61,7 @@ const InvestigationStatusColumn = (props: Props) => {
                 <Typography>{investigationSubStatus + '/'}</Typography>
             }
             {
-                investigationStatus === InvestigationMainStatus.IN_PROCESS && transfered &&
+                investigationStatus === InvestigationMainStatus.IN_PROCESS && wasInvestigationTransfered &&
                 <Typography>{transferedSubStatus + '/'}</Typography>
             }
             <Typography>{investigationStatus}</Typography>
@@ -91,7 +91,7 @@ interface Props {
     investigationStatus: string | null;
     investigationSubStatus: string;
     statusReason: string;
-    transfered: boolean;
+    wasInvestigationTransfered: boolean;
     epidemiologyNumber: number;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 };

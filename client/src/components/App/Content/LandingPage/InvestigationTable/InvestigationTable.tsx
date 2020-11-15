@@ -153,7 +153,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         switch (cellName) {
             case TableHeadersNames.epidemiologyNumber:
                 return <InvestigationNumberColumn
-                    transfered={indexedRow.transfered}
+                    wasInvestigationTransfered={indexedRow.transfered}
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
                 />
             case TableHeadersNames.investigatorName:
@@ -327,7 +327,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     investigationStatus={investigationStatus}
                     investigationSubStatus={indexedRow.investigationSubStatus}
                     statusReason={indexedRow.statusReason}
-                    transfered={indexedRow.transfered}
+                    wasInvestigationTransfered={indexedRow.transfered}
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
