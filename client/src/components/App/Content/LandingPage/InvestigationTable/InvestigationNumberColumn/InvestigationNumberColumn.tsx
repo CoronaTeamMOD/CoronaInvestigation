@@ -11,8 +11,6 @@ const InvestigationNumberColumn = (props: Props) => {
 
     const classes = useStyles();
 
-    console.log(wasInvestigationTransferred)
-
     return (
         <div className={classes.columnWrapper}>
             <Typography>{epidemiologyNumber}</Typography>
