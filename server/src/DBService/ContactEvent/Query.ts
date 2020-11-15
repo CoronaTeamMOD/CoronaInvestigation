@@ -64,6 +64,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
       placeType
       startTime
       trainLine
+      creationTime
       contactedPeopleByContactEvent {
         nodes {
           id
@@ -71,6 +72,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           contactStatus
           contactType
           extraInfo
+          creationTime
           personByPersonInfo {
             firstName
             identificationNumber

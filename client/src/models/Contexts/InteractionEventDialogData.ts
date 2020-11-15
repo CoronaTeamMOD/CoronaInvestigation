@@ -31,6 +31,7 @@ interface InteractionEventDialogData {
     flightOriginAirport?: string;
     flightOriginCity?: string;
     flightOriginCountry?: string;
+    creationTime: Date;
 }
 
 export default InteractionEventDialogData;

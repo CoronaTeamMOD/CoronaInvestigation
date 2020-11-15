@@ -21,6 +21,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
     externalizationApproval: false,
     contacts,
     contactPersonPhoneNumber: '',
+    creationTime: new Date()
 });
 
 const newContactEventTitle = 'יצירת מקום/מגע חדש';

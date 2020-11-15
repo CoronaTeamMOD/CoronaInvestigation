@@ -7,13 +7,14 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import InteractedContact from 'models/InteractedContact';
+import useContactFields from 'Utils/vendor/useContactFields';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import useContactFields from 'Utils/vendor/useContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import InteractedContact from 'models/InteractedContact';
 
 import useStyles from './ContactFormStyles';
 
@@ -28,7 +29,7 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
@@ -36,6 +37,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus }: Pr
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
+
+    const { shouldDisableContact } = useStatusUtils();
 
     useEffect(() => {
         const values = getValues();
@@ -113,7 +116,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus }: Pr
                             control={control}
                             render={(props) => (
                                 <NumericTextField
-                                    disabled={isFieldDisabled}
+                                    disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                     name={props.name}
                                     value={props.value}
                                     onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
@@ -181,4 +184,5 @@ export default ContactForm;
 interface Props {
     updatedContactIndex: number;
     contactStatus?: InteractedContact['contactStatus'];
+    contactCreationTime?: Date;
 };

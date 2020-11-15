@@ -59,7 +59,7 @@ const ContactUploader = ({contactEvent, onSave}:ExcelUploaderProps) => {
             });
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
-                const validationInfo = validateContact(contact);
+                const validationInfo = validateContact(contact, true);
 
                 if (!validationInfo.valid) {
                     const error = `שגיאה בשורה ${contact.rowNum + 1}: `.concat(validationInfo.error);

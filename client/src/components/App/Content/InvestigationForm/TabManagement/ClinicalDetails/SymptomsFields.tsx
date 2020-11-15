@@ -1,15 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
-import StoreStateType from 'redux/storeStateType';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -22,7 +21,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     } = props;
     const { control, errors } = useFormContext();
 
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
+    const { wasInvestigationReopend } = useStatusUtils();
 
     return (
         <>

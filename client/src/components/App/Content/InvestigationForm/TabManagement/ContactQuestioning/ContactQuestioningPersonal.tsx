@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { differenceInYears } from 'date-fns';
 import { Avatar, Grid, Typography } from '@material-ui/core';
 
@@ -7,12 +6,12 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
+import useContactFields from 'Utils/vendor/useContactFields';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import StoreStateType from 'redux/storeStateType';
-import useContactFields from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -22,8 +21,6 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
     
     const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
-
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
     
     const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
     
@@ -31,8 +28,11 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
     const contactAge = interactedContact.birthDate && !isNaN(age as number) ? age === 0 ? '0' : age : null;
 
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
+
     useEffect(() => {
-        const shouldDisable = isFieldDisabled || (wasInvestigationReopend && interactedContact.identificationNumber !== null);
+        const shouldDisable = isFieldDisabled || (shouldDisableIdByReopen && !!interactedContact.identificationNumber);
         setShouldIdDisable(shouldDisable);
     }, [interactedContact.contactStatus])
 
