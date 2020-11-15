@@ -39,7 +39,39 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const { validateContact } = useContactFields();
     const { alertError } = useCustomSwal();
 
-    const saveContact = (interactedContact: InteractedContact) => {
+    const validateAllContacts = (workflow: string) : InteractedContact[] => {
+        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((previous, contact) => {
+            const validationInfo = validateContact(contact, ValidationReason.SAVE_CONTACT);
+
+            if (!validationInfo.valid) {
+                logger.warn({
+                    service: Service.CLIENT,
+                    severity: Severity.MEDIUM,
+                    workflow,
+                    step: `Couldnt save the interacted contact ${contact.id} due to validation`,
+                    user: userId,
+                    investigation: epidemiologyNumber
+                });
+                const error = `${contact.firstName} ${contact.lastName}: `.concat(validationInfo.error);
+                return {
+                    errorMessages: [...previous.errorMessages, error],
+                    validContacts: previous.validContacts
+                }
+            }
+            return {
+                errorMessages: previous.errorMessages,
+                validContacts: [...previous.validContacts, contact]
+            }
+        }, {validContacts: [], errorMessages: []});
+
+        if(errorMessages.length > 0) {
+            alertError(contactsSaveErrorMessageStart + "\r\n".concat(errorMessages.join("\r\n")));
+        }
+
+        return validContacts;
+    }
+
+    const isSingleContactValid = (interactedContact: InteractedContact) : boolean => {
         const validationInfo = validateContact(interactedContact, ValidationReason.SAVE_CONTACT);
         if (!validationInfo.valid) {
             logger.warn({
@@ -51,7 +83,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 investigation: epidemiologyNumber
             });
             alertError(validationInfo.error);
-        } else if(!checkForSpecificDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    const saveContact = (interactedContact: InteractedContact) => {
+        if(!checkForSpecificDuplicateIds(interactedContact.identificationNumber, interactedContact.id)) {
             interactedContact.identificationNumber = '';
             const changedInteractedContact = allContactedInteractions.findIndex(currContact => currContact.id === interactedContact.id);
             allContactedInteractions.splice(changedInteractedContact, 1, interactedContact);
@@ -98,36 +136,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContactQuestioning = (): Promise<AxiosResponse<any>> => {
         const workflow = 'Saving all contacts';
 
-        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((previous, contact) => {
-            const validationInfo = validateContact(contact, ValidationReason.SAVE_CONTACT);
-
-            if (!validationInfo.valid) {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow,
-                    step: `Couldnt save the interacted contact ${contact.id} due to validation`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const error = `${contact.firstName} ${contact.lastName}: `.concat(validationInfo.error);
-                return {
-                    errorMessages: [...previous.errorMessages, error],
-                    validContacts: previous.validContacts
-                }
-            }
-            return {
-                errorMessages: previous.errorMessages,
-                validContacts: [...previous.validContacts, contact]
-            }
-        }, {validContacts: [], errorMessages: []});
-
-        if(errorMessages.length > 0) {
-            alertError(contactsSaveErrorMessageStart + "\r\n".concat(errorMessages.join("\r\n")));
-        }
-
         const contactsSavingVariable = {
-            unSavedContacts: {contacts: validContacts}
+            unSavedContacts: {contacts: allContactedInteractions}
         }
         
         logger.info({
