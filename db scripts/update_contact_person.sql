@@ -70,7 +70,6 @@ begin
 	    set extra_info = extraInfo,
 		contact_type = contactType
 	    where id = contacted_person_id ;
-
 	    update person
 	    set first_name = firstName,
 	    	last_name  = LastName,
@@ -79,7 +78,6 @@ begin
 	    	identification_type = (case when identificationNumber is null then null
 				 				  	     when identificationType is null then 'ת"ז'
 				 				  	   else identificationType end)
-
 	   from contacted_person
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
 
@@ -97,8 +95,8 @@ begin
 
 			person_id := currval('person_id_seq');
 			INSERT INTO public.contacted_person
-			(person_info, contact_event,extra_info, contact_type, contact_status)
-			VALUES(person_id, contact_event_id,extraInfo, contactType, 1);
+			(person_info, contact_event,extra_info, contact_type, contact_status, creation_time)
+			VALUES(person_id, contact_event_id,extraInfo, contactType, 1, now());
 	    end if;
 	end loop;
 end;

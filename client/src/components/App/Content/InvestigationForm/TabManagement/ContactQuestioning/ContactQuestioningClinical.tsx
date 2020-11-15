@@ -12,12 +12,13 @@ import StoreStateType from 'redux/storeStateType';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './ContactQuestioningStyles';
-import useContactFields from 'Utils/vendor/useContactFields';
 
 const emptyFamilyRelationship: FamilyRelationship = {
     id: null as any,
@@ -26,11 +27,14 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
-
+    
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
-
+    
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
+
     const {alertError} = useCustomSwal();
     const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
 
@@ -42,9 +46,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const handleIsolation = (value: boolean) => {
         const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
-        const validation = validateContact(contactWithIsolationRequirement);
-        if(!validation.valid) {
-            alertError(validation.error)
+        const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
+        if(!contactValidation.valid) {
+            alertError(contactValidation.error)
         } else {
             value ?
                 Swal.fire({
@@ -167,7 +171,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
-                            disabled={isFieldDisabled || (wasInvestigationReopend && interactedContact.doesNeedIsolation)}
+                            disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
                             test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}

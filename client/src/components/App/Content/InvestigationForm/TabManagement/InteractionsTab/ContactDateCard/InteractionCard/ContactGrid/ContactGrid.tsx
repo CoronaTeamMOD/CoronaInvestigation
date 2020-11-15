@@ -8,6 +8,7 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 
 import useStyles from './ContactGridStyles';
 
@@ -26,7 +27,9 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
+    
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime);
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -95,7 +98,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             <div className={classes.deleteIconDiv}>
                 <CompletedQuestioningTooltip>
                     <IconButton 
-                        disabled={isContactComplete || wasInvestigationReopend}
+                        disabled={shouldDisableDeleteContact}
                         test-id='deleteContactLocation' 
                         onClick={() => {
                         contact.serialId && onDeleteContactClick(

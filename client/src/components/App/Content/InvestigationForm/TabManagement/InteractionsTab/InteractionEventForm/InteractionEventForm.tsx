@@ -30,6 +30,7 @@ export const defaultContact: Contact = {
   phoneNumber: '',
   idNumber: '',
   contactType: -1,
+  creationTime: new Date(),  
 };
 
 const addContactButton: string = 'הוסף מגע';
@@ -215,6 +216,7 @@ const InteractionEventForm: React.FC<Props> = (
                     key={index}
                     updatedContactIndex={index}
                     contactStatus={contact.contactStatus}
+                    contactCreationTime={contact.creationTime}
                   />
                 </Grid>
               ))

@@ -41,6 +41,7 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesWorkWithCrowd
       doesNeedIsolation
       contactStatus
+      creationTime
     }
   }
 }

@@ -138,10 +138,10 @@ begin
  		raise notice 'insert new person %', personId	;   
 	   	   INSERT INTO public.contacted_person (person_info, contact_event, relationship, extra_info, contact_type, 
 	   	   contacted_person_city, does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
-	   	   repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation) 
+	   	   repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
 	    VALUES(personId, contactEvent, personRelationship, extraInfo, contactType, 
 	   		contactedPersonCity, doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
-	   		repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation);
+	   		repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 
 	   end if;
 	end loop;

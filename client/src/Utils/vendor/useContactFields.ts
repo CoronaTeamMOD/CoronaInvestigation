@@ -7,6 +7,7 @@ import ContactType from 'models/enums/ContactType';
 
 export const COMPLETE_STATUS = 5;
 export const STRICT_CONTACT_TYPE = 1;
+const isolationErrorMessageEnd = ' ולכן לא ניתן להקים דיווח בידוד';
 
 interface validValidation {
     valid:true;
@@ -15,6 +16,11 @@ interface validValidation {
 interface invalidValidation {
     valid:false;
     error: string;
+}
+
+export enum ValidationReason {
+    HANDLE_ISOLATION,
+    SAVE_CONTACT
 }
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
@@ -26,36 +32,36 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         return contacts.filter((contact) => shouldDisable(contact.contactStatus));
     };
 
+    const checkIsLooseContact = (contactType: number | string) =>  typeof contactType === 'number'
+        ? contactType !== STRICT_CONTACT_TYPE
+        : contactType !== ContactType.TIGHT;
+
     const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
         InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
         InteractedContactFields.LAST_NAME];
 
-    const validateContact = (contact: InteractedContact): validValidation | invalidValidation => {
+    const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
         if(!contact.doesNeedIsolation) {
             return {valid: true};
         } else {
             const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>
                 !Boolean(contact[mandatoryField as keyof InteractedContact])
             );
-            const isLooseContact = typeof contact.contactType === "number"
-                ? contact.contactType !== STRICT_CONTACT_TYPE
-                : contact.contactType !== ContactType.TIGHT;
+            const isLooseContact = checkIsLooseContact(contact.contactType);
 
             if (emptyFieldNames.length > 0 || isLooseContact)
-                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact)};
+                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact, validationReason)};
             else return {valid: true};
         }
     };
 
-    const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean) => {
-        let message = 'שים לב, ';
-
+    const buildEmptyFieldsString = (emptyFields: string[], isLooseContact: boolean) : string => {
+        let message = '';
         if(emptyFields.length > 0) {
             const fieldWord = `לא מילאת את ${emptyFields.length > 1 ? 'שדות ' : 'שדה '}`;
             const emptyFieldProblem = emptyFields.map(fieldName => ContactedPersonFieldMapper[fieldName as keyof typeof ContactedPersonFieldMapper]);
-            message = message.concat(fieldWord.concat(emptyFieldProblem.join(', ')));
-            if(isLooseContact)
-                message = message.concat(' ו')
+            message = fieldWord.concat(emptyFieldProblem.join(', '));
+            if(isLooseContact) message = message.concat(' ו')
         }
 
         if(isLooseContact) {
@@ -63,14 +69,24 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
             message = message.concat(looseContactErrorMessage);
         }
 
-        return message.concat(' ולכן לא ניתן להקים דיווח בידוד');
+        return message;
+    }
+
+    const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean, validationReason: ValidationReason) => {
+        let message = 'שים לב, ';
+        const emptyFieldsString = buildEmptyFieldsString(emptyFields, isLooseContact);
+
+        if(validationReason === ValidationReason.HANDLE_ISOLATION) return message.concat(emptyFieldsString).concat(isolationErrorMessageEnd);
+
+        return emptyFieldsString;
     };
 
     return {
         isFieldDisabled,
         getDisabledFields,
         shouldDisable,
-        validateContact
+        validateContact,
+        checkIsLooseContact
     }
 };
 

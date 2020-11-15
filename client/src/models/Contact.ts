@@ -9,6 +9,7 @@ interface Contact {
     contactType: number;
     extraInfo?: string;
     contactStatus?: InteractedContact['contactStatus'];
+    creationTime: Date;
 }
 
 export default Contact;

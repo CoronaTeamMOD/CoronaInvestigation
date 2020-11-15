@@ -1,12 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import { timeFormat } from 'Utils/displayUtils';
-import StoreStateType from 'redux/storeStateType';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './InteractionCardStyles';
@@ -31,12 +30,13 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const { interaction, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
-
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
-
+    
     const {getDisabledFields} = useContactFields();
     const completedContacts = getDisabledFields(interaction.contacts);
     const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
+    
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime);
 
     return (
         <Card className={classes.container}>
@@ -56,7 +56,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         <Edit />
                     </IconButton>
                     <IconButton test-id={'deleteContactLocation'}
-                                disabled={completedContacts?.length > 0 || wasInvestigationReopend}
+                                disabled={shouldDisableDeleteInteraction}
                                 onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>

@@ -280,47 +280,4 @@ ContactedPeopleRoute.post('/excel', async (request: Request, response: Response)
         })
 });
 
-ContactedPeopleRoute.post('/checkDuplicates', (request, response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: `Checking for duplicate ids request`,
-        step: `Launching GraphQL Request CHECK_FOR_DUPLICATE_IDS`,
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    });
-    graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, {currInvestigationId: parseInt(response.locals.epidemiologynumber),
-        idToCheck: request.body.currIdNumber, interactedContactId: request.body.interactedContactId}).then((result) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: `Got result for duplicate check`,
-            step: `Finished GraphQL Request CHECK_FOR_DUPLICATE_IDS`,
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
-        });
-            if(result.data?.checkDuplicatesIds) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: `Duplicate check succeeded - no duplicates`,
-                    step: `Sending 200 OK to client`,
-                    user: response.locals.user.id,
-                    investigation: response.locals.epidemiologynumber
-                });
-                response.send(result.data?.checkDuplicatesIds?.boolean);
-            }
-    }).catch((error) => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: `Duplicate check failed`,
-            step: `duplicate check request failed with ${error.message}`,
-            user: response.locals.user.id,
-            investigation: response.locals.epidemiologynumber
-        });
-        response.status(errorStatusCode).send(error);
-    })
-});
-
 export default ContactedPeopleRoute;

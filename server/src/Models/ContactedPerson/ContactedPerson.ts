@@ -19,6 +19,7 @@ interface InteractedContact extends Person {
     repeatingOccuranceWithConfirmed: boolean;
     doesLiveWithConfirmed: boolean;
     doesWorkWithCrowd: boolean;
+    creationTime: Date;
 };
 
 export default InteractedContact;

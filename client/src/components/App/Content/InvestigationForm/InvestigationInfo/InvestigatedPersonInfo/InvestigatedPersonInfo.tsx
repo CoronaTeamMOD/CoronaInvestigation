@@ -9,6 +9,7 @@ import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/i
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -44,7 +45,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
     const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
-    const wasInvestigationReopend = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime) !== null;
+    const { wasInvestigationReopend } = useStatusUtils();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);

@@ -21,6 +21,7 @@ interface InteractedContact extends Person {
     doesLiveWithConfirmed: boolean;
     doesWorkWithCrowd: boolean;
     doesNeedIsolation: boolean;
+    creationTime?: Date;
 };
 
 export default InteractedContact;

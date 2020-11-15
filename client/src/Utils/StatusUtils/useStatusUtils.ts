@@ -1,3 +1,4 @@
+import { isBefore } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 
@@ -14,6 +15,8 @@ const useStatusUtils = () => {
     const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const investigationEndTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
+    const wasInvestigationReopend = investigationEndTime !== null;
 
     const updateIsDeceased = (onInvestigationFinish: Function) => {
         if (!investigatedPatient.isDeceased) {
@@ -75,9 +78,15 @@ const useStatusUtils = () => {
         }
     }
 
+    const shouldDisableContact = (creationTime: Date) => {
+        return wasInvestigationReopend && isBefore(new Date(creationTime), new Date(investigationEndTime as Date))
+    };
+
     return {
         updateIsDeceased,
-        updateIsCurrentlyHospitialized
+        updateIsCurrentlyHospitialized,
+        wasInvestigationReopend,
+        shouldDisableContact
     }
 
 };
