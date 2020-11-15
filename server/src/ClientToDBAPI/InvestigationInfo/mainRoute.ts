@@ -313,15 +313,26 @@ investigationInfo.post('/updateInvestigationTransfer', (request: Request, respon
         epidemiologyNumber: +epidemiologyNumber
     })
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Investigation transfer',
-                step: 'the investigation start time was updated successfully',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologyNumber
-            });
-            response.send(result)
+            if (result?.errors?.length > 0) {
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow: 'Investigation transfer',
+                    step: `the investigation transfer indication failed to update due to: ${result.errors[0].message ? result.errors[0].message : JSON.stringify(result)}`,
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologyNumber
+                });
+            } else {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow: 'Investigation transfer',
+                    step: 'the investigation start time was updated successfully',
+                    user: response.locals.user.id,
+                    investigation: response.locals.epidemiologyNumber
+                });
+                response.send(result);
+            }
         })
         .catch(err => {
             logger.error({
@@ -332,6 +343,7 @@ investigationInfo.post('/updateInvestigationTransfer', (request: Request, respon
                 user: response.locals.user.id,
                 investigation: response.locals.epidemiologyNumber
             });
+            response.status(errorStatusCode).send(err);
         });
 });
 
