@@ -5,7 +5,6 @@ import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
 import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
-import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 
@@ -15,8 +14,7 @@ import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-
-export const orderedTabsNames : string[] = [TabNames.PERSONAL_INFO, TabNames.CLINICAL_DETAILS, TabNames.EXPOSURES_AND_FLIGHTS, TabNames.INTERACTIONS, TabNames.CONTACT_QUESTIONING];
+import { orderedTabsNames } from './useTabManagement'
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
