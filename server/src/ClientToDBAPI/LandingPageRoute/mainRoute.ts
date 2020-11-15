@@ -178,7 +178,7 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(CHANGE_DESK_ID, response.locals, {epidemiologyNumber, updatedDesk: null, transferReason})))
+    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(CHANGE_DESK_ID, response.locals, {epidemiologyNumber, updatedDesk, transferReason})))
     .then((results: any[]) => {
         if (areAllResultsValid(results)) {
             logger.info({
