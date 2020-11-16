@@ -11,11 +11,10 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 
 import useStyles from './InvestigationStatusColumnStyles';
-import { transferredSubStatus } from '../useInvestigationTable';
 
 const InvestigationStatusColumn = (props: Props) => {
 
-    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason, wasInvestigationTransferred } = props;
+    const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason } = props;
     
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
@@ -60,10 +59,6 @@ const InvestigationStatusColumn = (props: Props) => {
                 (investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus) &&
                 <Typography>{investigationSubStatus + '/'}</Typography>
             }
-            {
-                (investigationStatus === InvestigationMainStatus.IN_PROCESS && wasInvestigationTransferred) &&
-                <Typography>{transferredSubStatus + '/'}</Typography>
-            }
             <Typography>{investigationStatus}</Typography>
             {
                 investigationStatus === InvestigationMainStatus.DONE &&
@@ -91,7 +86,6 @@ interface Props {
     investigationStatus: string | null;
     investigationSubStatus: string;
     statusReason: string;
-    wasInvestigationTransferred: boolean;
     epidemiologyNumber: number;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 };
