@@ -52,7 +52,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     , [exposures]);
 
   const [coronaTestDate, setCoronaTestDate] = useState<Date>();
-  const [returnedFromDeadSea, setReturnedFromRedSea] = useState<boolean>(false);
+  const [returnedFromDeadSea, setReturnedFromDeadSea] = useState<boolean>(false);
   const [returnedFromEilat, setReturnedFromEilat] = useState<boolean>(false);
 
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure);
@@ -291,7 +291,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 value={returnedFromDeadSea}
                 onChange={(event, value) => {
                   if (value !== null) {
-                    setReturnedFromRedSea(value);
+                    setReturnedFromDeadSea(value);
                   }
                 }}
               />
