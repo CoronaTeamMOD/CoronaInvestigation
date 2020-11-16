@@ -171,8 +171,9 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
             })
             if (result?.data?.investigationByEpidemiologyNumber) {
                 response.send(convertClinicalDetailsFromDB(result));
+            } else {
+                response.send(result)
             }
-            response.send(result)
         }
     ).catch(error => {
         logger.error({
