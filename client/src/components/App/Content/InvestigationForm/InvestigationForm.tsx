@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import StoreStateType from 'redux/storeStateType';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import StoreStateType from 'redux/storeStateType';
-import { useSelector } from 'react-redux';
 import { setFormState } from 'redux/Form/formActionCreators';
-
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StartInvestigationDateVariables from 'models/StartInvestigationDateVariables';
 import {ExposureAndFlightsContextProvider, ExposureAndFlightsDetails,
@@ -32,7 +31,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     const [endInvestigationDate, setEndInvestigationDate] = React.useState<Date>(new Date());
     const [lastTabDisplayedId, setLastTabDisplayedId] = React.useState<number>(LAST_TAB_ID - 1);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const formsValidations = useSelector<StoreStateType, any>((state) => state.formsValidations[investigationId]);
 
     const exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet = React.useMemo(() => ({
         exposureAndFlightsData,
@@ -59,10 +57,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
         currentTab,
         setNextTab,
     } = useTabManagement({lastTabDisplayedId});
-
-    useEffect(() => {
-        console.log('lastTabDisplayedId:' + lastTabDisplayedId);
-    }, [lastTabDisplayedId]);
 
     useEffect(() => {
         setLastTabDisplayedId(areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1);
