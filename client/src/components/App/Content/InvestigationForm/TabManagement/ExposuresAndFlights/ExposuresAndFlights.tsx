@@ -1,8 +1,8 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form'
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AddCircle } from '@material-ui/icons';
+import { FormProvider, useForm } from 'react-hook-form';
+import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
@@ -11,30 +11,31 @@ import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
-import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FieldName from 'commons/FieldName/FieldName';
+import { setFormState } from 'redux/Form/formActionCreators';
+import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
+import { exposureAndFlightsContext, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 import FlightsForm from './FlightsForm/FlightsForm';
 import useStyles from './ExposuresAndFlightsStyles';
 import ExposureForm from './ExposureForm/ExposureForm';
-import { exposureAndFlightsContext, Exposure, initialExposureOrFlight, isConfirmedExposureInvalid, isFlightInvalid, fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 
 const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 const defaultDestinationCountryCode = '900';
 
-const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
-  const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
-  const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
+const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
+  const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
+  const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
   const { parseAddress } = useGoogleApiAutocomplete();
-  const {saveExposureAndFlightData} = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
+  const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+  const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
   const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
   const methods = useForm();
@@ -42,35 +43,35 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { fieldContainer } = useFormStyles();
   const classes = useStyles();
 
-  const disableConfirmedExposureAddition : boolean= React.useMemo(() => 
+  const disableConfirmedExposureAddition: boolean = React.useMemo(() =>
     exposures.some(exposure => exposure.wasConfirmedExposure && isConfirmedExposureInvalid(exposure))
     , [exposures]);
-  
-  const disableFlightAddition : boolean= React.useMemo(() => 
+
+  const disableFlightAddition: boolean = React.useMemo(() =>
     exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
     , [exposures]);
 
   const [coronaTestDate, setCoronaTestDate] = useState<Date>();
 
-  const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure)
-  const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad)
+  const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure);
+  const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (wereConfirmedExposures && !doesHaveConfirmedExposures(exposures)) && onExposureAdded(true, false);
-  }, [wereConfirmedExposures])
+  }, [wereConfirmedExposures]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (wereFlights && !doesHaveFlights(exposures)) && onExposureAdded(false, true);
-  }, [wereFlights])
+  }, [wereFlights]);
 
-  const parseDbExposure = (exposure:Exposure) => {
-    const {exposureAddress, ...restOfData} = exposure;
-    return ({exposureAddress: parseAddress(exposureAddress), ...restOfData});
+  const parseDbExposure = (exposure: Exposure) => {
+    const { exposureAddress, ...restOfData } = exposure;
+    return ({ exposureAddress: parseAddress(exposureAddress), ...restOfData });
   };
 
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
-  useEffect(() => {
+  const fetchExposuresAndFlights = () => {
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -81,27 +82,29 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
     });
     axios
       .get('/exposure/exposures/' + investigationId)
-        .then(result => {
-          logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching Exposures And Flights',
-            step: 'got results back from the server',
-            user: userId,
-            investigation: investigationId
+      .then(result => {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Fetching Exposures And Flights',
+          step: 'got results back from the server',
+          user: userId,
+          investigation: investigationId
         });
-          const data: Exposure[] = result?.data;
-          return data && data.map(parseDbExposure);
-        })
+        const data: Exposure[] = result?.data;
+        return data && data.map(parseDbExposure);
+      })
       .then((exposures?: Exposure[]) => {
-          if (exposures) {
-              setExposureDataAndFlights({
-                  exposures,
-                  exposuresToDelete: [],
-                  wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
-                  wereFlights: doesHaveFlights(exposures)
-              });
-          }
+        if (exposures) {
+          setExposureDataAndFlights({
+            exposures,
+            exposuresToDelete: [],
+            wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+            wereFlights: doesHaveFlights(exposures),
+            wasInEilat: wasInEilat,
+            wasInDeadSea: wasInDeadSea,
+          });
+        }
       })
       .then(() => {
         logger.info({
@@ -113,24 +116,24 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           investigation: investigationId
         });
         axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
-            if (res.data) {
-              logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Corona Test Date',
-                step: 'got results back from the server',
-                user: userId,
-                investigation: investigationId
-              });
-              setCoronaTestDate(convertDate(res.data.coronaTestDate));
-            } else {
-              logger.warn({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Getting Corona Test Date',
-                step: 'got status 200 but wrong data'
-              });
-            }
+          if (res.data) {
+            logger.info({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Getting Corona Test Date',
+              step: 'got results back from the server',
+              user: userId,
+              investigation: investigationId
+            });
+            setCoronaTestDate(convertDate(res.data.coronaTestDate));
+          } else {
+            logger.warn({
+              service: Service.CLIENT,
+              severity: Severity.HIGH,
+              workflow: 'Getting Corona Test Date',
+              step: 'got status 200 but wrong data'
+            });
+          }
         })
       })
       .catch((error) => {
@@ -147,11 +150,61 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           icon: 'error',
         })
       });
+  }
+
+  const fetchResortsData = () => {
+    const workflow = 'Fetching investigated patient resorts data'
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow,
+      step: `launching investigated patient resorts request`,
+      user: userId,
+      investigation: investigationId
+    });
+    axios.get('investigationInfo/resorts/' + investigatedPatientId)
+    .then((result) => {
+      if (result?.data) {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow,
+          step: `got investigated patient resorts response successfully`,
+          user: userId,
+          investigation: investigationId
+        });
+        onExposuresStatusChange(fieldsNames.wasInEilat, result?.data?.wasInEilat);
+        onExposuresStatusChange(fieldsNames.wasInDeadSea, result?.data?.wasInDeadSea);
+      } else {
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.HIGH,
+          workflow,
+          step: `failed to investigated patient resorts response`,
+          user: userId,
+          investigation: investigationId
+        });
+      }
+    }).catch(error => {
+      logger.error({
+        service: Service.CLIENT,
+        severity: Severity.HIGH,
+        workflow,
+        step: `failed to get resorts response due to ` + error,
+        user: userId,
+        investigation: investigationId
+      });
+    })
+  }
+
+  useEffect(() => {
+    fetchExposuresAndFlights();
+    fetchResortsData();
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
     const updatedExpousres = [...exposureAndFlightsData.exposures];
-    const updatedExposure = {...updatedExpousres[index], [fieldName]: value};
+    const updatedExposure = { ...updatedExpousres[index], [fieldName]: value };
     updatedExpousres.splice(index, 1, updatedExposure);
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
@@ -159,7 +212,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
     });
   };
 
-    const onExposuresStatusChange = (fieldName: any, value: any) => {
+  const onExposuresStatusChange = (fieldName: any, value: any) => {
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
       [fieldName]: value
@@ -167,46 +220,47 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
   };
 
   const onExposureAdded = (wasConfirmedExposure: boolean, wasAbroad: boolean) => {
-    const newExposure : Exposure = {...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
+    const newExposure: Exposure = { ...initialExposureOrFlight, wasConfirmedExposure, wasAbroad };
     if (wasAbroad) newExposure.flightDestinationCountry = defaultDestinationCountryCode;
-    const updatedExposures : Exposure[] = [...exposures, newExposure];
+    const updatedExposures: Exposure[] = [...exposures, newExposure];
     setExposureDataAndFlights({
       ...exposureAndFlightsData,
-        exposures: updatedExposures,
+      exposures: updatedExposures,
     });
   }
 
-  const saveExposure = (e: React.ChangeEvent<{}>) => {
-    e.preventDefault();
+  const saveExposure = (event: React.ChangeEvent<{}>) => {
+    event.preventDefault();
     logger.info({
-      service: Service.CLIENT,
-      severity: Severity.LOW,
-      workflow: 'Saving Exposures And Flights tab',
-      step: 'launching the server request',
-      investigation: investigationId,
-      user: userId
-  })
-    saveExposureAndFlightData()
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: 'Saving Exposures And Flights tab',
+        step: 'launching the server request',
+        investigation: investigationId,
+        user: userId
+    })
+    const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
+    Promise.all(tabSavePromises)
     .then(() => {
       logger.info({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow: 'Saving Exposures And Flights tab',
-          step: 'saved exposures and flights successfully',
-          investigation: investigationId,
-          user: userId
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: 'Saving Exposures And Flights tab',
+        step: 'saved confirmed exposures, flights and resorts data successfully',
+        investigation: investigationId,
+        user: userId
       });
     })
     .catch((error) => {
-      logger.error({
+        logger.error({
           service: Service.CLIENT,
-          severity: Severity.LOW,
+          severity: Severity.HIGH,
           workflow: 'Saving Exposures And Flights tab',
           step: `got error from server: ${error}`,
           investigation: investigationId,
           user: userId
-      });
-      Swal.fire({
+        });
+        Swal.fire({
           title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
           icon: 'error'
       });
@@ -219,14 +273,14 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
       <FormProvider {...methods}>
         <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
           <div className={classes.subForm}>
-              <FormTitle title='חשיפה אפשרית'/>
+            <FormTitle title='חשיפה אפשרית' />
 
-              <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
+            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
               <Toggle
                 value={wereConfirmedExposures}
                 onChange={(e, value) => {
                   if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wereConfirmedExposures,value)
+                    onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value)
                   }
                 }}
               />
@@ -240,18 +294,18 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
                 {
                   exposures.map((exposure, index) =>
                     exposure.wasConfirmedExposure &&
-                      <>
-                        <ExposureForm
-                          coronaTestDate={coronaTestDate}
-                          key={(exposure.id || '') + index.toString()}
-                          fieldsNames={fieldsNames}
-                          exposureAndFlightsData={exposure}
-                          handleChangeExposureDataAndFlightsField={
-                            (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
-                          }
-                        />
-                        <Divider/>
-                      </>
+                    <>
+                      <ExposureForm
+                        coronaTestDate={coronaTestDate}
+                        key={(exposure.id || '') + index.toString()}
+                        fieldsNames={fieldsNames}
+                        exposureAndFlightsData={exposure}
+                        handleChangeExposureDataAndFlightsField={
+                          (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
+                        }
+                      />
+                      <Divider />
+                    </>
                   )
                 }
                 <IconButton
@@ -273,14 +327,40 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           <Divider />
 
           <div className={classes.subForm}>
-              <FormTitle title='חזרה מחו״ל'/>
+            <FormTitle title='חזרה מאילת או מים המלח' />
+             <FormRowWithInput fieldName='חזר מאילת'>
+              <Toggle
+                value={wasInEilat}
+                onChange={(event, value) => {
+                  if (value !== null) {
+                    onExposuresStatusChange(fieldsNames.wasInEilat, value);
+                  }
+                }}
+              />
+            </FormRowWithInput>
+            <FormRowWithInput fieldName='חזר מים המלח'>
+              <Toggle
+                value={wasInDeadSea}
+                onChange={(event, value) => {
+                  if (value !== null) {
+                    onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
+                  }
+                }}
+              />
+            </FormRowWithInput>
+          </div>
 
-              <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
+          <Divider />
+
+          <div className={classes.subForm}>
+            <FormTitle title='חזרה מחו״ל' />
+
+            <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
               <Toggle
                 value={wereFlights}
-                onChange={(e, value) => {
+                onChange={(event, value) => {
                   if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wereFlights,value)
+                    onExposuresStatusChange(fieldsNames.wereFlights, value)
                   }
                 }}
               />
@@ -291,20 +371,20 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
               className={classes.additionalInformationForm}
             >
               <div>
-                  <FieldName fieldName='פרטי טיסת חזור לארץ:' className={fieldContainer}/>
-                  {
+                <FieldName fieldName='פרטי טיסת חזור לארץ:' className={fieldContainer} />
+                {
                   exposures.map((exposure, index) =>
                     exposure.wasAbroad &&
                     <>
                       <FlightsForm
-                      fieldsNames={fieldsNames}
-                      key={(exposure.id || '') + index.toString()}
-                      exposureAndFlightsData={exposure}
+                        fieldsNames={fieldsNames}
+                        key={(exposure.id || '') + index.toString()}
+                        exposureAndFlightsData={exposure}
                         handleChangeExposureDataAndFlightsField={
                           (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
                         }
                       />
-                      <Divider/>
+                      <Divider />
                     </>
                   )
                 }

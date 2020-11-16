@@ -4,6 +4,8 @@ import StoreStateType from 'redux/storeStateType';
 import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/Contexts/ExposuresAndFlights';
 
 import axios from '../axios';
+import logger from 'logger/logger';
+import { Service, Severity } from 'models/Logger';
 
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
@@ -19,6 +21,27 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+
+    const saveResortsData = () : Promise<void> => {
+        let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
+        
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Saving investigated patient resort data',
+            step: 'launching the server request',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
+
+        return axios.post('/investigationInfo/resorts', {
+            wasInEilat,
+            wasInDeadSea,
+            id: investigatedPatientId,
+        });
+    } 
 
     const saveExposureAndFlightData = async () : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
@@ -37,6 +60,15 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
+
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'Saving Exposures And Flights',
+            step: 'launching the server request',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
@@ -81,7 +113,8 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     }
 
     return {
-        saveExposureAndFlightData
+        saveExposureAndFlightData,
+        saveResortsData
     }
 };
 

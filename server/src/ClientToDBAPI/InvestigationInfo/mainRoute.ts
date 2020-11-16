@@ -12,8 +12,10 @@ import {
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
-    UPDATE_INVESTIGATION_TRANSFER
+    UPDATE_INVESTIGATION_TRANSFER,
+    UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
+import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
 
 const errorStatusCode = 500;
 
@@ -346,6 +348,114 @@ investigationInfo.post('/updateInvestigationTransfer', (request: Request, respon
             });
             response.status(errorStatusCode).send(err);
         });
+});
+
+investigationInfo.get('/resorts/:id', (request: Request, response: Response) => {
+    const workflow = 'Query investigated patients resorts data';
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow,
+        step: `launching get investigated patients resorts data`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, {id: +request.params.id})
+        .then((result) => {
+            const resortsData = result?.data?.investigatedPatientById; 
+            if (resortsData) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow,
+                    step: `queried investigated patients resorts data successfully`,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.send(resortsData);
+            } else {
+                const errorMessage : string | undefined = result?.errors[0]?.message;
+                let step = 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request';
+                if (errorMessage) {
+                    step = ' due to ' + errorMessage;
+                }
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow,
+                    step,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.status(errorStatusCode).send(errorMessage);
+            }
+        })
+        .catch(error => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow,
+                step: 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            });
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.post('/resorts', (request: Request, response: Response) => {
+    const workflow = 'Save investigated patients resorts data';
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow,
+        step: `launching save investigated patients resorts data`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+
+    const queryVariables = {...request.body};
+
+    return graphqlRequest(UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, queryVariables)
+        .then((result) => {
+            if (result?.data && !result?.errors) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow,
+                    step: `saved investigated patients resorts data successfully`,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.send(result?.data);
+            } else {
+                const errorMessage : string | undefined = result?.errors[0]?.message;
+                let step = 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request';
+                if (errorMessage) {
+                    step = ' due to ' + errorMessage;
+                }
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow,
+                    step,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.status(errorStatusCode).send(errorMessage);
+            }
+        })
+        .catch(error => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow,
+                step: 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            });
+            response.status(errorStatusCode).send(error);
+        })
 });
 
 export default investigationInfo;
