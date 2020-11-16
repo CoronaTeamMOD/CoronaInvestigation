@@ -178,7 +178,6 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const saveExposure = (e: React.ChangeEvent<{}>) => {
     e.preventDefault();
-    setFormState(investigationId, id, true);
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -187,7 +186,8 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
       investigation: investigationId,
       user: userId
   })
-    saveExposureAndFlightData().then(() => {
+    saveExposureAndFlightData()
+    .then(() => {
       logger.info({
           service: Service.CLIENT,
           severity: Severity.LOW,
@@ -211,6 +211,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           icon: 'error'
       });
     })
+    .finally(() => setFormState(investigationId, id, true))
   }
 
   return (
