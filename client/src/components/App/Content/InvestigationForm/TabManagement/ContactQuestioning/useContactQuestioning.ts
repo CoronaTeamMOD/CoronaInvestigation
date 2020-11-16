@@ -7,10 +7,8 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import {Service, Severity} from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 import { setFormState } from 'redux/Form/formActionCreators';
 
@@ -22,11 +20,6 @@ import {
     symptomsWithUnknownStartDate,
 } from '../InteractionsTab/useInteractionsTab';
 
-interface ContactsValidationDevision {
-    validContacts: InteractedContact[], 
-    errorMessages: string[]
-}
-
 const contactsSaveErrorMessageStart = 'לא ניתן לשמור את המגעים הבאים:';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
@@ -36,24 +29,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { checkDuplicateIds } = useDuplicateContactId();
-    const { validateContact } = useContactFields();
-    const { alertError } = useCustomSwal();
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
-        const validationInfo = validateContact(interactedContact, ValidationReason.SAVE_CONTACT);
-        if (!validationInfo.valid) {
-            logger.warn({
-                service: Service.CLIENT,
-                severity: Severity.MEDIUM,
-                workflow: 'Saving single contact',
-                step: `Couldnt save the interacted contact ${interactedContact.id} due to validation`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
-            alertError(validationInfo.error);
-            return false;
-        }
-        else if (checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
+        if (checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
             return false;
         } else {
             const contacts = [interactedContact];
@@ -96,37 +74,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContactQuestioning = () => {
         const workflow = 'Saving all contacts';
 
-        const { errorMessages, validContacts } = allContactedInteractions.reduce<ContactsValidationDevision>((previous, contact) => {
-            const validationInfo = validateContact(contact, ValidationReason.SAVE_CONTACT);
-
-            if (!validationInfo.valid) {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow,
-                    step: `Couldnt save the interacted contact ${contact.id} due to validation`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
-                const error = `${contact.firstName} ${contact.lastName}: `.concat(validationInfo.error);
-                return {
-                    errorMessages: [...previous.errorMessages, error],
-                    validContacts: previous.validContacts
-                }
-            }
-            return {
-                errorMessages: previous.errorMessages,
-                validContacts: [...previous.validContacts, contact]
-            }
-        }, {validContacts: [], errorMessages: []});
-
-        if(errorMessages.length > 0) {
-            alertError(contactsSaveErrorMessageStart + "\r\n".concat(errorMessages.join("\r\n")));
-        }
-
         if (!checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
             const contactsSavingVariable = {
-                unSavedContacts: {contacts: validContacts}
+                unSavedContacts: {contacts: allContactedInteractions}
             }
             logger.info({
                 service: Service.CLIENT,
