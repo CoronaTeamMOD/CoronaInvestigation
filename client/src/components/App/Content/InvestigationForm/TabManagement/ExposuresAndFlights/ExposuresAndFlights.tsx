@@ -32,7 +32,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
   const { parseAddress } = useGoogleApiAutocomplete();
-  const { saveExposureAndFlightData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
+  const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
   const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
@@ -239,8 +239,10 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       step: 'launching the server request',
       investigation: investigationId,
       user: userId
-    })
-    saveExposureAndFlightData().then(() => {
+  })
+    const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
+    Promise.all(tabSavePromises)
+    .then(() => {
       logger.info({
         service: Service.CLIENT,
         severity: Severity.LOW,
