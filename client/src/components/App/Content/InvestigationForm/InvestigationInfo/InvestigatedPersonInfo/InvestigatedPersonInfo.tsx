@@ -1,23 +1,23 @@
 import * as yup from 'yup';
-import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
-import React, { ChangeEvent, useEffect } from 'react';
-import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
-import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
+import {format} from 'date-fns';
+import {useSelector} from 'react-redux';
+import {Autocomplete} from '@material-ui/lab';
+import React, {ChangeEvent, useEffect} from 'react';
+import {Collapse, Grid, Typography, Paper, TextField} from '@material-ui/core';
+import {CakeOutlined, EventOutlined, Help, CalendarToday} from '@material-ui/icons';
 
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import { InvestigationStatus } from 'models/InvestigationStatus';
+import {InvestigationStatus} from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
+import {setInvestigationStatus} from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
+import {transferredSubStatus} from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import useStyles from './InvestigatedPersonInfoStyles';
 import InfoItemWithIcon from './InfoItemWithIcon/InfoItemWithIcon';
@@ -37,15 +37,15 @@ const transferInvestigation = 'נדרשת העברה';
 const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/
 
 const InvestigatedPersonInfo = (props: Props) => {
-    const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
+    const {currentTab, investigatedPatientStaticInfo, epedemioligyNumber} = props;
 
     const classes = useStyles();
 
     const [statusReasonError, setStatusReasonError] = React.useState<string[] | null>(null);
-    const { identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution } = investigatedPatientStaticInfo;
-    const { age, identityNumber, fullName, primaryPhone, birthDate } = patientInfo;
+    const {identityType, gender, isDeceased, patientInfo, isCurrentlyHospitalized, isInClosedInstitution} = investigatedPatientStaticInfo;
+    const {age, identityNumber, fullName, primaryPhone, birthDate} = patientInfo;
     const Divider = () => <span className={classes.divider}> | </span>;
-    const { wasInvestigationReopend } = useStatusUtils();
+    const {wasInvestigationReopend} = useStatusUtils();
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
@@ -54,13 +54,13 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
-    const validationSchema = investigationStatus.subStatus === transferredSubStatus ? 
-    yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-    yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
+    const reasonValidation = investigationStatus.subStatus === transferredSubStatus ?
+        yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+        yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
-    const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
+    const {confirmExitUnfinishedInvestigation, shouldUpdateInvestigationStatus} = useInvestigatedPersonInfo();
 
-    useEffect(()=> {
+    useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
         }
@@ -83,9 +83,9 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
-    const validateStatusReason = async (newStatusReason : string | null) => {
+    const validateStatusReason = (newStatusReason: string | null) => {
         try {
-            await validationSchema.validateSync(newStatusReason);
+            reasonValidation.validateSync(newStatusReason);
             setStatusReasonError(null)
         } catch (err) {
             setStatusReasonError(err.errors)
@@ -96,7 +96,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const isStatusDisable = (status: string) => {
         if (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) {
-            return status === InvestigationMainStatus.NEW && wasInvestigationReopend 
+            return status === InvestigationMainStatus.NEW && wasInvestigationReopend
         }
         return status === InvestigationMainStatus.NEW;
     };
@@ -105,19 +105,20 @@ const InvestigatedPersonInfo = (props: Props) => {
         <Paper className={classes.paper}>
             <div className={classes.headerTopPart}>
                 <div className={classes.investigationHeaderInfo}>
-                    <InvestigationMenu />
+                    <InvestigationMenu/>
                     <Typography variant='h6' className={classes.investigationTitle}>
                         {`${fullName} ${epedemioligyNumber}`}
                     </Typography>
-                    {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />}
+                    {isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל'/>}
                     <PhoneDial
                         phoneNumber={primaryPhone}
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(event) => { 
-                        handleLeaveInvestigationClick(event); 
-                        validateStatusReason(investigationStatus.statusReason)}}
+                    onClick={(event) => {
+                        handleLeaveInvestigationClick(event);
+                        validateStatusReason(investigationStatus.statusReason)
+                    }}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
@@ -129,7 +130,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                     <Grid item xs={12} className={classes.fieldLabel}>
                         <Grid container className={classes.containerGrid} justify='flex-start' alignItems='center'>
                             <Typography>
-                                <b><bdi>{statusLabel}</bdi>: </b>
+                                <b>
+                                    <bdi>{statusLabel}</bdi>
+                                    : </b>
                             </Typography>
                             <Grid item className={classes.statusSelectGrid}>
                                 <Autocomplete
@@ -166,7 +169,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 />
                             </Grid>
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
-                                investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
+                            investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <Autocomplete
                                         className={classes.subStatusSelect}
@@ -199,19 +202,20 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     />
                                 </Grid>
                             </Collapse>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
+                            <Collapse
+                                in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         className={classes.subStatusSelect}
                                         value={investigationStatus.statusReason}
                                         required={investigationStatus.subStatus === transferredSubStatus}
                                         placeholder='פירוט'
-                                        error={statusReasonError ? true : false}
+                                        error={Boolean(statusReasonError)}
                                         label={statusReasonError ? statusReasonError[0] : ''}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value;
-                                            const isValid = validationSchema.isValidSync(newStatusReason);
-                                            validateStatusReason(newStatusReason)
+                                            const isValid = reasonValidation.isValidSync(newStatusReason);
+                                            validateStatusReason(newStatusReason);
                                             if (isValid || newStatusReason === '') {
                                                 setInvestigationStatus({
                                                     mainStatus: investigationStatus.mainStatus,
@@ -232,66 +236,70 @@ const InvestigatedPersonInfo = (props: Props) => {
                     {
                         age !== null &&
                         <>
-                            <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age} icon={CakeOutlined} />
+                            <InfoItemWithIcon testId='age' name='גיל' value={+age < 1 ? 'פחות משנה' : age}
+                                              icon={CakeOutlined}/>
                             {
-                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15' />
+                                +age <= maxComplexityAge && <ComplexityIcon tooltipText='המאומת מתחת לגיל 15'/>
                             }
-                            <Divider />
+                            <Divider/>
                         </>
                     }
                     <InfoItemWithIcon testId='birthdate' name='תאריך לידה' value={
                         birthDate ? format(new Date(birthDate), displayDateFormat) : 'אין תאריך'
                     }
-                        icon={CalendarToday}
+                                      icon={CalendarToday}
                     />
                     {
-                        isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל' />
+                        isMandatoryInfoMissing && <ComplexityIcon tooltipText='אימות מרשם נכשל'/>
                     }
-                    <Divider />
+                    <Divider/>
                     <InfoItemWithIcon testId='examinationDate' name='תאריך תחילת מחלה' value=
                         {
                             format(new Date(props.coronaTestDate), displayDateFormat)
                         }
-                        icon={EventOutlined}
+                                      icon={EventOutlined}
                     />
-                    <Divider />
+                    <Divider/>
                     <InfoItemWithIcon testId='gender' name='מין' value={gender}
-                        icon={Help}
+                                      icon={Help}
                     />
-                    <Divider />
+                    <Divider/>
                     <InfoItemWithIcon testId='idType' name='סוג תעודה מזהה' value={identityType}
-                        icon={Help}
+                                      icon={Help}
                     />
-                    <Divider />
+                    <Divider/>
                     <InfoItemWithIcon testId='idNumber' name='מספר תעודה מזהה' value={identityNumber}
-                        icon={Help}
+                                      icon={Help}
                     />
-                    <Divider />
-                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר' value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
-                        icon={Help}
+                    <Divider/>
+                    <InfoItemWithIcon testId='isDeceased' name='האם נפטר'
+                                      value={indication((isDeceased || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED))}
+                                      icon={Help}
                     />
                     {
                         (isDeceased ||
                             (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
-                        <ComplexityIcon tooltipText='המאומת נפטר' />
+                        <ComplexityIcon tooltipText='המאומת נפטר'/>
                     }
-                    <Divider />
-                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז' value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
-                        icon={Help}
+                    <Divider/>
+                    <InfoItemWithIcon testId='isCurrentlyHospitalized' name='האם מאושפז'
+                                      value={indication((isCurrentlyHospitalized || investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED))}
+                                      icon={Help}
                     />
                     {
                         (isCurrentlyHospitalized ||
                             (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
-                        <ComplexityIcon tooltipText='המאומת מאושפז' />
+                        <ComplexityIcon tooltipText='המאומת מאושפז'/>
                     }
-                    <Divider />
-                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד' value={indication(isInClosedInstitution)}
-                        icon={Help}
+                    <Divider/>
+                    <InfoItemWithIcon testId='isInInstitution' name='שוהה במוסד'
+                                      value={indication(isInClosedInstitution)}
+                                      icon={Help}
                     />
                     {
-                        isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד' />
+                        isInClosedInstitution && <ComplexityIcon tooltipText='המאומת שוהה במוסד'/>
                     }
                 </div>
             </div>

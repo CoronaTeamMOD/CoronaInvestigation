@@ -28,6 +28,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
+    const statuses = useSelector<StoreStateType, string[]>(state => state.statuses);
+    const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
@@ -47,6 +49,14 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         });
     };
 
+    const checkValidMainStatus = () => {
+        return statuses.findIndex(currStatus => currStatus === investigationStatus.mainStatus) !== -1;
+    }
+
+    const checkSubStatus = () => {
+        return subStatuses.findIndex(currSubStatus => currSubStatus === investigationStatus.subStatus) !== -1 || investigationStatus.subStatus === '';
+    }
+
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         if(investigationStatus.subStatus === transferredSubStatus && !investigationStatus.statusReason) {
             alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
@@ -54,7 +64,12 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'הבנתי, המשך'
             });
         }
-        else {
+        else if(!checkValidMainStatus() || !checkSubStatus()) {
+            alertWarning('שים לב, כדי לצאת מחקירה יש להזין סטטוס חקירה וסטטוס משנה תקינים' , {
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'הבנתי, המשך'
+            });
+        } else {
             alertWarning('האם אתה בטוח שתרצה לצאת מהחקירה ולחזור אליה מאוחר יותר?', {
                 showCancelButton: true,
                 cancelButtonText: 'בטל',
