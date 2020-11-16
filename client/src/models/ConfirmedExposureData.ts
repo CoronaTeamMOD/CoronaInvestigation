@@ -1,7 +1,7 @@
-import {GeocodeResponse, GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
 import CovidPatient from './CovidPatient';
+import {GeocodeResponse, GoogleApiPlace} from '../commons/LocationInputField/LocationInput';
 
-interface ExposureData {
+interface ConfirmedExposureData {
     id: number | null,
     wasConfirmedExposure: boolean,
     exposureDate: Date | null;
@@ -11,4 +11,4 @@ interface ExposureData {
     exposureSource: CovidPatient | null;
 }
 
-export default ExposureData;
+export default ConfirmedExposureData;

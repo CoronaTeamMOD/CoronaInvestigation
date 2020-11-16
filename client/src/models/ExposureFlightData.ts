@@ -1,4 +1,4 @@
-interface FlightData {
+interface ExposureFlightData {
    wasAbroad: boolean;
    flightDestinationCountry: string | null;
    flightDestinationCity: string | null;
@@ -12,4 +12,4 @@ interface FlightData {
    flightNum: string | null;
 }
 
-export default FlightData;
+export default ExposureFlightData;

@@ -1,9 +1,10 @@
 import { createContext } from 'react';
 
-import ExposureData from 'models/ExposureData';
-import FlightData from 'models/FlightData';
+import ExposureFlightData from 'models/ExposureFlightData';
+import ExposureResortData from 'models/ExposureResortData';
+import ConfirmedExposureData from 'models/ConfirmedExposureData';
 
-export type Exposure = ExposureData & FlightData;
+export type Exposure = ConfirmedExposureData & ExposureFlightData & ExposureResortData;
 
 export type ExposureAndFlightsDetails = {
     exposures: Exposure[],
@@ -37,6 +38,8 @@ export const fieldsNames = {
     flightNumber: 'flightNum',
     wereConfirmedExposures: 'wereConfirmedExposures',
     wereFlights: 'wereFlights',
+    wasInResort: 'wasInResort',
+    resortLocation: 'resortLocation',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -64,7 +67,9 @@ export const initialExposureOrFlight: Exposure = {
     flightStartDate: null,
     flightEndDate: null,
     airline: null,
-    flightNum: null
+    flightNum: null,
+    wasInResort: false,
+    resort_location: null,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
