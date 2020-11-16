@@ -30,7 +30,7 @@ const defaultDestinationCountryCode = '900';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
-  const { exposures, wereFlights, wereConfirmedExposures, returnedFromResort } = exposureAndFlightsData;
+  const { exposures, wereFlights, wereConfirmedExposures, wasInResort } = exposureAndFlightsData;
   const { parseAddress } = useGoogleApiAutocomplete();
   const { saveExposureAndFlightData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
@@ -100,7 +100,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             exposuresToDelete: [],
             wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
             wereFlights: doesHaveFlights(exposures),
-            returnedFromResort: true,
+            wasInResort: wasInResort,
           });
         }
       })
@@ -277,17 +277,17 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
             <FormRowWithInput fieldName='האם חזר מאילת או מים המלח בטווח ימי החקירה?'>
               <Toggle
-                value={returnedFromResort}
+                value={wasInResort}
                 onChange={(e, value) => {
                   if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.returnedFromResort, value);
+                    onExposuresStatusChange(fieldsNames.wasInResort, value);
                   }
                 }}
               />
             </FormRowWithInput>
 
             <Collapse
-              in={returnedFromResort}
+              in={wasInResort}
               className={classes.additionalInformationForm}
             >
             </Collapse>
