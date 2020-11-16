@@ -5,9 +5,12 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+    
 import useStyles from './DefaultPlaceEventFormStyles';
 
-const PlaceNameForm = ({nameFieldLabel='שם המוסד'}:Props) => {
+const DEFAULT_NAME_FIELD_LABEL = 'שם המוסד';
+
+const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL}:Props) => {
     const { control } = useFormContext();
 
     const classes = useStyles();

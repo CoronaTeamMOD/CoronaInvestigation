@@ -45,9 +45,9 @@ export const getOptionsByPlaceAndSubplaceType = (placeTypeCode: string, subplace
     return  {...placeConfig, ...subPlaceConfig};
 };
 
-type places = 'privateHouse' | 'office' | 'transportation' | 'school' | 'medical' | 'religion' | 'geriatric' | 'otherPublicPlaces';
+type Places = 'privateHouse' | 'office' | 'transportation' | 'school' | 'medical' | 'religion' | 'geriatric' | 'otherPublicPlaces';
 
-const placeTypesCodesHierarchy: Record<places, FormConfig> = {
+const placeTypesCodesHierarchy: Record<Places, FormConfig> = {
     privateHouse: {
         code: 'בית פרטי',
         ...defaultOptions,
