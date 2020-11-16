@@ -44,14 +44,12 @@ const useDuplicateContactId = () => {
     }
 
     const handleDuplicateIdsError = (duplicateIds: (string | undefined)[]) => {
-        logger.error({
-            service: Service.CLIENT,
-            severity: Severity.MEDIUM,
+        const duplicateIdsLogger = logger.setup({
             workflow: 'Create/Update contacts',
-            step: 'Didnt save contacts due to duplicate ids',
             user: userId,
             investigation: epidemiologyNumber
-        });
+        })
+        duplicateIdsLogger.error('Didnt save contacts due to duplicate ids', Severity.MEDIUM);
         const errorText = duplicateIds?.length > 1 ?
             `שים לב, מספרי זיהוי ${duplicateIds?.join(', ')} כבר קיימים בחקירה! אנא בצע את השינויים הנדרשים` :
             `שים לב, מספר זיהוי ${duplicateIds} כבר קיים בחקירה! אנא בצע את השינויים הנדרשים`
