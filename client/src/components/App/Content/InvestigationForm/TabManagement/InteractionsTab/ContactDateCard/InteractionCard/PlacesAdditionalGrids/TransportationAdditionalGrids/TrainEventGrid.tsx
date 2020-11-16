@@ -19,36 +19,31 @@ const TrainEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר מוצא'>
-                        <Typography>
+                <FormInput xs={6} fieldName='עיר מוצא'>
+                    <Typography>
                             {cities.get(interaction.cityOrigin as string)?.displayName}
                         </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת עליה'>
-                        <Typography variant='caption'>
+                </FormInput>
+
+                <FormInput xs={6} fieldName='תחנת עליה'>
+                    <Typography variant='caption'>
                             {interaction.boardingStation}
                         </Typography>
-                    </FormInput>
-                </Grid>
+                </FormInput>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר יעד'>
-                        <Typography>
+
+                <FormInput xs={6} fieldName='עיר יעד'>
+                    <Typography>
                             {cities.get(interaction.cityDestination as string)?.displayName}
                         </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת ירידה'>
-                        <Typography variant='caption'>
+                </FormInput>
+
+                <FormInput xs={6} fieldName='תחנת ירידה'>
+                    <Typography variant='caption'>
                             {interaction.endStation}
                         </Typography>
-                    </FormInput>
-                </Grid>
+                </FormInput>
             </Grid>
         </>
     );

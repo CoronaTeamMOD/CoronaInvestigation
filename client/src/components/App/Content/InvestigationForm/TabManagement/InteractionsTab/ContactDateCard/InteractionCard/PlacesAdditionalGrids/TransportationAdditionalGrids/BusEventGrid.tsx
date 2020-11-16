@@ -19,52 +19,43 @@ const BusEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='קו'>
-                        <Typography variant='caption'>
-                            {interaction.busLine}
-                        </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='חברה'>
-                        <Typography variant='caption'>
-                            {interaction.busCompany}
-                        </Typography>
-                    </FormInput>
-                </Grid>
+                <FormInput xs={6} fieldName='קו'>
+                    <Typography variant='caption'>
+                        {interaction.busLine}
+                    </Typography>
+                </FormInput>
+
+                <FormInput xs={6} fieldName='חברה'>
+                    <Typography variant='caption'>
+                        {interaction.busCompany}
+                    </Typography>
+                </FormInput>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר מוצא'>
-                        <Typography>
-                            {cities.get(interaction.cityOrigin as string)?.displayName}
-                        </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת עליה'>
-                        <Typography variant='caption'>
-                            {interaction.boardingStation}
-                        </Typography>
-                    </FormInput>
-                </Grid>
+                <FormInput xs={6} fieldName='עיר מוצא'>
+                    <Typography>
+                        {cities.get(interaction.cityOrigin as string)?.displayName}
+                    </Typography>
+                </FormInput>
+
+                <FormInput xs={6} fieldName='תחנת עליה'>
+                    <Typography variant='caption'>
+                        {interaction.boardingStation}
+                    </Typography>
+                </FormInput>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='עיר יעד'>
-                        <Typography>
-                            {cities.get(interaction.cityDestination as string)?.displayName}
-                        </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='תחנת ירידה'>
-                        <Typography variant='caption'>
-                            {interaction.endStation}
-                        </Typography>
-                    </FormInput>
-                </Grid>
+                <FormInput xs={6} fieldName='עיר יעד'>
+                    <Typography>
+                        {cities.get(interaction.cityDestination as string)?.displayName}
+                    </Typography>
+                </FormInput>
+
+                <FormInput xs={6} fieldName='תחנת ירידה'>
+                    <Typography variant='caption'>
+                        {interaction.endStation}
+                    </Typography>
+                </FormInput>
             </Grid>
         </>
     );

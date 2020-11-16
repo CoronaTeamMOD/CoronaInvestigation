@@ -24,8 +24,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
     return (
         <>
             <div className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
-                    <FormInput fieldName='קו'>
+                    <FormInput xs={2} className={classes.mainTextItem} fieldName='קו'>
                         <Controller 
                             name={InteractionEventDialogFields.BUS_LINE}
                             control={control}
@@ -39,9 +38,7 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={2} className={classes.secondaryTextItem}>
-                    <FormInput fieldName='חברה'>
+                    <FormInput xs={2} className={classes.secondaryTextItem} fieldName='חברה'>
                         <Controller 
                             name={InteractionEventDialogFields.BUS_COMPANY}
                             control={control}
@@ -55,97 +52,6 @@ const BusEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-            </div>
-            <div className={formClasses.formRow}>
-                <Grid item xs={4} className={classes.mainTextItem}>
-                    <FormInput fieldName='עיר מוצא'>
-                        <Controller 
-                            name={InteractionEventDialogFields.CITY_ORIGIN}
-                            control={control}
-                            render={(props) => (
-                                <Autocomplete
-                                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                    getOptionLabel={(option) => option.value?.displayName || ''}
-                                    filterOptions={cityFilterOptions}
-                                    onChange={(event, selectedCity) => props.onChange(selectedCity?.id as string)}
-                                    onInputChange={(event, newInputValue) => {
-                                        if (newInputValue === '') {
-                                            props.onChange('');
-                                        }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                            className={formClasses.autocomplete}
-                                        />
-                                    }
-                                />
-                            )}
-                        />  
-                    </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='תחנת עליה'>
-                        <Controller 
-                            name={InteractionEventDialogFields.BOARDING_STATION}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                </Grid>
-            </div>
-            <div className={formClasses.formRow}>
-                <Grid item xs={4} className={classes.mainTextItem}>
-                    <FormInput fieldName='עיר יעד'>
-                    <Controller 
-                            name={InteractionEventDialogFields.CITY_DESTINATION}
-                            control={control}
-                            render={(props) => (
-                                <Autocomplete
-                                    options={Array.from(cities, ([id, value]) => ({ id, value }))}
-                                    getOptionLabel={(option) => option.value?.displayName || ''}
-                                    filterOptions={cityFilterOptions}
-                                    onChange={(event, selectedCity) => props.onChange(selectedCity?.id as string)}
-                                    onInputChange={(event, newInputValue) => {
-                                        if (newInputValue === '') {
-                                            props.onChange('');
-                                        }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                            className={formClasses.autocomplete}
-                                        />
-                                    }
-                                />
-                            )}
-                        />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='תחנת ירידה'>
-                        <Controller 
-                            name={InteractionEventDialogFields.END_STATION}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    name={props.name}                               
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                </Grid>
             </div>
         </>
     );

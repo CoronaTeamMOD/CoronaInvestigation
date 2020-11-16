@@ -13,7 +13,7 @@ const MedicalLocationGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
         {
-            interaction.placeSubType === placeTypesCodesHierarchy.medical.subTypesCodes.hospital ?
+            interaction.placeSubType === placeTypesCodesHierarchy.medical.subTypesCodes?.hospital.code ?
                 <HospitalEventGrid interaction={interaction}/>
             : 
                 <DefaultPlaceEventGrid interaction={interaction}/>

@@ -60,6 +60,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
       locationAddress
       numberOfContacted
       placeName
+      placeDescription
       placeSubType
       placeType
       startTime

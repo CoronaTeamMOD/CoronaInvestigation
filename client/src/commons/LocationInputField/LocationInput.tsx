@@ -76,7 +76,7 @@ const LocationInput = (props: LocationInputProps) => {
         <Controller name={name}
             control={control}
             render={(props) => (
-                <AutocompletedField
+                <AutocompletedField fullWidth
                     value={parsedSelected}
                     options={locationOptions}
                     onChange={(event: React.ChangeEvent<{}>, newValue) => onChange(newValue as GoogleApiPlace | null)}

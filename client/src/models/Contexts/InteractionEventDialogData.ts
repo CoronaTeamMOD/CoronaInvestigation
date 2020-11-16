@@ -9,6 +9,7 @@ interface InteractionEventDialogData {
     externalizationApproval: boolean;
     investigationId: number;
     placeName?: string;
+    placeDescription?: string;
     locationAddress: Address;
     placeSubType: number | null;
     busLine?: string;

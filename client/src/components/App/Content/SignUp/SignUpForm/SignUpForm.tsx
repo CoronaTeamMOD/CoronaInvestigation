@@ -90,8 +90,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
         <FormProvider {...methods}>
             <form id='signUp' onSubmit={methods.handleSubmit(onSubmit)}>
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='שם משתמש מב"ר'>
+                        <FormInput xs={8} fieldName='שם משתמש מב"ר'>
                             <Controller 
                                 name={SignUpFields.MABAR_USER_NAME}
                                 control={methods.control}
@@ -110,13 +109,11 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                 </Grid>
 
                 { mode === FormMode.READ ? 
                     <Grid container justify='flex-start' className={classes.formRow}>
-                        <Grid item xs={8}>
-                            <FormInput fieldName='שם מלא'>
+                            <FormInput xs={8} fieldName='שם מלא'>
                                 <Controller 
                                     name={SignUpFields.FULL_NAME}
                                     control={methods.control}
@@ -130,12 +127,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     )}
                                 />
                             </FormInput>
-                        </Grid>
                     </Grid>
                 : 
                     <Grid container justify='flex-start' className={classes.formRow}>
-                        <Grid item xs={8}>
-                            <FormInput fieldName='שם מלא'>
+                            <FormInput xs={8} fieldName='שם מלא'>
                                 <Controller
                                     name={`${SignUpFields.FULL_NAME}.${SignUpFields.FIRST_NAME}`}
                                     control={methods.control}
@@ -149,7 +144,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     )}
                                 />
                             </FormInput>
-                        </Grid>
                         <Grid item xs={4}>
                             <Controller
                                 name={`${SignUpFields.FULL_NAME}.${SignUpFields.LAST_NAME}`}
@@ -167,9 +161,8 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                     </Grid>
                 }
 
-                <Grid container justify='flex-start' className={classes.formRow}> 
-                    <Grid item xs={8}>
-                        <FormInput fieldName='עיר מגורים'>
+                <Grid container justify='flex-start' className={classes.formRow}>
+                        <FormInput xs={8} fieldName='עיר מגורים'>
                             <Controller
                                 name={SignUpFields.CITY}
                                 control={methods.control}
@@ -196,12 +189,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>                
                 </Grid>   
                 
-                <Grid container justify='flex-start' className={classes.formRow}>  
-                    <Grid item xs={8}>
-                        <FormInput fieldName='טלפון'>   
+                <Grid container justify='flex-start' className={classes.formRow}>
+                        <FormInput xs={8} fieldName='טלפון'>
                             <Controller 
                                 name={SignUpFields.PHONE_NUMBER}
                                 control={methods.control}
@@ -215,13 +206,11 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                     /> 
                                 )}
                             />
-                        </FormInput> 
-                    </Grid>                   
+                        </FormInput>
                 </Grid>  
 
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='ת"ז'>
+                        <FormInput xs={8} fieldName='ת"ז'>
                             <Controller 
                                 name={SignUpFields.ID}
                                 control={methods.control}
@@ -236,12 +225,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                 </Grid>
 
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='מייל'>
+                        <FormInput xs={8} fieldName='מייל'>
                             <Controller 
                                 name={SignUpFields.MAIL}
                                 control={methods.control}
@@ -260,12 +247,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                 </Grid>
 
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='שיוך ארגוני'>
+                        <FormInput xs={8} fieldName='שיוך ארגוני'>
                             <Controller
                                 name={SignUpFields.COUNTY}
                                 control={methods.control}
@@ -293,7 +278,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                     <Grid item xs={4}>
                         <Controller
                             name={SignUpFields.DESK}
@@ -324,8 +308,7 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                 </Grid>
             
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='מסגרות'>
+                        <FormInput xs={8} fieldName='מסגרות'>
                             <Controller
                                 name={SignUpFields.SOURCE_ORGANIZATION}
                                 control={methods.control}
@@ -353,12 +336,10 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                 </Grid>   
 
                 <Grid container justify='flex-start' className={classes.formRow}>
-                    <Grid item xs={8}>
-                        <FormInput fieldName='שפות'>
+                        <FormInput xs={8} fieldName='שפות'>
                             <Controller
                                 name={SignUpFields.LANGUAGES}
                                 control={methods.control}
@@ -387,7 +368,6 @@ const SignUpForm: React.FC<Props> = ({ defaultValues, handleSaveUser, mode }: Pr
                                 )}
                             />
                         </FormInput>
-                    </Grid>
                 </Grid>
                                         
             </form>
