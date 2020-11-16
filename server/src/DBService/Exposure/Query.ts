@@ -68,3 +68,13 @@ query getOptionalExposureSources($searchRegex: String!) {
     }
   }
 `;
+
+export const GET_ALL_RESORTS = gql`
+query getAllResorts {
+  allResorts {
+    nodes {
+      displayName
+    }
+  }
+}
+`;

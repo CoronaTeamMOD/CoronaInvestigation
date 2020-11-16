@@ -9,7 +9,7 @@ import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
 import ExposureByInvestigationId from '../../Models/Exposure/ExposureByInvestigationId';
-import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS } from '../../DBService/Exposure/Query';
+import { GET_EXPOSURE_INFO, GET_EXPOSURE_SOURCE_OPTIONS, GET_ALL_RESORTS } from '../../DBService/Exposure/Query';
 import OptionalExposureSourcesResponse from '../../Models/Exposure/OptionalExposureSourcesResponse';
 
 const exposureRoute = Router();
@@ -218,6 +218,59 @@ exposureRoute.post('/updateExposures', (request: Request, response: Response) =>
                 user: response.locals.user.id
             });
             response.status(errorStatusCode).send(error)
+        })
+});
+
+exposureRoute.get('/resorts', (request: Request, response: Response) => {
+    const workflow = 'Query all resorts';
+    logger.info({
+        service: Service.SERVER,
+        severity: Severity.LOW,
+        workflow,
+        step: `launching get all resorts from graphql`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    return graphqlRequest(GET_ALL_RESORTS, response.locals)
+        .then((result) => {
+            const resorts = result?.data?.getAllResorts?.nodes; 
+            if (resorts) {
+                logger.info({
+                    service: Service.SERVER,
+                    severity: Severity.LOW,
+                    workflow,
+                    step: `queried all resorts successfully`,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.send(resorts.map((resort: any) => resort.displayName));
+            } else {
+                const errorMessage : string | undefined = result?.errors[0]?.message;
+                let step = 'error in requesting graphql API request in GET_ALL_RESORTS request';
+                if (errorMessage) {
+                    step = ' due to ' + errorMessage;
+                }
+                logger.error({
+                    service: Service.SERVER,
+                    severity: Severity.HIGH,
+                    workflow,
+                    step,
+                    investigation: response.locals.epidemiologynumber,
+                    user: response.locals.user.id
+                });
+                response.status(errorStatusCode).send(errorMessage);
+            }
+        })
+        .catch(error => {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow,
+                step: 'error in requesting graphql API request in GET_ALL_RESORTS request',
+                investigation: response.locals.epidemiologynumber,
+                user: response.locals.user.id
+            });
+            response.status(errorStatusCode).send(error);
         })
 });
 
