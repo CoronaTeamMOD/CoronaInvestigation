@@ -32,13 +32,14 @@ const useDuplicateContactId = () => {
     // It will treat it as the same id and not as two different ids
     const checkDuplicateIdsForInteractions = (idsToCheck: IdToCheck[]) => {
         const trimmedIds = idsToCheck.filter((id: IdToCheck) => id.id);
+        const newIds: string[] = trimmedIds.filter((id: IdToCheck) => !id.serialId).map((id) => id.id as string);
         const duplicateIds = trimmedIds.filter((id: IdToCheck) => 
-            trimmedIds.findIndex((IdToCheck) => IdToCheck.id === id.id && IdToCheck.serialId !== id.serialId) !== -1);
+            trimmedIds.findIndex((IdToCheck) => (IdToCheck.id === id.id) && (IdToCheck.serialId !== id.serialId)) !== -1);
         if (duplicateIds.length > 0) {
             handleDuplicateIdsError(Array.from(new Set(duplicateIds.map(id => id.id))));
             return true;
         } else {
-            return false;
+            return checkDuplicateIds(newIds);
         }
     }
 
