@@ -62,3 +62,11 @@ query GetAllSubStatuses($parentStatus: String!) {
 }
 `;
 
+export const GET_INVESTIGATED_PATIENT_RESORTS_DATA = gql`
+query getInvestigatedPatientResortsData($id: Int!) {
+  investigatedPatientById(id: $id) {
+    wasInDeadSea
+    wasInEilat
+  }
+}
+`;

@@ -70,7 +70,7 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
-  useEffect(() => {
+  const fetchExposuresAndFlights = () => {
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -81,27 +81,27 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
     });
     axios
       .get('/exposure/exposures/' + investigationId)
-        .then(result => {
-          logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching Exposures And Flights',
-            step: 'got results back from the server',
-            user: userId,
-            investigation: investigationId
+      .then(result => {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow: 'Fetching Exposures And Flights',
+          step: 'got results back from the server',
+          user: userId,
+          investigation: investigationId
         });
-          const data: Exposure[] = result?.data;
-          return data && data.map(parseDbExposure);
-        })
+        const data: Exposure[] = result?.data;
+        return data && data.map(parseDbExposure);
+      })
       .then((exposures?: Exposure[]) => {
-          if (exposures) {
-              setExposureDataAndFlights({
-                  exposures,
-                  exposuresToDelete: [],
-                  wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
-                  wereFlights: doesHaveFlights(exposures)
-              });
-          }
+        if (exposures) {
+          setExposureDataAndFlights({
+            exposures,
+            exposuresToDelete: [],
+            wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+            wereFlights: doesHaveFlights(exposures),
+          });
+        }
       })
       .then(() => {
         logger.info({
@@ -113,24 +113,24 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           investigation: investigationId
         });
         axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
-            if (res.data) {
-              logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Corona Test Date',
-                step: 'got results back from the server',
-                user: userId,
-                investigation: investigationId
-              });
-              setCoronaTestDate(convertDate(res.data.coronaTestDate));
-            } else {
-              logger.warn({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Getting Corona Test Date',
-                step: 'got status 200 but wrong data'
-              });
-            }
+          if (res.data) {
+            logger.info({
+              service: Service.CLIENT,
+              severity: Severity.LOW,
+              workflow: 'Getting Corona Test Date',
+              step: 'got results back from the server',
+              user: userId,
+              investigation: investigationId
+            });
+            setCoronaTestDate(convertDate(res.data.coronaTestDate));
+          } else {
+            logger.warn({
+              service: Service.CLIENT,
+              severity: Severity.HIGH,
+              workflow: 'Getting Corona Test Date',
+              step: 'got status 200 but wrong data'
+            });
+          }
         })
       })
       .catch((error) => {
@@ -147,6 +147,54 @@ const ExposuresAndFlights : React.FC<Props> = ({ id }: Props): JSX.Element => {
           icon: 'error',
         })
       });
+  }
+
+  const fetchResorts = () => {
+    const workflow = 'Fetching investigated patient resorts data'
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow,
+      step: `launching investigated patient resorts request`,
+      user: userId,
+      investigation: investigationId
+    });
+    axios.get('investigationPatient/resorts')
+    .then((result) => {
+      if (result?.data) {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow,
+          step: `got investigated patient resorts response successfully`,
+          user: userId,
+          investigation: investigationId
+        });
+
+      } else {
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.HIGH,
+          workflow,
+          step: `failed to investigated patient resorts response`,
+          user: userId,
+          investigation: investigationId
+        });
+      }
+    }).catch(error => {
+      logger.error({
+        service: Service.CLIENT,
+        severity: Severity.HIGH,
+        workflow,
+        step: `failed to get resorts response due to ` + error,
+        user: userId,
+        investigation: investigationId
+      });
+    })
+  }
+
+  useEffect(() => {
+    fetchExposuresAndFlights();
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
