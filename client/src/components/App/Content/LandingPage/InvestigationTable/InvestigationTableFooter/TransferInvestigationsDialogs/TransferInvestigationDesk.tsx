@@ -23,9 +23,6 @@ const TransferInvestigationDesk = (props: Props) => {
 
     const { allDesks, open, onClose, onConfirm } = props;
 
-    const [transferDesk, setTransferDesk] = useState<Desk>(defaultDesk);
-    const [transferReason, setTransferReason] = useState<string>();
-
     const methods = useForm({
         mode: 'all',
         resolver: yupResolver(validationSchema),
@@ -93,7 +90,7 @@ const TransferInvestigationDesk = (props: Props) => {
                                     placeholder='כתוב סיבה'
                                     className={classes.input}
                                     test-id='transfer-reason'
-                                    value={transferReason}
+                                    value={props.value}
                                     error={methods.errors[TransferInvestigationDeskInputsNames.REASON]}
                                     label={methods.errors[TransferInvestigationDeskInputsNames.REASON]?.message || 'כתוב סיבה'}
                                     onChange={(event) => props.onChange(event.target.value)}
