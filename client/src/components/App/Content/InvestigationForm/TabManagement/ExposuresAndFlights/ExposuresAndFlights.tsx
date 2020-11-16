@@ -29,8 +29,8 @@ const addFlightButton: string = 'הוסף טיסה לחול';
 const defaultDestinationCountryCode = '900';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
-  const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);;
-  const { exposures, wereFlights, wereConfirmedExposures } = exposureAndFlightsData;
+  const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
+  const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
   const { parseAddress } = useGoogleApiAutocomplete();
   const { saveExposureAndFlightData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
@@ -52,8 +52,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     , [exposures]);
 
   const [coronaTestDate, setCoronaTestDate] = useState<Date>();
-  const [returnedFromDeadSea, setReturnedFromDeadSea] = useState<boolean>(true);
-  const [returnedFromEilat, setReturnedFromEilat] = useState<boolean>(true);
 
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure);
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad);
@@ -103,6 +101,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             exposuresToDelete: [],
             wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
             wereFlights: doesHaveFlights(exposures),
+            wasInEilat: wasInEilat,
+            wasInDeadSea: wasInDeadSea,
           });
         }
       })
@@ -173,8 +173,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
           user: userId,
           investigation: investigationId
         });
-        setReturnedFromEilat(result?.data?.wasInEilat);
-        setReturnedFromDeadSea(result?.data?.wasInDeadSea);
+        onExposuresStatusChange(fieldsNames.wasInEilat, result?.data?.wasInEilat);
+        onExposuresStatusChange(fieldsNames.wasInDeadSea, result?.data?.wasInDeadSea);
       } else {
         logger.error({
           service: Service.CLIENT,
@@ -229,8 +229,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     });
   }
 
-  const saveExposure = (e: React.ChangeEvent<{}>) => {
-    e.preventDefault();
+  const saveExposure = (event: React.ChangeEvent<{}>) => {
+    event.preventDefault();
     setFormState(investigationId, id, true);
     logger.info({
       service: Service.CLIENT,
@@ -328,20 +328,20 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             <FormTitle title='חזרה מאילת או מים המלח' />
              <FormRowWithInput fieldName='חזר מאילת'>
               <Toggle
-                value={returnedFromEilat}
+                value={wasInEilat}
                 onChange={(event, value) => {
                   if (value !== null) {
-                    setReturnedFromEilat(value);
+                    onExposuresStatusChange(fieldsNames.wasInEilat, value);
                   }
                 }}
               />
             </FormRowWithInput>
             <FormRowWithInput fieldName='חזר מים המלח'>
               <Toggle
-                value={returnedFromDeadSea}
+                value={wasInDeadSea}
                 onChange={(event, value) => {
                   if (value !== null) {
-                    setReturnedFromDeadSea(value);
+                    onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
                   }
                 }}
               />

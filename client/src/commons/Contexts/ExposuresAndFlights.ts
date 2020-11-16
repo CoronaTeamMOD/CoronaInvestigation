@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
-import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
+import ExposureData from 'models/ExposureData';
 
 export type Exposure = ExposureData & FlightData;
 
@@ -10,6 +10,8 @@ export type ExposureAndFlightsDetails = {
     exposuresToDelete: (number | null)[],
     wereConfirmedExposures: boolean,
     wereFlights: boolean,
+    wasInEilat: boolean,
+    wasInDeadSea: boolean,
 }
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -37,6 +39,8 @@ export const fieldsNames = {
     flightNumber: 'flightNum',
     wereConfirmedExposures: 'wereConfirmedExposures',
     wereFlights: 'wereFlights',
+    wasInEilat: 'wasInEilat',
+    wasInDeadSea: 'wasInDeadSea',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -44,6 +48,8 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     exposuresToDelete: [],
     wereConfirmedExposures: false,
     wereFlights: false,
+    wasInEilat: false,
+    wasInDeadSea: false,
 };
 
 export const initialExposureOrFlight: Exposure = {
@@ -64,7 +70,9 @@ export const initialExposureOrFlight: Exposure = {
     flightStartDate: null,
     flightEndDate: null,
     airline: null,
-    flightNum: null
+    flightNum: null,
+    wasInEilat: false,
+    wasInDeadSea: false,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
