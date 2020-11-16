@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 const appinsights = require('applicationinsights');
 import { createLogger, transports, format, Logger as winstonLogger } from 'winston';
 
-import { MethodsLogMessage, LogMessage, InitialLogMessage, LogType, Environment } from '../Models/Logger/types';
+import { MethodsLogMessage, LogMessage, InitialLogMessage, LogType, Environment, Severity, InitialLogData, Service } from '../Models/Logger/types';
 
 dotenv.config();
 
@@ -27,8 +27,9 @@ class Logger {
                     };
                     const messageFromMethod: MethodsLogMessage = JSON.parse(JSON.stringify(info.message));
                     const outputLog: LogMessage = {
+                        service: Service.SERVER,
                         ...initialLog,
-                        ...messageFromMethod
+                        ...messageFromMethod,
                     }
                     if (JSON.parse(process.env.SHOULD_POST_TO_AZURE)) {
                         this._postToAzure(outputLog);
@@ -56,6 +57,14 @@ class Logger {
 
     info(logMessage: MethodsLogMessage) {
         this.logger.info(logMessage);
+    }
+
+    setup(logData: InitialLogData) {
+        return {
+            info: (step: string, severity: Severity) => this.info({ ...logData, step, severity }),
+            warn: (step: string, severity: Severity) => this.warning({ ...logData, step, severity }),
+            error: (step: string, severity: Severity) => this.error({ ...logData, step, severity })
+        }
     }
 
 }
