@@ -19,6 +19,17 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+
+    const saveResortsData = () : Promise<void> => {
+        let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
+        
+        return axios.post('/investigationInfo/resorts', {
+            wasInEilat,
+            wasInDeadSea,
+            id: investigatedPatientId,
+        });
+    } 
 
     const saveExposureAndFlightData = async () : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
@@ -81,7 +92,8 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     }
 
     return {
-        saveExposureAndFlightData
+        saveExposureAndFlightData,
+        saveResortsData
     }
 };
 
