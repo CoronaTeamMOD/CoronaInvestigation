@@ -34,7 +34,6 @@ import { InvestigationStatus } from 'models/InvestigationStatus';
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
-import useInvestigatedPersonInfo from '../../InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 export const ADDITIONAL_PHONE_LABEL = 'טלפון נוסף';
 export const RELEVANT_OCCUPATION_LABEL = 'האם עובד באחד מהבאים:';
@@ -280,9 +279,11 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 });
                 complexityErrorAlert(error);
             })
-        personalInfoValidationSchema.isValid(data).then(valid => {
-            setFormState(investigationId, id, valid);
-        })
+            .finally(() => { 
+                personalInfoValidationSchema.isValid(data).then(valid => {
+                    setFormState(investigationId, id, valid);
+                })
+            })
     }
 
     return (

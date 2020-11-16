@@ -17,7 +17,6 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
-import { duplicateIdsErrorMsg } from 'Utils/vendor/useDuplicateContactId';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
@@ -319,27 +318,16 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                         handleInvestigationFinish();
                     }
                 }).catch((error) => {
-                    if (error.response.data === duplicateIdsErrorMsg) {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Ending Investigation',
-                            step: `found duplicate ids in the investigation and can't finish it`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        alertWarning('נמצאו מספרי זיהוי זהים בחקירה, אנא בצע את השינויים המתאימים');
-                    } else {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.HIGH,
-                            workflow: 'Ending Investigation',
-                            step: `got errors in server result: ${error}`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
-                        alertError('לא ניתן היה לסיים את החקירה');
-                    }
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.HIGH,
+                        workflow: 'Ending Investigation',
+                        step: `got errors in server result: ${error}`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
+                    alertError('לא ניתן היה לסיים את החקירה');
+                    
                 })
             };
         });

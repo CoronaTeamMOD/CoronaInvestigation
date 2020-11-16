@@ -231,7 +231,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const saveExposure = (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
-    setFormState(investigationId, id, true);
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -264,8 +263,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         Swal.fire({
           title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
           icon: 'error'
-        });
-      })
+      });
+    })
+    .finally(() => setFormState(investigationId, id, true))
   }
 
   return (
