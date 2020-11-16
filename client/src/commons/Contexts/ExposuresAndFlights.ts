@@ -71,7 +71,7 @@ export const initialExposureOrFlight: Exposure = {
     airline: null,
     flightNum: null,
     wasInResort: false,
-    resort_location: null,
+    resortLocation: null,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
