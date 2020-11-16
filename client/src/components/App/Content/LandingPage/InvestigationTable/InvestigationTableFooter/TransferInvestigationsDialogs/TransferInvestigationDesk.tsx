@@ -46,7 +46,14 @@ const TransferInvestigationDesk = (props: Props) => {
 
     return (
         <FormProvider {...methods}>
-            <TransferInvestigationDialog formName={tranferDeskFormName} title='העברת חקירות' isConfirmDisabled={!isDataValid} open={open} onClose={onClose} onConfirm={onDialogConfirm}>
+            <TransferInvestigationDialog 
+                formName={tranferDeskFormName} 
+                title='העברת חקירות' 
+                isConfirmDisabled={!isDataValid} 
+                open={open} 
+                onClose={onClose} 
+                onConfirm={onDialogConfirm}
+            >
                 <>
                     <div className={classes.inputRow}>
                         <Typography>לאן להעביר?</Typography>

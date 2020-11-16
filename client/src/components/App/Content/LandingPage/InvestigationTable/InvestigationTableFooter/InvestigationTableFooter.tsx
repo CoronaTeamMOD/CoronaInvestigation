@@ -8,10 +8,10 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import FooterAction from './FooterAction/FooterAction';
 import useStyle from './InvestigationTableFooterStyles';
+import useInvestigationTableFooter from './useInvestigationTableFooter';
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
 
-import useInvestigationTableFooter from './useInvestigationTableFooter';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -45,7 +45,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const singleAssignment = 'הקצאה';
     const multipleAssignments = 'הקצאות';
 
-
     const cardActions: CardActionDescription[] = [
         {
             icon: Send,
@@ -66,7 +65,12 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                     <Typography>{isSingleInvestigation ? singleInvestigation : checkedRowsIds.length}</Typography>
                     <Typography>{isSingleInvestigation ? 'אחת' : multipleInvestigations}</Typography>
                 </div>
-                {cardActions.map(cardAction => <FooterAction key={cardAction.displayTitle} icon={cardAction.icon} displayTitle={cardAction.displayTitle} onClick={cardAction.onClick} />)}
+                {cardActions.map(cardAction => <FooterAction 
+                                                    key={cardAction.displayTitle} 
+                                                    icon={cardAction.icon} 
+                                                    displayTitle={cardAction.displayTitle} 
+                                                    onClick={cardAction.onClick} 
+                                               />)}
                 <IconButton onClick={onClose}>
                     <Close />
                 </IconButton>

@@ -23,6 +23,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseDesksDialog = () => setOpenDesksDialog(false);
 
+    const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
+        const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
+            checkedRowsIds.includes(row.epidemiologyNumber) ? {...row, [newValueFieldName]: newValue, statusReason: transferReason} : row);
+        setTableRows(updatedRows);
+    }
+
     const handleConfirmDesksDialog = (updatedDesk: Desk, transferReason: string) => {
         axios.post('/landingPage/changeDesk', {
             epidemiologyNumbers: checkedRowsIds,
@@ -37,9 +43,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 investigation: checkedRowsIds.join(', '),
                 user: userId
             })
-            const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
-                checkedRowsIds.includes(row.epidemiologyNumber) ? {...row, investigationDesk: updatedDesk.deskName, statusReason: transferReason} : row);
-            setTableRows(updatedRows);
+            updateRows(transferReason, 'investigationDesk', updatedDesk.deskName);
             handleCloseDesksDialog();
         })
         .catch(error => {
@@ -74,9 +78,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 investigation: checkedRowsIds.join(', '),
                 user: userId
             })
-            const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
-                checkedRowsIds.includes(row.epidemiologyNumber) ? {...row, investigator: updatedIvestigator.value, statusReason: transferReason} : row);
-            setTableRows(updatedRows);
+            updateRows(transferReason, 'investigator', updatedIvestigator.value);
             handleCloseInvestigatorsDialog();
         })
         .catch(error => {
