@@ -24,7 +24,7 @@ const InvestigationStatusColumn = (props: Props) => {
 
     const onIconClicked = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         event.stopPropagation();
-        const IconLogger = logger.setup({
+        const iconLogger = logger.setup({
             workflow: 'Ending Investigation',
             user: userId,
             investigation: epidemiologyNumber
@@ -35,11 +35,11 @@ const InvestigationStatusColumn = (props: Props) => {
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
-            IconLogger.info('update investigation status request was successful', Severity.LOW);
+            iconLogger.info('update investigation status request was successful', Severity.LOW);
             moveToTheInvestigationForm(epidemiologyNumber);
         })
             .catch((error) => {
-                IconLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                iconLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                 alertError('לא ניתן לפתוח את החקירה מחדש');
             })
     }
