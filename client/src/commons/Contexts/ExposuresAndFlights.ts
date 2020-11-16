@@ -1,16 +1,17 @@
 import { createContext } from 'react';
 
-import FlightData from 'models/FlightData';
-import ExposureData from 'models/ExposureData';
+import ExposureFlightData from 'models/ExposureFlightData';
+import ExposureResortData from 'models/ExposureResortData';
+import ConfirmedExposureData from 'models/ConfirmedExposureData';
 
-export type Exposure = ExposureData & FlightData;
+export type Exposure = ConfirmedExposureData & ExposureFlightData & ExposureResortData;
 
 export type ExposureAndFlightsDetails = {
     exposures: Exposure[],
     exposuresToDelete: (number | null)[],
     wereConfirmedExposures: boolean,
     wereFlights: boolean,
-    returnedFromResort: boolean,
+    wasInResort: boolean,
 }
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -38,7 +39,8 @@ export const fieldsNames = {
     flightNumber: 'flightNum',
     wereConfirmedExposures: 'wereConfirmedExposures',
     wereFlights: 'wereFlights',
-    returnedFromResort: 'returnedFromResort',
+    wasInResort: 'wasInResort',
+    resortLocation: 'resortLocation',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -46,7 +48,7 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     exposuresToDelete: [],
     wereConfirmedExposures: false,
     wereFlights: false,
-    returnedFromResort: false,
+    wasInResort: false,
 };
 
 export const initialExposureOrFlight: Exposure = {
@@ -67,7 +69,9 @@ export const initialExposureOrFlight: Exposure = {
     flightStartDate: null,
     flightEndDate: null,
     airline: null,
-    flightNum: null
+    flightNum: null,
+    wasInResort: false,
+    resort_location: null,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
