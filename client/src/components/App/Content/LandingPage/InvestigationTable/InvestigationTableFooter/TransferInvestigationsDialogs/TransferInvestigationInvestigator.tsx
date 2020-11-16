@@ -28,10 +28,6 @@ const TransferInvestigationDesk = (props: Props) => {
         }
     });
     
-    const isConfirmDisabled = React.useMemo<boolean>(() => (
-        validationSchema.isValidSync(methods.getValues())
-    ), [methods.getValues()])
-        
     const onDialogConfirm = () => (
         methods.handleSubmit((data) => {
             onConfirm(data[TransferInvestigationInvestigatorInputNames.INVESTIGATOR], data[TransferInvestigationInvestigatorInputNames.REASON] || '');
@@ -40,7 +36,14 @@ const TransferInvestigationDesk = (props: Props) => {
 
     return (
         <FormProvider {...methods}>
-            <TransferInvestigationDialog formName={transferInvestigatorFormName} title='העברת חקירות' isConfirmDisabled={!isConfirmDisabled} open={open} onClose={onClose} onConfirm={onDialogConfirm}>
+            <TransferInvestigationDialog 
+                formName={transferInvestigatorFormName} 
+                title='העברת חקירות' 
+                isConfirmDisabled={!methods.formState.isValid} 
+                open={open} 
+                onClose={onClose} 
+                onConfirm={onDialogConfirm}
+            >
                 <>
                     <div className={classes.inputRow}>
                         <Typography>למי להעביר?</Typography>

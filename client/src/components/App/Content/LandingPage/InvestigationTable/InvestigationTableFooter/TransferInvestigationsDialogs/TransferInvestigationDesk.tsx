@@ -37,16 +37,12 @@ const TransferInvestigationDesk = (props: Props) => {
 
     const classes = useStyles();
 
-    const isDataValid = React.useMemo<boolean>(() => (
-        validationSchema.isValidSync(methods.getValues())
-    ), [methods.getValues()]);
-
     return (
         <FormProvider {...methods}>
             <TransferInvestigationDialog 
                 formName={tranferDeskFormName} 
                 title='העברת חקירות' 
-                isConfirmDisabled={!isDataValid} 
+                isConfirmDisabled={!methods.formState.isValid} 
                 open={open} 
                 onClose={onClose} 
                 onConfirm={onDialogConfirm}
