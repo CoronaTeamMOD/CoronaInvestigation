@@ -243,7 +243,7 @@ exposureRoute.get('/resorts', (request: Request, response: Response) => {
                     investigation: response.locals.epidemiologynumber,
                     user: response.locals.user.id
                 });
-                response.send(resorts.map((resort: any) => resort.displayName));
+                response.send(resorts.map((resort: any) => resort.display));
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
                 let step = 'error in requesting graphql API request in GET_ALL_RESORTS request';
