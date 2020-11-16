@@ -9,7 +9,7 @@ interface FormRowWithInputProps {
     appendantLabelIcon?: JSX.Element;
     children: React.ReactElement;
     testId?: string;
-    labelLength?: GridSize;
+    labelLength?: Exclude<GridSize, 'auto'>;
     gridProps?: GridProps;
 }
 
