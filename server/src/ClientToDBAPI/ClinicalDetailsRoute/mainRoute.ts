@@ -108,7 +108,7 @@ clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Respo
             })
             response.send(result?.data?.allIsolationSources?.nodes)
         } else {
-            logger.info({
+            logger.error({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
                 workflow: 'Fetching Isolation Source',

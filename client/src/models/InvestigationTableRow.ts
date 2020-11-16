@@ -2,6 +2,7 @@ import County from './County';
 import Investigator from './Investigator';
 
 interface InvestigationTableRow {
+    isChecked: boolean;
     epidemiologyNumber: number;
     coronaTestDate: string;
     isComplex: boolean;

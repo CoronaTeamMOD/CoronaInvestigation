@@ -1,8 +1,8 @@
 import { gql } from "postgraphile";
 
 export const CHANGE_DESK_ID = gql`
-  mutation ChangeDeskId($epidemiologyNumber: Int!, $updatedDesk: Int!) {
-    updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {deskId: $updatedDesk}, epidemiologyNumber: $epidemiologyNumber}) {
+  mutation ChangeDeskId($epidemiologyNumber: Int!, $updatedDesk: Int!, $transferReason: String) {
+    updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {deskId: $updatedDesk, statusReason: $transferReason, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}) {
       clientMutationId
     }
   }

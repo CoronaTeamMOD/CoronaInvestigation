@@ -3,6 +3,7 @@ import SortOrder from 'models/enums/SortOrder';
 export const investigatorIdPropertyName = 'investigatorId';
 
 export enum TableHeadersNames {
+    multipleCheck = 'multipleCheck',
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
     isComplex = 'isComplex',
@@ -27,6 +28,7 @@ export type Order = SortOrder.asc | SortOrder.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export const TableHeaders: IndexedInvestigation = {
+    [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תאריך הבדיקה',
     [TableHeadersNames.isComplex]: '',
@@ -47,6 +49,7 @@ export const TableHeaders: IndexedInvestigation = {
 }
 
 export const adminCols: string[] = [
+    TableHeadersNames.multipleCheck,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.priority,
@@ -75,6 +78,7 @@ export const userCols: string[] = [
 ]
 
 export const sortableCols: sortableHeaders = {
+    [TableHeadersNames.multipleCheck]: false,
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,
     [TableHeadersNames.isComplex]: false,

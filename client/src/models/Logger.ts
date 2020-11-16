@@ -32,7 +32,7 @@ export interface MethodsLogMessage extends InitialLogData {
 
 export interface InitialLogData {
     user?: string;
-    investigation?: number;
+    investigation?: number | string;
     service?: Service;
     workflow: string;
 }
