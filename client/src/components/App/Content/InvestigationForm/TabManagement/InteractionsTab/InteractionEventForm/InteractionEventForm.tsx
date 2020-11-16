@@ -12,19 +12,19 @@ import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import  {getOptionsByPlaceAndSubplaceType} from 'Utils/placeTypesCodesHierarchy';
+import { getOptionsByPlaceAndSubplaceType } from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import AddressForm from './AddressForm/AddressForm';
-import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
-import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
 import useInteractionsForm from './useInteractionsForm';
+import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import InteractionEventSchema from './InteractionEventSchema';
+import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
 
 export const defaultContact: Contact = {
   firstName: '',
