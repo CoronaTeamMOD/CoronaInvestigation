@@ -22,8 +22,13 @@ export enum ValidationReason {
     HANDLE_ISOLATION,
     SAVE_CONTACT,
     EXCEL_LOADING
-}
+} 
+
 const COMPLETE_CONTACT_QUESTIONING_STATUS = 'הושלם התחקור';
+
+const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
+    InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
+    InteractedContactFields.LAST_NAME];
 
 const useContactFields = (contactStatus?: InteractedContact['contactStatus']) => {
     const shouldDisable = (status?: InteractedContact['contactStatus']) => status === COMPLETE_STATUS;
@@ -38,13 +43,9 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
         ? contactType !== STRICT_CONTACT_TYPE
         : contactType !== ContactType.TIGHT;
 
-    const mandatoryQuarantineFields = [InteractedContactFields.IDENTIFICATION_NUMBER, InteractedContactFields.IDENTIFICATION_TYPE,
-        InteractedContactFields.CONTACTED_PERSON_CITY, InteractedContactFields.PHONE_NUMBER, InteractedContactFields.FIRST_NAME,
-        InteractedContactFields.LAST_NAME];
-
     const validateContact = (contact: InteractedContact, validationReason: ValidationReason): validValidation | invalidValidation => {
         if(!contact.doesNeedIsolation) {
-            return {valid: true};
+            return { valid: true };
         } else {
             const emptyFieldNames = mandatoryQuarantineFields.filter(mandatoryField =>
                 !Boolean(contact[mandatoryField as keyof InteractedContact])
@@ -55,12 +56,12 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
 
             if ((validationReason === ValidationReason.EXCEL_LOADING && isStatusCompleted) ||
                  emptyFieldNames.length > 0 || isLooseContact)
-                return {valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact, validationReason, isStatusCompleted)};
-            else return {valid: true};
+                return { valid: false, error: generateErrorMessage(emptyFieldNames, isLooseContact, validationReason, isStatusCompleted) };
+            else return { valid: true };
         }
     };
 
-    const buildInValidFieldsString = (emptyFields: string[], isLooseContact: boolean) : string => {
+    const buildInvalidFieldsString = (emptyFields: string[], isLooseContact: boolean) : string => {
         let message = '';
         if(emptyFields.length > 0) {
             const fieldWord = `לא מילאת את ${emptyFields.length > 1 ? 'שדות ' : 'שדה '}`;
@@ -78,15 +79,15 @@ const useContactFields = (contactStatus?: InteractedContact['contactStatus']) =>
     const generateErrorMessage = (emptyFields: string[], isLooseContact: boolean,
                                   validationReason: ValidationReason, isStatusCompleted: boolean) => {
         let message = 'שים לב, ';
-        const inValidFieldsString = buildInValidFieldsString(emptyFields, isLooseContact);
+        const invalidFieldsString = buildInvalidFieldsString(emptyFields, isLooseContact);
 
         switch(validationReason) {
             case ValidationReason.HANDLE_ISOLATION:
-                return message.concat(inValidFieldsString).concat(isolationErrorMessageEnd);
+                return message.concat(invalidFieldsString).concat(isolationErrorMessageEnd);
             case ValidationReason.SAVE_CONTACT: 
-                return inValidFieldsString;
+                return invalidFieldsString;
             case ValidationReason.EXCEL_LOADING: {
-                message = message.concat(inValidFieldsString);
+                message = message.concat(invalidFieldsString);
                 if(isStatusCompleted) {
                     const statusCompleted = 'לא ניתן לטעון מגע בסטטוס הושלם התחקור';
                     message = message.concat(statusCompleted);
