@@ -70,7 +70,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
-  useEffect(() => {
+  const fetchExposuresAndFlights = () => {
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -148,6 +148,54 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
           icon: 'error',
         })
       });
+  }
+
+  const fetchResorts = () => {
+    const workflow = 'Fetching resorts'
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow,
+      step: `launching resorts request`,
+      user: userId,
+      investigation: investigationId
+    });
+    axios.get('exposures/resorts')
+    .then((result) => {
+      if (result?.data && result.headers['content-type'].includes('application/json')) {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow,
+          step: `got resorts response successfully`,
+          user: userId,
+          investigation: investigationId
+        });
+      } else {
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.HIGH,
+          workflow,
+          step: `failed to get resorts response`,
+          user: userId,
+          investigation: investigationId
+        });
+      }
+    }).catch(error => {
+      logger.error({
+        service: Service.CLIENT,
+        severity: Severity.HIGH,
+        workflow,
+        step: `failed to get resorts response due to ` + error,
+        user: userId,
+        investigation: investigationId
+      });
+    })
+  }
+
+  useEffect(() => {
+    fetchExposuresAndFlights();
+
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
