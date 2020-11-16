@@ -1,13 +1,12 @@
 import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
-import GetAllDesks from '../../Models/Desk/GetAllDesks';
-import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS, GET_ALL_DESKS } from '../../DBService/LandingPage/Query';
-import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
+import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
+import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
+import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS } from '../../DBService/LandingPage/Query';
 
 const errorStatusResponse = 500;
 
@@ -167,10 +166,10 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
 })
 
 landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, response: Response) => {
-    const changeDeskIdVariables = {
-        epidemiologyNumber: request.body.epidemiologyNumber,
-        updatedDesk: request.body.updatedDesk
-    };
+    const epidemiologyNumbers: number[] = request.body.epidemiologyNumbers;
+    const updatedDesk: number = request.body.updatedDesk;
+    const transferReason: number = request.body.transferReason;
+
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -179,17 +178,28 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(CHANGE_DESK_ID, response.locals, changeDeskIdVariables)
-        .then((result: any) => {
+    Promise.all(epidemiologyNumbers.map(epidemiologyNumber => graphqlRequest(CHANGE_DESK_ID, response.locals, {epidemiologyNumber, updatedDesk, transferReason})))
+    .then((results: any[]) => {
+        if (areAllResultsValid(results)) {
             logger.info({
                 service: Service.SERVER,
                 severity: Severity.LOW,
                 workflow: 'Change desk id',
-                step: `desk id has been changed in the DB, investigation: ${request.body.epidemiologyNumber}`,
+                step: `desk id has been changed in the DB, investigations: ${epidemiologyNumbers}`,
                 user: response.locals.user.id
             });
-            response.send(result.data)
-        }).catch(err => {
+            response.send(results[0]?.data || '');
+        } else {
+            logger.error({
+                service: Service.SERVER,
+                severity: Severity.HIGH,
+                workflow: 'Change desk id',
+                step: `desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`,
+                user: response.locals.user.id
+            });
+            response.sendStatus(errorStatusResponse);
+        }
+    }).catch(err => {
             logger.error({
                 service: Service.SERVER,
                 severity: Severity.HIGH,
@@ -198,7 +208,7 @@ landingPageRoute.post('/changeDesk', adminMiddleWare, (request: Request, respons
                 investigation: response.locals.epidemiologyNumber,
                 user: response.locals.user.id
             });
-            response.sendStatus(500);
+            response.sendStatus(errorStatusResponse);
         });
 })
 

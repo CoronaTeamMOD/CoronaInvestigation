@@ -30,3 +30,12 @@ export const graphqlRequest = (query: DocumentNode, requestHeaders: any, variabl
         return result;
     })
 );
+
+export const multipleInvestigationsBulkErrorMessage = (results: any[], epidemiologyNumbers: number[]) => {
+    return results.map((result, index) => {
+        const promiseResultMessage = result?.errors[0]?.message || '';
+        return promiseResultMessage ? `${epidemiologyNumbers[index]}: ${promiseResultMessage}` : '';
+    }).join(', ');
+}
+
+export const areAllResultsValid = (results: any[]) => !results.some(result => !result?.data);

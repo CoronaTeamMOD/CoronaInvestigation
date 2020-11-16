@@ -12,9 +12,9 @@ export const UPDATE_IS_USER_ACTIVE = gql`
 `;
 
 export const UPDATE_INVESTIGATOR = gql`
-mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!) {
+mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
-      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser}, epidemiologyNumber: $epidemiologyNumber}
+      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, statusReason: $transferReason, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
     ) {
       clientMutationId
     }

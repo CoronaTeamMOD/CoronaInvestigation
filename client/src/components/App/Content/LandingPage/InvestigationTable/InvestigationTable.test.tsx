@@ -10,6 +10,7 @@ describe('investigationTable tests', () => {
     beforeAll(() => {
 
         newRowData = {
+            isChecked: false,
             epidemiologyNumber: 111,
             mainStatus: 'חדש',
             subStatus: 'חדש2',
@@ -29,7 +30,8 @@ describe('investigationTable tests', () => {
                 id: 50,
             },
             investigationDesk: 'שם דסק',
-            comment: 'הערה'
+            comment: 'הערה',
+            statusReason: 'כי ככה'
         };
     });
 
@@ -49,6 +51,7 @@ describe('investigationTable tests', () => {
             newRowData.county,
             newRowData.investigator,
             newRowData.comment,
+            newRowData.statusReason
         );
 
         expect(newRow).toEqual(newRowData);
@@ -70,6 +73,7 @@ describe('investigationTable tests', () => {
             newRowData.county,
             newRowData.investigator,
             newRowData.comment,
+            newRowData.statusReason
         );
 
         expect(newRow).not.toEqual(newRowData);

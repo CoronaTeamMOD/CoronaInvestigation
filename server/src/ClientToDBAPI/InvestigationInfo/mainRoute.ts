@@ -72,16 +72,16 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
                 });
                 response.send(convertInvestigationInfoFromDB(investigationInfo));
             } else {
-                logger.info({
-                    severity: Severity.LOW,
+                logger.error({
+                    severity: Severity.HIGH,
                     step: `failed to fetch static info due to ${JSON.stringify(result)}`,
                     ...baseLog
                 });
                 response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
             }
         }).catch((error) => {
-            logger.info({
-                severity: Severity.LOW,
+            logger.error({
+                severity: Severity.HIGH,
                 step: `failed to fetch static info due to ${error}`,
                 ...baseLog
             });
