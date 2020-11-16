@@ -233,13 +233,13 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     event.preventDefault();
     setFormState(investigationId, id, true);
     logger.info({
-      service: Service.CLIENT,
-      severity: Severity.LOW,
-      workflow: 'Saving Exposures And Flights tab',
-      step: 'launching the server request',
-      investigation: investigationId,
-      user: userId
-  })
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow: 'Saving Exposures And Flights tab',
+        step: 'launching the server request',
+        investigation: investigationId,
+        user: userId
+    })
     const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
     Promise.all(tabSavePromises)
     .then(() => {
@@ -247,25 +247,25 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         service: Service.CLIENT,
         severity: Severity.LOW,
         workflow: 'Saving Exposures And Flights tab',
-        step: 'saved exposures and flights successfully',
+        step: 'saved confirmed exposures, flights and resorts data successfully',
         investigation: investigationId,
         user: userId
       });
     })
-      .catch((error) => {
-        logger.error({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow: 'Saving Exposures And Flights tab',
-          step: `got error from server: ${error}`,
-          investigation: investigationId,
-          user: userId
-        });
-        Swal.fire({
-          title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-          icon: 'error'
-        });
-      })
+    .catch((error) => {
+      logger.error({
+        service: Service.CLIENT,
+        severity: Severity.HIGH,
+        workflow: 'Saving Exposures And Flights tab',
+        step: `got error from server: ${error}`,
+        investigation: investigationId,
+        user: userId
+      });
+      Swal.fire({
+        title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        icon: 'error'
+      });
+    })
   }
 
   return (
