@@ -349,7 +349,7 @@ investigationInfo.post('/updateInvestigationTransfer', (request: Request, respon
         });
 });
 
-investigationInfo.get('/resorts', (request: Request, response: Response) => {
+investigationInfo.get('/resorts/:id', (request: Request, response: Response) => {
     const workflow = 'Query investigated patients resorts data';
     logger.info({
         service: Service.SERVER,
@@ -359,7 +359,7 @@ investigationInfo.get('/resorts', (request: Request, response: Response) => {
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, {id: request.body.id})
+    return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, {id: +request.params.id})
         .then((result) => {
             const resortsData = result?.data?.investigatedPatientById; 
             if (resortsData) {

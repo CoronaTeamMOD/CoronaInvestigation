@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
-import { AddCircle, CheckBox } from '@material-ui/icons';
+import { AddCircle } from '@material-ui/icons';
 import { FormProvider, useForm } from 'react-hook-form';
 import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
@@ -35,6 +35,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { saveExposureAndFlightData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+  const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
   const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
   const methods = useForm();
@@ -51,8 +52,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     , [exposures]);
 
   const [coronaTestDate, setCoronaTestDate] = useState<Date>();
-  const [returnedFromDeadSea, setReturnedFromDeadSea] = useState<boolean>(false);
-  const [returnedFromEilat, setReturnedFromEilat] = useState<boolean>(false);
+  const [returnedFromDeadSea, setReturnedFromDeadSea] = useState<boolean>(true);
+  const [returnedFromEilat, setReturnedFromEilat] = useState<boolean>(true);
 
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure);
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad);
@@ -151,7 +152,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       });
   }
 
-  const fetchResorts = () => {
+  const fetchResortsData = () => {
     const workflow = 'Fetching investigated patient resorts data'
     logger.info({
       service: Service.CLIENT,
@@ -161,7 +162,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       user: userId,
       investigation: investigationId
     });
-    axios.get('investigationPatient/resorts')
+    axios.get('investigationInfo/resorts/' + investigatedPatientId)
     .then((result) => {
       if (result?.data) {
         logger.info({
@@ -172,7 +173,8 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
           user: userId,
           investigation: investigationId
         });
-
+        setReturnedFromEilat(result?.data?.wasInEilat);
+        setReturnedFromDeadSea(result?.data?.wasInDeadSea);
       } else {
         logger.error({
           service: Service.CLIENT,
@@ -197,6 +199,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   useEffect(() => {
     fetchExposuresAndFlights();
+    fetchResortsData();
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
