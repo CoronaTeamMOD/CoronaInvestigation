@@ -7,7 +7,6 @@ import FormInput from 'commons/FormInput/FormInput';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-import useStyles from './BusinessContactFormStyles';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const businessContactFirstNameField = 'שם פרטי';
@@ -19,7 +18,6 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();
 
     const formClasses = useFormStyles();
-    const classes = useStyles();
 
     return (
         <div>
