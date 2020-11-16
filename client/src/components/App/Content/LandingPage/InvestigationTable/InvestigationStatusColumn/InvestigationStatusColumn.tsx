@@ -6,7 +6,7 @@ import { Tooltip, Typography } from '@material-ui/core';
 import { InfoOutlined, LockOpen } from '@material-ui/icons';
 
 import axios from 'Utils/axios';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 
@@ -24,31 +24,22 @@ const InvestigationStatusColumn = (props: Props) => {
 
     const onIconClicked = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         event.stopPropagation();
+        const IconLogger = logger.setup({
+            workflow: 'Ending Investigation',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
             investigationSubStatus: null,
             statusReason: null,
             epidemiologyNumber
         }).then(() => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Ending Investigation',
-                step: `update investigation status request was successful`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            IconLogger.info('update investigation status request was successful', Severity.LOW);
             moveToTheInvestigationForm(epidemiologyNumber);
         })
             .catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Ending Investigation',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                IconLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                 alertError('לא ניתן לפתוח את החקירה מחדש');
             })
     }
@@ -67,7 +58,7 @@ const InvestigationStatusColumn = (props: Props) => {
                 </Tooltip>
             }
             {
-                investigationStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                investigationStatus === InvestigationMainStatus.CANT_COMPLETE && investigationSubStatus &&
                 <Tooltip title={investigationSubStatus}>
                     <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='error' />
                 </Tooltip>
