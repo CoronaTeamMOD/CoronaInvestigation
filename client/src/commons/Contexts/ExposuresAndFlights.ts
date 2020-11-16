@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
-import ExposureData from 'models/ExposureData';
 import FlightData from 'models/FlightData';
+import ExposureData from 'models/ExposureData';
 
 export type Exposure = ExposureData & FlightData;
 
@@ -10,6 +10,7 @@ export type ExposureAndFlightsDetails = {
     exposuresToDelete: (number | null)[],
     wereConfirmedExposures: boolean,
     wereFlights: boolean,
+    returnedFromResort: boolean,
 }
 
 export interface ExposureAndFlightsDetailsAndSet {
@@ -37,6 +38,7 @@ export const fieldsNames = {
     flightNumber: 'flightNum',
     wereConfirmedExposures: 'wereConfirmedExposures',
     wereFlights: 'wereFlights',
+    returnedFromResort: 'returnedFromResort',
 };
 
 export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
@@ -44,6 +46,7 @@ export const initialExposuresAndFlightsData: ExposureAndFlightsDetails = {
     exposuresToDelete: [],
     wereConfirmedExposures: false,
     wereFlights: false,
+    returnedFromResort: false,
 };
 
 export const initialExposureOrFlight: Exposure = {
