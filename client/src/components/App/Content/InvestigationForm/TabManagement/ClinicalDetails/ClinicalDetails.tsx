@@ -113,10 +113,12 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                     icon: 'error'
                 })
-            });
-        ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
-            setFormState(epidemiologyNumber, id, valid);
-        })
+            })
+            .finally(() => {
+                ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);

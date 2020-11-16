@@ -231,7 +231,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const saveExposure = (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
-    setFormState(investigationId, id, true);
     logger.info({
         service: Service.CLIENT,
         severity: Severity.LOW,
@@ -253,19 +252,20 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       });
     })
     .catch((error) => {
-      logger.error({
-        service: Service.CLIENT,
-        severity: Severity.HIGH,
-        workflow: 'Saving Exposures And Flights tab',
-        step: `got error from server: ${error}`,
-        investigation: investigationId,
-        user: userId
-      });
-      Swal.fire({
-        title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-        icon: 'error'
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.HIGH,
+          workflow: 'Saving Exposures And Flights tab',
+          step: `got error from server: ${error}`,
+          investigation: investigationId,
+          user: userId
+        });
+        Swal.fire({
+          title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+          icon: 'error'
       });
     })
+    .finally(() => setFormState(investigationId, id, true))
   }
 
   return (
