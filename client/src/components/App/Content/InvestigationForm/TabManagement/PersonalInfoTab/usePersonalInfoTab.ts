@@ -8,9 +8,15 @@ import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import { setFormState } from 'redux/Form/formActionCreators';
+import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 
 import useStyles from './PersonalInfoTabStyles';
-import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
+import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
+import personalInfoValidationSchema from './PersonalInfoValidationSchema';
 
 const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePersonalInfoTabOutcome => {
 
@@ -18,14 +24,18 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
+
+    const { complexityErrorAlert } = useComplexitySwal();
 
     const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setInvestigatedPatientRoles,
-            setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany,
+        setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany,
     } = parameters;
 
     const fetchPersonalInfo = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
-                               trigger: (payload?: string | string[]) => Promise<boolean>
-                              ) => {
+        trigger: (payload?: string | string[]) => Promise<boolean>
+    ) => {
         const occupationsLogger = logger.setup({
             workflow: 'Fetching Occupations',
             user: userId,
@@ -93,7 +103,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                 }
                 const PersonalInfoData = {
                     phoneNumber: investigatedPatient.primaryPhone,
-                    additionalPhoneNumber:  investigatedPatient.additionalPhoneNumber,
+                    additionalPhoneNumber: investigatedPatient.additionalPhoneNumber,
                     contactPhoneNumber: investigatedPatient.patientContactPhoneNumber,
                     insuranceCompany: investigatedPatient.hmo,
                     ...convertedPatientAddress,
@@ -127,7 +137,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                         title: classes.swalTitle
                     },
                 });
-            } 
+            }
         })
     }
 
@@ -198,11 +208,42 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
         });
     }
 
+    const savePersonalData = (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => {
+        const savePersonalDataLogger = logger.setup({
+            workflow: 'Saving personal details tab',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
+        savePersonalDataLogger.info('launching the server request', Severity.LOW);
+        axios.post('/personalDetails/updatePersonalDetails',
+            {
+                id: investigatedPatientId,
+                personalInfoData,
+            })
+            .then(() => {
+                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatus.NEW;
+                savePersonalDataLogger.info(
+                    `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
+                    Severity.LOW
+                );
+            })
+            .catch((error) => {
+                savePersonalDataLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                complexityErrorAlert(error);
+            })
+            .finally(() => {
+                personalInfoValidationSchema.isValid(data).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
+    }
+
     return {
         fetchPersonalInfo,
         getSubOccupations,
         getEducationSubOccupations,
-        getStreetsByCity
+        getStreetsByCity,
+        savePersonalData
     }
 }
 

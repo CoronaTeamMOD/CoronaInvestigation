@@ -2,7 +2,7 @@ import Street from 'models/Street';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
-import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
+import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 export interface usePersonalInfoTabParameters {
     occupationsStateContext: OccupationsContext;
@@ -24,4 +24,5 @@ export interface usePersonalInfoTabOutcome {
     getSubOccupations: (parentOccupation: string) => void;
     getEducationSubOccupations: (city: string) => void;
     getStreetsByCity: (cityId: string) => void;
+    savePersonalData: (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => void;
 };
