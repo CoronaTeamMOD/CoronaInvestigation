@@ -14,7 +14,6 @@ import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FieldName from 'commons/FieldName/FieldName';
 import { setFormState } from 'redux/Form/formActionCreators';
-import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
@@ -73,7 +72,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
-  useEffect(() => {
+  const fetchExposuresAndFlights = () => {
     logger.info({
       service: Service.CLIENT,
       severity: Severity.LOW,
@@ -102,7 +101,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             exposures,
             exposuresToDelete: [],
             wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
-            wereFlights: doesHaveFlights(exposures)
+            wereFlights: doesHaveFlights(exposures),
           });
         }
       })
@@ -150,6 +149,54 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
           icon: 'error',
         })
       });
+  }
+
+  const fetchResorts = () => {
+    const workflow = 'Fetching investigated patient resorts data'
+    logger.info({
+      service: Service.CLIENT,
+      severity: Severity.LOW,
+      workflow,
+      step: `launching investigated patient resorts request`,
+      user: userId,
+      investigation: investigationId
+    });
+    axios.get('investigationPatient/resorts')
+    .then((result) => {
+      if (result?.data) {
+        logger.info({
+          service: Service.CLIENT,
+          severity: Severity.LOW,
+          workflow,
+          step: `got investigated patient resorts response successfully`,
+          user: userId,
+          investigation: investigationId
+        });
+
+      } else {
+        logger.error({
+          service: Service.CLIENT,
+          severity: Severity.HIGH,
+          workflow,
+          step: `failed to investigated patient resorts response`,
+          user: userId,
+          investigation: investigationId
+        });
+      }
+    }).catch(error => {
+      logger.error({
+        service: Service.CLIENT,
+        severity: Severity.HIGH,
+        workflow,
+        step: `failed to get resorts response due to ` + error,
+        user: userId,
+        investigation: investigationId
+      });
+    })
+  }
+
+  useEffect(() => {
+    fetchExposuresAndFlights();
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
