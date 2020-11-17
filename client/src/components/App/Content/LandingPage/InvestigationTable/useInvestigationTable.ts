@@ -833,7 +833,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
             classNames.push(classes.epiNumberCell);
         }
-        if (checkedRowsIds.includes(rows[rowIndex].epidemiologyNumber)) {
+        if (checkedRowsIds.includes(rows[rowIndex]?.epidemiologyNumber)) {
             classNames.push(classes.checkedRow);
         }
         if ((isDefaultOrder && !isLoading) &&
