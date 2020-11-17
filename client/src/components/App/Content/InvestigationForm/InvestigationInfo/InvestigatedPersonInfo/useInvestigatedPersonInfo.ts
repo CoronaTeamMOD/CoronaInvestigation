@@ -16,15 +16,12 @@ import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexit
 import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
-import useStyles from './InvestigatedPersonInfoStyles';
 import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
-    const classes = useStyles({});
-
     const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
-    const { alertWarning } = useCustomSwal();
+    const { alertWarning, alertError, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
@@ -34,15 +31,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const handleInvestigationFinish = async () => {
-        Swal.fire({
-            icon: 'success',
-            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
-            customClass: {
-                title: classes.swalTitle,
-            },
+        alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
-            showConfirmButton: false
-        })
+            showConfirmButton: false})
         timeout(1500).then(() => {
             setIsInInvestigation(false);
             window.close();
@@ -50,11 +41,15 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const checkValidMainStatus = () => {
-        return statuses.findIndex(currStatus => currStatus === investigationStatus.mainStatus) !== -1;
+        if(statuses.length > 0)
+            return statuses.findIndex(currStatus => currStatus === investigationStatus.mainStatus) !== -1;
+        return false;
     }
 
     const checkSubStatus = () => {
-        return subStatuses.findIndex(currSubStatus => currSubStatus === investigationStatus.subStatus) !== -1 || investigationStatus.subStatus === '';
+        if(subStatuses.length > 0)
+            return subStatuses.findIndex(currSubStatus => currSubStatus === investigationStatus.subStatus) !== -1 || investigationStatus.subStatus === '';
+        return false;
     }
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
@@ -140,13 +135,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     }
 
     const handleUnfinishedInvestigationFailed = () => {
-        Swal.fire({
-            title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות',
-            icon: 'error',
-            customClass: {
-                title: classes.swalTitle
-            }
-        })
+        alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
     };
 
     const shouldUpdateInvestigationStatus = (investigationInvestigator? : string) => {

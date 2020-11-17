@@ -1,30 +1,34 @@
 import Swal from 'sweetalert2';
 import theme from 'styles/theme';
 import * as redux from 'react-redux'
-import { act } from 'react-dom/test-utils';
+import {act} from 'react-dom/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { wait } from '@testing-library/react';
-import { testHooksFunction, testHooksFunctionWithRoute } from 'TestHooks';
+import {testHooksFunction} from 'TestHooks';
 
 import axios from 'Utils/axios';
 
 import useInvestigatedPersonInfo from './useInvestigatedPersonInfo';
-import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
+import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
+import {useSelector} from "react-redux";
 
 jest.mock('redux/store', () => {
     return {
         store: {
-            getState: () => ({user: {token: 1}})
+            getState: () => ({user: {token: 1}}),
         }
     }
 })
 
-jest.mock('redux/store', () => {middlewares: []});
+jest.mock('redux/store', () => {
+    middlewares: []
+});
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
 
-jest.mock('redux/IsLoading/isLoadingActionCreators', () => {return {setIsLoading: (isLoading: boolean) => jest.fn()}})
+jest.mock('redux/IsLoading/isLoadingActionCreators', () => {
+    return {setIsLoading: (isLoading: boolean) => jest.fn()}
+})
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -32,36 +36,42 @@ let investigatedPersonInfoOutcome: InvestigatedPersonInfoOutcome;
 
 describe('investigatedPersonInfo tests', () => {
     afterEach(() => {
-    jest.resetAllMocks();
-    mockAdapter.reset();
-});
+        jest.resetAllMocks();
+        mockAdapter.reset();
+    });
 
     describe('confirmExitUnfinishedInvestigation tests', () => {
-        beforeEach(async () => {
-            await testHooksFunction(() => {
-                investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
-                mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
-            });
-        })
-
         beforeEach(() => {
-            jest.mock('react-redux', () => {
-                const ActualReactRedux = require.requireActual('react-redux');
-                return {
-                    ...ActualReactRedux,
-                    useSelector: jest.fn().mockImplementation(() => {
-                        return { 
+            const ActualReactRedux = require.requireActual('react-redux');
+            return {
+                ...ActualReactRedux,
+                useSelector: jest.fn().mockImplementation(() => {
+                    return {
+                        statuses: ['', '', ''],
+                        subStatuses: ['', '', ''],
+                        investigation: {
                             epidemiologyNumber: -1,
                             cantReachInvestigated: false,
                             investigatedPatientId: -1,
                             creator: '',
                             lastUpdator: '',
-                        };
-                    }),
-                };
-            });
+                            investigationStatus: {
+                                mainStatus: 'בטיפול',
+                                subStatus: '',
+                                statusReason: '',
+                            },
+                        },
+                    };
+                }),
+            };
         });
 
+        beforeEach(async () => {
+            await testHooksFunction(() => {
+                investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
+                mockAdapter.onPost('/investigationInfo/updateInvestigationStatus').reply(200);
+            });
+        });
         const epidemiologyNumber = 111;
         const cantReachInvestigated = false;
 
@@ -80,6 +90,19 @@ describe('investigatedPersonInfo tests', () => {
             }
         };
 
+        const expectedNoStatusSwal = {
+            icon: 'warning',
+            title: "שים לב, כדי לצאת מחקירה יש להזין סטטוס חקירה וסטטוס משנה תקינים",
+            confirmButtonColor: "rgb(44, 151, 185)",
+            confirmButtonText: "הבנתי, המשך",
+            customClass: {
+                container: "makeStyles-container-1",
+                content: "makeStyles-swalText-3",
+                title: "makeStyles-swalTitle-2",
+            }
+
+        }
+
         const expectedSecondSwal = {
             icon: 'success',
             title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
@@ -91,19 +114,16 @@ describe('investigatedPersonInfo tests', () => {
         };
 
         it('check that swal was opened', async () => {
-
             const myspy = jest.spyOn(Swal, 'fire');
-
             await act(async () => {
                 await testHooksFunction(() => {
                     investigatedPersonInfoOutcome = useInvestigatedPersonInfo();
                 });
-                investigatedPersonInfoOutcome
-                    .confirmExitUnfinishedInvestigation(epidemiologyNumber);
+                investigatedPersonInfoOutcome.confirmExitUnfinishedInvestigation(epidemiologyNumber);
             });
 
             expect(myspy).toHaveBeenCalled();
-            expect(myspy).toHaveBeenCalledWith(expectedFirstSwal);
+            expect(myspy).toHaveBeenCalledWith(expectedNoStatusSwal);
         });
 
         // it('Check that second swal was opened on acception', async () => {
