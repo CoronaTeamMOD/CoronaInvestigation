@@ -339,7 +339,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.multipleCheck:
                 return (
                     <Checkbox onClick={(event) => {
-                        event.stopPropagation(); 
+                        event.stopPropagation();
                         markRow(indexedRow.epidemiologyNumber);
                     }} color='primary' checked={checkedRowsIds.includes(indexedRow.epidemiologyNumber)} />
                 )
@@ -405,10 +405,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const counterDescription: string = useMemo(() => {
         const adminMessage = `, מתוכן ${filteredTableRows.filter(filteredRow => filteredRow.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
         return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
- 
-      }, [filteredTableRows]);
-    
-    
+
+    }, [filteredTableRows]);
+
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
@@ -490,7 +489,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     return tags[0] + additionalDisplay;
                                 }}
                             />
-                            <IconButton><Close onClick={() => closeFilterRow()} /></IconButton>
+                            <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>
                         </Card>
                     </Collapse>
                 </Grid>
@@ -551,9 +550,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </TableContainer>
             </Grid>
             <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit>
-                <InvestigationTableFooter 
-                    allInvestigators={getFilteredUsersOfCurrentCounty()} 
-                    checkedRowsIds={checkedRowsIds} 
+                <InvestigationTableFooter
+                    allInvestigators={getFilteredUsersOfCurrentCounty()}
+                    checkedRowsIds={checkedRowsIds}
                     allDesks={allDesks}
                     onClose={() => setCheckedRowsIds([])}
                     tableRows={tableRows}
