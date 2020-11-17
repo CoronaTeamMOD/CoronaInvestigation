@@ -10,11 +10,12 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import heLocale from 'date-fns/locale/he';
 import axios from 'axios';
+import { PersistGate } from 'redux-persist/integration/react'
 
 import './index.css';
 import './styles/fonts.css';
 import theme from './styles/theme';
-import { store } from './redux/store';
+import { store, persistor } from './redux/store';
 import App from './components/App/App';
 
 axios.defaults.baseURL = '/db';
@@ -22,11 +23,11 @@ axios.defaults.headers['content-type'] = 'text/plain';
 axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
 
 axios.interceptors.request.use(
-    async (config) => {
-        config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
-        return config;
-    }, 
-    (error) => Promise.reject(error)
+  async (config) => {
+    config.headers.EpidemiologyNumber = store.getState().investigation.epidemiologyNumber;
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -35,9 +36,11 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={heLocale}>
         <StylesProvider jss={jss}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <PersistGate loading={null} persistor={persistor}>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </PersistGate>
         </StylesProvider>
       </MuiPickersUtilsProvider>
     </MuiThemeProvider>

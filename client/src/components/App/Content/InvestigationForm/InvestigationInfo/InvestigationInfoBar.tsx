@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { store } from 'redux/store';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
@@ -66,18 +65,16 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     React.useEffect(() => {
-        timeout(2000).then(() => {
-            let openedEpidemiologyNumber = store.getState().investigation.lastOpenedEpidemiologyNumber;
-            if (openedEpidemiologyNumber !== defaultEpidemiologyNumber) {
-                setEpidemiologyNum(openedEpidemiologyNumber);
-                setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
-            } else {
-                handleInvalidEntrance();
-            }
-        });
+        if (lastOpenedEpidemiologyNumber !== defaultEpidemiologyNumber) {
+            setEpidemiologyNum(lastOpenedEpidemiologyNumber);
+            setLastOpenedEpidemiologyNum(defaultEpidemiologyNumber);
+        } else {
+            handleInvalidEntrance();
+        }
     }, []);
 
     React.useEffect(() => {
