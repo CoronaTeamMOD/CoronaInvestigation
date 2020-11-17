@@ -12,7 +12,8 @@ import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId'
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId';
 import { getOptionsByPlaceAndSubplaceType } from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -121,11 +122,11 @@ const InteractionEventForm: React.FC<Props> = (
 
   const generatedErrorMessage = useMemo<string>(() => {
     const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
-    const isPrivatePlace = placeType === 'בית פרטי';
+    const isPrivatePlace = placeType === placeTypesCodesHierarchy.privateHouse.code;
     const errors: string[] = [];
 
     if (isPrivatePlace) {
-      errors.push('אם מדובר בבית פרטי')
+      errors.push('מדובר בבית פרטי')
     } else {
       if (isUnknownTime) {
         errors.push('הזמן אינו ידוע');
