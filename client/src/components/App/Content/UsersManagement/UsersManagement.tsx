@@ -77,9 +77,6 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.DESK: {
                 return row[cellName] ? row[cellName] : noDeskAssignment
             }
-            case UsersManagementTableHeadersNames.FULL_NAME: {
-                return row[cellName] || row[UsersManagementTableHeadersNames.USER_NAME]
-            }
             default: 
                 return row[cellName]
         }
