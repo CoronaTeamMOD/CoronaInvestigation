@@ -94,6 +94,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
+    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
+
     useEffect(() => {
         const filteredRows = tableRows.filter(row => {
             return (
@@ -341,7 +343,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Checkbox onClick={(event) => {
                         event.stopPropagation();
                         markRow(indexedRow.epidemiologyNumber);
-                    }} color='primary' checked={checkedRowsIds.includes(indexedRow.epidemiologyNumber)} />
+                    }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
                 )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
@@ -525,8 +527,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 return (
-                                    <TableRow
-                                        key={indexedRow.epidemiologyNumber}
+                                    <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
+                                        key={indexedRow.epidemiologyNumber} classes={{selected: classes.checkedRow}}
                                         className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
                                         onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
                                     >
