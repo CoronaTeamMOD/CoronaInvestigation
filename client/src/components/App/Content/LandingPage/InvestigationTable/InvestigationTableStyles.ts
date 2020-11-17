@@ -148,7 +148,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontWeight: 600
     },
     checkedRow: {
-        backgroundColor: 'rgb(202, 222, 234)'
+        backgroundColor: 'rgb(202, 222, 234)!important'
     }
 }));
 
