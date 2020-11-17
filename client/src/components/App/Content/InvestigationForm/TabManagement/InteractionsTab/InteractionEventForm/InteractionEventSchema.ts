@@ -22,8 +22,9 @@ const interactionEventSchema = yup.object().shape({
     [InteractionEventDialogFields.START_TIME]: yup.date().required()
       .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעה מ לא יכולה להיות גדולה משעה עד'),
     [InteractionEventDialogFields.END_TIME]: yup.date().required()
-      .min(yup.ref(InteractionEventDialogFields.START_TIME), 
-      'שעה עד לא יכולה להיות קטנה משעה מ'),
+      .min(yup.ref(InteractionEventDialogFields.START_TIME),
+      'שעה עד לא יכולה להיות קטנה משעה מ')
+        .notOneOf([yup.ref(InteractionEventDialogFields.START_TIME)], 'יש להזין שעת סיום שונה משעת התחלה'),
     [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().required('שדה חובה'),
     [InteractionEventDialogFields.CONTACTS]: yup.array().of(yup.object().shape({
         [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),
