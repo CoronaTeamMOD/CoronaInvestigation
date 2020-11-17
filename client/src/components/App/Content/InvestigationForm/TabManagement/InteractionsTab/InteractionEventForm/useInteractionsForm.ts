@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
-import {Service, Severity} from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -29,71 +29,41 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 }))
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
+                const updateInteractionsLogger = logger.setup({
                     workflow: 'Update Interaction',
-                    step: `launching update interaction request`,
                     user: userId,
                     investigation: epidemiologyNumber
-                });
-                axios.post('/intersections/updateContactEvent', parsedData).then((response) => {
+                })
+                updateInteractionsLogger.info('launching update interaction request', Severity.LOW);
+                axios.post('/intersections/updateContactEvent', parsedData)
+                .then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Interaction',
-                            step: 'updated interaction successfully',
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
+                        updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
                         loadInteractions();
                         closeEditDialog();
                     }
-                }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.HIGH,
-                            workflow: 'Update Interaction',
-                            step: `got error from server: ${error}`,
-                            investigation: epidemiologyNumber,
-                            user: userId
-                        });
-                        handleFailedSave('לא ניתן היה לשמור את השינויים');
+                })
+                .catch((error) => {
+                    updateInteractionsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                    handleFailedSave('לא ניתן היה לשמור את השינויים');
                     }
                 )
             } else {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
+                const createInteractionsLogger = logger.setup({
                     workflow: 'Create Interaction',
-                    step: `launching create interaction request`,
                     user: userId,
                     investigation: epidemiologyNumber
                 });
+                createInteractionsLogger.info('launching create interaction request', Severity.LOW);
                 axios.post('/intersections/createContactEvent', parsedData).then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Create Interaction',
-                            step: 'created interaction successfully',
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
+                        createInteractionsLogger.info('created interaction successfully', Severity.LOW);
                         loadInteractions();
                         closeNewDialog();
                     } 
                 })
                     .catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Create Interaction',
-                            step: `got error from server: ${error}`,
-                            investigation: epidemiologyNumber,
-                            user: userId
-                        });
+                        createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
                         closeNewDialog();
                         handleFailedSave('לא ניתן היה ליצור אירוע חדש');
                     })

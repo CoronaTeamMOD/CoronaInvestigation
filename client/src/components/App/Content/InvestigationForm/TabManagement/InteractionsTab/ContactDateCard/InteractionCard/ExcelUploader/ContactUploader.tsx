@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
 import axios from 'Utils/axios';
@@ -53,18 +53,12 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
 
     const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
         if(contacts && contacts.length > 0) {
-            const logInfo = {
-                service: Service.CLIENT,
+            const dataInFileLogger = logger.setup({
                 workflow: 'Saving Contacted People Excel',
+                user: userId,
                 investigation: epidemiologyNumber,
-                user: userId
-            };
-
-            logger.info({
-                ...logInfo,
-                severity: Severity.LOW,
-                step: 'launching saving contacted people excel request',
-            });
+            })
+            dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {
                 const validationInfo = validateContact(contact, ValidationReason.EXCEL_LOADING);
@@ -78,11 +72,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
 
             if(validationErrors.length > 0) {
                 alertError(validationErrors.join("\r\n"));
-                logger.error({
-                    ...logInfo,
-                    severity: Severity.HIGH,
-                    step: `failed to upload excel, validation errors on data: ${validationErrors.join(',')}`,
-                });
+                dataInFileLogger.info(`failed to upload excel, validation errors on data: ${validationErrors.join(',')}`, Severity.HIGH);
             } else {
                 const contactsData = contacts.map(contact => {
                     const { rowNum, ...contactData } = contact;
@@ -93,19 +83,11 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                 if (!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
                     axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
                         .then(() => {
-                            logger.info({
-                                ...logInfo,
-                                severity: Severity.LOW,
-                                step: 'contacted people excel was saved successfully',
-                            })
+                            dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
                             onSave();
                         })
                         .catch(error => {
-                            logger.error({
-                                ...logInfo,
-                                severity: Severity.LOW,
-                                step: `got error from server: ${error}`,
-                            });
+                            dataInFileLogger.error(`got error from server: ${error}`, Severity.LOW);
                             alertError('שגיאה בשמירת הנתונים');
                         })
                 }
