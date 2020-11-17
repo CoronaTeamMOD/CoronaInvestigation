@@ -14,17 +14,17 @@ import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterface
 jest.mock('redux/store', () => {
     return {
         store: {
-            getState: () => ({user: {token: 1}})
+            getState: () => ({ user: { token: 1 } })
         }
     }
 })
 
-jest.mock('redux/store', () => {middlewares: []});
+jest.mock('redux/store', () => { middlewares: [] });
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
 
-jest.mock('redux/IsLoading/isLoadingActionCreators', () => {return {setIsLoading: (isLoading: boolean) => jest.fn()}})
+jest.mock('redux/IsLoading/isLoadingActionCreators', () => { return { setIsLoading: (isLoading: boolean) => jest.fn() } })
 
 const mockAdapter = new MockAdapter(axios);
 
@@ -32,9 +32,9 @@ let investigatedPersonInfoOutcome: InvestigatedPersonInfoOutcome;
 
 describe('investigatedPersonInfo tests', () => {
     afterEach(() => {
-    jest.resetAllMocks();
-    mockAdapter.reset();
-});
+        jest.resetAllMocks();
+        mockAdapter.reset();
+    });
 
     describe('confirmExitUnfinishedInvestigation tests', () => {
         beforeEach(async () => {
@@ -50,7 +50,7 @@ describe('investigatedPersonInfo tests', () => {
                 return {
                     ...ActualReactRedux,
                     useSelector: jest.fn().mockImplementation(() => {
-                        return { 
+                        return {
                             epidemiologyNumber: -1,
                             cantReachInvestigated: false,
                             investigatedPatientId: -1,
@@ -74,9 +74,9 @@ describe('investigatedPersonInfo tests', () => {
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
             customClass: {
-                content: "makeStyles-swalText-17",
-                title: "makeStyles-swalTitle-16",
-                container: "makeStyles-container-15",
+                content: "makeStyles-swalText-18",
+                title: "makeStyles-swalTitle-17",
+                container: "makeStyles-container-16",
             }
         };
 
