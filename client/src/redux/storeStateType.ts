@@ -1,12 +1,13 @@
-import User from 'models/User';
 import City from 'models/City';
 import Country from 'models/Country';
 import DBAddress from 'models/DBAddress';
 import ContactType from 'models/ContactType';
 import InvestigationRedux from 'models/InvestigationRedux';
 
+import { UserState } from './User/userReducer';
+
 export default interface StoreStateType {
-    user: User;
+    user: UserState;
     isLoading: boolean;
     isInInvestigation: boolean;
     investigation: InvestigationRedux;

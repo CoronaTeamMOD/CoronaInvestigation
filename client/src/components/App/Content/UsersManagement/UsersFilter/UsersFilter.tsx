@@ -68,7 +68,7 @@ const GenericAutoComplete: React.FC<GenericAutoCompleteProps> = (props: GenericA
 const UsersFilter:React.FC<Props> = ( props : Props ) => {
     const { sourcesOrganization, languages, counties, userTypes, handleFilterChange, handleCloseFitler } = props;
 
-    const userType = useSelector<StoreStateType, number>(state => state.user.userType);
+    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
 
     const classes = useStyles();
     

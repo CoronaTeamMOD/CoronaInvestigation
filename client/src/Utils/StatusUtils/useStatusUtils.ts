@@ -14,7 +14,7 @@ const useStatusUtils = () => {
 
     const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const investigationEndTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
     const wasInvestigationReopend = investigationEndTime !== null;
 

@@ -66,7 +66,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     React.useEffect(() => {
         if (lastOpenedEpidemiologyNumber !== defaultEpidemiologyNumber) {

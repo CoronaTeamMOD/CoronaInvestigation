@@ -11,7 +11,7 @@ import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInte
 
 const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { setPlacesSubTypesByTypes } = parameters;
 

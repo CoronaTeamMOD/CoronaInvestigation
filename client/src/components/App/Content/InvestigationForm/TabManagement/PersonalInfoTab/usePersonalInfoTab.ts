@@ -22,7 +22,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
 
     const classes = useStyles({});
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);

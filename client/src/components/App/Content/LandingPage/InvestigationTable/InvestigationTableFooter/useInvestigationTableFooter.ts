@@ -17,7 +17,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const { alertError } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const handleOpenDesksDialog = () => setOpenDesksDialog(true);
 

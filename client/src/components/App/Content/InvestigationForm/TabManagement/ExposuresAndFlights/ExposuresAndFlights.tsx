@@ -37,7 +37,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
   const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
-  const userId = useSelector<StoreStateType, string>(state => state.user.id);
+  const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
   const methods = useForm();
 

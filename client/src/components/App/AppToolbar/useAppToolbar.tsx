@@ -2,6 +2,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { persistor } from 'redux/store';
 
 import User from 'models/User';
 import logger from 'logger/logger';
@@ -22,7 +23,7 @@ export interface useTopToolbarOutcome  {
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
     const classes = useStyles();
     
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
@@ -78,6 +79,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
 
     const logout = async () => {
         await setUserActivityStatus(false);
+        await persistor.purge();
         window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout`;
     }
 

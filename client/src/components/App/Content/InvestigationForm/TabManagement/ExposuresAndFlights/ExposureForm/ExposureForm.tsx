@@ -52,7 +52,7 @@ const ExposureForm = (props: any) => {
   const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
   const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-  const userId = useSelector<StoreStateType, string>(state => state.user.id);
+  const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
   const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
     const fields: string[] = [];

@@ -22,7 +22,7 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const saveResortsData = () : Promise<void> => {
         let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;

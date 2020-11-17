@@ -14,7 +14,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const {loadInteractions, closeNewDialog, closeEditDialog} = props;
         const {parseLocation} = useDBParser();
         const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-        const userId = useSelector<StoreStateType, string>(state => state.user.id);
+        const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
             const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ?

@@ -98,7 +98,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -318,7 +318,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchAllCountyUsers();
             fetchAllCounties();
         }
-        if (user.userName !== initialUserState.userName) {
+        if (user.userName !== initialUserState.data.userName) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,

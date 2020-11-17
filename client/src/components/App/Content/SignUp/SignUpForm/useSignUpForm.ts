@@ -21,7 +21,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const fetchCities = () => {

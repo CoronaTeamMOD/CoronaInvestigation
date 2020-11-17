@@ -25,7 +25,7 @@ const SignUp : React.FC<Props> = ({ open, handleSaveUser, handleCloseSignUp }) =
 
     const classes = useStyles();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const defaultValues : SignUpUser = {
         ...UserInitialValues,

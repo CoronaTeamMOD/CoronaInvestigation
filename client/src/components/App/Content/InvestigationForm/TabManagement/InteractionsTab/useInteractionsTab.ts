@@ -35,7 +35,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const classes = useStyles({});
 

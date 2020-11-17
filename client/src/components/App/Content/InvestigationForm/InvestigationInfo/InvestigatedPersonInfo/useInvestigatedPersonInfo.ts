@@ -27,8 +27,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
     const { alertWarning } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
-    const userRole = useSelector<StoreStateType, number>(state => state.user.userType);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
+    const userRole = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 

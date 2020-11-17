@@ -3,27 +3,42 @@ import userType from 'models/enums/UserType';
 
 import * as Actions from './userActionTypes';
 
-export const initialUserState: User = {
-    id: '1',
-    userName: 'XXXXXX',
-    investigationGroup: -1,
-    isActive: false,
-    phoneNumber: '',
-    serialNumber: -1,
-    activeInvestigationsCount: 0,
-    newInvestigationsCount: 0,
-    userType: userType.INVESTIGATOR,
-    sourceOrganization: '',
-    deskName: '',
-    countyByInvestigationGroup: {
-        districtId: -1
-    }
+export interface UserState {
+    data: User;
+    isLoggedIn: boolean;
 }
 
-const userReducer = (state = initialUserState, action: Actions.UserAction): User => {
+export const initialUserState: UserState = {
+    data: {
+        id: '1',
+        userName: 'XXXXXX',
+        investigationGroup: -1,
+        isActive: false,
+        phoneNumber: '',
+        serialNumber: -1,
+        activeInvestigationsCount: 0,
+        newInvestigationsCount: 0,
+        userType: userType.INVESTIGATOR,
+        sourceOrganization: '',
+        deskName: '',
+        countyByInvestigationGroup: {
+            districtId: -1
+        }
+    },
+    isLoggedIn: false
+}
+
+const userReducer = (state = initialUserState, action: Actions.UserAction): UserState => {
     switch (action.type) {
-        case Actions.SET_USER: return { ...state, ...action.payload.user };
-        case Actions.SET_IS_ACTIVE: return { ...state, isActive: action.payload.isActive };
+        case Actions.SET_USER: return {
+            ...state,
+            data: action.payload.user,
+            isLoggedIn: true
+        };
+        case Actions.SET_IS_ACTIVE: return {
+            ...state,
+            data: { ...state.data, isActive: action.payload.isActive }
+        };
         default: return state;
     }
 }
