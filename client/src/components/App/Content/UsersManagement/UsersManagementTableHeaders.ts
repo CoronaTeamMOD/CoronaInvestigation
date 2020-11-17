@@ -12,10 +12,10 @@ export enum UsersManagementTableHeadersNames {
 }
 
 export const UsersManagementTableHeaders = {
-    [UsersManagementTableHeadersNames.FULL_NAME]: 'שם',
+    [UsersManagementTableHeadersNames.USER_NAME]: 'שם',
     [UsersManagementTableHeadersNames.SOURCE_ORGANIZATION]: 'מסגרת',
     [UsersManagementTableHeadersNames.LANGUAGES]: 'שפות מדוברות',
-    [UsersManagementTableHeadersNames.MABAR_USER_NAME]: 'שם משתמש',
+    [UsersManagementTableHeadersNames.MABAR_USER_NAME]: 'מזהה',
     [UsersManagementTableHeadersNames.COUNTY]: 'נפה',
     [UsersManagementTableHeadersNames.DESK]: 'דסק',
     [UsersManagementTableHeadersNames.USER_TYPE]: 'סוג משתמש',
@@ -24,7 +24,7 @@ export const UsersManagementTableHeaders = {
 }
 
 export const SortOrderTableHeadersNames = {
-    [UsersManagementTableHeadersNames.FULL_NAME]: 'FULL_NAME',
+    [UsersManagementTableHeadersNames.USER_NAME]: 'USER_NAME',
     [UsersManagementTableHeadersNames.SOURCE_ORGANIZATION]: 'SOURCE_ORGANIZATION',
     [UsersManagementTableHeadersNames.MABAR_USER_NAME]: 'ID',
     [UsersManagementTableHeadersNames.COUNTY]: 'INVESTIGATION_GROUP',
