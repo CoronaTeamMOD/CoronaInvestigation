@@ -18,27 +18,26 @@ const CommentDisplay = ({comment}: Props) => {
 
     return (
         <ClickAwayListener onClickAway={handleTooltipClose}>
-          <Tooltip classes={{tooltip:classes.lightTooltip, popper: classes.popper}}
-            PopperProps={{
-              disablePortal: true,
-              placement: 'bottom-start',
-              modifiers: {
-                offset: {
-                  enabled: true,
-                  offset: '20px, 0',
-                },
-              },
-            }}
-            onClose={handleTooltipClose}
-            open={isTooltipOpen}
-            disableHoverListener
-            disableTouchListener
-            title={comment || noCommentMessage}>
-            <IconButton onClick={handleTooltipToggle}>
-            <Comment color={comment ? 'primary' : 'disabled'} />
-            </IconButton>
-          </Tooltip>
-      </ClickAwayListener>
+            <Tooltip classes={{tooltip: classes.lightTooltip, popper: classes.popper}}
+                     PopperProps={{
+                         disablePortal: true,
+                         placement: 'bottom-start',
+                         modifiers: {
+                             offset: {
+                                 enabled: true,
+                                 offset: '20px, 0',
+                             },
+                         },
+                     }}
+                     onClose={handleTooltipClose}
+                     open={isTooltipOpen}
+                     disableHoverListener
+                     title={comment || noCommentMessage}>
+                <IconButton onClick={handleTooltipToggle}>
+                    <Comment color={comment ? 'primary' : 'disabled'}/>
+                </IconButton>
+            </Tooltip>
+        </ClickAwayListener>
     )
 }
 
