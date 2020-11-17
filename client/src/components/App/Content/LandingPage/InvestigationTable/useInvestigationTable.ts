@@ -820,7 +820,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getTableCellStyles = (rowIndex: number, cellKey: string) => {
+    const getTableCellStyles = (displayedRow: InvestigationTableRow[], rowIndex: number, cellKey: string) => {
         let classNames = [];
 
         classNames.push(classes.font);
@@ -833,7 +833,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
             classNames.push(classes.epiNumberCell);
         }
-        if (checkedRowsIds.includes(rows[rowIndex].epidemiologyNumber)) {
+        if (checkedRowsIds.includes(displayedRow[rowIndex].epidemiologyNumber)) {
             classNames.push(classes.checkedRow);
         }
         if ((isDefaultOrder && !isLoading) &&

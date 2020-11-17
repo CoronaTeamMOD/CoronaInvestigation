@@ -533,7 +533,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         {
                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
-                                                    className={getTableCellStyles(index, key).join(' ')}
+                                                    className={getTableCellStyles(filteredTableRows, index, key).join(' ')}
                                                     onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                 >
                                                     {

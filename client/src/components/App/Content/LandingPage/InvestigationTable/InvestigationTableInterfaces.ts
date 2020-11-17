@@ -26,7 +26,7 @@ export interface useInvestigationTableOutcome {
     onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => void;
     onCountyChange: (indexedRow: IndexedInvestigation, newSelectedCountyId: any, currentSelectedCounty: string) => void;
     onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: any, currentSelectedDesk: string) => void;
-    getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
+    getTableCellStyles: (displayedRow: InvestigationTableRow[], rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
     onCancel: () => void;
