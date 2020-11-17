@@ -34,7 +34,8 @@ const useTabManagement = ({lastTabDisplayedId}: {lastTabDisplayedId: number}) =>
             } else {
                 if(nextTab.current === lastTabDisplayedId + 1) {
                     if(isInvestigationValid()) {
-                        confirmFinishInvestigation(epidemiologyNumber);
+                        //@ts-ignore
+                        confirmFinishInvestigation(epidemiologyNumber, () => nextTab.current = lastTabDisplayedId);
                     } else {
                         const displayedForms = [...tabsValidations];
                         !areThereContacts && displayedForms.splice(orderedTabsNames.findIndex(tabName => tabName === TabNames.CONTACT_QUESTIONING), 1);

@@ -175,7 +175,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         }
     }, [investigationStatus.mainStatus]);
 
-    const confirmFinishInvestigation = (epidemiologyNumber: number) => {
+    const confirmFinishInvestigation = (epidemiologyNumber: number, onCancel: () => void) => {
         const finishInvestigationLogger= logger.setup({
             workflow: 'Ending Investigation',
             user: userId,
@@ -211,7 +211,9 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     alertError('לא ניתן היה לסיים את החקירה');
                     
                 })
-            };
+            } else {
+                onCancel();
+            }
         });
     };
 
