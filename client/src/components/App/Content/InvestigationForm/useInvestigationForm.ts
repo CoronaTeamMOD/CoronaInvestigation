@@ -83,7 +83,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             user: userId,
             investigation: epidemiologyNumber
         });
-        contactTypesLogger.info(launching contact types request, Severity.LOW);
+        contactTypesLogger.info('launching contact types request', Severity.LOW);
         axios.get('/intersections/contactTypes')
             .then((result: any) => {
                 contactTypesLogger.info('contact types request was successful', Severity.LOW);
