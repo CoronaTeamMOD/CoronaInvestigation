@@ -489,7 +489,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     return tags[0] + additionalDisplay;
                                 }}
                             />
-                            <IconButton onClick={() => closeFilterRow()} ><Close /></IconButton>
+                            <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>
                         </Card>
                     </Collapse>
                 </Grid>
