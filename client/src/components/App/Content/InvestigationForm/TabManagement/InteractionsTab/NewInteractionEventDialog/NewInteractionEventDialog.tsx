@@ -18,7 +18,7 @@ const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], 
     locationAddress: initAddress,
     startTime,
     endTime,
-    externalizationApproval: false,
+    externalizationApproval: null,
     contacts,
     contactPersonPhoneNumber: '',
     creationTime: new Date()

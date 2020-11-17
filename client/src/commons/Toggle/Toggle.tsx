@@ -18,13 +18,13 @@ const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
         <ToggleButtonGroup value={value} exclusive {...rest}>
             <ToggleButton className={classes.toggle} 
                 disabled={disabled}
-                style={!value ? activeButtonStyle : {}}
+                style={value === false ? activeButtonStyle : {}}
                 value={false}>
                 {firstOption ? firstOption : 'לא'}
             </ToggleButton>
             <ToggleButton className={classes.toggle}
                 disabled={disabled}
-                style={value ? activeButtonStyle : {}}
+                style={value === true ? activeButtonStyle : {}}
                 value={true}>
                 {secondOption ? secondOption : 'כן'}
             </ToggleButton>
