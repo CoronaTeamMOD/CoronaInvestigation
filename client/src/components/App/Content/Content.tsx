@@ -9,6 +9,8 @@ import LandingPage from  './LandingPage/LandingPage';
 import InvestigationForm from './InvestigationForm/InvestigationForm';
 import UsersManagement from './UsersManagement/UsersManagement'
 
+const finishedLogoutRoute = '/.auth/logout/complete';
+
 const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSignUp }): JSX.Element => {
   
     return (
@@ -17,6 +19,7 @@ const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSig
                 <Route path={investigationFormRoute} component={InvestigationForm} />
                 <Route path={landingPageRoute} component={LandingPage} />
                 <Route path={usersManagementRoute} component={UsersManagement} />
+                <Redirect from={finishedLogoutRoute} to='/'/>
                 <Redirect from='/' to={landingPageRoute}/>
             </Switch>
             <SignUp open={isSignUpOpen} handleSaveUser={handleSaveUser} handleCloseSignUp={handleCloseSignUp}/>
