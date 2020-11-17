@@ -1,19 +1,20 @@
 import React from 'react';
-import { Button, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { Button, Typography } from '@material-ui/core';
 
-import logger from 'logger/logger';
-import StoreStateType from 'redux/storeStateType';
-import { Severity } from 'models/Logger';
-import Interaction from 'models/Contexts/InteractionEventDialogData';
-import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
 import axios from 'Utils/axios';
-import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
-import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import logger from 'logger/logger';
+import Contact from 'models/Contact';
+import { Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
 
-import useContactExcel from './useContactExcel';
 import useStyles from './ExcelUploaderStyles';
+import useContactExcel from './useContactExcel';
 
 const fileEndings = [
     'xlsx', 'xlsb', 'xlsm', 'xls', 'xml', 'csv', 'txt', 'ods', 'fods', 'uos', 'sylk', 'dif', 'dbf', 'prn', 'qpw', '123', 'wb*', 'wq*', 'html', 'htm'
@@ -33,15 +34,19 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     
-    const existingContacts = allInteractions.flatMap(interaction => interaction.contacts);
-    const existingContactsIds: string[] = existingContacts.map(contact => contact.idNumber).filter(id => id) as string[];
+    const existingContacts : Contact[] = allInteractions
+    .flatMap(interaction => interaction.contacts
+        .map(contact => ({...contact,
+            startTime: interaction.startTime})
+        )
+    );
     
     const onFail = () => alertError('שגיאה בטעינת הקובץ');
 
     const { onFileSelect } = useContactExcel(setData, onFail);
     const { alertError } = useCustomSwal();
     const { validateContact } = useContactFields();
-    const { checkDuplicateIds  } = useDuplicateContactId();
+    const { checkExcelDuplicateKeys } = useDuplicateContactId();
     
     const classes = useStyles();
     
@@ -78,9 +83,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
                     const { rowNum, ...contactData } = contact;
                     return contactData;
                 });
-                const excelContactsIds = contacts.map((contact) => contact.identificationNumber)
-                                                 .filter(id => id);
-                if (!checkDuplicateIds(excelContactsIds.concat(existingContactsIds))) {
+                if (!checkExcelDuplicateKeys(contacts, existingContacts)) {
                     axios.post('/contactedPeople/excel', { contactEvent, contacts: contactsData })
                         .then(() => {
                             dataInFileLogger.info('contacted people excel was saved successfully', Severity.LOW);
