@@ -9,13 +9,14 @@ import { useStyles } from './DatePickStyles';
 const TimePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { error, labelText, value, onChange } = props;
+  const { error, labelText, value, onChange, disabled } = props;
 
   return (
     <KeyboardTimePicker
       ampm={false}
       test-id={props.testId}
       error={error}
+      disabled={disabled}
       className={classes.dateText}
       format='HH:mm'
       placeholder='HH:mm'
