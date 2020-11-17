@@ -238,7 +238,9 @@ const InteractionEventForm: React.FC<Props> = (
                     <Toggle
                       test-id='allowExternalization'
                       value={props.value}
-                      onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                      onChange={(event, value: boolean) => {
+                        value !== null && props.onChange(value as boolean)}
+                      }
                       className={formClasses.formToggle}
                     />
                   )}
