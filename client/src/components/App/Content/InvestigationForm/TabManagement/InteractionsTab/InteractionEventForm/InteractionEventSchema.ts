@@ -12,19 +12,31 @@ const interactionEventSchema = yup.object().shape({
     [InteractionEventDialogFields.PLACE_SUB_TYPE]: yup.number().when(
       InteractionEventDialogFields.PLACE_TYPE, {
         is: placeType => placeType !== placeTypesCodesHierarchy.geriatric.code &&
-                         placeType !== placeTypesCodesHierarchy.office.code,
+        placeType !== placeTypesCodesHierarchy.office.code,
         then: yup.number().nullable().required('תת סוג אתר חובה'),
         otherwise: yup.number().nullable()
       }
-    ),
+      ),
     [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().nullable()
       .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
-    [InteractionEventDialogFields.START_TIME]: yup.date().required()
-      .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעה מ לא יכולה להיות גדולה משעה עד'),
-    [InteractionEventDialogFields.END_TIME]: yup.date().required()
-      .min(yup.ref(InteractionEventDialogFields.START_TIME),
-      'שעה עד לא יכולה להיות קטנה משעה מ')
-        .notOneOf([yup.ref(InteractionEventDialogFields.START_TIME)], 'יש להזין שעת סיום שונה משעת התחלה'),
+    [InteractionEventDialogFields.UNKNOWN_TIME]: yup.boolean(),
+    [InteractionEventDialogFields.START_TIME]: yup.date().nullable().when(
+      InteractionEventDialogFields.UNKNOWN_TIME, {
+        is: unknownTime => !unknownTime,
+        then: yup.date().required()
+              .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעה מ לא יכולה להיות גדולה משעה עד'),
+        else: yup.date().nullable()
+      }
+    ),
+    [InteractionEventDialogFields.END_TIME]: yup.date().nullable().when(
+      InteractionEventDialogFields.UNKNOWN_TIME,{
+        is: unknownTime => !unknownTime,
+        then: yup.date().required()
+              .min(yup.ref(InteractionEventDialogFields.START_TIME), 
+              'שעה עד לא יכולה להיות קטנה משעה מ'),
+        else: yup.date().nullable()
+      }
+    ),
     [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().required('שדה חובה'),
     [InteractionEventDialogFields.CONTACTS]: yup.array().of(yup.object().shape({
         [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),

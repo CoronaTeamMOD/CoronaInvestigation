@@ -1,9 +1,9 @@
 import { isValid } from 'date-fns';
-import React, { useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { useForm, FormProvider, Controller, useFieldArray } from 'react-hook-form';
-import { Grid, Typography, Divider, IconButton, Collapse } from '@material-ui/core';
+import { Grid, Typography, Divider, IconButton, Collapse, Checkbox, FormControlLabel } from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
@@ -52,10 +52,16 @@ const InteractionEventForm: React.FC<Props> = (
     resolver: yupResolver(InteractionEventSchema)
   });
 
+  const initialInteractionDate = React.useRef<Date>(interactionData?.startTime as Date);
+
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
   const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
+  const isUnknownTime = methods.watch(InteractionEventDialogFields.UNKNOWN_TIME);
+  const locationAddress = methods.watch(InteractionEventDialogFields.LOCATION_ADDRESS);
+  const placeName = methods.watch(InteractionEventDialogFields.PLACE_NAME);
+  const placeDescription = methods.watch(InteractionEventDialogFields.PLACE_DESCRIPTION);
 
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
@@ -113,19 +119,42 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
-  const memoIsPrivatePlace: boolean = useMemo(() => {
+  const generatedErrorMessage = useMemo<string>(() => {
+    const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
     const isPrivatePlace = placeType === 'בית פרטי';
+    const errors: string[] = [];
 
     if (isPrivatePlace) {
-      methods.setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, false);
+      errors.push('אם מדובר בבית פרטי')
+    } else {
+      if (isUnknownTime) {
+        errors.push('הזמן אינו ידוע');
+      }
+      if (!(locationAddress && (placeName || placeDescription))) {
+        errors.push('חסרה כתובת ובנוסף חסר שם המוסד או פירוט');
+      }
     }
-    return isPrivatePlace;
-  }, [placeType]);
+    if (errors.length === 0) {
+      return '';
+    } else {
+      return initialMessage.concat(errors.join(', '));
+    }
+  }, [placeType, isUnknownTime, locationAddress, placeName, placeDescription]);
+
+  useEffect(() => {
+    methods.setValue(InteractionEventDialogFields.START_TIME, isUnknownTime ? null : interactionData?.startTime);
+    methods.setValue(InteractionEventDialogFields.END_TIME, isUnknownTime ? null : interactionData?.endTime);
+  }, [isUnknownTime])
 
   const convertData = (data: InteractionEventDialogData) => {
     const name = data[InteractionEventDialogFields.PLACE_NAME];
+    initialInteractionDate.current.setHours(0, 0, 0, 0);
+    const startTimeToSave = isUnknownTime ? initialInteractionDate.current : data.startTime;
+    const endTimeToSave = isUnknownTime ? initialInteractionDate.current : data.endTime;
     return {
       ...data,
+      [InteractionEventDialogFields.START_TIME]: startTimeToSave,
+      [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
       [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: data === null ? false : data.externalizationApproval,
@@ -182,6 +211,7 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                         <TimePick
+                            disabled={isUnknownTime as boolean}
                             testId='contactLocationStartTime'
                             value={props.value}
                             onChange={(newTime: Date) =>
@@ -199,6 +229,7 @@ const InteractionEventForm: React.FC<Props> = (
                     control={methods.control}
                     render={(props) => (
                         <TimePick
+                            disabled={isUnknownTime as boolean}
                             testId='contactLocationEndTime'
                             value={props.value}
                             onChange={(newTime: Date) =>
@@ -210,8 +241,25 @@ const InteractionEventForm: React.FC<Props> = (
                     )}
                 />
               </FormInput>
+              <Grid item xs={3}>
+                <Controller 
+                  name={InteractionEventDialogFields.UNKNOWN_TIME}
+                  control={methods.control}
+                  render={(props) => 
+                    <FormControlLabel 
+                      label='זמן לא ידוע'
+                      control={
+                        <Checkbox
+                          color='primary'
+                          checked={props.value}
+                          onChange={(event) => props.onChange(event.target.checked)}
+                        />
+                      }
+                    />
+                  }
+                />
+              </Grid>
           </Grid>
-
           <Collapse in={hasAddress}>
             <AddressForm/>
           </Collapse>
@@ -228,27 +276,30 @@ const InteractionEventForm: React.FC<Props> = (
             <BusinessContactForm/>
           </Collapse>
 
-          <Collapse in={!memoIsPrivatePlace}>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
-              <FormInput xs={12} fieldName='האם מותר להחצנה'>
-                <Controller
-                  name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
-                  control={methods.control}
-                  render={(props) => (
-                    <Toggle
-                      test-id='allowExternalization'
-                      value={props.value}
-                      onChange={(event, value: boolean) => {
-                        value !== null && props.onChange(value as boolean)}
-                      }
-                      className={formClasses.formToggle}
-                    />
-                  )}
-                />
-              </FormInput>
-            </Grid>
-          </Collapse>
-
+          <Grid className={formClasses.formRow} container justify='flex-start'>
+            <FormInput xs={12} fieldName='האם מותר להחצנה'>
+              <Controller
+                name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
+                control={methods.control}
+                render={(props) => (
+                  <Toggle
+                    test-id='allowExternalization'
+                    disabled={generatedErrorMessage !== ''}
+                    value={generatedErrorMessage !== '' ? null : props.value}
+                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                    className={formClasses.formToggle}
+                  />
+                )}
+              />
+            </FormInput>
+          </Grid>
+          <Grid item xs={12}>
+            <Collapse in={Boolean(generatedErrorMessage)}>
+              <Typography className={classes.externalizationErrorMessage}>
+                <b>{generatedErrorMessage}</b>
+              </Typography>
+            </Collapse>
+          </Grid>
         </Grid>
         <Divider light={true} />
         <Grid
