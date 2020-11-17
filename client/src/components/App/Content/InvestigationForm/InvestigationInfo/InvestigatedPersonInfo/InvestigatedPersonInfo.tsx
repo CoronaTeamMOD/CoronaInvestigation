@@ -84,9 +84,9 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
-    const validateStatusReason = async (newStatusReason: string | null) => {
+    const validateStatusReason = (newStatusReason: string | null) => {
         try {
-            await validationSchema.validateSync(newStatusReason);
+            validationSchema.validateSync(newStatusReason);
             setStatusReasonError(null)
         } catch (err) {
             setStatusReasonError(err.errors)
