@@ -24,7 +24,7 @@ const interactionEventSchema = yup.object().shape({
       InteractionEventDialogFields.UNKNOWN_TIME, {
         is: unknownTime => !unknownTime,
         then: yup.date().required()
-              .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעת התחלה חייבת להיות קטנה משעת הסיום'),
+              .max(yup.ref(InteractionEventDialogFields.END_TIME), 'שעת התחלה חייבת להיות לפני שעת הסיום'),
         else: yup.date().nullable()
       }
     ),
@@ -33,7 +33,7 @@ const interactionEventSchema = yup.object().shape({
         is: unknownTime => !unknownTime,
         then: yup.date().required()
               .min(yup.ref(InteractionEventDialogFields.START_TIME), 
-              'שעת הסיום חייבת להיות גדולה משעת ההתחלה'),
+              'שעת הסיום חייבת להיות אחרי שעת ההתחלה'),
         else: yup.date().nullable()
       }
     ),

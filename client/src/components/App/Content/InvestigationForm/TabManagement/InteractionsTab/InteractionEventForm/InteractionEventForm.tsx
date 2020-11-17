@@ -120,7 +120,7 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
-  const generatedErrorMessage = useMemo<string>(() => {
+  const externalizationErrorMessage = useMemo<string>(() => {
     const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
     const isPrivatePlace = placeType === placeTypesCodesHierarchy.privateHouse.code;
     const errors: string[] = [];
@@ -285,8 +285,8 @@ const InteractionEventForm: React.FC<Props> = (
                 render={(props) => (
                   <Toggle
                     test-id='allowExternalization'
-                    disabled={generatedErrorMessage !== ''}
-                    value={generatedErrorMessage !== '' ? null : props.value}
+                    disabled={externalizationErrorMessage !== ''}
+                    value={externalizationErrorMessage !== '' ? null : props.value}
                     onChange={(event, value: boolean) => props.onChange(value as boolean)}
                     className={formClasses.formToggle}
                   />
@@ -295,9 +295,9 @@ const InteractionEventForm: React.FC<Props> = (
             </FormInput>
           </Grid>
           <Grid item xs={12}>
-            <Collapse in={Boolean(generatedErrorMessage)}>
+            <Collapse in={Boolean(externalizationErrorMessage)}>
               <Typography className={classes.externalizationErrorMessage}>
-                <b>{generatedErrorMessage}</b>
+                <b>{externalizationErrorMessage}</b>
               </Typography>
             </Collapse>
           </Grid>
