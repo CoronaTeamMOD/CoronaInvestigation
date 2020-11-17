@@ -146,10 +146,10 @@ const InteractionEventForm: React.FC<Props> = (
   const onPlaceSubtypeChange = (newValue: PlaceSubType | null) => {
     if (newValue) {
       setPlaceSubtypeName(newValue?.displayName);
-      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id);
+      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, newValue.id, { shouldValidate: true });
     } else {
       setPlaceSubtypeName('');
-      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, null);
+      methods.setValue(InteractionEventDialogFields.PLACE_SUB_TYPE, null, { shouldValidate: true });
     }
   };
 
@@ -170,7 +170,7 @@ const InteractionEventForm: React.FC<Props> = (
             placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
             placeType={placeType}
             placeSubType={placeSubType}
-            onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue)}
+            onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, { shouldValidate: true })}
             onPlaceSubTypeChange={onPlaceSubtypeChange}
           />
 
