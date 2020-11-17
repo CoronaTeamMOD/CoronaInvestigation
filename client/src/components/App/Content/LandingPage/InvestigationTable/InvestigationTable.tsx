@@ -408,7 +408,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     }, [filteredTableRows]);
 
-
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
