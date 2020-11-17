@@ -6,6 +6,7 @@ interface InteractionEventDialogData {
     placeType: string;
     startTime: Date;
     endTime: Date;
+    unknownTime: boolean;
     externalizationApproval: boolean;
     investigationId: number;
     placeName?: string;

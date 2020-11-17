@@ -4,6 +4,7 @@ enum InteractionEventDialogFields {
     PLACE_SUB_TYPE = 'placeSubType',
     START_TIME = 'startTime',
     END_TIME = 'endTime',
+    UNKNOWN_TIME = 'unknownTime',
     EXTERNALIZATION_APPROVAL = 'externalizationApproval',
     INVESTIGATION_ID = 'investigationId',
     PLACE_NAME = 'placeName',
