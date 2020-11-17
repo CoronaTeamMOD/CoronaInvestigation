@@ -48,8 +48,10 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 if (result.value) {
                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
                     !saveContact({...interactedContact, contactStatus: selectedStatus?.id}) && setPreviousContactStatus()
+                } else {
+                    setPreviousContactStatus();
                 }
-            });
+            })
         } else if (selectedStatus?.id) {
             updateInteractedContact(interactedContact, InteractedContactFields.CONTACT_STATUS, selectedStatus?.id);
             saveContact({...interactedContact, contactStatus: selectedStatus?.id});
