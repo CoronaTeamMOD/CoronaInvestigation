@@ -1,9 +1,8 @@
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
 import React, { ChangeEvent, useEffect } from 'react';
-import { Collapse, Grid, Typography, Paper, TextField } from '@material-ui/core';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 
 import UserType from 'models/enums/UserType';
@@ -30,6 +29,8 @@ const maxComplexityAge = 14;
 const yes = 'כן';
 const no = 'לא';
 const statusLabel = 'סטטוס';
+const subStatusLabel = 'סיבה';
+const statusReasonLabel = 'פירוט'
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
@@ -54,17 +55,17 @@ const InvestigatedPersonInfo = (props: Props) => {
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
-    const validationSchema = investigationStatus.subStatus === transferredSubStatus ? 
-    yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
-    yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
+    const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
+        yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
+        yup.string().matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable();
 
     const { confirmExitUnfinishedInvestigation } = useInvestigatedPersonInfo();
 
-    useEffect(()=> {
+    useEffect(() => {
         if (investigationStatus.subStatus !== transferredSubStatus) {
             validateStatusReason(investigationStatus.statusReason)
         }
-    },[investigationStatus.subStatus]);
+    }, [investigationStatus.subStatus]);
 
     const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
 
@@ -83,7 +84,7 @@ const InvestigatedPersonInfo = (props: Props) => {
         return check ? yes : no;
     };
 
-    const validateStatusReason = async (newStatusReason : string | null) => {
+    const validateStatusReason = async (newStatusReason: string | null) => {
         try {
             await validationSchema.validateSync(newStatusReason);
             setStatusReasonError(null)
@@ -96,7 +97,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const isStatusDisable = (status: string) => {
         if (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) {
-            return status === InvestigationMainStatus.NEW && wasInvestigationReopend 
+            return status === InvestigationMainStatus.NEW && wasInvestigationReopend
         }
         return status === InvestigationMainStatus.NEW;
     };
@@ -115,9 +116,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                 </div>
                 <PrimaryButton
-                    onClick={(event) => { 
-                        handleLeaveInvestigationClick(event); 
-                        validateStatusReason(investigationStatus.statusReason)}}
+                    onClick={(event) => {
+                        handleLeaveInvestigationClick(event);
+                        validateStatusReason(investigationStatus.statusReason)
+                    }}
                     type='submit'
                     form={`form-${currentTab}`}
                 >
@@ -132,71 +134,68 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <b><bdi>{statusLabel}</bdi>: </b>
                             </Typography>
                             <Grid item className={classes.statusSelectGrid}>
-                                <Autocomplete
-                                    className={classes.statusSelect}
-                                    test-id='currentStatus'
-                                    options={permittedStatuses}
-                                    getOptionLabel={(option) => option}
-                                    inputValue={investigationStatus.mainStatus as string | undefined}
-                                    getOptionDisabled={option => isStatusDisable(option)}
-                                    onChange={(event, newStatus) => {
-                                        if (newStatus) {
-                                            setInvestigationStatus({
-                                                mainStatus: newStatus,
-                                                subStatus: '',
-                                                statusReason: ''
-                                            });
-                                        }
-                                    }}
-                                    onInputChange={(event, newStatusInput) => {
-                                        if (event?.type !== 'blur') {
-                                            setInvestigationStatus({
-                                                mainStatus: newStatusInput,
-                                                subStatus: '',
-                                                statusReason: ''
-                                            });
-                                        }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                            placeholder='סטטוס'
-                                        />
-                                    }
-                                />
-                            </Grid>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
-                                investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
-                                <Grid item className={classes.statusSelectGrid}>
-                                    <Autocomplete
-                                        className={classes.subStatusSelect}
-                                        test-id='currentSubStatus'
-                                        options={subStatuses}
-                                        getOptionLabel={(option) => option}
-                                        inputValue={investigationStatus.subStatus as string | undefined}
-                                        onChange={(event, newSubStatus) => {
-                                            setInvestigationStatus({
-                                                mainStatus: investigationStatus.mainStatus,
-                                                subStatus: newSubStatus ? String(newSubStatus) : null,
-                                                statusReason: ''
-                                            });
-                                        }}
-                                        onInputChange={(event, newSubStatusInput) => {
-                                            if (event?.type !== 'blur') {
+                                <FormControl variant="outlined" className={classes.statusSelect}>
+                                    <InputLabel className={classes.statusSelect} id="status-label">{statusLabel}</InputLabel>
+                                    <Select
+                                        labelId="status-label"
+                                        test-id='currentStatus'
+                                        variant="outlined"
+                                        label={statusLabel}
+                                        value={investigationStatus.mainStatus as string}
+                                        onChange={(event) => {
+                                            const newStatus = event.target.value as string
+                                            if (newStatus) {
                                                 setInvestigationStatus({
-                                                    mainStatus: investigationStatus.mainStatus,
-                                                    subStatus: newSubStatusInput,
+                                                    mainStatus: newStatus,
+                                                    subStatus: '',
                                                     statusReason: ''
                                                 });
                                             }
                                         }}
-                                        renderInput={(params) =>
-                                            <TextField
-                                                {...params}
-                                                placeholder='סיבה'
-                                            />
+                                    >
+                                        {
+                                            permittedStatuses.map((status: string) => (
+                                                <MenuItem
+                                                    key={status}
+                                                    disabled={isStatusDisable(status)}
+                                                    value={status}>
+                                                    {status}
+                                                </MenuItem>
+                                            ))
                                         }
-                                    />
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
+                                investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
+                                <Grid item className={classes.statusSelectGrid}>
+                                    <FormControl variant="outlined" className={classes.subStatusSelect}>
+                                        <InputLabel className={classes.subStatusLabel} id="sub-status-label">{subStatusLabel}</InputLabel>
+                                        <Select
+                                            labelId="sub-status-label"
+                                            test-id='currentSubStatus'
+                                            label={subStatusLabel}
+                                            value={investigationStatus.subStatus as string | undefined}
+                                            onChange={(event) => {
+                                                const newSubStatus = event.target.value as string
+                                                setInvestigationStatus({
+                                                    mainStatus: investigationStatus.mainStatus,
+                                                    subStatus: newSubStatus ? String(newSubStatus) : null,
+                                                    statusReason: ''
+                                                });
+                                            }}
+                                        >
+                                            {
+                                                subStatuses.map((subStatus: string) => (
+                                                    <MenuItem
+                                                        key={subStatus}
+                                                        value={subStatus}>
+                                                        {subStatus}
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                             </Collapse>
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
@@ -205,9 +204,9 @@ const InvestigatedPersonInfo = (props: Props) => {
                                         className={classes.subStatusSelect}
                                         value={investigationStatus.statusReason}
                                         required={investigationStatus.subStatus === transferredSubStatus}
-                                        placeholder='פירוט'
+                                        placeholder={statusReasonLabel}
                                         error={statusReasonError ? true : false}
-                                        label={statusReasonError ? statusReasonError[0] : ''}
+                                        label={statusReasonError ? statusReasonError[0] : statusReasonLabel}
                                         onChange={async (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                                             const newStatusReason: string = event.target.value;
                                             const isValid = validationSchema.isValidSync(newStatusReason);
