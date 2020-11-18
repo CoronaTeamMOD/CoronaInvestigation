@@ -48,9 +48,9 @@ const InvestigationStatusColumn = (props: Props) => {
         <div className={classes.columnWrapper}>
             {
                 (investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus) &&
-                <Typography>{investigationSubStatus + '/'}</Typography>
+                `${investigationSubStatus}/`
             }
-            <Typography>{investigationStatus}</Typography>
+            {investigationStatus}
             {
                 investigationStatus === InvestigationMainStatus.DONE &&
                 <Tooltip title='פתיחת חקירה' placement='top' arrow>

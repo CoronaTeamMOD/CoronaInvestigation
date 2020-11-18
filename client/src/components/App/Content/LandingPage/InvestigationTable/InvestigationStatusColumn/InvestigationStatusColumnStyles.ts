@@ -2,7 +2,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     columnWrapper: {
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'center'
     },
     investigatonIcon: {
         margin: '0 0.5vw',
