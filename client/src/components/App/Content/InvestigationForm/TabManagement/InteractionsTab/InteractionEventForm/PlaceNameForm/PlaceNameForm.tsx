@@ -1,10 +1,10 @@
 import React from 'react';
 import {Grid} from '@material-ui/core';
-import FormInput from 'commons/FormInput/FormInput';
 import {Controller, useFormContext} from 'react-hook-form';
+
+import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import InteractionEventDialogFields
-    from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
 import useStyles from './DefaultPlaceEventFormStyles';
 
