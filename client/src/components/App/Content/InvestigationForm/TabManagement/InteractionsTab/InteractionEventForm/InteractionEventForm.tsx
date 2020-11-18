@@ -158,8 +158,7 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
-      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: 
-        data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] === null ? false : data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL],
+      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
