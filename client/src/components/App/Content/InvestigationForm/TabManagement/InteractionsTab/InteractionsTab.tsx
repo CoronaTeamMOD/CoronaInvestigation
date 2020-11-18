@@ -61,32 +61,18 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
-                        datesToInvestigate.reverse().map(date =>
-                            <ContactDateCard
-                                allInteractions={interactions}
-                                loadInteractions={loadInteractions}
-                                contactDate={date}
-                                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
-                                onDeleteClick={handleDeleteContactEvent}
-                                onDeleteContactClick={handleDeleteContactedPerson}
-                                createNewInteractionEvent={() => setNewInteractionEventDate(date)}
-                                interactions={interactionsMap.get(date.getTime())}
-                                key={date.getTime()}
-                            />
-                            ) :
-                        datesToInvestigate.map(date =>
-                            <ContactDateCard
-                                allInteractions={interactions}
-                                loadInteractions={loadInteractions}
-                                contactDate={date}
-                                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
-                                onDeleteClick={handleDeleteContactEvent}
-                                onDeleteContactClick={handleDeleteContactedPerson}
-                                createNewInteractionEvent={() => setNewInteractionEventDate(date)}
-                                interactions={interactionsMap.get(date.getTime())}
-                                key={date.getTime()}
-                            />
+                    datesToInvestigate.reverse().map(date =>
+                        <ContactDateCard
+                            allInteractions={interactions}
+                            loadInteractions={loadInteractions}
+                            contactDate={date}
+                            onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                            onDeleteClick={handleDeleteContactEvent}
+                            onDeleteContactClick={handleDeleteContactedPerson}
+                            createNewInteractionEvent={() => setNewInteractionEventDate(date)}
+                            interactions={interactionsMap.get(date.getTime())}
+                            key={date.getTime()}
+                        />
                         )
                 }
                 {
