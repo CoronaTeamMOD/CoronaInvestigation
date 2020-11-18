@@ -2,8 +2,8 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { Service, Severity } from 'models/Logger';

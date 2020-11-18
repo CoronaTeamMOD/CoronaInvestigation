@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import City from 'models/City';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';

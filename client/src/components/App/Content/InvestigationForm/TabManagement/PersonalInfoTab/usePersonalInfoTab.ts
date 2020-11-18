@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { initDBAddress } from 'models/DBAddress';
 import { Severity } from 'models/Logger';
@@ -13,6 +13,7 @@ import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import useStyles from './PersonalInfoTabStyles';
 import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
@@ -74,6 +75,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
             investigation: epidemiologyNumber
         });
         personalDetailsLogger.info('launching personal data request', Severity.LOW);
+        setIsLoading(true);
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
             if (res && res.data && res.data) {
                 personalDetailsLogger.info('got results back from the server', Severity.LOW);
@@ -120,14 +122,18 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                 setPersonalInfoData(PersonalInfoData);
                 reset(PersonalInfoData);
                 trigger();
+                setIsLoading(false);
                 investigatedPatient.subOccupationBySubOccupation && setSubOccupationName(investigatedPatient.subOccupationBySubOccupation.displayName);
                 if (investigatedPatient.hmo !== null) {
                     setInsuranceCompany(investigatedPatient.hmo);
                 }
             } else {
                 personalDetailsLogger.error(`got errors in server result: ${JSON.stringify(res)}`, Severity.HIGH);
+                setIsLoading(false);
             }
         }).catch((error) => {
+            setIsLoading(false);
+
             if (epidemiologyNumber !== -1) {
                 personalDetailsLogger.error(`got errors in server request ${error}`, Severity.HIGH);
                 Swal.fire({
