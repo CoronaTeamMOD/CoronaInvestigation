@@ -12,13 +12,13 @@ const InvestigationNumberColumn = (props: Props) => {
 
     return (
         <div className={classes.columnWrapper}>
-            <Typography>{epidemiologyNumber}</Typography>
             {
                 wasInvestigationTransferred &&
                 <Tooltip title={transferReason}>
                     <ReplyAll color='primary' className={classes.transferredIcon}/>
                 </Tooltip>
             }
+            <Typography>{epidemiologyNumber}</Typography>
         </div>
     )
 }

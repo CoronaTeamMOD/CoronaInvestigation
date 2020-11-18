@@ -575,14 +575,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
+        const changeInvestigatorLogger= logger.setup({
+            workflow: 'Change Investigation Investigator',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch investigator',
-                step: `the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`,
-                user: user.id
-            })
+            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW)
         Swal.fire({
             icon: 'warning',
             title: `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`,
@@ -596,19 +596,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Switch investigator',
-                    step: 'the investigator have been switched successfully',
-                    investigation: indexedRow.epidemiologyNumber as number,
-                    user: user.id
-                })
                 axios.post('/users/changeInvestigator', {
                     epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                     user: newSelectedInvestigator.id
                 }
                 ).then(() => timeout(1900).then(() => {
+                    changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
                     setSelectedRow(UNDEFINED_ROW)
                     setRows(rows.map((investigation: InvestigationTableRow) => (
                         investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
@@ -623,40 +616,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             : investigation
                     )))
                 })).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Switch investigator',
-                        step: `the investigator swap failed due to: ${error}`,
-                        investigation: indexedRow.epidemiologyNumber as number,
-                        user: user.id
-                    });
+                    changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Switch investigator',
-                    step: 'the admin denied the investigator from being switched',
-                    investigation: indexedRow.epidemiologyNumber as number,
-                    user: user.id
-                })
+                changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
                 setSelectedRow(UNDEFINED_ROW);
             }
         })
     }
 
     const onCountyChange = (indexedRow: IndexedInvestigation, newSelectedCounty: any) => {
+        const changeCountyLogger= logger.setup({
+            workflow: 'Change Investigation County',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
         if (selectedInvestigator && newSelectedCounty.value !== '')
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch County',
-                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`,
-                user: user.id,
-                investigation: +indexedRow.epidemiologyNumber
-            })
+            changeCountyLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`, Severity.LOW);
         Swal.fire({
             icon: 'warning',
             title: `<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`,
@@ -674,26 +652,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     epidemiologyNumber: indexedRow.epidemiologyNumber,
                     updatedCounty: newSelectedCounty.id,
                 }).then(() => timeout(1900).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'County change GraphQL POST request to the DB',
-                        step: 'Changed the county successfully',
-                        user: user.id,
-                        investigation: +indexedRow.epidemiologyNumber
-                    });
+                    changeCountyLogger.info('changed the county successfully',  Severity.LOW);
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 }))
                 .catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'County change GraphQL POST request to the DB',
-                        step: error,
-                        user: user.id,
-                        investigation: +indexedRow.epidemiologyNumber
-                    });
+                    changeCountyLogger.error('couldnt change the county due to ' + error,  Severity.LOW);
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
@@ -706,14 +670,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk.deskName}</b>?</p>`;
         const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk.deskName}</b>?</p>`;
 
+        const changeDeskLogger= logger.setup({
+            workflow: 'Change Investigation Desk',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
         if (selectedInvestigator && newSelectedDesk.deskName !== '' && newSelectedDesk.deskName !== indexedRow.investigationDesk) {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch Desk',
-                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`,
-                user: user.id
-            })
+            changeDeskLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`,Severity.LOW);
             Swal.fire({
                 icon: 'warning',
                 title: indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle,
@@ -731,12 +695,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                         updatedDesk: newSelectedDesk.id,
                     }).then(() => timeout(1900).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'GraphQL POST request to the DB',
-                            step: 'changed the desk successfully'
-                        });
+                        changeDeskLogger.info('changed the desk successfully',  Severity.LOW);
                         setRows(rows.map((investigation: InvestigationTableRow) => (
                             investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                                 {
@@ -749,12 +708,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         setSelectedRow(UNDEFINED_ROW);
                     }))
                     .catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.HIGH,
-                            workflow: 'GraphQL POST request to the DB',
-                            step: error
-                        });
+                        changeDeskLogger.error('couldnt chang the desk due to ' + error,  Severity.HIGH);
                         fireSwalError(UPDATE_ERROR_TITLE);
                     })
                 } else if (result.isDismissed) {
