@@ -35,7 +35,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
 const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/;
-const noReason = 'אין סיבה';
+export const noReason = 'אין סיבה';
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
