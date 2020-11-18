@@ -1,6 +1,6 @@
-import React from 'react';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
 
 import axios from 'Utils/axios';
@@ -25,17 +25,21 @@ const maxInvestigatedDays: number = 21;
 export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-    const { interactions, setInteractions, setAreThereContacts } = parameters;
+    const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError } = useCustomSwal();
+
+    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
+    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
+    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
     const classes = useStyles({});
 
-    const getCoronaTestDate = (setTestDate: React.Dispatch<React.SetStateAction<Date | null>>) => {
+    const getCoronaTestDate = () => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -55,7 +59,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     user: userId,
                     investigation: epidemiologyNumber
                 });
-                setTestDate(convertDate(res.data.coronaTestDate));
+                setCoronaTestDate(convertDate(res.data.coronaTestDate));
             } else {
                 logger.warn({
                     service: Service.CLIENT,
@@ -67,34 +71,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
-        if (coronaTestDate !== null) {
-            const endInvestigationDate = new Date();
-            let startInvestigationDate: Date;
-            if (doesHaveSymptoms) {
-                if (symptomsStartDate) {
-                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
-                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
-                        alertError('תאריך תחילת התסמינים לא חוקי');
-                        return []
-                    }
-                    startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
-                }
-                else
-                    startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
-            } else {
-                startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
-            }
-            try {
-                return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
-            } catch (e) {
-                return []
-            }
-        }
-        return [];
-    }
-
-    const getClinicalDetailsSymptoms = (setSymptomsStartDate: React.Dispatch<React.SetStateAction<Date | null>>, setDoesHaveSymptoms: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const getClinicalDetailsSymptoms = () => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -165,6 +142,43 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 handleLoadInteractionsError();
             });
     }
+
+    useEffect(() => {
+        loadInteractions();
+        getCoronaTestDate();
+        getClinicalDetailsSymptoms();
+    }, []);
+
+    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
+        if (coronaTestDate !== null) {
+            const endInvestigationDate = new Date();
+            let startInvestigationDate: Date;
+            if (doesHaveSymptoms) {
+                if (symptomsStartDate) {
+                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
+                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
+                        alertError('תאריך תחילת התסמינים לא חוקי');
+                        return []
+                    }
+                    startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
+                }
+                else
+                    startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
+            } else {
+                startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
+            }
+            try {
+                return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
+            } catch (e) {
+                return []
+            }
+        }
+        return [];
+    }
+
+    useEffect(() => {
+        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+    }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
         return ({
@@ -302,8 +316,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     return {
         getDatesToInvestigate,
         loadInteractions,
-        getCoronaTestDate,
-        getClinicalDetailsSymptoms,
         handleDeleteContactEvent,
         handleDeleteContactedPerson
     }
