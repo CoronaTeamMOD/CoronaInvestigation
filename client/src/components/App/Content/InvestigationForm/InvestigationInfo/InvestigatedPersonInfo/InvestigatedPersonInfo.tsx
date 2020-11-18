@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useMemo } from 'react';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
 import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 
@@ -11,7 +11,6 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import InvestigationSubStatus from 'models/enums/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
@@ -68,10 +67,9 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
     }, [investigationStatus.subStatus]);
 
-    let updatedSubStatuses: string[] = subStatuses;
-    if (investigationStatus.mainStatus === InvestigationSubStatus.IN_PROCESS) {
-        updatedSubStatuses = updatedSubStatuses.concat(noReason);
-    }
+    const updatedSubStatuses = useMemo(() =>
+        investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS ? subStatuses.concat(noReason) : subStatuses,
+        [subStatuses]);
     
     const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
 
