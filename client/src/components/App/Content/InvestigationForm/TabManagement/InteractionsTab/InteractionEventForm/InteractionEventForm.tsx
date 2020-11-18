@@ -34,7 +34,7 @@ export const defaultContact: Contact = {
   phoneNumber: '',
   idNumber: '',
   contactType: -1,
-  creationTime: new Date(),  
+  creationTime: new Date(),
 };
 
 const addContactButton: string = 'הוסף מגע';
@@ -90,17 +90,17 @@ const InteractionEventForm: React.FC<Props> = (
   const onSubmit = (data: InteractionEventDialogData) => {
     const interactionDataToSave = convertData(data);
     const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
-    .flat()
-    .map((contact) => { 
-      return ({
-        id: contact[InteractionEventContactFields.ID], 
-        serialId: contact[InteractionEventContactFields.SERIAL_ID]
-      })
-    });
+      .flat()
+      .map((contact) => {
+        return ({
+          id: contact[InteractionEventContactFields.ID],
+          serialId: contact[InteractionEventContactFields.SERIAL_ID]
+        })
+      });
 
     const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
-      return({
-        id: contact[InteractionEventContactFields.ID], 
+      return ({
+        id: contact[InteractionEventContactFields.ID],
         serialId: contact[InteractionEventContactFields.SERIAL_ID]
       })
     });
@@ -108,7 +108,7 @@ const InteractionEventForm: React.FC<Props> = (
     const contactsIdsToCheck: IdToCheck[] = allContactsIds.concat(newIds);
     if (!checkDuplicateIdsForInteractions(contactsIdsToCheck)) {
       saveInteractions(interactionDataToSave);
-    }  
+    }
   }
 
   const generatePlacenameByPlaceSubType = (input: string) => {
@@ -159,7 +159,7 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
       [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: data === null ? false : data.externalizationApproval,
-      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]?
+      [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
           if (serialId) {
@@ -206,67 +206,67 @@ const InteractionEventForm: React.FC<Props> = (
           />
 
           <Grid className={formClasses.formRow} container justify='flex-start'>
-              <FormInput xs={5} fieldName='משעה'>
-                <Controller
-                    name={InteractionEventDialogFields.START_TIME}
-                    control={methods.control}
-                    render={(props) => (
-                        <TimePick
-                            disabled={isUnknownTime as boolean}
-                            testId='contactLocationStartTime'
-                            value={props.value}
-                            onChange={(newTime: Date) =>
-                                handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
-                            }
-                            labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
-                            error={get(methods.errors, props.name)}
-                        />
-                    )}
-                />
-              </FormInput>
-              <FormInput xs={4} fieldName='עד שעה'>
-                <Controller
-                    name={InteractionEventDialogFields.END_TIME}
-                    control={methods.control}
-                    render={(props) => (
-                        <TimePick
-                            disabled={isUnknownTime as boolean}
-                            testId='contactLocationEndTime'
-                            value={props.value}
-                            onChange={(newTime: Date) =>
-                                handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
-                            }
-                            labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
-                            error={get(methods.errors, props.name)}
-                        />
-                    )}
-                />
-              </FormInput>
-              <Grid item xs={3}>
-                <Controller 
-                  name={InteractionEventDialogFields.UNKNOWN_TIME}
-                  control={methods.control}
-                  render={(props) => 
-                    <FormControlLabel 
-                      label='זמן לא ידוע'
-                      control={
-                        <Checkbox
-                          color='primary'
-                          checked={props.value}
-                          onChange={(event) => props.onChange(event.target.checked)}
-                        />
-                      }
-                    />
-                  }
-                />
-              </Grid>
+            <FormInput xs={5} fieldName='משעה'>
+              <Controller
+                name={InteractionEventDialogFields.START_TIME}
+                control={methods.control}
+                render={(props) => (
+                  <TimePick
+                    disabled={isUnknownTime as boolean}
+                    testId='contactLocationStartTime'
+                    value={props.value}
+                    onChange={(newTime: Date) =>
+                      handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                    }
+                    labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
+                    error={get(methods.errors, props.name)}
+                  />
+                )}
+              />
+            </FormInput>
+            <FormInput xs={4} fieldName='עד שעה'>
+              <Controller
+                name={InteractionEventDialogFields.END_TIME}
+                control={methods.control}
+                render={(props) => (
+                  <TimePick
+                    disabled={isUnknownTime as boolean}
+                    testId='contactLocationEndTime'
+                    value={props.value}
+                    onChange={(newTime: Date) =>
+                      handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                    }
+                    labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
+                    error={get(methods.errors, props.name)}
+                  />
+                )}
+              />
+            </FormInput>
+            <Grid item xs={3}>
+              <Controller
+                name={InteractionEventDialogFields.UNKNOWN_TIME}
+                control={methods.control}
+                render={(props) =>
+                  <FormControlLabel
+                    label='זמן לא ידוע'
+                    control={
+                      <Checkbox
+                        color='primary'
+                        checked={props.value}
+                        onChange={(event) => props.onChange(event.target.checked)}
+                      />
+                    }
+                  />
+                }
+              />
+            </Grid>
           </Grid>
           <Collapse in={hasAddress}>
-            <AddressForm/>
+            <AddressForm />
           </Collapse>
 
           <Collapse in={isNamedLocation}>
-            <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
+            <PlaceNameForm nameFieldLabel={nameFieldLabel} />
           </Collapse>
 
           <Collapse in={!!extraFields}>
@@ -274,7 +274,7 @@ const InteractionEventForm: React.FC<Props> = (
           </Collapse>
 
           <Collapse in={isBusiness}>
-            <BusinessContactForm/>
+            <BusinessContactForm />
           </Collapse>
 
           <Grid className={formClasses.formRow} container justify='flex-start'>
@@ -287,7 +287,7 @@ const InteractionEventForm: React.FC<Props> = (
                     test-id='allowExternalization'
                     disabled={externalizationErrorMessage !== ''}
                     value={externalizationErrorMessage !== '' ? null : props.value}
-                    onChange={(event, value: boolean) => props.onChange(value as boolean)}
+                    onChange={(event, value: boolean) => value !== null && props.onChange(value as boolean)}
                     className={formClasses.formToggle}
                   />
                 )}
