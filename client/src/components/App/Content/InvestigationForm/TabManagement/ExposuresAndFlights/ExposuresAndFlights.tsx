@@ -6,6 +6,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Collapse, Divider, Typography, IconButton } from '@material-ui/core';
 
 import axios from 'Utils/axios';
+import ResortData from 'models/ResortData';
 import logger from 'logger/logger';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
@@ -96,14 +97,25 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       })
       .then((exposures?: Exposure[]) => {
         if (exposures) {
-          setExposureDataAndFlights({
-            exposures,
-            exposuresToDelete: [],
-            wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
-            wereFlights: doesHaveFlights(exposures),
-            wasInEilat: wasInEilat,
-            wasInDeadSea: wasInDeadSea,
+          fetchResortsData().then((result) => {
+              setExposureDataAndFlights({
+                exposures,
+                exposuresToDelete: [],
+                wereConfirmedExposures: doesHaveConfirmedExposures(exposures),
+                wereFlights: doesHaveFlights(exposures),
+                wasInEilat: result.wasInEilat,
+                wasInDeadSea: result.wasInDeadSea,
+              });
+          }).catch((error) => {
+            logger.error({
+              service: Service.CLIENT,
+              severity: Severity.HIGH,
+              workflow: 'Fetching investigated patient resorts data',
+              step: `failed to get resorts response due to ` + error,
+              user: userId,
+              investigation: investigationId
           });
+          })
         }
       })
       .then(() => {
@@ -152,54 +164,34 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       });
   }
 
-  const fetchResortsData = () => {
-    const workflow = 'Fetching investigated patient resorts data'
-    logger.info({
-      service: Service.CLIENT,
-      severity: Severity.LOW,
-      workflow,
-      step: `launching investigated patient resorts request`,
-      user: userId,
-      investigation: investigationId
-    });
-    axios.get('investigationInfo/resorts/' + investigatedPatientId)
-    .then((result) => {
-      if (result?.data) {
-        logger.info({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow,
-          step: `got investigated patient resorts response successfully`,
-          user: userId,
-          investigation: investigationId
-        });
-        onExposuresStatusChange(fieldsNames.wasInEilat, result?.data?.wasInEilat);
-        onExposuresStatusChange(fieldsNames.wasInDeadSea, result?.data?.wasInDeadSea);
-      } else {
-        logger.error({
-          service: Service.CLIENT,
-          severity: Severity.HIGH,
-          workflow,
-          step: `failed to investigated patient resorts response`,
-          user: userId,
-          investigation: investigationId
-        });
-      }
-    }).catch(error => {
-      logger.error({
+  const fetchResortsData: () => Promise<ResortData> = async () => {
+      const workflow = 'Fetching investigated patient resorts data'
+      logger.info({
         service: Service.CLIENT,
-        severity: Severity.HIGH,
+        severity: Severity.LOW,
         workflow,
-        step: `failed to get resorts response due to ` + error,
+        step: `launching investigated patient resorts request`,
         user: userId,
         investigation: investigationId
       });
-    })
+      const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
+      logger.info({
+        service: Service.CLIENT,
+        severity: Severity.LOW,
+        workflow,
+        step: `got investigated patient resorts response successfully`,
+        user: userId,
+        investigation: investigationId
+      });
+      const resortData: ResortData =  {
+        wasInEilat: result?.data?.wasInEilat,
+        wasInDeadSea: result?.data?.wasInDeadSea
+      }
+      return resortData;
   }
 
   useEffect(() => {
     fetchExposuresAndFlights();
-    fetchResortsData();
   }, []);
 
   const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
