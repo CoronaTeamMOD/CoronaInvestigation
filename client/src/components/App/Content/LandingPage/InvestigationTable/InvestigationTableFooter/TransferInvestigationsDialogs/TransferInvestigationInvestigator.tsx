@@ -56,9 +56,9 @@ const TransferInvestigationDesk = (props: Props) => {
                                     options={allInvestigators}
                                     getOptionLabel={(option) => option ? option.value.userName : option}
                                     value={props.value}
-                                    onChange={(event, selectedInvestigator) => {
+                                    onChange={(event, selectedInvestigator) => 
                                         props.onChange(selectedInvestigator ? selectedInvestigator : null)
-                                    }}
+                                    }
                                     onBlur={props.onBlur}
                                     renderInput={(params) =>
                                         <TextField
