@@ -8,6 +8,7 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import ConditionalTooltip from 'commons/ConditionalTooltip/ConditionalTooltip';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 
 import useStyles from './ContactGridStyles';
@@ -30,14 +31,6 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime);
-
-    const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
-        isContactComplete ?
-            <Tooltip title='המגע בסטטוס הושלם'>
-                <span>{children}</span>
-            </Tooltip>
-            : children
-    );
 
     return (
         <>
@@ -84,7 +77,8 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
             </Grid>
             <div className={classes.deleteIconDiv}>
-                <CompletedQuestioningTooltip>
+                <ConditionalTooltip renderTooltip={isContactComplete}
+                                    title='המגע בסטטוס הושלם'>
                     <IconButton 
                         disabled={shouldDisableDeleteContact}
                         test-id='deleteContactLocation' 
@@ -96,7 +90,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     }}>
                         <Delete/>
                     </IconButton>
-                </CompletedQuestioningTooltip>
+                </ConditionalTooltip>
             </div>
         </>
     );

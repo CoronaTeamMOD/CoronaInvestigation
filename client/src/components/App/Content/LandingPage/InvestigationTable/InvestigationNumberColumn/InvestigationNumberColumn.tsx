@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReplyAll } from '@material-ui/icons';
-import { Tooltip, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import ConditionalTooltip from 'commons/ConditionalTooltip/ConditionalTooltip';
 
 import useStyles from './InvestigationStatusNumberStyles';
 
@@ -14,9 +15,10 @@ const InvestigationNumberColumn = (props: Props) => {
         <div className={classes.columnWrapper}>
             {
                 wasInvestigationTransferred &&
-                <Tooltip title={transferReason} arrow>
+                <ConditionalTooltip renderTooltip={!!transferReason}
+                                    title={transferReason} arrow>
                     <ReplyAll color='primary' className={classes.transferredIcon}/>
-                </Tooltip>
+                </ConditionalTooltip>
             }
             <Typography>{epidemiologyNumber}</Typography>
         </div>
