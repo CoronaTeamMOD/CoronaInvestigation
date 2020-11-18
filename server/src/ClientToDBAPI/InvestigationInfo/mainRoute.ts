@@ -5,7 +5,6 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Service, Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { CHECK_FOR_DUPLICATE_IDS } from '../../DBService/ContactedPeople/Mutation';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -163,8 +162,6 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     investigation: epidemiologyNumber
                 });
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
-                    graphqlRequest(CHECK_FOR_DUPLICATE_IDS, response.locals, { currInvestigationId: epidemiologyNumber }).then((result) => {
-                        if (!result?.checkForDuplicateIds?.boolean) {
                             const investigationEndTime = new Date();
                             logger.info({
                                 service: Service.SERVER,
@@ -202,10 +199,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                                     });
                                     response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
                                 });
-                        } else {
-                            response.status(errorStatusCode).json({ message: 'found duplicate ids' });
-                        }
-                    })
+                       
                 } else {
                     response.send({ message: 'updated the investigation status successfully' });
                 }
