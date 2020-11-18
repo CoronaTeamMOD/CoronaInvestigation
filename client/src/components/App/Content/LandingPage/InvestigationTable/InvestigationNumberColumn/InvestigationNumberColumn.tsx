@@ -14,8 +14,8 @@ const InvestigationNumberColumn = (props: Props) => {
         <div className={classes.columnWrapper}>
             {
                 wasInvestigationTransferred &&
-                <Tooltip title={transferReason === null? '' : transferReason} arrow>
-                    <ReplyAll color='primary' className={classes.transferredIcon}/>
+                <Tooltip title={transferReason === null ? '' : transferReason} arrow>
+                    <ReplyAll color='primary' className={classes.transferredIcon} />
                 </Tooltip>
             }
             <Typography>{epidemiologyNumber}</Typography>
