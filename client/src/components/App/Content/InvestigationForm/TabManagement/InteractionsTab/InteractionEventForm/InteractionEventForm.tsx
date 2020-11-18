@@ -13,9 +13,9 @@ import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId';
 import { getOptionsByPlaceAndSubplaceType } from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import useDuplicateContactId, { IdToCheck } from 'Utils/vendor/useDuplicateContactId';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
@@ -40,8 +40,7 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog }: Props
-): JSX.Element => {
+  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog }: Props): JSX.Element => {
 
   const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
@@ -66,7 +65,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
-  const formConfig = React.useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);
+  const formConfig = useMemo(() => getOptionsByPlaceAndSubplaceType(placeType, placeSubType), [placeType, placeSubType]);
 
   const classes = useStyles();
   const formClasses = useFormStyles();
@@ -264,21 +263,14 @@ const InteractionEventForm: React.FC<Props> = (
           <Collapse in={hasAddress}>
             <AddressForm />
           </Collapse>
-
           <Collapse in={isNamedLocation}>
             <PlaceNameForm nameFieldLabel={nameFieldLabel} />
           </Collapse>
-
           <Collapse in={!!extraFields}>
             {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
           </Collapse>
-
-          <Collapse in={isBusiness}>
-            <BusinessContactForm />
-          </Collapse>
-
           <Grid className={formClasses.formRow} container justify='flex-start'>
-            <FormInput xs={12} fieldName='האם מותר להחצנה'>
+            <FormInput xs={7} fieldName='האם מותר להחצנה'>
               <Controller
                 name={InteractionEventDialogFields.EXTERNALIZATION_APPROVAL}
                 control={methods.control}
@@ -301,8 +293,12 @@ const InteractionEventForm: React.FC<Props> = (
               </Typography>
             </Collapse>
           </Grid>
+          <Divider light={true} />
+          <Collapse in={isBusiness}>
+            <BusinessContactForm />
+          </Collapse>
+          <Divider light={true} />
         </Grid>
-        <Divider light={true} />
         <Grid
           container
           className={formClasses.form + ' ' + classes.spacedOutForm}
