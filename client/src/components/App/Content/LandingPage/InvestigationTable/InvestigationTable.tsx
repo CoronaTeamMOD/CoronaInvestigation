@@ -165,6 +165,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return <InvestigationNumberColumn
                     wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
+                    transferReason={indexedRow.transferReason}
                 />
             case TableHeadersNames.investigatorName:
                 const isUnassigned = indexedRow.investigatorName === 'לא משויך';

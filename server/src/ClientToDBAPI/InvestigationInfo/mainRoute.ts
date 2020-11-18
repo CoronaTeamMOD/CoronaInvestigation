@@ -11,7 +11,6 @@ import {
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
-    UPDATE_INVESTIGATION_TRANSFER,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -292,58 +291,6 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
             response.status(errorStatusCode).send('error in fetching data: ' + err)
         });
 });
-
-investigationInfo.post('/updateInvestigationTransfer', (request: Request, response: Response) => {
-    const { epidemiologyNumber } = request.body;
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Investigation transfer',
-        step: `requesting the graphql API to update investigation transfer indication with parameters ${JSON.stringify({
-            epidemiologyNumber
-        })}`,
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologyNumber
-    })
-    graphqlRequest(UPDATE_INVESTIGATION_TRANSFER, response.locals, {
-        epidemiologyNumber: +epidemiologyNumber
-    })
-        .then((result: any) => {
-            if (result?.errors?.length > 0) {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.HIGH,
-                    workflow: 'Investigation transfer',
-                    step: `the investigation transfer indication failed to update due to: ${result.errors[0].message ? result.errors[0].message : JSON.stringify(result)}`,
-                    user: response.locals.user.id,
-                    investigation: response.locals.epidemiologyNumber
-                });
-                response.send(result);
-            } else {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: 'Investigation transfer',
-                    step: 'the investigation start time was updated successfully',
-                    user: response.locals.user.id,
-                    investigation: response.locals.epidemiologyNumber
-                });
-                response.send(result);
-            }
-        })
-        .catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Investigation transfer',
-                step: `the investigation transfer indication failed to update due to: ${err}`,
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologyNumber
-            });
-            response.status(errorStatusCode).send(err);
-        });
-});
-
 investigationInfo.get('/resorts/:id', (request: Request, response: Response) => {
     const workflow = 'Query investigated patients resorts data';
     logger.info({

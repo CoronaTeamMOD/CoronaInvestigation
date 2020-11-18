@@ -32,14 +32,6 @@ export const COMMENT = gql`
   }
 `;
 
-export const UPDATE_INVESTIGATION_TRANSFER = gql`
-mutation UpdateInvestigationStatus($epidemiologyNumber: Int!) {
-  updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}) {
-    clientMutationId
-  }
-}
-`;
-
 export const UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA = gql`
 mutation updateInvestigatedPatientById ($wasInEilat: Boolean!, $wasInDeadSea: Boolean!, $id: Int!) {
     updateInvestigatedPatientById(input: {investigatedPatientPatch: {wasInEilat: $wasInEilat, wasInDeadSea: $wasInDeadSea}, id: $id}) {

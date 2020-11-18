@@ -16,11 +16,15 @@ RETURN (select
     json_build_object(
         'allInvestigations', json_agg(
             json_build_object(
+                'comment', investigationTable.comment,
                 'epidemiologyNumber', investigationTable.epidemiology_number,
 				'coronaTestDate', investigationTable.corona_test_date,
-				'isComplex', investigationTable.complexity_code <> 2,
+                'isComplex', investigationTable.complexity_code <> 2,
 				'priority', investigationTable.priority,
-				'desk', (select desk_name from public.desks where id = investigationTable.desk),
+				'statusReason', investigationTable.status_reason,
+				'transferReason', investigationTable.transfer_reason,
+				'wasInvestigationTransferred', investigationTable.was_investigation_transferred,
+				'desk', (select desk_name from public.desks where id = investigationTable.desk_id),
 				'investigatedPatientByInvestigatedPatientId', (
 					select json_build_object (
 						'covidPatientByCovidPatient', (

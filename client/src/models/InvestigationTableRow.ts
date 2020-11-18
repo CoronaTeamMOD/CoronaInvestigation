@@ -19,6 +19,7 @@ interface InvestigationTableRow {
     comment: string;
     statusReason: string;
     wasInvestigationTransferred: boolean;
+    transferReason: string;
 };
 
 export default InvestigationTableRow;

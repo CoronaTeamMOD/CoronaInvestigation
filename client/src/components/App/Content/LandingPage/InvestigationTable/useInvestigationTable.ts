@@ -58,6 +58,7 @@ export const createRowData = (
     comment: string,
     statusReason: string,
     wasInvestigationTransferred: boolean,
+    transferReason: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -76,6 +77,7 @@ export const createRowData = (
     comment,
     statusReason,
     wasInvestigationTransferred,
+    transferReason
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -378,6 +380,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const county = user ? user.countyByInvestigationGroup : '';
                                 const statusReason = user ? investigation.statusReason : '';
                                 const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
+                                const transferReason = user ? investigation.transferReason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
@@ -398,6 +401,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.comment,
                                     statusReason,
                                     wasInvestigationTransferred,
+                                    transferReason,
                                 )
                             });
                         setRows(investigationRows);
@@ -556,6 +560,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.comment]: row.comment,
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
+            [TableHeadersNames.transferReason]: row.transferReason
         }
     }
 
@@ -567,12 +572,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getCountyMapKeyByValue = (map: Map<number, County>, value: string): number => {
         const key = Array.from(map.keys()).find(key => map.get(key)?.displayName === value);
         return key ? key : 0;
-    }
-
-    const changeInvestigationToTransferred = (indexedRow: IndexedInvestigation): Promise<void> => {
-        return axios.post('/investigationInfo/updateInvestigationTransfer', {
-            epidemiologyNumber: indexedRow.epidemiologyNumber
-        });
     }
 
     const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
@@ -615,6 +614,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                             {
                                 ...investigation,
+                                wasInvestigationTransferred: true,
                                 investigator: {
                                     id: newSelectedInvestigator.id,
                                     userName: newSelectedInvestigator.value.userName
@@ -622,36 +622,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             }
                             : investigation
                     )))
-                })).then(() => {
-                    changeInvestigationToTransferred(indexedRow).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Transfered',
-                            step: `update investigation transfered request was successful`,
-                            user: user.id,
-                            investigation: epidemiologyNumber
-                        });
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Transfered',
-                            step: `got errors in server result: ${error}`,
-                            user: user.id,
-                            investigation: epidemiologyNumber
-                        });
-                    });
-                }).catch((error) => {
+                })).catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
-                        severity: Severity.LOW,
+                        severity: Severity.HIGH,
                         workflow: 'Switch investigator',
                         step: `the investigator swap failed due to: ${error}`,
                         investigation: indexedRow.epidemiologyNumber as number,
                         user: user.id
-                    })
-                    fireSwalError(UPDATE_ERROR_TITLE)
+                    });
+                    fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
                 logger.info({
@@ -704,30 +684,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     });
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
-                })).then(() => {
-                    changeInvestigationToTransferred(indexedRow).then(() => {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Update Investigation Transfered',
-                            step: `update investigation transfered request was successful`,
-                            user: user.id,
-                            investigation: epidemiologyNumber
-                        });
-                    }).catch((error) => {
-                        logger.error({
-                            service: Service.CLIENT,
-                            severity: Severity.HIGH,
-                            workflow: 'Update Investigation Transfered',
-                            step: `got errors in server result: ${error}`,
-                            user: user.id,
-                            investigation: epidemiologyNumber
-                        });
-                    });
-                }).catch((error) => {
+                }))
+                .catch((error) => {
                     logger.error({
                         service: Service.CLIENT,
-                        severity: Severity.LOW,
+                        severity: Severity.HIGH,
                         workflow: 'County change GraphQL POST request to the DB',
                         step: error,
                         user: user.id,
@@ -780,32 +741,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                                 {
                                     ...investigation,
+                                    wasInvestigationTransferred: true,
                                     investigationDesk: newSelectedDesk.deskName
                                 }
                                 : investigation
                         )));
                         setSelectedRow(UNDEFINED_ROW);
-                    })).then(() => {
-                        changeInvestigationToTransferred(indexedRow).then(() => {
-                            logger.info({
-                                service: Service.CLIENT,
-                                severity: Severity.LOW,
-                                workflow: 'Update Investigation Transfered',
-                                step: `update investigation transfered request was successful`,
-                                user: user.id,
-                                investigation: epidemiologyNumber
-                            });
-                        }).catch((error) => {
-                            logger.error({
-                                service: Service.CLIENT,
-                                severity: Severity.HIGH,
-                                workflow: 'Update Investigation Transfered',
-                                step: `got errors in server result: ${error}`,
-                                user: user.id,
-                                investigation: epidemiologyNumber
-                            });
-                        });
-                    }).catch((error) => {
+                    }))
+                    .catch((error) => {
                         logger.error({
                             service: Service.CLIENT,
                             severity: Severity.HIGH,

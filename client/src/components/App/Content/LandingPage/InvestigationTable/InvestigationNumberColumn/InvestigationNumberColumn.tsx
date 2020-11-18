@@ -1,13 +1,12 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import { faReplyAll } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ReplyAll } from '@material-ui/icons';
+import { Tooltip, Typography } from '@material-ui/core';
 
 import useStyles from './InvestigationStatusNumberStyles';
 
 const InvestigationNumberColumn = (props: Props) => {
 
-    const { wasInvestigationTransferred, epidemiologyNumber } = props;
+    const { wasInvestigationTransferred, epidemiologyNumber, transferReason } = props;
 
     const classes = useStyles();
 
@@ -16,7 +15,9 @@ const InvestigationNumberColumn = (props: Props) => {
             <Typography>{epidemiologyNumber}</Typography>
             {
                 wasInvestigationTransferred &&
-                <FontAwesomeIcon icon={faReplyAll} className={classes.transferredIcon} />
+                <Tooltip title={transferReason}>
+                    <ReplyAll color='primary' className={classes.transferredIcon}/>
+                </Tooltip>
             }
         </div>
     )
@@ -25,6 +26,7 @@ const InvestigationNumberColumn = (props: Props) => {
 interface Props {
     wasInvestigationTransferred: boolean;
     epidemiologyNumber: number;
+    transferReason: string;
 };
 
 export default InvestigationNumberColumn;
