@@ -137,6 +137,7 @@ const InteractionEventForm: React.FC<Props> = (
     if (errors.length === 0) {
       return '';
     } else {
+      methods.setValue(InteractionEventDialogFields.EXTERNALIZATION_APPROVAL, null);
       return initialMessage.concat(errors.join(', '));
     }
   }, [placeType, isUnknownTime, locationAddress, placeName, placeDescription]);
@@ -157,7 +158,7 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
-      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: data === null ? false : data.externalizationApproval,
+      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
@@ -285,9 +286,11 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
-            <Typography color={methods.errors[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] ? 'error' : 'initial'} >
+            { !Boolean(externalizationErrorMessage) &&
+              <Typography color={methods.errors[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] ? 'error' : 'initial'} >
                 חובה לבחור החצנה
-            </Typography>
+              </Typography>
+            }
           </Grid>
           <Grid item xs={12}>
             <Collapse in={Boolean(externalizationErrorMessage)}>

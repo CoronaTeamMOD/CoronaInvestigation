@@ -29,7 +29,7 @@ const interactionEventSchema = yup.object().shape({
       }
     ),
     [InteractionEventDialogFields.END_TIME]: yup.date().nullable().when(
-      InteractionEventDialogFields.UNKNOWN_TIME,{
+      InteractionEventDialogFields.UNKNOWN_TIME, {
         is: unknownTime => !unknownTime,
         then: yup.date().required()
               .min(yup.ref(InteractionEventDialogFields.START_TIME), 
@@ -37,7 +37,22 @@ const interactionEventSchema = yup.object().shape({
         else: yup.date().nullable()
       }
     ),
-    [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().required('שדה חובה'),
+    [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: yup.boolean().when(
+      [InteractionEventDialogFields.PLACE_TYPE, InteractionEventDialogFields.UNKNOWN_TIME,
+       InteractionEventDialogFields.LOCATION_ADDRESS, InteractionEventDialogFields.PLACE_NAME,
+       InteractionEventDialogFields.PLACE_DESCRIPTION], {
+        is: (placeType, isUnknownTime, locationAddress, placeName, placeDescription) => {
+          if (placeType === placeTypesCodesHierarchy.privateHouse.code ||
+              isUnknownTime || !(locationAddress && (placeName || placeDescription))) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        then: yup.boolean().required('שדה חובה'),
+        otherwise: yup.boolean().nullable()
+       }
+    ),
     [InteractionEventDialogFields.CONTACTS]: yup.array().of(yup.object().shape({
         [InteractionEventContactFields.FIRST_NAME]: yup.string().nullable().required('שם פרטי חובה'),
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
