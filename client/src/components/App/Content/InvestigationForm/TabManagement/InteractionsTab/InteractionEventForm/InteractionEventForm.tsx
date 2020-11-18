@@ -285,6 +285,9 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
+            <Typography color={methods.errors[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] ? 'error' : 'initial'} >
+                חובה לבחור החצנה
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             <Collapse in={Boolean(externalizationErrorMessage)}>
