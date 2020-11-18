@@ -1,4 +1,3 @@
-  
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
@@ -56,24 +55,30 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         e.preventDefault();
         setFormState(investigationId, id, true);
     }
+
+    const generateContactCard = (interactionDate: Date) => {
+        return (
+            <ContactDateCard
+                allInteractions={interactions}
+                loadInteractions={loadInteractions}
+                contactDate={interactionDate}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                onDeleteClick={handleDeleteContactEvent}
+                onDeleteContactClick={handleDeleteContactedPerson}
+                createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}
+                interactions={interactionsMap.get(interactionDate.getTime())}
+                key={interactionDate.getTime()}
+            />
+        )
+    }
     
     return (
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    datesToInvestigate.reverse().map(date =>
-                        <ContactDateCard
-                            allInteractions={interactions}
-                            loadInteractions={loadInteractions}
-                            contactDate={date}
-                            onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
-                            onDeleteClick={handleDeleteContactEvent}
-                            onDeleteContactClick={handleDeleteContactedPerson}
-                            createNewInteractionEvent={() => setNewInteractionEventDate(date)}
-                            interactions={interactionsMap.get(date.getTime())}
-                            key={date.getTime()}
-                        />
-                        )
+                    datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
+                        datesToInvestigate.reverse().map(date => generateContactCard(date)) :
+                        datesToInvestigate.map(date => generateContactCard(date))
                 }
                 {
                     newInteractionEventDate && <NewInteractionEventDialog
