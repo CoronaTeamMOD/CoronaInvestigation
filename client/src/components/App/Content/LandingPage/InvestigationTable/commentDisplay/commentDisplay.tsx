@@ -18,7 +18,7 @@ const CommentDisplay = ({comment, scrollableRef}: Props) => {
     React.useEffect(() => {
         scrollableRef?.addEventListener('scroll', handleTooltipClose)
         return () => scrollableRef?.removeEventListener('scroll', handleTooltipClose)
-    });
+    }, []);
 
     const classes = useStyles();
 
