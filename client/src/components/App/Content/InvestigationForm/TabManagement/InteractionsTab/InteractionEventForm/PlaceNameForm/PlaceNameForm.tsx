@@ -1,8 +1,8 @@
 import React from 'react';
 import {Grid} from '@material-ui/core';
+import FormInput from 'commons/FormInput/FormInput';
 import {Controller, useFormContext} from 'react-hook-form';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import FormInput from 'commons/FormInput/FormInput';
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
     
@@ -31,7 +31,7 @@ const PlaceNameForm = ({nameFieldLabel=DEFAULT_NAME_FIELD_LABEL}:Props) => {
                     )}
                 />
             </FormInput>
-            <FormInput xs={5} labelLength={2} fieldName={'פירוט נוסף'}>
+            <FormInput xs={5} labelLength={3} fieldName='פירוט נוסף'>
                 <Controller
                     name={InteractionEventDialogFields.PLACE_DESCRIPTION}
                     control={control}
@@ -54,4 +54,4 @@ export default PlaceNameForm;
 
 interface Props {
     nameFieldLabel? :string
-}
+};
