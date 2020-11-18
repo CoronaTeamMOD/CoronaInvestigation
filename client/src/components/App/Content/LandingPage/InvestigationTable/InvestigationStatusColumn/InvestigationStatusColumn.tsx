@@ -2,8 +2,8 @@ import React from 'react';
 import logger from 'logger/logger';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { Tooltip, Typography } from '@material-ui/core';
-import { InfoOutlined, LockOpen } from '@material-ui/icons';
+import { Tooltip } from '@material-ui/core';
+import { Info, LockOpen } from '@material-ui/icons';
 
 import axios from 'Utils/axios';
 import { Severity } from 'models/Logger';
@@ -47,28 +47,28 @@ const InvestigationStatusColumn = (props: Props) => {
     return (
         <div className={classes.columnWrapper}>
             {
-                (investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus) &&
-                <Typography>{investigationSubStatus + '/'}</Typography>
-            }
-            <Typography>{investigationStatus}</Typography>
-            {
                 investigationStatus === InvestigationMainStatus.DONE &&
-                <Tooltip title='פתיחת חקירה' placement='top' arrow>
+                <Tooltip title='פתיחת חקירה' arrow>
                     <LockOpen className={classes.investigatonIcon} onClick={onIconClicked} color='primary' />
                 </Tooltip>
             }
             {
                 investigationStatus === InvestigationMainStatus.CANT_COMPLETE && investigationSubStatus &&
-                <Tooltip title={investigationSubStatus}>
-                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='error' />
+                <Tooltip title={investigationSubStatus} arrow>
+                    <Info className={classes.investigatonIcon} fontSize='small' color='error' />
                 </Tooltip>
             }
             {
                 (investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason) &&
-                <Tooltip title={statusReason}>
-                    <InfoOutlined className={classes.investigatonIcon} fontSize='small' color='primary' />
+                <Tooltip title={statusReason} arrow>
+                    <Info className={classes.investigatonIcon} fontSize='small' color='primary' />
                 </Tooltip>
             }
+            {
+                (investigationStatus === InvestigationMainStatus.IN_PROCESS && investigationSubStatus) &&
+                `${investigationSubStatus}/`
+            }
+            {investigationStatus}
         </div>
     )
 }

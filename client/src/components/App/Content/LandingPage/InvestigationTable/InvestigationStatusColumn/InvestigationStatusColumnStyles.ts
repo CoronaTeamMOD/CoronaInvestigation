@@ -1,13 +1,16 @@
+import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     columnWrapper: {
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'center'
     },
     investigatonIcon: {
-        margin: '0 0.5vw',
-        cursor: 'pointer'
+        marginLeft: theme.spacing(0.75),
+        cursor: 'pointer',
+        flip: false
     },
-});
+}));
 
 export default useStyles;
