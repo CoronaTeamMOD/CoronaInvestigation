@@ -83,6 +83,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
 
+    const tableContainerRef = React.useRef<HTMLElement>();
+
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
@@ -327,7 +329,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </div>
                 );
             case TableHeadersNames.comment:
-                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]} />
+                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                                       scrollableRef={tableContainerRef.current} />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
@@ -495,7 +498,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Card>
                     </Collapse>
                 </Grid>
-                <TableContainer component={Paper} className={classes.tableContainer}>
+                <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
                             <TableRow>

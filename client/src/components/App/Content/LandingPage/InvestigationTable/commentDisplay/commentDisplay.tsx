@@ -6,7 +6,7 @@ import useStyles from './commentDisplayStyles';
 
 const noCommentMessage = 'אין הערה';
 
-const CommentDisplay = ({comment}: Props) => {
+const CommentDisplay = ({comment, scrollableRef}: Props) => {
     const [isTooltipOpen, setIsTooltipOpen] = React.useState<boolean>(false);
 
     const handleTooltipClose = () => setIsTooltipOpen(false);
@@ -14,6 +14,11 @@ const CommentDisplay = ({comment}: Props) => {
         event.stopPropagation();
         setIsTooltipOpen(isOpen => !isOpen);
     };
+
+    React.useEffect(() => {
+        scrollableRef?.addEventListener('scroll', handleTooltipClose)
+        return () => scrollableRef?.removeEventListener('scroll', handleTooltipClose)
+    });
 
     const classes = useStyles();
 
@@ -32,6 +37,7 @@ const CommentDisplay = ({comment}: Props) => {
             }}
             onClose={handleTooltipClose}
             open={isTooltipOpen}
+                   disableHoverListener
             title={comment || noCommentMessage}>
                   <IconButton onClick={handleTooltipToggle}>
                       <Comment color={comment ? 'primary' : 'disabled'}/>
@@ -43,6 +49,7 @@ const CommentDisplay = ({comment}: Props) => {
 
 interface Props {
     comment: string | null;
+    scrollableRef?: HTMLElement;
 }
 
 export default CommentDisplay;
