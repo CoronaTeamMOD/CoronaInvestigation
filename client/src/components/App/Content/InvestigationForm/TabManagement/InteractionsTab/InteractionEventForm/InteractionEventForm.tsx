@@ -157,8 +157,9 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.START_TIME]: startTimeToSave,
       [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
-      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
+      [InteractionEventDialogFields.PLACE_NAME]: Boolean(data[InteractionEventDialogFields.PLACE_NAME]) ?
+          data[InteractionEventDialogFields.PLACE_NAME] : generatePlacenameByPlaceSubType(placeSubtypeName),
+      [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: data === null ? false : data.externalizationApproval,
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
           const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
@@ -201,7 +202,11 @@ const InteractionEventForm: React.FC<Props> = (
             placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
             placeType={placeType}
             placeSubType={placeSubType}
-            onPlaceTypeChange={(newValue) => methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, { shouldValidate: true })}
+            onPlaceTypeChange={(newValue) => {
+              methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, {shouldValidate: true});
+              Boolean(placeName) &&
+                  methods.setValue(InteractionEventDialogFields.PLACE_NAME, '');
+            }}
             onPlaceSubTypeChange={onPlaceSubtypeChange}
           />
 
