@@ -54,17 +54,12 @@ const TransferInvestigationDesk = (props: Props) => {
                                 <Autocomplete
                                     className={classes.input}
                                     options={allInvestigators}
-                                    getOptionLabel={(option) => option.value.userName}
-                                    inputValue={props.value?.value.userName || ''}
+                                    getOptionLabel={(option) => option ? option.value.userName : option}
                                     value={props.value}
-                                    onChange={(event, selectedInvestigator) => (
+                                    onChange={(event, selectedInvestigator) => 
                                         props.onChange(selectedInvestigator ? selectedInvestigator : null)
-                                    )}
-                                    onInputChange={(event, selectedInvestigatorName) => {
-                                        if (event?.type !== 'blur' && selectedInvestigatorName) {
-                                            props.onChange(event, null);
-                                        }
-                                    }}
+                                    }
+                                    onBlur={props.onBlur}
                                     renderInput={(params) =>
                                         <TextField
                                             {...params}
