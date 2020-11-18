@@ -76,7 +76,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                     if (shouldUpdateInvestigationStatus()) {
                         axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: investigationStatus.mainStatus,
-                            investigationSubStatus: subStatus,
+                            investigationSubStatus: subStatus !== 'אין סיבה' ? subStatus : null,
                             statusReason: statusReason,
                             epidemiologyNumber: epidemiologyNumber
                         }).then(() => {

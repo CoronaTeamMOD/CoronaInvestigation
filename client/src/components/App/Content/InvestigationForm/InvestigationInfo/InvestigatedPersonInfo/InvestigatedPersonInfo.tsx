@@ -2,8 +2,8 @@ import * as yup from 'yup';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import React, { ChangeEvent, useEffect } from 'react';
-import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 import { CakeOutlined, EventOutlined, Help, CalendarToday } from '@material-ui/icons';
+import { Collapse, Grid, Typography, Paper, TextField, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 
 import UserType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
@@ -11,6 +11,7 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import InvestigationSubStatus from 'models/enums/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
@@ -34,8 +35,8 @@ const statusReasonLabel = 'פירוט'
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
-const transferInvestigation = 'נדרשת העברה';
-const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/
+const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/;
+const noReason = 'אין סיבה';
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
@@ -67,6 +68,11 @@ const InvestigatedPersonInfo = (props: Props) => {
         }
     }, [investigationStatus.subStatus]);
 
+    let updatedSubStatuses: string[] = subStatuses;
+    if (investigationStatus.mainStatus === InvestigationSubStatus.IN_PROCESS) {
+        updatedSubStatuses = updatedSubStatuses.concat(noReason);
+    }
+    
     const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
@@ -134,12 +140,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <b><bdi>{statusLabel}</bdi>: </b>
                             </Typography>
                             <Grid item className={classes.statusSelectGrid}>
-                                <FormControl variant="outlined" className={classes.statusSelect}>
-                                    <InputLabel className={classes.statusSelect} id="status-label">{statusLabel}</InputLabel>
+                                <FormControl variant='outlined' className={classes.statusSelect}>
+                                    <InputLabel className={classes.statusSelect} id='status-label'>{statusLabel}</InputLabel>
                                     <Select
-                                        labelId="status-label"
+                                        labelId='status-label'
                                         test-id='currentStatus'
-                                        variant="outlined"
+                                        variant='outlined'
                                         label={statusLabel}
                                         value={investigationStatus.mainStatus as string}
                                         onChange={(event) => {
@@ -169,10 +175,10 @@ const InvestigatedPersonInfo = (props: Props) => {
                             <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
                                 investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
                                 <Grid item className={classes.statusSelectGrid}>
-                                    <FormControl variant="outlined" className={classes.subStatusSelect}>
-                                        <InputLabel className={classes.subStatusLabel} id="sub-status-label">{subStatusLabel}</InputLabel>
+                                    <FormControl variant='outlined' className={classes.subStatusSelect}>
+                                        <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
                                         <Select
-                                            labelId="sub-status-label"
+                                            labelId='sub-status-label'
                                             test-id='currentSubStatus'
                                             label={subStatusLabel}
                                             value={investigationStatus.subStatus as string | undefined}
@@ -186,7 +192,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                             }}
                                         >
                                             {
-                                                subStatuses.map((subStatus: string) => (
+                                                updatedSubStatuses.map((subStatus: string) => (
                                                     <MenuItem
                                                         key={subStatus}
                                                         value={subStatus}>
@@ -305,4 +311,4 @@ interface Props {
     currentTab: number;
 };
 
-export default InvestigatedPersonInfo
+export default InvestigatedPersonInfo;
