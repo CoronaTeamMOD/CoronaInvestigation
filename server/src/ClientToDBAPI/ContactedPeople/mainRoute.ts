@@ -4,7 +4,7 @@ import logger from '../../Logger/Logger';
 import { handleDBErrors } from '../IntersectionsRoute/mainRoute'
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity, Service } from '../../Models/Logger/types';
-import { UPDATE_LIST_OF_CONTACTS, CHECK_FOR_DUPLICATE_IDS } from '../../DBService/ContactedPeople/Mutation';
+import { UPDATE_LIST_OF_CONTACTS } from '../../DBService/ContactedPeople/Mutation';
 import {
     GET_ALL_CONTACT_STATUSES,
     GET_ALL_FAMILY_RELATIONSHIPS,
