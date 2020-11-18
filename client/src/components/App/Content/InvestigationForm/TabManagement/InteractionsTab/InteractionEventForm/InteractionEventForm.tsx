@@ -52,7 +52,7 @@ const InteractionEventForm: React.FC<Props> = (
     resolver: yupResolver(InteractionEventSchema)
   });
 
-  const initialInteractionDate = React.useRef<Date>(interactionData?.startTime as Date);
+  const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
 
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
