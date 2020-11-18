@@ -157,7 +157,7 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.START_TIME]: startTimeToSave,
       [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
-      [InteractionEventDialogFields.PLACE_NAME]: name || generatePlacenameByPlaceSubType(placeSubtypeName),
+      [InteractionEventDialogFields.PLACE_NAME]: name,
       [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: data === null ? false : data.externalizationApproval,
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS]?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
