@@ -25,7 +25,13 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
         const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
-            checkedRowsIds.includes(row.epidemiologyNumber) ? {...row, [newValueFieldName]: newValue, statusReason: transferReason} : row);
+            checkedRowsIds.includes(row.epidemiologyNumber) ? 
+            {...row, 
+                wasInvestigationTransferred: true, 
+                [newValueFieldName]: newValue, 
+                transferReason
+            } 
+            : row);
         setTableRows(updatedRows);
     }
 

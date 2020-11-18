@@ -14,7 +14,7 @@ export const UPDATE_IS_USER_ACTIVE = gql`
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
-      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, statusReason: $transferReason, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
+      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, transferReason: $transferReason, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
     ) {
       clientMutationId
     }
@@ -24,7 +24,7 @@ mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $trans
 export const UPDATE_COUNTY_BY_USER = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!) {
     updateInvestigationByEpidemiologyNumber(
-      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, deskId: null}, epidemiologyNumber: $epidemiologyNumber}
+      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, deskId: null, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
     ) {
       clientMutationId
     }
