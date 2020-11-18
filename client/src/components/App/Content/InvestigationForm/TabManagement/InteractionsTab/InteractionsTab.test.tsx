@@ -8,7 +8,7 @@ import { testHooksFunction } from 'TestHooks';
 
 import useInteractionsTab from './useInteractionsTab';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
-        useInteractionsTabInput as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
+    useInteractionsTabParameters as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
@@ -17,6 +17,8 @@ let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
 let interactionsForTests: Interaction[] = [];
 let useInteractionsTabInput: useInteactionsTabsInputInterface = {
     interactions: interactionsForTests,
+    setAreThereContacts: () => {}, 
+    setDatesToInvestigate: () => {},
     // @ts-ignore
     setInteractions: (interactionsArr: Interaction[]) => {interactionsForTests = interactionsArr;}
 };

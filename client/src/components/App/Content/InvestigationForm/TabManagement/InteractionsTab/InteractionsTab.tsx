@@ -23,23 +23,15 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
-    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
-    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
-    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
+    const [datesToInvestigate, setDatesToInvestigate] = useState<Date[]>([]);
 
-    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate,
-        getClinicalDetailsSymptoms, handleDeleteContactEvent, handleDeleteContactedPerson } =
+    const { loadInteractions, handleDeleteContactEvent, handleDeleteContactedPerson } =
         useInteractionsTab({
             setInteractions,
             interactions,
-            setAreThereContacts
+            setAreThereContacts,
+            setDatesToInvestigate
         });
-
-    useEffect(() => {
-        loadInteractions();
-        getCoronaTestDate(setCoronaTestDate);
-        getClinicalDetailsSymptoms(setSymptomsStartDate, setDoesHaveSymptoms);
-    }, []);
 
     useEffect(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
@@ -69,7 +61,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).reverse().map(date =>
+                    datesToInvestigate.reverse().map(date =>
                         <ContactDateCard
                             allInteractions={interactions}
                             loadInteractions={loadInteractions}

@@ -38,7 +38,7 @@ class Logger {
             timestamp: new Date().toLocaleString('he-IL'),
             type: logType,
         }
-        if (JSON.parse(process.env.REACT_APP_SHOULD_POST_TO_AZURE as string)) {
+        if (process.env.REACT_APP_SHOULD_POST_TO_AZURE && JSON.parse(process.env.REACT_APP_SHOULD_POST_TO_AZURE as string)) {
             this._postToAzure(logMessage);
         }
     }

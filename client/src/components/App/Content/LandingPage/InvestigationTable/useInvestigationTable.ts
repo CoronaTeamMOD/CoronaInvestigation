@@ -20,6 +20,7 @@ import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import InvestigationSubStatus from 'models/enums/InvestigationSubStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
@@ -491,12 +492,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
-                            investigationSubStatus: null,
+                            investigationSubStatus: InvestigationSubStatus.IN_PROCESS,
                             epidemiologyNumber: investigationRow.epidemiologyNumber
                         });
                         setInvestigationStatus({
                             mainStatus: InvestigationMainStatus.IN_PROCESS,
-                            subStatus: null,
+                            subStatus: InvestigationSubStatus.IN_PROCESS,
                             statusReason: null
                         });
                         logger.info({
