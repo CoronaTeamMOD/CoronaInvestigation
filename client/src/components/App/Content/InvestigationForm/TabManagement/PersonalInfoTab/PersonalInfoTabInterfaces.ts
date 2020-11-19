@@ -4,7 +4,7 @@ import investigatedPatientRole from 'models/investigatedPatientRole';
 import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
 import { PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
-export interface usePersoanlInfoTabParameters {
+export interface usePersonalInfoTabParameters {
     occupationsStateContext: OccupationsContext;
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
     setPersonalInfoData: React.Dispatch<React.SetStateAction<PersonalInfoFormData>>;
