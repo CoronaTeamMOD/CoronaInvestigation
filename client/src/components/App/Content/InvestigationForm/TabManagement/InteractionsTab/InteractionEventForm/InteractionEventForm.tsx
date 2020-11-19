@@ -122,6 +122,7 @@ const InteractionEventForm: React.FC<Props> = (
   const externalizationErrorMessage = useMemo<string>(() => {
     const initialMessage = '*שים לב כי לא ניתן להחצין מקום אם ';
     const isPrivatePlace = placeType === placeTypesCodesHierarchy.privateHouse.code;
+    const isTransportationPlace = placeType === placeTypesCodesHierarchy.transportation.code;
     const errors: string[] = [];
 
     if (isPrivatePlace) {
@@ -130,7 +131,7 @@ const InteractionEventForm: React.FC<Props> = (
       if (isUnknownTime) {
         errors.push('הזמן אינו ידוע');
       }
-      if (!(locationAddress && (placeName || placeDescription))) {
+      if (!isTransportationPlace && !(locationAddress && (placeName || placeDescription))) {
         errors.push('חסרה כתובת ובנוסף חסר שם המוסד או פירוט');
       }
     }
