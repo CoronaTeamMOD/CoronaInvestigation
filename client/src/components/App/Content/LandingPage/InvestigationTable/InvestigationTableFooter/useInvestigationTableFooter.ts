@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Desk from 'models/Desk';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -46,12 +46,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             updatedDesk: updatedDesk.id,
             transferReason
         }).then(() => {
-            switchDeskLogger.info('the desk have been switched successfully',Severity.LOW)
+            switchDeskLogger.info('the desk have been switched successfully', Severity.LOW)
             updateRows(transferReason, 'investigationDesk', updatedDesk.deskName);
             handleCloseDesksDialog();
         })
         .catch(error => {
-            switchDeskLogger.error(`the investigator swap failed due to: ${error}`,Severity.HIGH)
+            switchDeskLogger.error(`the investigator swap failed due to: ${error}`, Severity.HIGH)
             handleCloseDesksDialog();
             alertError('לא ניתן היה לבצע את ההעברה לדסק');
         })
@@ -72,12 +72,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             user: updatedIvestigator.id,
             transferReason
         }).then(() => {
-            changeInvestigatorLogger.info('the investigator have been switched successfully',Severity.LOW)
+            changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW)
             updateRows(transferReason, 'investigator', updatedIvestigator.value);
             handleCloseInvestigatorsDialog();
         })
         .catch(error => {
-            changeInvestigatorLogger.error(`the investigator swap failed due to: ${error}`,Severity.HIGH)
+            changeInvestigatorLogger.error(`the investigator swap failed due to: ${error}`, Severity.HIGH)
             handleCloseInvestigatorsDialog();
             alertError('לא ניתן היה לבצע את ההעברה לחוקר');
         })

@@ -4,7 +4,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import InvestigatedPatient from 'models/InvestigatedPatient';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 
@@ -27,10 +27,10 @@ const useStatusUtils = () => {
         if (!investigatedPatient.isDeceased) {
             axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
-                    updateIsDeceasedLogger.info(`launching isDeceased request succssesfully ${result}`,Severity.LOW)
+                    updateIsDeceasedLogger.info(`launching isDeceased request succssesfully ${result}`, Severity.LOW)
                     onInvestigationFinish();
                 }).catch((error: any) => {
-                    updateIsDeceasedLogger.error(`launching isDeceased request unsuccssesfully ${error}`,Severity.HIGH)
+                    updateIsDeceasedLogger.error(`launching isDeceased request unsuccssesfully ${error}`, Severity.HIGH)
                     complexityErrorAlert(error);
                 })
         }
@@ -48,10 +48,10 @@ const useStatusUtils = () => {
         if (!investigatedPatient.isCurrentlyHospitialized) {
             axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
-                    updateIsCurrentlyHospitializedLogger.info(`launching isCurrentlyHospitialized request succssesfully ${result}`,Severity.LOW)
+                    updateIsCurrentlyHospitializedLogger.info(`launching isCurrentlyHospitialized request succssesfully ${result}`, Severity.LOW)
                     onInvestigationFinish();
                 }).catch((error: any) => {
-                    updateIsCurrentlyHospitializedLogger.error(`launching isCurrentlyHospitialized request unsuccssesfully ${error}`,Severity.HIGH)
+                    updateIsCurrentlyHospitializedLogger.error(`launching isCurrentlyHospitialized request unsuccssesfully ${error}`, Severity.HIGH)
                     complexityErrorAlert(error);
                 })
         }

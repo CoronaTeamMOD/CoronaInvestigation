@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import User from 'models/User';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';

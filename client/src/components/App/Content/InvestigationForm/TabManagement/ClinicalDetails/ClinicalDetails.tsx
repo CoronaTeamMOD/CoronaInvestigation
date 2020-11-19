@@ -11,7 +11,7 @@ import Street from 'models/Street';
 import logger from 'logger/logger';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
@@ -86,13 +86,13 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
             investigation: epidemiologyNumber,
             user: userId
         });
-        saveClinicalDetailsLogger.info('launching the server request',Severity.LOW)
+        saveClinicalDetailsLogger.info('launching the server request', Severity.LOW)
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
             .then(() => {
-                saveClinicalDetailsLogger.info('saved clinical details successfully',Severity.LOW)
+                saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW)
             })
             .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`,Severity.HIGH)
+                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH)
                 Swal.fire({
                     title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                     icon: 'error'

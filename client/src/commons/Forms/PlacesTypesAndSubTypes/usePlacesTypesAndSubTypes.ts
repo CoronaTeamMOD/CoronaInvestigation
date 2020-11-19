@@ -4,7 +4,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 
 import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
 
@@ -21,14 +21,14 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
             user: userId,
             investigation: epidemiologyNumber
         });
-        getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request',Severity.LOW)
+        getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW)
         axios.get('/intersections/getPlacesSubTypesByTypes').then(
             result => {
                 if (result && result.data) {
-                    getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful',Severity.LOW)
+                    getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW)
                     setPlacesSubTypesByTypes(result.data)
                 } else {
-                    getPlacesSubTypesByTypesLogger.warn('got status 200 but wrong data',Severity.HIGH)
+                    getPlacesSubTypesByTypesLogger.warn('got status 200 but wrong data', Severity.HIGH)
                 }
             }
         ).catch((error) => {

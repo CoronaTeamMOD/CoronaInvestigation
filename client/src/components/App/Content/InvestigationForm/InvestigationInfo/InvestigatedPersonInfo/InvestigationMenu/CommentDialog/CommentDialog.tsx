@@ -13,7 +13,7 @@ import CommentIcon from '@material-ui/icons/CommentOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import StoreStateType from 'redux/storeStateType';
@@ -46,11 +46,11 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
         axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
             .then(() => {
                 setComment(commentToSend);
-                sendCommentLogger.info('Successfully added comment to investigation',Severity.LOW)
+                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW)
             })
             .catch(() => {
                 alertError(errorMessage);
-                sendCommentLogger.error('Error occured in adding comment to investigation',Severity.HIGH)
+                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH)
             })
             .finally(handleDialogClose);
     };

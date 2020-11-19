@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import logger from 'logger/logger';
 import { timeout } from 'Utils/Timeout/Timeout';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
@@ -83,12 +83,12 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             user: userId,
             investigation: epidemiologyNumber
         });
-        investigationInfoLogger.info('launching investigation info request',Severity.LOW)
+        investigationInfoLogger.info('launching investigation info request', Severity.LOW)
         epidemiologyNumber !== defaultEpidemiologyNumber &&
             axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
             ).then((result: any) => {
                 if (result && result.data) {
-                    investigationInfoLogger.info('investigation info request was successful',Severity.LOW)
+                    investigationInfoLogger.info('investigation info request was successful', Severity.LOW)
                     const investigationInfo : InvestigationInfo = result.data;
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
                     setIsDeceased(investigationInfo.investigatedPatient.isDeceased);
@@ -100,11 +100,11 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setInvestigationStaticInfo(investigationInfo);
                 }
                 else {
-                    investigationInfoLogger.warn('got status 200 but wrong data',Severity.HIGH)
+                    investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH)
                     handleInvalidEntrance();
                 }
             }).catch((error) => {
-                investigationInfoLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
+                investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                 handleInvalidEntrance()
             });
     }, [epidemiologyNumber]);

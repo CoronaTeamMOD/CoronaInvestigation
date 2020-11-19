@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
@@ -55,7 +55,7 @@ const useDuplicateContactId = () => {
             user: userId,
             investigation: epidemiologyNumber
         })
-        loadContactsLogger.error('Didnt load contacts due to duplicate ids',Severity.MEDIUM)
+        loadContactsLogger.error('Didnt load contacts due to duplicate ids', Severity.MEDIUM)
         const errorText = "לא ניתן לטעון את האקסל כי מספרי הזיהוי הבאים כבר קיימים בחקירה \r\n" + 
             duplicateIdsContacts.map(contact => 
                 `${format(new Date(contact.startTime as Date), displayDateFormat)}: ${contact.idNumber}`).join("\r\n");

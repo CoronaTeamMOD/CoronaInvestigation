@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2';
 
 import logger from 'logger/logger'
-import { Service, Severity } from 'models/Logger'
+import { Severity } from 'models/Logger'
 import User from 'models/User';
 import SignUpUser from 'models/SignUpUser';
 import SignUpFields from 'models/enums/SignUpFields';
@@ -57,7 +57,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        fetchUsersLogger.info('launching users request',Severity.LOW)
+        fetchUsersLogger.info('launching users request', Severity.LOW)
         const fetchUsersRoute = getUsersRoute(); 
         if (fetchUsersRoute !== '') {
             axios.post(fetchUsersRoute, {
@@ -73,7 +73,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
                         setUsers(result.data?.users);
                         setTotalCount(result.data?.totalCount);
-                        fetchUsersLogger.info('got results back from the server',Severity.LOW)
+                        fetchUsersLogger.info('got results back from the server', Severity.LOW)
                     } 
                 })
                 .catch(err => {
@@ -83,7 +83,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     else {
                         handleFailedRequest('לא ניתן היה לקבל משתמשים');
                     }
-                    fetchUsersLogger.error('didnt get results back from the server',Severity.HIGH)
+                    fetchUsersLogger.error('didnt get results back from the server', Severity.HIGH)
                 });
         }
     }
@@ -94,17 +94,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request',Severity.LOW)
+        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW)
         axios.get('/users/sourcesOrganization')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setSourcesOrganization(result.data);
-                    fetchSourcesOrganizationLogger.info('got results back from the server',Severity.LOW)
+                    fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל מסגרות');
-                fetchSourcesOrganizationLogger.error('didnt get results back from the server',Severity.HIGH)      
+                fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 
@@ -114,17 +114,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        fetchCountiesLogger.info('launching counties request',Severity.LOW)
+        fetchCountiesLogger.info('launching counties request', Severity.LOW)
         axios.get('/counties')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setCounties(result.data);
-                    fetchCountiesLogger.info('got results back from the server',Severity.LOW)
+                    fetchCountiesLogger.info('got results back from the server', Severity.LOW)
                 }  
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל נפות');
-                fetchCountiesLogger.error('didnt get results back from the server',Severity.HIGH)      
+                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     };
 
@@ -134,18 +134,18 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        fetchUserTypesLogger.info('launching userTypes request',Severity.LOW)
+        fetchUserTypesLogger.info('launching userTypes request', Severity.LOW)
         axios.get('/users/userTypes')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json'))
                 {
                     setUserTypes(result.data);
-                    fetchUserTypesLogger.info('got results back from the server',Severity.LOW)
+                    fetchUserTypesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל סוגי משתמשים');
-                fetchUserTypesLogger.error('didnt get results back from the server',Severity.HIGH)       
+                fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     }
 
@@ -155,17 +155,17 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
             user: user.id,
             investigation: epidemiologyNumber
         });
-        fetchLanguagesLogger.info('launching languages request',Severity.LOW)
+        fetchLanguagesLogger.info('launching languages request', Severity.LOW)
         axios.get('/users/languages')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setLanguages(result?.data);
-                    fetchLanguagesLogger.info('got results back from the server',Severity.LOW)
+                    fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל שפות');
-                fetchLanguagesLogger.error('didnt get results back from the server',Severity.HIGH)      
+                fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 

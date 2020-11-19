@@ -7,7 +7,7 @@ import City from 'models/City';
 import County from 'models/County';
 import Desk from 'models/Desk';
 import Language from 'models/Language';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
@@ -30,7 +30,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        fetchCitiesLogger.info('launching cities request',Severity.LOW)
+        fetchCitiesLogger.info('launching cities request', Severity.LOW)
         axios.get('/addressDetails/cities')
             .then((result: any) => {
                 const cities: Map<string, City> = new Map();
@@ -38,11 +38,11 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                     cities.set(city.id, city)
                 });
                 setCities(cities);
-                fetchCitiesLogger.info('got results back from the server',Severity.LOW)
+                fetchCitiesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל ערים');
-                fetchCitiesLogger.error('didnt get results back from the server',Severity.HIGH)
+                fetchCitiesLogger.error('didnt get results back from the server', Severity.HIGH)
             });
     };
 
@@ -52,15 +52,15 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        fetchCountiesLogger.info('launching counties request',Severity.LOW)
+        fetchCountiesLogger.info('launching counties request', Severity.LOW)
         axios.get('/counties')
             .then(result => {
                 result?.data && setCounties(result?.data);
-                fetchCountiesLogger.info('got results back from the server',Severity.LOW)
+                fetchCountiesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל נפות');
-                fetchCountiesLogger.error('didnt get results back from the server',Severity.HIGH)       
+                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     };
 
@@ -70,15 +70,15 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request',Severity.LOW)
+        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW)
         axios.get('/users/sourcesOrganization')
             .then(result => {
                 result?.data && setSourcesOrganization(result?.data);
-                fetchSourcesOrganizationLogger.info('got results back from the server',Severity.LOW)
+                fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל מסגרות');
-                fetchSourcesOrganizationLogger.error('didnt get results back from the server',Severity.HIGH)      
+                fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 
@@ -88,15 +88,15 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        fetchLanguagesLogger.info('launching languages request',Severity.LOW)
+        fetchLanguagesLogger.info('launching languages request', Severity.LOW)
         axios.get('/users/languages')
             .then(result => {
                 result?.data && setLanguages(result?.data);
-                fetchLanguagesLogger.info('got results back from the server',Severity.LOW)
+                fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל שפות');
-                fetchLanguagesLogger.error('didnt get results back from the server',Severity.HIGH)    
+                fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)    
             });
     }
     
@@ -106,13 +106,13 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        fetchDesksLogger.info('launching desks request',Severity.LOW)
+        fetchDesksLogger.info('launching desks request', Severity.LOW)
         axios.get('/desks').then(response => {
-            fetchDesksLogger.info('The desks were fetched successfully',Severity.LOW)
+            fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW)
             const { data } = response;
             setDesks(data);
         }).catch(err => {
-            fetchDesksLogger.error(`got error from the server: ${err}`,Severity.HIGH)
+            fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH)
         })
     }
 
@@ -130,15 +130,15 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             user: userId,
             investigation: epidemiologyNumber
         });
-        createUserLogger.info('launching createUser request',Severity.LOW)
+        createUserLogger.info('launching createUser request', Severity.LOW)
         axios.post('/users', {...newUser, languages : newUser.languages || []})
         .then(() => {
             handleSaveUser && handleSaveUser();
-            createUserLogger.info('user was created successfully',Severity.LOW)
+            createUserLogger.info('user was created successfully', Severity.LOW)
         })
         .catch(err => {
             handleFailedRequest('לא ניתן היה ליצור משתמש חדש');
-            createUserLogger.error('create user was failed',Severity.CRITICAL)        
+            createUserLogger.error('create user was failed', Severity.CRITICAL)        
         })
     }
 

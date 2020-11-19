@@ -10,7 +10,7 @@ import ResortData from 'models/ResortData';
 import logger from 'logger/logger';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FieldName from 'commons/FieldName/FieldName';
@@ -85,11 +85,11 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       user: userId
     });
 
-    fetchExposuresAndFlightsLogger.info(`launching exposures and flights request`,Severity.LOW)
+    fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW)
     axios
       .get('/exposure/exposures/' + investigationId)
       .then(result => {
-        fetchExposuresAndFlightsLogger.info('got results back from the server',Severity.LOW)
+        fetchExposuresAndFlightsLogger.info('got results back from the server', Severity.LOW)
         const data: Exposure[] = result?.data;
         return data && data.map(parseDbExposure);
       })
@@ -105,23 +105,23 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 wasInDeadSea: result.wasInDeadSea,
               });
           }).catch((error) => {
-            getCoronaTestDateLogger.error(`failed to get resorts response due to ` + error,Severity.HIGH)
+            getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH)
           })
         }
       })
       .then(() => {
-        getCoronaTestDateLogger.info(`launching Corona Test Date request`,Severity.LOW)
+        getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW)
         axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
           if (res.data) {
-            getCoronaTestDateLogger.info('got results back from the server',Severity.LOW)
+            getCoronaTestDateLogger.info('got results back from the server', Severity.LOW)
             setCoronaTestDate(convertDate(res.data.coronaTestDate));
           } else {
-            getCoronaTestDateLogger.warn('got status 200 but wrong data',Severity.HIGH)
+            getCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH)
           }
         })
       })
       .catch((error) => {
-        fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`,Severity.HIGH)
+        fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH)
         Swal.fire({
           title: 'לא ניתן היה לטעון את החשיפה',
           icon: 'error',
@@ -135,9 +135,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       investigation: investigationId,
       user: userId
     });
-    fetchResortsDataLogger.info(`launching investigated patient resorts request`,Severity.LOW)
+    fetchResortsDataLogger.info('launching investigated patient resorts request', Severity.LOW)
     const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
-    fetchResortsDataLogger.info(`got investigated patient resorts response successfully`,Severity.LOW)
+    fetchResortsDataLogger.info('got investigated patient resorts response successfully', Severity.LOW)
     const resortData: ResortData =  {
       wasInEilat: result?.data?.wasInEilat,
       wasInDeadSea: result?.data?.wasInDeadSea
@@ -183,14 +183,14 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       investigation: investigationId,
       user: userId
     });
-    saveExposureLogger.info('launching the server request',Severity.LOW)
+    saveExposureLogger.info('launching the server request', Severity.LOW)
     const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
     Promise.all(tabSavePromises)
     .then(() => {
-      saveExposureLogger.info('saved confirmed exposures, flights and resorts data successfully',Severity.LOW)
+      saveExposureLogger.info('saved confirmed exposures, flights and resorts data successfully', Severity.LOW)
     })
     .catch((error) => {
-      saveExposureLogger.error(`got error from server: ${error}`,Severity.HIGH)
+      saveExposureLogger.error(`got error from server: ${error}`, Severity.HIGH)
       Swal.fire({
         title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
         icon: 'error'

@@ -6,7 +6,7 @@ import { persistor } from 'redux/store';
 
 import User from 'models/User';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setIsActive } from 'redux/User/userActionCreators';
 
@@ -40,12 +40,12 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user.investigationGroup]);
 
     const getUserActivityStatus = () => {
-        getUserActivityStatusLogger.info('started user activity status fetching',Severity.LOW)
+        getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW)
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
             if (result.data) {
                 setIsActive(result.data.isActive);
-                getUserActivityStatusLogger.info('fetched user activity status successfully',Severity.LOW)
+                getUserActivityStatusLogger.info('fetched user activity status successfully', Severity.LOW)
             } else {
                 getUserActivityStatusLogger.warn('The user doesnt exist on db',Severity.MEDIUM)
             }
@@ -57,7 +57,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`,Severity.HIGH)
+            getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`, Severity.HIGH)
         });
     }
 
@@ -74,7 +74,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         }).then((result) => {
             if(result.data)
                 setIsActive(result.data.isActive);
-                getUserActivityStatusLogger.info('updated is user active successfully',Severity.LOW)
+                getUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW)
         }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לעדכן את הסטטוס שלך',
@@ -83,7 +83,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            getUserActivityStatusLogger.error(`error in updating is user active ${error}`,Severity.HIGH)
+            getUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH)
         });
     }
 
@@ -91,11 +91,11 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         const getCountyByUserLogger = logger.setup({
             workflow: 'GraphQL request to the DB',
         });
-        getCountyByUserLogger.info('started fetching county display name by user',Severity.LOW)
+        getCountyByUserLogger.info('started fetching county display name by user', Severity.LOW)
         axios.get('counties/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data);
-                getCountyByUserLogger.info('fetched county display name by user successfully',Severity.LOW)
+                getCountyByUserLogger.info('fetched county display name by user successfully', Severity.LOW)
             }
         }).catch((error) => {
             Swal.fire({
@@ -105,7 +105,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`,Severity.HIGH)
+            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`, Severity.HIGH)
         });
     }
 

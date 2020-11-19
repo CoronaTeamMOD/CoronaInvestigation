@@ -7,7 +7,7 @@ import logger from 'logger/logger';
 import userType from 'models/enums/UserType';
 import {timeout} from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import {Service, Severity} from 'models/Logger';
+import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import {InvestigationStatus} from 'models/InvestigationStatus';
@@ -69,7 +69,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    updateInvestigationStatusLogger.info(`launching investigation status request`,Severity.LOW)
+                    updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW)
                     const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
                     const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
                     if (shouldUpdateInvestigationStatus()) {
@@ -79,9 +79,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                             statusReason: statusReason,
                             epidemiologyNumber: epidemiologyNumber
                         }).then(() => {
-                            updateInvestigationStatusLogger.info(`update investigation status request was successful`,Severity.LOW)
+                            updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW)
                         }).catch((error) => {
-                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
+                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                             handleUnfinishedInvestigationFailed();
                         })
                     }

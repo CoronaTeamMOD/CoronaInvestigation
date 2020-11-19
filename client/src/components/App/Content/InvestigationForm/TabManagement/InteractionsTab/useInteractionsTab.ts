@@ -7,7 +7,7 @@ import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
@@ -45,14 +45,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             investigation: epidemiologyNumber,
             user: userId
         });
-        getCoronaTestDateLogger.info(`launching Corona Test Date request`,Severity.LOW)
+        getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW)
 
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
-                getCoronaTestDateLogger.info('got results back from the server',Severity.LOW)
+                getCoronaTestDateLogger.info('got results back from the server', Severity.LOW)
                 setCoronaTestDate(convertDate(res.data.coronaTestDate));
             } else {
-                getCoronaTestDateLogger.warn('got status 200 but wrong data',Severity.HIGH)
+                getCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH)
             }
         })
     }
@@ -63,16 +63,16 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             investigation: epidemiologyNumber,
             user: userId
         });
-        getClinicalDetailsSymptomsLogger.info('launching clinical data request',Severity.LOW)
+        getClinicalDetailsSymptomsLogger.info('launching clinical data request', Severity.LOW)
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data) {
-                    getClinicalDetailsSymptomsLogger.info('got results back from the server',Severity.LOW)
+                    getClinicalDetailsSymptomsLogger.info('got results back from the server', Severity.LOW)
                     const clinicalDetails = result.data;
                     setDoesHaveSymptoms(clinicalDetails.doesHaveSymptoms);
                     setSymptomsStartDate(convertDate(clinicalDetails.symptomsStartTime));
                 } else {
-                    getClinicalDetailsSymptomsLogger.warn('got status 200 but got invalid outcome',Severity.HIGH)
+                    getClinicalDetailsSymptomsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH)
                 }
             });
     }
@@ -83,10 +83,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             investigation: epidemiologyNumber,
             user: userId
         });
-        loadInteractionsLogger.info(`launching interactions request`,Severity.LOW)
+        loadInteractionsLogger.info('launching interactions request', Severity.LOW)
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
-                loadInteractionsLogger.info('got results back from the server',Severity.LOW)
+                loadInteractionsLogger.info('got results back from the server', Severity.LOW)
                 const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
                     return currentValue + interaction.contacts.length
@@ -94,7 +94,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 setAreThereContacts(numberOfContactedPeople > 0);
                 setInteractions(allInteractions);
             }).catch((error) => {
-                loadInteractionsLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
+                loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                 handleLoadInteractionsError();
             });
     }
@@ -186,14 +186,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }
         }).then((result) => {
             if (result.value) {
-                deletingInteractionsLogger.info(`launching interaction delete request`,Severity.LOW)
+                deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW)
                 axios.delete('/intersections/deleteContactEvent', {
                     params: { contactEventId }
                 }).then(() => {
-                    deletingInteractionsLogger.info(`interaction was deleted successfully`,Severity.LOW)
+                    deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch((error) => {
-                    deletingInteractionsLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
+                    deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                     handleDeleteFailed(eventDeleteFailedMsg);
                 })
             }
@@ -221,14 +221,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }
         }).then((result) => {
             if (result.value) {
-                deleteContactedPersonLogger.info(`launching interaction delete request`,Severity.LOW)
+                deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW)
                 axios.delete('/intersections/contactedPerson', {
                     params: { contactedPersonId }
                 }).then(() => {
-                    deleteContactedPersonLogger.info(`interaction was deleted successfully`,Severity.LOW)
+                    deleteContactedPersonLogger.info('interaction was deleted successfully', Severity.LOW)
                     loadInteractions();
                 }).catch((error) => {
-                    deleteContactedPersonLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
+                    deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                     handleDeleteFailed(contactDeleteFailedMsg);
                 })
             }
