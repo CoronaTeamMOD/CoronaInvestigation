@@ -16,7 +16,7 @@ import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexit
 import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
-import { noReason } from './InvestigatedPersonInfo';
+import { inProcess } from './InvestigatedPersonInfo';
 import useStyles from './InvestigatedPersonInfoStyles';
 import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
 
@@ -77,7 +77,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                     if (shouldUpdateInvestigationStatus()) {
                         axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: investigationStatus.mainStatus,
-                            investigationSubStatus: subStatus !== noReason ? subStatus : null,
+                            investigationSubStatus: subStatus !== inProcess ? subStatus : null,
                             statusReason: statusReason,
                             epidemiologyNumber: epidemiologyNumber
                         }).then(() => {
