@@ -80,6 +80,11 @@ const ExposureForm = (props: any) => {
   }
 
   useEffect(() => {
+    const confirmedExposuresLogger = logger.setup({
+      workflow: 'Fetching list of confirmed exposures',
+      investigation: epidemiologyNumber,
+      user: userId
+    });
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
       const confirmedExposuresLogger = logger.setup({
