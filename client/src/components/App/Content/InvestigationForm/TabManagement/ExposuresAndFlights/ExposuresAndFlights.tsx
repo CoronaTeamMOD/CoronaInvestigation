@@ -10,7 +10,7 @@ import ResortData from 'models/ResortData';
 import logger from 'logger/logger';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FieldName from 'commons/FieldName/FieldName';
@@ -73,25 +73,23 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
   const fetchExposuresAndFlights = () => {
-    logger.info({
-      service: Service.CLIENT,
-      severity: Severity.LOW,
+    const fetchExposuresAndFlightsLogger = logger.setup({
       workflow: 'Fetching Exposures And Flights',
-      step: `launching exposures and flights request`,
-      user: userId,
-      investigation: investigationId
+      investigation: investigationId,
+      user: userId
     });
+
+    const getCoronaTestDateLogger = logger.setup({
+      workflow: 'Getting Corona Test Date',
+      investigation: investigationId,
+      user: userId
+    });
+
+    fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW)
     axios
       .get('/exposure/exposures/' + investigationId)
       .then(result => {
-        logger.info({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow: 'Fetching Exposures And Flights',
-          step: 'got results back from the server',
-          user: userId,
-          investigation: investigationId
-        });
+        fetchExposuresAndFlightsLogger.info('got results back from the server', Severity.LOW)
         const data: Exposure[] = result?.data;
         return data && data.map(parseDbExposure);
       })
@@ -107,56 +105,23 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                 wasInDeadSea: result.wasInDeadSea,
               });
           }).catch((error) => {
-            logger.error({
-              service: Service.CLIENT,
-              severity: Severity.HIGH,
-              workflow: 'Fetching investigated patient resorts data',
-              step: `failed to get resorts response due to ` + error,
-              user: userId,
-              investigation: investigationId
-          });
+            getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH)
           })
         }
       })
       .then(() => {
-        logger.info({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow: 'Getting Corona Test Date',
-          step: `launching Corona Test Date request`,
-          user: userId,
-          investigation: investigationId
-        });
+        getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW)
         axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
           if (res.data) {
-            logger.info({
-              service: Service.CLIENT,
-              severity: Severity.LOW,
-              workflow: 'Getting Corona Test Date',
-              step: 'got results back from the server',
-              user: userId,
-              investigation: investigationId
-            });
+            getCoronaTestDateLogger.info('got results back from the server', Severity.LOW)
             setCoronaTestDate(convertDate(res.data.coronaTestDate));
           } else {
-            logger.warn({
-              service: Service.CLIENT,
-              severity: Severity.HIGH,
-              workflow: 'Getting Corona Test Date',
-              step: 'got status 200 but wrong data'
-            });
+            getCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH)
           }
         })
       })
       .catch((error) => {
-        logger.error({
-          service: Service.CLIENT,
-          severity: Severity.LOW,
-          workflow: 'Fetching Exposures And Flights',
-          step: `got error from server: ${error}`,
-          investigation: investigationId,
-          user: userId
-        });
+        fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH)
         Swal.fire({
           title: 'לא ניתן היה לטעון את החשיפה',
           icon: 'error',
@@ -165,29 +130,19 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   }
 
   const fetchResortsData: () => Promise<ResortData> = async () => {
-      const workflow = 'Fetching investigated patient resorts data'
-      logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
-        workflow,
-        step: `launching investigated patient resorts request`,
-        user: userId,
-        investigation: investigationId
-      });
-      const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
-      logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
-        workflow,
-        step: `got investigated patient resorts response successfully`,
-        user: userId,
-        investigation: investigationId
-      });
-      const resortData: ResortData =  {
-        wasInEilat: result?.data?.wasInEilat,
-        wasInDeadSea: result?.data?.wasInDeadSea
-      }
-      return resortData;
+    const fetchResortsDataLogger = logger.setup({
+      workflow: 'Fetching investigated patient resorts data',
+      investigation: investigationId,
+      user: userId
+    });
+    fetchResortsDataLogger.info('launching investigated patient resorts request', Severity.LOW)
+    const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
+    fetchResortsDataLogger.info('got investigated patient resorts response successfully', Severity.LOW)
+    const resortData: ResortData =  {
+      wasInEilat: result?.data?.wasInEilat,
+      wasInDeadSea: result?.data?.wasInDeadSea
+    }
+    return resortData;
   }
 
   useEffect(() => {
@@ -223,38 +178,22 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const saveExposure = (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
-    logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
-        workflow: 'Saving Exposures And Flights tab',
-        step: 'launching the server request',
-        investigation: investigationId,
-        user: userId
-    })
+    const saveExposureLogger = logger.setup({
+      workflow: 'Saving Exposures And Flights tab',
+      investigation: investigationId,
+      user: userId
+    });
+    saveExposureLogger.info('launching the server request', Severity.LOW)
     const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
     Promise.all(tabSavePromises)
     .then(() => {
-      logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
-        workflow: 'Saving Exposures And Flights tab',
-        step: 'saved confirmed exposures, flights and resorts data successfully',
-        investigation: investigationId,
-        user: userId
-      });
+      saveExposureLogger.info('saved confirmed exposures, flights and resorts data successfully', Severity.LOW)
     })
     .catch((error) => {
-        logger.error({
-          service: Service.CLIENT,
-          severity: Severity.HIGH,
-          workflow: 'Saving Exposures And Flights tab',
-          step: `got error from server: ${error}`,
-          investigation: investigationId,
-          user: userId
-        });
-        Swal.fire({
-          title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-          icon: 'error'
+      saveExposureLogger.error(`got error from server: ${error}`, Severity.HIGH)
+      Swal.fire({
+        title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
+        icon: 'error'
       });
     })
     .finally(() => setFormState(investigationId, id, true))

@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import logger from 'logger/logger';
 import { timeout } from 'Utils/Timeout/Timeout';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
@@ -78,26 +78,17 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, []);
 
     React.useEffect(() => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const investigationInfoLogger = logger.setup({
             workflow: 'Fetching investigation Info',
-            step: 'launching investigation info request',
             user: userId,
             investigation: epidemiologyNumber
         });
+        investigationInfoLogger.info('launching investigation info request', Severity.LOW)
         epidemiologyNumber !== defaultEpidemiologyNumber &&
             axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`
             ).then((result: any) => {
                 if (result && result.data) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching investigation Info',
-                        step: 'investigation info request was successful',
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    investigationInfoLogger.info('investigation info request was successful', Severity.LOW)
                     const investigationInfo : InvestigationInfo = result.data;
                     setInvestigatedPatientId(investigationInfo.investigatedPatientId);
                     setIsDeceased(investigationInfo.investigatedPatient.isDeceased);
@@ -109,23 +100,11 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
                     setInvestigationStaticInfo(investigationInfo);
                 }
                 else {
-                    logger.warn({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Fetching investigation Info',
-                        step: 'got status 200 but wrong data'
-                    });
+                    investigationInfoLogger.warn('got status 200 but wrong data', Severity.HIGH)
                     handleInvalidEntrance();
                 }
             }).catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching investigation Info',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                investigationInfoLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
                 handleInvalidEntrance()
             });
     }, [epidemiologyNumber]);

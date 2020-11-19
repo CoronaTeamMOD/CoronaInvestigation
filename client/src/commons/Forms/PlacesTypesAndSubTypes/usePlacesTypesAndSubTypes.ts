@@ -4,7 +4,7 @@ import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 
 import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInterfaces';
 
@@ -16,44 +16,23 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
     const { setPlacesSubTypesByTypes } = parameters;
 
     const getPlacesSubTypesByTypes = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const getPlacesSubTypesByTypesLogger = logger.setup({
             workflow: 'Fetching Places And Sub Types By Types',
-            step: 'launching places and sub types by types request',
             user: userId,
             investigation: epidemiologyNumber
         });
+        getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW)
         axios.get('/intersections/getPlacesSubTypesByTypes').then(
             result => {
                 if (result && result.data) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching Places And Sub Types By Types',
-                        step: 'places and sub types by types request was successful',
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    getPlacesSubTypesByTypesLogger.info('places and sub types by types request was successful', Severity.LOW)
                     setPlacesSubTypesByTypes(result.data)
                 } else {
-                    logger.warn({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Fetching Places And Sub Types By Types',
-                        step: 'got status 200 but wrong data'
-                    });
+                    getPlacesSubTypesByTypesLogger.warn('got status 200 but wrong data', Severity.HIGH)
                 }
             }
         ).catch((error) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Fetching Places And Sub Types By Types',
-                step: `got errors in server result: ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            getPlacesSubTypesByTypesLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
         })
     };
 

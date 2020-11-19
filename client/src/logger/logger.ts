@@ -1,6 +1,6 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
-import { MethodsLogMessage, LogMessage, LogType, Environment, InitialLogData, Service, Severity } from 'models/Logger';
+import { MethodsLogMessage, LogMessage, LogType, Environment, InitialLogData, Severity, Service } from 'models/Logger';
 
 class Logger {
 

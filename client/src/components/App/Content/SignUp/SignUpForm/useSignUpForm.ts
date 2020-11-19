@@ -7,7 +7,7 @@ import City from 'models/City';
 import County from 'models/County';
 import Desk from 'models/Desk';
 import Language from 'models/Language';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
@@ -25,14 +25,12 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const fetchCities = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchCitiesLogger = logger.setup({
             workflow: 'Fetching cities',
-            step: 'launching cities request',
             user: userId,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchCitiesLogger.info('launching cities request', Severity.LOW)
         axios.get('/addressDetails/cities')
             .then((result: any) => {
                 const cities: Map<string, City> = new Map();
@@ -40,155 +38,81 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                     cities.set(city.id, city)
                 });
                 setCities(cities);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching cities',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                fetchCitiesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל ערים');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching cities',
-                    step: 'didnt get results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                fetchCitiesLogger.error('didnt get results back from the server', Severity.HIGH)
             });
     };
 
     const fetchCounties = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchCountiesLogger = logger.setup({
             workflow: 'Fetching counties',
-            step: 'launching counties request',
             user: userId,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchCountiesLogger.info('launching counties request', Severity.LOW)
         axios.get('/counties')
             .then(result => {
                 result?.data && setCounties(result?.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching counties',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                fetchCountiesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל נפות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching counties',
-                    step: 'didnt get results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });         
+                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     };
 
     const fetchSourcesOrganization = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchSourcesOrganizationLogger = logger.setup({
             workflow: 'Fetching sourcesOrganization',
-            step: 'launching sourcesOrganization request',
             user: userId,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW)
         axios.get('/users/sourcesOrganization')
             .then(result => {
                 result?.data && setSourcesOrganization(result?.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching sourcesOrganization',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל מסגרות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching sourcesOrganization',
-                    step: 'didnt get results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });         
+                fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 
     const fetchLanguages = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchLanguagesLogger = logger.setup({
             workflow: 'Fetching languages',
-            step: 'launching languages request',
             user: userId,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchLanguagesLogger.info('launching languages request', Severity.LOW)
         axios.get('/users/languages')
             .then(result => {
                 result?.data && setLanguages(result?.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching languages',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל שפות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching languages',
-                    step: 'didnt get results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });         
+                fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)    
             });
     }
     
     const fetchDesks = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchDesksLogger = logger.setup({
             workflow: 'Getting desks',
-            step: 'launching desks request',
             user: userId,
             investigation: epidemiologyNumber
         });
+        fetchDesksLogger.info('launching desks request', Severity.LOW)
         axios.get('/desks').then(response => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Desks',
-                step: 'The desks were fetched successfully'
-            });
+            fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW)
             const { data } = response;
             setDesks(data);
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Desks',
-                step: `got error from the server: ${err}`
-            });
+            fetchDesksLogger.error(`got error from the server: ${err}`, Severity.HIGH)
         })
     }
 
@@ -201,37 +125,20 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }, [])
 
     const createUser = (newUser: SignUpUser) => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const createUserLogger = logger.setup({
             workflow: 'Create user',
-            step: 'launching createUser request',
             user: userId,
             investigation: epidemiologyNumber
         });
+        createUserLogger.info('launching createUser request', Severity.LOW)
         axios.post('/users', {...newUser, languages : newUser.languages || []})
         .then(() => {
             handleSaveUser && handleSaveUser();
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Create user',
-                step: 'user was created successfully',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            createUserLogger.info('user was created successfully', Severity.LOW)
         })
         .catch(err => {
             handleFailedRequest('לא ניתן היה ליצור משתמש חדש');
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.CRITICAL,
-                workflow: 'Create user',
-                step: 'create user was failed',
-                user: userId,
-                investigation: epidemiologyNumber
-            });         
-        
+            createUserLogger.error('create user was failed', Severity.CRITICAL)        
         })
     }
 

@@ -10,7 +10,7 @@ import useFormStyles from 'styles/formStyles';
 import PlaceSubType from 'models/PlaceSubType';
 import CovidPatient from 'models/CovidPatient';
 import DatePick from 'commons/DatePick/DatePick';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import ExposureFields from 'models/enums/ExposureFields';
 import CovidPatientFields from 'models/CovidPatientFields';
@@ -81,34 +81,20 @@ const ExposureForm = (props: any) => {
   useEffect(() => {
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
-      setIsLoading(true);
-      logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
+      const confirmedExposuresLogger = logger.setup({
         workflow: 'Fetching list of confirmed exposures',
-        step: `launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`,
-        user: userId,
-        investigation: epidemiologyNumber
+        investigation: epidemiologyNumber,
+        user: userId
       });
+      setIsLoading(true);
+      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`, Severity.LOW)
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
           if (result?.data && result.headers['content-type'].includes('application/json')) {
-            logger.info({
-              service: Service.CLIENT,
-              severity: Severity.LOW,
-              workflow: 'Fetching list of confirmed exposures',
-              step: 'got results back from the server',
-              user: userId,
-              investigation: epidemiologyNumber
-            });
+            confirmedExposuresLogger.info('got results back from the server', Severity.LOW)
             setOptionalCovidPatients(result.data);
           } else {
-            logger.warn({
-              service: Service.CLIENT,
-              severity: Severity.HIGH,
-              workflow: 'Fetching list of confirmed exposures',
-              step: 'got status 200 but wrong data'
-            });
+            confirmedExposuresLogger.warn('got status 200 but wrong data', Severity.HIGH)
             Swal.fire({
               title: 'לא הצלחנו לטעון את רשימת המאומתים',
               text: 'שימו לב שהזנתם נתונים תקינים',
@@ -121,14 +107,7 @@ const ExposureForm = (props: any) => {
           }
         })
         .catch((error) => {
-          logger.error({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching list of confirmed exposures',
-            step: `got error from server: ${error}`,
-            investigation: epidemiologyNumber,
-            user: userId
-          });
+          confirmedExposuresLogger.error(`got error from server: ${error}`, Severity.HIGH)
           Swal.fire({
             title: 'לא הצלחנו לטעון את רשימת המאומתים',
             text: 'שימו לב שהזנתם נתונים תקינים',

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2';
 
 import logger from 'logger/logger'
-import { Service, Severity } from 'models/Logger'
+import { Severity } from 'models/Logger'
 import User from 'models/User';
 import SignUpUser from 'models/SignUpUser';
 import SignUpFields from 'models/enums/SignUpFields';
@@ -52,14 +52,12 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     }
 
     const fetchUsers = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchUsersLogger = logger.setup({
             workflow: 'Fetching users',
-            step: 'launching users request',
             user: user.id,
             investigation: epidemiologyNumber
         });
+        fetchUsersLogger.info('launching users request', Severity.LOW)
         const fetchUsersRoute = getUsersRoute(); 
         if (fetchUsersRoute !== '') {
             axios.post(fetchUsersRoute, {
@@ -75,14 +73,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
                         setUsers(result.data?.users);
                         setTotalCount(result.data?.totalCount);
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Fetching users',
-                            step: 'got results back from the server',
-                            user: user.id,
-                            investigation: epidemiologyNumber
-                        });
+                        fetchUsersLogger.info('got results back from the server', Severity.LOW)
                     } 
                 })
                 .catch(err => {
@@ -92,160 +83,89 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     else {
                         handleFailedRequest('לא ניתן היה לקבל משתמשים');
                     }
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Fetching users',
-                        step: 'didnt get results back from the server',
-                        user: user.id,
-                        investigation: epidemiologyNumber
-                    });
+                    fetchUsersLogger.error('didnt get results back from the server', Severity.HIGH)
                 });
         }
     }
 
     const fetchSourcesOrganization = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchSourcesOrganizationLogger = logger.setup({
             workflow: 'Fetching sourcesOrganization',
-            step: 'launching sourcesOrganization request',
             user: user.id,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW)
         axios.get('/users/sourcesOrganization')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setSourcesOrganization(result.data);
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching sourcesOrganization',
-                        step: 'got results back from the server',
-                        user: user.id,
-                        investigation: epidemiologyNumber
-                    });
+                    fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל מסגרות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching sourcesOrganization',
-                    step: 'didnt get results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });         
+                fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 
     const fetchCounties = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchCountiesLogger = logger.setup({
             workflow: 'Fetching counties',
-            step: 'launching counties request',
             user: user.id,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchCountiesLogger.info('launching counties request', Severity.LOW)
         axios.get('/counties')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setCounties(result.data);
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching counties',
-                        step: 'got results back from the server',
-                        user: user.id,
-                        investigation: epidemiologyNumber
-                    });
+                    fetchCountiesLogger.info('got results back from the server', Severity.LOW)
                 }  
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל נפות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching counties',
-                    step: 'didnt get results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });         
+                fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     };
 
     const fetchUserTypes = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchUserTypesLogger = logger.setup({
             workflow: 'Fetching userTypes',
-            step: 'launching userTypes request',
             user: user.id,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchUserTypesLogger.info('launching userTypes request', Severity.LOW)
         axios.get('/users/userTypes')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json'))
                 {
                     setUserTypes(result.data);
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching userTypes',
-                        step: 'got results back from the server',
-                        user: user.id,
-                        investigation: epidemiologyNumber
-                    });
+                    fetchUserTypesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל סוגי משתמשים');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching userTypes',
-                    step: 'didnt get results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });         
+                fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     }
 
     const fetchLanguages = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchLanguagesLogger = logger.setup({
             workflow: 'Fetching languages',
-            step: 'launching languages request',
             user: user.id,
             investigation: epidemiologyNumber
-        })
+        });
+        fetchLanguagesLogger.info('launching languages request', Severity.LOW)
         axios.get('/users/languages')
             .then(result => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setLanguages(result?.data);
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching languages',
-                        step: 'got results back from the server',
-                        user: user.id,
-                        investigation: epidemiologyNumber
-                    });
+                    fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
             .catch(err => {
                 handleFailedRequest('לא ניתן היה לקבל שפות');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching languages',
-                    step: 'didnt get results back from the server',
-                    user: user.id,
-                    investigation: epidemiologyNumber
-                });         
+                fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
 

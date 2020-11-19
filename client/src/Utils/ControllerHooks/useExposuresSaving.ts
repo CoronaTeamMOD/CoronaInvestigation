@@ -5,7 +5,7 @@ import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/C
 
 import axios from '../axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
@@ -26,15 +26,12 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
 
     const saveResortsData = () : Promise<void> => {
         let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
-        
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const saveResortsDataLogger = logger.setup({
             workflow: 'Saving investigated patient resort data',
-            step: 'launching the server request',
-            investigation: epidemiologyNumber,
-            user: userId
+            user: userId,
+            investigation: epidemiologyNumber
         });
+        saveResortsDataLogger.info('launching the server request', Severity.LOW)
 
         return axios.post('/investigationInfo/resorts', {
             wasInEilat,
@@ -46,6 +43,11 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     const saveExposureAndFlightData = async () : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
         let filteredExposures : (Exposure | DBExposure)[] = [];
+        const saveExposureAndFlightDataLogger = logger.setup({
+            workflow: 'Saving Exposures And Flights',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         if (!wereFlights && !wereConfirmedExposures) {
             exposuresToDelete = exposures.map(exposure => exposure.id).filter(id => id);
         } else {
@@ -60,15 +62,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
-
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving Exposures And Flights',
-            step: 'launching the server request',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW)
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
