@@ -79,28 +79,20 @@ const ExposureForm = (props: any) => {
   }
 
   useEffect(() => {
+    const confirmedExposuresLogger = logger.setup({
+      workflow: 'Fetching list of confirmed exposures',
+      service: Service.CLIENT,
+      investigation: epidemiologyNumber,
+      user: userId
+    });
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
       setIsLoading(true);
-      logger.info({
-        service: Service.CLIENT,
-        severity: Severity.LOW,
-        workflow: 'Fetching list of confirmed exposures',
-        step: `launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`,
-        user: userId,
-        investigation: epidemiologyNumber
-      });
+      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`,Severity.LOW)
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
           if (result?.data && result.headers['content-type'].includes('application/json')) {
-            logger.info({
-              service: Service.CLIENT,
-              severity: Severity.LOW,
-              workflow: 'Fetching list of confirmed exposures',
-              step: 'got results back from the server',
-              user: userId,
-              investigation: epidemiologyNumber
-            });
+            confirmedExposuresLogger.info('got results back from the server',Severity.LOW)
             setOptionalCovidPatients(result.data);
           } else {
             logger.warn({
@@ -121,14 +113,7 @@ const ExposureForm = (props: any) => {
           }
         })
         .catch((error) => {
-          logger.error({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Fetching list of confirmed exposures',
-            step: `got error from server: ${error}`,
-            investigation: epidemiologyNumber,
-            user: userId
-          });
+          confirmedExposuresLogger.error(`got error from server: ${error}`,Severity.HIGH)
           Swal.fire({
             title: 'לא הצלחנו לטעון את רשימת המאומתים',
             text: 'שימו לב שהזנתם נתונים תקינים',

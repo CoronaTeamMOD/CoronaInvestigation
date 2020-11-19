@@ -81,34 +81,19 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = methods.getValues();
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const saveClinicalDetailsLogger = logger.setup({
             workflow: 'Saving clinical details tab',
-            step: 'launching the server request',
+            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
-        })
+        });
+        saveClinicalDetailsLogger.info('launching the server request',Severity.LOW)
         saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
             .then(() => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Saving clinical details tab',
-                    step: 'saved clinical details successfully',
-                    investigation: epidemiologyNumber,
-                    user: userId
-                });
+                saveClinicalDetailsLogger.info('saved clinical details successfully',Severity.LOW)
             })
             .catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Saving clinical details tab',
-                    step: `got error from server: ${error}`,
-                    investigation: epidemiologyNumber,
-                    user: userId
-                });
+                saveClinicalDetailsLogger.error(`got error from server: ${error}`,Severity.HIGH)
                 Swal.fire({
                     title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                     icon: 'error'

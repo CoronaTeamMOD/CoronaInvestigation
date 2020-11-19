@@ -36,31 +36,23 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     }
 
     const handleConfirmDesksDialog = (updatedDesk: Desk, transferReason: string) => {
+        const switchDeskLogger = logger.setup({
+            workflow: 'Switch desk',
+            service: Service.CLIENT,
+            investigation: checkedRowsIds.join(', '),
+            user: userId
+        });
         axios.post('/landingPage/changeDesk', {
             epidemiologyNumbers: checkedRowsIds,
             updatedDesk: updatedDesk.id,
             transferReason
         }).then(() => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch desk',
-                step: 'the desk have been switched successfully',
-                investigation: checkedRowsIds.join(', '),
-                user: userId
-            })
+            switchDeskLogger.info('the desk have been switched successfully',Severity.LOW)
             updateRows(transferReason, 'investigationDesk', updatedDesk.deskName);
             handleCloseDesksDialog();
         })
         .catch(error => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Switch desk',
-                step: `the investigator swap failed due to: ${error}`,
-                investigation: checkedRowsIds.join(', '),
-                user: userId
-            })
+            switchDeskLogger.error(`the investigator swap failed due to: ${error}`,Severity.HIGH)
             handleCloseDesksDialog();
             alertError('לא ניתן היה לבצע את ההעברה לדסק');
         })
@@ -71,31 +63,23 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleCloseInvestigatorsDialog = () => setOpenInvestigatorsDialog(false);
 
     const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
+        const changeInvestigatorLogger = logger.setup({
+            workflow: 'Switch investigator',
+            service: Service.CLIENT,
+            investigation: checkedRowsIds.join(', '),
+            user: userId
+        });
         axios.post('/users/changeInvestigator', {
             epidemiologyNumbers: checkedRowsIds,
             user: updatedIvestigator.id,
             transferReason
         }).then(() => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch investigator',
-                step: 'the investigator have been switched successfully',
-                investigation: checkedRowsIds.join(', '),
-                user: userId
-            })
+            changeInvestigatorLogger.info('the investigator have been switched successfully',Severity.LOW)
             updateRows(transferReason, 'investigator', updatedIvestigator.value);
             handleCloseInvestigatorsDialog();
         })
         .catch(error => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Switch investigator',
-                step: `the investigator swap failed due to: ${error}`,
-                investigation: checkedRowsIds.join(', '),
-                user: userId
-            })
+            changeInvestigatorLogger.error(`the investigator swap failed due to: ${error}`,Severity.HIGH)
             handleCloseInvestigatorsDialog();
             alertError('לא ניתן היה לבצע את ההעברה לחוקר');
         })

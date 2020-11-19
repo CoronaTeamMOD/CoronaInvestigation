@@ -116,66 +116,44 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllDesksByCountyId = () => {
+        const desksByCountyIdLogger = logger.setup({
+            workflow: 'Getting Desks by county id',
+            service: Service.CLIENT,
+        });
         axios.get('/desks/county')
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Getting Desks by county id',
-                        step: 'The desks were fetched successfully'
-                    });
+                    desksByCountyIdLogger.info('The desks were fetched successfully',Severity.LOW)
                     setAllDesks(result.data);
                 } else {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Getting Desks',
-                        step: 'Got 200 status code but results structure isnt as expected'
-                    });
+                    desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected',Severity.HIGH)
                 }
             })
             .catch((err) => {
                 fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting Desks',
-                    step: err
-                });
+                desksByCountyIdLogger.error(err,Severity.HIGH)
             })
     }
 
     const fetchAllInvestigationStatuses = () => {
+        const investigationStatusesLogger = logger.setup({
+            workflow: 'GraphQL GET statuses request to the DB',
+            service: Service.CLIENT,
+        });
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL GET statuses request to the DB',
-                        step: 'The investigations statuses were fetched successfully'
-                    });
+                    investigationStatusesLogger.info('The investigations statuses were fetched successfully',Severity.LOW)
                     const allStatuses: string[] = result.data;
                     allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
                     setAllStatuses(allStatuses);
                 } else {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL GET statuses request to the DB',
-                        step: 'Got 200 status code but results structure isnt as expected'
-                    });
+                    investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected',Severity.HIGH)
                 }
             })
             .catch((err) => {
                 fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL GET statuses request to the DB',
-                    step: err
-                });
+                investigationStatusesLogger.error(err,Severity.HIGH)
             })
     }
 
@@ -190,14 +168,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
-        setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const investigationClickLogger = logger.setup({
             workflow: 'Investigation click',
-            step: `Entered investigation: ${epidemiologyNumberVal}`,
+            service: Service.CLIENT,
             investigation: epidemiologyNumberVal
-        })
+        });
+        setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
+        investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`,Severity.LOW)
         setIsInInvestigation(true);
         setIsCurrentlyLoading(true);
         await persistor.flush();
@@ -209,23 +186,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Investigations',
-                step: 'user is admin so landingPage/groupInvestigations route is chosen',
-                user: user.id
-            });
-            return axios.get('landingPage/groupInvestigations/' + orderBy)
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
-            step: 'user isnt admin so landingPage/investigations route is chosen',
+            service: Service.CLIENT,
             user: user.id
         });
+        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen',Severity.LOW)
+            return axios.get('landingPage/groupInvestigations/' + orderBy)
+        }
+        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen',Severity.LOW)
         return axios.get('/landingPage/investigations/' + orderBy);
     }
 
@@ -234,13 +204,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
     const fetchAllCountyUsers = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const countyUsersLogger = logger.setup({
             workflow: 'Getting group users',
-            step: `requesting the server the connected admin's group users`,
+            service: Service.CLIENT,
             user: user.id
-        })
+        });
+        countyUsersLogger.info(`requesting the server the connected admin's group users`,Severity.LOW)
         axios.get(`/users/group`)
             .then((result: any) => {
                 let countyUsers: Map<string, User> = new Map();
@@ -254,34 +223,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         countyUsers = new Map(Array.from(countyUsers.entries())
                             .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
                     });
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL request to the DB',
-                        step: 'fetched all the users successfully'
-                    });
+                    countyUsersLogger.info('fetched all the users successfully',Severity.LOW)
                     setAllUsersOfCurrCounty(countyUsers);
                 } else {
-                    logger.warn({
-                        service: Service.CLIENT,
-                        severity: Severity.MEDIUM,
-                        workflow: 'Getting group users',
-                        step: 'the connected admin doesnt have group users',
-                        user: user.id
-                    });
+                    countyUsersLogger.warn('the connected admin doesnt have group users',Severity.MEDIUM)
                 }
             }).catch(err => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL request to the DB',
-                    step: err
-                });
+                countyUsersLogger.error(err,Severity.HIGH)
                 fireSwalError(FETCH_ERROR_TITLE);
             });
     }
 
     const fetchAllCounties = () => {
+        const fetchAllCountiesLogger = logger.setup({
+            workflow: 'GraphQL request to the DB',
+            service: Service.CLIENT,
+        });
         axios.get('/counties').then((result: any) => {
             const allCounties: Map<number, County> = new Map();
             result && result.data && result.data.forEach((county: any) => {
@@ -290,20 +247,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     displayName: `${county.district} - ${county.displayName}`
                 })
             });
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: 'fetched all the counties successfully'
-            });
+            fetchAllCountiesLogger.info('fetched all the counties successfully',Severity.LOW)
             setAllCounties(allCounties);
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: err
-            });
+            fetchAllCountiesLogger.error(err,Severity.HIGH)
             fireSwalError(FETCH_ERROR_TITLE);
         });
     }
@@ -313,57 +260,32 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchTableData = () => {
+        const fetchInvestigationsLogger = logger.setup({
+            workflow: 'Getting Investigations',
+            service: Service.CLIENT,
+            user: user.id
+        });
         setIsLoading(true);
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
             fetchAllCountyUsers();
             fetchAllCounties();
         }
         if (user.userName !== initialUserState.data.userName) {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Investigations',
-                step: `launching the selected request to the DB ordering by ${orderBy}`,
-                user: user.id
-            });
+            fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`,Severity.LOW)
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Getting Investigations',
-                        step: 'got respond from the server',
-                        user: user.id
-                    });
+                    fetchInvestigationsLogger.info('got respond from the server',Severity.LOW)
 
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
 
                     if (user.investigationGroup !== -1) {
-                        logger.info({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Getting Investigations',
-                            step: 'user investigation group is valid',
-                            user: user.id
-                        });
+                        fetchInvestigationsLogger.info('user investigation group is valid',Severity.LOW)
                         if (data && data.allInvestigations) {
-                            logger.info({
-                                service: Service.CLIENT,
-                                severity: Severity.LOW,
-                                workflow: 'Getting Investigations',
-                                step: 'got investigations from the DB',
-                                user: user.id
-                            });
+                            fetchInvestigationsLogger.info('got investigations from the DB',Severity.LOW)
                             allInvestigationsRawData = data.allInvestigations
                         } else {
-                            logger.warn({
-                                service: Service.CLIENT,
-                                severity: Severity.MEDIUM,
-                                workflow: 'Getting Investigations',
-                                step: 'didnt get investigations from the DB',
-                                user: user.id
-                            });
+                            fetchInvestigationsLogger.warn('didnt get investigations from the DB',Severity.MEDIUM)
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
@@ -406,13 +328,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
-                        logger.warn({
-                            service: Service.CLIENT,
-                            severity: Severity.LOW,
-                            workflow: 'Getting Investigations',
-                            step: 'user investigation group is invalid',
-                            user: user.id
-                        });
+                        fetchInvestigationsLogger.warn('user investigation group is invalid',Severity.MEDIUM)
                     }
                 })
                 .catch((err: any) => {
@@ -423,12 +339,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             title: classes.errorAlertTitle
                         }
                     })
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL GET users request to the DB',
-                        step: err
-                    });
+                    fetchInvestigationsLogger.error(err,Severity.HIGH)
                 });
         }
     };
@@ -440,12 +351,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }, [user.id, user, orderBy, isInInvestigations]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
-        const logInfo = {
-            service: Service.CLIENT,
+        const investigationClickLogger = logger.setup({
             workflow: 'Investigation click',
+            service: Service.CLIENT,
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
-        };
+        });
 
         axios.interceptors.request.use(
             (config) => {
@@ -457,11 +368,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             (error) => Promise.reject(error)
         );
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
-            logger.info({
-                ...logInfo,
-                severity: Severity.LOW,
-                step: 'the clicked investigation is not the first one',
-            });
+            investigationClickLogger.info('the clicked investigation is not the first one',Severity.LOW)
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -477,21 +384,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
-            logger.info({
-                ...logInfo,
-                severity: Severity.LOW,
-                step: 'the user clicked a new investigation',
-            })
+            investigationClickLogger.info('the user clicked a new investigation',Severity.LOW)
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
-                    logger.info({
-                        ...logInfo,
-                        severity: Severity.LOW,
-                        step: 'updated investigation start time now sending request to update status',
-                    });
+                    investigationClickLogger.info('updated investigation start time now sending request to update status',Severity.LOW)
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
@@ -503,32 +402,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             subStatus: null,
                             statusReason: null
                         });
-                        logger.info({
-                            ...logInfo,
-                            severity: Severity.LOW,
-                            step: `Updated new investigation to have "in process" status and entered the investigation,
-                             investigated person: ${investigationRow.fullName}, 
-                             investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                        });
+                        investigationClickLogger.info(`Updated new investigation to have "in process" status and entered the investigation,
+                        investigated person: ${investigationRow.fullName}, 
+                        investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,Severity.LOW)
                         moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
                     } catch (e) {
                         throw new Error('failed to update investigation status with error' + JSON.stringify(e))
                     }
                 })
                 .catch((error) => {
-                    logger.error({
-                        ...logInfo,
-                        severity: Severity.HIGH,
-                        step: error
-                    });
+                    investigationClickLogger.error(error,Severity.HIGH)
                     fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
-            logger.info({
-                ...logInfo,
-                severity: Severity.LOW,
-                step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-            });
+            investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,Severity.LOW)
             setInvestigationStatus({
                 mainStatus: investigationRow.investigationStatus,
                 subStatus: investigationRow.investigationSubStatus,

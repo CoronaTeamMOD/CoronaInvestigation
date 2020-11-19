@@ -64,14 +64,12 @@ const App: React.FC = (): JSX.Element => {
     }, []);
 
     const initUser = async () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const initUserLogger = logger.setup({
             workflow: 'login to the app',
-            step: 'before environment condition'
-        })
-
+            service: Service.CLIENT
+        });
         const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
+        initUserLogger.info('before environment condition', Severity.LOW)
         fetchUser(userId, userName);
     };
 
@@ -83,23 +81,16 @@ const App: React.FC = (): JSX.Element => {
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const fetchUser = (userId: string, userName: string) => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const fetchUserLogger = logger.setup({
             workflow: 'Getting user details',
-            step: 'launch request to the server',
+            service: Service.CLIENT,
             user: user.id
         });
+        fetchUserLogger.info('launch request to the server', Severity.LOW)
         setIsLoading(true);
         axios.get(`/users/user`).then((result: any) => {
             if (result && result.data.userById) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting user details',
-                    step: 'recived user from the server',
-                    user: result.data.userById
-                })
+                fetchUserLogger.info('recived user from the server', Severity.LOW)
                 const userFromDB = result.data.userById;
                 setUser({
                     ...userFromDB,
@@ -107,13 +98,7 @@ const App: React.FC = (): JSX.Element => {
                     userName
                 });
             } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow: 'Getting user details',
-                    step: `user has not been found due to: ${JSON.stringify(result)}`,
-                    user: user.id
-                })
+                fetchUserLogger.warn(`user has not been found due to: ${JSON.stringify(result)}`, Severity.MEDIUM)
                 setUser({
                     ...user,
                     id: userId,
@@ -124,13 +109,7 @@ const App: React.FC = (): JSX.Element => {
 
             setIsLoading(false);
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.MEDIUM,
-                workflow: 'Getting user details',
-                step: `got error from the server: ${err}`,
-                user: user.id
-            });
+            fetchUserLogger.warn(`got error from the server: ${err}`, Severity.MEDIUM)
             setIsLoading(false);
         })
     }

@@ -28,6 +28,11 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
+    const getUserActivityStatusLogger = logger.setup({
+        workflow: 'GraphQL request to the DB',
+        service: Service.CLIENT
+    });
+
     React.useEffect(() => {
         if (user.investigationGroup !== -1) {
             getCountyByUser();
@@ -36,29 +41,14 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user.investigationGroup]);
 
     const getUserActivityStatus = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'GraphQL request to the DB',
-            step: 'started user activity status fetching'
-        });
+        getUserActivityStatusLogger.info('started user activity status fetching',Severity.LOW)
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
             if (result.data) {
                 setIsActive(result.data.isActive);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL request to the DB',
-                    step: 'fetched user activity status successfully'
-                });
+                getUserActivityStatusLogger.info('fetched user activity status successfully',Severity.LOW)
             } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow: 'GraphQL request to the DB',
-                    step: 'The user doesnt exist on db'
-                });
+                getUserActivityStatusLogger.warn('The user doesnt exist on db',Severity.MEDIUM)
             }
         }).catch((error) => {
             Swal.fire({
@@ -68,12 +58,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: `error in fetching user activity status ${error}`
-            });
+            getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`,Severity.HIGH)
         });
     }
 
@@ -84,23 +69,13 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'GraphQL request to the DB',
-            step: 'started is user active updating'
-        });
+        getUserActivityStatusLogger.info('started is user active updating',Severity.LOW)
         return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
             if(result.data)
                 setIsActive(result.data.isActive);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL request to the DB',
-                    step: 'updated is user active successfully'
-                });
+                getUserActivityStatusLogger.info('updated is user active successfully',Severity.LOW)
         }).catch((error) => {
             Swal.fire({
                 title: 'לא הצלחנו לעדכן את הסטטוס שלך',
@@ -109,31 +84,20 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: `error in updating is user active ${error}`
-            });
+            getUserActivityStatusLogger.error(`error in updating is user active ${error}`,Severity.HIGH)
         });
     }
 
     const getCountyByUser = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const getCountyByUserLogger = logger.setup({
             workflow: 'GraphQL request to the DB',
-            step: 'started fetching county display name by user'
+            service: Service.CLIENT
         });
+        getCountyByUserLogger.info('started fetching county display name by user',Severity.LOW)
         axios.get('counties/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data);
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL request to the DB',
-                    step: 'fetched county display name by user successfully'
-                });
+                getCountyByUserLogger.info('fetched county display name by user successfully',Severity.LOW)
             }
         }).catch((error) => {
             Swal.fire({
@@ -143,12 +107,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                     title: classes.swalTitle
                 },
             });
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL request to the DB',
-                step: `error in fetching county display name by user ${error}`
-            });
+            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`,Severity.HIGH)
         });
     }
 

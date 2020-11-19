@@ -49,6 +49,12 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     };
 
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
+        const updateInvestigationStatusLogger = logger.setup({
+            workflow: 'Update Investigation Status',
+            service: Service.CLIENT,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         if(investigationStatus.subStatus === transferredSubStatus && !investigationStatus.statusReason) {
             alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
                 confirmButtonColor: theme.palette.primary.main,
@@ -64,14 +70,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update Investigation Status',
-                        step: `launching investigation status request`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    updateInvestigationStatusLogger.info(`launching investigation status request`,Severity.LOW)
                     const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
                     const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
                     if (shouldUpdateInvestigationStatus()) {
@@ -81,23 +80,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                             statusReason: statusReason,
                             epidemiologyNumber: epidemiologyNumber
                         }).then(() => {
-                            logger.info({
-                                service: Service.CLIENT,
-                                severity: Severity.LOW,
-                                workflow: 'Update Investigation Status',
-                                step: `update investigation status request was successful`,
-                                user: userId,
-                                investigation: epidemiologyNumber
-                            });
+                            updateInvestigationStatusLogger.info(`update investigation status request was successful`,Severity.LOW)
                         }).catch((error) => {
-                            logger.error({
-                                service: Service.CLIENT,
-                                severity: Severity.HIGH,
-                                workflow: 'Update Investigation Status',
-                                step: `got errors in server result: ${error}`,
-                                user: userId,
-                                investigation: epidemiologyNumber
-                            });
+                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
                             handleUnfinishedInvestigationFailed();
                         })
                     }

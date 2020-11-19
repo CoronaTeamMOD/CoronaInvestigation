@@ -19,27 +19,19 @@ const useStatusUtils = () => {
     const wasInvestigationReopend = investigationEndTime !== null;
 
     const updateIsDeceased = (onInvestigationFinish: Function) => {
+        const updateIsDeceasedLogger = logger.setup({
+            workflow: 'Update isDeceased',
+            service: Service.CLIENT,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         if (!investigatedPatient.isDeceased) {
             axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update isDeceased',
-                        step: `launching isDeceased request succssesfully ${result}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    updateIsDeceasedLogger.info(`launching isDeceased request succssesfully ${result}`,Severity.LOW)
                     onInvestigationFinish();
                 }).catch((error: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update isDeceased',
-                        step: `launching isDeceased request unsuccssesfully ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    updateIsDeceasedLogger.error(`launching isDeceased request unsuccssesfully ${error}`,Severity.HIGH)
                     complexityErrorAlert(error);
                 })
         }
@@ -49,27 +41,19 @@ const useStatusUtils = () => {
     }
 
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
+        const updateIsCurrentlyHospitializedLogger = logger.setup({
+            workflow: 'Update isCurrentlyHospitialized',
+            service: Service.CLIENT,
+            user: userId,
+            investigation: epidemiologyNumber
+        });
         if (!investigatedPatient.isCurrentlyHospitialized) {
             axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update isCurrentlyHospitialized',
-                        step: `launching isCurrentlyHospitialized request succssesfully ${result}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    updateIsCurrentlyHospitializedLogger.info(`launching isCurrentlyHospitialized request succssesfully ${result}`,Severity.LOW)
                     onInvestigationFinish();
                 }).catch((error: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Update isCurrentlyHospitialized',
-                        step: `launching isCurrentlyHospitialized request unsuccssesfully ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    updateIsCurrentlyHospitializedLogger.error(`launching isCurrentlyHospitialized request unsuccssesfully ${error}`,Severity.HIGH)
                     complexityErrorAlert(error);
                 })
         }

@@ -40,90 +40,56 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const classes = useStyles({});
 
     const getCoronaTestDate = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const getCoronaTestDateLogger = logger.setup({
             workflow: 'Getting Corona Test Date',
-            step: `launching Corona Test Date request`,
-            user: userId,
-            investigation: epidemiologyNumber
+            service: Service.CLIENT,
+            investigation: epidemiologyNumber,
+            user: userId
         });
+        getCoronaTestDateLogger.info(`launching Corona Test Date request`,Severity.LOW)
 
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting Corona Test Date',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                getCoronaTestDateLogger.info('got results back from the server',Severity.LOW)
                 setCoronaTestDate(convertDate(res.data.coronaTestDate));
             } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Getting Corona Test Date',
-                    step: 'got status 200 but wrong data'
-                });
+                getCoronaTestDateLogger.warn('got status 200 but wrong data',Severity.HIGH)
             }
         })
     }
 
     const getClinicalDetailsSymptoms = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const getClinicalDetailsSymptomsLogger = logger.setup({
             workflow: 'Fetching Clinical Details',
-            step: 'launching clinical data request',
-            user: userId,
-            investigation: epidemiologyNumber
+            service: Service.CLIENT,
+            investigation: epidemiologyNumber,
+            user: userId
         });
+        getClinicalDetailsSymptomsLogger.info('launching clinical data request',Severity.LOW)
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data) {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching Clinical Details',
-                        step: 'got results back from the server',
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    getClinicalDetailsSymptomsLogger.info('got results back from the server',Severity.LOW)
                     const clinicalDetails = result.data;
                     setDoesHaveSymptoms(clinicalDetails.doesHaveSymptoms);
                     setSymptomsStartDate(convertDate(clinicalDetails.symptomsStartTime));
                 } else {
-                    logger.warn({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Fetching Clinical Details',
-                        step: 'got status 200 but got invalid outcome'
-                    })
+                    getClinicalDetailsSymptomsLogger.warn('got status 200 but got invalid outcome',Severity.HIGH)
                 }
             });
     }
 
     const loadInteractions = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const loadInteractionsLogger = logger.setup({
             workflow: 'Fetching Interactions',
-            step: `launching interactions request`,
-            user: userId,
-            investigation: epidemiologyNumber
+            service: Service.CLIENT,
+            investigation: epidemiologyNumber,
+            user: userId
         });
+        loadInteractionsLogger.info(`launching interactions request`,Severity.LOW)
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching Interactions',
-                    step: 'got results back from the server',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                loadInteractionsLogger.info('got results back from the server',Severity.LOW)
                 const allInteractions: InteractionEventDialogData[] = result.data.map(convertDBInteractionToInteraction);
                 const numberOfContactedPeople = allInteractions.reduce((currentValue: number, interaction: InteractionEventDialogData) => {
                     return currentValue + interaction.contacts.length
@@ -131,14 +97,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 setAreThereContacts(numberOfContactedPeople > 0);
                 setInteractions(allInteractions);
             }).catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching Interactions',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                loadInteractionsLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
                 handleLoadInteractionsError();
             });
     }
@@ -210,6 +169,12 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const handleDeleteContactEvent = (contactEventId: number) => {
+        const deletingInteractionsLogger = logger.setup({
+            workflow: 'Deleting Interaction',
+            service: Service.CLIENT,
+            investigation: epidemiologyNumber,
+            user: userId
+        });
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה למחוק את האירוע?',
@@ -225,35 +190,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }
         }).then((result) => {
             if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Deleting Interaction',
-                    step: `launching interaction delete request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                deletingInteractionsLogger.info(`launching interaction delete request`,Severity.LOW)
                 axios.delete('/intersections/deleteContactEvent', {
                     params: { contactEventId }
                 }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Deleting Interaction',
-                        step: `interaction was deleted successfully`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    deletingInteractionsLogger.info(`interaction was deleted successfully`,Severity.LOW)
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Deleting Interaction',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    deletingInteractionsLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
                     handleDeleteFailed(eventDeleteFailedMsg);
                 })
             }
@@ -262,6 +206,12 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const handleDeleteContactedPerson = (contactedPersonId: number, contactEventId: number) => {
+        const deleteContactedPersonLogger = logger.setup({
+            workflow: 'Deleting Contacted Person',
+            service: Service.CLIENT,
+            investigation: epidemiologyNumber,
+            user: userId
+        });
         Swal.fire({
             icon: 'warning',
             title: 'האם אתה בטוח שתרצה למחוק את מגע?',
@@ -276,35 +226,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             }
         }).then((result) => {
             if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Deleting Contacted Person',
-                    step: `launching interaction delete request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                deleteContactedPersonLogger.info(`launching interaction delete request`,Severity.LOW)
                 axios.delete('/intersections/contactedPerson', {
                     params: { contactedPersonId }
                 }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Deleting Contacted Person',
-                        step: `interaction was deleted successfully`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    deleteContactedPersonLogger.info(`interaction was deleted successfully`,Severity.LOW)
                     loadInteractions();
                 }).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Deleting Contacted Person',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    deleteContactedPersonLogger.error(`got errors in server result: ${error}`,Severity.HIGH)
                     handleDeleteFailed(contactDeleteFailedMsg);
                 })
             }

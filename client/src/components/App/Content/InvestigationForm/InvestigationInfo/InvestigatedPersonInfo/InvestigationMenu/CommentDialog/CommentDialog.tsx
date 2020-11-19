@@ -39,26 +39,19 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
     React.useEffect(resetInput, [comment]);
 
     const sendComment = (commentToSend: string | null, errorMessage: string) => {
-        const logInfo = {
+        const sendCommentLogger = logger.setup({
+            workflow: `POST request add comment to investigation ${epidemiologyNumber}`,
             service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: `POST request add comment to investigation ${epidemiologyNumber}`
-        };
+        });
        
         axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
             .then(() => {
                 setComment(commentToSend);
-                logger.info({
-                    ...logInfo,
-                     step: 'Successfully added comment to investigation'
-                 });
+                sendCommentLogger.info('Successfully added comment to investigation',Severity.LOW)
             })
             .catch(() => {
                 alertError(errorMessage);
-                logger.info({
-                    ...logInfo,
-                     step: 'Error occured in adding comment to investigation'
-                 });
+                sendCommentLogger.error('Error occured in adding comment to investigation',Severity.HIGH)
             })
             .finally(handleDialogClose);
     };

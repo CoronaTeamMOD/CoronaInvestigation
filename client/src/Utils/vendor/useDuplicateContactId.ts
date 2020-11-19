@@ -50,14 +50,12 @@ const useDuplicateContactId = () => {
     }
 
     const handleExcelDuplicateIdsError = (duplicateIdsContacts: Contact[]) => {
-        logger.error({
-            service: Service.CLIENT,
-            severity: Severity.MEDIUM,
+        const loadContactsLogger = logger.setup({
             workflow: 'Load contacts from excel',
-            step: 'Didnt load contacts due to duplicate ids',
             user: userId,
             investigation: epidemiologyNumber
-        });
+        })
+        loadContactsLogger.error('Didnt load contacts due to duplicate ids',Severity.MEDIUM)
         const errorText = "לא ניתן לטעון את האקסל כי מספרי הזיהוי הבאים כבר קיימים בחקירה \r\n" + 
             duplicateIdsContacts.map(contact => 
                 `${format(new Date(contact.startTime as Date), displayDateFormat)}: ${contact.idNumber}`).join("\r\n");
