@@ -221,6 +221,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
             user: userId
         });
         savePersonalDataLogger.info('launching the server request', Severity.LOW);
+        setIsLoading(true);
         axios.post('/personalDetails/updatePersonalDetails',
             {
                 id: investigatedPatientId,
@@ -238,6 +239,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                 complexityErrorAlert(error);
             })
             .finally(() => {
+                setIsLoading(false);
                 personalInfoValidationSchema.isValid(data).then(valid => {
                     setFormState(epidemiologyNumber, id, valid);
                 })
