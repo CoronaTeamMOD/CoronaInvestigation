@@ -35,7 +35,7 @@ const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד
 const errorMessage = 'השדה יכול להכניס רק תווים חוקיים';
 const requiredMessage = 'שדה זה הינו שדה חובה';
 const excludeSpecialCharsRegex = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/;
-export const noReason = 'אין סיבה';
+export const inProcess = 'בטיפול';
 
 const InvestigatedPersonInfo = (props: Props) => {
     const { currentTab, investigatedPatientStaticInfo, epedemioligyNumber } = props;
@@ -68,7 +68,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     }, [investigationStatus.subStatus]);
 
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS ? subStatuses.concat(noReason) : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
         [subStatuses, investigationStatus]);
     
     const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
@@ -202,7 +202,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     </FormControl>
                                 </Grid>
                             </Collapse>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== ''}>
+                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         className={classes.subStatusSelect}
