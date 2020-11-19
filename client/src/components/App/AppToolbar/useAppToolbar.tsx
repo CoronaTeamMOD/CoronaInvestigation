@@ -1,5 +1,4 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { persistor } from 'redux/store';
@@ -9,6 +8,7 @@ import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setIsActive } from 'redux/User/userActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
@@ -25,6 +25,7 @@ export interface useTopToolbarOutcome  {
 const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const classes = useStyles();
+    const { alertError } = useCustomSwal();
     
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
 
@@ -50,13 +51,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 getUserActivityStatusLogger.warn('The user doesnt exist on db',Severity.MEDIUM)
             }
         }).catch((error) => {
-            Swal.fire({
-                title: 'לא הצלחנו לקבל את הסטטוס הנוכחי שלך',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                },
-            });
+            alertError('לא הצלחנו לקבל את הסטטוס הנוכחי שלך');
             getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`, Severity.HIGH)
         });
     }
@@ -76,13 +71,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 setIsActive(result.data.isActive);
                 getUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW)
         }).catch((error) => {
-            Swal.fire({
-                title: 'לא הצלחנו לעדכן את הסטטוס שלך',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                },
-            });
+            alertError('לא הצלחנו לעדכן את הסטטוס שלך');
             getUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH)
         });
     }
@@ -98,13 +87,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
                 getCountyByUserLogger.info('fetched county display name by user successfully', Severity.LOW)
             }
         }).catch((error) => {
-            Swal.fire({
-                title: 'לא הצלחנו לקבל את הלשכה שלך',
-                icon: 'error',
-                customClass: {
-                    title: classes.swalTitle
-                },
-            });
+            alertError('לא הצלחנו לקבל את הלשכה שלך');
             getCountyByUserLogger.error(`error in fetching county display name by user ${error}`, Severity.HIGH)
         });
     }

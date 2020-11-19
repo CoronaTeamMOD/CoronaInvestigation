@@ -1,31 +1,27 @@
-import Swal from 'sweetalert2';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import userType from 'models/enums/UserType';
-import {timeout} from 'Utils/Timeout/Timeout';
+import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
-import {InvestigationStatus} from 'models/InvestigationStatus';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import {setIsInInvestigation} from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
-import useStyles from './InvestigatedPersonInfoStyles';
-import {InvestigatedPersonInfoOutcome} from './InvestigatedPersonInfoInterfaces';
+import { InvestigatedPersonInfoOutcome } from './InvestigatedPersonInfoInterfaces';
 
 const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
 
-    const classes = useStyles({});
-
     const {updateIsDeceased, updateIsCurrentlyHospitialized} = useStatusUtils();
-    const { alertWarning } = useCustomSwal();
+    const { alertSuccess, alertWarning, alertError } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const userRole = useSelector<StoreStateType, number>(state => state.user.data.userType);
@@ -33,15 +29,10 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const handleInvestigationFinish = async () => {
-        Swal.fire({
-            icon: 'success',
-            title: 'בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה',
-            customClass: {
-                title: classes.swalTitle,
-            },
+        alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
-        })
+        });
         timeout(1500).then(() => {
             setIsInInvestigation(false);
             window.close();
@@ -82,7 +73,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                             updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW)
                         }).catch((error) => {
                             updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
-                            handleUnfinishedInvestigationFailed();
+                            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
                         })
                     }
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
@@ -108,16 +99,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         }
         return String(personAge);
     }
-
-    const handleUnfinishedInvestigationFailed = () => {
-        Swal.fire({
-            title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות',
-            icon: 'error',
-            customClass: {
-                title: classes.swalTitle
-            }
-        })
-    };
 
     const shouldUpdateInvestigationStatus = (investigationInvestigator? : string) => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;

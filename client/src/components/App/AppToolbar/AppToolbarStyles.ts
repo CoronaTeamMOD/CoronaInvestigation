@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     countyTextField: {
         backgroundColor: theme.palette.background.default
     },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
     menuIcon: {
         color: 'white',
         marginRight: theme.spacing(1)
@@ -62,7 +58,6 @@ export interface AppToolbarClasses {
     userSection: string;
     greetUserText: string;
     countyTextField: string;
-    swalTitle: string;
     menuIcon: string;
     menuTypo: string;
     menuItem: string;

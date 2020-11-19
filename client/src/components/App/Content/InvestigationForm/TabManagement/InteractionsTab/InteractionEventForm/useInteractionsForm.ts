@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import {useSelector} from 'react-redux';
 
 import axios from 'Utils/axios';
@@ -7,12 +6,16 @@ import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import useDBParser from 'Utils/vendor/useDBParsing';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const {loadInteractions, closeNewDialog, closeEditDialog} = props;
-        const {parseLocation} = useDBParser();
+        const { loadInteractions, closeNewDialog, closeEditDialog } = props;
+        
+        const { parseLocation } = useDBParser();
+        const { alertError } = useCustomSwal();
+
         const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
         const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
@@ -45,7 +48,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 })
                 .catch((error) => {
                     updateInteractionsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                    handleFailedSave('לא ניתן היה לשמור את השינויים');
+                    alertError('לא ניתן היה לשמור את השינויים');
                     }
                 )
             } else {
@@ -65,16 +68,9 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     .catch((error) => {
                         createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
                         closeNewDialog();
-                        handleFailedSave('לא ניתן היה ליצור אירוע חדש');
+                        alertError('לא ניתן היה ליצור אירוע חדש');
                     })
             }
-        }
-
-        const handleFailedSave = (message: string) => {
-            Swal.fire({
-                title: message,
-                icon: 'error',
-            })
         }
 
         return {

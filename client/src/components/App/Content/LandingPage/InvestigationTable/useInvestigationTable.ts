@@ -1,8 +1,7 @@
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { format } from 'date-fns';
 
 import User from 'models/User';
 import theme from 'styles/theme';
@@ -17,6 +16,7 @@ import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
@@ -88,11 +88,12 @@ export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks, checkedRowsIds } = parameters;
+        setAllStatuses, setAllDesks } = parameters;
     
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const classes = useStyle(false)();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -104,16 +105,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
-
-    const fireSwalError = (errorTitle: string) => {
-        Swal.fire({
-            title: errorTitle,
-            icon: 'error',
-            customClass: {
-                title: classes.errorAlertTitle
-            }
-        });
-    };
 
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
@@ -129,7 +120,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }
             })
             .catch((err) => {
-                fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
+                alertError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
                 desksByCountyIdLogger.error(err, Severity.HIGH)
             })
     }
@@ -150,7 +141,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }
             })
             .catch((err) => {
-                fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
+                alertError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
                 investigationStatusesLogger.error(err, Severity.HIGH)
             })
     }
@@ -225,7 +216,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }
             }).catch(err => {
                 countyUsersLogger.error(err, Severity.HIGH)
-                fireSwalError(FETCH_ERROR_TITLE);
+                alertError(FETCH_ERROR_TITLE);
             });
     }
 
@@ -245,7 +236,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             setAllCounties(allCounties);
         }).catch(err => {
             fetchAllCountiesLogger.error(err, Severity.HIGH)
-            fireSwalError(FETCH_ERROR_TITLE);
+            alertError(FETCH_ERROR_TITLE);
         });
     }
 
@@ -325,13 +316,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     }
                 })
                 .catch((err: any) => {
-                    Swal.fire({
-                        title: 'אופס... לא הצלחנו לשלוף',
-                        icon: 'error',
-                        customClass: {
-                            title: classes.errorAlertTitle
-                        }
-                    })
+                    alertError('אופס... לא הצלחנו לשלוף');
                     fetchInvestigationsLogger.error(err, Severity.HIGH)
                 });
         }
@@ -404,7 +389,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 })
                 .catch((error) => {
                     investigationClickLogger.error(error, Severity.HIGH)
-                    fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
+                    alertError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
             investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,Severity.LOW)
@@ -461,17 +446,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
             changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW)
-        Swal.fire({
-            icon: 'warning',
-            title: `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`,
+        alertWarning(`<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
             showCancelButton: true,
             cancelButtonText: 'לא',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
-            }
+            confirmButtonText: 'כן, המשך'
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.post('/users/changeInvestigator', {
@@ -495,7 +475,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     )))
                 })).catch((error) => {
                     changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
-                    fireSwalError(UPDATE_ERROR_TITLE);
+                    alertError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
                 changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
@@ -513,17 +493,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (selectedInvestigator && newSelectedCounty.value !== '')
             changeCountyLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`, Severity.LOW);
-        Swal.fire({
-            icon: 'warning',
-            title: `<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`,
+        alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`, {
             showCancelButton: true,
             cancelButtonText: 'לא',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
-            }
+            confirmButtonText: 'כן, המשך'
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.post('/users/changeCounty', {
@@ -536,7 +511,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }))
                 .catch((error) => {
                     changeCountyLogger.error(`couldnt change the county due to ${error}`, Severity.LOW);
-                    fireSwalError(UPDATE_ERROR_TITLE);
+                    alertError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
                 setSelectedRow(UNDEFINED_ROW);
@@ -556,17 +531,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
         if (selectedInvestigator && newSelectedDesk.deskName !== '' && newSelectedDesk.deskName !== indexedRow.investigationDesk) {
             changeDeskLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`, Severity.LOW);
-            Swal.fire({
-                icon: 'warning',
-                title: indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle,
+            alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
                 showCancelButton: true,
                 cancelButtonText: 'לא',
                 cancelButtonColor: theme.palette.error.main,
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'כן, המשך',
-                customClass: {
-                    title: classes.swalTitle,
-                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios.post('/landingPage/changeDesk', {
@@ -587,7 +557,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     }))
                     .catch((error) => {
                         changeDeskLogger.error(`couldnt chang the desk due to ${error}`, Severity.HIGH);
-                        fireSwalError(UPDATE_ERROR_TITLE);
+                        alertError(UPDATE_ERROR_TITLE);
                     })
                 } else if (result.isDismissed) {
                     setSelectedRow(UNDEFINED_ROW);

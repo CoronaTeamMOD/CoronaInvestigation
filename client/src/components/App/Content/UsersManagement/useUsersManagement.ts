@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import Swal from 'sweetalert2';
 
 import logger from 'logger/logger'
 import { Severity } from 'models/Logger'
@@ -10,6 +9,7 @@ import SignUpFields from 'models/enums/SignUpFields';
 import SortOrder from 'models/enums/SortOrder';
 import County from 'models/County';
 import SourceOrganization from 'models/SourceOrganization';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import UserTypeModel from 'models/UserType';
 import UserTypeEnum from 'models/enums/UserType';
 import Language from 'models/Language';
@@ -43,6 +43,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
+    const { alertError } = useCustomSwal();
+    
     const getUsersRoute = () => {
         switch (user.userType) {
             case UserTypeEnum.ADMIN: return '/users/county';
@@ -78,10 +80,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                 })
                 .catch(err => {
                     if (err.response.status === 401) {
-                        handleFailedRequest('אין לך הרשאות למידע זה');
+                        alertError('אין לך הרשאות למידע זה');
                     }
                     else {
-                        handleFailedRequest('לא ניתן היה לקבל משתמשים');
+                        alertError('לא ניתן היה לקבל משתמשים');
                     }
                     fetchUsersLogger.error('didnt get results back from the server', Severity.HIGH)
                 });
@@ -102,8 +104,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל מסגרות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל מסגרות');
                 fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
@@ -122,8 +124,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     fetchCountiesLogger.info('got results back from the server', Severity.LOW)
                 }  
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל נפות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל נפות');
                 fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     };
@@ -143,8 +145,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     fetchUserTypesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל סוגי משתמשים');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל סוגי משתמשים');
                 fetchUserTypesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     }
@@ -163,8 +165,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
                     fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
                 } 
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל שפות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל שפות');
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
@@ -182,13 +184,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
         }
         setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
         setFitlerRules(filterRulesToSet)
-    }
-
-    const handleFailedRequest = (message: string) => {
-        Swal.fire({
-            title: message,
-            icon: 'error',
-        })
     }
 
     useEffect(() => {

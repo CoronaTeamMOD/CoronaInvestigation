@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
@@ -11,17 +10,17 @@ import { setInvestigatedPatientId } from 'redux/Investigation/investigationActio
 import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
-import useStyles from './PersonalInfoTabStyles';
 import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
 
 const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePersonalInfoTabOutcome => {
 
-    const classes = useStyles({});
+    const { alertError } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -136,13 +135,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
 
             if (epidemiologyNumber !== -1) {
                 personalDetailsLogger.error(`got errors in server request ${error}`, Severity.HIGH);
-                Swal.fire({
-                    title: 'הייתה שגיאה בטעינת הפרטים האישיים',
-                    icon: 'error',
-                    customClass: {
-                        title: classes.swalTitle
-                    },
-                });
+                alertError('הייתה שגיאה בטעינת הפרטים האישיים');
             }
         })
     }

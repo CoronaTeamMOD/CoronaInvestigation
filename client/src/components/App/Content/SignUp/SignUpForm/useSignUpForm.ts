@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
 
 import SignUpUser from 'models/SignUpUser';
 import City from 'models/City';
@@ -13,6 +12,7 @@ import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
 import { setCities } from 'redux/City/cityActionCreators';
 import SourceOrganization from 'models/SourceOrganization';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCome  => {
 
@@ -23,6 +23,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+
+    const { alertError } = useCustomSwal();
 
     const fetchCities = () => {
         const fetchCitiesLogger = logger.setup({
@@ -40,8 +42,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 setCities(cities);
                 fetchCitiesLogger.info('got results back from the server', Severity.LOW)
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל ערים');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל ערים');
                 fetchCitiesLogger.error('didnt get results back from the server', Severity.HIGH)
             });
     };
@@ -58,8 +60,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 result?.data && setCounties(result?.data);
                 fetchCountiesLogger.info('got results back from the server', Severity.LOW)
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל נפות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל נפות');
                 fetchCountiesLogger.error('didnt get results back from the server', Severity.HIGH)       
             });
     };
@@ -76,8 +78,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 result?.data && setSourcesOrganization(result?.data);
                 fetchSourcesOrganizationLogger.info('got results back from the server', Severity.LOW)
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל מסגרות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל מסגרות');
                 fetchSourcesOrganizationLogger.error('didnt get results back from the server', Severity.HIGH)      
             });
     }
@@ -94,8 +96,8 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
                 result?.data && setLanguages(result?.data);
                 fetchLanguagesLogger.info('got results back from the server', Severity.LOW)
             })
-            .catch(err => {
-                handleFailedRequest('לא ניתן היה לקבל שפות');
+            .catch(() => {
+                alertError('לא ניתן היה לקבל שפות');
                 fetchLanguagesLogger.error('didnt get results back from the server', Severity.HIGH)    
             });
     }
@@ -136,16 +138,9 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
             handleSaveUser && handleSaveUser();
             createUserLogger.info('user was created successfully', Severity.LOW)
         })
-        .catch(err => {
-            handleFailedRequest('לא ניתן היה ליצור משתמש חדש');
+        .catch(() => {
+            alertError('לא ניתן היה ליצור משתמש חדש');
             createUserLogger.error('create user was failed', Severity.CRITICAL)        
-        })
-    }
-
-    const handleFailedRequest = (message: string) => {
-        Swal.fire({
-          title: message,
-          icon: 'error',
         })
     }
 

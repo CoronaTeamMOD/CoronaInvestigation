@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { AddCircle } from '@material-ui/icons';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -15,6 +14,7 @@ import StoreStateType from 'redux/storeStateType';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import FieldName from 'commons/FieldName/FieldName';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import useExposuresSaving from 'Utils/ControllerHooks/useExposuresSaving';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
@@ -32,8 +32,10 @@ const defaultDestinationCountryCode = '900';
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
-  const { parseAddress } = useGoogleApiAutocomplete();
+  
   const { saveExposureAndFlightData, saveResortsData } = useExposuresSaving({ exposureAndFlightsData, setExposureDataAndFlights });
+  const { parseAddress } = useGoogleApiAutocomplete();
+  const { alertError } = useCustomSwal();
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
   const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
@@ -122,10 +124,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
       })
       .catch((error) => {
         fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH)
-        Swal.fire({
-          title: 'לא ניתן היה לטעון את החשיפה',
-          icon: 'error',
-        })
+        alertError('לא ניתן היה לטעון את החשיפה');
       });
   }
 
@@ -191,10 +190,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     })
     .catch((error) => {
       saveExposureLogger.error(`got error from server: ${error}`, Severity.HIGH)
-      Swal.fire({
-        title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-        icon: 'error'
-      });
+      alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
     })
     .finally(() => setFormState(investigationId, id, true))
   }
