@@ -110,7 +110,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }
 
     useEffect(() => {
-        if (subOccupationName === '') {
+        if (!Boolean(subOccupationName)) {
             methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
         }
     }, [subOccupationName]);
