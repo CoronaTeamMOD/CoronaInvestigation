@@ -53,7 +53,7 @@ const InvestigatedPersonInfo = (props: Props) => {
     const statuses = useSelector<StoreStateType, string[]>(state => state.statuses);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
-    const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
+    const userType = useSelector<StoreStateType, number>(state => state.user.userType);
 
     const validationSchema = investigationStatus.subStatus === transferredSubStatus ?
         yup.string().required(requiredMessage).matches(excludeSpecialCharsRegex, errorMessage).max(50, maxLengthErrorMessage).nullable() :
