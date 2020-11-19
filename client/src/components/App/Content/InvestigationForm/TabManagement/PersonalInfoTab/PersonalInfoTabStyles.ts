@@ -111,10 +111,6 @@ const useStyles = makeStyles({
         minWidth: '15vw',
         marginLeft: '8vw'
     },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
     markComplexity: {
         border: 'solid #FFC90E',
         borderRadius: 24,
@@ -125,9 +121,6 @@ const useStyles = makeStyles({
     },
     complexIconOnOccupation: {
         marginTop: '5%',
-    },
-    swalText: {
-        fontFamily: 'Assistant',
     },
     gradeInput: {
         width: '7vw'

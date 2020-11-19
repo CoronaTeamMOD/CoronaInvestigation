@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Grid, MenuItem, Typography } from '@material-ui/core';
@@ -14,6 +13,7 @@ import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import ExposureFields from 'models/enums/ExposureFields';
 import CovidPatientFields from 'models/CovidPatientFields';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ExposureSearchTextField from 'commons/AlphabetTextField/ExposureSearchTextField';
 import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
@@ -46,6 +46,7 @@ const ExposureForm = (props: any) => {
 
   const classes = useStyles();
   const formClasses = useFormStyles();
+  const { alertError } = useCustomSwal();
 
   const [exposureSourceSearch, setExposureSourceSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -95,28 +96,16 @@ const ExposureForm = (props: any) => {
             setOptionalCovidPatients(result.data);
           } else {
             confirmedExposuresLogger.warn('got status 200 but wrong data', Severity.HIGH)
-            Swal.fire({
-              title: 'לא הצלחנו לטעון את רשימת המאומתים',
-              text: 'שימו לב שהזנתם נתונים תקינים',
-              icon: 'error',
-              customClass: {
-                title: classes.swalTitle,
-                content: classes.swalText
-              },
-            })
+            alertError('לא הצלחנו לטעון את רשימת המאומתים', {
+              text: 'שימו לב שהזנתם נתונים תקינים'
+            });
           }
         })
         .catch((error) => {
           confirmedExposuresLogger.error(`got error from server: ${error}`, Severity.HIGH)
-          Swal.fire({
-            title: 'לא הצלחנו לטעון את רשימת המאומתים',
-            text: 'שימו לב שהזנתם נתונים תקינים',
-            icon: 'error',
-            customClass: {
-              title: classes.swalTitle,
-              content: classes.swalText
-            },
-          })
+          alertError('לא הצלחנו לטעון את רשימת המאומתים', {
+            text: 'שימו לב שהזנתם נתונים תקינים'
+          });
         })
         .finally(() => setIsLoading(false));
     }

@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -14,6 +13,7 @@ import Toggle from 'commons/Toggle/Toggle';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -30,6 +30,7 @@ import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './Bac
 
 const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
+    const { alertError } = useCustomSwal();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
@@ -93,10 +94,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
             })
             .catch((error) => {
                 saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH)
-                Swal.fire({
-                    title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
-                    icon: 'error'
-                })
+                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
             })
             .finally(() => {
                 ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {

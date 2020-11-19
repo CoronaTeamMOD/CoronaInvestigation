@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { addDays, format } from 'date-fns';
@@ -35,7 +34,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
 
-    const {alertError} = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
     const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
 
     const [cityInput, setCityInput] = useState<string>('');
@@ -51,24 +50,19 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             alertError(contactValidation.error)
         } else {
             value ?
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
-                    showCancelButton: true,
-                    cancelButtonText: 'בטל',
-                    cancelButtonColor: theme.palette.error.main,
-                    confirmButtonColor: theme.palette.primary.main,
-                    confirmButtonText: 'כן, המשך',
-                    customClass: {
-                        title: classes.swalTitle
-                    }
-                }).then((result) => {
-                    if (result.value) {
-                        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
-                    }
-                })
-                :
-                updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
+            alertWarning('האם אתה בטוח שתרצה להקים דיווח בידוד?', {
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+            }).then((result) => {
+                if (result.value) {
+                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
+                }
+            })
+            :
+            updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
         }
     };
 

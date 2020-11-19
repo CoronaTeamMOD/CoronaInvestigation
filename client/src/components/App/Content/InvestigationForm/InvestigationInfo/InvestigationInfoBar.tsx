@@ -1,5 +1,4 @@
 import React from 'react';
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -11,11 +10,11 @@ import StoreStateType from 'redux/storeStateType';
 import { landingPageRoute } from 'Utils/Routes/Routes';
 import InvestigationInfo from 'models/InvestigationInfo';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setGender } from 'redux/Gender/GenderActionCreators';
 import { setEpidemiologyNum, setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigatedPatientId, setValidationDate , setIsCurrentlyHospitialized, setIsDeceased, setEndTime } from 'redux/Investigation/investigationActionCreators';
 
-import useStyles from './InvestigationInfoBarStyles';
 import {CommentContextProvider} from './Context/CommentContext';
 import InvestigationMetadata from './InvestigationMetadata/InvestigationMetadata';
 import InvestigatedPersonInfo from './InvestigatedPersonInfo/InvestigatedPersonInfo';
@@ -60,7 +59,7 @@ export const LandingPageTimer = 1900;
 const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     let history = useHistory();
-    const classes = useStyles();
+    const { alertWarning } = useCustomSwal();
 
     const [investigationStaticInfo, setInvestigationStaticInfo] = React.useState<InvestigationInfo>(defaultInvestigationStaticInfo);
 
@@ -110,16 +109,10 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, [epidemiologyNumber]);
 
     const handleInvalidEntrance = () => {
-        Swal.fire({
-            icon: 'warning',
-            title: 'נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם',
-            customClass: {
-                title: classes.swalTitle
-            },
+        alertWarning('נכנסת לעמוד חקירה מבלי לעבור בדף הנחיתה! הנך מועבר לשם', {
             timer: 1750,
             showConfirmButton: false
         });
-
         timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
     };
 

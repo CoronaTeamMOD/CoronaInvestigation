@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
@@ -12,7 +11,6 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
-import useStyles from './InteractionsTabStyles';
 import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
 
 export const symptomsWithKnownStartDate: number = 4;
@@ -28,7 +26,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
-    const { alertError } = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
@@ -36,8 +34,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
-
-    const classes = useStyles({});
 
     const getCoronaTestDate = () => {
         const getCoronaTestDateLogger = logger.setup({
@@ -95,7 +91,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 setInteractions(allInteractions);
             }).catch((error) => {
                 loadInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
-                handleLoadInteractionsError();
+                alertError('הייתה שגיאה בטעינת האירועים והמגעים');
             });
     }
 
@@ -145,45 +141,20 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const handleLoadInteractionsError = () => {
-        Swal.fire({
-            title: 'הייתה שגיאה בטעינת האירועים והמגעים',
-            icon: 'error',
-            customClass: {
-                title: classes.swalTitle
-            }
-        });
-    }
-
-    const handleDeleteFailed = (messageToDisplay: string) => {
-        Swal.fire({
-            title: messageToDisplay,
-            icon: 'error',
-            customClass: {
-                title: classes.swalTitle
-            }
-        })
-    }
-
     const handleDeleteContactEvent = (contactEventId: number) => {
         const deletingInteractionsLogger = logger.setup({
             workflow: 'Deleting Interaction',
             investigation: epidemiologyNumber,
             user: userId
         });
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שתרצה למחוק את האירוע?',
+        alertWarning('האם אתה בטוח שתרצה למחוק את האירוע?',
+        {
             text: 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
-                content: classes.swalText
-            }
         }).then((result) => {
             if (result.value) {
                 deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW)
@@ -194,7 +165,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch((error) => {
                     deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
-                    handleDeleteFailed(eventDeleteFailedMsg);
+                    alertError(eventDeleteFailedMsg);
                 })
             }
             ;
@@ -207,18 +178,12 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             investigation: epidemiologyNumber,
             user: userId
         });
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שתרצה למחוק את מגע?',
+        alertWarning('האם אתה בטוח שתרצה למחוק את מגע?', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle,
-                content: classes.swalText
-            }
         }).then((result) => {
             if (result.value) {
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW)
@@ -229,7 +194,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     loadInteractions();
                 }).catch((error) => {
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
-                    handleDeleteFailed(contactDeleteFailedMsg);
+                    alertError(contactDeleteFailedMsg);
                 })
             }
             ;
