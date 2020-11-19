@@ -43,8 +43,9 @@ const interactionEventSchema = yup.object().shape({
        InteractionEventDialogFields.PLACE_DESCRIPTION], {
         is: (placeType, isUnknownTime, locationAddress, placeName, placeDescription) => {
           if (placeType === placeTypesCodesHierarchy.privateHouse.code ||
-              isUnknownTime || !(locationAddress && (placeName || placeDescription))) {
-            return false;
+              isUnknownTime || (placeType !== placeTypesCodesHierarchy.transportation.code
+                && !(locationAddress && (placeName || placeDescription)))) {
+                return false;
           } else {
             return true;
           }
