@@ -34,6 +34,7 @@ export interface InitialLogData {
     user?: string;
     investigation?: number | string;
     workflow: string;
+    service?: Service.CLIENT,
 }
 
 export interface InitialLogMessage {

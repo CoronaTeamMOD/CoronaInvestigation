@@ -535,7 +535,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 }))
                 .catch((error) => {
-                    changeCountyLogger.error('couldnt change the county due to ' + error, Severity.LOW);
+                    changeCountyLogger.error(`couldnt change the county due to ${error}`, Severity.LOW);
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
@@ -586,7 +586,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         setSelectedRow(UNDEFINED_ROW);
                     }))
                     .catch((error) => {
-                        changeDeskLogger.error('couldnt chang the desk due to ' + error, Severity.HIGH);
+                        changeDeskLogger.error(`couldnt chang the desk due to ${error}`, Severity.HIGH);
                         fireSwalError(UPDATE_ERROR_TITLE);
                     })
                 } else if (result.isDismissed) {
