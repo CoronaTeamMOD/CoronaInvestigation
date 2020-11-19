@@ -28,7 +28,6 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
         const saveResortsDataLogger = logger.setup({
             workflow: 'Saving investigated patient resort data',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -46,7 +45,6 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         let filteredExposures : (Exposure | DBExposure)[] = [];
         const saveExposureAndFlightDataLogger = logger.setup({
             workflow: 'Saving Exposures And Flights',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

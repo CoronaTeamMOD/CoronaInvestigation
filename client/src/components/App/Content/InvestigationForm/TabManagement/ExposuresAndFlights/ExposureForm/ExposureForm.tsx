@@ -81,7 +81,6 @@ const ExposureForm = (props: any) => {
   useEffect(() => {
     const confirmedExposuresLogger = logger.setup({
       workflow: 'Fetching list of confirmed exposures',
-      service: Service.CLIENT,
       investigation: epidemiologyNumber,
       user: userId
     });
@@ -96,7 +95,6 @@ const ExposureForm = (props: any) => {
             setOptionalCovidPatients(result.data);
           } else {
             logger.warn({
-              service: Service.CLIENT,
               severity: Severity.HIGH,
               workflow: 'Fetching list of confirmed exposures',
               step: 'got status 200 but wrong data'

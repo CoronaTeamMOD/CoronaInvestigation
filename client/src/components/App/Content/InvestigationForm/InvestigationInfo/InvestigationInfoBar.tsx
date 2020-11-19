@@ -80,7 +80,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     React.useEffect(() => {
         const investigationInfoLogger = logger.setup({
             workflow: 'Fetching investigation Info',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

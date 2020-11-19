@@ -54,7 +54,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const fetchUsers = () => {
         const fetchUsersLogger = logger.setup({
             workflow: 'Fetching users',
-            service: Service.CLIENT,
             user: user.id,
             investigation: epidemiologyNumber
         });
@@ -92,7 +91,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const fetchSourcesOrganization = () => {
         const fetchSourcesOrganizationLogger = logger.setup({
             workflow: 'Fetching sourcesOrganization',
-            service: Service.CLIENT,
             user: user.id,
             investigation: epidemiologyNumber
         });
@@ -113,7 +111,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const fetchCounties = () => {
         const fetchCountiesLogger = logger.setup({
             workflow: 'Fetching counties',
-            service: Service.CLIENT,
             user: user.id,
             investigation: epidemiologyNumber
         });
@@ -134,7 +131,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const fetchUserTypes = () => {
         const fetchUserTypesLogger = logger.setup({
             workflow: 'Fetching userTypes',
-            service: Service.CLIENT,
             user: user.id,
             investigation: epidemiologyNumber
         });
@@ -156,7 +152,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup({
             workflow: 'Fetching languages',
-            service: Service.CLIENT,
             user: user.id,
             investigation: epidemiologyNumber
         });

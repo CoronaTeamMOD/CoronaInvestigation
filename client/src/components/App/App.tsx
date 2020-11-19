@@ -66,7 +66,6 @@ const App: React.FC = (): JSX.Element => {
     const initUser = async () => {
         const initUserLogger = logger.setup({
             workflow: 'login to the app',
-            service: Service.CLIENT
         });
         const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
         initUserLogger.info('before environment condition', Severity.LOW)
@@ -83,7 +82,6 @@ const App: React.FC = (): JSX.Element => {
     const fetchUser = (userId: string, userName: string) => {
         const fetchUserLogger = logger.setup({
             workflow: 'Getting user details',
-            service: Service.CLIENT,
             user: user.id
         });
         fetchUserLogger.info('launch request to the server', Severity.LOW)

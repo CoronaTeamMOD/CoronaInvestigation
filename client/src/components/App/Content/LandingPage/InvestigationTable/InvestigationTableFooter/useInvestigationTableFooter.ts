@@ -38,7 +38,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleConfirmDesksDialog = (updatedDesk: Desk, transferReason: string) => {
         const switchDeskLogger = logger.setup({
             workflow: 'Switch desk',
-            service: Service.CLIENT,
             investigation: checkedRowsIds.join(', '),
             user: userId
         });
@@ -65,7 +64,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Switch investigator',
-            service: Service.CLIENT,
             investigation: checkedRowsIds.join(', '),
             user: userId
         });

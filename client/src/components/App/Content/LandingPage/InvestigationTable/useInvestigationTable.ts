@@ -118,7 +118,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
             workflow: 'Getting Desks by county id',
-            service: Service.CLIENT,
         });
         axios.get('/desks/county')
             .then((result) => {
@@ -138,7 +137,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllInvestigationStatuses = () => {
         const investigationStatusesLogger = logger.setup({
             workflow: 'GraphQL GET statuses request to the DB',
-            service: Service.CLIENT,
         });
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
@@ -170,7 +168,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         const investigationClickLogger = logger.setup({
             workflow: 'Investigation click',
-            service: Service.CLIENT,
             investigation: epidemiologyNumberVal
         });
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
@@ -188,7 +185,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
-            service: Service.CLIENT,
             user: user.id
         });
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
@@ -206,7 +202,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCountyUsers = () => {
         const countyUsersLogger = logger.setup({
             workflow: 'Getting group users',
-            service: Service.CLIENT,
             user: user.id
         });
         countyUsersLogger.info(`requesting the server the connected admin's group users`,Severity.LOW)
@@ -237,7 +232,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCounties = () => {
         const fetchAllCountiesLogger = logger.setup({
             workflow: 'GraphQL request to the DB',
-            service: Service.CLIENT,
         });
         axios.get('/counties').then((result: any) => {
             const allCounties: Map<number, County> = new Map();
@@ -262,7 +256,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchTableData = () => {
         const fetchInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
-            service: Service.CLIENT,
             user: user.id
         });
         setIsLoading(true);
@@ -353,7 +346,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
             workflow: 'Investigation click',
-            service: Service.CLIENT,
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
         });

@@ -51,7 +51,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         const updateInvestigationStatusLogger = logger.setup({
             workflow: 'Update Investigation Status',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

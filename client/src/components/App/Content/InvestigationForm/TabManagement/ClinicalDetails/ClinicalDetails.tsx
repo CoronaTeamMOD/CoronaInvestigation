@@ -83,7 +83,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         const values = methods.getValues();
         const saveClinicalDetailsLogger = logger.setup({
             workflow: 'Saving clinical details tab',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });

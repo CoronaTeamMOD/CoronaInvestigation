@@ -18,7 +18,6 @@ const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) 
     const getPlacesSubTypesByTypes = () => {
         const getPlacesSubTypesByTypesLogger = logger.setup({
             workflow: 'Fetching Places And Sub Types By Types',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

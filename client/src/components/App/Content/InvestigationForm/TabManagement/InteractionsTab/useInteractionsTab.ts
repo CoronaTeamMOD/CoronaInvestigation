@@ -42,7 +42,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const getCoronaTestDate = () => {
         const getCoronaTestDateLogger = logger.setup({
             workflow: 'Getting Corona Test Date',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -61,7 +60,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const getClinicalDetailsSymptoms = () => {
         const getClinicalDetailsSymptomsLogger = logger.setup({
             workflow: 'Fetching Clinical Details',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -82,7 +80,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup({
             workflow: 'Fetching Interactions',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -171,7 +168,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const handleDeleteContactEvent = (contactEventId: number) => {
         const deletingInteractionsLogger = logger.setup({
             workflow: 'Deleting Interaction',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -208,7 +204,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const handleDeleteContactedPerson = (contactedPersonId: number, contactEventId: number) => {
         const deleteContactedPersonLogger = logger.setup({
             workflow: 'Deleting Contacted Person',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });

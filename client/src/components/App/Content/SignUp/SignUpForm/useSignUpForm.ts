@@ -27,7 +27,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchCities = () => {
         const fetchCitiesLogger = logger.setup({
             workflow: 'Fetching cities',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -50,7 +49,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchCounties = () => {
         const fetchCountiesLogger = logger.setup({
             workflow: 'Fetching counties',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -69,7 +67,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchSourcesOrganization = () => {
         const fetchSourcesOrganizationLogger = logger.setup({
             workflow: 'Fetching sourcesOrganization',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -88,7 +85,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchLanguages = () => {
         const fetchLanguagesLogger = logger.setup({
             workflow: 'Fetching languages',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -107,7 +103,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const fetchDesks = () => {
         const fetchDesksLogger = logger.setup({
             workflow: 'Getting desks',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -132,7 +127,6 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const createUser = (newUser: SignUpUser) => {
         const createUserLogger = logger.setup({
             workflow: 'Create user',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

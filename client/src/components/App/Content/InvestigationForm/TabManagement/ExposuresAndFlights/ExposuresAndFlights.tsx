@@ -75,14 +75,12 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const fetchExposuresAndFlights = () => {
     const fetchExposuresAndFlightsLogger = logger.setup({
       workflow: 'Fetching Exposures And Flights',
-      service: Service.CLIENT,
       investigation: investigationId,
       user: userId
     });
 
     const getCoronaTestDateLogger = logger.setup({
       workflow: 'Getting Corona Test Date',
-      service: Service.CLIENT,
       investigation: investigationId,
       user: userId
     });
@@ -134,7 +132,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const fetchResortsData: () => Promise<ResortData> = async () => {
     const fetchResortsDataLogger = logger.setup({
       workflow: 'Fetching investigated patient resorts data',
-      service: Service.CLIENT,
       investigation: investigationId,
       user: userId
     });
@@ -183,7 +180,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     event.preventDefault();
     const saveExposureLogger = logger.setup({
       workflow: 'Saving Exposures And Flights tab',
-      service: Service.CLIENT,
       investigation: investigationId,
       user: userId
     });

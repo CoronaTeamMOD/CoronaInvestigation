@@ -30,7 +30,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
 
     const getUserActivityStatusLogger = logger.setup({
         workflow: 'GraphQL request to the DB',
-        service: Service.CLIENT
     });
 
     React.useEffect(() => {
@@ -91,7 +90,6 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const getCountyByUser = () => {
         const getCountyByUserLogger = logger.setup({
             workflow: 'GraphQL request to the DB',
-            service: Service.CLIENT
         });
         getCountyByUserLogger.info('started fetching county display name by user',Severity.LOW)
         axios.get('counties/county/displayName').then((result) => {

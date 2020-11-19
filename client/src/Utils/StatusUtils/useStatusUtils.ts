@@ -21,7 +21,6 @@ const useStatusUtils = () => {
     const updateIsDeceased = (onInvestigationFinish: Function) => {
         const updateIsDeceasedLogger = logger.setup({
             workflow: 'Update isDeceased',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });
@@ -43,7 +42,6 @@ const useStatusUtils = () => {
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
         const updateIsCurrentlyHospitializedLogger = logger.setup({
             workflow: 'Update isCurrentlyHospitialized',
-            service: Service.CLIENT,
             user: userId,
             investigation: epidemiologyNumber
         });

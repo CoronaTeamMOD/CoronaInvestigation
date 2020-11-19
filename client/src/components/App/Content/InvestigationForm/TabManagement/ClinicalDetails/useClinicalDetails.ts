@@ -55,7 +55,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getSymptoms = () => {
         const getSymptomsLogger = logger.setup({
             workflow: 'Fetching Symptoms',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -74,7 +73,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getBackgroundDiseases = () => {
         const getBackgroundDiseasesLogger = logger.setup({
             workflow: 'Fetching Background Diseases',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -93,7 +91,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getIsolationSources = () => {
         const getIsolationSourcesLogger = logger.setup({
             workflow: 'Fetching Isolation Sources',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -112,7 +109,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const getStreetByCity = (cityId: string) => {
         const getStreetByCityLogger = logger.setup({
             workflow: 'Getting streets of city',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -134,7 +130,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     ) => {
         const fetchClinicalDetailsLogger = logger.setup({
             workflow: 'Fetching Clinical Details',
-            service: Service.CLIENT,
             investigation: epidemiologyNumber,
             user: userId
         });
