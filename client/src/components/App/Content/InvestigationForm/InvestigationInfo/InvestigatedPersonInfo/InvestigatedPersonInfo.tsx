@@ -141,6 +141,17 @@ const InvestigatedPersonInfo = (props: Props) => {
                                 <FormControl variant='outlined' className={classes.statusSelect}>
                                     <InputLabel className={classes.statusSelect} id='status-label'>{statusLabel}</InputLabel>
                                     <Select
+                                        MenuProps={{
+                                            anchorOrigin: {
+                                              vertical: "bottom",
+                                              horizontal: "left"
+                                            },
+                                            transformOrigin: {
+                                              vertical: "top",
+                                              horizontal: "left"
+                                            },
+                                            getContentAnchorEl: null
+                                        }}
                                         labelId='status-label'
                                         test-id='currentStatus'
                                         variant='outlined'
@@ -176,6 +187,17 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     <FormControl variant='outlined' className={classes.subStatusSelect}>
                                         <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
                                         <Select
+                                            MenuProps={{
+                                                anchorOrigin: {
+                                                  vertical: "bottom",
+                                                  horizontal: "left"
+                                                },
+                                                transformOrigin: {
+                                                  vertical: "top",
+                                                  horizontal: "left"
+                                                },
+                                                getContentAnchorEl: null
+                                            }}
                                             labelId='sub-status-label'
                                             test-id='currentSubStatus'
                                             label={subStatusLabel}
