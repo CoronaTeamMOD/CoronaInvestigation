@@ -178,7 +178,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
         educationSubOccupationsLogger.info(`launching education sub occupations request with parameter: ${city}`, Severity.LOW);
         axios.get('/personalDetails/educationSubOccupations?city=' + city).then((res: any) => {
             if (res && res.data && res.data.data) {
-                educationSubOccupationsLogger.info(`got results from the server`, Severity.LOW);
+                educationSubOccupationsLogger.info('got results from the server', Severity.LOW);
                 setSubOccupations(res.data.data.allSubOccupations.nodes.map((node: any) => {
                     return {
                         id: node.id,
