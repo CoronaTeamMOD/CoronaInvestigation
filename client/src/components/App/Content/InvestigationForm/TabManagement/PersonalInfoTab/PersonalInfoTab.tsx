@@ -15,11 +15,13 @@ import { Service, Severity } from 'models/Logger';
 import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
 import {setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
@@ -28,8 +30,6 @@ import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/Compl
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { InvestigationStatus } from 'models/InvestigationStatus';
 
 import useStyles from './PersonalInfoTabStyles';
 import usePersonalInfoTab from './usePersonalInfoTab';
@@ -101,7 +101,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         setOccupation(newOccupation);
         setSubOccupationName('');
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
-        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         methods.setValue(PersonalInfoDataContextFields.ROLE, '');
@@ -109,6 +108,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }
+
+    useEffect(() => {
+        if (!Boolean(subOccupationName)) {
+            methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
+        }
+    }, [subOccupationName]);
 
     const data = methods.getValues();
 

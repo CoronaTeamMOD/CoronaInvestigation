@@ -10,9 +10,9 @@ import Occupations from 'models/enums/Occupations';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 
 import useStyles from './PersonalInfoTabStyles';
-import { usePersoanlInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
+import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces'; 
 
-const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePersonalInfoTabOutcome => {
+const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePersonalInfoTabOutcome => {
 
     const classes = useStyles({});
 
@@ -132,7 +132,7 @@ const usePersonalInfoTab = (parameters: usePersoanlInfoTabParameters): usePerson
                     insuranceCompany: investigatedPatient.hmo,
                     ...convertedPatientAddress,
                     relevantOccupation: investigatedPatient.occupation,
-                    educationOccupationCity: investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation ?
+                    educationOccupationCity: (investigatedPatient.occupation === Occupations.EDUCATION_SYSTEM && investigatedPatient.subOccupationBySubOccupation) ?
                         investigatedPatient.subOccupationBySubOccupation.city : '',
                     institutionName: investigatedPatient.subOccupation !== null ? investigatedPatient.subOccupation : '',
                     otherOccupationExtraInfo: investigatedPatient.otherOccupationExtraInfo !== null ? investigatedPatient.otherOccupationExtraInfo : '',
