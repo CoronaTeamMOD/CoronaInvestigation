@@ -24,57 +24,27 @@ addressRoute.get('/cities', (request: Request, response: Response) => {
 });
 
 addressRoute.get('/city/:cityId/streets', (request: Request, response: Response) => {
-  logger.info({
-    service: Service.SERVER,
-    severity: Severity.LOW,
+  const getStreetsOfCityLogger = logger.setup({
     workflow: 'Getting streets of city',
-    step: `launcing DB request with parameter ${request.params.cityId}`,
     investigation: response.locals.epidemiologynumber,
     user: response.locals.user.id
   });
+  getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`,Severity.LOW)
   graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
     let streets: Street[] = [];
-    logger.info({
-      service: Service.SERVER,
-      severity: Severity.LOW,
-      workflow: 'Getting streets of city',
-      step: 'got response from DB',
-      investigation: response.locals.epidemiologynumber,
-      user: response.locals.user.id
-    });
+    getStreetsOfCityLogger.info('got response from DB',Severity.LOW)
     if(result && result.data && result.data.cityById && result.data.cityById.streetsByCity){
-      logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Getting streets of city',
-        step: 'got streets from DB',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-      });
+      getStreetsOfCityLogger.info('got streets from DB',Severity.LOW)
       streets = result.data.cityById.streetsByCity.nodes.map((street: Street) => ({
         id: street.id,
         displayName: street.displayName,
       }));
     } else {
-      logger.warning({
-        service: Service.SERVER,
-        severity: Severity.MEDIUM,
-        workflow: 'Getting streets of city',
-        step: 'didnt get streets from DB',
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-      });
+      getStreetsOfCityLogger.warn('didnt get streets from DB',Severity.MEDIUM)
     }
     return response.send(streets);
   }).catch(error => {
-    logger.error({
-      service: Service.SERVER,
-      severity: Severity.MEDIUM,
-      workflow: 'Getting streets of city',
-      step: `got error from graphql API ${error}`,
-      investigation: response.locals.epidemiologynumber,
-      user: response.locals.user.id
-    });
+    getStreetsOfCityLogger.error(`got error from graphql API ${error}`,Severity.HIGH)
     response.sendStatus(500)
   });
 });
