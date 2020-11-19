@@ -94,7 +94,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds
     });
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
 
     const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
 

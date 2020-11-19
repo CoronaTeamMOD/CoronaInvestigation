@@ -40,7 +40,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     const [filterRules, setFitlerRules] = useState<any>({});
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const getUsersRoute = () => {

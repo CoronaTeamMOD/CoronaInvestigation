@@ -8,14 +8,13 @@ import User from 'models/User';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
-import { store } from 'redux/store';
+import { persistor, store } from 'redux/store';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { activateIsLoading } from 'Utils/axios';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -99,7 +98,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -190,7 +189,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         startWaiting();
     }, [])
 
-    const moveToTheInvestigationForm = (epidemiologyNumberVal: number) => {
+    const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         logger.info({
             service: Service.CLIENT,
@@ -200,8 +199,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigation: epidemiologyNumberVal
         })
         setIsInInvestigation(true);
-        epidemiologyNumberVal !== defaultEpidemiologyNumber && window.open(investigationURL);
         setIsCurrentlyLoading(true);
+        await persistor.flush();
+        window.open(investigationURL);
         timeout(15000).then(() => {
             store.getState().investigation.isCurrentlyLoading && setIsCurrentlyLoading(false);
         });
@@ -318,7 +318,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchAllCountyUsers();
             fetchAllCounties();
         }
-        if (user.userName !== initialUserState.userName) {
+        if (user.userName !== initialUserState.data.userName) {
             logger.info({
                 service: Service.CLIENT,
                 severity: Severity.LOW,

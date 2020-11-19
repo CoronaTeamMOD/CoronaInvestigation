@@ -21,7 +21,7 @@ const useDuplicateContactId = () => {
     
     const { alertWarning } = useCustomSwal();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const findDuplicateIds = (idsToCheck: ContactId[]) => {
         const trimmedIds: ContactId[] = idsToCheck.filter(id => id);

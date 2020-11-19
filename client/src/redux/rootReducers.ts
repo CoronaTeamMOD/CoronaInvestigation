@@ -1,4 +1,3 @@
-import { withReduxStateSync } from 'redux-state-sync';
 import { combineReducers, Reducer, CombinedState, AnyAction } from 'redux';
 
 import formReducer from './Form/formReducer';
@@ -15,7 +14,7 @@ import subStatusesReducer from './SubStatuses/subStatusesReducer';
 import investigationReducer from './Investigation/investigationReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 
-export default withReduxStateSync(combineReducers<StoreStateType>({
+export default combineReducers<StoreStateType>({
      user: userReducer,
      isLoading: isLoadingReducer,
      isInInvestigation: isInInvestigationReducer,
@@ -28,4 +27,4 @@ export default withReduxStateSync(combineReducers<StoreStateType>({
      subStatuses: subStatusesReducer,
      formsValidations: formReducer,
      address: addressReducer,
-})) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;
+}) as unknown as Reducer<CombinedState<StoreStateType>, AnyAction>;

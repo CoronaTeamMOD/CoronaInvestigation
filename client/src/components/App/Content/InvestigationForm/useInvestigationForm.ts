@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import City from 'models/City';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import theme from 'styles/theme';
 import Country from 'models/Country';
@@ -32,7 +32,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);

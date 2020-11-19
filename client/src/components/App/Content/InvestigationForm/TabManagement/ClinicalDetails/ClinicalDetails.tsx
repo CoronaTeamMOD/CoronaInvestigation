@@ -49,7 +49,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = useClinicalDetails({
             setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });

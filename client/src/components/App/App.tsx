@@ -52,12 +52,15 @@ const getStubAuthUserData = () => ({
 
 const App: React.FC = (): JSX.Element => {
 
-    const user = useSelector<StoreStateType, User>(state => state.user);
+    const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const isUserLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        initUser();
+        if(!isUserLoggedIn) {
+            initUser();
+        }
     }, []);
 
     const initUser = async () => {

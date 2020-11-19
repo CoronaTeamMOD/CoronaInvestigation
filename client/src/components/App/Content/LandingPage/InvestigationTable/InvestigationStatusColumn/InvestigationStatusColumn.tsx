@@ -16,7 +16,7 @@ const InvestigationStatusColumn = (props: Props) => {
 
     const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason } = props;
     
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { alertError } = useCustomSwal();
 

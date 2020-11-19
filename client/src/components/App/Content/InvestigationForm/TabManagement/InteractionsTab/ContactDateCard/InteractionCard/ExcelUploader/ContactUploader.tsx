@@ -32,7 +32,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     const buttonRef = React.useRef<HTMLInputElement>(null);
     
     const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     
     const existingContacts : Contact[] = allInteractions
     .flatMap(interaction => interaction.contacts

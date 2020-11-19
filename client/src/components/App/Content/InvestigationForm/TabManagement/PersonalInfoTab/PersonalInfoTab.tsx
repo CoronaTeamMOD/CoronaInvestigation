@@ -7,13 +7,9 @@ import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
 import City from 'models/City';
-import axios from 'Utils/axios';
 import Street from 'models/Street';
-import logger from 'logger/logger';
 import DBAddress from 'models/DBAddress';
-import { Service, Severity } from 'models/Logger';
 import Occupations from 'models/enums/Occupations';
-import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
@@ -24,11 +20,10 @@ import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import {setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
+import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
-import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 import useStyles from './PersonalInfoTabStyles';
@@ -78,14 +73,10 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const { complexityErrorAlert } = useComplexitySwal();
 
-    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity } = usePersonalInfoTab({
+    const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity, savePersonalData } = usePersonalInfoTab({
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
         setStreets, occupationsStateContext, setInsuranceCompany, setInvestigatedPatientRoles,
     });
@@ -249,52 +240,13 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
         return INSTITUTION_NAME_LABEL;
     }
 
-    const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
-        const logInfo = {
-            service: Service.CLIENT,
-            workflow: 'Saving personal details tab',
-            investigation: investigationId,
-            user: userId
-        };
-
-        event.preventDefault();
-        logger.info({
-            ...logInfo,
-            severity: Severity.LOW,
-            step: 'launching the server request',
-        });
-        axios.post('/personalDetails/updatePersonalDetails',
-            {
-                id: investigatedPatientId,
-                personalInfoData,
-            })
-            .then(() => {
-                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatus.NEW;
-                logger.info({
-                    ...logInfo,
-                    severity: Severity.LOW,
-                    step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
-                });
-            })
-            .catch((error) => {
-                logger.error({
-                    ...logInfo,
-                    severity: Severity.LOW,
-                    step: `got error from server: ${error}`,
-                });
-                complexityErrorAlert(error);
-            })
-            .finally(() => { 
-                personalInfoValidationSchema.isValid(data).then(valid => {
-                    setFormState(investigationId, id, valid);
-                })
-            })
-    }
-
     return (
         <div className={classes.tabInitialContainer}>
             <FormProvider {...methods}>
-                <form id={`form-${id}`} onSubmit={(event) => savePersonalData(event, convertToDBData())}>
+                <form id={`form-${id}`} onSubmit={(event) => {
+                    event.preventDefault();
+                    savePersonalData(convertToDBData(), data, id);
+                }}>
                     <FormRowWithInput fieldName={PHONE_LABEL}>
                         <Grid item xs={2} className={classes.personalInfoItem}>
                             <Controller

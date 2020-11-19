@@ -42,7 +42,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const { setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     

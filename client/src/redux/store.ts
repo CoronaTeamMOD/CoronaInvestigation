@@ -1,21 +1,18 @@
 import thunk from 'redux-thunk';
-import {createStore, applyMiddleware, compose} from 'redux';
-import { createStateSyncMiddleware, initStateWithPrevTab } from 'redux-state-sync';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist'
+import storageSession from 'redux-persist/lib/storage/session'
 
 import reducers from './rootReducers';
-import * as userActionTypes from '../redux/User/userActionTypes';
-import * as investigationActionTypes from '../redux/Investigation/investigationActionTypes';
-import * as isInInvestigationActionTypes from '../redux/IsInInvestigations/isInInvestigationActionTypes';
 
-const config = {
-    predicate: (action: any) => (action.type === investigationActionTypes.SET_LAST_OPENED_EPIDEMIOLOGY_NUM || 
-        action.type === investigationActionTypes.SET_IS_CURRENTLY_LOADING || 
-        action.type === isInInvestigationActionTypes.SET_IS_IN_INVESTIGATION ||
-        action.type === userActionTypes.SET_IS_ACTIVE),
+
+const persistConfig = {
+    key: 'root',
+    storage: storageSession,
 };
-const middlewares = [createStateSyncMiddleware(config)];
 
+const persistedReducer = persistReducer(persistConfig, reducers)
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk, ...middlewares)));
-initStateWithPrevTab(store);
+export const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)));
+export const persistor = persistStore(store);
