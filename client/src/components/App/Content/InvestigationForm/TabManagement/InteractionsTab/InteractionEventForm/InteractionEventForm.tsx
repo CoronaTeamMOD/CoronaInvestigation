@@ -214,7 +214,7 @@ const InteractionEventForm: React.FC<Props> = (
           }
         )
       }>
-        <Grid className={formClasses.form} container justify='flex-start'>
+        <Grid className={formClasses.form} container justify='space-between'>
           <PlacesTypesAndSubTypes size='Dialog'
             placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
             placeSubTypeName={InteractionEventDialogFields.PLACE_SUB_TYPE}
@@ -269,7 +269,7 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
-            <Grid item xs={3}>
+            <FormInput xs={3} fieldName=''>
               <Controller
                 name={InteractionEventDialogFields.UNKNOWN_TIME}
                 control={methods.control}
@@ -286,7 +286,7 @@ const InteractionEventForm: React.FC<Props> = (
                   />
                 }
               />
-            </Grid>
+            </FormInput>
           </Grid>
           <Collapse in={hasAddress}>
             <AddressForm />
