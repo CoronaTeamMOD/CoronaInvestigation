@@ -40,7 +40,7 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog }: Props): JSX.Element => {
+  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog ,isNewInteraction}: Props): JSX.Element => {
 
   const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
@@ -53,15 +53,17 @@ const InteractionEventForm: React.FC<Props> = (
   });
 
   const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-
   const placeType = methods.watch(InteractionEventDialogFields.PLACE_TYPE);
   const placeSubType = methods.watch(InteractionEventDialogFields.PLACE_SUB_TYPE);
   const interactionStartTime = methods.watch(InteractionEventDialogFields.START_TIME);
-  const interationEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
+  const interactionEndTime = methods.watch(InteractionEventDialogFields.END_TIME);
   const isUnknownTime = methods.watch(InteractionEventDialogFields.UNKNOWN_TIME);
   const locationAddress = methods.watch(InteractionEventDialogFields.LOCATION_ADDRESS);
   const placeName = methods.watch(InteractionEventDialogFields.PLACE_NAME);
   const placeDescription = methods.watch(InteractionEventDialogFields.PLACE_DESCRIPTION);
+
+  const [startTime, setStartTime] = useState<Date | null>(isNewInteraction ? null : interactionStartTime);
+  const [endTime, setEndTime] = useState<Date | null>(isNewInteraction ? null : interactionEndTime);
 
   const { fields, append } = useFieldArray<Contact>({ control: methods.control, name: InteractionEventDialogFields.CONTACTS });
   const contacts = fields;
@@ -159,7 +161,7 @@ const InteractionEventForm: React.FC<Props> = (
       [InteractionEventDialogFields.END_TIME]: endTimeToSave,
       [InteractionEventDialogFields.ID]: methods.watch(InteractionEventDialogFields.ID),
       [InteractionEventDialogFields.PLACE_NAME]: Boolean(data[InteractionEventDialogFields.PLACE_NAME]) ?
-          data[InteractionEventDialogFields.PLACE_NAME] : generatePlacenameByPlaceSubType(placeSubtypeName),
+        data[InteractionEventDialogFields.PLACE_NAME] : generatePlacenameByPlaceSubType(placeSubtypeName),
       [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
       [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
         data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
@@ -196,7 +198,22 @@ const InteractionEventForm: React.FC<Props> = (
 
   return (
     <FormProvider {...methods}>
-      <form id='interactionEventForm' onSubmit={methods.handleSubmit(onSubmit)}>
+      <form id='interactionEventForm' onSubmit={
+        methods.handleSubmit(
+          () => {
+            const filTimeValidationMessage = 'יש למלא שעה'; 
+            if (!startTime) {
+              methods.setError(InteractionEventDialogFields.START_TIME, { type: 'manual', message: filTimeValidationMessage });
+            }
+            if (!endTime) {
+              methods.setError(InteractionEventDialogFields.END_TIME, { type: 'manual', message: filTimeValidationMessage });
+            }
+            if (startTime && endTime) {
+              onSubmit(methods.getValues())
+            }
+          }
+        )
+      }>
         <Grid className={formClasses.form} container justify='flex-start'>
           <PlacesTypesAndSubTypes size='Dialog'
             placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
@@ -204,9 +221,9 @@ const InteractionEventForm: React.FC<Props> = (
             placeType={placeType}
             placeSubType={placeSubType}
             onPlaceTypeChange={(newValue) => {
-              methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, {shouldValidate: true});
+              methods.setValue(InteractionEventDialogFields.PLACE_TYPE, newValue, { shouldValidate: true });
               Boolean(placeName) &&
-                  methods.setValue(InteractionEventDialogFields.PLACE_NAME, '');
+                methods.setValue(InteractionEventDialogFields.PLACE_NAME, '');
             }}
             onPlaceSubTypeChange={onPlaceSubtypeChange}
           />
@@ -220,9 +237,11 @@ const InteractionEventForm: React.FC<Props> = (
                   <TimePick
                     disabled={isUnknownTime as boolean}
                     testId='contactLocationStartTime'
-                    value={props.value}
-                    onChange={(newTime: Date) =>
+                    value={startTime}
+                    onChange={(newTime: Date) => {
+                      setStartTime(newTime)
                       handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
+                    }
                     }
                     labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'משעה*'}
                     error={get(methods.errors, props.name)}
@@ -238,9 +257,11 @@ const InteractionEventForm: React.FC<Props> = (
                   <TimePick
                     disabled={isUnknownTime as boolean}
                     testId='contactLocationEndTime'
-                    value={props.value}
-                    onChange={(newTime: Date) =>
-                      handleTimeChange(newTime, interationEndTime, InteractionEventDialogFields.END_TIME)
+                    value={endTime}
+                    onChange={(newTime: Date) => {
+                      setEndTime(newTime)
+                      handleTimeChange(newTime, interactionEndTime, InteractionEventDialogFields.END_TIME)
+                    }
                     }
                     labelText={get(methods.errors, props.name) ? get(methods.errors, props.name).message : 'עד שעה*'}
                     error={get(methods.errors, props.name)}
@@ -292,7 +313,7 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
-            { !Boolean(externalizationErrorMessage) &&
+            {!Boolean(externalizationErrorMessage) &&
               <Typography color={methods.errors[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL] ? 'error' : 'initial'} >
                 חובה לבחור החצנה
               </Typography>
@@ -357,4 +378,5 @@ interface Props {
   loadInteractions: () => void;
   closeNewDialog: () => void;
   closeEditDialog: () => void;
+  isNewInteraction?: Boolean;
 };
