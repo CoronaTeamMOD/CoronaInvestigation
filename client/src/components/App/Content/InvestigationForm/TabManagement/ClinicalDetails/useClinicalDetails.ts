@@ -122,7 +122,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         getStreetByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW)
         axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
             if (result?.data) {
-                getStreetByCityLogger.info('got data from the server',Severity.LOW)
+                getStreetByCityLogger.info('got data from the server', Severity.LOW)
                 setStreetsInCity(result.data.map((node: Street) => node))
             } else {
                 getStreetByCityLogger.error(`got errors in server result: ${JSON.stringify(result)}`, Severity.HIGH)

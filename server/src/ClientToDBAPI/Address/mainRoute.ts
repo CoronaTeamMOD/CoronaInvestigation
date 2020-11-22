@@ -29,7 +29,7 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
     investigation: response.locals.epidemiologynumber,
     user: response.locals.user.id
   });
-  getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`,Severity.LOW)
+  getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`, Severity.LOW)
   graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
     let streets: Street[] = [];
     getStreetsOfCityLogger.info('got response from DB', Severity.LOW)

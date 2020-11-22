@@ -159,15 +159,15 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         user: response.locals.user.id
     })
 
-    saveClinicalDetailsFieldsLogger.info(`launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`,Severity.LOW)
+    saveClinicalDetailsFieldsLogger.info(`launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`, Severity.LOW)
     graphqlRequest(UPDATE_INVESTIGATION, response.locals, requestInvestigation).then(() => {
-        saveClinicalDetailsFieldsLogger.info(`saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`,Severity.LOW)
+        saveClinicalDetailsFieldsLogger.info(`saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`, Severity.LOW)
         graphqlRequest(ADD_BACKGROUND_DISEASES, response.locals, investigatedPatientBackgroundDeseases).then(() => {
-            saveClinicalDetailsFieldsLogger.info(`background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`,Severity.LOW)
+            saveClinicalDetailsFieldsLogger.info(`background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`, Severity.LOW)
             graphqlRequest(ADD_SYMPTOMS, response.locals, investigatedPatientSymptoms).then(() => {
-                saveClinicalDetailsFieldsLogger.info(`symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`,Severity.LOW)
+                saveClinicalDetailsFieldsLogger.info(`symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`, Severity.LOW)
                 graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, investigatedPatientClinicalInfo).then(() => {
-                    saveClinicalDetailsFieldsLogger.info('saved covid patient clinical info',Severity.LOW)
+                    saveClinicalDetailsFieldsLogger.info('saved covid patient clinical info', Severity.LOW)
                     response.send('Added clinical details');
                 }).catch(err => {
                     saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS request',Severity.HIGH)
@@ -203,11 +203,11 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,
             houseNumValue: isolationAddress?.houseNum ? isolationAddress?.houseNum : null,
         }
-        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`,Severity.LOW)
+        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW)
         graphqlRequest(CREATE_ADDRESS, response.locals, {
             input: requestAddress
         }).then((result: CreateAddressResponse) => {
-            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation',Severity.LOW)
+            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW)
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         }).catch(err => {
             saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH)

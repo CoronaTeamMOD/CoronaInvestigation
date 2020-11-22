@@ -63,7 +63,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
-        getUserActivityStatusLogger.info('started is user active updating',Severity.LOW)
+        getUserActivityStatusLogger.info('started is user active updating', Severity.LOW)
         return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {

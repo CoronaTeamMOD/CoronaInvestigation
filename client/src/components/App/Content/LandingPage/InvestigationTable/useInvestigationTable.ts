@@ -255,7 +255,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchAllCounties();
         }
         if (user.userName !== initialUserState.data.userName) {
-            fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`,Severity.LOW)
+            fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW)
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
                     fetchInvestigationsLogger.info('got respond from the server', Severity.LOW)
@@ -392,7 +392,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     alertError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
-            investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,Severity.LOW)
+            investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW)
             setInvestigationStatus({
                 mainStatus: investigationRow.investigationStatus,
                 subStatus: investigationRow.investigationSubStatus,
