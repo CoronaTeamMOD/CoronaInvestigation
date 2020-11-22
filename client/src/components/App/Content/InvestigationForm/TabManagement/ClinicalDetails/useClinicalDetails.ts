@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
-import axios from 'Utils/axios';
 import Street from 'models/Street';
 import DBAddress, { initDBAddress } from 'models/DBAddress';
 import { Severity } from 'models/Logger';
@@ -9,8 +9,12 @@ import logger from 'logger/logger';
 import StoreStateType from 'redux/storeStateType';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import IsolationSource from 'models/IsolationSource';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { setFormState } from 'redux/Form/formActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
+import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 
 export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
 
@@ -42,9 +46,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const { setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
+    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
+
+    const { alertError } = useCustomSwal();
     
     React.useEffect(() => {
         getSymptoms();
@@ -133,7 +140,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber,
             user: userId
         });
-        fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW)
+        fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW);
+        setIsLoading(true);
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data) {
@@ -184,15 +192,38 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     }
                     reset(initialDBClinicalDetailsToSet);
                     trigger();
+                    setIsLoading(false);
                 } else {
                     fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH)
+                    setIsLoading(false);
                 }
             }
         );
     };
 
-    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number): Promise<void> => {
-        return axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: { ...clinicalDetails, epidemiologyNumber, investigatedPatientId } }));
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
+        const saveClinicalDetailsLogger = logger.setup({
+            workflow: 'Saving clinical details tab',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
+        saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
+        setIsLoading(true);
+        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: { ...clinicalDetails, epidemiologyNumber, investigatedPatientId } }))
+            .then(() => {
+                saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
+            })
+            .catch((error) => {
+                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+            })
+            .finally(() => {
+                setIsLoading(false);
+                ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
+        
     }
 
     return {
