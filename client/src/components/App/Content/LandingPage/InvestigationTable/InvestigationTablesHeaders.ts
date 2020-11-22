@@ -31,7 +31,7 @@ export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean }
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
-    [TableHeadersNames.coronaTestDate]: 'תאריך הבדיקה',
+    [TableHeadersNames.coronaTestDate]: 'תאריך תחילת המחלה',
     [TableHeadersNames.isComplex]: '',
     [TableHeadersNames.priority]: 'עדיפות',
     [TableHeadersNames.fullName]: 'שם מלא',
