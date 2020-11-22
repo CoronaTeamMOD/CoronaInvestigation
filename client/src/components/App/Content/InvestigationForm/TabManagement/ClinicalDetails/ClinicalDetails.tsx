@@ -7,13 +7,9 @@ import { useForm, Controller, FormProvider } from 'react-hook-form';
 
 import City from 'models/City';
 import Street from 'models/Street';
-import logger from 'logger/logger';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
-import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
@@ -30,7 +26,6 @@ import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './Bac
 
 const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
-    const { alertError } = useCustomSwal();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
@@ -48,9 +43,6 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = useClinicalDetails({
             setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });
@@ -82,25 +74,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = methods.getValues();
-        const saveClinicalDetailsLogger = logger.setup({
-            workflow: 'Saving clinical details tab',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
-        saveClinicalDetailsLogger.info('launching the server request', Severity.LOW)
-        saveClinicalDetails(values as ClinicalDetailsData, epidemiologyNumber, investigatedPatientId)
-            .then(() => {
-                saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW)
-            })
-            .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH)
-                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
-            })
-            .finally(() => {
-                ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
-            })
+        saveClinicalDetails(values as ClinicalDetailsData, validationDate, id);
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
