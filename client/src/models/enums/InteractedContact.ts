@@ -6,7 +6,7 @@ enum InteractedContactFields {
     CONTACT_DATE = 'contactDate',
     CONTACT_TYPE = 'contactType',
     EXTRA_INFO = 'extraInfo',
-    CANT_REACH_CONTACT = 'cantReachContact',
+    CONTACT_STATUS = 'contactStatus',
     RELATIONSHIP = 'relationship',
     FAMILY_RELATIONSHIP = 'familyRelationship',
     OCCUPATION = 'occupation',
@@ -18,7 +18,9 @@ enum InteractedContactFields {
     DOES_LIVE_WITH_CONFIRMED = 'doesLiveWithConfirmed',
     DOES_WORK_WITH_CROWD = 'doesWorkWithCrowd',
     DOES_NEED_ISOLATION = 'doesNeedIsolation',
-    EXPAND = 'expand',
-}
+    FIRST_NAME = 'firstName',
+    LAST_NAME = 'lastName',
+    PHONE_NUMBER = 'phoneNumber',
+};
 
 export default InteractedContactFields;

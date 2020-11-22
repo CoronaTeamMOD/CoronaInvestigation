@@ -12,6 +12,7 @@ export interface GetContactEventResponse {
 export interface GetContactEventByIdResponse {
     data: {
         contactEventById: ContactEvent
+    }
 }
 
 export interface ContactEvent {
@@ -48,6 +49,7 @@ export interface ContactEvent {
     startTime: Date,
     trainLine: string,
     placeTypeByPlaceType: PlaceSubType,
+    creationTime: Date,
     contactedPeopleByContactEvent: {
         nodes: ContactedPerson[]
     }

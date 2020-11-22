@@ -18,7 +18,7 @@ const isIdValid = (id: string | null | undefined) => {
       sum += digitMul;
     })
   }
-  return sum % 10 === 0;
+  return sum % 10 === 0 && sum > 0;
 }
 
 export {

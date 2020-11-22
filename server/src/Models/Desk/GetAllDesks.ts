@@ -7,6 +7,7 @@ interface GetAllDesks {
 }
 
 interface Desk {
+    id: number;
     deskName: string;
 }
 

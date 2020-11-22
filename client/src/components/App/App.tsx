@@ -1,15 +1,15 @@
 import { config } from 'dotenv';
 import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import User from 'models/User';
-import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import userType from 'models/enums/UserType';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import Environment from 'models/enums/Environments';
 import { setUser } from 'redux/User/userActionCreators';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import Content from './Content/Content';
 import AppToolbar from './AppToolbar/AppToolbar';
@@ -31,20 +31,55 @@ type AuthenticationReturn = [{
 
 const userNameClaimType = 'name';
 
+const notInLocalEnv = () => (
+    process.env.REACT_APP_ENVIRONMENT === Environment.PROD ||
+    process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH ||
+    process.env.REACT_APP_ENVIRONMENT === Environment.TEST
+);
+
+const getAuthUserData = async () => {
+    const { protocol, hostname } = window.location;
+    const { data } = await axios.get<AuthenticationReturn>(`${protocol}//${hostname}/.auth/me`);
+    const userId = data[0].user_id.split('@')[0];
+    const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
+    return { userId, userName };
+};
+
+const getStubAuthUserData = () => ({
+    userId: '7',
+    userName: 'stubuser'
+});
+
 const App: React.FC = (): JSX.Element => {
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
     const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
 
-    const handleCloseSignUp = () => setIsSignUpOpen(false);
+    useEffect(() => {
+        initUser();
+    }, []);
+
+    const initUser = async () => {
+        logger.info({
+            service: Service.CLIENT,
+            severity: Severity.LOW,
+            workflow: 'login to the app',
+            step: 'before environment condition'
+        })
+
+        const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
+        fetchUser(userId, userName);
+    };
 
     const handleSaveUser = () => {
         handleCloseSignUp();
-        fetchUser();
-    }
+        fetchUser(user.id, user.userName);
+    };
 
-    const fetchUser = () => {
+    const handleCloseSignUp = () => setIsSignUpOpen(false);
+
+    const fetchUser = (userId: string, userName: string) => {
         logger.info({
             service: Service.CLIENT,
             severity: Severity.LOW,
@@ -52,6 +87,7 @@ const App: React.FC = (): JSX.Element => {
             step: 'launch request to the server',
             user: user.id
         });
+        setIsLoading(true);
         axios.get(`/users/user`).then((result: any) => {
             if (result && result.data.userById) {
                 logger.info({
@@ -63,11 +99,11 @@ const App: React.FC = (): JSX.Element => {
                 })
                 const userFromDB = result.data.userById;
                 setUser({
-                    ...userFromDB
+                    ...userFromDB,
+                    id: userId,
+                    userName
                 });
-                return userFromDB;
             } else {
-                setIsSignUpOpen(true);
                 logger.warn({
                     service: Service.CLIENT,
                     severity: Severity.MEDIUM,
@@ -75,7 +111,15 @@ const App: React.FC = (): JSX.Element => {
                     step: `user has not been found due to: ${JSON.stringify(result)}`,
                     user: user.id
                 })
+                setUser({
+                    ...user,
+                    id: userId,
+                    userName
+                });
+                setIsSignUpOpen(true);
             }
+
+            setIsLoading(false);
         }).catch(err => {
             logger.error({
                 service: Service.CLIENT,
@@ -83,65 +127,10 @@ const App: React.FC = (): JSX.Element => {
                 workflow: 'Getting user details',
                 step: `got error from the server: ${err}`,
                 user: user.id
-            })
+            });
+            setIsLoading(false);
         })
     }
-
-    useEffect(() => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'login to the app',
-            step: 'before environment condition'
-        })
-        if (process.env.REACT_APP_ENVIRONMENT === Environment.PROD || process.env.REACT_APP_ENVIRONMENT === Environment.DEV_AUTH || process.env.REACT_APP_ENVIRONMENT === Environment.TEST) {
-            axios.get<AuthenticationReturn>(`${window.location.protocol}//${window.location.hostname}/.auth/me`)
-                .then((response) => {
-                    const { data } = response;
-                    const userId = data[0].user_id.split('@')[0];
-                    const userName = data[0].user_claims.find(claim => claim.typ === userNameClaimType)?.val as string;
-
-                    setUser({
-                        investigationGroup: -1,
-                        isActive: true,
-                        phoneNumber: '123',
-                        serialNumber: 34,
-                        id: userId,
-                        userName: userName,
-                        activeInvestigationsCount: 0,
-                        newInvestigationsCount: 0,
-                        userType: userType.INVESTIGATOR,
-                        sourceOrganization: '',
-                        deskName: '',
-                        countyByInvestigationGroup: {
-                            districtId: -1
-                        }
-                    });
-                    fetchUser();
-                })
-        } else {
-            const userId = '7'
-            const userName = 'stubuser';
-
-            setUser({
-                investigationGroup: -1,
-                isActive: true,
-                phoneNumber: '123',
-                serialNumber: 34,
-                id: userId,
-                userName: userName,
-                activeInvestigationsCount: 0,
-                newInvestigationsCount: 0,
-                userType: userType.INVESTIGATOR,
-                sourceOrganization: '',
-                deskName: '',
-                countyByInvestigationGroup: {
-                    districtId: -1
-                }
-            });
-            fetchUser();
-        }
-    }, [])
 
     return (
         <>

@@ -7,6 +7,7 @@ query InvestigationStaticDetails($investigationId: Int!) {
     startTime
     lastUpdateTime
     investigatingUnit
+    endTime
     investigatedPatientByInvestigatedPatientId {
       covidPatientByCovidPatient {
         identityNumber
@@ -47,6 +48,25 @@ query GetAllSubStatuses {
     nodes {
       displayName
     }
+  }
+}
+`;
+
+export const GET_SUB_STATUSES_BY_STATUS = gql`
+query GetAllSubStatuses($parentStatus: String!) {
+  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
+    nodes {
+      displayName
+    }
+  }
+}
+`;
+
+export const GET_INVESTIGATED_PATIENT_RESORTS_DATA = gql`
+query getInvestigatedPatientResortsData($id: Int!) {
+  investigatedPatientById(id: $id) {
+    wasInDeadSea
+    wasInEilat
   }
 }
 `;

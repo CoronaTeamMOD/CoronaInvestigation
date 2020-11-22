@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { differenceInYears } from 'date-fns';
 import { Avatar, Grid, Typography } from '@material-ui/core';
 
@@ -6,6 +6,8 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
+import useContactFields from 'Utils/vendor/useContactFields';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -15,12 +17,24 @@ import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element => {
-    const classes = useStyles();
-
+    
     const { interactedContact, changeIdentificationType, updateInteractedContact } = props;
-
+    
+    const [shouldIdDisable, setShouldIdDisable] = useState<boolean>(false);
+    
+    const { isFieldDisabled } = useContactFields(interactedContact.contactStatus);
+    
+    const classes = useStyles();
     const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
     const contactAge = interactedContact.birthDate && !isNaN(age as number) ? age === 0 ? '0' : age : null;
+
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
+
+    useEffect(() => {
+        const shouldDisable = isFieldDisabled || (shouldDisableIdByReopen && !!interactedContact.identificationNumber);
+        setShouldIdDisable(shouldDisable);
+    }, [interactedContact.contactStatus])
 
     return (
         <Grid item xs={4}>
@@ -33,16 +47,18 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName fieldName='תעודה מזהה:'/>
                     <Grid item xs={3}>
                         <Toggle
+                            disabled={isFieldDisabled}
                             test-id='identificationType'
                             firstOption='ת.ז'
                             secondOption='דרכון'
                             value={interactedContact.identificationType !== IdentificationTypes.ID}
-                            onChange={(event, value) => changeIdentificationType(interactedContact, value)}
+                            onChange={(event, value) => value !== null && changeIdentificationType(interactedContact, value)}
                         />
                     </Grid>
                     <FieldName fieldName='מספר תעודה:'/>
                     <Grid item xs={3}>
                         <AlphanumericTextField
+                            disabled={shouldIdDisable}
                             testId='identificationNumber'
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             value={interactedContact.identificationNumber}
@@ -57,6 +73,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item alignItems='center'>
                     <FieldName xs={5} fieldName='תאריך לידה:'/>
                      <DatePick
+                         disabled={isFieldDisabled}
                          testId='contactBirthDate'
                          maxDate={new Date()}
                             useBigCalender={false}
@@ -69,6 +86,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <FieldName xs={5} fieldName='גיל:'/>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             name='age'
                             testId='contactAge'
                             value={contactAge}
@@ -79,6 +97,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                 <Grid container item>
                     <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL}/>
                      <NumericTextField
+                         disabled={isFieldDisabled}
                          testId='additionalPhoneNumber'
                          name={InteractedContactFields.ADDITIONAL_PHONE_NUMBER}
                             value={interactedContact.additionalPhoneNumber}

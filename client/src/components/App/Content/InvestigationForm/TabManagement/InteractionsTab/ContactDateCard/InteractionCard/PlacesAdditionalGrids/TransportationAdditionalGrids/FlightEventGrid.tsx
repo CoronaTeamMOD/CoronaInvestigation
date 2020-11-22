@@ -19,66 +19,51 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='מספר טיסה'>
+                    <FormInput xs={6} fieldName='מספר טיסה'>
                         <Typography variant='caption'>
                             {interaction.flightNum}
                         </Typography>
                     </FormInput>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormInput fieldName='חברת תעופה'>
+
+                    <FormInput xs={6} fieldName='חברת תעופה'>
                         <Typography variant='caption'>
                             {interaction.airline}
                         </Typography>
                     </FormInput>
-                </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={4}>
-                    <FormInput fieldName='ארץ מוצא'>
+                    <FormInput xs={4} fieldName='ארץ מוצא'>
                         <Typography>
                             {countries.get(interaction.flightOriginCountry as string)?.displayName}
                         </Typography>
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='עיר מוצא'>
+                    <FormInput xs={4} fieldName='עיר מוצא'>
                         <Typography variant='caption'>
                             {interaction.flightOriginCity}
                         </Typography>
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='שדה תעופה מוצא'>
+                    <FormInput xs={4} fieldName='שדה תעופה מוצא'>
                         <Typography variant='caption'>
                             {interaction.flightOriginAirport}
                         </Typography>
                     </FormInput>
-                </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={4}>
-                    <FormInput fieldName='ארץ יעד'>
+                    <FormInput xs={4} fieldName='ארץ יעד'>
                         <Typography>
                             {countries.get(interaction.flightDestinationCountry as string)?.displayName}
                         </Typography>
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='עיר יעד'>
+                    <FormInput xs={4} fieldName='עיר יעד'>
                         <Typography variant='caption'>
                             {interaction.flightDestinationCity}
                         </Typography>
                     </FormInput>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormInput fieldName='שדה תעופה יעד'>
+                    <FormInput xs={4} fieldName='שדה תעופה יעד'>
                         <Typography variant='caption'>
                             {interaction.flightDestinationAirport}
                         </Typography>
                     </FormInput>
-                </Grid>
             </Grid>
         </>
     );

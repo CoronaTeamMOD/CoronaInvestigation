@@ -3,6 +3,7 @@ import DBAddress from 'models/DBAddress';
 interface ClinicalDetailsData {
     isolationStartDate: Date | null;
     isolationEndDate: Date | null;
+    isolationSource: number | null;
     isolationAddress: DBAddress;
     isInIsolation: boolean;
     isIsolationProblem: boolean;

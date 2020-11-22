@@ -5,9 +5,6 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'space-between',
     },
-    addressAutoCompleteField: {
-        marginLeft: '-4vw',
-    }
 });
 
 export default useStyles;

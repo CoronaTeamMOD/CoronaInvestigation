@@ -20,7 +20,18 @@ query getAllSymptoms {
   }  
 `;
 
-export const GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER  = gql`
+export const GET_ISOLATION_SOURCES = gql`
+query getAllIsolationSources {
+  allIsolationSources {
+    nodes {
+      id
+      description
+    }
+  }
+}
+`;
+
+export const GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER = gql`
 query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
   investigationByEpidemiologyNumber(epidemiologyNumber: $epidemiologyNumber) {
     addressByIsolationAddress {
@@ -38,6 +49,7 @@ query investigationByEpidemiologyNumber($epidemiologyNumber: Int!) {
     symptomsStartTime
     isolationStartTime
     isolationEndTime
+    isolationSource
     isIsolationProblem
     isInIsolation
     isIsolationProblemMoreInfo

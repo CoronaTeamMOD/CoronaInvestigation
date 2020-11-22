@@ -7,7 +7,6 @@ import FormInput from 'commons/FormInput/FormInput';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-import useStyles from './BusinessContactFormStyles';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 
 const businessContactFirstNameField = 'שם פרטי';
@@ -19,14 +18,12 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();
 
     const formClasses = useFormStyles();
-    const classes = useStyles();
 
     return (
         <div>
             <Typography variant='body1' className={formClasses.fieldName}>פרטי איש קשר:</Typography>
             <Grid container className={formClasses.formRow}>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactFirstNameField}>
+                <FormInput xs={4} fieldName={businessContactFirstNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             control={control}
@@ -40,10 +37,8 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactLastNameField}>
+                </FormInput>
+                <FormInput xs={4} fieldName={businessContactLastNameField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             control={control}
@@ -57,10 +52,8 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.detailsItemField}>
-                    <FormInput fieldName={businessContactNumField}>
+                </FormInput>
+                <FormInput xs={4} fieldName={businessContactNumField}>
                         <Controller 
                             name={InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER}
                             control={control}
@@ -73,8 +66,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </FormInput>
-                </Grid>
+                </FormInput>
             </Grid>
         </div>
     );

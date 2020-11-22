@@ -1,5 +1,7 @@
 import {makeStyles} from '@material-ui/styles';
 
+import theme from 'styles/theme';
+
 const useStyles = makeStyles({
     spacedOutForm: {
         maxWidth: '100%',
@@ -29,8 +31,13 @@ const useStyles = makeStyles({
             marginLeft: '-3vw',
             width: '11.5vw',
         },
-
     },
+    duplicateIdsError: {
+        zIndex: 1300,
+    },
+    externalizationErrorMessage: {
+        color: theme.palette.error.main
+    }
 });
 
 export default useStyles;

@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
@@ -10,11 +9,13 @@ import Country from 'models/Country';
 import ContactType from 'models/ContactType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import { setStatuses } from 'redux/Status/statusesActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
@@ -22,73 +23,48 @@ import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
-import useStyles from './InvestigationFormStyles';
-import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
+import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
+
+    const { alertError, alertWarning, alertSuccess } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
-    const classes = useStyles({});
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const initializeTabShow = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const tabShowLogger = logger.setup({
             workflow: 'Getting Amount Of Contacts',
-            step: `launching amount of contacts request`,
             user: userId,
             investigation: epidemiologyNumber
         });
+        tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Amount Of Contacts',
-                step: `amount of contacts request was successful`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
             setAreThereContacts(result?.data?.data?.allContactedPeople?.totalCount > 0);
         }).catch((error) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.HIGH,
-                workflow: 'Getting Amount Of Contacts',
-                step: `got errors in server result: ${error}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            tabShowLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
         });
     };
 
     const fetchCities = () => {
         if (cities && cities.size === 0) {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
+            const cityLogger = logger.setup({
                 workflow: 'Fetching Cities',
-                step: `launching cities request`,
                 user: userId,
                 investigation: epidemiologyNumber
             });
+            cityLogger.info('launching cities request', Severity.LOW);
             axios.get('/addressDetails/cities')
                 .then((result: any) => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Fetching Cities',
-                        step: `cities request was successful`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    cityLogger.info('cities request was successful', Severity.LOW);
                     const cities: Map<string, City> = new Map();
                     result && result.data && result.data.forEach((city: City) => {
                         cities.set(city.id, city)
@@ -96,37 +72,21 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                     setCities(cities);
                 })
                 .catch(error => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Fetching Cities',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    cityLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                 });
         }
     };
 
     const fetchContactTypes = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const contactTypesLogger = logger.setup({
             workflow: 'Fetching Contact Types',
-            step: `launching contact types request`,
             user: userId,
             investigation: epidemiologyNumber
         });
+        contactTypesLogger.info('launching contact types request', Severity.LOW);
         axios.get('/intersections/contactTypes')
             .then((result: any) => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching Contact Types',
-                    step: `contact types request was successful`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                contactTypesLogger.info('contact types request was successful', Severity.LOW);
                 const contactTypes: Map<number, ContactType> = new Map();
                 result && result.data && result.data.forEach((contactType: ContactType) => {
                     contactTypes.set(contactType.id, contactType)
@@ -134,36 +94,20 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 setContactType(contactTypes);
             })
             .catch(error => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching Contact Types',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                contactTypesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             });
     }
 
     const fetchCountries = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const countriesLogger = logger.setup({
             workflow: 'Fetching Countries',
-            step: `launching countries request`,
             user: userId,
             investigation: epidemiologyNumber
         });
+        countriesLogger.info('launching countries request', Severity.LOW);
         axios.get('/addressDetails/countries')
             .then((result: any) => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Fetching Countries',
-                    step: `countries request was successful`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                countriesLogger.info('countries request was successful', Severity.LOW);
                 const countries: Map<string, Country> = new Map();
                 result && result.data && result.data.forEach((country: Country) => {
                     countries.set(country.id, country)
@@ -171,154 +115,117 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
                 setCountries(countries);
             })
             .catch(error => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.HIGH,
-                    workflow: 'Fetching Countries',
-                    step: `got errors in server result: ${error}`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                countriesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             });
     };
 
-    const fetchSubStatuses = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+    const fetchSubStatusesByStatus = (parentStatus: string) => {
+        const subStatusesByStatusLogger = logger.setup({
             workflow: 'Fetching Sub Statuses',
-            step: `launching sub statuses request`,
             user: userId,
             investigation: epidemiologyNumber
         });
-        axios.get('/investigationInfo/subStatuses').then((result: any) => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting sub statuses',
-                step: `recieved DB response ${JSON.stringify(result)}`,
-            });
-
+        subStatusesByStatusLogger.info('launching sub statuses request', Severity.LOW);
+        axios.get('/investigationInfo/subStatuses/' + parentStatus).then((result: any) => {
+            subStatusesByStatusLogger.info(`recieved DB response ${JSON.stringify(result)}`, Severity.LOW);
             const resultNodes = result?.data?.data?.allInvestigationSubStatuses?.nodes;
-
             if (resultNodes) {
                 setSubStatuses(resultNodes.map((element: any) => element.displayName));
             }
         }).catch((err: any) => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting sub statuses',
-                step: `error DB response ${JSON.stringify(err)}`,
-            });
+            subStatusesByStatusLogger.error( `error DB response ${JSON.stringify(err)}`,  Severity.LOW);
         });
     };
 
-    useEffect(() => {
-        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id)
-        fetchCities();
-        fetchCountries();
-        fetchContactTypes();
-        fetchSubStatuses();
-        initializeTabShow();
-    }, [epidemiologyNumber, userId]);
-
-    const confirmFinishInvestigation = (epidemiologyNumber: number) => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Ending Investigation',
-            step: 'the user has been offered the oppurtunity to finish the investigation',
+    const fetchStatuses = () => {
+        const statusesLogger = logger.setup({
+            workflow: 'GraphQL GET statuses request to the DB',
             user: userId,
             investigation: epidemiologyNumber
         });
-        Swal.fire({
-            icon: 'warning',
-            title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
+        axios.get('/landingPage/investigationStatuses').
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    statusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
+                    const allStatuses: string[] = result.data;
+                    setStatuses(allStatuses);
+                } else {
+                    statusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                }
+            })
+            .catch((err) => {
+                statusesLogger.error(err, Severity.HIGH);
+            })
+    };
+
+    useEffect(() => {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+            fetchCities();
+            fetchCountries();
+            fetchContactTypes();
+            fetchSubStatusesByStatus(investigationStatus.mainStatus);
+            fetchStatuses();
+            initializeTabShow();
+        }
+    }, [epidemiologyNumber, userId]);
+
+    useEffect(() => {
+        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+            fetchSubStatusesByStatus(investigationStatus.mainStatus);
+        }
+    }, [investigationStatus.mainStatus]);
+
+    const confirmFinishInvestigation = (epidemiologyNumber: number, onCancel: () => void) => {
+        const finishInvestigationLogger= logger.setup({
+            workflow: 'Ending Investigation',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
+        alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך',
-            customClass: {
-                title: classes.swalTitle
-            }
+            confirmButtonText: 'כן, המשך'
         }).then((result) => {
             if (result.value) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Ending Investigation',
-                    step: `launching investigation status request`,
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                finishInvestigationLogger.info('launching investigation status request', Severity.LOW);
                 axios.post('/investigationInfo/updateInvestigationStatus', {
                     investigationMainStatus: InvestigationMainStatus.DONE,
                     investigationSubStatus: null,
+                    statusReason: null,
                     epidemiologyNumber: epidemiologyNumber
                 }).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Ending Investigation',
-                        step: `update investigation status request was successful`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Ending Investigation',
-                        step: `launching investigation end time request`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
+                    finishInvestigationLogger.info('update investigation status request was successful', Severity.LOW);
+                    finishInvestigationLogger.info('launching investigation end time request', Severity.LOW);
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         updateIsDeceased(handleInvestigationFinish);
-                    }
-                    else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
+                    } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
                         updateIsCurrentlyHospitialized(handleInvestigationFinish);
-                    }
-                    else {
+                    } else {
                         handleInvestigationFinish();
-                    }}).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.HIGH,
-                        workflow: 'Ending Investigation',
-                        step: `got errors in server result: ${error}`,
-                        user: userId,
-                        investigation: epidemiologyNumber
-                    });
-                    handleInvestigationFinishFailed();
+                    }
+                }).catch((error) => {
+                    finishInvestigationLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                    alertError('לא ניתן היה לסיים את החקירה');
+                    
                 })
-            };
+            } else {
+                onCancel();
+            }
         });
     };
 
     const handleInvestigationFinish = () => {
-        Swal.fire({
-            icon: 'success',
-            title: 'החקירה הסתיימה! הנך מועבר לעמוד הנחיתה',
-            customClass: {
-                title: classes.swalTitle
-            },
+        alertSuccess('החקירה הסתיימה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
-        }
-        );
+        });
         timeout(LandingPageTimer).then(() => {
             setIsInInvestigation(false);
             window.close();
         });
-    };
-
-    const handleInvestigationFinishFailed = () => {
-        Swal.fire({
-            title: 'לא ניתן היה לסיים את החקירה',
-            icon: 'error',
-        })
     };
 
     return {

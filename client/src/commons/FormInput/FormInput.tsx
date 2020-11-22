@@ -1,31 +1,34 @@
 import React from 'react';
-import { Typography, TypographyProps, Grid } from '@material-ui/core';
+import {Typography, TypographyProps, Grid, GridSize} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
 
 const FormInput: React.FC<Props> = (props: Props): JSX.Element => {
     const formClasses = useFormStyles();
 
-    const { fieldName, children, labelLength, ...rest } = props;
+    const { fieldName, children, labelLength, xs, className, ...rest } = props;
 
     return (
-        <div test-id={'textFormInput'} className={formClasses.formField}>
-            <Grid item xs={labelLength ? labelLength : 4}>
+        <Grid container item alignItems='center'
+               test-id={'textFormInput'} xs={xs} className={className || ''}>
+            <Grid item xs={labelLength ? labelLength : 3}>
                 <Typography className={formClasses.fieldName} variant='caption' {...rest}>
                     <b>{fieldName + ':'}</b>
                 </Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={labelLength ? (12-labelLength) as GridSize : 9}>
                 {children}
             </Grid>
-        </div>
+        </Grid>
     );
 };
 
 export default FormInput;
 
 interface Props extends TypographyProps {
+    xs?: GridSize;
     fieldName: string;
+    className?: string;
     children: JSX.Element | JSX.Element[];
-    labelLength?: "auto" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined;
+    labelLength?: Exclude<GridSize, 'auto'>;
 };

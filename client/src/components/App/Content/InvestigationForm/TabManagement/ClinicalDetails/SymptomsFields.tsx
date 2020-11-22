@@ -5,9 +5,10 @@ import { Collapse, Grid, Typography } from '@material-ui/core';
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
 import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
 
@@ -20,6 +21,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     } = props;
     const { control, errors } = useFormContext();
 
+    const { wasInvestigationReopend } = useStatusUtils();
+
     return (
         <>
             <FormRowWithInput fieldName='האם יש תסמינים:'>
@@ -29,6 +32,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                         control={control}
                         render={(props) => (
                             <Toggle
+                                disabled={wasInvestigationReopend}
                                 test-id='areThereSymptoms'
                                 value={props.value}
                                 onChange={(e, value) => {
@@ -53,6 +57,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     <CustomCheckbox
                                         testId='unkownSymptomsDate'
                                         checkboxElements={[{
+                                            disabled:wasInvestigationReopend,
                                             value: props.value,
                                             labelText: 'תאריך התחלת תסמינים לא ידוע',
                                             checked: props.value,
@@ -72,6 +77,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                         control={control}
                                         render={(props) => (
                                             <DatePick
+                                                disabled={wasInvestigationReopend}
                                                 onBlur={props.onBlur}
                                                 maxDate={new Date()}
                                                 testId='symptomsStartDate'
@@ -101,6 +107,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     <>
                                         {
                                             symptoms.map((symptom: string) => (
+                                                symptom !== otherSymptomFieldName &&
                                                 <Grid item xs={6} key={symptom}>
                                                     <CustomCheckbox
                                                         key={symptom}
@@ -115,6 +122,18 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 </Grid>
                                             ))
                                         }
+                                        <Grid item xs={6} key={otherSymptomFieldName}>
+                                            <CustomCheckbox
+                                                key={otherSymptomFieldName}
+                                                checkboxElements={[{
+                                                    key: otherSymptomFieldName,
+                                                    value: otherSymptomFieldName,
+                                                    labelText: otherSymptomFieldName,
+                                                    checked: props.value.includes(otherSymptomFieldName),
+                                                    onChange: () => handleSymptomCheck(otherSymptomFieldName, props.onChange, props.value)
+                                                }]}
+                                            />
+                                        </Grid>
                                     </>
                                 )}
                             />

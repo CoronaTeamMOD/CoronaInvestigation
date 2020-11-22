@@ -27,6 +27,9 @@ const useStyle = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         borderBottom: '2px solid rgba(224,224,224,1)'
+    },
+    excelControllers: {
+        display: 'flex'
     }
 });
 

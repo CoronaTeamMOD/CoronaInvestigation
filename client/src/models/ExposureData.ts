@@ -9,6 +9,8 @@ interface ExposureData {
     exposurePlaceType: string | null;
     exposurePlaceSubType: number | null;
     exposureSource: CovidPatient | null;
+    wasInEilat: boolean;
+    wasInDeadSea: boolean;
 }
 
 export default ExposureData;

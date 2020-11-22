@@ -1,10 +1,10 @@
+import axios from 'axios';
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import User from 'models/User';
-import Desk from 'models/Desk';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
@@ -12,24 +12,31 @@ import { store } from 'redux/store';
 import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
+import { activateIsLoading } from 'Utils/axios';
 import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import axios, { activateIsLoading } from 'Utils/axios';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
-import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
+import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy } from './InvestigationTable';
-import { TableHeadersNames, IndexedInvestigation } from './InvestigationTablesHeaders';
+import {
+    TableHeadersNames,
+    IndexedInvestigation,
+    IndexedInvestigationData,
+    investigatorIdPropertyName
+} from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import useInvestigatedPersonInfo
+    from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
 
@@ -48,7 +55,11 @@ export const createRowData = (
     county: County,
     investigator: Investigator,
     comment: string,
+    statusReason: string,
+    wasInvestigationTransferred: boolean,
+    transferReason: string
 ): InvestigationTableRow => ({
+    isChecked: false,
     epidemiologyNumber,
     coronaTestDate,
     isComplex,
@@ -62,7 +73,10 @@ export const createRowData = (
     investigationDesk,
     county,
     investigator,
-    comment
+    comment,
+    statusReason,
+    wasInvestigationTransferred,
+    transferReason
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -71,13 +85,15 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את המשתמש';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
-export const ALL_DESKS_FILTER_OPTIONS = 'כל הדסקים';
+export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const classes = useStyle();
-
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks } = parameters;
+        setAllStatuses, setAllDesks, checkedRowsIds } = parameters;
+    
+    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
+
+    const classes = useStyle(false)();
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
@@ -100,70 +116,68 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     };
 
-    const fetchAllDesks = () => {
-        axios.get('/desks').
-        then((result) => {
-            if (result?.data && result.headers['content-type'].includes('application/json')) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting Desks',
-                    step: 'The desks were fetched successfully'
-                });
-                const alDesks : string[] = result.data.map((desk: Desk) => desk.name);
-                alDesks.unshift(ALL_DESKS_FILTER_OPTIONS);
-                setAllDesks(alDesks);
-            } else {
+    const fetchAllDesksByCountyId = () => {
+        axios.get('/desks/county')
+            .then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Getting Desks by county id',
+                        step: 'The desks were fetched successfully'
+                    });
+                    setAllDesks(result.data);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'Getting Desks',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'Getting Desks',
-                    step: 'Got 200 status code but results structure isnt as expected'
+                    step: err
                 });
-            }
-        })
-        .catch((err) => {
-            fireSwalError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting Desks',
-                step: err
-            });
-        })
+            })
     }
 
     const fetchAllInvestigationStatuses = () => {
         axios.get('/landingPage/investigationStatuses').
-        then((result) => {
-            if (result?.data && result.headers['content-type'].includes('application/json')) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL GET statuses request to the DB',
-                    step: 'The investigations statuses were fetched successfully'
-                });
-                const allStatuses : string[] = result.data;
-                allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
-                setAllStatuses(allStatuses);
-            } else {
+            then((result) => {
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    logger.info({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'The investigations statuses were fetched successfully'
+                    });
+                    const allStatuses: string[] = result.data;
+                    allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
+                    setAllStatuses(allStatuses);
+                } else {
+                    logger.error({
+                        service: Service.CLIENT,
+                        severity: Severity.LOW,
+                        workflow: 'GraphQL GET statuses request to the DB',
+                        step: 'Got 200 status code but results structure isnt as expected'
+                    });
+                }
+            })
+            .catch((err) => {
+                fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
                 logger.error({
                     service: Service.CLIENT,
                     severity: Severity.LOW,
                     workflow: 'GraphQL GET statuses request to the DB',
-                    step: 'Got 200 status code but results structure isnt as expected'
+                    step: err
                 });
-            }
-        })
-        .catch((err) => {
-            fireSwalError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'GraphQL GET statuses request to the DB',
-                step: err
-            });
-        })
+            })
     }
 
     useEffect(() => {
@@ -172,8 +186,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         fetchAllInvestigationStatuses();
-        fetchAllDesks();
-
+        fetchAllDesksByCountyId();
         startWaiting();
     }, [])
 
@@ -217,8 +230,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
-        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount || 
-            fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
+        fisrtUser.newInvestigationsCount - secondUser.newInvestigationsCount ||
+        fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
     const fetchAllCountyUsers = () => {
         logger.info({
@@ -354,36 +367,42 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
-                          .filter((investigation: any) => 
-                            investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                            investigation?.userByCreator)
-                          .map((investigation: any) => {
-                              const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                              const desk = investigation.desk;
-                              const covidPatient = patient.covidPatientByCovidPatient;
-                              const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                              const user = investigation.userByCreator;
-                              const county = user ? user.countyByInvestigationGroup : '';
-                              const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
-                                  investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                  '';
-                            return createRowData(
-                                investigation.epidemiologyNumber,
-                                investigation.coronaTestDate,
-                                investigation.isComplex,
-                                investigation.priority,
-                                investigation.investigationStatusByInvestigationStatus.displayName,
-                                subStatus,
-                                covidPatient.fullName,
-                                covidPatient.primaryPhone,
-                                covidPatient.age,
-                                patientCity ? patientCity.displayName : '',
-                                desk,
-                                county,
-                                { id: user.id, userName: user.userName },
-                                investigation.comment
-                            )
-                        });
+                            .filter((investigation: any) =>
+                                investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                investigation?.userByCreator)
+                            .map((investigation: any) => {
+                                const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                const desk = investigation.desk;
+                                const covidPatient = patient.covidPatientByCovidPatient;
+                                const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                const user = investigation.userByCreator;
+                                const county = user ? user.countyByInvestigationGroup : '';
+                                const statusReason = user ? investigation.statusReason : '';
+                                const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
+                                const transferReason = user ? investigation.transferReason : '';
+                                const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                    investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                    '';
+                                return createRowData(
+                                    investigation.epidemiologyNumber,
+                                    investigation.coronaTestDate,
+                                    investigation.isComplex,
+                                    investigation.priority,
+                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    subStatus,
+                                    covidPatient.fullName,
+                                    covidPatient.primaryPhone,
+                                    covidPatient.age,
+                                    patientCity ? patientCity.displayName : '',
+                                    desk,
+                                    county,
+                                    { id: user.id, userName: user.userName },
+                                    investigation.comment,
+                                    statusReason,
+                                    wasInvestigationTransferred,
+                                    transferReason,
+                                )
+                            });
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
@@ -414,13 +433,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const {startWaiting,onCancel, onOk, snackbarOpen} = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
+    const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
     useEffect(() => {
         fetchTableData()
-    }, [user.id, classes.errorAlertTitle, user, orderBy, isInInvestigations]);
+    }, [user.id, user, orderBy, isInInvestigations]);
 
-    const onInvestigationRowClick = (investigationRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+    const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
+        const logInfo = {
+            service: Service.CLIENT,
+            workflow: 'Investigation click',
+            investigation: investigationRow.epidemiologyNumber,
+            user: user.id
+        };
+
         axios.interceptors.request.use(
             (config) => {
                 config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -432,13 +458,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         );
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
                 step: 'the clicked investigation is not the first one',
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
-            })
+            });
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -450,66 +473,74 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             setAxiosInterceptorId(newInterceptor);
             axiosInterceptorId !== -1 && axios.interceptors.request.eject(axiosInterceptorId);
         }
-        setInvestigationStatus({
-            mainStatus: investigationRow.investigationStatus === InvestigationMainStatus.NEW ?
-                InvestigationMainStatus.IN_PROCESS :
-                investigationRow.investigationStatus,
-            subStatus: investigationRow.investigationSubStatus
-        })
-        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW) {
+        const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
+        indexOfInvestigationObject !== -1 &&
+            setCreator(rows[indexOfInvestigationObject].investigator.id);
+        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
-                step: 'the user clicked a new investigation, updating status in the DB',
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
+                step: 'the user clicked a new investigation',
             })
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
-            }).then(() => {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Investigation click',
-                    step: 'updated investigation start time now sending request to update status',
-                    investigation: investigationRow.epidemiologyNumber,
-                    user: user.id
-                });
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Investigation click',
-                    step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                    investigation: investigationRow.epidemiologyNumber,
-                    user: user.id
-                });
-                moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
-            }).catch((error) => {
-                logger.error({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'GraphQL POST request to the DB',
-                    step: error
-                });
-                fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
             })
+                .then(async () => {
+                    logger.info({
+                        ...logInfo,
+                        severity: Severity.LOW,
+                        step: 'updated investigation start time now sending request to update status',
+                    });
+                    try {
+                        await axios.post('/investigationInfo/updateInvestigationStatus', {
+                            investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
+                            investigationSubStatus: null,
+                            epidemiologyNumber: investigationRow.epidemiologyNumber
+                        });
+                        setInvestigationStatus({
+                            mainStatus: InvestigationMainStatus.IN_PROCESS,
+                            subStatus: null,
+                            statusReason: null
+                        });
+                        logger.info({
+                            ...logInfo,
+                            severity: Severity.LOW,
+                            step: `Updated new investigation to have "in process" status and entered the investigation,
+                             investigated person: ${investigationRow.fullName}, 
+                             investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
+                        });
+                        moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
+                    } catch (e) {
+                        throw new Error('failed to update investigation status with error' + JSON.stringify(e))
+                    }
+                })
+                .catch((error) => {
+                    logger.error({
+                        ...logInfo,
+                        severity: Severity.HIGH,
+                        step: error
+                    });
+                    fireSwalError(OPEN_INVESTIGATION_ERROR_TITLE)
+                })
         } else {
             logger.info({
-                service: Service.CLIENT,
+                ...logInfo,
                 severity: Severity.LOW,
-                workflow: 'Investigation click',
                 step: `the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`,
-                investigation: investigationRow.epidemiologyNumber,
-                user: user.id
-            })
+            });
+            setInvestigationStatus({
+                mainStatus: investigationRow.investigationStatus,
+                subStatus: investigationRow.investigationSubStatus,
+                statusReason: investigationRow.statusReason
+            });
             moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
         }
     }
 
-    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigation => {
+    const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
+            [TableHeadersNames.multipleCheck]: row.isChecked,
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
             [TableHeadersNames.isComplex]: row.isComplex,
@@ -519,11 +550,16 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
+            [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
+            [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
-            [TableHeadersNames.comment]: row.comment
+            [TableHeadersNames.comment]: row.comment,
+            [TableHeadersNames.statusReason]: row.statusReason,
+            [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
+            [TableHeadersNames.transferReason]: row.transferReason
         }
     }
 
@@ -538,14 +574,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
+        const changeInvestigatorLogger= logger.setup({
+            workflow: 'Change Investigation Investigator',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch investigator',
-                step: `the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`,
-                user: user.id
-            })
+            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW)
         Swal.fire({
             icon: 'warning',
             title: `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`,
@@ -559,24 +595,18 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Switch investigator',
-                    step: 'the investigator have been switched successfully',
-                    investigation: indexedRow.epidemiologyNumber as number,
-                    user: user.id
-                })
                 axios.post('/users/changeInvestigator', {
-                    epidemiologyNumber: indexedRow.epidemiologyNumber,
+                    epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                     user: newSelectedInvestigator.id
                 }
                 ).then(() => timeout(1900).then(() => {
+                    changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
                     setSelectedRow(UNDEFINED_ROW)
                     setRows(rows.map((investigation: InvestigationTableRow) => (
                         investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                             {
                                 ...investigation,
+                                wasInvestigationTransferred: true,
                                 investigator: {
                                     id: newSelectedInvestigator.id,
                                     userName: newSelectedInvestigator.value.userName
@@ -585,39 +615,25 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             : investigation
                     )))
                 })).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'Switch investigator',
-                        step: `the investigator swap failed due to: ${error}`,
-                        investigation: indexedRow.epidemiologyNumber as number,
-                        user: user.id
-                    })
-                    fireSwalError(UPDATE_ERROR_TITLE)
+                    changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
+                    fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Switch investigator',
-                    step: 'the admin denied the investigator from being switched',
-                    investigation: indexedRow.epidemiologyNumber as number,
-                    user: user.id
-                })
+                changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
                 setSelectedRow(UNDEFINED_ROW);
             }
         })
     }
 
     const onCountyChange = (indexedRow: IndexedInvestigation, newSelectedCounty: any) => {
+        const changeCountyLogger= logger.setup({
+            workflow: 'Change Investigation County',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
         if (selectedInvestigator && newSelectedCounty.value !== '')
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Switch County',
-                step: `the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`,
-                user: user.id
-            })
+            changeCountyLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`, Severity.LOW);
         Swal.fire({
             icon: 'warning',
             title: `<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`,
@@ -635,28 +651,70 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     epidemiologyNumber: indexedRow.epidemiologyNumber,
                     updatedCounty: newSelectedCounty.id,
                 }).then(() => timeout(1900).then(() => {
-                    logger.info({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: 'changed the county successfully'
-                    });
+                    changeCountyLogger.info('changed the county successfully',  Severity.LOW);
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
-                })).catch((error) => {
-                    logger.error({
-                        service: Service.CLIENT,
-                        severity: Severity.LOW,
-                        workflow: 'GraphQL POST request to the DB',
-                        step: error
-                    });
+                }))
+                .catch((error) => {
+                    changeCountyLogger.error('couldnt change the county due to ' + error,  Severity.LOW);
                     fireSwalError(UPDATE_ERROR_TITLE);
                 })
             } else if (result.isDismissed) {
-
                 setSelectedRow(UNDEFINED_ROW);
             }
         })
+    }
+
+    const onDeskChange = (indexedRow: IndexedInvestigation, newSelectedDesk: any) => {
+        const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk.deskName}</b>?</p>`;
+        const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk.deskName}</b>?</p>`;
+
+        const changeDeskLogger= logger.setup({
+            workflow: 'Change Investigation Desk',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+
+        if (selectedInvestigator && newSelectedDesk.deskName !== '' && newSelectedDesk.deskName !== indexedRow.investigationDesk) {
+            changeDeskLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} desk from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk.deskName)}`,Severity.LOW);
+            Swal.fire({
+                icon: 'warning',
+                title: indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle,
+                showCancelButton: true,
+                cancelButtonText: 'לא',
+                cancelButtonColor: theme.palette.error.main,
+                confirmButtonColor: theme.palette.primary.main,
+                confirmButtonText: 'כן, המשך',
+                customClass: {
+                    title: classes.swalTitle,
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post('/landingPage/changeDesk', {
+                        epidemiologyNumbers: [indexedRow.epidemiologyNumber],
+                        updatedDesk: newSelectedDesk.id,
+                    }).then(() => timeout(1900).then(() => {
+                        changeDeskLogger.info('changed the desk successfully',  Severity.LOW);
+                        setRows(rows.map((investigation: InvestigationTableRow) => (
+                            investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                                {
+                                    ...investigation,
+                                    wasInvestigationTransferred: true,
+                                    investigationDesk: newSelectedDesk.deskName
+                                }
+                                : investigation
+                        )));
+                        setSelectedRow(UNDEFINED_ROW);
+                    }))
+                    .catch((error) => {
+                        changeDeskLogger.error('couldnt chang the desk due to ' + error,  Severity.HIGH);
+                        fireSwalError(UPDATE_ERROR_TITLE);
+                    })
+                } else if (result.isDismissed) {
+                    setSelectedRow(UNDEFINED_ROW);
+                }
+            })
+        }
     }
 
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
@@ -672,7 +730,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.epidemiologyNumber) {
             classNames.push(classes.epiNumberCell);
         }
-
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&
@@ -690,6 +747,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     return {
         tableRows: rows,
+        setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
         onInvestigatorChange,
@@ -701,6 +759,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onCancel,
         onOk,
         snackbarOpen,
+        moveToTheInvestigationForm,
+        onDeskChange,
     };
 };
 

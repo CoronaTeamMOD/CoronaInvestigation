@@ -25,13 +25,16 @@ export enum Environment {
     PROD = 'prod'
 }
 
-export interface MethodsLogMessage {
-    user?: string;
-    investigation?: number;
-    workflow: string;
+export interface MethodsLogMessage extends InitialLogData {
     step: string;
-    service: Service;
     severity: Severity;
+}
+
+export interface InitialLogData {
+    user?: string;
+    investigation?: number | string;
+    service?: Service;
+    workflow: string;
 }
 
 export interface InitialLogMessage {

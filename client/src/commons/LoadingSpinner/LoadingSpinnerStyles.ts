@@ -1,15 +1,15 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 
-import { primaryBackgroundColor } from "styles/theme";
+import { primaryBackgroundColor } from 'styles/theme';
 
 const useStyle = makeStyles({
   container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 9999,
     backgroundColor: primaryBackgroundColor,
-    opacity: "0.8 !important",
+    opacity: '0.8 !important',
   },
 });
 

@@ -1,15 +1,17 @@
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid
+    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
+    Slide, Box
 } from '@material-ui/core';
 import { Refresh, Warning, Close } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Desk from 'models/Desk';
 import User from 'models/User';
 import County from 'models/County';
 import userType from 'models/enums/UserType';
@@ -17,14 +19,19 @@ import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import FilterTableOption from 'models/FilterTableOption';
-import CommentDisplay from './commentDisplay/commentDisplay';
+import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import useStyles from './InvestigationTableStyles';
+import CommentDisplay from './commentDisplay/commentDisplay';
+import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
+import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
+import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
+import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
-import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS, ALL_DESKS_FILTER_OPTIONS } from './useInvestigationTable';
 
 export const defaultOrderBy = 'defaultOrder';
 const resetSortButtonText = 'סידור לפי תעדוף';
@@ -49,19 +56,22 @@ const defaultCounty = {
     displayName: ''
 }
 
-const defaultFilterOptions : FilterTableOption = {mainStatus: [ALL_STATUSES_FILTER_OPTIONS], investigationDesk: [ALL_DESKS_FILTER_OPTIONS]};
+const defaultFilterOptions: FilterTableOption = { mainStatus: [], investigationDesk: [] };
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
+const unassignedToDesk = 'לא שוייך לדסק';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
-    const classes = useStyles();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
+    const classes = useStyles(isScreenWide)();
 
+    const [checkedRowsIds, setCheckedRowsIds] = useState<number[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
     const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
     const [countyAutoCompleteClicked, setCountyAutoCompleteClicked] = useState<boolean>(false);
+    const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
     const [currCounty, setCurrCounty] = useState<County>(defaultCounty);
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
@@ -71,39 +81,61 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
-    const [allDesks, setAllDesks] = useState<string[]>([]);
+    const [allDesks, setAllDesks] = useState<Desk[]>([]);
+
+    const tableContainerRef = React.useRef<HTMLElement>();
 
     const {
-        onCancel, onOk,snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, getTableCellStyles
-    } = useInvestigationTable({ selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, 
-        setAllCounties, setAllStatuses, setAllDesks });
+        onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
+        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
+        moveToTheInvestigationForm, setTableRows
+    } = useInvestigationTable({
+        selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty,
+        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds
+    });
 
     const user = useSelector<StoreStateType, User>(state => state.user);
 
-    useEffect(() => {
-        if (investigatorAutoCompleteClicked && countyAutoCompleteClicked) {
-            setInvestigatorAutoCompleteClicked(false);
-        }
-    }, [countyAutoCompleteClicked]);
+    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
 
     useEffect(() => {
-        if (countyAutoCompleteClicked && investigatorAutoCompleteClicked) {
-            setCountyAutoCompleteClicked(false);
-        }
-    }, [investigatorAutoCompleteClicked]);
-
-    useEffect(() => {
-        let filteredRows : InvestigationTableRow[] = [...tableRows];
-        if (filterOptions !== defaultFilterOptions) {
-            filteredRows = filteredRows.filter(row => {
-                const indexedRow : {[index: string]: any} = {...row};
-                return !Object.keys(filterOptions).some(key => !(filterOptions[key].includes(indexedRow[key]) || filterOptions[key].includes(defaultFilterOptions[key][0])))
-            })
-        }
+        const filteredRows = tableRows.filter(row => {
+            return (
+                (filterOptions.mainStatus.includes(row.mainStatus) || filterOptions.mainStatus.length === 0) &&
+                (filterOptions.investigationDesk.map((desk: Desk) => desk.deskName).includes(row.investigationDesk) || filterOptions.investigationDesk.length === 0)
+            );
+        })
         setFilteredTableRows(filteredRows);
-
+        setCheckedRowsIds([]);
     }, [tableRows, filterOptions])
+
+    const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
+        switch (key) {
+            case TableHeadersNames.investigatorName: {
+                event.stopPropagation();
+                setInvestigatorAutoCompleteClicked(true);
+                setCountyAutoCompleteClicked(false);
+                setDeskAutoCompleteClicked(false);
+                break;
+            }
+            case TableHeadersNames.county: {
+                event.stopPropagation();
+                setCountyAutoCompleteClicked(true);
+                setInvestigatorAutoCompleteClicked(false);
+                setDeskAutoCompleteClicked(false);
+                break;
+            }
+            case TableHeadersNames.investigationDesk: {
+                event.stopPropagation();
+                setDeskAutoCompleteClicked(true);
+                setInvestigatorAutoCompleteClicked(false);
+                setCountyAutoCompleteClicked(false);
+                break;
+            }
+        }
+        setSelectedRow(epidemiologyNumber);
+        setCheckedRowsIds([]);
+    }
 
     const CustomPopper = (props: any) => {
         return (<Popper {...props} style={{ width: 350 }} placement='bottom-start' />)
@@ -115,8 +147,26 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         </Tooltip>
     )
 
+    const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
+        const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
+        return filterOptions.investigationDesk.length === 0 ?
+            allUsersOfCountyArray :
+            allUsersOfCountyArray.filter(({ id, value }) => {
+                if (!value.deskByDeskId) {
+                    return false;
+                }
+                return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+            });
+    }
+
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         switch (cellName) {
+            case TableHeadersNames.epidemiologyNumber:
+                return <InvestigationNumberColumn
+                    wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
+                    epidemiologyNumber={indexedRow.epidemiologyNumber}
+                    transferReason={indexedRow.transferReason}
+                />
             case TableHeadersNames.investigatorName:
                 const isUnassigned = indexedRow.investigatorName === 'לא משויך';
                 if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
@@ -126,7 +176,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <Autocomplete
                                 PopperComponent={CustomPopper}
                                 test-id='currentInvetigationUser'
-                                options={Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }))}
+                                options={getFilteredUsersOfCurrentCounty()}
                                 getOptionLabel={(option) => option.value.userName}
                                 renderOption={(option, { selected }) => (
                                     option.value ?
@@ -137,12 +187,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {investigatorNameMsg} :
                                                     <b>
                                                             {option.value.userName}
-                                                    </b>
+                                                        </b>
                                                         &nbsp;&nbsp;
                                                         {
                                                             (option.value.sourceOrganization || option.value.deskName) ?
                                                                 `${option.value.sourceOrganization ? option.value.sourceOrganization : hasNoSourceOrganization},
-                                                                ${option.value.deskName ? option.value.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
+                                                                ${option.value.deskByDeskId?.deskName ? option.value.deskByDeskId?.deskName : hasNoDesk}` : `${hasNoSourceOrganization}, ${hasNoDesk}`
                                                         }
                                                     </a>
                                                     <br></br>
@@ -172,11 +222,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
-                                    const updatedInvestigator = {
-                                        id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
-                                        userName: selectedInvestigatorName
+                                    if (event?.type !== 'blur') {
+                                        const updatedInvestigator = {
+                                            id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                            userName: selectedInvestigatorName
+                                        }
+                                        setSelectedInvestigator(updatedInvestigator);
                                     }
-                                    setSelectedInvestigator(updatedInvestigator);
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -210,11 +262,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
                             }}
                             onInputChange={(event, selectedCounty) => {
-                                const updatedCounty: County = {
-                                    id: getCountyMapKeyByValue(allCounties, selectedCounty),
-                                    displayName: selectedCounty
+                                if (event?.type !== 'blur') {
+                                    const updatedCounty: County = {
+                                        id: getCountyMapKeyByValue(allCounties, selectedCounty),
+                                        displayName: selectedCounty
+                                    }
+                                    setCurrCounty(updatedCounty);
                                 }
-                                setCurrCounty(updatedCounty);
                             }}
                             renderInput={(params) =>
                                 <TextField
@@ -226,6 +280,34 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 }
                 else {
                     return indexedRow[cellName as keyof typeof TableHeadersNames]
+                }
+            case TableHeadersNames.investigationDesk:
+                if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
+                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN)) {
+                    return (
+                        <Autocomplete
+                            options={allDesks}
+                            getOptionLabel={(option) => option.deskName}
+                            onChange={(event, newSelectedDesk) => {
+                                onDeskChange(indexedRow, newSelectedDesk, indexedRow.investigationDesk)
+                            }}
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    placeholder='דסק'
+                                />
+                            }
+                            renderTags={(tags) => {
+                                const additionalTagsAmount = tags.length - 1;
+                                const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                return tags[0] + additionalDisplay;
+                            }}
+                        />
+                    )
+                }
+                else {
+                    const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames];
+                    return deskValue ? deskValue : unassignedToDesk
                 }
             case TableHeadersNames.priority:
                 let cssClass = '';
@@ -248,7 +330,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </div>
                 );
             case TableHeadersNames.comment:
-                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]} />
+                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                                       scrollableRef={tableContainerRef.current} />
+            case TableHeadersNames.investigationStatus:
+                const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
+                const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
+                return <InvestigationStatusColumn
+                    investigationStatus={investigationStatus}
+                    investigationSubStatus={indexedRow.investigationSubStatus}
+                    statusReason={indexedRow.statusReason}
+                    epidemiologyNumber={epidemiologyNumber}
+                    moveToTheInvestigationForm={moveToTheInvestigationForm}
+                />
+            case TableHeadersNames.multipleCheck:
+                return (
+                    <Checkbox onClick={(event) => {
+                        event.stopPropagation();
+                        markRow(indexedRow.epidemiologyNumber);
+                    }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
+                )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
@@ -266,34 +366,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
-        const newFilterOptions : FilterTableOption = {...filterOptions};
+    const markRow = (epidemiologyNumber: number) => {
+        const epidemiologyNumberIndex = checkedRowsIds.findIndex(checkedRow => epidemiologyNumber === checkedRow);
+        if (epidemiologyNumberIndex !== -1) {
+            setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epidemiologyNumber));
+        } else {
+            setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
+        }
+    }
 
-        if (selectedStatuses.length === 0) {
-            newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
-        } else if (selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-            if (!filterOptions.mainStatus.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-                newFilterOptions.mainStatus = [ALL_STATUSES_FILTER_OPTIONS];
-            } else {
-                newFilterOptions.mainStatus = selectedStatuses.filter(status => status !== ALL_STATUSES_FILTER_OPTIONS);
-            }
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
+        const newFilterOptions: FilterTableOption = { ...filterOptions };
+
+        if (selectedStatuses.length === 0 || selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
+            newFilterOptions.mainStatus = [];
         } else {
             newFilterOptions.mainStatus = selectedStatuses;
         }
         setFilterOptions(newFilterOptions);
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: string[]) => {
-        const newFilterOptions : FilterTableOption = {...filterOptions};
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
+        const newFilterOptions: FilterTableOption = { ...filterOptions };
 
         if (selectedDesks.length === 0) {
-            newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
-        } else if (selectedDesks.includes(ALL_DESKS_FILTER_OPTIONS)) {
-            if (!filterOptions.investigationDesk.includes(ALL_DESKS_FILTER_OPTIONS)) {
-                newFilterOptions.investigationDesk = [ALL_DESKS_FILTER_OPTIONS];
-            } else {
-                newFilterOptions.investigationDesk = selectedDesks.filter(desk => desk !== ALL_DESKS_FILTER_OPTIONS);
-            }
+            newFilterOptions.investigationDesk = [];
         } else {
             newFilterOptions.investigationDesk = selectedDesks;
         }
@@ -301,12 +398,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const filterIconByToggle = () => {
-        const filterIcon = <FontAwesomeIcon icon={faFilter} style={{fontSize: '15px'}}/>;
+        const filterIcon = <FontAwesomeIcon icon={faFilter} style={{ fontSize: '15px' }} />;
         if (showFilterRow) return <Badge
-        anchorOrigin={{vertical: 'top',horizontal: 'left',}} variant='dot' badgeContent='' color='error'>{filterIcon}
+            anchorOrigin={{ vertical: 'top', horizontal: 'left', }} variant='dot' badgeContent='' color='error'>{filterIcon}
         </Badge>
         return filterIcon
     }
+
+    const isInvestigationRowClickable = (investigationStatus: string) =>
+        !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
+
+    const counterDescription: string = useMemo(() => {
+        const adminMessage = `, מתוכן ${filteredTableRows.filter(filteredRow => filteredRow.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
+        return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+
+    }, [filteredTableRows]);
 
     return (
         <>
@@ -321,11 +427,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Card className={classes.filterByDeskCard}>
                         <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
                         <Autocomplete
-                            classes={{inputRoot: classes.autocompleteInput}}
                             disableCloseOnSelect
                             multiple
                             options={allDesks}
-                            getOptionLabel={(option) => option}
+                            getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
                             value={filterOptions.investigationDesk}
                             renderInput={(params) =>
@@ -333,63 +438,68 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                     {...params}
                                 />
                             }
-                            renderTags={(tags, tagsProps) => {
+                            renderTags={(tags: Desk[]) => {
                                 const additionalTagsAmount = tags.length - 1;
                                 const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                return tags[0] + additionalDisplay;
+                                return tags[0].deskName + additionalDisplay;
                             }}
+                            classes={{ inputRoot: classes.autocompleteInput }}
                         />
                     </Card>
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
-                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
-                    <Button
-                        color='primary'
-                        className={classes.filterButton}
-                        startIcon={filterIconByToggle()}
-                        onClick={toggleFilterRow}
-                    />
-                    <Button
-                        color='primary'
-                        className={classes.sortResetButton}
-                        startIcon={<Refresh />}
-                        onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
-                    >
-                        {resetSortButtonText}
-                    </Button>
-                </Grid>
-                <Grid container justify="flex-end" className={classes.tableHeaderRow}>
-                {
+                <div className={classes.tableHeaderRow}>
+
+                    <Typography color='primary' className={classes.counterLabel} >
+                        {counterDescription}
+                    </Typography>
+                    <Box justifyContent='flex-end'>
+                        <Button
+                            color='primary'
+                            className={classes.filterButton}
+                            startIcon={filterIconByToggle()}
+                            onClick={toggleFilterRow}
+                        />
+                        <Button
+                            color='primary'
+                            className={classes.sortResetButton}
+                            startIcon={<Refresh />}
+                            onClick={(event: any) => handleRequestSort(event, defaultOrderBy)}
+                        >
+                            {resetSortButtonText}
+                        </Button>
+                    </Box>
+                </div>
+                <Grid container justify="flex-end" className={classes.filterTableRow}>
                     <Collapse in={showFilterRow}>
-                            <Card className={classes.filterTableCard}>
-                                <Typography>סינון לפי</Typography>
-                                <Typography>סטטוס:</Typography>
-                                <Autocomplete
-                                    classes={{inputRoot: classes.autocompleteInput}}
-                                    disableCloseOnSelect
-                                    multiple
-                                    options={allStatuses}
-                                    getOptionLabel={(option) => option}
-                                    onChange={onSelectedStatusesChange}
-                                    value={filterOptions.mainStatus}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                        />
-                                    }
-                                    renderTags={(tags) => {
-                                        const additionalTagsAmount = tags.length - 1;
-                                        const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                        return tags[0] + additionalDisplay;
-                                    }}
-                                />
-                                <IconButton><Close onClick={() => closeFilterRow()}/></IconButton>
-                            </Card>
+                        <Card className={classes.filterTableCard}>
+                            <Typography>סינון לפי</Typography>
+                            <Typography>סטטוס:</Typography>
+                            <Autocomplete
+                                classes={{ inputRoot: classes.autocompleteInput }}
+                                disableCloseOnSelect
+                                multiple
+                                options={allStatuses}
+                                getOptionLabel={(option) => option}
+                                onChange={onSelectedStatusesChange}
+                                value={filterOptions.mainStatus}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                    />
+                                }
+                                renderTags={(tags) => {
+                                    const additionalTagsAmount = tags.length - 1;
+                                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
+                                    return tags[0] + additionalDisplay;
+                                }}
+                            />
+                            <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>
+                        </Card>
                     </Collapse>
-                }
                 </Grid>
-                <TableContainer component={Paper} className={classes.tableContainer}>
+                <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
                         <TableHead>
                             <TableRow>
@@ -419,24 +529,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <TableBody>
                             {filteredTableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
+                                const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 return (
-                                    <TableRow
-                                        key={indexedRow.epidemiologyNumber}
-                                        className={classes.investigationRow}
-                                        onClick={() => onInvestigationRowClick(indexedRow)}
+                                    <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
+                                        key={indexedRow.epidemiologyNumber} classes={{selected: classes.checkedRow}}
+                                        className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                        onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
                                     >
                                         {
                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                 <TableCell
                                                     className={getTableCellStyles(index, key).join(' ')}
-                                                    onClick={(event: any) => {
-                                                        if (key === TableHeadersNames.investigatorName || key === TableHeadersNames.county) {
-                                                            event.stopPropagation();
-                                                            key === TableHeadersNames.county ? setCountyAutoCompleteClicked(true) :
-                                                                setInvestigatorAutoCompleteClicked(true);
-                                                            setSelectedRow(indexedRow.epidemiologyNumber);
-                                                        }
-                                                    }}
+                                                    onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                 >
                                                     {
                                                         getTableCell(key, indexedRow)
@@ -451,9 +555,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Table>
                 </TableContainer>
             </Grid>
+            <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit>
+                <InvestigationTableFooter
+                    allInvestigators={getFilteredUsersOfCurrentCounty()}
+                    checkedRowsIds={checkedRowsIds}
+                    allDesks={allDesks}
+                    onClose={() => setCheckedRowsIds([])}
+                    tableRows={tableRows}
+                    setTableRows={setTableRows}
+                />
+            </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
-                             onClose={onCancel} onOk={onOk}
-                             message={refreshPromptMessage}/>
+                onClose={onCancel} onOk={onOk}
+                message={refreshPromptMessage} />
         </>
     );
 }

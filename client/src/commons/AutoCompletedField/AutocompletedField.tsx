@@ -17,7 +17,8 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
         label,
         placeholder,
         filterOptions = (x: any) => x,
-        noOptionsMessage = defaultNoOptionsMessage
+        noOptionsMessage = defaultNoOptionsMessage,
+        fullWidth
     } = props;
     const classes = useStyles();
 
@@ -42,12 +43,17 @@ const AutocompletedField: AutocompletedFieldType = (props) => {
             {...config}
             {...(props.renderOption) ? { renderOption: props.renderOption } : {}}
             value={value}
+            fullWidth={fullWidth}
             options={options} noOptionsText={noOptionsMessage}
             filterOptions={filterOptions}
             getOptionLabel={props.getOptionLabel || genericLabel}
             onChange={onChange}
             renderInput={inputElement}
-            onInputChange={onInputChange}
+            onInputChange={(event, value, reason) => {
+                if (event?.type !== 'blur' && onInputChange) {
+                    onInputChange(event, value, reason);
+                }
+            }}
         />
     );
 };

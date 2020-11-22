@@ -1,4 +1,4 @@
-import {gql} from 'postgraphile';
+import { gql } from 'postgraphile';
 
 export const UPDATE_IS_USER_ACTIVE = gql`
     mutation updateUserIsActive($id: String!, $isActive: Boolean!) {
@@ -12,8 +12,20 @@ export const UPDATE_IS_USER_ACTIVE = gql`
 `;
 
 export const UPDATE_INVESTIGATOR = gql`
+mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
+    updateInvestigationByEpidemiologyNumber(
+      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, transferReason: $transferReason, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
+    ) {
+      clientMutationId
+    }
+  }     
+`;
+
+export const UPDATE_COUNTY_BY_USER = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!) {
-    updateInvestigationByEpidemiologyNumber(input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser}, epidemiologyNumber: $epidemiologyNumber}) {
+    updateInvestigationByEpidemiologyNumber(
+      input: {investigationPatch: {creator: $newUser, lastUpdator: $newUser, deskId: null, wasInvestigationTransferred: true}, epidemiologyNumber: $epidemiologyNumber}
+    ) {
       clientMutationId
     }
   }     

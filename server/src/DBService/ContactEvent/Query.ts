@@ -32,6 +32,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
     nodes {
       id
+      unknownTime
       hospitalDepartment
       airline
       allowsHamagenData
@@ -60,16 +61,20 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
       locationAddress
       numberOfContacted
       placeName
+      placeDescription
       placeSubType
       placeType
       startTime
       trainLine
+      creationTime
       contactedPeopleByContactEvent {
         nodes {
           id
           contactEvent
+          contactStatus
           contactType
           extraInfo
+          creationTime
           personByPersonInfo {
             firstName
             identificationNumber

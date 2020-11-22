@@ -1,5 +1,5 @@
-import React from 'react';
 import Swal from 'sweetalert2';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -15,21 +15,20 @@ import { Service, Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import { setFormState } from 'redux/Form/formActionCreators';
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import { initialClinicalDetails } from 'commons/Contexts/ClinicalDetailsContext';
-import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import { useStyles } from './ClinicalDetailsStyles';
-import useClinicalDetails from './useClinicalDetails';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
 import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
+import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
-const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles();
 
     const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
@@ -40,7 +39,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         resolver: yupResolver(ClinicalDetailsSchema(validationDate))
     });
     
-    const [initialDBClinicalDetails, setInitialDBClinicalDetails] = React.useState<ClinicalDetailsData>(initialClinicalDetails);
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
     const [isolationCityName, setIsolationCityName] = React.useState<string>('');
@@ -53,10 +51,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails } = useClinicalDetails({
-        setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity, initialDBClinicalDetails,
-        setInitialDBClinicalDetails
-    });
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = useClinicalDetails({
+            setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -103,7 +99,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     investigation: epidemiologyNumber,
                     user: userId
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
@@ -118,10 +113,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                     title: 'לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות',
                     icon: 'error'
                 })
-            });
-        ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
-            setFormState(epidemiologyNumber, id, valid);
-        })
+            })
+            .finally(() => {
+                ClinicalDetailsSchema(validationDate).isValid(values).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
@@ -134,27 +131,30 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const watchDoesHaveBackgroundDiseases = methods.watch(ClinicalDetailsFields.DOES_HAVE_BACKGROUND_DISEASES);
     const watchBackgroundDiseases = methods.watch(ClinicalDetailsFields.BACKGROUND_DESEASSES);
     const watchWasHospitalized = methods.watch(ClinicalDetailsFields.WAS_HOPITALIZED);
-    const watchHospitalizedStartDate = methods.watch(ClinicalDetailsFields.HOSPITALIZATION_START_DATE);
-    const watcHospitalizedEndDate = methods.watch(ClinicalDetailsFields.HOSPITALIZATION_END_DATE);
+    const watchAddress = methods.watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        watchAddress.city && getStreetByCity(watchAddress.city);
+    }, [watchAddress?.city]);
+
+    useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsInIsolation === false) {
             methods.setValue(ClinicalDetailsFields.ISOLATION_START_DATE, null);
             methods.setValue(ClinicalDetailsFields.ISOLATION_END_DATE, null);
         }
     }, [watchIsInIsolation]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsIsolationProblem === false) {
             methods.setValue(ClinicalDetailsFields.IS_ISOLATION_PROBLEM_MORE_INFO, '');
         }
     }, [watchIsIsolationProblem]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchDoesHaveSymptoms === false) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS, []);
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
@@ -162,32 +162,32 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         }
     }, [watchDoesHaveSymptoms]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!watchSymptoms.includes(otherSymptomFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_SYMPTOMS_MORE_INFO, '');
         }
     }, [watchSymptoms]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchIsSymptomsDateUnknown) {
             methods.setValue(ClinicalDetailsFields.SYMPTOMS_START_DATE, null);
         }
     }, [watchIsSymptomsDateUnknown])
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchDoesHaveBackgroundDiseases === false) {
             methods.setValue(ClinicalDetailsFields.BACKGROUND_DESEASSES, []);
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
     }, [watchDoesHaveBackgroundDiseases]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!watchBackgroundDiseases.includes(otherBackgroundDiseaseFieldName)) {
             methods.setValue(ClinicalDetailsFields.OTHER_BACKGROUND_DISEASES_MORE_INFO, '');
         }
     }, [watchBackgroundDiseases]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (watchWasHospitalized === false) {
             methods.setValue(ClinicalDetailsFields.HOSPITAL, '');
             methods.setValue(ClinicalDetailsFields.HOSPITALIZATION_START_DATE, null);
@@ -205,7 +205,8 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                 classes={classes} 
                                 watchIsInIsolation={watchIsInIsolation} 
                                 watchIsolationStartDate={watchIsolationStartDate} 
-                                watchIsolationEndDate={watchIsolationEndDate} 
+                                watchIsolationEndDate={watchIsolationEndDate}
+                                isolationSources={isolationSources}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -226,15 +227,18 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                     props.onChange(selectedCity ? selectedCity.id : '')
                                                     if (selectedCity?.id && selectedCity.id !== props.value) {
                                                         setIsolationStreetName('');
+                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
                                                         getStreetByCity(selectedCity.id);
                                                     }
                                                 }}
                                                 onInputChange={(event, selectedCityName) => {
-                                                    setIsolationCityName(selectedCityName);
-                                                    if (selectedCityName === '') {
-                                                        setStreetsInCity([]);
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event?.type !== 'blur') {
+                                                        setIsolationCityName(selectedCityName);
+                                                        if (selectedCityName === '') {
+                                                            setStreetsInCity([]);
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>
@@ -266,10 +270,12 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 filterOptions={streetFilterOptions}
                                                 onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
                                                 onInputChange={(event, selectedStreetName) => {
-                                                    setIsolationStreetName(selectedStreetName);
-                                                    if (selectedStreetName === '') {
-                                                        props.onChange('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                    if (event?.type !== 'blur') {
+                                                        setIsolationStreetName(selectedStreetName);
+                                                        if (selectedStreetName === '') {
+                                                            props.onChange('');
+                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
+                                                        }
                                                     }
                                                 }}
                                                 renderInput={(params) =>
@@ -383,7 +389,6 @@ const ClinicalDetails: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: () => void;
 }
 
 export default ClinicalDetails;

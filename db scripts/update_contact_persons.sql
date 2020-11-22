@@ -21,7 +21,7 @@ doesFeelGood bool;
 doesNeedHelpInIsolation bool;
 repeatingOccuranceWithConfirmed bool;
 doesLiveWithConfirmed bool;
-cantReachContact bool;
+contactStatus int4;
 doesWorkWithCrowd bool;
 
 firstName varchar;
@@ -36,10 +36,7 @@ additionalPhoneNumber varchar;
 personId int4;
 contactEvent int4;
 begin 
-
-	
 	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
-	
 	contactPersonArr :=(
 					select  array_agg(p_data.value)
 					from json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
@@ -78,9 +75,23 @@ begin
 		select nullif((contactedPerson->'doesNeedHelpInIsolation')::text,'null')::bool into doesNeedHelpInIsolation;
 		select nullif((contactedPerson->'repeatingOccuranceWithConfirmed')::text,'null')::bool into repeatingOccuranceWithConfirmed;
 		select nullif((contactedPerson->'doesLiveWithConfirmed')::text,'null')::bool into doesLiveWithConfirmed;
-		select nullif((contactedPerson->'cantReachContact')::text,'null')::bool into cantReachContact;
+		select nullif((contactedPerson->'contactStatus')::text,'null')::int4 into contactStatus;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
+	if identificationNumber is not null then
+			maxDuplicateIds := case when contactedPersonId is null then 0 else 1 end;
+			if exists (select  1
+				from public.contacted_person cp
+				join person p on cp.person_info = p.id join contact_event ce on ce.id = cp.contact_event
+				where ce.investigation_id = (
+						select ce.investigation_id
+						from  contact_event ce
+						where ce.id = contactEvent) and  p.identification_number = identificationNumber and p.identification_number is not null
+				group by p.identification_number
+				having count(p.identification_number) > maxDuplicateIds) then
+					raise exception 'found duplicate ids:%', identificationnumber;
+			end if;
+		end if;		
 	if contactedPersonId is not null then
 	    	/*update person and contacted person */
  		raise notice 'update contacted person %', contactedPersonId;
@@ -96,7 +107,7 @@ begin
 			does_need_help_in_isolation =doesNeedHelpInIsolation ,
 			repeating_occurance_with_confirmed =repeatingOccuranceWithConfirmed ,
 			does_live_with_confirmed  =doesLiveWithConfirmed ,
-			cant_reach_contact =cantReachContact ,
+			contact_status =contactStatus ,
 			does_work_with_crowd = doesWorkWithCrowd,
 			relationship=	personRelationship 
 			where id = contactedPersonId ;
@@ -127,10 +138,10 @@ begin
  		raise notice 'insert new person %', personId	;   
 	   	   INSERT INTO public.contacted_person (person_info, contact_event, relationship, extra_info, contact_type, 
 	   	   contacted_person_city, does_have_background_diseases, occupation, does_feel_good, does_need_help_in_isolation, 
-	   	   repeating_occurance_with_confirmed, does_live_with_confirmed, cant_reach_contact, family_relationship, does_work_with_crowd, does_need_isolation) 
+	   	   repeating_occurance_with_confirmed, does_live_with_confirmed, contact_status, family_relationship, does_work_with_crowd, does_need_isolation, creation_time) 
 	    VALUES(personId, contactEvent, personRelationship, extraInfo, contactType, 
 	   		contactedPersonCity, doesHaveBackgroundDiseases, personOccupation , doesfeelGood, doesNeedHelpInIsolation,
-	   		repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, cantReachContact, familyRelationship, doesWorkWithCrowd, doesNeedIsolation);
+	   		repeatingOccuranceWithConfirmed, doesLiveWithConfirmed, contactStatus, familyRelationship, doesWorkWithCrowd, doesNeedIsolation, now());
 
 	   end if;
 	end loop;

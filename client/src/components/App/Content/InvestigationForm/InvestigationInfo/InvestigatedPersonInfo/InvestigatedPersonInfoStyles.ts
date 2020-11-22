@@ -5,7 +5,7 @@ const useStyles = makeStyles({
         padding: '0.7vw',
         borderRadius: 0
     },
-    headerTopPart:{
+    headerTopPart: {
         display: 'flex',
         justifyContent: 'space-between',
         paddingLeft: '1vw',
@@ -17,8 +17,8 @@ const useStyles = makeStyles({
         alignItems: 'center',
     },
     investigationTitle: {
-        paddingRight:'0.5vw',
-        flip:false,
+        paddingRight: '0.5vw',
+        flip: false,
         fontWeight: 400,
     },
     informationBar: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     },
     divider: {
         paddingLeft: '0.5vw',
-        flip:false,
+        flip: false,
     },
     additionalInfo: {
         display: 'flex',
@@ -42,6 +42,7 @@ const useStyles = makeStyles({
         flexDirection: 'column',
         alignItems: 'center',
         flex: 5,
+        marginBottom: '0.5vh'
     },
     containerGrid: {
         maxWidth: '100vw',
@@ -52,13 +53,24 @@ const useStyles = makeStyles({
         },
         marginRight: '-2vw',
     },
+    statusSelect: {
+        width: '14vw',
+        height: '2vw'
+    },
     subStatusSelect: {
-        width: '12vw'
+        width: '14vw',
+        height: '2vw'
+    },
+    statusSelectGrid: {
+        flip: false,
+        marginRight: '1vw'
     },
     swalTitle: {
         fontSize: '1.5vw',
         fontFamily: 'Assistant',
     },
+    subStatusLabel: {
+    }
 });
 
 export default useStyles;

@@ -105,7 +105,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                     />
                 </FormInput>
             }
-            <FormInput fieldName='סוג משתמש' labelLength={8}>
+            <FormInput fieldName='סוג משתמש'>
                 <GenericAutoComplete 
                     options={userTypes}
                     handleChange={(userTypes) => handleFilterChange(get(FilterCreators, 'USER_TYPE').create(
@@ -114,7 +114,7 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                     className={classes.autoComplete}
                 />
             </FormInput>
-            <FormInput fieldName='פעיל/לא פעיל' labelLength={8}>
+            <FormInput fieldName='פעיל/לא פעיל'>
                 <GenericAutoComplete 
                     options={activeStatuses}
                     handleChange={(userStatuses) => handleFilterChange(get(FilterCreators, 'USER_STATUS').create(
@@ -123,8 +123,8 @@ const UsersFilter:React.FC<Props> = ( props : Props ) => {
                     className={classes.autoComplete}
                 />
             </FormInput>
-            <IconButton>
-                <Close onClick={handleCloseFitler}/>
+            <IconButton onClick={handleCloseFitler}>
+                <Close/>
             </IconButton>
         </div>
     );

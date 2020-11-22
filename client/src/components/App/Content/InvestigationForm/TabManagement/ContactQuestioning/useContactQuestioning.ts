@@ -1,76 +1,80 @@
+import {AxiosResponse} from 'axios';
 import {useSelector} from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
-import { subDays, differenceInCalendarDays } from 'date-fns';
+import {differenceInCalendarDays, subDays} from 'date-fns';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import { Service, Severity } from 'models/Logger';
+import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import { setFormState } from 'redux/Form/formActionCreators';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import { convertDate, nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate,} from '../InteractionsTab/useInteractionsTab';
+import {
+    convertDate,
+    nonSymptomaticPatient,
+    symptomsWithKnownStartDate,
+    symptomsWithUnknownStartDate,
+} from '../InteractionsTab/useInteractionsTab';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {setAllContactedInteractions, allContactedInteractions, setCurrentInteractedContact} = parameters;
-
+    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
-    const saveContact = (interactedContact: InteractedContact) => {
-        updateInteractedContact(interactedContact, InteractedContactFields.EXPAND, false);
-        const contacts = [interactedContact];
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving single contact',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then(() => {
-            logger.info({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
+    const { checkDuplicateIds } = useDuplicateContactId();
+
+    const saveContact = (interactedContact: InteractedContact): boolean => {
+        if (checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
+            return false;
+        } else {
+            const contactLogger = logger.setup({
                 workflow: 'Saving single contact',
-                step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
                 user: userId,
                 investigation: epidemiologyNumber
             });
-        }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Saving single contact',
-                step: `got the following error from the server: ${err}`,
+            const contacts = [interactedContact];
+            const contactsSavingVariable = {
+                unSavedContacts: { contacts }
+            }
+            contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
+            axios.post('/contactedPeople/interactedContacts', contactsSavingVariable).then((response) => {
+                if (response.data?.data?.updateContactPersons) {
+                    contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
+                }
+            }).catch(err => {
+                contactLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
+            });
+            return true;
+        }
+    }
+
+    const saveContactQuestioning = () => {
+        if (!checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
+            const contactsSavingVariable = {
+                unSavedContacts: {contacts: allContactedInteractions}
+            }
+            const contactLogger = logger.setup({
+                workflow: 'Saving all contacts',
                 user: userId,
                 investigation: epidemiologyNumber
+            });
+            contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
+            axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
+            .then((response: AxiosResponse<any>) => {
+                if (response.data?.data?.updateContactPersons) {
+                    contactLogger.info('got respond from the server', Severity.LOW);
+                }
             })
-        });
-    };
-
-    const saveContactQuestioning = (): Promise<void> => {
-        const contacts = allContactedInteractions;
-        const contactsSavingVariable = {
-            unSavedContacts: {contacts}
-        }
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Saving all contacts',
-            step: `launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`,
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        return axios.post('/contactedPeople/interactedContacts',
-            {
-                unSavedContacts: {contacts}
-            }
-        );
+            .catch(err => {
+                contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
+            })
+            .finally(() => setFormState(epidemiologyNumber, id, true))
+        }        
     };
 
     const calculateEarliestDateToInvestigate = (coronaTestDate: Date | null, symptomsStartTime: Date | null, doesHaveSymptoms: boolean): Date => {
@@ -91,71 +95,77 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const loadInteractedContacts = () => {
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
+        const interactedContactsLogger = logger.setup({
             workflow: 'Getting corona test date',
-            step: `launching server request with epidemiology number ${epidemiologyNumber}`,
             user: userId,
             investigation: epidemiologyNumber
-        });
+        })
+        interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
         axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
             if (res.data !== null) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting corona test date',
-                    step: 'got respond from the server that has data',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
                 setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(
                     convertDate(res.data.coronaTestDate),
                     convertDate(res.data.symptomsStartTime),
                     res.data.doesHaveSymptoms
                 ));
             } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow: 'Getting corona test date',
-                    step: 'got respond from the server without data',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
             }
         }).catch(err => {
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting corona test date',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            })
+            interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
         })
     }
 
-    const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
-        let interactedContacts: InteractedContact[] = [];
-        logger.info({
-            service: Service.CLIENT,
-            severity: Severity.LOW,
-            workflow: 'Getting contacts',
-            step: `launching server request with epidemiology number ${epidemiologyNumber}`,
+    const loadFamilyRelationships = () => {
+        const familyRelationshipsLogger = logger.setup({
+            workflow: 'Getting family relationships',
+            user: userId,
+            investigation: epidemiologyNumber
+        })
+        familyRelationshipsLogger.info('launching server request', Severity.LOW);
+        axios.get('/contactedPeople/familyRelationships').then((result: any) => {
+            if (result?.data?.data?.allFamilyRelationships) {
+                familyRelationshipsLogger.info('got respond from the server that has data', Severity.LOW);
+                setFamilyRelationships(result?.data?.data?.allFamilyRelationships?.nodes);
+            } else {
+                familyRelationshipsLogger.warn('got respond from the server without data', Severity.MEDIUM);
+            }
+        }).catch(err => {
+            familyRelationshipsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
+        });
+    }
+
+    const loadContactStatuses = () => {
+        const contactStatusesLogger = logger.setup({
+            workflow: 'Getting contact statuses',
             user: userId,
             investigation: epidemiologyNumber
         });
+        contactStatusesLogger.info('launching server request', Severity.LOW);
+        axios.get('/contactedPeople/contactStatuses').then((result: any) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                contactStatusesLogger.info('got respond from the server that has data', Severity.LOW);
+                setContactStatuses(result.data);
+            } else {
+                contactStatusesLogger.warn('got respond from the server without data', Severity.MEDIUM);
+            }
+        }).catch(err => {
+            contactStatusesLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
+        });
+    }
+
+    const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
+        const interactedContactsLogger = logger.setup({
+            workflow: 'Getting contacts',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        let interactedContacts: InteractedContact[] = [];
+        interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
         axios.get('/contactedPeople/allContacts/' + epidemiologyNumber).then((result: any) => {
             if (result?.data?.data?.allContactedPeople?.nodes) {
-                logger.info({
-                    service: Service.CLIENT,
-                    severity: Severity.LOW,
-                    workflow: 'Getting contacts',
-                    step: 'got respond from the server that has data',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
                 result.data.data.allContactedPeople.nodes.forEach((contact: any) => {
                     interactedContacts.push(
                         {
@@ -171,7 +181,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             contactDate: contact.contactEventByContactEvent.startTime,
                             contactEvent: contact.contactEventByContactEvent.id,
                             contactType: contact.contactType,
-                            cantReachContact: contact.cantReachContact ? contact.cantReachContact : false,
+                            contactStatus: contact.contactStatus,
                             extraInfo: contact.extraInfo,
                             relationship: contact.relationship,
                             familyRelationship: contact.familyRelationship,
@@ -184,59 +194,29 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             repeatingOccuranceWithConfirmed: contact.repeatingOccuranceWithConfirmed ? contact.repeatingOccuranceWithConfirmed : false,
                             doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
                             doesNeedIsolation: contact.doesNeedIsolation ? contact.doesNeedIsolation : false,
-                            expand: false,
+                            creationTime: contact.creationTime,
                         }
                     )
                 });
             } else {
-                logger.warn({
-                    service: Service.CLIENT,
-                    severity: Severity.MEDIUM,
-                    workflow: 'Getting contacts',
-                    step: 'got respond from the server without data',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                interactedContactsLogger.warn('got respond from the server without data', Severity.MEDIUM);
             }
         }).then(() => {
             setAllContactedInteractions(interactedContacts.filter((contactedPerson: InteractedContact) =>
                 differenceInCalendarDays(new Date(contactedPerson.contactDate), new Date(minimalDateToFilter)) >= 0
             ))
-        }).catch((err) =>{
-            logger.error({
-                service: Service.CLIENT,
-                severity: Severity.LOW,
-                workflow: 'Getting contacts',
-                step: `got the following error from the server: ${err}`,
-                user: userId,
-                investigation: epidemiologyNumber
-            })
+        }).catch((err) => {
+            interactedContactsLogger.error(`got the following error from the server: ${err}`, Severity.LOW);
         });
     };
 
-    const updateCantReachInteractedContact = (interactedContact: InteractedContact, value: boolean) => {
-        setCurrentInteractedContact(interactedContact);
-        const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
-        const updatedContactedInteractions = [...allContactedInteractions];
-        const updatedContact : InteractedContact = {
-            ...allContactedInteractions[contactIndex],
-            [InteractedContactFields.CANT_REACH_CONTACT]: value,
-            [InteractedContactFields.EXPAND]: value ? false : allContactedInteractions[contactIndex][InteractedContactFields.EXPAND]
-        };
-        setCurrentInteractedContact(updatedContact);
-        updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
-        setAllContactedInteractions(updatedContactedInteractions);
-    };
-
     const updateInteractedContact = (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => {
-        setCurrentInteractedContact(interactedContact);
         const contactIndex = allContactedInteractions.findIndex(contact => contact.id === interactedContact.id)
         const updatedContactedInteractions = [...allContactedInteractions];
-        const updatedContact : InteractedContact = {
+        const updatedContact: InteractedContact = {
             ...allContactedInteractions[contactIndex],
             [fieldToUpdate]: value
         };
-        setCurrentInteractedContact(updatedContact);
         updatedContactedInteractions.splice(contactIndex, 1, updatedContact);
         setAllContactedInteractions(updatedContactedInteractions);
     };
@@ -246,13 +226,30 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, newIdentificationType);
     };
 
+    const checkForSpecificDuplicateIds = (identificationNumberToCheck: string, interactedContactId: number) => {
+        if(Boolean(identificationNumberToCheck)) {
+            return (allContactedInteractions.findIndex((contact) => contact.identificationNumber === identificationNumberToCheck
+                && contact.id !== interactedContactId) === -1);
+        } else {
+            return !Boolean(identificationNumberToCheck)
+        }
+    }
+
+    const checkAllContactsForDuplicateIds = () => {
+        const allIdentificationNumbersToCheck = allContactedInteractions.filter(currContact => Boolean(currContact.identificationNumber));
+        return (new Set(allIdentificationNumbersToCheck)).size === allIdentificationNumbersToCheck.length;
+    }
+
     return {
         saveContact,
         updateInteractedContact,
         changeIdentificationType,
         loadInteractedContacts,
         saveContactQuestioning,
-        updateCantReachInteractedContact
+        loadFamilyRelationships,
+        loadContactStatuses,
+        checkForSpecificDuplicateIds,
+        checkAllContactsForDuplicateIds
     };
 };
 

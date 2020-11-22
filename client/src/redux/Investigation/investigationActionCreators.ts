@@ -65,3 +65,17 @@ export const setValidationDate = (validationDate: Date) => {
         payload: { validationDate }
     })
 }
+
+export const setEndTime = (endTime: Date | null) => {
+    store.dispatch({
+        type: actionTypes.SET_END_TIME,
+        payload: { endTime }
+    })
+}
+
+export const setCreator = (creator: string) => {
+    store.dispatch({
+        type: actionTypes.SET_CREATOR,
+        payload: { creator }
+    })
+}

@@ -1,3 +1,5 @@
+import InteractedContact from './InteractedContact';
+
 interface Contact {
     serialId?: number;
     firstName: string;
@@ -6,6 +8,9 @@ interface Contact {
     idNumber?: string;
     contactType: number;
     extraInfo?: string;
+    contactStatus?: InteractedContact['contactStatus'];
+    creationTime: Date;
+    startTime?: Date;
 }
 
 export default Contact;

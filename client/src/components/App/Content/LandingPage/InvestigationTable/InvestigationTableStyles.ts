@@ -1,7 +1,7 @@
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
         height: '80vh',
         backgroundColor: '#F3F6FB',
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableContainer : {
         width: '90vw',
+        height: isWide ? '67vh' : '61vh',
         marginBottom: '5vh'
     },
     welcomeMessage: {
@@ -29,6 +30,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     investigationRow: {
         textDecoration: 'none',
+    },
+    clickableInvestigationRow: {
         cursor: 'pointer'
     },
     columnBorder: {
@@ -55,6 +58,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableHeaderRow: {
         width: '90vw',  
+        alignItems: 'center',    
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        display: 'flex'
     },
     sortResetButton: {
         fontWeight: 600
@@ -66,6 +73,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: '1vh 0',
         alignItems: 'center',
         height: '8vh',
+    },
+    filterTableRow: {
+        width: '90vw',  
+        alignItems: 'center',    
+        justifyContent: 'flex-end',
+        display: 'flex'
     },
     filterButton: {
         fontWeight: 600,
@@ -130,6 +143,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.warning.main,
         paddingLeft: theme.spacing(1),
         flip: false
+    },
+    counterLabel:{ 
+        fontWeight: 600
+    },
+    checkedRow: {
+        backgroundColor: 'rgb(202, 222, 234)!important'
     }
 }));
 

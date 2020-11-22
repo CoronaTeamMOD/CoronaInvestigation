@@ -17,7 +17,7 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
     contactDate: 'תאריך חשיפה',
     contactType: 'סוג מגע',
     extraInfo: 'פירוט נוסף על אופי המגע',
-    cantReachContact: 'אין מענה',
+    contactStatus: 'סטטוס',
     relationship: 'קשר',
     familyRelationship: 'קרבה משפחתית',
     occupation: 'האם עוסק באחד מן התחומים הבאים',
@@ -32,3 +32,11 @@ export const ContactedPersonFieldMapper: ContactedPersonExcel= {
 };
 
 export type ContactedPersonExcel =  { [K in keyof Omit<InteractedContact, 'id'|'contactEvent'>]: string };
+
+export interface ExcelRow extends ContactedPersonExcel {
+    __rowNum__: number;
+};
+
+export interface ParsedExcelRow extends InteractedContact {
+    rowNum: number;
+};

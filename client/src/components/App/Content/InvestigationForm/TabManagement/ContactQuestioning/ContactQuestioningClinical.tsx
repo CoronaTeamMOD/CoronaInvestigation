@@ -12,6 +12,9 @@ import StoreStateType from 'redux/storeStateType';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
@@ -24,10 +27,16 @@ const emptyFamilyRelationship: FamilyRelationship = {
 
 const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles();
-
+    
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
-
+    
     const { familyRelationships, interactedContact, updateInteractedContact } = props;
+
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
+
+    const {alertError} = useCustomSwal();
+    const { isFieldDisabled, validateContact } = useContactFields(interactedContact.contactStatus);
 
     const [cityInput, setCityInput] = useState<string>('');
 
@@ -36,25 +45,31 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
     const handleIsolation = (value: boolean) => {
-        value ?
-            Swal.fire({
-                icon: 'warning',
-                title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
-                showCancelButton: true,
-                cancelButtonText: 'בטל',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך',
-                customClass: {
-                    title: classes.swalTitle
-                }
-            }).then((result) => {
-                if (result.value) {
-                    updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
-                }
-            })
-        :
-        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
+        const contactWithIsolationRequirement = {...interactedContact, doesNeedIsolation: value};
+        const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
+        if(!contactValidation.valid) {
+            alertError(contactValidation.error)
+        } else {
+            value ?
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'האם אתה בטוח שתרצה להקים דיווח בידוד?',
+                    showCancelButton: true,
+                    cancelButtonText: 'בטל',
+                    cancelButtonColor: theme.palette.error.main,
+                    confirmButtonColor: theme.palette.primary.main,
+                    confirmButtonText: 'כן, המשך',
+                    customClass: {
+                        title: classes.swalTitle
+                    }
+                }).then((result) => {
+                    if (result.value) {
+                        updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, true);
+                    }
+                })
+                :
+                updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_ISOLATION, false);
+        }
     };
 
     return (
@@ -70,6 +85,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
+                                    disabled={isFieldDisabled}
                                     test-id='familyRelationshipSelect'
                                     name={InteractedContactFields.FAMILY_RELATIONSHIP}
                                     placeholder='קרבה משפחתית'
@@ -97,6 +113,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <FieldName xs={6} fieldName='קשר:'/>
                     <Grid item xs={6}>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             testId='relationship'
                             name={InteractedContactFields.RELATIONSHIP}
                             value={interactedContact.relationship}
@@ -112,6 +129,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <FieldName xs={6} fieldName='יישוב השהייה בבידוד:' />
                         <Grid item xs={6}>
                             <Autocomplete
+                                disabled={isFieldDisabled}
                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                 getOptionLabel={(option) => option?.value ? option.value.displayName : ''}
                                 inputValue={cityInput}
@@ -122,7 +140,9 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                                     updateInteractedContact(interactedContact, InteractedContactFields.CONTACTED_PERSON_CITY, selectedCity?.id);
                                 }}
                                 onInputChange={(event, selectedCityName) => {
-                                    setCityInput(selectedCityName);
+                                    if (event?.type !== 'blur') {
+                                        setCityInput(selectedCityName);
+                                    }
                                 }}
                                 renderInput={(params) =>
                                     <TextField
@@ -140,9 +160,10 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='האם נדרש סיוע עבור מקום בידוד?'/>
                         <Toggle
+                            disabled={isFieldDisabled}
                             test-id='doesNeedHelpInIsolation'
                             value={interactedContact.doesNeedHelpInIsolation}
-                            onChange={(event, booleanValue) => updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
+                            onChange={(event, booleanValue) => booleanValue !== null && updateInteractedContact(interactedContact, InteractedContactFields.DOES_NEED_HELP_IN_ISOLATION, booleanValue)}
                         />
                     </Grid>
                 </Grid>
@@ -150,6 +171,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                     <Grid container justify='space-between'>
                         <FieldName xs={6} fieldName='הקמת דיווח בידוד'/>
                         <Toggle
+                            disabled={isFieldDisabled || (shouldDisableIdByReopen && interactedContact.doesNeedIsolation === true)}
                             test-id='doesNeedIsolation'
                             value={interactedContact.doesNeedIsolation}
                             onChange={(event, booleanValue) => booleanValue !== null && handleIsolation(booleanValue)}
@@ -161,6 +183,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
                     <Grid item xs={6}>
                         <AlphanumericTextField
+                            disabled={isFieldDisabled}
                             testId='isolationEndDate'
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}

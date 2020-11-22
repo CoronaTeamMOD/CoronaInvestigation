@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import React, { useContext, useEffect, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
 import City from 'models/City';
@@ -15,14 +15,16 @@ import { Service, Severity } from 'models/Logger';
 import Occupations from 'models/enums/Occupations';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setAddress } from 'redux/Address/AddressActionCreators';
+import { InvestigationStatus } from 'models/InvestigationStatus';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
 import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
+import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
 import PersonalInfoDataContextFields from 'models/enums/PersonalInfoDataContextFields';
-import { setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
+import {setIsCurrentlyLoading} from 'redux/Investigation/investigationActionCreators';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
@@ -56,7 +58,7 @@ const grades = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 
 const defaultInvestigationId = -1;
 const defaultRole = { id: -1, displayName: '' };
 
-const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element => {
+const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
     const occupationsStateContext = useContext(occupationsContext);
@@ -79,6 +81,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
+    const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const { complexityErrorAlert } = useComplexitySwal();
 
@@ -98,7 +101,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
         setOccupation(newOccupation);
         setSubOccupationName('');
         methods.setValue(PersonalInfoDataContextFields.RELEVANT_OCCUPATION, newOccupation);
-        methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
         methods.setValue(PersonalInfoDataContextFields.OTHER_OCCUPATION_EXTRA_INFO, '');
         methods.setValue(PersonalInfoDataContextFields.EDUCATION_OCCUPATION_CITY, '');
         methods.setValue(PersonalInfoDataContextFields.ROLE, '');
@@ -106,6 +108,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
             getEducationSubOccupations(personalInfoState.educationOccupationCity);
         }
     }
+
+    useEffect(() => {
+        if (!Boolean(subOccupationName)) {
+            methods.setValue(PersonalInfoDataContextFields.INSTITUTION_NAME, '');
+        }
+    }, [subOccupationName]);
 
     const data = methods.getValues();
 
@@ -149,6 +157,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     )
 
     const convertToDBData = (): PersonalInfoDbData => {
+        const data = methods.getValues();
         return {
             phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
             additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
@@ -183,14 +192,14 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }, [data.city, data.street, data.floor, data.houseNum]);
 
     useEffect(() => {
-        if(data.role){
-            setRoleObj(    
-                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) => 
-                investigatedPatientRole.id === data.role)??defaultRole
-                );
+        if (data.role) {
+            setRoleObj(
+                investigatedPatientRoles.find((investigatedPatientRole: investigatedPatientRole) =>
+                    investigatedPatientRole.id === data.role) ?? defaultRole
+            );
         }
 
-    }, [investigatedPatientRoles,data.role]);
+    }, [investigatedPatientRoles, data.role]);
 
 
     useEffect(() => {
@@ -241,45 +250,45 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
     }
 
     const savePersonalData = (event: any, personalInfoData: PersonalInfoDbData) => {
-        event.preventDefault();
-        logger.info({
+        const logInfo = {
             service: Service.CLIENT,
-            severity: Severity.LOW,
             workflow: 'Saving personal details tab',
-            step: 'launching the server request',
             investigation: investigationId,
             user: userId
-        })
+        };
+
+        event.preventDefault();
+        logger.info({
+            ...logInfo,
+            severity: Severity.LOW,
+            step: 'launching the server request',
+        });
         axios.post('/personalDetails/updatePersonalDetails',
             {
                 id: investigatedPatientId,
                 personalInfoData,
             })
             .then(() => {
+                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatus.NEW;
                 logger.info({
-                    service: Service.CLIENT,
+                    ...logInfo,
                     severity: Severity.LOW,
-                    workflow: 'Saving personal details tab',
-                    step: 'saved personal details successfully',
-                    investigation: investigationId,
-                    user: userId
+                    step: `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                 });
-                onSubmit();
             })
             .catch((error) => {
                 logger.error({
-                    service: Service.CLIENT,
+                    ...logInfo,
                     severity: Severity.LOW,
-                    workflow: 'Saving personal details tab',
-                    step: `got error from server: ${error.response.data}`,
-                    investigation: investigationId,
-                    user: userId
+                    step: `got error from server: ${error}`,
                 });
                 complexityErrorAlert(error);
             })
-        personalInfoValidationSchema.isValid(data).then(valid => {
-            setFormState(investigationId, id, valid);
-        })
+            .finally(() => { 
+                personalInfoValidationSchema.isValid(data).then(valid => {
+                    setFormState(investigationId, id, valid);
+                })
+            })
     }
 
     return (
@@ -380,10 +389,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                 props.onChange(selectedInsuranceCompany ? selectedInsuranceCompany : '')
                                             }}
                                             onInputChange={(event, selectedInsuranceCompany) => {
-                                                setInsuranceCompany(selectedInsuranceCompany);
-                                                if (selectedInsuranceCompany === '') {
-                                                    props.onChange('');
-                                                    methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                if (event?.type !== 'blur') {
+                                                    setInsuranceCompany(selectedInsuranceCompany);
+                                                    if (selectedInsuranceCompany === '') {
+                                                        props.onChange('');
+                                                        methods.setValue(PersonalInfoDataContextFields.INSURANCE_COMPANY, '');
+                                                    }
                                                 }
                                             }}
                                             className={props.value === NO_INSURANCE ? classes.markComplexity : ''}
@@ -422,7 +433,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             inputValue={cityName}
                                             filterOptions={cityFilterOptions}
                                             onInputChange={(event, newInputValue) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     methods.setValue(PersonalInfoDataContextFields.STREET, '')
                                                     setStreetName('')
                                                     setCityName(newInputValue);
@@ -466,7 +477,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             getOptionSelected={(option) => option.id === props.value}
                                             inputValue={streetName}
                                             onInputChange={(event, newInputValue) => {
-                                                if (event.type !== 'blur') {
+                                                if (event?.type !== 'blur') {
                                                     setStreetName(newInputValue);
                                                     if (newInputValue === '') {
                                                         methods.setValue(PersonalInfoDataContextFields.STREET, '')
@@ -632,7 +643,9 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                                             props.onChange(selectedRole?.id as number);
                                                         }}
                                                         onInputChange={(event, newRoleInput) => {
-                                                            setRoleInput(newRoleInput);
+                                                            if (event?.type !== 'blur') {
+                                                                setRoleInput(newRoleInput);
+                                                            }
                                                         }}
                                                         renderInput={(params) =>
                                                             <TextField
@@ -648,34 +661,31 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             roleInput === 'תלמיד/ה' && occupation === Occupations.EDUCATION_SYSTEM &&
                                             <>
                                                 <Grid item xs={1}>
-                                                    <Controller
-                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                        control={methods.control}
-                                                        render={(props) => (
-                                                            <>
-                                                                <FormControl variant='outlined'>
-                                                                    <InputLabel>שכבה</InputLabel>
-                                                                    <Select
-                                                                        label='שכבה'
-                                                                        name={PersonalInfoDataContextFields.EDUCATION_GRADE}
-                                                                        className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
-                                                                        value={props.value}
-                                                                        onChange={(event) => props.onChange(event.target.value)}
-                                                                    >
-                                                                        {
-                                                                            grades.map((grade: string) => (
-                                                                                <MenuItem
-                                                                                    key={grade}
-                                                                                    value={grade}>
-                                                                                    {grade}
-                                                                                </MenuItem>
-                                                                            ))
-                                                                        }
-                                                                    </Select>
-                                                                </FormControl>
-                                                            </>
-                                                        )}
-                                                    />
+                                                    <FormControl variant='outlined'>
+                                                        <InputLabel>שכבה</InputLabel>
+                                                        <Controller
+                                                            name={PersonalInfoDataContextFields.EDUCATION_GRADE}
+                                                            control={methods.control}
+                                                            render={(props) => (
+                                                                <Select
+                                                                    label='שכבה'
+                                                                    className={[classes.gradeInput, props.value && classes.markComplexity].join(' ')}
+                                                                    value={props.value}
+                                                                    onChange={(event) => props.onChange(event.target.value)}
+                                                                >
+                                                                    {
+                                                                        grades.map((grade: string) => (
+                                                                            <MenuItem
+                                                                                key={grade}
+                                                                                value={grade}>
+                                                                                {grade}
+                                                                            </MenuItem>
+                                                                        ))
+                                                                    }
+                                                                </Select>
+                                                            )}
+                                                        />
+                                                    </FormControl>
                                                 </Grid>
                                                 <Grid item xs={1}>
                                                     <Controller
@@ -696,7 +706,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
                                             </>
                                         }
                                     </>
-                                    : subOccupations.length > 0 ?
+                                    : occupation === Occupations.DEFENSE_FORCES ?
                                         <Grid item xs={3}>{institutionComponent}</Grid>
                                         :
                                         <Grid item xs={2}>
@@ -731,7 +741,6 @@ const PersonalInfoTab: React.FC<Props> = ({ id, onSubmit }: Props): JSX.Element 
 
 interface Props {
     id: number;
-    onSubmit: any;
 };
 
 export default PersonalInfoTab;

@@ -3,30 +3,40 @@ import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui/icons';
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
+import Contact from 'models/Contact';
 import { timeFormat } from 'Utils/displayUtils';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
+import useStyles from './InteractionCardStyles';
 import ContactGrid from './ContactGrid/ContactGrid';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import useContactFields from 'Utils/vendor/useContactFields';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
 import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
 import MedicalLocationGrid from './PlacesAdditionalGrids/MedicalLocationGrid';
 import DefaultPlaceEventGrid from './PlacesAdditionalGrids/DefaultPlaceEventGrid';
+import ExcelFormatDownloader from './ExcelFormatDownloader/ExcelFormatDownloader';
 import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid';
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
-
-import useStyles from './InteractionCardStyles';
 
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
-    const { interaction, onEditClick, onDeleteClick, onDeleteContactClick } = props;
+    const { interaction, allInteractions, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
     const [areDetailsOpen, setAreDetailsOpen] = React.useState<boolean>(false);
+    
+    const {getDisabledFields} = useContactFields();
+    const completedContacts = getDisabledFields(interaction.contacts);
+    const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
+    
+    const { shouldDisableContact } = useStatusUtils();
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime);
 
     return (
         <Card className={classes.container}>
@@ -45,7 +55,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     <IconButton test-id={'editContactLocation'} onClick={onEditClick}>
                         <Edit />
                     </IconButton>
-                    <IconButton test-id={'deleteContactLocation'} onClick={onDeleteClick}>
+                    <IconButton test-id={'deleteContactLocation'}
+                                disabled={shouldDisableDeleteInteraction}
+                                onClick={onDeleteClick}>
                         <Delete />
                     </IconButton>
                 </div>
@@ -102,11 +114,22 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                             <Typography>
                                 <b>אנשים שהיו באירוע: ({interaction.contacts.length})</b>
                             </Typography>
-                            {interaction.id && <ContactUploader contactEvent={interaction.id} onSave={props.loadInteractions} />}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <div className={classes.excelControllers}>
+                                <ExcelFormatDownloader />
+                                {interaction.id && 
+                                <ContactUploader 
+                                    allInteractions={allInteractions}
+                                    contactEvent={interaction.id}
+                                    onSave={props.loadInteractions}
+                                />}
+                            </div>
                         </Grid>
                         {interaction.contacts.map(person => (
                             <Grid item xs={12} className={classes.interactionItem}>
                                 <ContactGrid
+                                    isContactComplete={isFieldDisabled(person.serialId)}
                                     contact={person}
                                     onDeleteContactClick={onDeleteContactClick}
                                     eventId={interaction.id ? interaction.id : -1}
@@ -121,6 +144,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
 };
 
 interface Props {
+    allInteractions: Interaction[];
     interaction: Interaction;
     onEditClick: () => void;
     onDeleteClick: () => void;

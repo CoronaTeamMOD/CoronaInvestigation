@@ -1,15 +1,15 @@
 import React from 'react';
 // @ts-ignore
-import GoogleMap from "google-map-react";
+import GoogleMap from 'google-map-react';
 import LocationInput, {
     GeocodeResponse,
     GoogleApiPlace
-} from "../LocationInputField/LocationInput";
+} from '../LocationInputField/LocationInput';
 
-import useGoogleApiAutocomplete from "commons/LocationInputField/useGoogleApiAutocomplete";
-import injectScript from "commons/LocationInputField/useGoogleScriptInjector";
-import useGoogleGeocoder from "commons/LocationInputField/useGoogleGeocoder";
-import useDBParser from "Utils/vendor/useDBParsing";
+import useDBParser from 'Utils/vendor/useDBParsing';
+import useGoogleGeocoder from 'commons/LocationInputField/useGoogleGeocoder';
+import injectScript from 'commons/LocationInputField/useGoogleScriptInjector';
+import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 interface MapProps {
     height?: number | string;
@@ -22,8 +22,8 @@ interface MapProps {
 const defaultMapPosition = { lng: 35.217018, lat: 31.771959 };
 const FOCUSED_ZOOM = 20;
 const DEFAULT_ZOOM = 8;
-const DEFAULT_MAP_HEIGHT = '40vh';
-const DEFAULT_MAP_WIDTH = '55vw';
+const DEFAULT_MAP_HEIGHT = '20vh';
+const DEFAULT_MAP_WIDTH = '30vw';
 const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) => {
     const { parseAddress } = useGoogleApiAutocomplete();
     const { requestDetailsFromLocation } = useGoogleGeocoder();
@@ -73,8 +73,8 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
             if (placeData) {
                 const {geometry: {location : {lat,lng}, viewport}}= placeData;
                 const newLocation = {
-                    lng: typeof lng === "function" ? lng() : (lng as number),
-                    lat: typeof lat === "function" ? lat() : (lat as number),
+                    lng: typeof lng === 'function' ? lng() : (lng as number),
+                    lat: typeof lat === 'function' ? lat() : (lat as number),
                 };
 
                 setMarkerPosition(newLocation);
@@ -113,17 +113,19 @@ const Map = ({ selectedAddress, setSelectedAddress, name, ...props }: MapProps) 
 
     const height = props.height || DEFAULT_MAP_HEIGHT;
     const width = props.width || DEFAULT_MAP_WIDTH;
-    return <div style={{height, width, padding: '5vh 0 10vh 0'}}>
+    return <div style={{display: 'flex', flexDirection: 'column', alignItems:'center', padding: '3vh 0'}}>
         <LocationInput name={name}
                        selectedAddress={selectedAddress as GoogleApiPlace}
                        setSelectedAddress={handleAddressSelected}
         />
+        <div style={{height, width}}>
         <GoogleMap googleMapLoader={injectScript}
                    zoom={zoom} center={mapPosition}
                    yesIWantToUseGoogleMapApiInternals
                    onGoogleApiLoaded={handleApiLoaded}
                    onClick={onMarkerDragEnd}
         />
+        </div>
     </div>;
 };
 

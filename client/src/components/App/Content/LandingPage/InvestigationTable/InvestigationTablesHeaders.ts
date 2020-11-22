@@ -1,6 +1,9 @@
 import SortOrder from 'models/enums/SortOrder';
 
+export const investigatorIdPropertyName = 'investigatorId';
+
 export enum TableHeadersNames {
+    multipleCheck = 'multipleCheck',
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
     isComplex = 'isComplex',
@@ -13,17 +16,22 @@ export enum TableHeadersNames {
     investigatorName = 'investigatorName',
     investigationStatus = 'investigationStatus',
     investigationSubStatus = 'investigationSubStatus',
+    statusReason = 'statusReason',
     investigationDesk = 'investigationDesk',
     comment = 'comment',
+    wasInvestigationTransferred = 'wasInvestigationTransferred',
+    transferReason = 'transferReason'
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
+export interface IndexedInvestigationData extends IndexedInvestigation {[investigatorIdPropertyName]: string;}
 export type Order = SortOrder.asc | SortOrder.desc;
-export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean};
+export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export const TableHeaders: IndexedInvestigation = {
+    [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
-    [TableHeadersNames.coronaTestDate]: 'תאריך הבדיקה',
+    [TableHeadersNames.coronaTestDate]: 'תאריך תחילת המחלה',
     [TableHeadersNames.isComplex]: '',
     [TableHeadersNames.priority]: 'עדיפות',
     [TableHeadersNames.fullName]: 'שם מלא',
@@ -34,11 +42,16 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.county]: 'נפה מבצעת',
     [TableHeadersNames.investigationStatus]: 'סטטוס ביצוע',
     [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף',
+    [TableHeadersNames.statusReason]: 'סיבה לסטטוס בטיפול',
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
-    [TableHeadersNames.comment]: ' '
+    [TableHeadersNames.comment]: ' ',
+    [TableHeadersNames.statusReason]: '',
+    [TableHeadersNames.wasInvestigationTransferred]: '',
+    [TableHeadersNames.transferReason]: '',
 }
 
 export const adminCols: string[] = [
+    TableHeadersNames.multipleCheck,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.priority,
@@ -67,6 +80,7 @@ export const userCols: string[] = [
 ]
 
 export const sortableCols: sortableHeaders = {
+    [TableHeadersNames.multipleCheck]: false,
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,
     [TableHeadersNames.isComplex]: false,
@@ -79,6 +93,10 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.county]: false,
     [TableHeadersNames.investigationStatus]: true,
     [TableHeadersNames.investigationSubStatus]: false,
+    [TableHeadersNames.statusReason]: false,
     [TableHeadersNames.investigationDesk]: false,
-    [TableHeadersNames.comment]: false
+    [TableHeadersNames.comment]: false,
+    [TableHeadersNames.statusReason]: false,
+    [TableHeadersNames.wasInvestigationTransferred]: false,
+    [TableHeadersNames.transferReason]: false,
 }

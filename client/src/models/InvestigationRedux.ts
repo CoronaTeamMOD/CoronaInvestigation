@@ -11,6 +11,7 @@ interface InvestigationRedux {
     isCurrentlyLoading: boolean;
     axiosInterceptorId: number;
     validationDate: Date;
+    endTime: Date | null;
 }
 
 export default InvestigationRedux;

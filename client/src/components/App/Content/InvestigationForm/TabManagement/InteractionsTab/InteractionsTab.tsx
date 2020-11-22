@@ -1,4 +1,3 @@
-  
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
@@ -15,7 +14,7 @@ import EditInteractionEventDialog from './EditInteractionEventDialog/EditInterac
 
 const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { id, onSubmit, setAreThereContacts } = props;
+    const { id, setAreThereContacts } = props;
 
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
@@ -23,23 +22,15 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [newInteractionEventDate, setNewInteractionEventDate] = useState<Date>();
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
-    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
-    const [doesHaveSymptoms, setDoesHaveSymptoms] = useState<boolean>(false);
-    const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
+    const [datesToInvestigate, setDatesToInvestigate] = useState<Date[]>([]);
 
-    const { getDatesToInvestigate, loadInteractions, getCoronaTestDate,
-        getClinicalDetailsSymptoms, handleDeleteContactEvent, handleDeleteContactedPerson } =
+    const { loadInteractions, handleDeleteContactEvent, handleDeleteContactedPerson } =
         useInteractionsTab({
             setInteractions,
             interactions,
-            setAreThereContacts
+            setAreThereContacts,
+            setDatesToInvestigate
         });
-
-    useEffect(() => {
-        loadInteractions();
-        getCoronaTestDate(setCoronaTestDate);
-        getClinicalDetailsSymptoms(setSymptomsStartDate, setDoesHaveSymptoms);
-    }, []);
 
     useEffect(() => {
         const mappedInteractionsArray = new Map<number, Interaction[]>();
@@ -63,25 +54,31 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormState(investigationId, id, true);
-        onSubmit();
+    }
+
+    const generateContactCard = (interactionDate: Date) => {
+        return (
+            <ContactDateCard
+                allInteractions={interactions}
+                loadInteractions={loadInteractions}
+                contactDate={interactionDate}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                onDeleteClick={handleDeleteContactEvent}
+                onDeleteContactClick={handleDeleteContactedPerson}
+                createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}
+                interactions={interactionsMap.get(interactionDate.getTime())}
+                key={interactionDate.getTime()}
+            />
+        )
     }
     
     return (
         <>
             <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
                 {
-                    getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate).reverse().map(date =>
-                        <ContactDateCard
-                            loadInteractions={loadInteractions}
-                            contactDate={date}
-                            onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
-                            onDeleteClick={handleDeleteContactEvent}
-                            onDeleteContactClick={handleDeleteContactedPerson}
-                            createNewInteractionEvent={() => setNewInteractionEventDate(date)}
-                            interactions={interactionsMap.get(date.getTime())}
-                            key={date.getTime()}
-                        />
-                        )
+                    datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
+                        datesToInvestigate.reverse().map(date => generateContactCard(date)) :
+                        datesToInvestigate.map(date => generateContactCard(date))
                 }
                 {
                     newInteractionEventDate && <NewInteractionEventDialog
@@ -89,6 +86,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
                 {
@@ -97,6 +95,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
                         loadInteractions={loadInteractions}
+                        interactions={interactions}
                     />
                 }
             </form>
@@ -106,7 +105,6 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
 interface Props {
     id: number;
-    onSubmit: () => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

@@ -5,6 +5,7 @@ AS $function$declare
 --Event variables:
 placeType varchar;
 placeName varchar;
+placeDescription varchar;
 investigationId int4;
 locationAddress varchar;
 startTime timestamp;
@@ -48,10 +49,18 @@ begin
 	-- General event details:
 	curr_event :=(select value::text::int4 from json_each(input_data) where key='id');
 
+	select (input_data->'deletedContacts') into deletedContacts;
+	if deletedContacts is not null and deletedContacts::TEXT != '[]' then
+		deletedContactsArr :=(select  array_agg(e_data.value) from json_array_elements(deletedContacts) e_data);
+		foreach deletedContactsId in array deletedContactsArr 
+		loop
+			DELETE from public.contacted_person where id=deletedContactsId;
+		end loop;
+	end if;
 	select nullif((input_data->'placeType')::text,'null') as val into placeType;
 	select nullif((input_data->'placeName')::text,'null') as val into placeName;
+	select nullif((input_data->'placeDescription')::text,'null') as val into placeDescription;
 	investigationId :=(select value::text::int4 from json_each(input_data) where key='investigationId') ;
-	locationAddress:=(select value from json_each(input_data) where key='locationAddress');
 	select nullif((input_data->'locationAddress')::text,'null') as val into locationAddress;
 	startTime:= (select value::text::timestamp  from json_each(input_data) where key='startTime');
 	endTime:=(select value::text::timestamp from json_each(input_data) where key='endTime');	
@@ -84,7 +93,7 @@ begin
 	select nullif((input_data->'flightDestinationCountry')::text,'null') as val into flightDestinationCountry;
 	select nullif((input_data->'flightOriginAirport')::text,'null') as val into flightOriginAirport;
 	select nullif((input_data->'flightOriginCity')::text,'null') as val into flightOriginCity;
-	select nullif((input_data->'flightOriginCountry')::text,'null') as val into flightOriginCity;
+	select nullif((input_data->'flightOriginCountry')::text,'null') as val into flightOriginCountry;
 
 	select nullif((input_data->'contactPhoneNumber')::text,'null') as val into contactPhoneNumber;
 
@@ -111,6 +120,7 @@ if curr_event is null then
 	contact_person_first_name ,
 	contact_person_last_name ,
 	contact_person_phone_number,
+	hospital_department,
 	flight_destination_airport ,
 	flight_destination_city ,
 	flight_destination_country ,
@@ -119,13 +129,15 @@ if curr_event is null then
 	flight_origin_country,
 	train_line,
 	isolation_start_date,
-	contact_Phone_Number
+	contact_Phone_Number,
+	creation_time
 	)
 	values(investigationId,
 		allow_hamagen,
 		startTime,
 		endTime,
 		trim(placeName,'"'),
+		trim(placeDescription, '"'),
 	    trim(placeType,'"'),
 		placeSubType,
 		trim(locationAddress,'"'),
@@ -143,8 +155,8 @@ if curr_event is null then
 		trim(contactPersonFirstName,'"'),
 		trim(contactPersonLastName,'"'),
 		trim(contactPersonPhoneNumber,'"'),
+		trim(hospitalDepartment, '""'),
 		trim(flightDestinationAirport,'"'),
-	--	hospitalDepartment,
 		trim(flightDestinationCity,'"'),
 		trim(flightDestinationCountry,'"'),
 		trim(flightOriginAirport,'"'),
@@ -152,7 +164,8 @@ if curr_event is null then
 		trim(flightOriginCountry,'"'),
 		trim(trainLine,'"'),
 		isolationStartDate,
-		trim(contactPhoneNumber,'"')
+		trim(contactPhoneNumber,'"'),
+		now()
 	);
 	curr_event := currval('contact_event_id_seq');
 else
@@ -162,12 +175,13 @@ else
 	allows_hamagen_data=allow_hamagen, 
 	start_time=startTime, 
 	end_time=endTime, 
-	place_name=trim(placeName,'"'), 
+	place_name=trim(placeName,'"'),
+	place_description = trim(placeDescription, '"'),
 	bus_line=trim(busLine,'"'), 
 	train_line=trim(trainLine,'"'), 
 	bus_company=trim(busCompany,'"'),
-	boarding_station=trim(busCompany,'"'), 
-	end_station=trim(boardingStation,'"'), 
+	boarding_station=trim(boardingStation,'"'), 
+	end_station=trim(endStation,'"'), 
 	isolation_start_date=isolationStartDate, 
 	externalization_approval=externalizationApproval, 
 	place_type=trim(placeType,'"'), 
@@ -179,17 +193,17 @@ else
 	contact_person_last_name=trim(contactPersonLastName,'"'),
 	contact_person_phone_number=trim(contactPersonPhoneNumber,'"'), 
 	number_of_contacted=contacted_number,
-	city_origin=trim(city_origin,'"'), 
-	city_destination=trim(city_destination,'"'),
+	city_origin=trim(cityOrigin,'"'), 
+	city_destination=trim(cityDestination,'"'),
 	location_address=trim(locationAddress,'"'), 
 	flight_origin_country=trim(flightOriginCountry,'"'), 
 	flight_origin_city=	trim(flightOriginCity,'"'), 
 	flight_origin_airport=trim(flightOriginAirport,'"'),  
-	flight_destination_country=trim(flightOriginAirport,'"'), 
+	flight_destination_country=trim(flightDestinationCountry,'"'), 
 	flight_destination_city=trim(flightDestinationCity,'"'),
 	flight_destination_airport=trim(flightDestinationAirport,'"'),
-	place_sub_type=placeSubType
-	
+	place_sub_type=placeSubType,
+	hospital_department = trim(hospitalDepartment,'"')
 	
 WHERE id=curr_event;
 
@@ -197,7 +211,7 @@ end if;
 
 	areContactsEmpty := contacts::TEXT = '[]';
 	if 	contacts is not null and areContactsEmpty = false then
-		perform public.update_contact_person(contacts,curr_event);
+		perform public.update_contact_person(contacts,curr_event,investigationId);
 	end if;
 
 return curr_event;

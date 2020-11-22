@@ -24,24 +24,21 @@ const FlightEventForm: React.FC = (): JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={2} className={classes.mainTextItem}>
-                    <FormInput fieldName='מספר טיסה'>
-                        <Controller
-                            name={InteractionEventDialogFields.FLIGHT_NUM}
-                            control={control}
-                            render={(props) => (
-                                <AlphanumericTextField
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                </Grid>
-                <Grid item xs={2}>
-                    <FormInput fieldName='חברת תעופה'>
+                <FormInput xs={2} className={classes.mainTextItem} fieldName='מספר טיסה'>
+                    <Controller
+                        name={InteractionEventDialogFields.FLIGHT_NUM}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                            />
+                        )}
+                    />
+                </FormInput>
+                    <FormInput xs={2} fieldName='חברת תעופה'>
                         <Controller
                             name={InteractionEventDialogFields.AIR_LINE}
                             control={control}
@@ -55,11 +52,9 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={3} className={classes.mainTextItem}>
-                    <FormInput fieldName='ארץ מוצא'>
+                    <FormInput xs={3} className={classes.mainTextItem} fieldName='ארץ מוצא'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_COUNTRY}
                             control={control}
@@ -84,9 +79,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.secondaryTextItem}>
-                    <FormInput fieldName='עיר מוצא' className={classes.secondaryTextLabel}>
+                    <FormInput xs={3} className={classes.secondaryTextItem} fieldName='עיר מוצא'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_CITY}
                             control={control}
@@ -100,9 +93,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={3}>
-                    <FormInput fieldName='שדה תעופה מוצא'>
+                    <FormInput xs={3} fieldName='שדה תעופה מוצא'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_ORIGIN_AIRPORT}
                             control={control}
@@ -116,12 +107,10 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
 
             </Grid>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={3} className={classes.mainTextItem}>
-                    <FormInput fieldName='ארץ יעד'>
+                    <FormInput xs={3} className={classes.mainTextItem} fieldName='ארץ יעד'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_DESTINATION_COUNTRY}
                             control={control}
@@ -146,9 +135,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={3} className={classes.secondaryTextItem}>
-                    <FormInput fieldName='עיר יעד'>
+                    <FormInput xs={3} className={classes.secondaryTextItem} fieldName='עיר יעד'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_DESTINATION_CITY}
                             control={control}
@@ -162,9 +149,7 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
-                <Grid item xs={3}>
-                    <FormInput fieldName='שדה תעופה יעד'>
+                    <FormInput xs={3} fieldName='שדה תעופה יעד'>
                         <Controller
                             name={InteractionEventDialogFields.FLIGHT_DESTINATION_AIRPORT}
                             control={control}
@@ -178,7 +163,6 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
-                </Grid>
             </Grid>
         </>
     );

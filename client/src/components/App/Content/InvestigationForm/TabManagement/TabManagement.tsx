@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Tabs, Tab, Card, createStyles, withStyles } from '@material-ui/core';
 
+import TabId from 'models/enums/TabId';
 import { Tab as TabObj } from 'models/Tab';
-import TabNames from 'models/enums/TabNames';
 import StoreStateType from 'redux/storeStateType';
-import { setFormState } from 'redux/Form/formActionCreators';
 
 import useStyles from './TabManagementStyles';
 import PersonalInfoTab from './PersonalInfoTab/PersonalInfoTab';
@@ -14,46 +13,42 @@ import ClinicalDetails from './ClinicalDetails/ClinicalDetails';
 import InteractionsTab from './InteractionsTab/InteractionsTab';
 import ContactQuestioning from './ContactQuestioning/ContactQuestioning';
 import ExposuresAndFlights from './ExposuresAndFlights/ExposuresAndFlights';
-
-export const orderedTabsNames : string[] = [TabNames.PERSONAL_INFO, TabNames.CLINICAL_DETAILS, TabNames.EXPOSURES_AND_FLIGHTS, TabNames.INTERACTIONS, TabNames.CONTACT_QUESTIONING];
+import { orderedTabsNames } from './useTabManagement'
 
 const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element => {
 
     const {
         currentTab,
-        moveToNextTab,
         setNextTab,
         areThereContacts,
         setAreThereContacts
     } = tabManagementProps;
 
-    const lastTabId = 4;
-
     const tabs: TabObj[] = [
         {
-            id: 0,
+            id: TabId.PERSONAL_INFO,
             name: orderedTabsNames[0],
-            displayComponent: <PersonalInfoTab id={0} onSubmit={moveToNextTab}/>
+            displayComponent: <PersonalInfoTab id={0}/>
         },
         {
-            id: 1,
+            id: TabId.CLINICAL_DETAILS,
             name: orderedTabsNames[1],
-            displayComponent: <ClinicalDetails id={1} onSubmit={moveToNextTab}/>
+            displayComponent: <ClinicalDetails id={1}/>
         },
         {
-            id: 2,
+            id: TabId.EXPOSURES,
             name: orderedTabsNames[2],
-            displayComponent: <ExposuresAndFlights id={2} onSubmit={moveToNextTab}/>
+            displayComponent: <ExposuresAndFlights id={2}/>
         },
         {
-            id: 3,
+            id: TabId.INTERACTIONS,
             name: orderedTabsNames[3],
-            displayComponent: <InteractionsTab id={3} onSubmit={moveToNextTab} setAreThereContacts={setAreThereContacts}/>
+            displayComponent: <InteractionsTab id={3} setAreThereContacts={setAreThereContacts}/>
         },
         {
-            id: lastTabId,
+            id: TabId.CONTACTS_QUESTIONING,
             name: orderedTabsNames[4],
-            displayComponent: <ContactQuestioning id={4} onSubmit={moveToNextTab}/>
+            displayComponent: <ContactQuestioning id={4} />
         }
     ];
 
@@ -76,10 +71,6 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
     const isTabValid = (tabId: number) => {
         return formsValidations !== undefined && formsValidations[tabId] !== null && !formsValidations[tabId];
     }
-    
-    useEffect(() => {
-        !areThereContacts && setFormState(investigationId, lastTabId, true);
-    }, [areThereContacts]);
 
     return (
         <Card className={classes.card}>
@@ -90,8 +81,8 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             >
                 {
                     tabs.map((tab: TabObj) =>
-                        !(tab.id === lastTabId && !areThereContacts) &&
-                        <StyledTab
+                    !(tab.id === TabId.CONTACTS_QUESTIONING && !areThereContacts) &&
+                    <StyledTab
                             // @ts-ignore
                             type='submit'
                             form={`form-${currentTab}`}
@@ -116,7 +107,6 @@ export default TabManagement;
 interface Props {
     areThereContacts: boolean;
     currentTab: number;
-    moveToNextTab: () => void;
     setNextTab: (nextTabId: number) => void;
     setAreThereContacts: React.Dispatch<React.SetStateAction<boolean>>;
 };

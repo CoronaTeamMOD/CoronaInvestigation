@@ -17,9 +17,7 @@ const AddressForm: React.FC = (): JSX.Element => {
 
     return (
         <Grid container justify='flex-start' className={[formClasses.formRow, additionalClasses.addressRow].join(' ')}>
-            <Grid item xs={4}>
-                <FormInput fieldName='כתובת'>
-                    <div className={additionalClasses.addressAutoCompleteField}>
+            <FormInput xs={8} fieldName='מקום/כתובת'>
                         <Controller
                             name={InteractionEventDialogFields.LOCATION_ADDRESS}
                             control={control}
@@ -31,9 +29,7 @@ const AddressForm: React.FC = (): JSX.Element => {
                                 />
                             )}
                         />
-                    </div>
-                </FormInput>
-            </Grid>
+            </FormInput>
         </Grid>
     )};
 

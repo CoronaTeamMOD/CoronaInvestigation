@@ -2,6 +2,7 @@ import React from 'react';
 
 import Street from 'models/Street';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import IsolationSource from 'models/IsolationSource';
 
 export interface useClinicalDetailsIncome {
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
@@ -9,8 +10,6 @@ export interface useClinicalDetailsIncome {
     setIsolationCityName: React.Dispatch<React.SetStateAction<string>>;
     setIsolationStreetName: React.Dispatch<React.SetStateAction<string>>;
     setStreetsInCity: React.Dispatch<React.SetStateAction<Street[]>>;
-    initialDBClinicalDetails: ClinicalDetailsData;
-    setInitialDBClinicalDetails: React.Dispatch<React.SetStateAction<ClinicalDetailsData>>;
 };
 
 export interface useClinicalDetailsOutcome {
@@ -20,4 +19,5 @@ export interface useClinicalDetailsOutcome {
     ) => void;
     getStreetByCity: (cityId: string) => void;
     saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, epidemiologyNumber: number, investigatedPatientId: number) => Promise<void>;
+    isolationSources: IsolationSource[];
 };

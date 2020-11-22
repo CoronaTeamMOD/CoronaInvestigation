@@ -1,17 +1,24 @@
-import React from 'react'
-import {Tooltip, ClickAwayListener, IconButton} from '@material-ui/core'
-import {Comment} from '@material-ui/icons'
+import React from 'react';
+import {Comment} from '@material-ui/icons';
+import {Tooltip, ClickAwayListener, IconButton} from '@material-ui/core';
+
 import useStyles from './commentDisplayStyles';
 
 const noCommentMessage = 'אין הערה';
 
-const CommentDisplay = ({comment}: Props) => {
+const CommentDisplay = ({comment, scrollableRef}: Props) => {
     const [isTooltipOpen, setIsTooltipOpen] = React.useState<boolean>(false);
+
     const handleTooltipClose = () => setIsTooltipOpen(false);
     const handleTooltipToggle = (event:any) => {
         event.stopPropagation();
         setIsTooltipOpen(isOpen => !isOpen);
     };
+
+    React.useEffect(() => {
+        scrollableRef?.addEventListener('scroll', handleTooltipClose)
+        return () => scrollableRef?.removeEventListener('scroll', handleTooltipClose)
+    }, []);
 
     const classes = useStyles();
 
@@ -30,12 +37,11 @@ const CommentDisplay = ({comment}: Props) => {
             }}
             onClose={handleTooltipClose}
             open={isTooltipOpen}
-            disableHoverListener
-            disableTouchListener
+                   disableHoverListener
             title={comment || noCommentMessage}>
-            <IconButton onClick={handleTooltipToggle}>
-            <Comment color={comment ? 'primary' : 'disabled'} />
-            </IconButton>
+                  <IconButton onClick={handleTooltipToggle}>
+                      <Comment color={comment ? 'primary' : 'disabled'}/>
+                  </IconButton>
           </Tooltip>
       </ClickAwayListener>
     )
@@ -43,6 +49,7 @@ const CommentDisplay = ({comment}: Props) => {
 
 interface Props {
     comment: string | null;
+    scrollableRef?: HTMLElement;
 }
 
 export default CommentDisplay;

@@ -6,9 +6,11 @@ interface InteractionEventDialogData {
     placeType: string;
     startTime: Date;
     endTime: Date;
-    externalizationApproval: boolean;
+    unknownTime: boolean;
+    externalizationApproval: boolean | null;
     investigationId: number;
     placeName?: string;
+    placeDescription?: string;
     locationAddress: Address;
     placeSubType: number | null;
     busLine?: string;
@@ -31,6 +33,7 @@ interface InteractionEventDialogData {
     flightOriginAirport?: string;
     flightOriginCity?: string;
     flightOriginCountry?: string;
+    creationTime: Date;
 }
 
 export default InteractionEventDialogData;

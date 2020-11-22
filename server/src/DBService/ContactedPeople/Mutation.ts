@@ -1,9 +1,9 @@
-import { gql } from 'postgraphile';
+import {gql} from 'postgraphile';
 
 export const UPDATE_LIST_OF_CONTACTS = gql`
-mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
-  updateContactPersons(input: {contactedPersons: $unSavedContacts}) {
-    clientMutationId
-  }
-}
+    mutation updateAllUnSavedContacts($unSavedContacts: JSON!) {
+        updateContactPersons(input: {contactedPersons: $unSavedContacts}) {
+            clientMutationId
+        }
+    }
 `;

@@ -17,20 +17,17 @@ const HospitalEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
     return (
         <>
             <Grid container justify='flex-start' className={formClasses.formRow}>
-                <Grid item xs={6}>
-                    <FormInput fieldName='שם בית חולים'>
-                        <Typography variant='caption'>
-                            {interaction.placeName}
-                        </Typography>
-                    </FormInput>
-                </Grid>
-                <Grid item xs={3}>
-                    <FormInput fieldName='מחלקה'>
-                        <Typography variant='caption'>
-                            {interaction.hospitalDepartment}
-                        </Typography>
-                    </FormInput>
-                </Grid>
+                <FormInput xs={6} fieldName='שם בית חולים'>
+                    <Typography variant='caption'>
+                        {interaction.placeName}
+                    </Typography>
+                </FormInput>
+            
+                <FormInput xs={3} fieldName='מחלקה'>
+                    <Typography variant='caption'>
+                        {interaction.hospitalDepartment}
+                    </Typography>
+                </FormInput>
             </Grid>
             <AddressGrid interaction={interaction} />
             <BusinessContactGrid interaction={interaction}/>

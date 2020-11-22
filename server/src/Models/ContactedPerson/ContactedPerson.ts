@@ -8,7 +8,7 @@ interface InteractedContact extends Person {
     contactType: ContactType;
     extraInfo: string;
     birthDate: Date;
-    cantReachContact: boolean;
+    contactStatus: string | number;
     relationship: string;
     familyRelationship: number;
     occupation: string;
@@ -19,6 +19,7 @@ interface InteractedContact extends Person {
     repeatingOccuranceWithConfirmed: boolean;
     doesLiveWithConfirmed: boolean;
     doesWorkWithCrowd: boolean;
+    creationTime: Date;
 };
 
 export default InteractedContact;

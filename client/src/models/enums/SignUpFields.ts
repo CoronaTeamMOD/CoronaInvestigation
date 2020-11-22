@@ -1,6 +1,7 @@
 enum SignUpFields {
     MABAR_USER_NAME = 'id',
     FULL_NAME = 'fullName',
+    USER_NAME = 'userName',
     FIRST_NAME = 'firstName',
     LAST_NAME = 'lastName',
     CITY = 'city',
