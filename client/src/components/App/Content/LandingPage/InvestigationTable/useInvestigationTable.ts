@@ -113,15 +113,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         axios.get('/desks/county')
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW)
+                    desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
                     setAllDesks(result.data);
                 } else {
-                    desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH)
+                    desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
             })
             .catch((err) => {
                 alertError('לא הצלחנו לשלוף את כל הדסקים האפשריים לסינון');
-                desksByCountyIdLogger.error(err, Severity.HIGH)
+                desksByCountyIdLogger.error(err, Severity.HIGH);
             })
     }
 
@@ -132,17 +132,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    investigationStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW)
+                    investigationStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
                     const allStatuses: string[] = result.data;
                     allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
                     setAllStatuses(allStatuses);
                 } else {
-                    investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH)
+                    investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
             })
             .catch((err) => {
                 alertError('לא הצלחנו לשלוף את כל הסטטוסים האפשריים לסינון');
-                investigationStatusesLogger.error(err, Severity.HIGH)
+                investigationStatusesLogger.error(err, Severity.HIGH);
             })
     }
 
@@ -162,7 +162,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigation: epidemiologyNumberVal
         });
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
-        investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW)
+        investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW);
         setIsInInvestigation(true);
         setIsCurrentlyLoading(true);
         await persistor.flush();
@@ -179,10 +179,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id
         });
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW)
+            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
             return axios.get('landingPage/groupInvestigations/' + orderBy)
         }
-        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW)
+        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
         return axios.get('/landingPage/investigations/' + orderBy);
     }
 
@@ -195,7 +195,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             workflow: 'Getting group users',
             user: user.id
         });
-        countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW)
+        countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
         axios.get(`/users/group`)
             .then((result: any) => {
                 let countyUsers: Map<string, User> = new Map();
@@ -209,13 +209,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         countyUsers = new Map(Array.from(countyUsers.entries())
                             .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
                     });
-                    countyUsersLogger.info('fetched all the users successfully', Severity.LOW)
+                    countyUsersLogger.info('fetched all the users successfully', Severity.LOW);
                     setAllUsersOfCurrCounty(countyUsers);
                 } else {
-                    countyUsersLogger.warn('the connected admin doesnt have group users', Severity.MEDIUM)
+                    countyUsersLogger.warn('the connected admin doesnt have group users', Severity.MEDIUM);
                 }
             }).catch(err => {
-                countyUsersLogger.error(err, Severity.HIGH)
+                countyUsersLogger.error(err, Severity.HIGH);
                 alertError(FETCH_ERROR_TITLE);
             });
     }
@@ -232,10 +232,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     displayName: `${county.district} - ${county.displayName}`
                 })
             });
-            fetchAllCountiesLogger.info('fetched all the counties successfully', Severity.LOW)
+            fetchAllCountiesLogger.info('fetched all the counties successfully', Severity.LOW);
             setAllCounties(allCounties);
         }).catch(err => {
-            fetchAllCountiesLogger.error(err, Severity.HIGH)
+            fetchAllCountiesLogger.error(err, Severity.HIGH);
             alertError(FETCH_ERROR_TITLE);
         });
     }
@@ -255,21 +255,21 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchAllCounties();
         }
         if (user.userName !== initialUserState.data.userName) {
-            fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW)
+            fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
-                    fetchInvestigationsLogger.info('got respond from the server', Severity.LOW)
+                    fetchInvestigationsLogger.info('got respond from the server', Severity.LOW);
 
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
 
                     if (user.investigationGroup !== -1) {
-                        fetchInvestigationsLogger.info('user investigation group is valid', Severity.LOW)
+                        fetchInvestigationsLogger.info('user investigation group is valid', Severity.LOW);
                         if (data && data.allInvestigations) {
-                            fetchInvestigationsLogger.info('got investigations from the DB', Severity.LOW)
+                            fetchInvestigationsLogger.info('got investigations from the DB', Severity.LOW);
                             allInvestigationsRawData = data.allInvestigations
                         } else {
-                            fetchInvestigationsLogger.warn('didnt get investigations from the DB', Severity.MEDIUM)
+                            fetchInvestigationsLogger.warn('didnt get investigations from the DB', Severity.MEDIUM);
                         }
 
                         const investigationRows: InvestigationTableRow[] = allInvestigationsRawData
@@ -312,12 +312,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         setRows(investigationRows);
                         setIsLoading(false);
                     } else {
-                        fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM)
+                        fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM);
                     }
                 })
                 .catch((err: any) => {
                     alertError('אופס... לא הצלחנו לשלוף');
-                    fetchInvestigationsLogger.error(err, Severity.HIGH)
+                    fetchInvestigationsLogger.error(err, Severity.HIGH);
                 });
         }
     };
@@ -345,7 +345,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             (error) => Promise.reject(error)
         );
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
-            investigationClickLogger.info('the clicked investigation is not the first one', Severity.LOW)
+            investigationClickLogger.info('the clicked investigation is not the first one', Severity.LOW);
             const newInterceptor = axios.interceptors.request.use(
                 (config) => {
                     config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
@@ -361,13 +361,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
-            investigationClickLogger.info('the user clicked a new investigation', Severity.LOW)
+            investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
-                    investigationClickLogger.info('updated investigation start time now sending request to update status', Severity.LOW)
+                    investigationClickLogger.info('updated investigation start time now sending request to update status', Severity.LOW);
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
                             investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
@@ -381,18 +381,18 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         });
                         investigationClickLogger.info(`Updated new investigation to have "in process" status and entered the investigation,
                         investigated person: ${investigationRow.fullName}, 
-                        investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW)
+                        investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW);
                         moveToTheInvestigationForm(investigationRow.epidemiologyNumber);
                     } catch (e) {
                         throw new Error('failed to update investigation status with error' + JSON.stringify(e))
                     }
                 })
                 .catch((error) => {
-                    investigationClickLogger.error(error, Severity.HIGH)
+                    investigationClickLogger.error(error, Severity.HIGH);
                     alertError(OPEN_INVESTIGATION_ERROR_TITLE)
                 })
         } else {
-            investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW)
+            investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW);
             setInvestigationStatus({
                 mainStatus: investigationRow.investigationStatus,
                 subStatus: investigationRow.investigationSubStatus,
@@ -445,7 +445,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
 
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
-            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW)
+            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
         alertWarning(`<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
             showCancelButton: true,
             cancelButtonText: 'לא',

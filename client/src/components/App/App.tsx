@@ -68,7 +68,7 @@ const App: React.FC = (): JSX.Element => {
             workflow: 'login to the app',
         });
         const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
-        initUserLogger.info('before environment condition', Severity.LOW)
+        initUserLogger.info('before environment condition', Severity.LOW);
         fetchUser(userId, userName);
     };
 
@@ -84,11 +84,11 @@ const App: React.FC = (): JSX.Element => {
             workflow: 'Getting user details',
             user: user.id
         });
-        fetchUserLogger.info('launch request to the server', Severity.LOW)
+        fetchUserLogger.info('launch request to the server', Severity.LOW);
         setIsLoading(true);
         axios.get(`/users/user`).then((result: any) => {
             if (result && result.data.userById) {
-                fetchUserLogger.info('recived user from the server', Severity.LOW)
+                fetchUserLogger.info('recived user from the server', Severity.LOW);
                 const userFromDB = result.data.userById;
                 setUser({
                     ...userFromDB,
@@ -96,7 +96,7 @@ const App: React.FC = (): JSX.Element => {
                     userName
                 });
             } else {
-                fetchUserLogger.warn(`user has not been found due to: ${JSON.stringify(result)}`, Severity.MEDIUM)
+                fetchUserLogger.warn(`user has not been found due to: ${JSON.stringify(result)}`, Severity.MEDIUM);
                 setUser({
                     ...user,
                     id: userId,
@@ -107,7 +107,7 @@ const App: React.FC = (): JSX.Element => {
 
             setIsLoading(false);
         }).catch(err => {
-            fetchUserLogger.warn(`got error from the server: ${err}`, Severity.MEDIUM)
+            fetchUserLogger.warn(`got error from the server: ${err}`, Severity.MEDIUM);
             setIsLoading(false);
         })
     }

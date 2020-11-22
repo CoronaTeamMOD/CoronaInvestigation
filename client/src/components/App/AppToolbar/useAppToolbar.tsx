@@ -41,18 +41,18 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }, [user.investigationGroup]);
 
     const getUserActivityStatus = () => {
-        getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW)
+        getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW);
         axios.get(`/users/userActivityStatus`)
         .then((result) => { 
             if (result.data) {
                 setIsActive(result.data.isActive);
-                getUserActivityStatusLogger.info('fetched user activity status successfully', Severity.LOW)
+                getUserActivityStatusLogger.info('fetched user activity status successfully', Severity.LOW);
             } else {
-                getUserActivityStatusLogger.warn('The user doesnt exist on db',Severity.MEDIUM)
+                getUserActivityStatusLogger.warn('The user doesnt exist on db',Severity.MEDIUM);
             }
         }).catch((error) => {
             alertError('לא הצלחנו לקבל את הסטטוס הנוכחי שלך');
-            getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`, Severity.HIGH)
+            getUserActivityStatusLogger.error(`error in fetching user activity status ${error}`, Severity.HIGH);
         });
     }
 
@@ -63,16 +63,16 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
-        getUserActivityStatusLogger.info('started is user active updating', Severity.LOW)
+        getUserActivityStatusLogger.info('started is user active updating', Severity.LOW);
         return axios.post('users/updateIsUserActive', {
             isActive
         }).then((result) => {
             if(result.data)
                 setIsActive(result.data.isActive);
-                getUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW)
+                getUserActivityStatusLogger.info('updated is user active successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את הסטטוס שלך');
-            getUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH)
+            getUserActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH);
         });
     }
 
@@ -80,15 +80,15 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         const getCountyByUserLogger = logger.setup({
             workflow: 'GraphQL request to the DB',
         });
-        getCountyByUserLogger.info('started fetching county display name by user', Severity.LOW)
+        getCountyByUserLogger.info('started fetching county display name by user', Severity.LOW);
         axios.get('counties/county/displayName').then((result) => {
             if(result.data){
                 setCountyDisplayName(result.data);
-                getCountyByUserLogger.info('fetched county display name by user successfully', Severity.LOW)
+                getCountyByUserLogger.info('fetched county display name by user successfully', Severity.LOW);
             }
         }).catch((error) => {
             alertError('לא הצלחנו לקבל את הלשכה שלך');
-            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`, Severity.HIGH)
+            getCountyByUserLogger.error(`error in fetching county display name by user ${error}`, Severity.HIGH);
         });
     }
 

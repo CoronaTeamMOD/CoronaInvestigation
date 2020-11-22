@@ -88,21 +88,21 @@ const ExposureForm = (props: any) => {
         user: userId
       });
       setIsLoading(true);
-      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`, Severity.LOW)
+      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`, Severity.LOW);
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
         .then(result => {
           if (result?.data && result.headers['content-type'].includes('application/json')) {
-            confirmedExposuresLogger.info('got results back from the server', Severity.LOW)
+            confirmedExposuresLogger.info('got results back from the server', Severity.LOW);
             setOptionalCovidPatients(result.data);
           } else {
-            confirmedExposuresLogger.warn('got status 200 but wrong data', Severity.HIGH)
+            confirmedExposuresLogger.warn('got status 200 but wrong data', Severity.HIGH);
             alertError('לא הצלחנו לטעון את רשימת המאומתים', {
               text: 'שימו לב שהזנתם נתונים תקינים'
             });
           }
         })
         .catch((error) => {
-          confirmedExposuresLogger.error(`got error from server: ${error}`, Severity.HIGH)
+          confirmedExposuresLogger.error(`got error from server: ${error}`, Severity.HIGH);
           alertError('לא הצלחנו לטעון את רשימת המאומתים', {
             text: 'שימו לב שהזנתם נתונים תקינים'
           });

@@ -210,7 +210,7 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW);
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         }).catch(err => {
-            saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH)
+            saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH);
             response.status(errorStatusCode).send(err);
         });
     } else {

@@ -60,7 +60,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW)
+                    updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
                     const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
                     const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
                     if (shouldUpdateInvestigationStatus()) {
@@ -70,9 +70,9 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                             statusReason: statusReason,
                             epidemiologyNumber: epidemiologyNumber
                         }).then(() => {
-                            updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW)
+                            updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
                         }).catch((error) => {
-                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH)
+                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                             alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
                         })
                     }

@@ -2,10 +2,9 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import User from '../../Models/User/User';
-import { Severity } from '../../Models/Logger/types';
+import {Service, Severity } from '../../Models/Logger/types';
 import CreateUserResponse from '../../Models/User/CreateUserResponse';
 import GetAllUserTypesResponse from '../../Models/User/GetAllUserTypesResponse';
-import UserAdminResponse from '../../Models/UserAdminResponse/UserAdminResponse';
 import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizations';
 import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
