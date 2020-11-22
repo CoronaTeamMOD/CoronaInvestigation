@@ -32,6 +32,7 @@ class Logger {
 
     _buildLogMessage(partialLogMessage: MethodsLogMessage, logType: LogType) {
         const logMessage: LogMessage = {
+            service: Service.CLIENT,
             ...partialLogMessage,
             environment: process.env.REACT_APP_ENVIRONMENT as Environment,
             timestamp: new Date().toLocaleString('he-IL'),
