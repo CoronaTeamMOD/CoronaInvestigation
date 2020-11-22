@@ -228,7 +228,9 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
 });
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
-    const { epidemiologyNumber, investigationStartTime } = request.body;
+    const { epidemiologyNumber } = request.body;
+    const investigationStartTime = new Date();
+
     logger.info({
         service: Service.SERVER,
         severity: Severity.LOW,
@@ -240,6 +242,7 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
         user: response.locals.user.id,
         investigation: response.locals.epidemiologyNumber
     })
+    
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, {
         epidemiologyNumber: +epidemiologyNumber,
         investigationStartTime

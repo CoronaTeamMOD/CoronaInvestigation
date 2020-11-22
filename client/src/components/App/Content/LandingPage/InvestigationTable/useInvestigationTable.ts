@@ -483,7 +483,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 step: 'the user clicked a new investigation',
             })
             axios.post('/investigationInfo/updateInvestigationStartTime', {
-                investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
