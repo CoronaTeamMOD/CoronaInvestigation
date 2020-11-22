@@ -151,7 +151,9 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
 });
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
-    const { epidemiologyNumber, investigationStartTime } = request.body;
+    const { epidemiologyNumber } = request.body;
+    const investigationStartTime = new Date();
+ 
     const updateInvestigationStartTimeLogger = logger.setup({
         workflow: 'Investigation click',
         user: response.locals.user.id,
@@ -161,6 +163,7 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
         epidemiologyNumber,
         investigationStartTime
     })}`, Severity.LOW);
+    
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, {
         epidemiologyNumber: +epidemiologyNumber,
         investigationStartTime

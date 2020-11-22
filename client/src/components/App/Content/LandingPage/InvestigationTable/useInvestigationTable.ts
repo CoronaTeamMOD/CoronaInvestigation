@@ -363,7 +363,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
             investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
-                investigationStartTime: new Date(),
                 epidemiologyNumber: investigationRow.epidemiologyNumber
             })
                 .then(async () => {
