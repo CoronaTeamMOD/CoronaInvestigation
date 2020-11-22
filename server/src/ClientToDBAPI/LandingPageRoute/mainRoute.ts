@@ -16,21 +16,22 @@ const landingPageRoute = Router();
 
 landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Response) => {
     const getInvestigationsParameters = {
-        userId: response.locals.user.id,
-        orderBy: request.params.orderBy
+        filter: {creator: {equalTo: response.locals.user.id}},
+        orderBy: request.params.orderBy,
+        offset: 0,
+        size: 100
     };
     const investigationsLogger = logger.setup({
         workflow: 'Getting Investigations',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber,
-    });
-    investigationsLogger.info(`launching graphql API request with parameters ${JSON.stringify(getInvestigationsParameters)}`, Severity.LOW);
-    graphqlRequest(GET_USER_INVESTIGATIONS, response.locals, getInvestigationsParameters)
+        investigation: response.locals.epidemiologynumber
+    })
+    graphqlRequest(ORDERED_INVESTIGATIONS, response.locals, getInvestigationsParameters)
         .then((result: any) => {
-            if (result && result.data && result.data.userInvestigationsSort &&
-                result.data.userInvestigationsSort.json) {
+            if (result && result.data && result.data.orderedInvestigations &&
+                result.data.orderedInvestigations.nodes) {
                 investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send(JSON.parse(result.data.userInvestigationsSort.json))
+                response.send({allInvestigations: convertOrderedInvestigationsData(result.data)});
             }
             else {
                 investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
