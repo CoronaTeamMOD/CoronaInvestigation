@@ -16,6 +16,49 @@ mutation GetSortedGroupInvestigation ($investigationGroupId: Int!, $orderBy: Str
 }
 `;
 
+export const ORDERED_INVESTIGATIONS = gql`
+query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
+  orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
+    nodes {
+      comment
+      epidemiologyNumber
+      coronaTestDate
+      complexityCode
+      priority
+      statusReason
+      transferReason
+      wasInvestigationTransferred
+      deskByDeskId {
+        deskName
+      }
+      investigatedPatientByInvestigatedPatientId {
+        covidPatientByCovidPatient {
+          birthDate
+          fullName
+          primaryPhone
+          addressByAddress {
+            cityByCity {
+              displayName
+            }
+          }
+        }
+      }
+      investigationStatusByInvestigationStatus {
+        displayName
+      }
+      investigationSubStatusByInvestigationSubStatus {
+        displayName
+      }
+      userByCreator {
+        id
+        userName
+      }
+    }
+    totalCount
+  }
+}
+`;
+
 export const GET_USER_BY_ID = gql`
 query GetUserById($userId: String!) {
   userById(id: $userId) {

@@ -6,7 +6,9 @@ import { adminMiddleWare } from '../../middlewares/Authentication';
 import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS } from '../../DBService/LandingPage/Query';
+import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS, ORDERED_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
+
+import { convertOrderedInvestigationsData } from './utils';
 
 const errorStatusResponse = 500;
 
@@ -43,22 +45,22 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
 
 landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request: Request, response: Response) => {
     const getInvestigationsParameters = {
-        investigationGroupId: +response.locals.user.investigationGroup,
-        orderBy: request.params.orderBy
+        filter: {userByCreator: {countyByInvestigationGroup: {id: {equalTo: +response.locals.user.investigationGroup}}}},
+        orderBy: request.params.orderBy,
+        offset: 0,
+        size: 100
     };
     const groupInvestigationsLogger = logger.setup({
         workflow: 'Getting Investigations',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber,
-    });
-    groupInvestigationsLogger.info(`launching graphql API group investigations request with parameters ${JSON.stringify(getInvestigationsParameters)}`, Severity.LOW);
-    graphqlRequest(GET_GROUP_INVESTIGATIONS, response.locals, getInvestigationsParameters)
+        investigation: response.locals.epidemiologynumber
+    })
+    graphqlRequest(ORDERED_INVESTIGATIONS, response.locals, getInvestigationsParameters)
         .then((result: any) => {
-
-            if (result && result.data && result.data.groupInvestigationsSort &&
-                result.data.groupInvestigationsSort.json) {
+            if (result && result.data && result.data.orderedInvestigations &&
+                result.data.orderedInvestigations.nodes) {
                 groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
-                response.send(JSON.parse(result.data.groupInvestigationsSort.json))
+                response.send(convertOrderedInvestigationsData(result.data));
             }
             else {
                 groupInvestigationsLogger.error(`got error in querying the DB ${JSON.stringify(result)}`, Severity.HIGH);
