@@ -60,7 +60,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
             if (result && result.data && result.data.orderedInvestigations &&
                 result.data.orderedInvestigations.nodes) {
                 groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
-                response.send(convertOrderedInvestigationsData(result.data));
+                response.send({allInvestigations: convertOrderedInvestigationsData(result.data)});
             }
             else {
                 groupInvestigationsLogger.error(`got error in querying the DB ${JSON.stringify(result)}`, Severity.HIGH);
