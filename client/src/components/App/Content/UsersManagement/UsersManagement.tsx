@@ -23,7 +23,7 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 }
 
-const usersManagementTitle = 'ניהול משתמשים';
+const usersManagementTitle = 'נsssss';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
                                        UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
