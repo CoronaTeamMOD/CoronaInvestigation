@@ -194,7 +194,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     trigger();
                     setIsLoading(false);
                 } else {
-                    fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH)
+                    fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH);
                     setIsLoading(false);
                 }
             }
