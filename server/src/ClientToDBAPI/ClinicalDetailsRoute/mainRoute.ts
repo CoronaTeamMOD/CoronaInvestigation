@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
@@ -24,108 +24,54 @@ const clinicalDetailsRoute = Router();
 const errorStatusCode = 500;
 
 clinicalDetailsRoute.get('/symptoms', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const symptomsLogger = logger.setup({
         workflow: 'Fetching Symptoms',
-        step: 'launching DB request',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
-    })
+    });
+    symptomsLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_SYMPTOMS, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Symptoms',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        symptomsLogger.info('got respond from DB', Severity.LOW);
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching Symptoms',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        symptomsLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
 
 clinicalDetailsRoute.get('/backgroundDiseases', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const backgroundDiseasesLogger = logger.setup({
         workflow: 'Fetching Background Diseases',
-        step: 'launching DB request',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
-    })
+    });
+    backgroundDiseasesLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_BACKGROUND_DISEASES, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Background Diseases',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        backgroundDiseasesLogger.info('got respond from DB', Severity.LOW);
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching Background Diseases',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        backgroundDiseasesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
 
 clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const isolationSourcesLogger = logger.setup({
         workflow: 'Fetching Isolation Source',
-        step: 'start DB request',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
+    isolationSourcesLogger.info('start DB request', Severity.LOW);
     graphqlRequest(GET_ISOLATION_SOURCES, response.locals).then((result: any) => {
         if(result?.data) {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Fetching Isolation Source',
-                step: 'got response from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            })
+            isolationSourcesLogger.info('got response from DB', Severity.LOW);
             response.send(result?.data?.allIsolationSources?.nodes)
         } else {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Fetching Isolation Source',
-                step: `couldnt query isolation sources due to ${result?.errors[0]?.message}`,
-                user: response.locals.user.id
-            });
+            isolationSourcesLogger.error(`couldnt query isolation sources due to ${result?.errors[0]?.message}`, Severity.HIGH);
             response.sendStatus(errorStatusCode);
         }
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching Isolation Source',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        isolationSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -151,24 +97,15 @@ const convertClinicalDetailsFromDB = (result: GetInvestigatedPatientClinicalDeta
 }
 
 clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const fetchClinicalDetailsFieldsLogger = logger.setup({
         workflow: 'Fetching Clinical Details',
-        step: 'launching DB request',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
+    fetchClinicalDetailsFieldsLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
         (result: GetInvestigatedPatientClinicalDetailsFields) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Fetching Clinical Details',
-                step: 'got respond from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            })
+            fetchClinicalDetailsFieldsLogger.info('got respond from DB', Severity.LOW);
             if (result?.data?.investigationByEpidemiologyNumber) {
                 response.send(convertClinicalDetailsFromDB(result));
             } else {
@@ -176,14 +113,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
             }
         }
     ).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Clinical Details',
-            step: `got error while accessing the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        fetchClinicalDetailsFieldsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -223,100 +153,48 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         otherBackgroundDiseasesMoreInfo: clinicalDetails.otherBackgroundDiseasesMoreInfo
     }
 
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const saveClinicalDetailsFieldsLogger = logger.setup({
         workflow: 'Saving clinical details tab',
-        step: `launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
-    });
+    })
+
+    saveClinicalDetailsFieldsLogger.info(`launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION, response.locals, requestInvestigation).then(() => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Saving clinical details tab',
-            step: `saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        saveClinicalDetailsFieldsLogger.info(`saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`, Severity.LOW);
         graphqlRequest(ADD_BACKGROUND_DISEASES, response.locals, investigatedPatientBackgroundDeseases).then(() => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Saving clinical details tab',
-                step: `background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            saveClinicalDetailsFieldsLogger.info(`background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`, Severity.LOW);
             graphqlRequest(ADD_SYMPTOMS, response.locals, investigatedPatientSymptoms).then(() => {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: 'Saving clinical details tab',
-                    step: `symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                saveClinicalDetailsFieldsLogger.info(`symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`, Severity.LOW);
                 graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, investigatedPatientClinicalInfo).then(() => {
-                    logger.info({
-                        service: Service.SERVER,
-                        severity: Severity.LOW,
-                        workflow: 'Saving clinical details tab',
-                        step: 'saved covid patient clinical info',
-                        investigation: response.locals.epidemiologynumber,
-                        user: response.locals.user.id
-                    });
+                    saveClinicalDetailsFieldsLogger.info('saved covid patient clinical info', Severity.LOW);
                     response.send('Added clinical details');
                 }).catch(err => {
-                    logger.error({
-                        service: Service.SERVER,
-                        severity: Severity.HIGH,
-                        workflow: 'Saving personal details tab',
-                        step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS request',
-                        investigation: response.locals.epidemiologynumber,
-                        user: response.locals.user.id
-                    });
+                    saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS request',Severity.HIGH);
                     response.status(errorStatusCode).send(err)
                 });
             }).catch(err => {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.HIGH,
-                    workflow: 'Saving personal details tab',
-                    step: 'error in requesting graphql API request in ADD_SYMPTOMS request',
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_SYMPTOMS request',Severity.HIGH);
                 response.status(errorStatusCode).send(err)
             });
         }).catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Saving personal details tab',
-                step: 'error in requesting graphql API request in ADD_BACKGROUND_DISEASES request',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_BACKGROUND_DISEASES request',Severity.HIGH);
             response.status(errorStatusCode).send(err)
         });
     }).catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Saving personal details tab',
-            step: 'error in requesting graphql API request in UPDATE_INVESTIGATION request',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATION request',Severity.HIGH);
         response.status(errorStatusCode).send(err)
-    });;
+    });
 }
 
 clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: Response) => {
 
     const isolationAddress = request.body.clinicalDetails?.isolationAddress;
+    const saveClinicalDetailsFieldsLogger = logger.setup({
+        workflow: 'Saving clinical details tab',
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    })
 
     if (isolationAddress !== null) {
         const requestAddress: InsertAndGetAddressIdInput = {
@@ -325,35 +203,14 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,
             houseNumValue: isolationAddress?.houseNum ? isolationAddress?.houseNum : null,
         }
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Saving clinical details tab',
-            step: `launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
         graphqlRequest(CREATE_ADDRESS, response.locals, {
             input: requestAddress
         }).then((result: CreateAddressResponse) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Saving clinical details tab',
-                step: 'got response from the DB for address creation',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW);
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         }).catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Saving clinical details tab',
-                step: `got errors approaching the graphql API ${err}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH);
             response.status(errorStatusCode).send(err);
         });
     } else {
@@ -362,113 +219,65 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
 });
 
 clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const coronaTestDateLogger = logger.setup({
         workflow: 'Getting corona test date of patient',
-        step: `launcing DB request with parameter ${request.params.investigationId}`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
+    coronaTestDateLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, { currInvestigation: Number(request.params.investigationId) })
         .then((result: CoronaTestDateQueryResult) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting corona test date of patient',
-                step: 'got response from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            coronaTestDateLogger.info('got response from DB', Severity.LOW);
             response.send(result.data.allInvestigations.nodes[0]);
         }).catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting corona test date of patient',
-                step: `got errors approaching the graphql API ${err}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            coronaTestDateLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(err);
         });
 });
 
 clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Updating is deceased value',
-        step: `launcing DB request with parameter ${request.params.investigationId}`,
+    const isDeceasedLogger = logger.setup({
+        workflow: 'Getting corona test date of patient',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
+    isDeceasedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(UPDATE_IS_DECEASED, response.locals, {
         investigatedPatientId: +request.params.investigatedPatientId, isDeceased: Boolean(request.params.isDeceased)
     }).then(result => {
         if (result.data) {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: `Updating is deceased value to ${request.params.isDeceased}`,
-                step: `got response from DB ${result}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            isDeceasedLogger.info(`got response from DB ${result}`, Severity.LOW);
             calculateInvestigationComplexity(request, response, complexityCalculationMessage);
         }
         else {
             return Promise.reject(JSON.stringify(result));
         }
     }).catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: `Updating is deceased value to ${request.params.isDeceased}`,
-            step: `got errors approaching the graphql API ${err}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        isDeceasedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
         response.status(errorStatusCode).json({message: 'failed to save the is deceased due to ' + err});
     });
 });
 
 clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCurrentlyHospitalized', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const isCurrentlyHospitializedLogger = logger.setup({
         workflow: 'Updating is currently hospitalized value',
-        step: `launcing DB request with parameter ${request.params.investigationId}`,
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
+    isCurrentlyHospitializedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(UPDATE_IS_CURRENTLY_HOSPITIALIZED, response.locals, {
         investigatedPatientId: +request.params.investigatedPatientId, isCurrentlyHospitalized: Boolean(request.params.isCurrentlyHospitalized)
     }).then(result => {
         console.log("RES: ", result)
         if (result.data) {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: `Updating is currently hospitalized value to ${request.params.isCurrentlyHospitalized}`,
-                step: 'got response from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            isCurrentlyHospitializedLogger.info('got response from DB', Severity.LOW);
             calculateInvestigationComplexity(request, response, complexityCalculationMessage);
         }
         else {
             return Promise.reject(JSON.stringify(result));
         }
     }).catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: `Updating is currently hospitalized value to ${request.params.isCurrentlyHospitalized}`,
-            step: `got errors approaching the graphql API ${err}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        isCurrentlyHospitializedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
         response.status(errorStatusCode).json({message: 'failed to save the is currently hospitialized due to ' + err});
     });
 });

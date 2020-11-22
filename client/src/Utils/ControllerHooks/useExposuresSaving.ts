@@ -31,7 +31,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
             user: userId,
             investigation: epidemiologyNumber
         });
-        saveResortsDataLogger.info('launching the server request', Severity.LOW)
+        saveResortsDataLogger.info('launching the server request', Severity.LOW);
 
         return axios.post('/investigationInfo/resorts', {
             wasInEilat,
@@ -62,7 +62,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
-        saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW)
+        saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW);
         
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,

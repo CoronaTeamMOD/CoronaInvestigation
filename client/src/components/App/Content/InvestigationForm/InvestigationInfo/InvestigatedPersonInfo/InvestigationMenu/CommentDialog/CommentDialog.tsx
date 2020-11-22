@@ -46,11 +46,11 @@ const CommentDialog = ({open, handleDialogClose}: Props) => {
         axios.post('/investigationInfo/comment', {comment: commentToSend, epidemiologyNumber})
             .then(() => {
                 setComment(commentToSend);
-                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW)
+                sendCommentLogger.info('Successfully added comment to investigation', Severity.LOW);
             })
             .catch(() => {
                 alertError(errorMessage);
-                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH)
+                sendCommentLogger.error('Error occured in adding comment to investigation', Severity.HIGH);
             })
             .finally(handleDialogClose);
     };

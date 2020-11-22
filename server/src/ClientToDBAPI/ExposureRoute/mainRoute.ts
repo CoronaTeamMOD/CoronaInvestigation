@@ -4,7 +4,7 @@ import { differenceInYears, subDays } from 'date-fns';
 import Exposure from '../../Models/Exposure/Exposure';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
@@ -50,35 +50,19 @@ const convertExposuresFromDB = (result: ExposureByInvestigationId) : Exposure[] 
 }
 
 exposureRoute.get('/exposures/:investigationId', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const exposuresLogger = logger.setup({
         workflow: 'Getting exposures',
-        step: `launcing DB request with parameter ${request.params.investigationId}`,
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
     });
+    exposuresLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(GET_EXPOSURE_INFO, response.locals, {investigationId: parseInt(request.params.investigationId)})
         .then((result: ExposureByInvestigationId) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting exposures',
-                step: 'got response from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            exposuresLogger.info('got response from DB', Severity.LOW);
             response.send(convertExposuresFromDB(result));
         })
         .catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Getting exposures',
-                step: `got errors approaching the graphql API ${err}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            exposuresLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(err);
         })
     }
@@ -129,50 +113,27 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
     const isPhoneOrIdentityNumber = phoneOrIdentityNumberRegex.test(searchValue);
     const searchRegex = convertSearchValueToRegex(searchValue, isPhoneOrIdentityNumber);
     const dateToStartSearching = subDays(new Date(request.params.coronaTestDate), searchDaysAmount);
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const optionalExposureSourcesLogger = logger.setup({
         workflow: 'Getting exposure source options',
-        step: `launcing DB request with parameters ${searchRegex} and ${dateToStartSearching}`,
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
     });
+    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchRegex} and ${dateToStartSearching}`, Severity.LOW);
     graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchRegex, dateToStartSearching})
         .then((result: OptionalExposureSourcesResponse) => {
             if (result?.data?.allCovidPatients?.nodes) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: 'Getting exposure source options',
-                    step: 'got response from DB',
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                optionalExposureSourcesLogger.info('got response from DB', Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 if (!isPhoneOrIdentityNumber) {
                     dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
                 }
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
-                logger.warning({
-                    service: Service.SERVER,
-                    severity: Severity.MEDIUM,
-                    workflow: 'Getting exposure source options',
-                    step: 'didnt get exposure source options from DB',
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                optionalExposureSourcesLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
             }
         })
         .catch(error => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Getting exposure source options',
-                step: `got error when approaching the graphql API: ${error}`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            optionalExposureSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
             response.sendStatus(errorStatusCode);
         })
 });
@@ -187,36 +148,19 @@ const convertExposuresToDB = (request: Request) => {
 
 exposureRoute.post('/updateExposures', (request: Request, response: Response) => {
     const inputExposures = {inputExposures: JSON.stringify(convertExposuresToDB(request))}
-
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const updateExposuresLogger = logger.setup({
         workflow: 'Saving Exposures and Flights tab',
-        step: `launching update exposures and flights info with the parameters ${inputExposures}`,
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
     });
+    updateExposuresLogger.info(`launching update exposures and flights info with the parameters ${inputExposures}`, Severity.LOW);
     return graphqlRequest(UPDATE_EXPOSURES, response.locals, inputExposures)
         .then((result) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Saving Exposures and Flights tab',
-                step: `saved exposures and flights`,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            updateExposuresLogger.info('saved exposures and flights', Severity.LOW);
             response.send(result);
         })
         .catch(error => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Saving Exposures and Flights tab',
-                step: 'error in requesting graphql API request in UPDATE_EXPOSURES request',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            updateExposuresLogger.error('error in requesting graphql API request in UPDATE_EXPOSURES request', Severity.HIGH);
             response.status(errorStatusCode).send(error)
         })
 });

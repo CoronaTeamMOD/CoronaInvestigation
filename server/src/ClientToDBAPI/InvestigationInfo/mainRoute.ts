@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
@@ -46,18 +46,12 @@ const convertInvestigationInfoFromDB = (investigationInfo: any) => {
 }
 
 investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
-    const baseLog = {
+    const staticInfoLogger = logger.setup({
+        workflow: 'query investigation staticInfo',
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologyNumber,
-        workflow: `query investigation staticInfo`,
-        service: Service.SERVER,
-    };
-
-    logger.info({
-        severity: Severity.LOW,
-        step: `requesting the graphql API to query investigations staticInfo`,
-        ...baseLog
+        investigation: response.locals.epidemiologynumber
     });
+    staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
         investigationId: +request.query.investigationId
@@ -65,26 +59,14 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
         .then((result: any) => {
             if (result?.data?.investigationByEpidemiologyNumber) {
                 const investigationInfo = result.data.investigationByEpidemiologyNumber;
-                logger.info({
-                    severity: Severity.LOW,
-                    step: `query investigations staticInfo successfully`,
-                    ...baseLog
-                });
+                staticInfoLogger.info('query investigations staticInfo successfully', Severity.LOW);
                 response.send(convertInvestigationInfoFromDB(investigationInfo));
             } else {
-                logger.error({
-                    severity: Severity.HIGH,
-                    step: `failed to fetch static info due to ${JSON.stringify(result)}`,
-                    ...baseLog
-                });
+                staticInfoLogger.error(`failed to fetch static info due to ${JSON.stringify(result)}`, Severity.HIGH);
                 response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
             }
         }).catch((error) => {
-            logger.error({
-                severity: Severity.HIGH,
-                step: `failed to fetch static info due to ${error}`,
-                ...baseLog
-            });
+            staticInfoLogger.error(`failed to fetch static info due to ${error}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
         });
 });
@@ -93,39 +75,24 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
     const { comment } = request.body;
     const epidemiologyNumber = parseInt(response.locals.epidemiologynumber);
     const data = { comment, epidemiologyNumber };
-    const info = {
+    const staticInfoLogger = logger.setup({
+        workflow: 'comment on investigation',
         user: response.locals.user.id,
         investigation: epidemiologyNumber,
-        workflow: 'comment on investigation',
-        service: Service.SERVER,
-    };
-
-    logger.info({
-        severity: Severity.LOW,
-        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify(data)}`,
-        ...info
     });
+    staticInfoLogger.info(`requesting the graphql API to update investigation status with parameters ${JSON.stringify(data)}`, Severity.LOW);
 
     return graphqlRequest(COMMENT, response.locals, data)
         .then((result) => {
             if (result?.errors?.length > 0)
                 throw new Error(result.errors[0]);
-
-            logger.info({
-                severity: Severity.LOW,
-                step: `successfully added comment w/ parameters ${JSON.stringify(data)}`,
-                ...info
-            });
+            
+            staticInfoLogger.info(`successfully added comment w/ parameters ${JSON.stringify(data)}`, Severity.LOW);
             return response.sendStatus(200);
         })
         .catch((error) => {
-            logger.error({
-                severity: Severity.MEDIUM,
-                step: `failed to add comment w/ parameters ${JSON.stringify(data)}
-                error: ${JSON.stringify(error)}
-                `,
-                ...info
-            });
+            staticInfoLogger.error(`failed to add comment w/ parameters ${JSON.stringify(data)}
+            error: ${JSON.stringify(error)}`, Severity.MEDIUM);
             return response.sendStatus(500)
         });
 });
@@ -133,17 +100,15 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
     const currentWorkflow = investigationMainStatus === InvestigationMainStatus.DONE ? 'Ending Investigation' : 'Investigation click';
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const updateInvestigationStatusLogger = logger.setup({
         workflow: currentWorkflow,
-        step: `requesting the graphql API to update investigation status with parameters ${JSON.stringify({
-            epidemiologyNumber,
-            status: investigationMainStatus
-        })}`,
         user: response.locals.user.id,
-        investigation: epidemiologyNumber
-    })
+        investigation: epidemiologyNumber,
+    });
+    updateInvestigationStatusLogger.info(`requesting the graphql API to update investigation status with parameters ${JSON.stringify({
+        epidemiologyNumber,
+        status: investigationMainStatus
+    })}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, {
         epidemiologyNumber,
         investigationStatus: investigationMainStatus,
@@ -152,50 +117,22 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
     })
         .then((result: any) => {
             if (result?.data && !result.errors) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: currentWorkflow,
-                    step: 'the investigation status was updated successfully',
-                    user: response.locals.user.id,
-                    investigation: epidemiologyNumber
-                });
+                updateInvestigationStatusLogger.info('the investigation status was updated successfully', Severity.LOW);
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
                             const investigationEndTime = new Date();
-                            logger.info({
-                                service: Service.SERVER,
-                                severity: Severity.LOW,
-                                workflow: 'Ending Investigation',
-                                step: `launching graphql API request to update end time with parameters: ${JSON.stringify({
-                                    epidemiologyNumber,
-                                    investigationEndTime
-                                })}`,
-                                user: response.locals.user.id,
-                                investigation: epidemiologyNumber
-                            });
+                            updateInvestigationStatusLogger.info(`launching graphql API request to update end time with parameters: ${JSON.stringify({
+                                epidemiologyNumber,
+                                investigationEndTime
+                            })}`, Severity.LOW);
                             graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
                                 epidemiologyNumber,
                                 investigationEndTime
                             })
                                 .then(() => {
-                                    logger.info({
-                                        service: Service.SERVER,
-                                        severity: Severity.LOW,
-                                        workflow: 'Ending Investigation',
-                                        step: 'got respond from the DB in the request to update end time',
-                                        user: response.locals.user.id,
-                                        investigation: epidemiologyNumber
-                                    });
+                                    updateInvestigationStatusLogger.info('got respond from the DB in the request to update end time', Severity.LOW);
                                     response.send({ message: 'updated the investigation status and end time successfully' });
                                 }).catch(err => {
-                                    logger.error({
-                                        service: Service.SERVER,
-                                        severity: Severity.HIGH,
-                                        workflow: 'Ending Investigation',
-                                        step: `failed to update the investigation end time due to: ${err}`,
-                                        user: response.locals.user.id,
-                                        investigation: epidemiologyNumber
-                                    });
+                                    updateInvestigationStatusLogger.error(`failed to update the investigation end time due to: ${err}`, Severity.HIGH);
                                     response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
                                 });
                        
@@ -203,116 +140,70 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     response.send({ message: 'updated the investigation status successfully' });
                 }
             } else {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.HIGH,
-                    workflow: currentWorkflow,
-                    step: `failed to update investigation status due to: ${JSON.stringify(result)}`,
-                    user: response.locals.user.id,
-                    investigation: epidemiologyNumber
-                });
+                updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${JSON.stringify(result)}`, Severity.HIGH);
                 response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
             }
         })
         .catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: currentWorkflow,
-                step: `failed to update investigation status due to: ${err}`,
-                user: response.locals.user.id,
-                investigation: epidemiologyNumber
-            });
+            updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${err}`, Severity.HIGH);
             response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
         });
 });
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {
     const { epidemiologyNumber, investigationStartTime } = request.body;
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const updateInvestigationStartTimeLogger = logger.setup({
         workflow: 'Investigation click',
-        step: `requesting the graphql API to update investigation start time with parameters ${JSON.stringify({
-            epidemiologyNumber,
-            investigationStartTime
-        })}`,
         user: response.locals.user.id,
-        investigation: response.locals.epidemiologyNumber
-    })
+        investigation: epidemiologyNumber,
+    });
+    updateInvestigationStartTimeLogger.info(`requesting the graphql API to update investigation start time with parameters ${JSON.stringify({
+        epidemiologyNumber,
+        investigationStartTime
+    })}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, {
         epidemiologyNumber: +epidemiologyNumber,
         investigationStartTime
     })
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Investigation click',
-                step: 'the investigation start time was updated successfully',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologyNumber
-            });
+            updateInvestigationStartTimeLogger.info('the investigation start time was updated successfully', Severity.LOW);
             response.send(result)
         })
         .catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Investigation click',
-                step: `the investigation start time failed to update due to: ${err}`,
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologyNumber
-            });
+            updateInvestigationStartTimeLogger.error(`the investigation start time failed to update due to: ${err}`, Severity.HIGH);
         });
 });
 
 investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response: Response) => {
+    const subStatusesLogger = logger.setup({
+        workflow: 'GraphQL GET subStatuses request to the DB',
+    });
     graphqlRequest(GET_SUB_STATUSES_BY_STATUS, response.locals, {
         parentStatus: request.params.parentStatus
     })
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'GraphQL GET subStatuses request to the DB',
-                step: 'graphqlResult THEN succsses'
-            });
-
+            subStatusesLogger.info('GraphQL GET subStatuses request to the DB', Severity.LOW);
             response.send(result)
         })
         .catch((err: any) => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'GraphQL GET subStatuses request to the DB',
-                step: `graphqlResult CATCH fail ${err}`
-            });
-            response.status(errorStatusCode).send('error in fetching data: ' + err)
+            subStatusesLogger.error(`graphqlResult CATCH fail ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send(`error in fetching data: ${err}`)
         });
 });
+
 investigationInfo.get('/resorts/:id', (request: Request, response: Response) => {
     const workflow = 'Query investigated patients resorts data';
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const resortsByIdLogger = logger.setup({
         workflow,
-        step: `launching get investigated patients resorts data`,
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
     });
+    resortsByIdLogger.info('launching get investigated patients resorts data', Severity.LOW);
     return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, {id: +request.params.id})
         .then((result) => {
             const resortsData = result?.data?.investigatedPatientById; 
             if (resortsData) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow,
-                    step: `queried investigated patients resorts data successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                resortsByIdLogger.info('queried investigated patients resorts data successfully', Severity.LOW);
                 response.send(resortsData);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -320,54 +211,31 @@ investigationInfo.get('/resorts/:id', (request: Request, response: Response) => 
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.HIGH,
-                    workflow,
-                    step,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                resortsByIdLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         })
         .catch(error => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow,
-                step: 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            resortsByIdLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });
 
 investigationInfo.post('/resorts', (request: Request, response: Response) => {
     const workflow = 'Save investigated patients resorts data';
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const resortsLogger = logger.setup({
         workflow,
-        step: `launching save investigated patients resorts data`,
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
     });
+    resortsLogger.info('launching get investigated patients resorts data', Severity.LOW);
 
     const queryVariables = {...request.body};
 
     return graphqlRequest(UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, queryVariables)
         .then((result) => {
             if (result?.data && !result?.errors) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow,
-                    step: `saved investigated patients resorts data successfully`,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                resortsLogger.info('saved investigated patients resorts data successfully', Severity.LOW);
                 response.send(result?.data);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -375,26 +243,12 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.HIGH,
-                    workflow,
-                    step,
-                    investigation: response.locals.epidemiologynumber,
-                    user: response.locals.user.id
-                });
+                resortsLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         })
         .catch(error => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow,
-                step: 'error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            resortsLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });

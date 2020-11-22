@@ -65,13 +65,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber,
             user: userId
         });
-        getSymptomsLogger.info('launching symptoms request', Severity.LOW)
+        getSymptomsLogger.info('launching symptoms request', Severity.LOW);
         axios.get('/clinicalDetails/symptoms').then(result => {
             if (result && result.data && result.data.data) {
-                getSymptomsLogger.info('got results back from the server', Severity.LOW)
+                getSymptomsLogger.info('got results back from the server', Severity.LOW);
                 setSymptoms((result.data.data.allSymptoms.nodes.map((node: any) => node.displayName as string[]).reverse()))
             } else {
-                getSymptomsLogger.warn('got status 200 but wrong data', Severity.HIGH)
+                getSymptomsLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
         }
         );
@@ -83,13 +83,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber,
             user: userId
         });
-        getBackgroundDiseasesLogger.info('launching background diseases request', Severity.LOW)
+        getBackgroundDiseasesLogger.info('launching background diseases request', Severity.LOW);
         axios.get('/clinicalDetails/backgroundDiseases').then(result => {
             if (result?.data && result.data.data) {
-                getBackgroundDiseasesLogger.info('got results back from the server', Severity.LOW)
+                getBackgroundDiseasesLogger.info('got results back from the server', Severity.LOW);
                 setBackgroundDiseases(result.data.data.allBackgroundDeseases.nodes.map((node: any) => node.displayName as string[]).reverse())
             } else {
-                getBackgroundDiseasesLogger.warn('got status 200 but wrong data', Severity.HIGH)
+                getBackgroundDiseasesLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
         }
         );
@@ -101,13 +101,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber,
             user: userId
         });
-        getIsolationSourcesLogger.info('Start isolation sources request', Severity.LOW)
+        getIsolationSourcesLogger.info('Start isolation sources request', Severity.LOW);
         axios.get('/clinicalDetails/isolationSources').then(result => {
             if (result?.data) {
-                getIsolationSourcesLogger.info('got results back from the server', Severity.LOW)
+                getIsolationSourcesLogger.info('got results back from the server', Severity.LOW);
                 setIsolationSources(result.data);
             } else {
-                getIsolationSourcesLogger.warn('got status 200 but wrong data', Severity.HIGH)
+                getIsolationSourcesLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
         }
         );
@@ -119,13 +119,13 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             investigation: epidemiologyNumber,
             user: userId
         });
-        getStreetByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW)
+        getStreetByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW);
         axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
             if (result?.data) {
-                getStreetByCityLogger.info('got data from the server',Severity.LOW)
+                getStreetByCityLogger.info('got data from the server', Severity.LOW);
                 setStreetsInCity(result.data.map((node: Street) => node))
             } else {
-                getStreetByCityLogger.error(`got errors in server result: ${JSON.stringify(result)}`, Severity.HIGH)
+                getStreetByCityLogger.error(`got errors in server result: ${JSON.stringify(result)}`, Severity.HIGH);
             }
         }
         )
@@ -145,7 +145,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
                 if (result?.data) {
-                    fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW)
+                    fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
                     if (patientAddress !== null && patientAddress.cityByCity !== null) {
@@ -194,7 +194,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     trigger();
                     setIsLoading(false);
                 } else {
-                    fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH)
+                    fetchClinicalDetailsLogger.warn('got status 200 but got invalid outcome', Severity.HIGH);
                     setIsLoading(false);
                 }
             }
