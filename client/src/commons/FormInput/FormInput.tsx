@@ -27,7 +27,7 @@ export default FormInput;
 
 interface Props extends TypographyProps {
     xs?: GridSize;
-    fieldName: string;
+    fieldName?: string;
     className?: string;
     children: JSX.Element | JSX.Element[];
     labelLength?: Exclude<GridSize, 'auto'>;

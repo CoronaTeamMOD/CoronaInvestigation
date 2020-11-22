@@ -40,7 +40,7 @@ export const defaultContact: Contact = {
 const addContactButton: string = 'הוסף מגע';
 
 const InteractionEventForm: React.FC<Props> = (
-  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog ,isNewInteraction}: Props): JSX.Element => {
+  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog, isNewInteraction }: Props): JSX.Element => {
 
   const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
   const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
@@ -188,6 +188,22 @@ const InteractionEventForm: React.FC<Props> = (
     }
   };
 
+  const validateAndHandleSubmit = () => {
+    return methods.handleSubmit(
+      () => {
+        const filTimeValidationMessage = 'יש למלא שעה';
+        if (!startTime) {
+          methods.setError(InteractionEventDialogFields.START_TIME, { type: 'manual', message: filTimeValidationMessage });
+        }
+        if (!endTime) {
+          methods.setError(InteractionEventDialogFields.END_TIME, { type: 'manual', message: filTimeValidationMessage });
+        }
+        if (startTime && endTime) {
+          onSubmit(methods.getValues())
+        }
+      })
+  }
+
   const {
     hasAddress,
     isNamedLocation,
@@ -198,22 +214,7 @@ const InteractionEventForm: React.FC<Props> = (
 
   return (
     <FormProvider {...methods}>
-      <form id='interactionEventForm' onSubmit={
-        methods.handleSubmit(
-          () => {
-            const filTimeValidationMessage = 'יש למלא שעה'; 
-            if (!startTime) {
-              methods.setError(InteractionEventDialogFields.START_TIME, { type: 'manual', message: filTimeValidationMessage });
-            }
-            if (!endTime) {
-              methods.setError(InteractionEventDialogFields.END_TIME, { type: 'manual', message: filTimeValidationMessage });
-            }
-            if (startTime && endTime) {
-              onSubmit(methods.getValues())
-            }
-          }
-        )
-      }>
+      <form id='interactionEventForm' onSubmit={validateAndHandleSubmit()}>
         <Grid className={formClasses.form} container justify='space-between'>
           <PlacesTypesAndSubTypes size='Dialog'
             placeTypeName={InteractionEventDialogFields.PLACE_TYPE}
@@ -269,7 +270,7 @@ const InteractionEventForm: React.FC<Props> = (
                 )}
               />
             </FormInput>
-            <FormInput xs={3} fieldName=''>
+            <FormInput xs={3} >
               <Controller
                 name={InteractionEventDialogFields.UNKNOWN_TIME}
                 control={methods.control}
