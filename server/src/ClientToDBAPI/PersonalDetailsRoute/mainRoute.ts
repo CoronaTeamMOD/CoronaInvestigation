@@ -17,97 +17,49 @@ const personalDetailsRoute = Router();
 const errorStatusCode = 500;
 
 personalDetailsRoute.get('/occupations', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const occupationsLogger = logger.setup({
         workflow: 'Fetching Occupations',
-        step: 'launching DB request',
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    occupationsLogger.info('launching DB request', Severity.LOW)
     graphqlRequest(GET_OCCUPATIONS, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Occupations',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        occupationsLogger.info('got respond from DB', Severity.LOW)
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching Occupations',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        occupationsLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
 
 personalDetailsRoute.get('/hmos', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const hmosLogger = logger.setup({
         workflow: 'Fetching HMOs',
-        step: 'launching DB request',
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    hmosLogger.info('launching DB request', Severity.LOW)
     graphqlRequest(GET_HMOS, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching HMOs',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        hmosLogger.info('got respond from DB', Severity.LOW)
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching HMOs',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        hmosLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
 
 personalDetailsRoute.get('/investigatedPatientRoles', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const investigatedPatientRolesLogger = logger.setup({
         workflow: 'Fetching investigated patient roles',
-        step: 'launching DB request',
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    investigatedPatientRolesLogger.info('launching DB request', Severity.LOW)
     graphqlRequest(GET_ALL_INVESTIGATED_PATIENT_ROLES, response.locals).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching investigated patient roles',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        investigatedPatientRolesLogger.info('got respond from DB', Severity.LOW)
         response.send(result?.data?.allInvestigatedPatientRoles?.nodes);
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Fetching investigated patient roles',
-            step: `got error when approaching the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        investigatedPatientRolesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
@@ -123,112 +75,57 @@ const convertPatientDetailsFromDB = (investigatedPatientDetails: PersonalInfoDbD
 }
 
 personalDetailsRoute.get('/investigatedPatientPersonalInfoFields', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const investigatedPatientPersonalInfoFieldsLogger = logger.setup({
         workflow: 'Fetching Personal Details',
-        step: 'launching DB request',
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    investigatedPatientPersonalInfoFieldsLogger.info('launching DB request', Severity.LOW)
     graphqlRequest(GET_INVESTIGATED_PATIENT_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, {id: +request.query.epidemioligyNumber})
     .then((result: GetInvestigatedPatientDetails) => {
         if (result?.data?.investigationByEpidemiologyNumber?.investigatedPatientByInvestigatedPatientId) {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Fetching Personal Details',
-                step: 'got respond from DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            })
+            investigatedPatientPersonalInfoFieldsLogger.info('got respond from DB', Severity.LOW)
             const investigatedPatientDetails = result.data.investigationByEpidemiologyNumber.investigatedPatientByInvestigatedPatientId;
             response.send(convertPatientDetailsFromDB(investigatedPatientDetails));
         } else {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Fetching Personal Details',
-                step: 'got invalid reponse from the DB',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            })
+            investigatedPatientPersonalInfoFieldsLogger.warn('got invalid reponse from the DB', Severity.MEDIUM)
             response.status(errorStatusCode).json({error: 'failed to fetch personal details'});
         }
     })
     .catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Personal Details',
-            step: `got error while accessing the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        investigatedPatientPersonalInfoFieldsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
 
 personalDetailsRoute.get('/subOccupations', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const subOccupationsLogger = logger.setup({
         workflow: 'Fetching Sub Occupation by Parent Occupation',
-        step: `launcing DB request with parameter ${request.query.parentOccupation}`,
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    subOccupationsLogger.info(`launcing DB request with parameter ${request.query.parentOccupation}`, Severity.LOW)
     graphqlRequest(GET_SUB_OCCUPATIONS_BY_OCCUPATION, response.locals, {parentOccupation: request.query.parentOccupation}).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Sub Occupation by Parent Occupation',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        subOccupationsLogger.info('got respond from DB', Severity.LOW)
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Sub Occupation by Parent Occupation',
-            step: `got error while accessing the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        subOccupationsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
 
 personalDetailsRoute.get('/educationSubOccupations', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const educationSubOccupationsLogger = logger.setup({
         workflow: 'Fetching Education Sub Occupation by City',
-        step: `launcing DB request with parameter ${request.query.city}`,
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    })
+    });
+    educationSubOccupationsLogger.info(`launcing DB request with parameter ${request.query.city}`, Severity.LOW)
     graphqlRequest(GET_EDUCATION_SUB_OCCUPATION_BY_CITY, response.locals, {city: request.query.city}).then((result: any) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Education Sub Occupation by City',
-            step: 'got respond from DB',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        })
+        educationSubOccupationsLogger.info('got respond from DB', Severity.LOW)
         response.send(result)
     }).catch(error => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Fetching Education Sub Occupation by City',
-            step: `got error while accessing the graphql API: ${error}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        educationSubOccupationsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH)
         response.sendStatus(errorStatusCode);
     });
 });
@@ -249,75 +146,42 @@ const savePersonalDetails = (request: Request, response: Response, address?: num
         educationGrade: personalInfoData.educationGrade,
         educationClassNumber: personalInfoData.educationClassNumber,
     };
-
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const savePersonalDetailsLogger = logger.setup({
         workflow: 'Saving personal details tab',
-        step: `launching update personal info with the parameters ${JSON.stringify(dbPersonalInfoData)}`,
+        user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
     });
+    savePersonalDetailsLogger.info(`launching update personal info with the parameters ${JSON.stringify(dbPersonalInfoData)}`, Severity.LOW)
     graphqlRequest(UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO, response.locals, dbPersonalInfoData).then((result: any) => {
         const dbCovidPatientPersonalInfo = {
             id: result.data.updateInvestigatedPatientById.covidPatientByCovidPatient.epidemiologyNumber,
             primaryPhone: personalInfoData.phoneNumber,
             address
         }
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Saving personal details tab',
-            step: `saved personal info now saving covid patient personal info with parameters ${JSON.stringify(dbCovidPatientPersonalInfo)}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        savePersonalDetailsLogger.info(`saved personal info now saving covid patient personal info with parameters ${JSON.stringify(dbCovidPatientPersonalInfo)}`, Severity.LOW)
         graphqlRequest(UPDATE_COVID_PATIENT_PERSONAL_INFO,  response.locals, dbCovidPatientPersonalInfo).then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Saving personal details tab',
-                step: 'saved covid patient personal info',
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            savePersonalDetailsLogger.info('saved covid patient personal info', Severity.LOW)
             calculateInvestigationComplexity(request, response, complexityCalculationMessage);
         }).catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Saving personal details tab',
-                step: 'error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request due to ' + err,
-                investigation: response.locals.epidemiologynumber,
-                user: response.locals.user.id
-            });
+            savePersonalDetailsLogger.error(`error in requesting graphql API request in UPDATE_COVID_PATIENT_PERSONAL_INFO request due to ${err}`, Severity.HIGH)
             response.status(errorStatusCode).json({message: 'failed to save the personal details covid patient details'});
         });
     })
     .catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.HIGH,
-            workflow: 'Saving personal details tab',
-            step: 'error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request due to ' + err,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        savePersonalDetailsLogger.error(`error in requesting graphql API request in UPDATE_INVESTIGATED_PERSON_PERSONAL_INFO request due to ${err}`, Severity.HIGH)
         response.status(errorStatusCode).json({message: 'failed to save the personal details investigated patient details'});
     });
 }
 
 personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response: Response) => {
     const address = request.body.personalInfoData.address;
+    const updatePersonalDetailsLogger = logger.setup({
+        workflow: 'Saving personal details tab',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
     if (address === null || address === undefined) {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.MEDIUM,
-            workflow: 'Saving personal details tab',
-            step: 'didnt get any address',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        updatePersonalDetailsLogger.info('didnt get any address', Severity.LOW)
     }
     const requestAddress: InsertAndGetAddressIdInput = {
         cityValue: address.city ? address.city : null ,
@@ -325,35 +189,14 @@ personalDetailsRoute.post('/updatePersonalDetails', (request: Request, response:
         floorValue: address?.floor ? address?.floor : null,
         houseNumValue: address?.houseNum ? address?.houseNum : null,
     }
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
-        workflow: 'Saving personal details tab',
-        step: `launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`,
-        investigation: response.locals.epidemiologynumber,
-        user: response.locals.user.id
-    });
+    updatePersonalDetailsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW)
     graphqlRequest(CREATE_ADDRESS,  response.locals, { input: requestAddress})
     .then((result) => {
-        logger.info({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Saving personal details tab',
-            step: 'got response from the DB for address creation',
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        updatePersonalDetailsLogger.info('got response from the DB for address creation', Severity.LOW)
         savePersonalDetails(request, response, result.data.insertAndGetAddressId.integer)
     })
     .catch(err => {
-        logger.error({
-            service: Service.SERVER,
-            severity: Severity.LOW,
-            workflow: 'Saving personal details tab',
-            step: `got errors approaching the graphql API ${err}`,
-            investigation: response.locals.epidemiologynumber,
-            user: response.locals.user.id
-        });
+        updatePersonalDetailsLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
         response.status(errorStatusCode).json({message: 'failed to save the personal details address due to ' + err});
     });
 });

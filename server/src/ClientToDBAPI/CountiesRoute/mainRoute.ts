@@ -10,15 +10,13 @@ const countiesRoute = Router();
 const errorStatusCode = 500;
 
 countiesRoute.get('', (request: Request, response: Response) => {
+    const getCountiesLogger = logger.setup({
+        workflow: 'All Counties Query',
+    });
     graphqlRequest(GET_ALL_COUNTIES, response.locals)
         .then((result: GetAllCountiesResponse) => {
             if (result?.data?.allCounties?.nodes) {
-                logger.info({
-                    service: Service.SERVER,
-                    severity: Severity.LOW,
-                    workflow: 'All Counties Query',
-                    step: `Queried all counties successfully`,
-                })
+                getCountiesLogger.info('Queried all counties successfully', Severity.LOW)
                 let counties = result.data.allCounties.nodes.map((county: any) => ({
                     id: county.id,
                     displayName: county.displayName,
@@ -26,53 +24,30 @@ countiesRoute.get('', (request: Request, response: Response) => {
                 }));
                 response.send(counties);
             } else {
-                logger.error({
-                    service: Service.SERVER,
-                    severity: Severity.CRITICAL,
-                    workflow: 'All Counties Query',
-                    step: `couldnt query all counties due to ${result.errors[0].message}`,
-                })
+                getCountiesLogger.error(`couldnt query all counties due to ${result.errors[0].message}`, Severity.CRITICAL)
                 response.status(errorStatusCode).send(`Couldn't query all counties`);
             }
         })
         .catch((error) => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.CRITICAL,
-                workflow: 'All Counties Query',
-                step: `couldnt query all counties due to ${error}`,
-            })
+            getCountiesLogger.error(`couldnt query all counties due to ${error}`, Severity.CRITICAL)
             response.status(errorStatusCode).send(`Couldn't query all counties`);
         });
 });
 
 
 countiesRoute.get('/county/displayName', (request: Request, response: Response) => {
-    logger.info({
-        service: Service.SERVER,
-        severity: Severity.LOW,
+    const countyByUserLogger = logger.setup({
         workflow: 'Fetching county display name by user',
-        step: 'launching DB request',
         user: response.locals.user.id
     });
+    countyByUserLogger.info('launching DB request', Severity.LOW)
     graphqlRequest(GET_COUNTY_DISPLAY_NAME_BY_USER, response.locals, { id: +response.locals.user.investigationGroup })
         .then((result: any) => {
-            logger.info({
-                service: Service.SERVER,
-                severity: Severity.LOW,
-                workflow: 'Fetching county display name by user',
-                step: 'Got response from DB',
-                user: response.locals.user.id
-            });
+            countyByUserLogger.info('Got response from DB', Severity.LOW)
             return response.send(result?.data?.countyById?.displayName as string);
         })
         .catch(err => {
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.CRITICAL,
-                workflow: 'Fetching county display name by user',
-                step: `error while trying fetch displayName due to ${err}`,
-            });
+            countyByUserLogger.error(`error while trying fetch displayName due to ${err}`, Severity.CRITICAL)
             response.status(errorStatusCode).send(`Couldn't query county display name`);
         });
 });

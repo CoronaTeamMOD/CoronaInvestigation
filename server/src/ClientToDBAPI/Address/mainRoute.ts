@@ -32,19 +32,19 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
   getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`,Severity.LOW)
   graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
     let streets: Street[] = [];
-    getStreetsOfCityLogger.info('got response from DB',Severity.LOW)
+    getStreetsOfCityLogger.info('got response from DB', Severity.LOW)
     if(result && result.data && result.data.cityById && result.data.cityById.streetsByCity){
-      getStreetsOfCityLogger.info('got streets from DB',Severity.LOW)
+      getStreetsOfCityLogger.info('got streets from DB', Severity.LOW)
       streets = result.data.cityById.streetsByCity.nodes.map((street: Street) => ({
         id: street.id,
         displayName: street.displayName,
       }));
     } else {
-      getStreetsOfCityLogger.warn('didnt get streets from DB',Severity.MEDIUM)
+      getStreetsOfCityLogger.warn('didnt get streets from DB', Severity.MEDIUM)
     }
     return response.send(streets);
   }).catch(error => {
-    getStreetsOfCityLogger.error(`got error from graphql API ${error}`,Severity.HIGH)
+    getStreetsOfCityLogger.error(`got error from graphql API ${error}`, Severity.HIGH)
     response.sendStatus(500)
   });
 });
