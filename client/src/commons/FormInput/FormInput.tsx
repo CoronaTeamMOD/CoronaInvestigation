@@ -13,7 +13,7 @@ const FormInput: React.FC<Props> = (props: Props): JSX.Element => {
                test-id={'textFormInput'} xs={xs} className={className || ''}>
             <Grid item xs={labelLength ? labelLength : 3}>
                 <Typography className={formClasses.fieldName} variant='caption' {...rest}>
-                    <b>{fieldName + ':'}</b>
+                {fieldName && <b>{fieldName + ':'}</b>}
                 </Typography>
             </Grid>
             <Grid item xs={labelLength ? (12-labelLength) as GridSize : 9}>
@@ -27,7 +27,7 @@ export default FormInput;
 
 interface Props extends TypographyProps {
     xs?: GridSize;
-    fieldName: string;
+    fieldName?: string;
     className?: string;
     children: JSX.Element | JSX.Element[];
     labelLength?: Exclude<GridSize, 'auto'>;

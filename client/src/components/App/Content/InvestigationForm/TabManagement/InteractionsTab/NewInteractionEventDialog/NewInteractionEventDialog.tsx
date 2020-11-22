@@ -46,6 +46,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                         loadInteractions={loadInteractions}
                         closeNewDialog={closeNewDialog}
                         closeEditDialog={()=>{}}
+                        isNewInteraction={true}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
