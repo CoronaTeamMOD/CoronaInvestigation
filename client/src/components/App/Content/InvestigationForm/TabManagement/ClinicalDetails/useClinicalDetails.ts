@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
 import axios from 'axios';
+
 import Street from 'models/Street';
 import DBAddress, { initDBAddress } from 'models/DBAddress';
 import { Severity } from 'models/Logger';
@@ -202,7 +202,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
-
         const saveClinicalDetailsLogger = logger.setup({
             workflow: 'Saving clinical details tab',
             investigation: epidemiologyNumber,
