@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
@@ -51,7 +51,7 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW)
+    staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW);
 
     graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
         investigationId: +request.query.investigationId
@@ -59,14 +59,14 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
         .then((result: any) => {
             if (result?.data?.investigationByEpidemiologyNumber) {
                 const investigationInfo = result.data.investigationByEpidemiologyNumber;
-                staticInfoLogger.info('query investigations staticInfo successfully', Severity.LOW)
+                staticInfoLogger.info('query investigations staticInfo successfully', Severity.LOW);
                 response.send(convertInvestigationInfoFromDB(investigationInfo));
             } else {
-                staticInfoLogger.error(`failed to fetch static info due to ${JSON.stringify(result)}`, Severity.HIGH)
+                staticInfoLogger.error(`failed to fetch static info due to ${JSON.stringify(result)}`, Severity.HIGH);
                 response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
             }
         }).catch((error) => {
-            staticInfoLogger.error(`failed to fetch static info due to ${error}`, Severity.HIGH)
+            staticInfoLogger.error(`failed to fetch static info due to ${error}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
         });
 });
@@ -80,19 +80,19 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
         user: response.locals.user.id,
         investigation: epidemiologyNumber,
     });
-    staticInfoLogger.info(`requesting the graphql API to update investigation status with parameters ${JSON.stringify(data)}`, Severity.LOW)
+    staticInfoLogger.info(`requesting the graphql API to update investigation status with parameters ${JSON.stringify(data)}`, Severity.LOW);
 
     return graphqlRequest(COMMENT, response.locals, data)
         .then((result) => {
             if (result?.errors?.length > 0)
                 throw new Error(result.errors[0]);
             
-            staticInfoLogger.info(`successfully added comment w/ parameters ${JSON.stringify(data)}`, Severity.LOW)
+            staticInfoLogger.info(`successfully added comment w/ parameters ${JSON.stringify(data)}`, Severity.LOW);
             return response.sendStatus(200);
         })
         .catch((error) => {
             staticInfoLogger.error(`failed to add comment w/ parameters ${JSON.stringify(data)}
-            error: ${JSON.stringify(error)}`, Severity.MEDIUM)
+            error: ${JSON.stringify(error)}`, Severity.MEDIUM);
             return response.sendStatus(500)
         });
 });
@@ -108,7 +108,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
     updateInvestigationStatusLogger.info(`requesting the graphql API to update investigation status with parameters ${JSON.stringify({
         epidemiologyNumber,
         status: investigationMainStatus
-    })}`, Severity.LOW)
+    })}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, {
         epidemiologyNumber,
         investigationStatus: investigationMainStatus,
@@ -117,22 +117,22 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
     })
         .then((result: any) => {
             if (result?.data && !result.errors) {
-                updateInvestigationStatusLogger.info('the investigation status was updated successfully', Severity.LOW)
+                updateInvestigationStatusLogger.info('the investigation status was updated successfully', Severity.LOW);
                 if (investigationMainStatus === InvestigationMainStatus.DONE) {
                             const investigationEndTime = new Date();
                             updateInvestigationStatusLogger.info(`launching graphql API request to update end time with parameters: ${JSON.stringify({
                                 epidemiologyNumber,
                                 investigationEndTime
-                            })}`, Severity.LOW)
+                            })}`, Severity.LOW);
                             graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
                                 epidemiologyNumber,
                                 investigationEndTime
                             })
                                 .then(() => {
-                                    updateInvestigationStatusLogger.info('got respond from the DB in the request to update end time', Severity.LOW)
+                                    updateInvestigationStatusLogger.info('got respond from the DB in the request to update end time', Severity.LOW);
                                     response.send({ message: 'updated the investigation status and end time successfully' });
                                 }).catch(err => {
-                                    updateInvestigationStatusLogger.error(`failed to update the investigation end time due to: ${err}`, Severity.HIGH)
+                                    updateInvestigationStatusLogger.error(`failed to update the investigation end time due to: ${err}`, Severity.HIGH);
                                     response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
                                 });
                        
@@ -140,12 +140,12 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                     response.send({ message: 'updated the investigation status successfully' });
                 }
             } else {
-                updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${JSON.stringify(result)}`, Severity.HIGH)
+                updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${JSON.stringify(result)}`, Severity.HIGH);
                 response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
             }
         })
         .catch(err => {
-            updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${err}`, Severity.HIGH)
+            updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${err}`, Severity.HIGH);
             response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
         });
 });
@@ -160,17 +160,17 @@ investigationInfo.post('/updateInvestigationStartTime', (request: Request, respo
     updateInvestigationStartTimeLogger.info(`requesting the graphql API to update investigation start time with parameters ${JSON.stringify({
         epidemiologyNumber,
         investigationStartTime
-    })}`, Severity.LOW)
+    })}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION_START_TIME, response.locals, {
         epidemiologyNumber: +epidemiologyNumber,
         investigationStartTime
     })
         .then((result: any) => {
-            updateInvestigationStartTimeLogger.info('the investigation start time was updated successfully', Severity.LOW)
+            updateInvestigationStartTimeLogger.info('the investigation start time was updated successfully', Severity.LOW);
             response.send(result)
         })
         .catch(err => {
-            updateInvestigationStartTimeLogger.error(`the investigation start time failed to update due to: ${err}`, Severity.HIGH)
+            updateInvestigationStartTimeLogger.error(`the investigation start time failed to update due to: ${err}`, Severity.HIGH);
         });
 });
 
@@ -182,11 +182,11 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
         parentStatus: request.params.parentStatus
     })
         .then((result: any) => {
-            subStatusesLogger.info('GraphQL GET subStatuses request to the DB', Severity.LOW)
+            subStatusesLogger.info('GraphQL GET subStatuses request to the DB', Severity.LOW);
             response.send(result)
         })
         .catch((err: any) => {
-            subStatusesLogger.error(`graphqlResult CATCH fail ${err}`, Severity.HIGH)
+            subStatusesLogger.error(`graphqlResult CATCH fail ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(`error in fetching data: ${err}`)
         });
 });
@@ -198,12 +198,12 @@ investigationInfo.get('/resorts/:id', (request: Request, response: Response) => 
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    resortsByIdLogger.info('launching get investigated patients resorts data', Severity.LOW)
+    resortsByIdLogger.info('launching get investigated patients resorts data', Severity.LOW);
     return graphqlRequest(GET_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, {id: +request.params.id})
         .then((result) => {
             const resortsData = result?.data?.investigatedPatientById; 
             if (resortsData) {
-                resortsByIdLogger.info('queried investigated patients resorts data successfully', Severity.LOW)
+                resortsByIdLogger.info('queried investigated patients resorts data successfully', Severity.LOW);
                 response.send(resortsData);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -211,12 +211,12 @@ investigationInfo.get('/resorts/:id', (request: Request, response: Response) => 
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                resortsByIdLogger.error(step, Severity.HIGH)
+                resortsByIdLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         })
         .catch(error => {
-            resortsByIdLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH)
+            resortsByIdLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });
@@ -228,14 +228,14 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    resortsLogger.info('launching get investigated patients resorts data', Severity.LOW)
+    resortsLogger.info('launching get investigated patients resorts data', Severity.LOW);
 
     const queryVariables = {...request.body};
 
     return graphqlRequest(UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA, response.locals, queryVariables)
         .then((result) => {
             if (result?.data && !result?.errors) {
-                resortsLogger.info('saved investigated patients resorts data successfully', Severity.LOW)
+                resortsLogger.info('saved investigated patients resorts data successfully', Severity.LOW);
                 response.send(result?.data);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -243,12 +243,12 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                resortsLogger.error(step, Severity.HIGH)
+                resortsLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         })
         .catch(error => {
-            resortsLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH)
+            resortsLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });

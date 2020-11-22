@@ -4,7 +4,7 @@ import { differenceInYears, subDays } from 'date-fns';
 import Exposure from '../../Models/Exposure/Exposure';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import CovidPatient from '../../Models/Exposure/CovidPatient';
 import { UPDATE_EXPOSURES } from '../../DBService/Exposure/Mutation';
 import CovidPatientDBOutput, { AddressDBOutput } from '../../Models/Exposure/CovidPatientDBOutput';
@@ -55,14 +55,14 @@ exposureRoute.get('/exposures/:investigationId', (request: Request, response: Re
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    exposuresLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW)
+    exposuresLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(GET_EXPOSURE_INFO, response.locals, {investigationId: parseInt(request.params.investigationId)})
         .then((result: ExposureByInvestigationId) => {
-            exposuresLogger.info('got response from DB', Severity.LOW)
+            exposuresLogger.info('got response from DB', Severity.LOW);
             response.send(convertExposuresFromDB(result));
         })
         .catch(err => {
-            exposuresLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            exposuresLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(err);
         })
     }
@@ -118,22 +118,22 @@ exposureRoute.get('/optionalExposureSources/:searchValue/:coronaTestDate', (requ
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchRegex} and ${dateToStartSearching}`, Severity.LOW)
+    optionalExposureSourcesLogger.info(`launcing DB request with parameters ${searchRegex} and ${dateToStartSearching}`, Severity.LOW);
     graphqlRequest(GET_EXPOSURE_SOURCE_OPTIONS, response.locals, {searchRegex, dateToStartSearching})
         .then((result: OptionalExposureSourcesResponse) => {
             if (result?.data?.allCovidPatients?.nodes) {
-                optionalExposureSourcesLogger.info('got response from DB', Severity.LOW)
+                optionalExposureSourcesLogger.info('got response from DB', Severity.LOW);
                 let dbBCovidPatients: CovidPatientDBOutput[] = result.data.allCovidPatients.nodes;
                 if (!isPhoneOrIdentityNumber) {
                     dbBCovidPatients = filterCovidPatientsByRegex(searchValue, dbBCovidPatients);
                 }
                 response.send(convertCovidPatientsFromDB(dbBCovidPatients));
             } else {
-                optionalExposureSourcesLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM)
+                optionalExposureSourcesLogger.warn('didnt get exposure source options from DB', Severity.MEDIUM);
             }
         })
         .catch(error => {
-            optionalExposureSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
+            optionalExposureSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
             response.sendStatus(errorStatusCode);
         })
 });
@@ -153,14 +153,14 @@ exposureRoute.post('/updateExposures', (request: Request, response: Response) =>
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    updateExposuresLogger.info(`launching update exposures and flights info with the parameters ${inputExposures}`, Severity.LOW)
+    updateExposuresLogger.info(`launching update exposures and flights info with the parameters ${inputExposures}`, Severity.LOW);
     return graphqlRequest(UPDATE_EXPOSURES, response.locals, inputExposures)
         .then((result) => {
-            updateExposuresLogger.info('saved exposures and flights', Severity.LOW)
+            updateExposuresLogger.info('saved exposures and flights', Severity.LOW);
             response.send(result);
         })
         .catch(error => {
-            updateExposuresLogger.error('error in requesting graphql API request in UPDATE_EXPOSURES request', Severity.HIGH)
+            updateExposuresLogger.error('error in requesting graphql API request in UPDATE_EXPOSURES request', Severity.HIGH);
             response.status(errorStatusCode).send(error)
         })
 });

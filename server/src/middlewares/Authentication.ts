@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import logger from '../Logger/Logger';
 import UserType from '../Models/User/UserType';
-import { Service, Severity } from '../Models/Logger/types';
+import { Severity } from '../Models/Logger/types';
 
 import { graphqlRequest } from '../GraphqlHTTPRequest';
 import { GET_USER_BY_ID } from '../DBService/Users/Query';
@@ -32,16 +32,16 @@ const handleConfidentialAuth = (
         investigation: +request.headers.epidemiologynumber
     });
     if (!userUpn) {
-        authenticationLogger.error('got no user at all', Severity.MEDIUM)
+        authenticationLogger.error('got no user at all', Severity.MEDIUM);
         return response.status(401).json({ error: "unauthorized prod user" });
     }
 
-        authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW)
+        authenticationLogger.info(`authorized azure upn successfully! got user: ${JSON.stringify(userId)}`, Severity.LOW);
 
-        authenticationLogger.info(`request to the graphql API with parameters: ${userId}`, Severity.LOW)
+        authenticationLogger.info(`request to the graphql API with parameters: ${userId}`, Severity.LOW);
 
         graphqlRequest(GET_USER_BY_ID, response.locals, { id: userId }).then((result: any) => {
-            authenticationLogger.info('fetched user by id successfully', Severity.LOW)
+            authenticationLogger.info('fetched user by id successfully', Severity.LOW);
             response.locals.user = {
                 id: userId,
                 name: result.data.userById?.userName,
@@ -53,7 +53,7 @@ const handleConfidentialAuth = (
             };
             return next();
         }).catch(err => {
-            authenticationLogger.error(`error in requesting the graphql API: ${err}`, Severity.HIGH)
+            authenticationLogger.error(`error in requesting the graphql API: ${err}`, Severity.HIGH);
             response.sendStatus(500);
         });;
 }
@@ -69,21 +69,21 @@ const authMiddleware = (
         investigation: +request.headers.epidemiologynumber
     });
     if (process.env.ENVIRONMENT === 'dev' || process.env.ENVIRONMENT === 'prod') {
-        authenticationLogger.info('authenticating with the azure recived upn', Severity.LOW)
+        authenticationLogger.info('authenticating with the azure recived upn', Severity.LOW);
         return handleConfidentialAuth(request, response, next);
     } else {
-        authenticationLogger.info('authenticating with the stubuser recived upn', Severity.LOW)
+        authenticationLogger.info('authenticating with the stubuser recived upn', Severity.LOW);
         const token = request.headers.authorization;
         const user = stubUsers[token as keyof typeof stubUsers];
         if (!user) {
-            authenticationLogger.error(`fake user doesn't exist got the upn: ${token}`, Severity.HIGH)
+            authenticationLogger.error(`fake user doesn't exist got the upn: ${token}`, Severity.HIGH);
             return response.status(401).json({ error: "unauthorized noauth user" });
         } else {
-            authenticationLogger.info(`noauth user found successfully, the user is: ${JSON.stringify(user)}`, Severity.LOW)
+            authenticationLogger.info(`noauth user found successfully, the user is: ${JSON.stringify(user)}`, Severity.LOW);
 
-            authenticationLogger.info(`request to the graphql API with parameters: ${user.id}`, Severity.LOW)
+            authenticationLogger.info(`request to the graphql API with parameters: ${user.id}`, Severity.LOW);
             graphqlRequest(GET_USER_BY_ID, response.locals, { id: user.id }).then((result: any) => {
-                authenticationLogger.info('fetched user by id successfully', Severity.LOW)
+                authenticationLogger.info('fetched user by id successfully', Severity.LOW);
                 response.locals.user = {
                     ...user,
                     userType: result.data.userById?.userType,
@@ -94,7 +94,7 @@ const authMiddleware = (
                 };
                 return next();
             }).catch(err => {
-                authenticationLogger.error(`error in requesting the graphql API due to ${err}`, Severity.HIGH)
+                authenticationLogger.error(`error in requesting the graphql API due to ${err}`, Severity.HIGH);
             });;
 
         }
@@ -113,10 +113,10 @@ export const adminMiddleWare = (
     });
     if (response.locals.user.userType === UserType.ADMIN ||
         response.locals.user.userType === UserType.SUPER_ADMIN) {
-            adminLogger.info('the requested user is admin', Severity.LOW)
+            adminLogger.info('the requested user is admin', Severity.LOW);
             return next();
     } else {
-        adminLogger.error('the user is not admin!', Severity.MEDIUM)
+        adminLogger.error('the user is not admin!', Severity.MEDIUM);
         response.status(401).json({ error: "unauthorized non admin user" })
     }
 };
@@ -132,10 +132,10 @@ export const superAdminMiddleWare = (
         investigation: response.locals.epidemiologynumber
     });
     if (response.locals.user.userType === UserType.SUPER_ADMIN) {
-        adminLogger.info('the requested user is super admin', Severity.LOW)
+        adminLogger.info('the requested user is super admin', Severity.LOW);
         return next();
     } else {
-        adminLogger.error('the user is not super admin!', Severity.MEDIUM)
+        adminLogger.error('the user is not super admin!', Severity.MEDIUM);
         response.status(401).json({ error: "unauthorized non super admin user" })
     }
 };

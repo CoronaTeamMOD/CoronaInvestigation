@@ -5,7 +5,7 @@ import City from '../../Models/Address/City';
 import Street from '../../Models/Address/Street';
 import Country from '../../Models/Address/Country';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import {GET_ALL_CITIES, GET_CITY_STREETS, GET_ALL_COUNTRIES} from '../../DBService/Address/Query';
 
 const addressRoute = Router();
@@ -29,22 +29,22 @@ addressRoute.get('/city/:cityId/streets', (request: Request, response: Response)
     investigation: response.locals.epidemiologynumber,
     user: response.locals.user.id
   });
-  getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`, Severity.LOW)
+  getStreetsOfCityLogger.info(`launcing DB request with parameter ${request.params.cityId}`, Severity.LOW);
   graphqlRequest(GET_CITY_STREETS, response.locals, {id: request.params.cityId}).then((result: any) => {
     let streets: Street[] = [];
-    getStreetsOfCityLogger.info('got response from DB', Severity.LOW)
+    getStreetsOfCityLogger.info('got response from DB', Severity.LOW);
     if(result && result.data && result.data.cityById && result.data.cityById.streetsByCity){
-      getStreetsOfCityLogger.info('got streets from DB', Severity.LOW)
+      getStreetsOfCityLogger.info('got streets from DB', Severity.LOW);
       streets = result.data.cityById.streetsByCity.nodes.map((street: Street) => ({
         id: street.id,
         displayName: street.displayName,
       }));
     } else {
-      getStreetsOfCityLogger.warn('didnt get streets from DB', Severity.MEDIUM)
+      getStreetsOfCityLogger.warn('didnt get streets from DB', Severity.MEDIUM);
     }
     return response.send(streets);
   }).catch(error => {
-    getStreetsOfCityLogger.error(`got error from graphql API ${error}`, Severity.HIGH)
+    getStreetsOfCityLogger.error(`got error from graphql API ${error}`, Severity.HIGH);
     response.sendStatus(500)
   });
 });

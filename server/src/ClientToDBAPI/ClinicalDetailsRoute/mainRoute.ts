@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
-import { Service, Severity } from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import { CREATE_ADDRESS } from '../../DBService/Address/Mutation';
 import Investigation from '../../Models/ClinicalDetails/Investigation';
 import CreateAddressResponse from '../../Models/Address/CreateAddress';
@@ -29,12 +29,12 @@ clinicalDetailsRoute.get('/symptoms', (request: Request, response: Response) => 
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    symptomsLogger.info('launching DB request', Severity.LOW)
+    symptomsLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_SYMPTOMS, response.locals).then((result: any) => {
-        symptomsLogger.info('got respond from DB', Severity.LOW)
+        symptomsLogger.info('got respond from DB', Severity.LOW);
         response.send(result)
     }).catch(error => {
-        symptomsLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
+        symptomsLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -45,12 +45,12 @@ clinicalDetailsRoute.get('/backgroundDiseases', (request: Request, response: Res
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    backgroundDiseasesLogger.info('launching DB request', Severity.LOW)
+    backgroundDiseasesLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_BACKGROUND_DISEASES, response.locals).then((result: any) => {
-        backgroundDiseasesLogger.info('got respond from DB', Severity.LOW)
+        backgroundDiseasesLogger.info('got respond from DB', Severity.LOW);
         response.send(result)
     }).catch(error => {
-        backgroundDiseasesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
+        backgroundDiseasesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -61,17 +61,17 @@ clinicalDetailsRoute.get('/isolationSources', (request: Request, response: Respo
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
-    isolationSourcesLogger.info('start DB request', Severity.LOW)
+    isolationSourcesLogger.info('start DB request', Severity.LOW);
     graphqlRequest(GET_ISOLATION_SOURCES, response.locals).then((result: any) => {
         if(result?.data) {
-            isolationSourcesLogger.info('got response from DB', Severity.LOW)
+            isolationSourcesLogger.info('got response from DB', Severity.LOW);
             response.send(result?.data?.allIsolationSources?.nodes)
         } else {
-            isolationSourcesLogger.error(`couldnt query isolation sources due to ${result?.errors[0]?.message}`, Severity.HIGH)
+            isolationSourcesLogger.error(`couldnt query isolation sources due to ${result?.errors[0]?.message}`, Severity.HIGH);
             response.sendStatus(errorStatusCode);
         }
     }).catch(error => {
-        isolationSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH)
+        isolationSourcesLogger.error(`got error when approaching the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -102,10 +102,10 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     })
-    fetchClinicalDetailsFieldsLogger.info('launching DB request', Severity.LOW)
+    fetchClinicalDetailsFieldsLogger.info('launching DB request', Severity.LOW);
     graphqlRequest(GET_INVESTIGATED_PATIENT_CLINICAL_DETAILS_BY_EPIDEMIOLOGY_NUMBER, response.locals, { epidemiologyNumber: +request.query.epidemiologyNumber }).then(
         (result: GetInvestigatedPatientClinicalDetailsFields) => {
-            fetchClinicalDetailsFieldsLogger.info('got respond from DB', Severity.LOW)
+            fetchClinicalDetailsFieldsLogger.info('got respond from DB', Severity.LOW);
             if (result?.data?.investigationByEpidemiologyNumber) {
                 response.send(convertClinicalDetailsFromDB(result));
             } else {
@@ -113,7 +113,7 @@ clinicalDetailsRoute.get('/getInvestigatedPatientClinicalDetailsFields', (reques
             }
         }
     ).catch(error => {
-        fetchClinicalDetailsFieldsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH)
+        fetchClinicalDetailsFieldsLogger.error(`got error while accessing the graphql API: ${error}`, Severity.HIGH);
         response.sendStatus(errorStatusCode);
     });
 });
@@ -159,30 +159,30 @@ const saveClinicalDetails = (request: Request, response: Response, isolationAddr
         user: response.locals.user.id
     })
 
-    saveClinicalDetailsFieldsLogger.info(`launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`, Severity.LOW)
+    saveClinicalDetailsFieldsLogger.info(`launching update clinical info with the parameters ${JSON.stringify(requestInvestigation)}`, Severity.LOW);
     graphqlRequest(UPDATE_INVESTIGATION, response.locals, requestInvestigation).then(() => {
-        saveClinicalDetailsFieldsLogger.info(`saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`, Severity.LOW)
+        saveClinicalDetailsFieldsLogger.info(`saved clinical info now adding background diseases with the parameters ${JSON.stringify(investigatedPatientBackgroundDeseases)}`, Severity.LOW);
         graphqlRequest(ADD_BACKGROUND_DISEASES, response.locals, investigatedPatientBackgroundDeseases).then(() => {
-            saveClinicalDetailsFieldsLogger.info(`background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`, Severity.LOW)
+            saveClinicalDetailsFieldsLogger.info(`background diseases were added now adding symptoms with the parameters ${JSON.stringify(investigatedPatientSymptoms)}`, Severity.LOW);
             graphqlRequest(ADD_SYMPTOMS, response.locals, investigatedPatientSymptoms).then(() => {
-                saveClinicalDetailsFieldsLogger.info(`symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`, Severity.LOW)
+                saveClinicalDetailsFieldsLogger.info(`symptoms were added now saving covid patient clinical info with the parameters ${JSON.stringify(investigatedPatientClinicalInfo)}`, Severity.LOW);
                 graphqlRequest(UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS, response.locals, investigatedPatientClinicalInfo).then(() => {
-                    saveClinicalDetailsFieldsLogger.info('saved covid patient clinical info', Severity.LOW)
+                    saveClinicalDetailsFieldsLogger.info('saved covid patient clinical info', Severity.LOW);
                     response.send('Added clinical details');
                 }).catch(err => {
-                    saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS request',Severity.HIGH)
+                    saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATED_PATIENT_CLINICAL_DETAILS request',Severity.HIGH);
                     response.status(errorStatusCode).send(err)
                 });
             }).catch(err => {
-                saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_SYMPTOMS request',Severity.HIGH)
+                saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_SYMPTOMS request',Severity.HIGH);
                 response.status(errorStatusCode).send(err)
             });
         }).catch(err => {
-            saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_BACKGROUND_DISEASES request',Severity.HIGH)
+            saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in ADD_BACKGROUND_DISEASES request',Severity.HIGH);
             response.status(errorStatusCode).send(err)
         });
     }).catch(err => {
-        saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATION request',Severity.HIGH)
+        saveClinicalDetailsFieldsLogger.error('error in requesting graphql API request in UPDATE_INVESTIGATION request',Severity.HIGH);
         response.status(errorStatusCode).send(err)
     });
 }
@@ -203,11 +203,11 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
             floorValue: isolationAddress?.floor ? isolationAddress?.floor : null,
             houseNumValue: isolationAddress?.houseNum ? isolationAddress?.houseNum : null,
         }
-        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW)
+        saveClinicalDetailsFieldsLogger.info(`launching the graphql API request for address creation with the parameters: ${JSON.stringify(requestAddress)}`, Severity.LOW);
         graphqlRequest(CREATE_ADDRESS, response.locals, {
             input: requestAddress
         }).then((result: CreateAddressResponse) => {
-            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW)
+            saveClinicalDetailsFieldsLogger.info('got response from the DB for address creation', Severity.LOW);
             saveClinicalDetails(request, response, result.data.insertAndGetAddressId.integer);
         }).catch(err => {
             saveClinicalDetailsFieldsLogger.error(`got errors approaching the graphql API ${err}`,Severity.HIGH)
@@ -224,13 +224,13 @@ clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, 
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    coronaTestDateLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW)
+    coronaTestDateLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, { currInvestigation: Number(request.params.investigationId) })
         .then((result: CoronaTestDateQueryResult) => {
-            coronaTestDateLogger.info('got response from DB', Severity.LOW)
+            coronaTestDateLogger.info('got response from DB', Severity.LOW);
             response.send(result.data.allInvestigations.nodes[0]);
         }).catch(err => {
-            coronaTestDateLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            coronaTestDateLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(err);
         });
 });
@@ -241,19 +241,19 @@ clinicalDetailsRoute.get('/isDeceased/:investigatedPatientId/:isDeceased', (requ
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    isDeceasedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW)
+    isDeceasedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(UPDATE_IS_DECEASED, response.locals, {
         investigatedPatientId: +request.params.investigatedPatientId, isDeceased: Boolean(request.params.isDeceased)
     }).then(result => {
         if (result.data) {
-            isDeceasedLogger.info(`got response from DB ${result}`, Severity.LOW)
+            isDeceasedLogger.info(`got response from DB ${result}`, Severity.LOW);
             calculateInvestigationComplexity(request, response, complexityCalculationMessage);
         }
         else {
             return Promise.reject(JSON.stringify(result));
         }
     }).catch(err => {
-        isDeceasedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+        isDeceasedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
         response.status(errorStatusCode).json({message: 'failed to save the is deceased due to ' + err});
     });
 });
@@ -264,20 +264,20 @@ clinicalDetailsRoute.get('/isCurrentlyHospitialized/:investigatedPatientId/:isCu
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
-    isCurrentlyHospitializedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW)
+    isCurrentlyHospitializedLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
     graphqlRequest(UPDATE_IS_CURRENTLY_HOSPITIALIZED, response.locals, {
         investigatedPatientId: +request.params.investigatedPatientId, isCurrentlyHospitalized: Boolean(request.params.isCurrentlyHospitalized)
     }).then(result => {
         console.log("RES: ", result)
         if (result.data) {
-            isCurrentlyHospitializedLogger.info('got response from DB', Severity.LOW)
+            isCurrentlyHospitializedLogger.info('got response from DB', Severity.LOW);
             calculateInvestigationComplexity(request, response, complexityCalculationMessage);
         }
         else {
             return Promise.reject(JSON.stringify(result));
         }
     }).catch(err => {
-        isCurrentlyHospitializedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+        isCurrentlyHospitializedLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
         response.status(errorStatusCode).json({message: 'failed to save the is currently hospitialized due to ' + err});
     });
 });

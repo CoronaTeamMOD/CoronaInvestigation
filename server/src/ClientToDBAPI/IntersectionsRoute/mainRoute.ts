@@ -2,7 +2,7 @@ import {Router, Request, Response} from 'express';
 
 import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
-import {Service, Severity} from '../../Models/Logger/types';
+import { Severity } from '../../Models/Logger/types';
 import {GetContactTypeResponse} from '../../Models/ContactEvent/GetContactType';
 import {
     GetPlaceSubTypesByTypesResposne,
@@ -32,9 +32,9 @@ export const handleDBErrors = (response: Response, errorMsg: string, workflow: s
         investigation: response.locals.epidemiologynumber
     });
     if(errorMsg.includes(duplicatesErrorMsg)) {
-        handleDBErrorsLogger.info('found duplicate ids', Severity.LOW)
+        handleDBErrorsLogger.info('found duplicate ids', Severity.LOW);
     } else {
-        handleDBErrorsLogger.error(`got errors approaching the graphql API ${errorMsg}`, Severity.HIGH)
+        handleDBErrorsLogger.error(`got errors approaching the graphql API ${errorMsg}`, Severity.HIGH);
     }
     response.send(errorMsg);
 }
@@ -49,17 +49,17 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    getPlacesSubTypesByTypesLogger.info('Getting Places And SubTypes By Types', Severity.LOW)
+    getPlacesSubTypesByTypesLogger.info('Getting Places And SubTypes By Types', Severity.LOW);
     graphqlRequest(GET_LOACTIONS_SUB_TYPES_BY_TYPES, response.locals)
         .then((result: GetPlaceSubTypesByTypesResposne) => {
-            getPlacesSubTypesByTypesLogger.info('got response from DB', Severity.LOW)
+            getPlacesSubTypesByTypesLogger.info('got response from DB', Severity.LOW);
             const locationsSubTypesByTypes: PlacesSubTypesByTypes = {};
             result.data.allPlaceTypes.nodes.forEach(type =>
                 locationsSubTypesByTypes[type.displayName] = type.placeSubTypesByParentPlaceType.nodes
             );
             response.send(locationsSubTypesByTypes);
         }).catch((err) => {
-            getPlacesSubTypesByTypesLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            getPlacesSubTypesByTypesLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(err);
     });
 });
@@ -89,13 +89,13 @@ intersectionsRoute.get('/contactTypes', (request: Request, response: Response) =
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    contactTypesLogger.info('launcing DB request', Severity.LOW)
+    contactTypesLogger.info('launcing DB request', Severity.LOW);
     graphqlRequest(GET_ALL_CONTACT_TYPES, response.locals)
         .then((result: GetContactTypeResponse) => {
-            contactTypesLogger.info('got response from DB', Severity.LOW)
+            contactTypesLogger.info('got response from DB', Severity.LOW);
             response.send(result.data.allContactTypes.nodes);
         }).catch((err) => {
-            contactTypesLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            contactTypesLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send('error in fetching data: ' + err);
     });
 });
@@ -106,14 +106,14 @@ intersectionsRoute.get('/contactEvent/:investigationId', (request: Request, resp
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    contactEventLogger.info('launcing DB request', Severity.LOW)
+    contactEventLogger.info('launcing DB request', Severity.LOW);
     graphqlRequest(GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID, response.locals, {currInvestigation: Number(request.params.investigationId)})
         .then((result: GetContactEventResponse) => {
-            contactEventLogger.info('got response from DB', Severity.LOW)
+            contactEventLogger.info('got response from DB', Severity.LOW);
             const allContactEvents: any = result.data.allContactEvents.nodes.map((event: ContactEvent) => convertDBEvent(event));
             response.send(allContactEvents);
         }).catch((err) => {
-            contactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            contactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send('error in fetching data: ' + err);
     });
 });
@@ -128,18 +128,18 @@ intersectionsRoute.post('/createContactEvent', (request: Request, response: Resp
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    createContactEventLogger.info('launcing DB request', Severity.LOW)
+    createContactEventLogger.info('launcing DB request', Severity.LOW);
     graphqlRequest(CREATE_CONTACT_EVENT, response.locals, {contactEvent: JSON.stringify(newEvent)})
         .then(result => {
             if (result?.data?.updateContactEventFunction) {
-                createContactEventLogger.info('got response from DB', Severity.LOW)
+                createContactEventLogger.info('got response from DB', Severity.LOW);
                 response.send(result)
             } else if(result.errors) {
                 handleDBErrors(response, result.errors[0].message, workflow)
             }
         })
         .catch(err => {
-            createContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            createContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(`error in creating event: ${err}`);
         });
 });
@@ -154,18 +154,18 @@ intersectionsRoute.post('/updateContactEvent', (request: Request, response: Resp
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    updateContactEventLogger.info('launcing DB request', Severity.LOW)
+    updateContactEventLogger.info('launcing DB request', Severity.LOW);
     graphqlRequest(EDIT_CONTACT_EVENT, response.locals, {event: JSON.stringify(updatedEvent)})
         .then(result => {
             if(result?.data?.updateContactEventFunction) {
-                updateContactEventLogger.info('got response from DB', Severity.LOW)
+                updateContactEventLogger.info('got response from DB', Severity.LOW);
                 response.send(result);
             } else if(result.errors) {
                 handleDBErrors(response, result.errors[0].message, workflow)
             }
         })
         .catch(err => {
-            updateContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            updateContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(`error in updating event: ${err}`);
         });
 });
@@ -176,15 +176,15 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    deleteContactEventLogger.info('launcing DB request', Severity.LOW)
+    deleteContactEventLogger.info('launcing DB request', Severity.LOW);
     const contactEventId = +request.query.contactEventId;
     graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
         .then(result => {
-            deleteContactEventLogger.info('got response from DB', Severity.LOW)
+            deleteContactEventLogger.info('got response from DB', Severity.LOW);
             response.send(result);
         })
         .catch(err => {
-            deleteContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            deleteContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(`error in deleting event: ${err}`);
         });
 });
@@ -195,15 +195,15 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    contactedPersonLogger.info('launcing DB request', Severity.LOW)
+    contactedPersonLogger.info('launcing DB request', Severity.LOW);
     const contactedPersonId = +request.query.contactedPersonId;
     graphqlRequest(DELETE_CONTACTED_PERSON, response.locals, {contactedPersonId})
         .then(result => {
-            contactedPersonLogger.info('got response from DB', Severity.LOW)
+            contactedPersonLogger.info('got response from DB', Severity.LOW);
             response.send(result);
         })
         .catch(err => {
-            contactedPersonLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH)
+            contactedPersonLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send('error in deleting event: ' + err);
         });
 });
