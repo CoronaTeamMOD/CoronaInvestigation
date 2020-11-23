@@ -5,6 +5,7 @@ import { makePluginHook, PostGraphileOptions } from 'postgraphile';
 require('dotenv').config();
 
 const ConnectionFilterPlugin = require('postgraphile-plugin-connection-filter');
+const PgOrderByRelatedPlugin = require('@graphile-contrib/pg-order-by-related');
 const pluginHook = makePluginHook([PgPubsub]);
 
 const genericOptions: PostGraphileOptions = {
@@ -12,7 +13,7 @@ const genericOptions: PostGraphileOptions = {
     graphiql: process.env.ENVIRONMENT !== 'prod',
     enhanceGraphiql: true,
     enableCors: true,
-    appendPlugins: [ConnectionFilterPlugin, pluginHook],
+    appendPlugins: [ConnectionFilterPlugin, pluginHook, PgOrderByRelatedPlugin],
     graphileBuildOptions: {
         connectionFilterRelations: true
     },

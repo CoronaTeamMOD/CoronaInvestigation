@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@graphile-contrib/pg-order-by-related": "^1.0.0-beta.6",
     "@graphile/pg-pubsub": "^4.8.0",
     "applicationinsights": "^1.8.7",
     "axios": "^0.20.0",
