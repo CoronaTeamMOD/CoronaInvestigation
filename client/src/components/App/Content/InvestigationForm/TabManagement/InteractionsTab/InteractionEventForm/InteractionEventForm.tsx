@@ -192,13 +192,15 @@ const InteractionEventForm: React.FC<Props> = (
     return methods.handleSubmit(
       () => {
         const filTimeValidationMessage = 'יש למלא שעה';
-        if (!startTime) {
-          methods.setError(InteractionEventDialogFields.START_TIME, { type: 'manual', message: filTimeValidationMessage });
+        if(!isUnknownTime) {
+          if (!startTime) {
+            methods.setError(InteractionEventDialogFields.START_TIME, { type: 'manual', message: filTimeValidationMessage });
+          }
+          if (!endTime) {
+            methods.setError(InteractionEventDialogFields.END_TIME, { type: 'manual', message: filTimeValidationMessage });
+          }
         }
-        if (!endTime) {
-          methods.setError(InteractionEventDialogFields.END_TIME, { type: 'manual', message: filTimeValidationMessage });
-        }
-        if (startTime && endTime) {
+        if (Boolean(startTime && endTime) || isUnknownTime) {
           onSubmit(methods.getValues())
         }
       })
