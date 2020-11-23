@@ -5,11 +5,10 @@ import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import IsolationSource from 'models/IsolationSource';
 
 export interface useClinicalDetailsIncome {
+    id: number;
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
-    setIsolationCityName: React.Dispatch<React.SetStateAction<string>>;
-    setIsolationStreetName: React.Dispatch<React.SetStateAction<string>>;
-    setStreetsInCity: React.Dispatch<React.SetStateAction<Street[]>>;
+    setStreetsInCity: React.Dispatch<React.SetStateAction<Map<string,Street>>>;
 };
 
 export interface useClinicalDetailsOutcome {
