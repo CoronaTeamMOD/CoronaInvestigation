@@ -43,12 +43,15 @@ export const initialClinicalDetails: ClinicalDetailsData = {
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity } = parameters;
+    const { id, setSymptoms, setBackgroundDiseases,
+            setStreetsInCity } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
+    const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
+    
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
 
     const { alertError } = useCustomSwal();
@@ -123,7 +126,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
             if (result?.data) {
                 getStreetByCityLogger.info('got data from the server', Severity.LOW);
-                setStreetsInCity(result.data.map((node: Street) => node))
+                const streets: Map<string, Street> = new Map();
+                result.data.forEach((street: Street) => {
+                    streets.set(street.id, street)
+                });
+                setStreetsInCity(streets);
             } else {
                 getStreetByCityLogger.error(`got errors in server result: ${JSON.stringify(result)}`, Severity.HIGH);
             }
@@ -148,21 +155,17 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (patientAddress !== null && patientAddress.cityByCity !== null) {
-                        let street = '';
-                        if (patientAddress.streetByStreet !== null) {
-                            street = patientAddress.streetByStreet.id;
-                            setIsolationStreetName(patientAddress.streetByStreet.displayName);
-                        }
-                        setIsolationCityName(patientAddress.cityByCity.displayName);
+                    if (tabsValidations[id] === null && !patientAddress.cityByCity && !patientAddress.streetByStreet && 
+                        !patientAddress.floor && !patientAddress.houseNum) {
+                        patientAddress = address;
+                    }
+                    else {
                         patientAddress = {
-                            city: patientAddress.cityByCity.id,
-                            street,
+                            city: patientAddress.cityByCity?.id,
+                            street: patientAddress.streetByStreet?.id,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
-                    } else {
-                        patientAddress = address;
                     }
                     const initialDBClinicalDetailsToSet = {
                         ...initialClinicalDetails,

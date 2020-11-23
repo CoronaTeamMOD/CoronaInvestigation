@@ -10,11 +10,11 @@ import Street from 'models/Street';
 import Gender from 'models/enums/Gender';
 import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
+import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import { cityFilterOptions, streetFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 
 import { useStyles } from './ClinicalDetailsStyles';
 import IsolationDatesFields from './IsolationDatesFields';
@@ -37,15 +37,13 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     
     const [symptoms, setSymptoms] = React.useState<string[]>([]);
     const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
-    const [isolationCityName, setIsolationCityName] = React.useState<string>('');
-    const [isolationStreetName, setIsolationStreetName] = React.useState<string>('');
-    const [streetsInCity, setStreetsInCity] = React.useState<Street[]>([]);
+    const [streetsInCity, setStreetsInCity] = React.useState<Map<string, Street>>(new Map());
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = useClinicalDetails({
-            setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity });
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = 
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, setStreetsInCity });
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -90,12 +88,14 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const watchAddress = methods.watch(ClinicalDetailsFields.ISOLATION_ADDRESS);
 
     useEffect(() => {
-        watchAddress.city && getStreetByCity(watchAddress.city);
-    }, [watchAddress?.city]);
-
-    useEffect(() => {
         fetchClinicalDetails(methods.reset, methods.trigger);
     }, []);
+
+    useEffect(() => {
+        if (watchAddress.city) {
+            getStreetByCity(watchAddress.city);
+        } 
+    }, [watchAddress?.city]);
 
     useEffect(() => {
         if (watchIsInIsolation === false) {
@@ -177,35 +177,12 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 test-id='currentQuarantineCity'
                                                 options={Array.from(cities, ([id, value]) => ({ id, value }))}
                                                 getOptionLabel={(option) => option ? option.value.displayName : option}
-                                                inputValue={isolationCityName}
-                                                filterOptions={cityFilterOptions}
-                                                onChange={(event, selectedCity) => {
-                                                    props.onChange(selectedCity ? selectedCity.id : '')
-                                                    if (selectedCity?.id && selectedCity.id !== props.value) {
-                                                        setIsolationStreetName('');
-                                                        methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                                        getStreetByCity(selectedCity.id);
-                                                    }
-                                                }}
-                                                onInputChange={(event, selectedCityName) => {
-                                                    if (event?.type !== 'blur') {
-                                                        setIsolationCityName(selectedCityName);
-                                                        if (selectedCityName === '') {
-                                                            setStreetsInCity([]);
-                                                            props.onChange('');
-                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                                        }
-                                                    }
-                                                }}
+                                                value={props.value && {id: props.value as string, value: cities.get(props.value) as City}}
+                                                onChange={(event, selectedCity) => props.onChange(selectedCity ? selectedCity.id : '')}
                                                 renderInput={(params) =>
                                                     <TextField
-                                                        error={methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && 
-                                                               methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY] ? true : false}
-                                                        label={
-                                                            methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                                            methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_CITY]?.message
-                                                             || 'עיר *'
-                                                        }
+                                                        error={Boolean(get(methods.errors, `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`))}
+                                                        label={get(methods.errors, `${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_CITY}`)?.message || 'עיר *'}
                                                         {...params}
                                                         placeholder='עיר'
                                                     />
@@ -220,33 +197,23 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                         control={methods.control}
                                         render={(props) => (
                                             <Autocomplete
-                                                options={streetsInCity}
-                                                getOptionLabel={(option) => option ? option.displayName : option}
-                                                inputValue={isolationStreetName}
-                                                filterOptions={streetFilterOptions}
-                                                onChange={(event, selectedStreet) => props.onChange(selectedStreet ? selectedStreet.id : '')}
-                                                onInputChange={(event, selectedStreetName) => {
-                                                    if (event?.type !== 'blur') {
-                                                        setIsolationStreetName(selectedStreetName);
-                                                        if (selectedStreetName === '') {
-                                                            props.onChange('');
-                                                            methods.setValue(`${ClinicalDetailsFields.ISOLATION_ADDRESS}.${ClinicalDetailsFields.ISOLATION_STREET}`, '');
-                                                        }
-                                                    }
+                                                options={Array.from(streetsInCity, ([id, value]) => ({ id, value }))}
+                                                getOptionLabel={(option) => {
+                                                    if (option) {
+                                                        if (option?.value) return option.value?.displayName
+                                                        else return '';
+                                                    } else return option
+                                                }}
+                                                value={props.value && {id: props.value as string, value: streetsInCity.get(props.value) as Street}}
+                                                onChange={(event, selectedStreet) => {
+                                                    props.onChange(selectedStreet ? selectedStreet.id : '')
                                                 }}
                                                 renderInput={(params) =>
                                                     <TextField
                                                         test-id='currentQuarantineStreet'
-                                                        error={methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS] && methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ? true : false}
-                                                        label={
-                                                            methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS] &&
-                                                            methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET] ?
-                                                            methods.errors[ClinicalDetailsFields.ISOLATION_ADDRESS][ClinicalDetailsFields.ISOLATION_STREET].message
-                                                                :
-                                                                'רחוב'
-                                                        }
                                                         {...params}
                                                         placeholder='רחוב'
+                                                        label='רחוב'
                                                     />
                                                 }
                                             />
