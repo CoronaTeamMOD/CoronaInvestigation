@@ -5,8 +5,8 @@ import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
+import { GET_ALL_INVESTIGATION_STATUS, ORDERED_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { GET_USER_INVESTIGATIONS, GET_GROUP_INVESTIGATIONS, GET_ALL_INVESTIGATION_STATUS, ORDERED_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 
 import { convertOrderedInvestigationsData } from './utils';
 
@@ -18,6 +18,7 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
     const getInvestigationsParameters = {
         filter: {creator: {equalTo: response.locals.user.id}},
         orderBy: request.params.orderBy,
+        // for future pagination
         offset: 0,
         size: 100
     };
@@ -48,6 +49,7 @@ landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request:
     const getInvestigationsParameters = {
         filter: {userByCreator: {countyByInvestigationGroup: {id: {equalTo: +response.locals.user.investigationGroup}}}},
         orderBy: request.params.orderBy,
+        // for future pagination
         offset: 0,
         size: 100
     };
