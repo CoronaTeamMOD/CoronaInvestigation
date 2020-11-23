@@ -39,11 +39,14 @@ export const initialClinicalDetails: ClinicalDetailsData = {
 
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
 
-    const { setSymptoms, setBackgroundDiseases, setIsolationCityName, setIsolationStreetName, setStreetsInCity } = parameters;
+    const { id, setSymptoms, setBackgroundDiseases,
+            setStreetsInCity } = parameters;
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.id);
+    const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
+
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
     
     React.useEffect(() => {
@@ -167,7 +170,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     user: userId,
                     investigation: epidemiologyNumber
                 })
-                setStreetsInCity(result.data.map((node: Street) => node))
+                const streets: Map<string, Street> = new Map();
+                result.data.forEach((street: Street) => {
+                    streets.set(street.id, street)
+                });
+                setStreetsInCity(streets)
             } else {
                 logger.error({
                     service: Service.CLIENT,
@@ -207,22 +214,18 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     });
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (patientAddress !== null && patientAddress.cityByCity !== null) {
-                        let street = '';
-                        if (patientAddress.streetByStreet !== null) {
-                            street = patientAddress.streetByStreet.id;
-                            setIsolationStreetName(patientAddress.streetByStreet.displayName);
-                        }
-                        setIsolationCityName(patientAddress.cityByCity.displayName);
+                    if (tabsValidations[id] === null && !patientAddress.cityByCity && !patientAddress.streetByStreet && 
+                        !patientAddress.floor && !patientAddress.houseNum) {
+                        patientAddress = address;
+                    }
+                    else {
                         patientAddress = {
-                            city: patientAddress.cityByCity.id,
-                            street,
+                            city: patientAddress.cityByCity?.id,
+                            street: patientAddress.streetByStreet?.id,
                             floor: patientAddress.floor,
                             houseNum: patientAddress.houseNum
                         }
-                    } else {
-                        patientAddress = address;
-                    }
+                    } 
                     const initialDBClinicalDetailsToSet = {
                         ...initialClinicalDetails,
                         isPregnant: Boolean(patientClinicalDetails.isPregnant),
