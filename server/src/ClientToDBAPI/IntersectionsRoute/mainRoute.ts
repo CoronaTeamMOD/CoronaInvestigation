@@ -231,7 +231,6 @@ intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, 
     involvedContacts.info('launcing DB request', Severity.LOW);
     graphqlRequest(GET_ALL_INVOLVED_CONTACTS, response.locals, {currInvestigation: Number(request.params.investigationId)})
         .then((result: GetInvolvedContactsResponse) => {
-            console.log(result);
             if (result?.data?.allInvolvedContacts?.nodes) {
                 involvedContacts.info('got response from DB', Severity.LOW);
                 const allContactEvents: any = result.data.allInvolvedContacts.nodes.map((contact: InvolvedContactDB) => convertInvolvedContact(contact));

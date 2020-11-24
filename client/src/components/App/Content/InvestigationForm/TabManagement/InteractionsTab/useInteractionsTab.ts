@@ -9,11 +9,11 @@ import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import InvolvementReason from 'models/enums/InvolvementReason';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
-import InvolvementReason from 'models/enums/InvolvementReason';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
@@ -22,6 +22,7 @@ const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, א
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
 const uxSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
 const maxInvestigatedDays: number = 21;
+
 interface GroupedInvolvedGroups {
     familyMembers: InvolvedContact[],
     educationMembers: InvolvedContact[],

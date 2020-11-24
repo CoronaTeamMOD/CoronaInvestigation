@@ -15,7 +15,6 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
-import { GET_ALL_FAMILY_RELATIONSHIPS } from '../../DBService/ContactedPeople/Query';
 
 const errorStatusCode = 500;
 
