@@ -89,3 +89,28 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
 }
 `;
 
+export const GET_ALL_INVOLVED_CONTACTS = gql`
+query getAllInvolvedContacts {
+  allInvolvedContacts {
+    nodes {
+      familyRelationshipByFamilyRelationship {
+        familyRelationship: displayName
+      }
+      personByPersonId {
+        birthDate
+        additionalPhoneNumber
+        firstName
+        identificationNumber
+        identificationType
+        lastName
+        phoneNumber
+      }
+      involvementReason,
+      isContactedPerson
+      cityByIsolationCity {
+        city: displayName
+      }
+    }
+  }
+}
+`;

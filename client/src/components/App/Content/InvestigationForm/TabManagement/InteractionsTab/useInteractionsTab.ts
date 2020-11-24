@@ -5,25 +5,33 @@ import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import StoreStateType from 'redux/storeStateType';
 import { Severity } from 'models/Logger';
+import StoreStateType from 'redux/storeStateType';
+import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
 import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
+import InvolvementReason from 'models/enums/InvolvementReason';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 7;
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
+const uxSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
 const maxInvestigatedDays: number = 21;
+interface GroupedInvolvedGroups {
+    familyMembers: InvolvedContact[],
+    educationMembers: InvolvedContact[],
+}
 
 export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
-    const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate } = parameters;
+    const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
+            setEducationMembers, setFamilyMembers, setInteractionsTabUx } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
@@ -73,6 +81,64 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             });
     }
 
+    const groupInvolvedContacts = (involvedContacts: InvolvedContact[]) : GroupedInvolvedGroups => {
+        return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {    
+            if (contact.involvementReason === InvolvementReason.FAMILY) {
+                return {
+                    familyMembers: [...previous.familyMembers, contact],
+                    educationMembers: previous.educationMembers
+                }
+            }
+            return {
+                educationMembers: [...previous.educationMembers, contact],
+                familyMembers: previous.familyMembers
+            }
+        }, {familyMembers: [], educationMembers: []});
+    }
+
+    const loadInvolvedContacts = () => {
+        const loadInvolvedContactsLogger = logger.setup({
+          workflow: 'loading involved contacts',
+          investigation: epidemiologyNumber,
+          user: userId
+        });
+        loadInvolvedContactsLogger.info('launching db request', Severity.LOW);
+        axios.get(`/intersections/involvedContacts/${epidemiologyNumber}`)
+        .then((result) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
+                const involvedContacts : InvolvedContact[] = result?.data;
+                const { familyMembers, educationMembers } = groupInvolvedContacts(involvedContacts);
+                setFamilyMembers(familyMembers);
+                setEducationMembers(educationMembers);
+            } else {
+                loadInvolvedContactsLogger.error('failed to get response due to ' + result, Severity.HIGH);    
+            }
+        }).catch((error) => {
+            loadInvolvedContactsLogger.error('failed to get response due to ' + error, Severity.HIGH);
+        });
+    }
+
+    const getInteractionsTabUx = () => {
+        const interactionsTabUxLogger = logger.setup({
+            workflow: 'fetching interactions tab ux data',
+            investigation: epidemiologyNumber,
+            user: userId
+          });
+          interactionsTabUxLogger.info('launching db request', Severity.LOW);
+          axios.get(`/investigationInfo/interactionsTabUx/${epidemiologyNumber}`)
+          .then((result) => {
+              if (result?.data) {
+                  interactionsTabUxLogger.info('got response successfully', Severity.LOW);
+                  setInteractionsTabUx(result?.data);
+              } else {
+                  interactionsTabUxLogger.error('failed to get response due to ' + result, Severity.HIGH);    
+              }
+          }).catch((error) => {
+              interactionsTabUxLogger.error('failed to get response due to ' + error, Severity.HIGH);
+          });
+    }
+
     const loadInteractions = () => {
         const loadInteractionsLogger = logger.setup({
             workflow: 'Fetching Interactions',
@@ -97,8 +163,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     useEffect(() => {
         loadInteractions();
+        loadInvolvedContacts();
         getCoronaTestDate();
         getClinicalDetailsSymptoms();
+        getInteractionsTabUx();
     }, []);
 
     const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
@@ -201,12 +269,29 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     }
 
+    const saveInvestigaionUxFamily = () : Promise<void> => {
+        const saveInvestigaionUxLogger = logger.setup({
+            workflow: 'Saving investigaion ux family data',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
+        return axios.post('/investigationInfo/investigaionUxFamily', {
+            id: epidemiologyNumber,
+            allowUncontactedFamily: true,
+        }).then(() => {
+            saveInvestigaionUxLogger.info('saved to db successfully', Severity.LOW);
+        }).catch((error) => {
+            saveInvestigaionUxLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            alertError(uxSaveFailedMsg);
+        })
+    }
 
     return {
         getDatesToInvestigate,
         loadInteractions,
         handleDeleteContactEvent,
-        handleDeleteContactedPerson
+        handleDeleteContactedPerson,
+        saveInvestigaionUxFamily
     }
 };
 

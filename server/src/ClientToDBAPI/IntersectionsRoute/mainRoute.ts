@@ -8,7 +8,12 @@ import {
     GetPlaceSubTypesByTypesResposne,
     PlacesSubTypesByTypes
 } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
-import {GetContactEventResponse, ContactEvent} from '../../Models/ContactEvent/GetContactEvent';
+import {
+    GetContactEventResponse, 
+    ContactEvent} from '../../Models/ContactEvent/GetContactEvent';
+import {
+    GetInvolvedContactsResponse, 
+    InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import {
     EDIT_CONTACT_EVENT,
     CREATE_CONTACT_EVENT,
@@ -18,7 +23,8 @@ import {
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID,
     GET_LOACTIONS_SUB_TYPES_BY_TYPES,
-    GET_ALL_CONTACT_TYPES
+    GET_ALL_CONTACT_TYPES,
+    GET_ALL_INVOLVED_CONTACTS
 } from '../../DBService/ContactEvent/Query';
 
 const errorStatusCode = 500;
@@ -206,6 +212,39 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
             contactedPersonLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send('error in deleting event: ' + err);
         });
+});
+
+const convertInvolvedContact = (contact: InvolvedContactDB) => ({
+    isContactedPerson: contact.isContactedPerson,
+    involvementReason: contact.involvementReason,
+    ...contact.familyRelationshipByFamilyRelationship,
+    ...contact.cityByIsolationCity,
+    ...contact.personByPersonId,
+});
+
+intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, response: Response) => {
+    const involvedContacts = logger.setup({
+        workflow: 'Getting involved contacts By Investigation ID',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    involvedContacts.info('launcing DB request', Severity.LOW);
+    graphqlRequest(GET_ALL_INVOLVED_CONTACTS, response.locals, {currInvestigation: Number(request.params.investigationId)})
+        .then((result: GetInvolvedContactsResponse) => {
+            console.log(result);
+            if (result?.data?.allInvolvedContacts?.nodes) {
+                involvedContacts.info('got response from DB', Severity.LOW);
+                const allContactEvents: any = result.data.allInvolvedContacts.nodes.map((contact: InvolvedContactDB) => convertInvolvedContact(contact));
+                response.send(allContactEvents);
+            } else {
+                const message = result?.errors[0]?.message;
+                involvedContacts.error(`got errors approaching the graphql API ${message}`, Severity.HIGH);
+                response.status(errorStatusCode).send('error in fetching data: ' + message);
+            }
+        }).catch((err) => {
+            involvedContacts.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send('error in fetching data: ' + err);
+    });
 });
 
 export default intersectionsRoute;

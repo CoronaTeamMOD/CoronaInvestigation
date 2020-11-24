@@ -54,4 +54,3 @@ export interface ContactEvent {
         nodes: ContactedPerson[]
     }
 }
-

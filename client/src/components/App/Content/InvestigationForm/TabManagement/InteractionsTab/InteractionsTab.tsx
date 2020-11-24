@@ -3,14 +3,21 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import React, { useState, useEffect } from 'react';
 
+import InvolvedContact from 'models/InvolvedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
+import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
+import InteractionsTabUx from 'models/InteractionsTabUx';
+
+const defaultInteractionsTabUx : InteractionsTabUx = {
+    allowUncontactedFamily: false
+}
 
 const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
@@ -23,13 +30,20 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [interactionsMap, setInteractionsMap] = useState<Map<number, InteractionEventDialogData[]>>(new Map<number, InteractionEventDialogData[]>())
     const [interactions, setInteractions] = useState<InteractionEventDialogData[]>([]);
     const [datesToInvestigate, setDatesToInvestigate] = useState<Date[]>([]);
+    const [interactionsTabUx, setInteractionsTabUx] = useState<InteractionsTabUx>(defaultInteractionsTabUx);
+    const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
+    const [familyMembers, setFamilyMembers] = useState<InvolvedContact[]>([]);
+    const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
 
-    const { loadInteractions, handleDeleteContactEvent, handleDeleteContactedPerson } =
+    const { loadInteractions, handleDeleteContactEvent, handleDeleteContactedPerson, saveInvestigaionUxFamily } =
         useInteractionsTab({
             setInteractions,
             interactions,
             setAreThereContacts,
-            setDatesToInvestigate
+            setDatesToInvestigate,
+            setEducationMembers,
+            setFamilyMembers,
+            setInteractionsTabUx
         });
 
     useEffect(() => {
@@ -53,8 +67,24 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembers.filter(member => !member.isContactedPerson);
+        const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
+        if (!interactionsTabUx.allowUncontactedFamily && areThereUncontactedMembers) {
+            setUncontactedFamilyMembers(uncontactedFamilyMembersArray);
+        } else {
+            completeTabChange();
+        }
+    }
+
+    const allowUncontactedInvolved = () => {
+        saveInvestigaionUxFamily().then(() => completeTabChange());
+    }
+
+    const completeTabChange = () => {
         setFormState(investigationId, id, true);
     }
+
+    const closeFamilyDialog = () => setUncontactedFamilyMembers([]);
 
     const generateContactCard = (interactionDate: Date) => {
         return (
@@ -98,6 +128,11 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactions={interactions}
                     />
                 }
+                <FamilyContactsDialog 
+                    uncontactedFamilyMembers={uncontactedFamilyMembers}
+                    isOpen={uncontactedFamilyMembers.length > 0} 
+                    closeDialog={closeFamilyDialog}
+                    confirmDialog={allowUncontactedInvolved}/>
             </form>
         </>
     )
