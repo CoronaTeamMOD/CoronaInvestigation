@@ -74,6 +74,7 @@ const GroupedInvestigationsForm : React.FC<Props> = () => {
                                     onOpen={() => setIsReasonsAutoCompleteOpen(true)}
                                     onClose={() => setIsReasonsAutoCompleteOpen(false)}
                                     loading={reasonsAutoCompleteLoading}
+                                    loadingText='טוען...'
                                     renderInput={(params) =>
                                         <TextField
                                             {...params}
