@@ -71,8 +71,6 @@ export const initialExposureOrFlight: Exposure = {
     flightEndDate: null,
     airline: null,
     flightNum: null,
-    wasInEilat: false,
-    wasInDeadSea: false,
 };
 
 export const isConfirmedExposureInvalid = (exposure: Exposure) =>
