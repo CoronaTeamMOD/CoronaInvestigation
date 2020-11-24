@@ -464,7 +464,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                             {
                                 ...investigation,
-                                // wasInvestigationTransferred: true,
                                 investigator: {
                                     id: newSelectedInvestigator.id,
                                     userName: newSelectedInvestigator.value.userName
@@ -547,7 +546,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
                                 {
                                     ...investigation,
-                                    // wasInvestigationTransferred: true,
                                     investigationDesk: newSelectedDesk.deskName
                                 }
                                 : investigation
