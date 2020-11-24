@@ -14,6 +14,7 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
+import { adminMiddleWare } from '../../middlewares/Authentication';
 
 const errorStatusCode = 500;
 
@@ -69,6 +70,35 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
             staticInfoLogger.error(`failed to fetch static info due to ${error}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
         });
+});
+
+investigationInfo.get('/groupedInvestigations/reasons', adminMiddleWare,  (request: Request, response: Response) => {
+    const reasonsLogger = logger.setup({
+        workflow: 'query reasons for grouped investigations',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    reasonsLogger.info('requesting the graphql API to query reasons', Severity.LOW);
+    const reasons = [
+        {
+            id: 100000000,
+            displayName: 'בני משפחה (מגורים משותפים)'
+        },
+        {
+            id: 100000001,
+            displayName: 'טלפון זהה'
+        },
+        {
+            id: 100000002,
+            displayName: 'שייכות למוסד משותף'
+        },
+        {
+            id: 100000004,
+            displayName: 'אחר'
+        }
+    ]
+    reasonsLogger.info('query reasons successfully', Severity.LOW);
+    response.send(reasons);
 });
 
 investigationInfo.post('/comment', (request: Request, response: Response) => {
