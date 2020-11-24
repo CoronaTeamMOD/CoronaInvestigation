@@ -8,6 +8,7 @@ export interface InvestigationTableFooterParameters {
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     setOpenDesksDialog: React.Dispatch<React.SetStateAction<boolean>>;
     setOpenInvestigatorsDialog: React.Dispatch<React.SetStateAction<boolean>>;
+    setOpenGroupedInvestigations: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface InvestigationTableFooterOutcome {
@@ -15,6 +16,8 @@ export interface InvestigationTableFooterOutcome {
     handleCloseDesksDialog: () => void;
     handleOpenInvestigatorsDialog: () => void;
     handleCloseInvestigatorsDialog: () => void;
+    handleOpenGroupedInvestigations: () => void;
+    handleCloseGroupedInvestigations: () => void;
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
     handleConfirmInvestigatorsDialog: (updatedIvestigator: InvestigatorOption, transferReason: string) => void;
 };
