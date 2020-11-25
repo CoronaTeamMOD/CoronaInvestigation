@@ -7,10 +7,10 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
+import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
-import { setFormState } from 'redux/Form/formActionCreators';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
 import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, convertDate } from 'Utils/DateUtils/useDateUtils';

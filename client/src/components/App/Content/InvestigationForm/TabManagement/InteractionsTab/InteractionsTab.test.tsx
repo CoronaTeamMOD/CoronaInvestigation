@@ -3,14 +3,13 @@ import MockAdapter from 'axios-mock-adapter';
 import { subDays, eachDayOfInterval } from 'date-fns';
 
 import axios from 'Utils/axios';
-import Interaction from 'models/Contexts/InteractionEventDialogData';
 import { testHooksFunction } from 'TestHooks';
+import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
 import { getDatesToInvestigate } from 'Utils/DateUtils/useDateUtils';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
     useInteractionsTabParameters as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
-
 
 const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});

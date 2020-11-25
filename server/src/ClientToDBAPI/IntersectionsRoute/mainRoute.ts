@@ -261,7 +261,7 @@ intersectionsRoute.post('/deleteContactEventsByDate', (request: Request, respons
                 deleteEventsByDateLogger.info('Finished deleting contact events with success', Severity.LOW);
                 response.send(result);
             } else if(result?.errors) {
-                deleteEventsByDateLogger.info(`Finished deleting contact events with Error ${result?.errors[0]}`, Severity.LOW);
+                deleteEventsByDateLogger.info(`Finished deleting contact events with Error ${result?.errors[0]}`, Severity.HIGH);
                 response.send(result?.errors[0]);
             }
     }).catch(err => {

@@ -40,6 +40,8 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     otherBackgroundDiseasesMoreInfo: ''
 };
 
+const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
+
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
     const { id, setSymptoms, setBackgroundDiseases,
             setStreetsInCity, didSymptomsDateChangeOccur } = parameters;
@@ -52,6 +54,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
+    const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
     
     React.useEffect(() => {
         getSymptoms();
@@ -86,12 +89,14 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         });
         fetchCoronaTestDateLogger.info('launching corona test date post request', Severity.LOW);
         axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
-            if (res.data !== null) {
+            if (Boolean(res?.data)) {
                 fetchCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
                 setCoronaTestDate(convertDate(res.data.coronaTestDate));
             } else {
                 fetchCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
+        }).catch(err => {
+            fetchCoronaTestDateLogger.warn(`Got 500 from coronaTestDate request: ${err}`, Severity.HIGH);
         });
     }
 
@@ -109,8 +114,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             } else {
                 getBackgroundDiseasesLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
-        }
-        );
+        });
     };
 
     const getIsolationSources = () => {
@@ -233,44 +237,47 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
                 } else {
                     deleteIrrelevantEventsLogger.error(`Deleting contact events finished with errors: ${result.data}`, Severity.LOW);
-                    alertError('קרתה תקלה במחיקת אירועים מיותרים');
+                    alertError(deletingContactEventsErrorMsg);
+                    setDidDeletingContactEventsSucceed(false);
                 }
             }).catch(err => {
                 deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
-                alertError('קרתה תקלה במחיקת אירועים מיותרים');
+                alertError(deletingContactEventsErrorMsg);
+                setDidDeletingContactEventsSucceed(false);
             })
         }
     }
     const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
         didSymptomsDateChangeOccur &&
-            deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms);
-        const saveClinicalDetailsLogger = logger.setup({
-            workflow: 'Saving clinical details tab',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
-        saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
-        setIsLoading(true);
-        axios.post('/clinicalDetails/saveClinicalDetails', ({
-            clinicalDetails: {
-                ...clinicalDetails,
-                epidemiologyNumber,
-                investigatedPatientId
-            }
-        }))
-            .then(() => {
-                saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
-            })
-            .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
-            })
-            .finally(() => {
-                setIsLoading(false);
-                ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
+            deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms)
+        if(didDeletingContactEventsSucceed) {
+            const saveClinicalDetailsLogger = logger.setup({
+                workflow: 'Saving clinical details tab',
+                investigation: epidemiologyNumber,
+                user: userId
+            });
+            saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
+            setIsLoading(true);
+            axios.post('/clinicalDetails/saveClinicalDetails', ({
+                clinicalDetails: {
+                    ...clinicalDetails,
+                    epidemiologyNumber,
+                    investigatedPatientId
+                }
+            })).then(() => {
+                    saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
                 })
-            })
+                .catch((error) => {
+                    saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                    alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                    ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+                        setFormState(epidemiologyNumber, id, valid);
+                    })
+                })
+        }
     }
 
 

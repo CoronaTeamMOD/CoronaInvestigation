@@ -2,7 +2,6 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
-import useSymptomsFields from './useSymptomsFields';
 
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
@@ -12,6 +11,7 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
+import useSymptomsFields from './useSymptomsFields';
 import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';
 
 export const otherSymptomFieldName = 'אחר';

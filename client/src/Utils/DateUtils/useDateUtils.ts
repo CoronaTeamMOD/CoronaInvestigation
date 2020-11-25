@@ -13,8 +13,8 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
         let startInvestigationDate: Date;
         if (doesHaveSymptoms) {
             if (symptomsStartDate) {
-                const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
-                if (TestAndSymptomsInterval > maxInvestigatedDays) {
+                const testAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
+                if (testAndSymptomsInterval > maxInvestigatedDays) {
                     return []
                 }
                 startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
