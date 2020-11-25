@@ -24,6 +24,8 @@ const useStyles = makeStyles({
     dialogFooter: {
         padding: '2vh 1vw',
         backgroundColor: 'lightgray',
+        display: 'flex',
+        justifyContent: 'space-between'
     },
 });
 
