@@ -28,7 +28,7 @@ const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFo
         axios.get('/investigationInfo/groupedInvestigations/reasons')
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
-                    setReasons(result.data);
+                    setReasons(result.data.nodes);
                     reasonsLogger.info('got results back from the server', Severity.LOW);
                 }
             })

@@ -5,7 +5,7 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { GET_INVESTIGAION_SETTINGS_FAMILY_DATA, GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS, GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGAION_SETTINGS_FAMILY_DATA } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
@@ -74,32 +74,27 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
 });
 
 investigationInfo.get('/groupedInvestigations/reasons', adminMiddleWare,  (request: Request, response: Response) => {
-    const reasonsLogger = logger.setup({
+    const groupedInvestigationsReasonsLogger = logger.setup({
         workflow: 'query reasons for grouped investigations',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    reasonsLogger.info('requesting the graphql API to query reasons', Severity.LOW);
-    const reasons = [
-        {
-            id: 100000000,
-            displayName: 'בני משפחה (מגורים משותפים)'
-        },
-        {
-            id: 100000001,
-            displayName: 'טלפון זהה'
-        },
-        {
-            id: 100000002,
-            displayName: 'שייכות למוסד משותף'
-        },
-        {
-            id: 100000003,
-            displayName: 'אחר'
+    groupedInvestigationsReasonsLogger.info('requesting the graphql API to query reasons', Severity.LOW);
+    graphqlRequest(GET_GROUPED_INVESTIGATIONS_REASONS, response.locals, {
+        investigationId: +request.query.investigationId
+    }).then((result: any) => {
+        if (result?.data?.allInvestigationGroupReasons) {
+            const groupedInvestigationsGrouped = result.data.allInvestigationGroupReasons
+            groupedInvestigationsReasonsLogger.info('query reasons successfully', Severity.LOW);
+            response.send(groupedInvestigationsGrouped);
+        } else {
+            groupedInvestigationsReasonsLogger.error(`failed to fetch reasons due to ${JSON.stringify(result)}`, Severity.HIGH);
+            response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
         }
-    ]
-    reasonsLogger.info('query reasons successfully', Severity.LOW);
-    response.send(reasons);
+    }).catch((error) => {
+        groupedInvestigationsReasonsLogger.error(`failed to fetch reasons due to ${error}`, Severity.HIGH);
+        response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+    });
 });
 
 investigationInfo.post('/comment', (request: Request, response: Response) => {
