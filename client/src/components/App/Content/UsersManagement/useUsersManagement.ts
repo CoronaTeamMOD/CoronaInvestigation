@@ -197,11 +197,11 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules])
+    }, [filterRules, cellNameSort])
 
     useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, user.userType])
+    }, [page, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
