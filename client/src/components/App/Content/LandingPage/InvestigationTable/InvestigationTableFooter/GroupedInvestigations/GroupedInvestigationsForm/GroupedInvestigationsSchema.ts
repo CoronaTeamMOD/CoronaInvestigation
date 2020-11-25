@@ -7,7 +7,7 @@ const otherRequiredMessage = 'יש לכתוב סיבה';
 const errorMessage = 'סיבה לא תקנית';
 const maxLengthErrorMessage = 'הסיבה חייבת להיות עד 200 תווים';
 
-export const OTHER = 100000004;
+export const OTHER = 100000003;
 
 const schema = yup.object().shape({
     [GroupedInvestigationsFields.REASON]: yup.object().shape({

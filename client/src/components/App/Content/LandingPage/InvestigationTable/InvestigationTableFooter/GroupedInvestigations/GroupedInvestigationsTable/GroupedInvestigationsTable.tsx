@@ -4,8 +4,8 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
-import { TableHeadersNames } from '../../../InvestigationTablesHeaders'
 import useStyles from './GroupedInvestigationsTableStyles'
+import { TableHeadersNames } from '../../../InvestigationTablesHeaders'
 
 const tableHeaders = {
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידימיולוגי',

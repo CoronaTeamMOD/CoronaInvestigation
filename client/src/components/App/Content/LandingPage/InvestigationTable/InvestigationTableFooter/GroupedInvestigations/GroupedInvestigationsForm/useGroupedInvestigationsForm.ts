@@ -11,7 +11,7 @@ export interface Reason {
     displayName: string
 }
 
-const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFormInCome): useGroupedInvestigationsFormOutCome => {
+const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFormIncome): useGroupedInvestigationsFormOutCome => {
 
     const { alertError } = useCustomSwal();
 
@@ -27,8 +27,10 @@ const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFo
         reasonsLogger.info('launching reasons request', Severity.LOW);
         axios.get('/investigationInfo/groupedInvestigations/reasons')
             .then((result: any) => {
-                result.data && setReasons(result.data);
-                reasonsLogger.info('got results back from the server', Severity.LOW);
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    setReasons(result.data);
+                    reasonsLogger.info('got results back from the server', Severity.LOW);
+                }
             })
             .catch(() => {
                 alertError('לא ניתן היה לקבל סיבות');
@@ -41,7 +43,7 @@ const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFo
     }
 }
 
-interface useGroupedInvestigationsFormInCome {
+interface useGroupedInvestigationsFormIncome {
     setReasons: React.Dispatch<React.SetStateAction<Reason[]>>
 }
 

@@ -94,7 +94,7 @@ investigationInfo.get('/groupedInvestigations/reasons', adminMiddleWare,  (reque
             displayName: 'שייכות למוסד משותף'
         },
         {
-            id: 100000004,
+            id: 100000003,
             displayName: 'אחר'
         }
     ]

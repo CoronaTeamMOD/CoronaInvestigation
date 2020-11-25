@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark } from '@material-ui/icons';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -9,9 +9,9 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import FooterAction from './FooterAction/FooterAction';
 import useStyle from './InvestigationTableFooterStyles';
 import useInvestigationTableFooter from './useInvestigationTableFooter';
+import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
-import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
 
 export interface CardActionDescription {
     icon: SvgIconComponent;

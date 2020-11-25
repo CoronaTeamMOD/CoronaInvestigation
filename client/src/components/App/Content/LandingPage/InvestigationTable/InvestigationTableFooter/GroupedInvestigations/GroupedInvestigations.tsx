@@ -1,45 +1,64 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { yupResolver } from '@hookform/resolvers';
+import { useForm, FormProvider } from 'react-hook-form';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
 
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
-import GroupedInvestigationsForm from './GroupedInvestigationsForm/GroupedInvestigationsForm'
-import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInvestigationsTable'
+import validationSchema from './GroupedInvestigationsForm/GroupedInvestigationsSchema';
+import GroupedInvestigationsForm from './GroupedInvestigationsForm/GroupedInvestigationsForm';
+import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInvestigationsTable';
+import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInvestigationsFields';
 
 const title = 'קיבוץ חקירות'
 
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose }: Props) => {
+
+    const methods = useForm({
+        mode: 'all',
+        resolver: yupResolver(validationSchema),
+        defaultValues: {
+            [GroupedInvestigationsFields.REASON]: null,
+            [GroupedInvestigationsFields.OTHER_REASON]: ''
+        }
+    });
+
     return (
-        <form>
-            <Dialog open={open}>
-                <DialogTitle>
-                    <b>
-                        {title}
-                    </b>
-                </DialogTitle>
-                <DialogContent>
-                    <GroupedInvestigationsTable invetigationsToGroup={invetigationsToGroup} />
-                    <GroupedInvestigationsForm />
-                </DialogContent>
-                <DialogActions>
-                    <Button 
-                        onClick={onClose}
-                        variant='contained'
-                        color='default'
-                    >
-                        ביטול
-                    </Button>
-                    <Button
-                        type='submit' 
-                        form='groupedInvestigations'
-                        variant='contained' 
-                        color='primary'
-                    >
-                        אישור
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </form>
+        <Dialog open={open}>
+            <DialogTitle>
+                <b>
+                    {title}
+                </b>
+            </DialogTitle>
+            <FormProvider {...methods}>
+                <form>
+                    <DialogContent>
+                        <GroupedInvestigationsTable invetigationsToGroup={invetigationsToGroup} />
+                        <GroupedInvestigationsForm />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button 
+                            onClick={onClose}
+                            variant='contained'
+                            color='default'
+                        >
+                            ביטול
+                        </Button>
+                        <Tooltip open={!methods.formState.isValid} title='יש לבחור סיבה'>
+                            <Button
+                                type='submit' 
+                                form='groupedInvestigations'
+                                disabled={!methods.formState.isValid}
+                                variant='contained' 
+                                color='primary'
+                            >
+                                אישור
+                            </Button>
+                        </Tooltip>
+                    </DialogActions>
+                </form>
+            </FormProvider>
+        </Dialog>
     );
 };
 
