@@ -51,7 +51,6 @@ const UsersManagement: React.FC = () => {
                 direction: cellNameSort.name !== cellName ? SortOrder.asc :
                            cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
             });
-            setPage(1);
         }
     }
 

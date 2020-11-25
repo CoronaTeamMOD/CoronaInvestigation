@@ -69,7 +69,8 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
         filter: filterBy,
         orderBy,
         offset: calculateOffset(currnetPage, size),
-        size
+        size,
+        unassignedFilter: filterBy
     };
     const groupInvestigationsLogger = logger.setup({
         workflow: 'Getting Investigations',
