@@ -18,6 +18,7 @@ import axios from 'Utils/axios'
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
+import { defaultPage } from './UsersManagement';
 
 interface UserDialog {
     isOpen: boolean,
@@ -187,7 +188,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     useEffect(() => {
-        setPage(1);
+        setPage(defaultPage);
     }, [filterRules])
 
     useEffect(() => {
@@ -198,8 +199,12 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }, [])
 
     useEffect(() => {
+        page === defaultPage && fetchUsers();
+    }, [filterRules])
+
+    useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, filterRules, user.userType])
+    }, [page, cellNameSort, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {

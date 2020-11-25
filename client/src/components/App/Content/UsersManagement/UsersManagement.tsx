@@ -18,6 +18,8 @@ import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
 
 const rowsPerPage: number = 7;
+export const defaultPage: number = 1;
+
 interface CellNameSort {
     name: string;
     direction: SortOrder | undefined;
@@ -30,7 +32,7 @@ const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, U
                                        UsersManagementTableHeadersNames.DESK];
 
 const UsersManagement: React.FC = () => {
-    const [page, setPage] = useState<number>(1);
+    const [page, setPage] = useState<number>(defaultPage);
     const [cellNameSort, setCellNameSort] = useState<CellNameSort>({ name: '', direction: undefined });
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
