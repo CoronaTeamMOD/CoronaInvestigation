@@ -10,6 +10,9 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 
 import useStyles from './NewInteractionEventDialogStyles';
 import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
+import ContactsTabs from "../InteractionEventForm/ContactsTabs/ContactsTabs";
+import {ChevronLeft, ChevronRight} from "@material-ui/icons";
+import InteractionDetailsForm from "../InteractionEventForm/InteractionDetailsForm/InteractionDetailsForm";
 
 const initialDialogData = (startTime: Date, endTime: Date, contacts: Contact[], investigationId: number) : InteractionEventDialogData => ({
     placeType: '',
@@ -29,10 +32,11 @@ const newContactEventTitle = 'יצירת מקום/מגע חדש';
 
 const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
     const { interactionDate, closeNewDialog, isOpen, loadInteractions, interactions } = props;
-
+    const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     
-    const classes = useStyles();            
+    const classes = useStyles();
+
 
     return (
         <Dialog classes={{ paper: classes.dialogPaper }} open={isOpen} maxWidth={false}>
@@ -40,7 +44,8 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm
+                    <InteractionDetailsForm
+                        isAddingContacts={isAddingContacts}
                         interactions={interactions}
                         interactionData={initialDialogData(interactionDate, interactionDate, [], epidemiologyNumber)}
                         loadInteractions={loadInteractions}
@@ -50,6 +55,19 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
+                {
+                    isAddingContacts
+                    ?  <Button variant='text' onClick={() => setIsAddingContacts(false)}>
+                            <ChevronRight/>
+                            חזרה ליצירת מקום
+                        </Button>
+                        : <Button variant='text' onClick={() => setIsAddingContacts(true)}>
+                            המשך ליצירת מגעים
+                            <ChevronLeft/>
+                        </Button>
+                }
+
+                <div>
                 <Button
                     test-id='cancelNewContactLocation'
                     onClick={() => closeNewDialog()}
@@ -64,6 +82,7 @@ const NewInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element =
                 >
                     צור מקום/מגע
                 </PrimaryButton>
+                </div>
             </DialogActions>
         </Dialog>
     );
