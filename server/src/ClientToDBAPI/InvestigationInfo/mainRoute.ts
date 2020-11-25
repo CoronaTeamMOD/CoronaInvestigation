@@ -5,12 +5,13 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGAION_SETTINGS_FAMILY_DATA, GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
+    UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -252,6 +253,67 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
         })
         .catch(error => {
             resortsLogger.error('error in requesting graphql API request in GET_INVESTIGATED_PATIENT_RESORTS_DATA request', Severity.HIGH);
+            response.status(errorStatusCode).send(error);
+        })
+});
+
+investigationInfo.get('/interactionsTabSettings/:id', (request: Request, response: Response) => {
+    const settingsFamilyLogger = logger.setup({
+        workflow: 'query investigation us family data',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    });
+    settingsFamilyLogger.info('requesting the graphql API to query data', Severity.LOW);
+
+    graphqlRequest(GET_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, {id: +request.params.id})
+        .then((result: any) => {
+            const recievedSettingsData = result?.data?.investigationSettingByEpidemiologyNumber;
+            if (recievedSettingsData) {
+                settingsFamilyLogger.info('query from db successfully', Severity.LOW);
+                response.send(recievedSettingsData);
+            } else {
+                const errorMessage : string | undefined = result?.errors[0]?.message;
+                let step = 'error in requesting graphql API request';
+                if (errorMessage) {
+                    step = ' due to ' + errorMessage;
+                }
+                settingsFamilyLogger.error(step, Severity.HIGH);
+                response.status(errorStatusCode).send(errorMessage);
+            }
+        }).catch((error) => {
+            settingsFamilyLogger.error(`error in requesting graphql API request due to ${error}`, Severity.HIGH);
+            response.status(errorStatusCode).json({ error: 'error in requesting graphql API request' });
+        });
+});
+
+investigationInfo.post('/investigationSettingsFamily', (request: Request, response: Response) => {
+    const workflow = 'Save investigaion settings family data';
+    const settingsFamilyLogger = logger.setup({
+        workflow,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber,
+    });
+    settingsFamilyLogger.info('launching get investigated patients resorts data', Severity.LOW);
+
+    const queryVariables = {...request.body};
+
+    return graphqlRequest(UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, queryVariables)
+        .then((result) => {
+            if (result?.data && !result?.errors) {
+                settingsFamilyLogger.info('saved to db successfully', Severity.LOW);
+                response.send(result?.data);
+            } else {
+                const errorMessage : string | undefined = result?.errors[0]?.message;
+                let step = 'error in requesting graphql API request';
+                if (errorMessage) {
+                    step = ' due to ' + errorMessage;
+                }
+                settingsFamilyLogger.error(step, Severity.HIGH);
+                response.status(errorStatusCode).send(errorMessage);
+            }
+        })
+        .catch(error => {
+            settingsFamilyLogger.error('error in requesting graphql API request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });

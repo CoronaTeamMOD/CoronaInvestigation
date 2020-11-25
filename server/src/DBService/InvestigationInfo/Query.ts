@@ -70,3 +70,11 @@ query getInvestigatedPatientResortsData($id: Int!) {
   }
 }
 `;
+
+export const GET_INVESTIGAION_SETTINGS_FAMILY_DATA = gql`
+query investigationSettingsFamilyData($id: Int!) {
+  investigationSettingByEpidemiologyNumber(epidemiologyNumber: $id) {
+    allowUncontactedFamily
+  }
+}
+`;
