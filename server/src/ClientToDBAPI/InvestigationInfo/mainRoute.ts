@@ -55,7 +55,9 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
     });
     staticInfoLogger.info('requesting the graphql API to query investigations staticInfo', Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGATION_INFO, response.locals)
+    graphqlRequest(GET_INVESTIGATION_INFO, response.locals, {
+        investigationId: +request.query.investigationId
+    })
         .then((result: any) => {
             if (result?.data?.investigationByEpidemiologyNumber) {
                 const investigationInfo = result.data.investigationByEpidemiologyNumber;
@@ -78,9 +80,7 @@ investigationInfo.get('/groupedInvestigations/reasons', adminMiddleWare,  (reque
         investigation: response.locals.epidemiologynumber
     })
     groupedInvestigationsReasonsLogger.info('requesting the graphql API to query reasons', Severity.LOW);
-    graphqlRequest(GET_GROUPED_INVESTIGATIONS_REASONS, response.locals, {
-        investigationId: +request.query.investigationId
-    }).then((result: any) => {
+    graphqlRequest(GET_GROUPED_INVESTIGATIONS_REASONS, response.locals).then((result: any) => {
         if (result?.data?.allInvestigationGroupReasons) {
             const groupedInvestigationsGrouped = result.data.allInvestigationGroupReasons
             groupedInvestigationsReasonsLogger.info('query reasons successfully', Severity.LOW);
