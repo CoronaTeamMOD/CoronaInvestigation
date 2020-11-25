@@ -14,7 +14,7 @@ import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
-import  { BC_TABS_NAME }  from 'models/BroadcastMessage';
+import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -91,7 +91,7 @@ export const transferredSubStatus = 'נדרשת העברה';
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks, currentPage, setCurrentPage } = parameters;
-    
+
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
     const classes = useStyle(false)();
@@ -112,7 +112,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
 
     const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
-    
+
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
             workflow: 'Getting Desks by county id',
@@ -161,7 +161,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage =  (broadcastEvent: MessageEvent) => 
+        windowTabsBroadcatChannel.current.onmessage = (broadcastEvent: MessageEvent) =>
             setIsInInvestigation(broadcastEvent.data.isInInvestigation);
     }, [])
 
@@ -193,14 +193,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 orderBy,
                 size: rowsPerPage,
                 currentPage: currentPage,
-                filterRules 
+                filterRules
             })
         }
         getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
         return axios.post('/landingPage/investigations', {
             orderBy,
             size: rowsPerPage,
-            currentPage: currentPage, 
+            currentPage: currentPage,
             filterRules
         });
     }
@@ -346,7 +346,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
     const handleFilterChange = (filterBy: any) => {
-        let nextFilterRules = {...filterRules};
+        let nextFilterRules = { ...filterRules };
         if (Object.values(filterBy)[0] !== null) {
             nextFilterRules = {
                 ...nextFilterRules,
@@ -476,7 +476,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
-        const changeInvestigatorLogger= logger.setup({
+        const changeInvestigatorLogger = logger.setup({
             workflow: 'Change Investigation Investigator',
             user: user.id,
             investigation: epidemiologyNumber
@@ -523,7 +523,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const onCountyChange = (indexedRow: IndexedInvestigation, newSelectedCounty: any) => {
-        const changeCountyLogger= logger.setup({
+        const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
             investigation: epidemiologyNumber
@@ -547,10 +547,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     setSelectedRow(UNDEFINED_ROW);
                     setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
                 }))
-                .catch((error) => {
-                    changeCountyLogger.error(`couldnt change the county due to ${error}`, Severity.LOW);
-                    alertError(UPDATE_ERROR_TITLE);
-                })
+                    .catch((error) => {
+                        changeCountyLogger.error(`couldnt change the county due to ${error}`, Severity.LOW);
+                        alertError(UPDATE_ERROR_TITLE);
+                    })
             } else if (result.isDismissed) {
                 setSelectedRow(UNDEFINED_ROW);
             }
@@ -561,7 +561,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk.deskName}</b>?</p>`;
         const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk.deskName}</b>?</p>`;
 
-        const changeDeskLogger= logger.setup({
+        const changeDeskLogger = logger.setup({
             workflow: 'Change Investigation Desk',
             user: user.id,
             investigation: epidemiologyNumber
@@ -592,10 +592,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )));
                         setSelectedRow(UNDEFINED_ROW);
                     }))
-                    .catch((error) => {
-                        changeDeskLogger.error(`couldnt chang the desk due to ${error}`, Severity.HIGH);
-                        alertError(UPDATE_ERROR_TITLE);
-                    })
+                        .catch((error) => {
+                            changeDeskLogger.error(`couldnt chang the desk due to ${error}`, Severity.HIGH);
+                            alertError(UPDATE_ERROR_TITLE);
+                        })
                 } else if (result.isDismissed) {
                     setSelectedRow(UNDEFINED_ROW);
                 }
@@ -612,8 +612,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
-        } 
-        
+        }
+
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&

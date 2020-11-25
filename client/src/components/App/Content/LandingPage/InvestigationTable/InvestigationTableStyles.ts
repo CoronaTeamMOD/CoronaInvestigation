@@ -18,7 +18,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         height: '14vh',
         width: '90vw',
     },
-    tableContainer : {
+    tableContainer: {
         width: '90vw',
         height: isWide ? '67vh' : '61vh',
         marginBottom: '2vh'
@@ -44,7 +44,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         borderBottom: '3px solid rgb(222, 218, 218)'
     },
     font: {
-        color:'#424242',
+        color: '#424242',
         whiteSpace: 'nowrap'
     },
     swalTitle: {
@@ -61,8 +61,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontSize: '1.2vw',
     },
     tableHeaderRow: {
-        width: '90vw',  
-        alignItems: 'center',    
+        width: '90vw',
+        alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
         display: 'flex',
@@ -83,8 +83,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         height: '8vh',
     },
     filterTableRow: {
-        width: '90vw',  
-        alignItems: 'center',    
+        width: '90vw',
+        alignItems: 'center',
         justifyContent: 'flex-end',
         display: 'flex'
     },
@@ -96,15 +96,15 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
-        padding: '1vh 0', 
+        padding: '1vh 0',
         width: '12vw',
         fontSize: '1vw'
     },
     activeSortIcon: {
         '&$active': {
             '&& $icon': {
-              color: theme.palette.primary.dark,
-              fontSize: "x-large"
+                color: theme.palette.primary.dark,
+                fontSize: "x-large"
             }
         }
     },
@@ -114,7 +114,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         borderBottom: '2px solid rgba(224, 224, 224, 1)'
     },
     fullWidthDiv: {
-         width: '-webkit-fill-available'
+        width: '-webkit-fill-available'
     },
     userNameStyle: {
         display: 'flex',
@@ -146,7 +146,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         paddingLeft: theme.spacing(1),
         flip: false
     },
-    counterLabel:{ 
+    counterLabel: {
         fontWeight: 600
     },
     checkedRow: {

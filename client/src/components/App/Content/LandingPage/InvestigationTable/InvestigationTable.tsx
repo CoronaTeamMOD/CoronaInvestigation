@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 import { Autocomplete, Pagination } from '@material-ui/lab';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
     Slide, Box
 } from '@material-ui/core';
-import { Refresh, Warning, Close } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -62,6 +62,7 @@ export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const unassignedToDesk = 'לא שוייך לדסק';
+const groupedInvestigationsColors = ['#f05454', '#30475e', '#9ddfd3', '#ea86b6', '#ffa36c', '#ffe05d', '#c56183', '#794c74', '#158467', '#a8dda8'];
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -85,8 +86,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]); 
     const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
+    const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
 
     const tableContainerRef = React.useRef<HTMLElement>();
+    const investigationColor = React.useRef<Map<number, string>>(new Map())
+    const coloredGroupedRows = useRef<number[]>([]);
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
@@ -102,6 +106,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
     const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
+
+
+    useEffect(() => {
+        coloredGroupedRows.current.splice(0, coloredGroupedRows.current.length);
+        investigationColor.current.clear();
+        tableRows.forEach((row) => {
+            const colorIndex = getRandomIndex();
+            coloredGroupedRows.current.push(colorIndex);
+            investigationColor.current.set(row.epidemiologyNumber, groupedInvestigationsColors[colorIndex]);
+        })
+    }, [tableRows]);
+
+    const getRandomIndex = () => {
+        const min = 0;
+        const max = groupedInvestigationsColors.length - 1;
+        let index = Math.floor(Math.random() * (max - min + 1) + min);
+        while (coloredGroupedRows.current.indexOf(index) > -1 && coloredGroupedRows.current.length < max) {
+            if (index < max) {
+                index++;
+            } else {
+                index = 0;
+            }
+        }
+        return index;
+    }
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
         switch (key) {
@@ -325,7 +354,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 );
             case TableHeadersNames.comment:
                 return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                                       scrollableRef={tableContainerRef.current} />
+                    scrollableRef={tableContainerRef.current} />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
@@ -338,10 +367,20 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 />
             case TableHeadersNames.multipleCheck:
                 return (
-                    <Checkbox onClick={(event) => {
-                        event.stopPropagation();
-                        markRow(indexedRow.epidemiologyNumber);
-                    }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
+                    <>
+                        <Checkbox onClick={(event) => {
+                            event.stopPropagation();
+                            markRow(indexedRow.epidemiologyNumber);
+                        }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
+                        <IconButton onClick={(event) => {
+                            event.stopPropagation();
+                            openGroupedInvestigation(indexedRow.epidemiologyNumber)
+                        }}>
+                            {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) ?
+                                <KeyboardArrowDown /> :
+                                <KeyboardArrowLeft />}
+                        </IconButton>
+                    </>
                 )
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
@@ -367,6 +406,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         } else {
             setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
         }
+    }
+
+    const openGroupedInvestigation = (epidemiologyNumber: number) => {
+        checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
+            setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
+            setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
@@ -518,24 +563,32 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 return (
-                                    <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
-                                        key={indexedRow.epidemiologyNumber} classes={{selected: classes.checkedRow}}
-                                        className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
-                                        onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
-                                    >
-                                        {
-                                            Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
-                                                <TableCell
-                                                    className={getTableCellStyles(index, key).join(' ')}
-                                                    onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
-                                                >
-                                                    {
-                                                        getTableCell(key, indexedRow)
-                                                    }
-                                                </TableCell>
-                                            ))
+                                    <>
+                                        <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
+                                            key={indexedRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
+                                            className={[classes.investigationRow, isRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                            onClick={() => isRowClickable && onInvestigationRowClick(indexedRow)}
+                                        >
+                                            {
+                                                Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
+                                                    <TableCell
+                                                        style={{ borderRightColor: key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.epidemiologyNumber) : '' }}
+                                                        className={getTableCellStyles(index, key).join(' ')}
+                                                        onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
+                                                    >
+                                                        {
+                                                            getTableCell(key, indexedRow)
+                                                        }
+                                                    </TableCell>
+                                                ))
+                                            }
+                                        </TableRow>
+                                        {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
+                                            <TableRow>
+                                                WASSSSUP
+                                            </TableRow>
                                         }
-                                    </TableRow>
+                                    </>
                                 )
                             })}
                         </TableBody>
