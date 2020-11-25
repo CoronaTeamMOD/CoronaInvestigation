@@ -257,7 +257,7 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
         })
 });
 
-investigationInfo.get('/interactionsTabUx/:id', (request: Request, response: Response) => {
+investigationInfo.get('/interactionsTabSettings/:id', (request: Request, response: Response) => {
     const uxFamilyLogger = logger.setup({
         workflow: 'query investigation us family data',
         user: response.locals.user.id,
@@ -267,10 +267,10 @@ investigationInfo.get('/interactionsTabUx/:id', (request: Request, response: Res
 
     graphqlRequest(GET_INVESTIGAION_UX_FAMILY_DATA, response.locals, {id: +request.params.id})
         .then((result: any) => {
-            const recievedUxData = result?.data?.investigationUxByEpidemiologyNumber;
-            if (recievedUxData) {
+            const recievedSettingsData = result?.data?.investigationSettingByEpidemiologyNumber;
+            if (recievedSettingsData) {
                 uxFamilyLogger.info('query from db successfully', Severity.LOW);
-                response.send(recievedUxData);
+                response.send(recievedSettingsData);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
                 let step = 'error in requesting graphql API request';
@@ -286,7 +286,7 @@ investigationInfo.get('/interactionsTabUx/:id', (request: Request, response: Res
         });
 });
 
-investigationInfo.post('/investigaionUxFamily', (request: Request, response: Response) => {
+investigationInfo.post('/investigationSettingsFamily', (request: Request, response: Response) => {
     const workflow = 'Save investigaion ux family data';
     const uxFamilyLogger = logger.setup({
         workflow,

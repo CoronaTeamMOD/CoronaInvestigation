@@ -41,8 +41,8 @@ mutation updateInvestigatedPatientById ($wasInEilat: Boolean!, $wasInDeadSea: Bo
 `;
 
 export const UPDATE_INVESTIGAION_UX_FAMILY_DATA = gql`
-mutation investigaionUxFamilyData ($allowUncontactedFamily: Boolean!, $id: Int!) {
-  updateInvestigationUxByEpidemiologyNumber(input: {investigationUxPatch: {allowUncontactedFamily: $allowUncontactedFamily}, epidemiologyNumber: $id}) {
+mutation investigationSettingsFamilyData ($allowUncontactedFamily: Boolean!, $id: Int!) {
+  updateInvestigationSettingByEpidemiologyNumber(input: {investigationSettingPatch: {allowUncontactedFamily: $allowUncontactedFamily}, epidemiologyNumber: $id}) {
     clientMutationId
   }
 }

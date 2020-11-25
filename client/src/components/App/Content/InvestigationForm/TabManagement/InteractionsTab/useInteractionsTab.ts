@@ -32,7 +32,7 @@ export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : 
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
-            setEducationMembers, setFamilyMembers, setInteractionsTabUx } = parameters;
+            setEducationMembers, setFamilyMembers, setInteractionsTabSettings, completeTabChange } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
@@ -120,23 +120,23 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     }
 
-    const getInteractionsTabUx = () => {
-        const interactionsTabUxLogger = logger.setup({
+    const getInteractionsTabSettings = () => {
+        const interactionsTabSettingsLogger = logger.setup({
             workflow: 'fetching interactions tab ux data',
             investigation: epidemiologyNumber,
             user: userId
           });
-          interactionsTabUxLogger.info('launching db request', Severity.LOW);
-          axios.get(`/investigationInfo/interactionsTabUx/${epidemiologyNumber}`)
+          interactionsTabSettingsLogger.info('launching db request', Severity.LOW);
+          axios.get(`/investigationInfo/interactionsTabSettings/${epidemiologyNumber}`)
           .then((result) => {
               if (result?.data) {
-                  interactionsTabUxLogger.info('got response successfully', Severity.LOW);
-                  setInteractionsTabUx(result?.data);
+                  interactionsTabSettingsLogger.info('got response successfully', Severity.LOW);
+                  setInteractionsTabSettings(result?.data);
               } else {
-                  interactionsTabUxLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
+                  interactionsTabSettingsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
               }
           }).catch((error) => {
-              interactionsTabUxLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
+              interactionsTabSettingsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
           });
     }
 
@@ -167,7 +167,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         loadInvolvedContacts();
         getCoronaTestDate();
         getClinicalDetailsSymptoms();
-        getInteractionsTabUx();
+        getInteractionsTabSettings();
     }, []);
 
     const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
@@ -270,19 +270,20 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     }
 
-    const saveInvestigaionUxFamily = () : Promise<void> => {
-        const saveInvestigaionUxLogger = logger.setup({
+    const saveInvestigaionSettingsFamily = () => {
+        const saveInvestigaionSettingsLogger = logger.setup({
             workflow: 'Saving investigaion ux family data',
             investigation: epidemiologyNumber,
             user: userId
         });
-        return axios.post('/investigationInfo/investigaionUxFamily', {
+        axios.post('/investigationInfo/investigationSettingsFamily', {
             id: epidemiologyNumber,
             allowUncontactedFamily: true,
         }).then(() => {
-            saveInvestigaionUxLogger.info('saved to db successfully', Severity.LOW);
+            saveInvestigaionSettingsLogger.info('saved to db successfully', Severity.LOW);
+            completeTabChange();
         }).catch((error) => {
-            saveInvestigaionUxLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+            saveInvestigaionSettingsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
             alertError(uxSaveFailedMsg);
         })
     }
@@ -292,7 +293,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         loadInteractions,
         handleDeleteContactEvent,
         handleDeleteContactedPerson,
-        saveInvestigaionUxFamily
+        saveInvestigaionSettingsFamily
     }
 };
 
