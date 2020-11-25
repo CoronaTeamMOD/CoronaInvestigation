@@ -129,17 +129,20 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                                             <Select
                                                 disabled={isFieldDisabled}
                                                 test-id='contactType'
-                                                defaultValue={Array.from(contactTypes.keys())[0]}
+                                                defaultValue={Array.from(contactTypes.keys())[2]}
                                                 value={props.value}
                                                 onChange={event => props.onChange(event.target.value as number)}
                                             >
                                                 {
-                                                    Array.from(contactTypes.values()).map((contactType) => (
+                                                    Array.from(contactTypes.values())
+                                                    .filter((editableContactType) => editableContactType.displayName !=='אופציונלי' )
+                                                    .map((contactType) => (
                                                         <MenuItem key={contactType.id} value={contactType.id}>
                                                             {contactType.displayName}
                                                         </MenuItem>
                                                     ))
                                                 }
+                                                
                                             </Select>
                                         )}
                                     />
