@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark } from '@material-ui/icons';
 
@@ -27,7 +27,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
     const [openInvestigatorsDialog, setOpenInvestigatorsDialog] = useState<boolean>(false);
     const [openGroupedInvestigations, setOpenGroupedInvestigations] = useState<boolean>(false);
-    const [investigationsToGroup, setInvestigationsToGroup] = useState<InvestigationTableRow[]>([]);
 
     const {
         handleOpenDesksDialog,
@@ -68,14 +67,9 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         }
     ]
 
-    useEffect(() => {
-        let investigationsToGroup : InvestigationTableRow[] = [];
-        checkedRowsIds.forEach((checkedRowId: number) => {
-            const investigationToGroup = tableRows.find((tableRow: InvestigationTableRow) => tableRow.epidemiologyNumber === checkedRowId);
-            investigationToGroup && investigationsToGroup.push(investigationToGroup);
-        })
-        setInvestigationsToGroup(investigationsToGroup);
-    }, [checkedRowsIds]);
+    const investigationsToGroup: InvestigationTableRow[] = useMemo(() => {
+        return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
+    }, [tableRows, checkedRowsIds])
 
     return (
         <>

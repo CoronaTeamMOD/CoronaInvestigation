@@ -46,8 +46,6 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
                         </Button>
                         <Tooltip open={!methods.formState.isValid} title='יש לבחור סיבה'>
                             <Button
-                                type='submit' 
-                                form='groupedInvestigations'
                                 disabled={!methods.formState.isValid}
                                 variant='contained' 
                                 color='primary'

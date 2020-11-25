@@ -11,7 +11,7 @@ export interface Reason {
     displayName: string
 }
 
-const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFormIncome): useGroupedInvestigationsFormOutCome => {
+const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFormIncome): useGroupedInvestigationsFormOutcome => {
 
     const { alertError } = useCustomSwal();
 
@@ -47,7 +47,7 @@ interface useGroupedInvestigationsFormIncome {
     setReasons: React.Dispatch<React.SetStateAction<Reason[]>>
 }
 
-interface useGroupedInvestigationsFormOutCome {
+interface useGroupedInvestigationsFormOutcome {
     fetchReasons: () => void;
 }
 
