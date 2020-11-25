@@ -1,6 +1,6 @@
 import { gql } from "postgraphile";
 
-export const ORDERED_INVESTIGATIONS = gql`
+export const ORDERED_INVESTIGATIONS = (investigationGroup: number) => gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
@@ -38,6 +38,9 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         userName
       }
     }
+    totalCount
+  }
+  unassignedInvestigations: orderedInvestigations(filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}}) {
     totalCount
   }
 }

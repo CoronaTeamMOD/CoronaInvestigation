@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
          IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -51,6 +51,7 @@ const UsersManagement: React.FC = () => {
                 direction: cellNameSort.name !== cellName ? SortOrder.asc :
                            cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
             });
+            setPage(1);
         }
     }
 

@@ -184,7 +184,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             delete filterRulesToSet[Object.keys(filterBy)[0]]
         }
         setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
-        setFitlerRules(filterRulesToSet)
+        setFitlerRules(filterRulesToSet);
     }
 
     useEffect(() => {
