@@ -9,8 +9,8 @@ export interface useClinicalDetailsIncome {
     setSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
     setBackgroundDiseases: React.Dispatch<React.SetStateAction<string[]>>;
     setStreetsInCity: React.Dispatch<React.SetStateAction<Map<string,Street>>>;
-
-};
+    didSymptomsDateChangeOccur: boolean;
+}
 
 export interface useClinicalDetailsOutcome {
     fetchClinicalDetails: (
@@ -20,4 +20,4 @@ export interface useClinicalDetailsOutcome {
     getStreetByCity: (cityId: string) => void;
     saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => void;
     isolationSources: IsolationSource[];
-};
+}

@@ -16,7 +16,6 @@ export interface useInteractionsTabParameters {
 };
 
 export interface useInteractionsTabOutcome {
-    getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
     loadInteractions: () => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
     handleDeleteContactedPerson: (contactedPersonId: number, contactEventId: number) => void;

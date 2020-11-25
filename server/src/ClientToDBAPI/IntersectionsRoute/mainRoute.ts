@@ -1,4 +1,4 @@
-import {Router, Request, Response} from 'express';
+import {Request, Response, Router} from 'express';
 
 import logger from '../../Logger/Logger';
 import {graphqlRequest} from '../../GraphqlHTTPRequest';
@@ -9,16 +9,17 @@ import {
     PlacesSubTypesByTypes
 } from '../../Models/ContactEvent/GetPlacesSubTypesByTypes';
 import {
-    GetContactEventResponse, 
+    GetContactEventResponse,
     ContactEvent} from '../../Models/ContactEvent/GetContactEvent';
 import {
-    GetInvolvedContactsResponse, 
+    GetInvolvedContactsResponse,
     InvolvedContactDB} from '../../Models/ContactEvent/GetInvolvedContacts';
 import {
-    EDIT_CONTACT_EVENT,
     CREATE_CONTACT_EVENT,
     DELETE_CONTACT_EVENT,
-    DELETE_CONTACTED_PERSON
+    DELETE_CONTACT_EVENTS_BY_DATE,
+    DELETE_CONTACTED_PERSON,
+    EDIT_CONTACT_EVENT
 } from '../../DBService/ContactEvent/Mutation';
 import {
     GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID,
@@ -243,6 +244,29 @@ intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, 
         }).catch((err) => {
             involvedContacts.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
             response.status(errorStatusCode).send(`error in fetching data: ${err}`);
+    });
+});
+
+intersectionsRoute.post('/deleteContactEventsByDate', (request: Request, response: Response) => {
+    const dateToDeleteBy = request.body.earliestDate;
+    const deleteEventsByDateLogger = logger.setup({
+        workflow: `Deleting Contact Events earlier than ${dateToDeleteBy}`,
+        investigation: response.locals.epidemiologynumber,
+        user: response.locals.user.id
+    });
+    deleteEventsByDateLogger.info('Launching GraphQl request to delete contact events', Severity.LOW);
+    graphqlRequest(DELETE_CONTACT_EVENTS_BY_DATE, response.locals, {investigationId: Number(response.locals.epidemiologynumber),
+        earliestDate: dateToDeleteBy}).then((result) => {
+            if(result?.data?.deleteContactEventsBeforeDate) {
+                deleteEventsByDateLogger.info('Finished deleting contact events with success', Severity.LOW);
+                response.send(result);
+            } else if(result?.errors) {
+                deleteEventsByDateLogger.info(`Finished deleting contact events with Error ${result?.errors[0]}`, Severity.LOW);
+                response.send(result?.errors[0]);
+            }
+    }).catch(err => {
+        deleteEventsByDateLogger.error(`Server encountered an error while deleting contact events: ${err}`, Severity.HIGH);
+        response.status(errorStatusCode).send(err);
     });
 });
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Grid, Typography } from '@material-ui/core';
 
+import useSymptomsFields from './useSymptomsFields';
+
 import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import CustomCheckbox from 'commons/CheckBox/CustomCheckbox';
@@ -10,18 +12,18 @@ import ClinicalDetailsFields from 'models/enums/ClinicalDetailsFields';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import { ClinicalDetailsClasses } from './ClinicalDetailsStyles';
+import { ClinicalDetailsClasses } from '../ClinicalDetailsStyles';
 
 export const otherSymptomFieldName = 'אחר';
 
 const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
-    const {
-        classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck,
-        symptoms,
-    } = props;
+    const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur } = props;
     const { control, errors } = useFormContext();
-
     const { wasInvestigationReopend } = useStatusUtils();
+    const { handleSymptomsDateDataChange } = useSymptomsFields({
+        didSymptomsDateChangeOccur,
+        setDidSymptomsDateChangeOccur
+    });
 
     return (
         <>
@@ -37,7 +39,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                 value={props.value}
                                 onChange={(e, value) => {
                                     if (value !== null) {
-                                        props.onChange(value)
+                                        handleSymptomsDateDataChange().then((result) => {
+                                            if(result.value) {
+                                                props.onChange(value)
+                                            }
+                                        })
                                     }
                                 }}
                             />
@@ -62,7 +68,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             labelText: 'תאריך התחלת תסמינים לא ידוע',
                                             checked: props.value,
                                             onChange: (e, value) => {
-                                                props.onChange(value);
+                                                handleSymptomsDateDataChange().then((result) => {
+                                                    if(result.value) {
+                                                        props.onChange(value);
+                                                    }
+                                                })
                                             }
                                         }]}
                                     />
@@ -84,7 +94,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 value={props.value}
                                                 labelText={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE]?.message || '* תאריך התחלת תסמינים'}
                                                 onChange={(newDate: Date) =>
-                                                    props.onChange(newDate)
+                                                    handleSymptomsDateDataChange().then((result) => {
+                                                        if(result.value) {
+                                                            props.onChange(newDate)
+                                                        }
+                                                    })
                                                 }
                                                 error={errors[ClinicalDetailsFields.SYMPTOMS_START_DATE] ? true : false}
                                             />
@@ -176,6 +190,8 @@ interface Props {
         selectedSymptoms: string[]
     ) => void;
     symptoms: string[];
+    didSymptomsDateChangeOccur: boolean;
+    setDidSymptomsDateChangeOccur: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default SymptomsFields;

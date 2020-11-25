@@ -218,14 +218,14 @@ clinicalDetailsRoute.post('/saveClinicalDetails', (request: Request, response: R
     }
 });
 
-clinicalDetailsRoute.get('/coronaTestDate/:investigationId', (request: Request, response: Response) => {
+clinicalDetailsRoute.get('/coronaTestDate', (request: Request, response: Response) => {
     const coronaTestDateLogger = logger.setup({
         workflow: 'Getting corona test date of patient',
         investigation: response.locals.epidemiologynumber,
         user: response.locals.user.id
     });
     coronaTestDateLogger.info(`launcing DB request with parameter ${request.params.investigationId}`, Severity.LOW);
-    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, { currInvestigation: Number(request.params.investigationId) })
+    graphqlRequest(GET_CORONA_TEST_DATE_OF_PATIENT, response.locals, { currInvestigation: Number(response.locals.epidemiologynumber) })
         .then((result: CoronaTestDateQueryResult) => {
             coronaTestDateLogger.info('got response from DB', Severity.LOW);
             response.send(result.data.allInvestigations.nodes[0]);
