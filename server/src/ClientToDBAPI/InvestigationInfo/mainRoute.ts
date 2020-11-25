@@ -5,7 +5,7 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { GET_INVESTIGAION_SETTINGS_FAMILY_DATA, GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS, GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGAION_SETTINGS_FAMILY_DATA } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
@@ -15,6 +15,7 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
+import { adminMiddleWare } from '../../middlewares/Authentication';
 
 const errorStatusCode = 500;
 
@@ -70,6 +71,28 @@ investigationInfo.get('/staticInfo', (request: Request, response: Response) => {
             staticInfoLogger.error(`failed to fetch static info due to ${error}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'failed to fetch static info' });
         });
+});
+
+investigationInfo.get('/groupedInvestigations/reasons', adminMiddleWare,  (request: Request, response: Response) => {
+    const groupedInvestigationsReasonsLogger = logger.setup({
+        workflow: 'query reasons for grouped investigations',
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    groupedInvestigationsReasonsLogger.info('requesting the graphql API to query reasons', Severity.LOW);
+    graphqlRequest(GET_GROUPED_INVESTIGATIONS_REASONS, response.locals).then((result: any) => {
+        if (result?.data?.allInvestigationGroupReasons) {
+            const groupedInvestigationsGrouped = result.data.allInvestigationGroupReasons
+            groupedInvestigationsReasonsLogger.info('query reasons successfully', Severity.LOW);
+            response.send(groupedInvestigationsGrouped);
+        } else {
+            groupedInvestigationsReasonsLogger.error(`failed to fetch reasons due to ${JSON.stringify(result)}`, Severity.HIGH);
+            response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+        }
+    }).catch((error) => {
+        groupedInvestigationsReasonsLogger.error(`failed to fetch reasons due to ${error}`, Severity.HIGH);
+        response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+    });
 });
 
 investigationInfo.post('/comment', (request: Request, response: Response) => {

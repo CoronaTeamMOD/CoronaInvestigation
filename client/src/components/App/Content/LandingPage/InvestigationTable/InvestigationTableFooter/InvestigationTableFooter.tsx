@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { SvgIconComponent, Close, Send, PersonPin } from '@material-ui/icons';
+import React, { useState, useMemo } from 'react';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -9,9 +9,9 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import FooterAction from './FooterAction/FooterAction';
 import useStyle from './InvestigationTableFooterStyles';
 import useInvestigationTableFooter from './useInvestigationTableFooter';
+import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
-
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -26,15 +26,19 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
     const [openInvestigatorsDialog, setOpenInvestigatorsDialog] = useState<boolean>(false);
+    const [openGroupedInvestigations, setOpenGroupedInvestigations] = useState<boolean>(false);
 
     const {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
         handleOpenInvestigatorsDialog,
         handleCloseInvestigatorsDialog,
+        handleOpenGroupedInvestigations,
+        handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog
-    } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, checkedRowsIds, tableRows, setTableRows })
+    } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
+                                      checkedRowsIds, tableRows, setTableRows })
 
     const classes = useStyle(isScreenWide)();
 
@@ -47,6 +51,11 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const cardActions: CardActionDescription[] = [
         {
+            icon: CollectionsBookmark,
+            displayTitle: 'קיבוץ חקירות',
+            onClick: handleOpenGroupedInvestigations
+        },
+        {
             icon: Send,
             displayTitle: `העברת ${isSingleInvestigation ? singleInvestigation : multipleInvestigations}`,
             onClick: handleOpenDesksDialog
@@ -57,6 +66,10 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             onClick: handleOpenInvestigatorsDialog
         }
     ]
+
+    const investigationsToGroup: InvestigationTableRow[] = useMemo(() => {
+        return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
+    }, [tableRows, checkedRowsIds])
 
     return (
         <>
@@ -75,10 +88,23 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                     <Close />
                 </IconButton>
             </Card>
-            <TransferInvestigationDesk allDesks={allDesks} open={openDesksDialog} 
-                onClose={handleCloseDesksDialog} onConfirm={handleConfirmDesksDialog} />
-            <TransferInvestigationInvestigator allInvestigators={allInvestigators} open={openInvestigatorsDialog} 
-                onClose={handleCloseInvestigatorsDialog} onConfirm={handleConfirmInvestigatorsDialog} />
+            <TransferInvestigationDesk 
+                open={openDesksDialog} 
+                onConfirm={handleConfirmDesksDialog} 
+                onClose={handleCloseDesksDialog}
+                allDesks={allDesks} 
+            />
+            <TransferInvestigationInvestigator 
+                open={openInvestigatorsDialog} 
+                onConfirm={handleConfirmInvestigatorsDialog} 
+                onClose={handleCloseInvestigatorsDialog} 
+                allInvestigators={allInvestigators} 
+            />
+            <GroupedInvestigations
+                open={openGroupedInvestigations}
+                onClose={handleCloseGroupedInvestigations}
+                invetigationsToGroup={investigationsToGroup}
+            />
         </>
     );
 })

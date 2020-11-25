@@ -13,7 +13,8 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
-    const { setOpenDesksDialog, setOpenInvestigatorsDialog, checkedRowsIds, tableRows, setTableRows } = parameters;
+    const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
+            checkedRowsIds, tableRows, setTableRows } = parameters;
 
     const { alertError } = useCustomSwal();
 
@@ -82,11 +83,17 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         })
     }
 
+    const handleOpenGroupedInvestigations = () => setOpenGroupedInvestigations(true);
+
+    const handleCloseGroupedInvestigations = () => setOpenGroupedInvestigations(false);
+
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
         handleOpenInvestigatorsDialog,
         handleCloseInvestigatorsDialog,
+        handleOpenGroupedInvestigations,
+        handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog
     }
