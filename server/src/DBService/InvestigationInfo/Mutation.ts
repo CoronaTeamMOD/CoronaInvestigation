@@ -39,3 +39,11 @@ mutation updateInvestigatedPatientById ($wasInEilat: Boolean!, $wasInDeadSea: Bo
     }
 }
 `;
+
+export const UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA = gql`
+mutation investigationSettingsFamilyData ($allowUncontactedFamily: Boolean!, $id: Int!) {
+  updateInvestigationSettingByEpidemiologyNumber(input: {investigationSettingPatch: {allowUncontactedFamily: $allowUncontactedFamily}, epidemiologyNumber: $id}) {
+    clientMutationId
+  }
+}
+`;

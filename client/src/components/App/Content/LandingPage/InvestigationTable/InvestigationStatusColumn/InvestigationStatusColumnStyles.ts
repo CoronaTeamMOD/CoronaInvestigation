@@ -11,6 +11,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: 'pointer',
         flip: false
     },
+    marginStatusWithoutIcon: {
+        display: 'flex',
+        alignItems: 'center',
+        flip: false,
+        marginRight: '1.4vw'
+    }
 }));
 
 export default useStyles;

@@ -18,6 +18,7 @@ import axios from 'Utils/axios'
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions'
 
 import { SortOrderTableHeadersNames } from './UsersManagementTableHeaders'
+import { defaultPage } from './UsersManagement';
 
 interface UserDialog {
     isOpen: boolean,
@@ -28,7 +29,7 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 }
 
-const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagementInCome): useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [counties, setCounties] = useState<County[]>([]);
@@ -194,8 +195,13 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     }, [])
 
     useEffect(() => {
+        setPage(defaultPage);
+        page === defaultPage && fetchUsers();
+    }, [filterRules])
+
+    useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, filterRules, user.userType])
+    }, [page, cellNameSort, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
@@ -233,6 +239,7 @@ interface useUsersManagementInCome {
     page: number;
     rowsPerPage: number;
     cellNameSort: CellNameSort;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface useUsersManagementOutCome {
