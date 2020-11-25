@@ -5,13 +5,13 @@ import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
 import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
-import { GET_INVESTIGAION_UX_FAMILY_DATA, GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
+import { GET_INVESTIGAION_SETTINGS_FAMILY_DATA, GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
     UPDATE_INVESTIGATION_START_TIME,
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
-    UPDATE_INVESTIGAION_UX_FAMILY_DATA,
+    UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
@@ -258,18 +258,18 @@ investigationInfo.post('/resorts', (request: Request, response: Response) => {
 });
 
 investigationInfo.get('/interactionsTabSettings/:id', (request: Request, response: Response) => {
-    const uxFamilyLogger = logger.setup({
+    const settingsFamilyLogger = logger.setup({
         workflow: 'query investigation us family data',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
-    uxFamilyLogger.info('requesting the graphql API to query data', Severity.LOW);
+    settingsFamilyLogger.info('requesting the graphql API to query data', Severity.LOW);
 
-    graphqlRequest(GET_INVESTIGAION_UX_FAMILY_DATA, response.locals, {id: +request.params.id})
+    graphqlRequest(GET_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, {id: +request.params.id})
         .then((result: any) => {
             const recievedSettingsData = result?.data?.investigationSettingByEpidemiologyNumber;
             if (recievedSettingsData) {
-                uxFamilyLogger.info('query from db successfully', Severity.LOW);
+                settingsFamilyLogger.info('query from db successfully', Severity.LOW);
                 response.send(recievedSettingsData);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -277,30 +277,30 @@ investigationInfo.get('/interactionsTabSettings/:id', (request: Request, respons
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                uxFamilyLogger.error(step, Severity.HIGH);
+                settingsFamilyLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         }).catch((error) => {
-            uxFamilyLogger.error(`error in requesting graphql API request due to ${error}`, Severity.HIGH);
+            settingsFamilyLogger.error(`error in requesting graphql API request due to ${error}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'error in requesting graphql API request' });
         });
 });
 
 investigationInfo.post('/investigationSettingsFamily', (request: Request, response: Response) => {
-    const workflow = 'Save investigaion ux family data';
-    const uxFamilyLogger = logger.setup({
+    const workflow = 'Save investigaion settings family data';
+    const settingsFamilyLogger = logger.setup({
         workflow,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber,
     });
-    uxFamilyLogger.info('launching get investigated patients resorts data', Severity.LOW);
+    settingsFamilyLogger.info('launching get investigated patients resorts data', Severity.LOW);
 
     const queryVariables = {...request.body};
 
-    return graphqlRequest(UPDATE_INVESTIGAION_UX_FAMILY_DATA, response.locals, queryVariables)
+    return graphqlRequest(UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA, response.locals, queryVariables)
         .then((result) => {
             if (result?.data && !result?.errors) {
-                uxFamilyLogger.info('saved to db successfully', Severity.LOW);
+                settingsFamilyLogger.info('saved to db successfully', Severity.LOW);
                 response.send(result?.data);
             } else {
                 const errorMessage : string | undefined = result?.errors[0]?.message;
@@ -308,12 +308,12 @@ investigationInfo.post('/investigationSettingsFamily', (request: Request, respon
                 if (errorMessage) {
                     step = ' due to ' + errorMessage;
                 }
-                uxFamilyLogger.error(step, Severity.HIGH);
+                settingsFamilyLogger.error(step, Severity.HIGH);
                 response.status(errorStatusCode).send(errorMessage);
             }
         })
         .catch(error => {
-            uxFamilyLogger.error('error in requesting graphql API request', Severity.HIGH);
+            settingsFamilyLogger.error('error in requesting graphql API request', Severity.HIGH);
             response.status(errorStatusCode).send(error);
         })
 });

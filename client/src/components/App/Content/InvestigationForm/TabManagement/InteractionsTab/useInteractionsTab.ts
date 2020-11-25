@@ -20,7 +20,7 @@ export const nonSymptomaticPatient: number = 7;
 export const symptomsWithUnknownStartDate: number = 7;
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
-const uxSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
+const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
 const maxInvestigatedDays: number = 21;
 
 interface GroupedInvolvedGroups {
@@ -122,7 +122,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const getInteractionsTabSettings = () => {
         const interactionsTabSettingsLogger = logger.setup({
-            workflow: 'fetching interactions tab ux data',
+            workflow: 'fetching interactions tab settings data',
             investigation: epidemiologyNumber,
             user: userId
           });
@@ -272,7 +272,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     const saveInvestigaionSettingsFamily = () => {
         const saveInvestigaionSettingsLogger = logger.setup({
-            workflow: 'Saving investigaion ux family data',
+            workflow: 'Saving investigaion settings family data',
             investigation: epidemiologyNumber,
             user: userId
         });
@@ -284,7 +284,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             completeTabChange();
         }).catch((error) => {
             saveInvestigaionSettingsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-            alertError(uxSaveFailedMsg);
+            alertError(settingsSaveFailedMsg);
         })
     }
 

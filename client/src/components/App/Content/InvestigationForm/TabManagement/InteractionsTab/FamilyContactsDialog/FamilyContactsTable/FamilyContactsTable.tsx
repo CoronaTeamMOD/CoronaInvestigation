@@ -46,9 +46,9 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
                 <TableHead>
                     <TableRow>
                         {
-                            Object.keys(FamilyContactsTableHeaders).map(cellName => {
+                            Object.values(FamilyContactsTableHeaders).map(cellName => {
                                 return (
-                                    <TableCell>{FamilyContactsTableHeaders[cellName as FamilyContactsTableHeadersNames]}</TableCell>
+                                    <TableCell>{cellName}</TableCell>
                                 )
                             })
                         }
