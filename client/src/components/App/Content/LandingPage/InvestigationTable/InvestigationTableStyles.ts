@@ -35,10 +35,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         cursor: 'pointer'
     },
     columnBorder: {
-        borderLeft: '2px solid black'
+        borderLeft: '3px solid rgb(222, 218, 218)'
     },
     rowBorder: {
-        borderBottom: '2px solid black'
+        borderBottom: '3px solid rgb(222, 218, 218)'
     },
     font: {
         color:'#424242'
