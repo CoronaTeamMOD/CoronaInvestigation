@@ -188,10 +188,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     useEffect(() => {
-        setPage(defaultPage);
-    }, [filterRules])
-
-    useEffect(() => {
         fetchSourcesOrganization();
         fetchCounties();
         fetchUserTypes();
@@ -199,6 +195,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }, [])
 
     useEffect(() => {
+        setPage(defaultPage);
         page === defaultPage && fetchUsers();
     }, [filterRules])
 
