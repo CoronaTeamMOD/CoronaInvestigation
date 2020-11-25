@@ -17,7 +17,7 @@ const landingPageRoute = Router();
 const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber - 1) * pageSize);
 
 landingPageRoute.post('/investigations', (request: Request, response: Response) => {
-    const { orderBy, size, currnetPage, filterRules } = request.body;
+    const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
         creator: {
             equalTo: response.locals.user.id
@@ -27,7 +27,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
     const getInvestigationsParameters = {
         filter: filterBy,
         orderBy,
-        offset: calculateOffset(currnetPage, size),
+        offset: calculateOffset(currentPage, size),
         size
     };
     const investigationsLogger = logger.setup({
@@ -54,7 +54,7 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
 })
 
 landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
-    const { orderBy, size, currnetPage, filterRules } = request.body;
+    const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
         userByCreator: {
             countyByInvestigationGroup: {
@@ -68,7 +68,7 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
     const getInvestigationsParameters = {
         filter: filterBy,
         orderBy,
-        offset: calculateOffset(currnetPage, size),
+        offset: calculateOffset(currentPage, size),
         size,
         unassignedFilter: filterBy
     };

@@ -187,7 +187,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             return axios.post('landingPage/groupInvestigations', {
                 orderBy,
                 size: rowsPerPage,
-                currnetPage: currentPage,
+                currentPage: currentPage,
                 filterRules 
             })
         }
@@ -195,7 +195,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return axios.post('/landingPage/investigations', {
             orderBy,
             size: rowsPerPage,
-            currnetPage: currentPage, 
+            currentPage: currentPage, 
             filterRules
         });
     }
