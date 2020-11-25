@@ -72,11 +72,11 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
     );
 };
 
-export default FamilyContactsTable;
-
 interface Props {
     familyMembers: InvolvedContact[];
     className: string
 };
 
 export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
+
+export default FamilyContactsTable;

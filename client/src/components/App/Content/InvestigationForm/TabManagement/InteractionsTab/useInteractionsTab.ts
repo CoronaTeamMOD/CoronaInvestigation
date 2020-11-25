@@ -113,10 +113,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 setFamilyMembers(familyMembers);
                 setEducationMembers(educationMembers);
             } else {
-                loadInvolvedContactsLogger.error('failed to get response due to ' + result, Severity.HIGH);    
+                loadInvolvedContactsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
             }
         }).catch((error) => {
-            loadInvolvedContactsLogger.error('failed to get response due to ' + error, Severity.HIGH);
+            loadInvolvedContactsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
         });
     }
 
@@ -133,10 +133,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                   interactionsTabUxLogger.info('got response successfully', Severity.LOW);
                   setInteractionsTabUx(result?.data);
               } else {
-                  interactionsTabUxLogger.error('failed to get response due to ' + result, Severity.HIGH);    
+                  interactionsTabUxLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
               }
           }).catch((error) => {
-              interactionsTabUxLogger.error('failed to get response due to ' + error, Severity.HIGH);
+              interactionsTabUxLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
           });
     }
 

@@ -238,11 +238,11 @@ intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, 
             } else {
                 const message = result?.errors[0]?.message;
                 involvedContacts.error(`got errors approaching the graphql API ${message}`, Severity.HIGH);
-                response.status(errorStatusCode).send('error in fetching data: ' + message);
+                response.status(errorStatusCode).send(`error in fetching data: ${message}`);
             }
         }).catch((err) => {
             involvedContacts.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
-            response.status(errorStatusCode).send('error in fetching data: ' + err);
+            response.status(errorStatusCode).send(`error in fetching data: ${err}`);
     });
 });
 
