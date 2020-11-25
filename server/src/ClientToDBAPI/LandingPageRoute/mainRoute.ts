@@ -14,25 +14,33 @@ const errorStatusResponse = 500;
 
 const landingPageRoute = Router();
 
-landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Response) => {
+const calculateOffset = (pageNumber: number, pageSize: number) => ((pageNumber - 1) * pageSize);
+
+landingPageRoute.post('/investigations', (request: Request, response: Response) => {
+    const { orderBy, size, currentPage, filterRules } = request.body;
+    const filterBy = {
+        creator: {
+            equalTo: response.locals.user.id
+        },
+        ...filterRules
+    };
     const getInvestigationsParameters = {
-        filter: {creator: {equalTo: response.locals.user.id}},
-        orderBy: request.params.orderBy,
-        // for future pagination
-        offset: 0,
-        size: 100
+        filter: filterBy,
+        orderBy,
+        offset: calculateOffset(currentPage, size),
+        size
     };
     const investigationsLogger = logger.setup({
         workflow: 'Getting Investigations',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(ORDERED_INVESTIGATIONS, response.locals, getInvestigationsParameters)
+    graphqlRequest(ORDERED_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
         .then((result: any) => {
             if (result && result.data && result.data.orderedInvestigations &&
                 result.data.orderedInvestigations.nodes) {
                 investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send({allInvestigations: convertOrderedInvestigationsData(result.data)});
+                response.send({allInvestigations: convertOrderedInvestigationsData(result.data), totalCount: +result.data.orderedInvestigations.totalCount});
             }
             else {
                 investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
@@ -45,25 +53,40 @@ landingPageRoute.get('/investigations/:orderBy', (request: Request, response: Re
         });
 })
 
-landingPageRoute.get('/groupInvestigations/:orderBy', adminMiddleWare, (request: Request, response: Response) => {
+landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
+    const { orderBy, size, currentPage, filterRules } = request.body;
+    const filterBy = {
+        userByCreator: {
+            countyByInvestigationGroup: {
+                id: {
+                    equalTo: +response.locals.user.investigationGroup
+                }
+            }
+        },
+        ...filterRules
+    };
     const getInvestigationsParameters = {
-        filter: {userByCreator: {countyByInvestigationGroup: {id: {equalTo: +response.locals.user.investigationGroup}}}},
-        orderBy: request.params.orderBy,
-        // for future pagination
-        offset: 0,
-        size: 100
+        filter: filterBy,
+        orderBy,
+        offset: calculateOffset(currentPage, size),
+        size,
+        unassignedFilter: filterBy
     };
     const groupInvestigationsLogger = logger.setup({
         workflow: 'Getting Investigations',
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(ORDERED_INVESTIGATIONS, response.locals, getInvestigationsParameters)
+    graphqlRequest(ORDERED_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
         .then((result: any) => {
             if (result && result.data && result.data.orderedInvestigations &&
                 result.data.orderedInvestigations.nodes) {
                 groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
-                response.send({allInvestigations: convertOrderedInvestigationsData(result.data)});
+                response.send({
+                    allInvestigations: convertOrderedInvestigationsData(result.data), 
+                    totalCount: +result.data.orderedInvestigations.totalCount,
+                    unassignedInvestigationsCount: +result.data.unassignedInvestigations.totalCount
+                });
             }
             else {
                 groupInvestigationsLogger.error(`got error in querying the DB ${JSON.stringify(result)}`, Severity.HIGH);

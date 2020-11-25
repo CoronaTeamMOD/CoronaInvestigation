@@ -18,7 +18,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     tableContainer : {
         width: '90vw',
         height: isWide ? '67vh' : '61vh',
-        marginBottom: '5vh'
+        marginBottom: '2vh'
     },
     welcomeMessage: {
         fontSize: '4vh',
@@ -149,6 +149,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     checkedRow: {
         backgroundColor: 'rgb(202, 222, 234)!important'
+    },
+    pagination: {
+        marginTop: '0'
     }
 }));
 

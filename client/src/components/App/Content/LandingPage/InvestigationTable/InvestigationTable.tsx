@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, Pagination } from '@material-ui/lab';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -18,13 +18,14 @@ import userType from 'models/enums/UserType';
 import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
-import FilterTableOption from 'models/FilterTableOption';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
+import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
@@ -34,6 +35,7 @@ import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } fro
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
 
 export const defaultOrderBy = 'defaultOrder';
+export const defaultPage = 1;
 const resetSortButtonText = 'סידור לפי תעדוף';
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
@@ -56,7 +58,7 @@ const defaultCounty = {
     displayName: ''
 }
 
-const defaultFilterOptions: FilterTableOption = { mainStatus: [], investigationDesk: [] };
+export const rowsPerPage = 10;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const unassignedToDesk = 'לא שוייך לדסק';
@@ -78,36 +80,28 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [allStatuses, setAllStatuses] = useState<string[]>([]);
-    const [filterOptions, setFilterOptions] = useState<FilterTableOption>(defaultFilterOptions);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
-    const [filteredTableRows, setFilteredTableRows] = useState<InvestigationTableRow[]>([]);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(defaultPage);
+    const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]); 
+    const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
 
     const tableContainerRef = React.useRef<HTMLElement>();
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows
+        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty,
-        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds
+        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
 
-    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
+    const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
-    useEffect(() => {
-        const filteredRows = tableRows.filter(row => {
-            return (
-                (filterOptions.mainStatus.includes(row.mainStatus) || filterOptions.mainStatus.length === 0) &&
-                (filterOptions.investigationDesk.map((desk: Desk) => desk.deskName).includes(row.investigationDesk) || filterOptions.investigationDesk.length === 0)
-            );
-        })
-        setFilteredTableRows(filteredRows);
-        setCheckedRowsIds([]);
-    }, [tableRows, filterOptions])
+    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
         switch (key) {
@@ -149,13 +143,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
-        return filterOptions.investigationDesk.length === 0 ?
+        return filterByDesks.length === 0 ?
             allUsersOfCountyArray :
             allUsersOfCountyArray.filter(({ id, value }) => {
                 if (!value.deskByDeskId) {
                     return false;
                 }
-                return filterOptions.investigationDesk.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+                return filterByDesks.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
             });
     }
 
@@ -376,25 +370,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
-        const newFilterOptions: FilterTableOption = { ...filterOptions };
-
-        if (selectedStatuses.length === 0 || selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS)) {
-            newFilterOptions.mainStatus = [];
-        } else {
-            newFilterOptions.mainStatus = selectedStatuses;
-        }
-        setFilterOptions(newFilterOptions);
+        const nextFilterByStatuses = selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS) ? 
+            []
+            :
+            selectedStatuses;
+        setFilterByStatuses(nextFilterByStatuses);
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
     }
 
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
-        const newFilterOptions: FilterTableOption = { ...filterOptions };
-
-        if (selectedDesks.length === 0) {
-            newFilterOptions.investigationDesk = [];
-        } else {
-            newFilterOptions.investigationDesk = selectedDesks;
-        }
-        setFilterOptions(newFilterOptions);
+        setFilterByDesks(selectedDesks);
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
     }
 
     const filterIconByToggle = () => {
@@ -409,10 +395,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
 
     const counterDescription: string = useMemo(() => {
-        const adminMessage = `, מתוכן ${filteredTableRows.filter(filteredRow => filteredRow.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
-        return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+        const adminMessage = `, מתוכן ${unassignedInvestigationsCount} לא מוקצות`;
+        return `ישנן ${totalCount}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
 
-    }, [filteredTableRows]);
+    }, [tableRows, unassignedInvestigationsCount]);
 
     return (
         <>
@@ -432,7 +418,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
-                            value={filterOptions.investigationDesk}
+                            value={filterByDesks}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
@@ -483,7 +469,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 options={allStatuses}
                                 getOptionLabel={(option) => option}
                                 onChange={onSelectedStatusesChange}
-                                value={filterOptions.mainStatus}
+                                value={filterByStatuses}
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
@@ -527,7 +513,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredTableRows.map((row: InvestigationTableRow, index: number) => {
+                            {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
                                 return (
@@ -554,6 +540,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Pagination
+                    page={currentPage}
+                    count={totalPageCount}
+                    onChange={(event, value) => setCurrentPage(value)}
+                    size='large'
+                    className={classes.pagination}
+                />
             </Grid>
             <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter

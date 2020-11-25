@@ -9,11 +9,13 @@ import { IndexedInvestigation, IndexedInvestigationData} from './InvestigationTa
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
     checkedRowsIds: number[];
+    currentPage: number;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface useInvestigationTableOutcome {
@@ -32,4 +34,7 @@ export interface useInvestigationTableOutcome {
     onCancel: () => void;
     snackbarOpen: boolean;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
+    totalCount: number;
+    handleFilterChange: (filterBy: any) => void;
+    unassignedInvestigationsCount: number;
 };

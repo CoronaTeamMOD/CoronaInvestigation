@@ -184,7 +184,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
             delete filterRulesToSet[Object.keys(filterBy)[0]]
         }
         setIsBadgeInVisible(Object.keys(filterRulesToSet).length === 0);
-        setFitlerRules(filterRulesToSet)
+        setFitlerRules(filterRulesToSet);
     }
 
     useEffect(() => {
@@ -197,11 +197,11 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     useEffect(() => {
         setPage(defaultPage);
         page === defaultPage && fetchUsers();
-    }, [filterRules])
+    }, [filterRules, cellNameSort])
 
     useEffect(() => {
         fetchUsers();
-    }, [page, cellNameSort, user.userType])
+    }, [page, user.userType])
     
     const watchUserInfo = (row: any) => {
         const userInfoToSet = {
