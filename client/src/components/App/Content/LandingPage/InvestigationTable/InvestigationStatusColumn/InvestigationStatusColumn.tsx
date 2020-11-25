@@ -15,7 +15,9 @@ import useStyles from './InvestigationStatusColumnStyles';
 const InvestigationStatusColumn = (props: Props) => {
 
     const { investigationStatus, investigationSubStatus, epidemiologyNumber, moveToTheInvestigationForm, statusReason } = props;
-    
+    const shouldMarginNonIcon = !((investigationStatus === InvestigationMainStatus.DONE) ||
+        (InvestigationMainStatus.CANT_COMPLETE && investigationSubStatus) ||
+        (investigationStatus === InvestigationMainStatus.IN_PROCESS && statusReason))
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { alertError } = useCustomSwal();
@@ -45,7 +47,7 @@ const InvestigationStatusColumn = (props: Props) => {
     }
 
     return (
-        <div className={classes.columnWrapper}>
+        <div className={shouldMarginNonIcon ? classes.marginStatusWithoutIcon : classes.columnWrapper}>
             {
                 investigationStatus === InvestigationMainStatus.DONE &&
                 <Tooltip title='פתיחת חקירה' arrow>

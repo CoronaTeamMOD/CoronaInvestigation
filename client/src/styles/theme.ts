@@ -75,6 +75,11 @@ const theme = createMuiTheme({
                     borderRadius: '14px'
                 }
             }
+        },
+        MuiTableCell: {
+            root: {
+                textAlign: 'center'
+            }
         }
     },
     props: {
