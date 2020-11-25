@@ -59,7 +59,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                                     name={props.name}
                                     key='contactedPersonFirstName'
                                     value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onChange={props.onChange}
                                     label={FIRST_NAME_LABEL}
                                     onBlur={props.onBlur}
                                     className={classes.newContactField}
@@ -77,7 +77,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                                     name={props.name}
                                     key='contactedPersonLastName'
                                     value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
+                                    onChange={props.onChange}
                                     onBlur={props.onBlur}
                                     label={LAST_NAME_LABEL}
                                     className={classes.newContactField}

@@ -5,12 +5,13 @@ import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
 import useStyles from './EditInteractionEventDialogStyles';
-import InteractionEventForm from '../InteractionEventForm/InteractionEventForm';
+import InteractionDetailsForm from "../InteractionEventForm/InteractionDetailsForm/InteractionDetailsForm";
 
 const newContactEventTitle = 'עריכת מקום/מגע';
 
 const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element => {
     const { closeEditDialog, eventToEdit, isOpen, loadInteractions, interactions  } = props;
+    const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     
     const classes = useStyles();
     
@@ -20,12 +21,13 @@ const EditInteractionEventDialog: React.FC<Props> = (props: Props): JSX.Element 
                 {newContactEventTitle}
             </DialogTitle>
                 <DialogContent>
-                    <InteractionEventForm 
+                    <InteractionDetailsForm
+                        isAddingContacts={isAddingContacts}
                         interactions={interactions}
                         interactionData={eventToEdit}
                         loadInteractions={loadInteractions}
-                        closeEditDialog={closeEditDialog}
                         closeNewDialog={()=>{}}
+                        closeEditDialog={closeEditDialog}
                     />
                 </DialogContent>
             <DialogActions className={classes.dialogFooter}>
