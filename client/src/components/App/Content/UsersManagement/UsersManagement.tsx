@@ -36,7 +36,7 @@ const UsersManagement: React.FC = () => {
 
     const { users, counties, sourcesOrganization, userTypes, languages,
             totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
-    useUsersManagementTable({ page, rowsPerPage, cellNameSort });
+    useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 

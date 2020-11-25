@@ -28,7 +28,7 @@ interface CellNameSort {
     direction: SortOrder | undefined;
 }
 
-const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagementInCome): useUsersManagementOutCome => {
+const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUsersManagementInCome): useUsersManagementOutCome => {
     
     const [users, setUsers] = useState<SignUpUser[]>([]);
     const [counties, setCounties] = useState<County[]>([]);
@@ -187,6 +187,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort }: useUsersManagem
     }
 
     useEffect(() => {
+        setPage(1);
+    }, [filterRules])
+
+    useEffect(() => {
         fetchSourcesOrganization();
         fetchCounties();
         fetchUserTypes();
@@ -233,6 +237,7 @@ interface useUsersManagementInCome {
     page: number;
     rowsPerPage: number;
     cellNameSort: CellNameSort;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface useUsersManagementOutCome {
