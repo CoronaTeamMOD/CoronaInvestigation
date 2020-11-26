@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
-import React, { useState } from 'react';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox } from '@material-ui/core';
+import React, { useMemo, useState } from 'react';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
 
@@ -23,6 +23,14 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
             setCheckedRowsIds([...checkedRowsIds, identificationNumber]);
         }
     }
+
+    const counterDescription: string = useMemo(() => {
+        return checkedRowsIds.length > 0 ?
+            checkedRowsIds.length === 1 ?
+                'נבחר מגע משפחה אחד' :
+                'בסה"כ נבחרו ' + checkedRowsIds.length + ' מגעי משפחה'
+            : ''
+    }, [checkedRowsIds]);
 
     const isRowSelected = (identificationNumber: string) => checkedRowsIds.includes(identificationNumber);
 
@@ -53,49 +61,52 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
     }
 
     return (
-        <TableContainer className={className} component={Paper}>
-            <Table stickyHeader>
-                <TableHead>
-                    <TableRow>
+        <>
+            <TableContainer className={className} component={Paper}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            {
+                                showCheckBoxes ?
+                                    [''].concat(Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                        return (
+                                            <TableCell>{cellName}</TableCell>
+                                        )
+                                    })
+                                    : (Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                        return (
+                                            <TableCell>{cellName}</TableCell>
+                                        )
+                                    })
+                            }
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
                         {
-                            showCheckBoxes ?
-                                [''].concat(Object.values(FamilyContactsTableHeaders)).map(cellName => {
-                                    return (
-                                        <TableCell>{cellName}</TableCell>
-                                    )
-                                })
-                                : (Object.values(FamilyContactsTableHeaders)).map(cellName => {
-                                    return (
-                                        <TableCell>{cellName}</TableCell>
-                                    )
-                                })
+                            familyMembers.map(member => (
+                                <>
+                                    <TableRow className={isRowSelected(member.identificationNumber) ? classes.checkedRow : ''}>
+                                        {
+                                            showCheckBoxes &&
+                                            <Checkbox onClick={(event) => {
+                                                event.stopPropagation();
+                                                selectRow(member.identificationNumber);
+                                            }} color='primary' checked={isRowSelected(member.identificationNumber)} />
+                                        }
+                                        {
+                                            Object.keys(FamilyContactsTableHeaders).map(cellName => (
+                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(member), cellName)}</TableCell>
+                                            ))
+                                        }
+                                    </TableRow>
+                                </>
+                            ))
                         }
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        familyMembers.map(member => (
-                            <>
-                            <TableRow>
-                                {
-                                    showCheckBoxes &&
-                                    <Checkbox onClick={(event) => {
-                                        event.stopPropagation();
-                                        selectRow(member.identificationNumber);
-                                    }} color='primary' checked={isRowSelected(member.identificationNumber)} />
-                                }
-                                {
-                                    Object.keys(FamilyContactsTableHeaders).map(cellName => (
-                                        <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(member), cellName)}</TableCell>
-                                    ))
-                                }
-                            </TableRow>
-                            </>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Typography><b>{counterDescription}</b></Typography>
+        </>
     );
 };
 
