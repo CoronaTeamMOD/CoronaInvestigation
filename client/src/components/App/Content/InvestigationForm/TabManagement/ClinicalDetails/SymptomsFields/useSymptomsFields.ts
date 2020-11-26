@@ -4,13 +4,10 @@ import theme from 'styles/theme';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import React from "react";
 
-const useSymptomsFields = (params: useSymptomsFieldsInCome): useSymptomsFieldsOutCome => {
+const useSymptomsFields = (): useSymptomsFieldsOutCome => {
     const { alertWarning } = useCustomSwal();
-    const { didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur} = params;
 
     const handleSymptomsDateDataChange = () => {
-        !didSymptomsDateChangeOccur &&
-            setDidSymptomsDateChangeOccur(true);
         return alertWarning('האם אתה בטוח שתרצה לשנות את שדה התסמינים? שינוי זה יגרום למחיקת האירועים והמגעים הקיימים בימים שימחקו', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
@@ -25,11 +22,6 @@ const useSymptomsFields = (params: useSymptomsFieldsInCome): useSymptomsFieldsOu
 
 interface useSymptomsFieldsOutCome {
     handleSymptomsDateDataChange: () => Promise<SweetAlertResult>;
-}
-
-interface useSymptomsFieldsInCome {
-    didSymptomsDateChangeOccur: boolean;
-    setDidSymptomsDateChangeOccur: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default useSymptomsFields;

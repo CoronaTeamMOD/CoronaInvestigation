@@ -20,10 +20,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { classes, watchDoesHaveSymptoms, watchSymptoms, watchIsSymptomsDateUnknown, handleSymptomCheck, symptoms, didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur } = props;
     const { control, errors } = useFormContext();
     const { wasInvestigationReopend } = useStatusUtils();
-    const { handleSymptomsDateDataChange } = useSymptomsFields({
-        didSymptomsDateChangeOccur,
-        setDidSymptomsDateChangeOccur
-    });
+    const { handleSymptomsDateDataChange } = useSymptomsFields();
 
     return (
         <>
@@ -41,6 +38,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     if (value !== null) {
                                         handleSymptomsDateDataChange().then((result) => {
                                             if(result.value) {
+                                                !didSymptomsDateChangeOccur &&
+                                                    setDidSymptomsDateChangeOccur(true);
                                                 props.onChange(value)
                                             }
                                         })
