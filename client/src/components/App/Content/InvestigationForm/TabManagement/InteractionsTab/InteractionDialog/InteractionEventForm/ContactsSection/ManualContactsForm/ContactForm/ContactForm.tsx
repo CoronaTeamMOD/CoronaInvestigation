@@ -53,7 +53,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     }
 
     return (
-        <div test-id='contactFormContainer' className={classes.addContactFields} key='addContactFields'>
+        <div test-id='contactFormContainer' key='addContactFields'>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
                     <Controller
