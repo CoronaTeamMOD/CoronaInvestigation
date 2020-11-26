@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
