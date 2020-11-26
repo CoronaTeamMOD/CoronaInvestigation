@@ -11,7 +11,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const { loadInteractions, closeNewDialog, closeEditDialog } = props;
+        const { loadInteractions, onDialogClose} = props;
         
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
@@ -43,7 +43,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     if (response.data?.data?.updateContactEventFunction) {
                         updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
                         loadInteractions();
-                        closeEditDialog();
+                        onDialogClose();
                     }
                 })
                 .catch((error) => {
@@ -62,12 +62,12 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
                         loadInteractions();
-                        closeNewDialog();
+                        onDialogClose();
                     } 
                 })
                     .catch((error) => {
                         createInteractionsLogger.error(`got error from server: ${error}`, Severity.LOW);
-                        closeNewDialog();
+                        onDialogClose();
                         alertError('לא ניתן היה ליצור אירוע חדש');
                     })
             }
@@ -81,8 +81,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
 
 interface useInteractionFormIncome {
     loadInteractions: () => void;
-    closeNewDialog: () => void;
-    closeEditDialog: () => void;
+    onDialogClose: () => void;
 }
 
 interface useInteractionFormOutcome {
