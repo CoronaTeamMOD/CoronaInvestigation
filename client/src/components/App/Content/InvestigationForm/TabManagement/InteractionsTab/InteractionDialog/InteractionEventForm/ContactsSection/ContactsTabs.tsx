@@ -26,7 +26,7 @@ const FormComponent = ({ currentTab }: { currentTab: number }) => {
     </>
 };
 
-const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
+const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
     const [currentTab, setTab] = React.useState<contactFormTabs>(0);
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -46,17 +46,17 @@ const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab classes={{ wrapper: classes.tab }}
-                    textColor={getTabTextColor(contactFormTabs.manualContactsForm)}
-                    icon={<FontAwesomeIcon icon={faUserEdit} />}
-                    label='הוספת מגע ידנית' />
-                <Tab classes={{ wrapper: classes.tab }}
-                    textColor={getTabTextColor(contactFormTabs.familyMembers)}
-                    icon={<GroupOutlined />}
-                    label='בני משפחה' />
+                <Tab classes={{wrapper: classes.tab}}
+                     textColor={getTabTextColor(contactFormTabs.manualContactsForm)}
+                     icon={<FontAwesomeIcon icon={faUserEdit}/>}
+                     label='הוספת מגע ידנית'/>
+                <Tab classes={{wrapper: classes.tab}}
+                     textColor={getTabTextColor(contactFormTabs.familyMembers)}
+                     icon={<GroupOutlined/>}
+                     label='בני משפחה'/>
             </Tabs>
-            <Divider orientation='vertical' variant='fullWidth' light={true} />
-            <FormComponent currentTab={currentTab} />
+            <Divider orientation='vertical' variant='fullWidth' light={true}/>
+            <FormComponent currentTab={currentTab}/>
         </div>
     );
 };
