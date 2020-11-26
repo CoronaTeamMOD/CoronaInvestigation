@@ -78,14 +78,3 @@ query investigationSettingsFamilyData($id: Int!) {
   }
 }
 `; 
-
-export const GET_GROUPED_INVESTIGATIONS_REASONS = gql`
-query GetAllGroupedInvestigationsReasons {
-  allInvestigationGroupReasons {
-    nodes {
-    	id
-			displayName
-    }
-  }
-}
-`;
