@@ -1,8 +1,10 @@
 import React from 'react';
 import {Divider, Tab, Tabs, Collapse} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ContactsForms from './ContactsForms/ContactsForms';
 import useFormStyles from 'styles/formStyles';
-import {makeStyles} from "@material-ui/core/styles";
 
 enum contactFormTabs {
     manualContactsForm= 0,
@@ -40,8 +42,9 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab label='הוספת מגע ידנית'/>
-                <Tab label='בני משפחה'/>
+
+                <Tab icon={<FontAwesomeIcon icon={faUserEdit} />} label='הוספת מגע ידנית'/>
+                <Tab icon={<FontAwesomeIcon icon={faUserEdit} />} label='בני משפחה'/>
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true}/>
             <FormComponent currentTab={currentTab}/>
