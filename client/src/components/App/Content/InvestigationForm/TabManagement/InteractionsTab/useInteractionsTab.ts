@@ -32,7 +32,7 @@ export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : 
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
-            setEducationMembers, setFamilyMembers, setInteractionsTabSettings, completeTabChange } = parameters;
+            setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
 
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
@@ -110,7 +110,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
                 const involvedContacts : InvolvedContact[] = result?.data;
                 const { familyMembers, educationMembers } = groupInvolvedContacts(involvedContacts);
-                setFamilyMembers(familyMembers);
+                familyMembersStateContext.familyMembers = familyMembers;
                 setEducationMembers(educationMembers);
             } else {
                 loadInvolvedContactsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    

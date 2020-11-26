@@ -1,5 +1,5 @@
 interface InteractionsTabSettings {
-    allowUncontactedFamily: boolean
+    allowUncontactedFamily: boolean;
 }
 
 export default InteractionsTabSettings;

@@ -1,26 +1,32 @@
 import React from 'react';
-import {Divider, Tab, Tabs, Collapse, TabTypeMap} from '@material-ui/core';
-import {GroupOutlined} from '@material-ui/icons';
+import { GroupOutlined } from '@material-ui/icons';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
+import { Divider, Tab, Tabs, Collapse, TabTypeMap } from '@material-ui/core';
+
 import useFormStyles from 'styles/formStyles';
+
 import useStyles from './ContactsTabsStyles';
+import FamilyMembers from './FamilyMembers/FamilyMembers';
+import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 
 enum contactFormTabs {
     manualContactsForm = 0,
     familyMembers = 1,
 }
 
-const FormComponent = ({currentTab}: {currentTab: number;}) => {
+const FormComponent = ({ currentTab }: { currentTab: number }) => {
     return <>
         <Collapse in={currentTab === contactFormTabs.manualContactsForm}>
-            <ManualContactsForm/>
+            <ManualContactsForm />
+        </Collapse>
+        <Collapse in={currentTab === contactFormTabs.familyMembers}>
+            <FamilyMembers />
         </Collapse>
     </>
 };
 
-const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
+const ContactsTabs = ({ isVisible }: { isVisible: boolean }) => {
     const [currentTab, setTab] = React.useState<contactFormTabs>(0);
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -40,17 +46,17 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
                 value={currentTab}
                 onChange={handleChange}
             >
-                <Tab classes={{wrapper: classes.tab}}
-                     textColor={getTabTextColor(contactFormTabs.manualContactsForm)}
-                     icon={<FontAwesomeIcon icon={faUserEdit}/>}
-                     label='הוספת מגע ידנית'/>
-                <Tab classes={{wrapper: classes.tab}}
-                     textColor={getTabTextColor(contactFormTabs.familyMembers)}
-                     icon={<GroupOutlined/>}
-                     label='בני משפחה'/>
+                <Tab classes={{ wrapper: classes.tab }}
+                    textColor={getTabTextColor(contactFormTabs.manualContactsForm)}
+                    icon={<FontAwesomeIcon icon={faUserEdit} />}
+                    label='הוספת מגע ידנית' />
+                <Tab classes={{ wrapper: classes.tab }}
+                    textColor={getTabTextColor(contactFormTabs.familyMembers)}
+                    icon={<GroupOutlined />}
+                    label='בני משפחה' />
             </Tabs>
-            <Divider orientation='vertical' variant='fullWidth' light={true}/>
-            <FormComponent currentTab={currentTab}/>
+            <Divider orientation='vertical' variant='fullWidth' light={true} />
+            <FormComponent currentTab={currentTab} />
         </div>
     );
 };

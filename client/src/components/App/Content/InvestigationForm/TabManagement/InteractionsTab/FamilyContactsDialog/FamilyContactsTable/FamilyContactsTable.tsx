@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
-import InteractedContactFields from 'models/enums/InteractedContact';
 
 import useStyles from './FamilyContactsTableStyles';
 import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
@@ -74,7 +73,7 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
 interface Props {
     familyMembers: InvolvedContact[];
-    className: string
+    className?: string;
 };
 
 export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
