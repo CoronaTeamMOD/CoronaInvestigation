@@ -4,8 +4,8 @@ import {ChevronLeft, ChevronRight} from '@material-ui/icons';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import {InteractionEventFormProps} from '../InteractionEventForm/InteractionEventForm';
-import InteractionDetailsForm from '../InteractionEventForm/InteractionDetailsForm/InteractionDetailsForm';
+import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm/InteractionDetailsForm';
 import useStyles from './InteractionDialogStyles';
 
 const InteractionDialog = (props: Props) => {
