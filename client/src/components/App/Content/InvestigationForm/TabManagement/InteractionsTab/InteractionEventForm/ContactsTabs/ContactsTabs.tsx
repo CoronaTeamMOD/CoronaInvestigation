@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {Divider, Tab, Tabs, Collapse} from '@material-ui/core';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { Divider, Tab, Tabs, Collapse } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import useFormStyles from 'styles/formStyles';
-import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 
 import ContactsForms from './ContactsForms/ContactsForms';
-import FamilyContactsTable from '../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTable';
+import FamilyMembers from './FamilyMembers/FamilyMembers';
 
 enum contactFormTabs {
     manualContactsForm = 0,
@@ -21,16 +20,13 @@ const useStyles = makeStyles({
     }
 });
 
-const FormComponent = ({currentTab}: {currentTab: number;}) => {
-    const { familyMembers } = useContext(familyMembersContext);
+const FormComponent = ({ currentTab }: { currentTab: number }) => {
     return <>
         <Collapse in={currentTab === contactFormTabs.manualContactsForm}>
-            <ContactsForms/>
+            <ContactsForms />
         </Collapse>
         <Collapse in={currentTab === contactFormTabs.familyMembers}>
-            <FamilyContactsTable
-                familyMembers={familyMembers}
-            />
+            <FamilyMembers />
         </Collapse>
     </>
 };
