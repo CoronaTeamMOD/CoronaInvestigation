@@ -13,8 +13,6 @@ import InteractionEventDialogFields
 import Contact from 'models/Contact';
 import useInteractionsForm from '../useInteractionsForm';
 import PlaceSubType from 'models/PlaceSubType';
-// @ts-ignore
-import { DevTool } from '@hookform/devtools';
 
 const InteractionDetailsForm = (props: Props) => {
     const  { interactions, interactionData, loadInteractions, onDialogClose,isAddingContacts,isNewInteraction } = props;
@@ -131,15 +129,14 @@ const InteractionDetailsForm = (props: Props) => {
     return (
         <FormProvider {...methods}>
             <form id='interactionEventForm' onSubmit={validateAndHandleSubmit}>
-                <DevTool control={methods.control}/>
-                    <InteractionEventForm
-                        isVisible={!isAddingContacts}
-                        interactionData={interactionData}
-                        isNewInteraction={isNewInteraction}
-                        onPlaceSubTypeChange={onPlaceSubtypeChange}
-                    />
+                <InteractionEventForm
+                    isVisible={!isAddingContacts}
+                    interactionData={interactionData}
+                    isNewInteraction={isNewInteraction}
+                    onPlaceSubTypeChange={onPlaceSubtypeChange}
+                />
 
-                    <ContactsTabs isVisible={isAddingContacts}/>
+                <ContactsTabs isVisible={isAddingContacts}/>
             </form>
         </FormProvider>
     );
