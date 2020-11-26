@@ -16,7 +16,7 @@ const placeSubTypeDisplayName = 'תת סוג';
 
 const defaultSubType = { displayName: '', id: -1 };
 
-const PlacesTypesAndSubTypes: React.FC<Props> = (props: Props): JSX.Element => {
+const PlacesTypesAndSubTypes: React.FC<PlacesTypesAndSubTypesProps> = (props: PlacesTypesAndSubTypesProps): JSX.Element => {
 
     const { placeTypeName, placeSubTypeName, placeType, placeSubType, onPlaceTypeChange, onPlaceSubTypeChange } = props;
     const { control, errors } = useFormContext();
@@ -163,7 +163,7 @@ export default PlacesTypesAndSubTypes;
 
 type FormSize = 'Dialog' | 'Tab';
 
-interface Props {
+export interface PlacesTypesAndSubTypesProps {
     placeTypeName: string;
     placeSubTypeName: string;
     placeType: string;
