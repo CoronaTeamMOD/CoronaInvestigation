@@ -1,27 +1,25 @@
 import React, {useState} from 'react';
 import InteractionEventForm, {InteractionEventFormProps} from "../InteractionEventForm";
 import ContactsTabs from "../ContactsTabs/ContactsTabs";
-import {FormProvider, useForm} from "react-hook-form";
-import InteractionEventDialogData from "../../../../../../../../models/Contexts/InteractionEventDialogData";
+import {FormProvider, useForm} from 'react-hook-form';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {yupResolver} from "@hookform/resolvers";
-import InteractionEventSchema from "../InteractionEventSchema";
-import useDuplicateContactId, {IdToCheck} from "../../../../../../../../Utils/vendor/useDuplicateContactId";
+import InteractionEventSchema from '../InteractionEventSchema';
+import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
 import InteractionEventContactFields
-    from "../../../../../../../../models/enums/InteractionsEventDialogContext/InteractionEventContactFields";
+    from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields
-    from "../../../../../../../../models/enums/InteractionsEventDialogContext/InteractionEventDialogFields";
-import Contact from "../../../../../../../../models/Contact";
-import useInteractionsForm from "../useInteractionsForm";
-import PlaceSubType from "../../../../../../../../models/PlaceSubType";
-import useFormStyles from "../../../../../../../../styles/formStyles";
+    from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import Contact from 'models/Contact';
+import useInteractionsForm from '../useInteractionsForm';
+import PlaceSubType from 'models/PlaceSubType';
 // @ts-ignore
 import { DevTool } from '@hookform/devtools';
-import {Collapse, Slide} from "@material-ui/core";
 
 const InteractionDetailsForm = (props: Props) => {
-    const  { interactions, interactionData, loadInteractions, closeNewDialog, closeEditDialog,isAddingContacts,isNewInteraction } = props;
+    const  { interactions, interactionData, loadInteractions, onDialogClose,isAddingContacts,isNewInteraction } = props;
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-    const { saveInteractions } = useInteractionsForm({ loadInteractions, closeNewDialog, closeEditDialog });
+    const { saveInteractions } = useInteractionsForm({ loadInteractions, onDialogClose});
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
     const methods = useForm<InteractionEventDialogData>({
@@ -107,30 +105,28 @@ const InteractionDetailsForm = (props: Props) => {
         }
     };
 
-    const validateAndHandleSubmit = () => {
-        return methods.handleSubmit(
-            (data) => {
-                console.log('data',data);
-                const filTimeValidationMessage = 'יש למלא שעה';
-                if (!isUnknownTime) {
-                    if (!interactionStartTime) {
-                        methods.setError(InteractionEventDialogFields.START_TIME, {
-                            type: 'manual',
-                            message: filTimeValidationMessage
-                        });
-                    }
-                    if (!interactionEndTime) {
-                        methods.setError(InteractionEventDialogFields.END_TIME, {
-                            type: 'manual',
-                            message: filTimeValidationMessage
-                        });
-                    }
+    const validateAndHandleSubmit = methods.handleSubmit(
+        () => {
+            const filTimeValidationMessage = 'יש למלא שעה';
+            if (!isUnknownTime) {
+                if (!interactionStartTime) {
+                    methods.setError(InteractionEventDialogFields.START_TIME, {
+                        type: 'manual',
+                        message: filTimeValidationMessage
+                    });
                 }
-                if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
-                    onSubmit(methods.getValues())
+                if (!interactionEndTime) {
+                    methods.setError(InteractionEventDialogFields.END_TIME, {
+                        type: 'manual',
+                        message: filTimeValidationMessage
+                    });
                 }
-            }, (error) => console.log('error sub,itting', error))
-    }
+            }
+            if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
+                onSubmit(methods.getValues())
+            }
+        })
+
 
     return (
         <FormProvider {...methods}>
@@ -140,8 +136,7 @@ const InteractionDetailsForm = (props: Props) => {
                         isVisible={!isAddingContacts}
                         interactionData={interactionData}
                         isNewInteraction={isNewInteraction}
-                        //@ts-ignore
-                        onPlaceSubtypeChange={onPlaceSubtypeChange}
+                        onPlaceSubTypeChange={onPlaceSubtypeChange}
                     />
 
                     <ContactsTabs isVisible={isAddingContacts}/>
@@ -154,8 +149,7 @@ interface Props {
     isAddingContacts: boolean;
     interactions: InteractionEventDialogData[];
     loadInteractions: () => void;
-    closeNewDialog: () => void;
-    closeEditDialog: () => void;
+    onDialogClose: () => void;
     interactionData?: InteractionEventFormProps['interactionData'];
     isNewInteraction?: InteractionEventFormProps['isNewInteraction'];
 }

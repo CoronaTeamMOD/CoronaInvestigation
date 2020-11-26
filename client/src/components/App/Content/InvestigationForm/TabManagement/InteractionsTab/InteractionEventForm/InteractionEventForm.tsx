@@ -1,32 +1,24 @@
 import {isValid} from 'date-fns';
-import {yupResolver} from '@hookform/resolvers';
 import React, {useEffect, useMemo, useState} from 'react';
-import {AddCircle as AddCircleIcon} from '@material-ui/icons';
-import {useForm, useFormContext, Controller, useFieldArray} from 'react-hook-form';
-import {Grid, Typography, Divider, IconButton, Collapse, Checkbox, FormControlLabel} from '@material-ui/core';
+import {useFormContext, Controller } from 'react-hook-form';
+import {Grid, Typography, Divider, Collapse, Checkbox, FormControlLabel} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
-import PlaceSubType from 'models/PlaceSubType';
 import TimePick from 'commons/DatePick/TimePick';
 import FormInput from 'commons/FormInput/FormInput';
 import {get} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import {getOptionsByPlaceAndSubplaceType} from 'Utils/placeTypesCodesHierarchy';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
-import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
+import PlacesTypesAndSubTypes, {PlacesTypesAndSubTypesProps} from 'commons/Forms/PlacesTypesAndSubTypes/PlacesTypesAndSubTypes';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import AddressForm from './AddressForm/AddressForm';
-import ContactForm from './ContactsTabs/ContactsForms/ContactForm/ContactForm';
 import useStyles from './InteractionEventFormStyles';
-import useInteractionsForm from './useInteractionsForm';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
-import InteractionEventSchema from './InteractionEventSchema';
 import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
-import {getVisibility} from "../../../../../../../Utils/stylingFunctions";
 
 export const defaultContact: Contact = {
     firstName: '',
@@ -38,8 +30,7 @@ export const defaultContact: Contact = {
 };
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
-    // @ts-ignore
-    { onPlaceSubtypeChange, isVisible, interactionData, isNewInteraction }: InteractionEventFormProps): JSX.Element => {
+    { onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction }: InteractionEventFormProps): JSX.Element => {
     const {control, watch, clearErrors, setValue, errors, setError} = useFormContext();
 
     const placeType = watch(InteractionEventDialogFields.PLACE_TYPE);
@@ -124,7 +115,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                         Boolean(placeName) &&
                                         setValue(InteractionEventDialogFields.PLACE_NAME, '');
                                     }}
-                                    onPlaceSubTypeChange={onPlaceSubtypeChange}
+                                    onPlaceSubTypeChange={onPlaceSubTypeChange}
             />
 
             <Grid className={formClasses.formRow} container justify='flex-start'>
@@ -140,8 +131,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                 onChange={(newTime: Date) => {
                                     setStartTime(newTime)
                                     handleTimeChange(newTime, interactionStartTime, InteractionEventDialogFields.START_TIME)
-                                }
-                                }
+                                }}
                                 labelText={get(errors, props.name) ? get(errors, props.name).message : 'משעה*'}
                                 error={get(errors, props.name)}
                             />
@@ -158,10 +148,9 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                                 testId='contactLocationEndTime'
                                 value={endTime}
                                 onChange={(newTime: Date) => {
-                                    setEndTime(newTime)
+                                    setEndTime(newTime);
                                     handleTimeChange(newTime, interactionEndTime, InteractionEventDialogFields.END_TIME)
-                                }
-                                }
+                                }}
                                 labelText={get(errors, props.name) ? get(errors, props.name).message : 'עד שעה*'}
                                 error={get(errors, props.name)}
                             />
@@ -191,7 +180,7 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
                 <AddressForm/>
             </Collapse>
             <Collapse in={isNamedLocation}>
-                <PlaceNameForm nameFieldLabel={nameFieldLabel}/>
+                <PlaceNameForm nameFieldLabel={nameFieldLabel} />
             </Collapse>
             <Collapse in={!!extraFields}>
                 {extraFields?.map((fieldElement: React.FC) => React.createElement(fieldElement))}
@@ -232,13 +221,13 @@ const InteractionEventForm: React.FC<InteractionEventFormProps> = (
             </Collapse>
             <Divider light={true}/>
         </Grid>
-
     );
 };
 
 export default InteractionEventForm;
 
 export interface InteractionEventFormProps {
+    onPlaceSubTypeChange: PlacesTypesAndSubTypesProps['onPlaceSubTypeChange'];
     interactionData?: InteractionEventDialogData;
     isNewInteraction?: Boolean;
     isVisible: boolean;
