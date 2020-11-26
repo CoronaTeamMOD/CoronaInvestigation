@@ -90,8 +90,8 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
 `;
 
 export const GET_ALL_INVOLVED_CONTACTS = gql`
-query getAllInvolvedContacts {
-  allInvolvedContacts {
+query getAllInvolvedContacts($currInvestigation: Int!) {
+  allInvolvedContacts(filter: {investigationId: {equalTo: $currInvestigation}}) {
     nodes {
       familyRelationshipByFamilyRelationship {
         familyRelationship: displayName
