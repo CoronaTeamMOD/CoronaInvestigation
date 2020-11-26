@@ -125,7 +125,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactions={interactions}
                     />
                 }
-                <FamilyContactsDialog 
+                <FamilyContactsDialog
                     uncontactedFamilyMembers={uncontactedFamilyMembers}
                     isOpen={uncontactedFamilyMembers.length > 0} 
                     closeDialog={closeFamilyDialog}
