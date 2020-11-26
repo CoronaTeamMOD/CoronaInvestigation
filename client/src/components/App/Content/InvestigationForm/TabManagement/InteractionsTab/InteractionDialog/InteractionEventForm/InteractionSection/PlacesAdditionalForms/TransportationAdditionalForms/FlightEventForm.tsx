@@ -9,9 +9,9 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-
-import useStyles from './TransportationFormsStyles';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+
+import useStyles from '../../TransportationForms/TransportationFormsStyles';
 
 const FlightEventForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();

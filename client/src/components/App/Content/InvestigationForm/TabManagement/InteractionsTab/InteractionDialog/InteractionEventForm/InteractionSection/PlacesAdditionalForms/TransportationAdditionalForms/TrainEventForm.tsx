@@ -1,17 +1,17 @@
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, TextField } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import City from 'models/City';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
-import useStyles from './TransportationFormsStyles';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
+import useStyles from '../../TransportationForms/TransportationFormsStyles';
 
 const TrainEventForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();

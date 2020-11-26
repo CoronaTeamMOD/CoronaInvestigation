@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 
 import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 
-import FamilyContactsTable from '../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTable';
+import FamilyContactsTable from '../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTable';
 
 const noFamilyMembers = 'לא קיימים נתונים ממרשם האוכלוסין';
 

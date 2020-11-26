@@ -12,7 +12,7 @@ import { cityFilterOptions } from 'Utils/Address/AddressOptionsFilters';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
-import useStyles from './TransportationFormsStyles';
+import useStyles from '../../TransportationForms/TransportationFormsStyles';
 
 const BusEventForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();
