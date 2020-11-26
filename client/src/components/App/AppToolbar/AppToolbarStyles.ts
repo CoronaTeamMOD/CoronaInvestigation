@@ -43,11 +43,16 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        paddingTop: theme.spacing(1)
     },
     activeItem: {
-        textDecoration: 'underline',
-        textDecorationColor: 'white'
+        flip: false,
+        borderRadius: 20,
+        background: '#5FB1CB',
+        color: 'white',
+        padding: theme.spacing(1),
+        marginLeft: theme.spacing(1)
     }
 }));
 
