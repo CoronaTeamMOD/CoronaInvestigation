@@ -29,6 +29,10 @@ const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
+const CONTACT_TYPE_TIGHT: number = 1;
+const CONTACT_TYPE_NOT_TIGHT: number = 2;
+const CONTACT_TYPE_OPTIONAL: number = 3;
+
 const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
@@ -42,116 +46,117 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
 
     useEffect(() => {
         const values = getValues();
-        const contactContactType: number = values.contacts[updatedContactIndex]?.contactType ? values.contacts[updatedContactIndex]?.contactType : Array.from(contactTypes.keys())[0];
+        const contactContactType: number = values.contacts[updatedContactIndex]?.contactType ? values.contacts[updatedContactIndex]?.contactType : Array.from(contactTypes.keys())[CONTACT_TYPE_NOT_TIGHT];
         setValue(`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`, contactContactType);
     }, []);
+
+    const getSelectableContactTypeValues = (): ContactType[] => {
+        return Array.from(contactTypes.values()).filter((ct: ContactType) => ct.id !== CONTACT_TYPE_OPTIONAL);
+    }
 
     return (
         <div test-id='contactFormContainer' className={classes.addContactFields} key='addContactFields'>
             <Grid className={formClasses.formRow} container justify='flex-start'>
-                    <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphabetTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    key='contactedPersonFirstName'
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    label={FIRST_NAME_LABEL}
-                                    onBlur={props.onBlur}
-                                    className={classes.newContactField}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                    <FormInput xs={4} labelLength={4} fieldName={contactedPersonLastName}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphabetTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    key='contactedPersonLastName'
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue as string)}
-                                    onBlur={props.onBlur}
-                                    label={LAST_NAME_LABEL}
-                                    className={classes.newContactField}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                    <FormInput xs={4} fieldName={contactedPersonPhone}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
-                            control={control}
-                            render={(props) => (
-                                <NumericTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
-                                    onBlur={props.onBlur}
-                                    label={PHONE_NUMBER_LABEL}
-                                />
-                            )}
-                        />
-                    </FormInput>
+                <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphabetTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                key='contactedPersonFirstName'
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                label={FIRST_NAME_LABEL}
+                                onBlur={props.onBlur}
+                                className={classes.newContactField}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} labelLength={4} fieldName={contactedPersonLastName}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphabetTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                key='contactedPersonLastName'
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                                label={LAST_NAME_LABEL}
+                                className={classes.newContactField}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} fieldName={contactedPersonPhone}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
+                        control={control}
+                        render={(props) => (
+                            <NumericTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
+                                onBlur={props.onBlur}
+                                label={PHONE_NUMBER_LABEL}
+                            />
+                        )}
+                    />
+                </FormInput>
             </Grid>
             <Grid className={formClasses.formRow} container justify='flex-start'>
-                    <FormInput xs={4} fieldName={contactedPersonID}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
-                            control={control}
-                            render={(props) => (
-                                <NumericTextField
-                                    disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
-                                    onBlur={props.onBlur}
-                                    className={classes.newContactField}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                    <FormInput xs={4} fieldName={contactTypeName}>
-                        <FormControl fullWidth>
-                            <div className={classes.newContactField}>
-                                    <Controller
-                                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`}
-                                        control={control}
-                                        render={(props) => (
-                                            <Select
-                                                disabled={isFieldDisabled}
-                                                test-id='contactType'
-                                                defaultValue={Array.from(contactTypes.keys())[2]}
-                                                value={props.value}
-                                                onChange={event => props.onChange(event.target.value as number)}
-                                            >
-                                                {
-                                                    Array.from(contactTypes.values())
-                                                    .filter((editableContactType) => editableContactType.displayName !=='אופציונלי' )
-                                                    .map((contactType) => (
-                                                        <MenuItem key={contactType.id} value={contactType.id}>
-                                                            {contactType.displayName}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                                
-                                            </Select>
-                                        )}
-                                    />
-                            </div>
-                        </FormControl>
-                    </FormInput>
+                <FormInput xs={4} fieldName={contactedPersonID}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
+                        control={control}
+                        render={(props) => (
+                            <NumericTextField
+                                disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as string)}
+                                onBlur={props.onBlur}
+                                className={classes.newContactField}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} fieldName={contactTypeName}>
+                    <FormControl fullWidth>
+                        <div className={classes.newContactField}>
+                            <Controller
+                                name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.CONTACT_TYPE}`}
+                                control={control}
+                                render={(props) => (
+                                    <Select
+                                        disabled={isFieldDisabled}
+                                        test-id='contactType'
+                                        defaultValue={Array.from(contactTypes.keys())[CONTACT_TYPE_NOT_TIGHT]}
+                                        value={props.value}
+                                        onChange={event => props.onChange(event.target.value as number)}
+                                    >
+                                        {
+                                            getSelectableContactTypeValues().map((contactType: ContactType) => (
+                                                <MenuItem key={contactType.id} value={contactType.id}>
+                                                    {contactType.displayName}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            />
+                        </div>
+                    </FormControl>
+                </FormInput>
             </Grid>
             <FormInput xs={12} fieldName={contactTypeMoreDetails}>
-                <Controller 
+                <Controller
                     name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
                     control={control}
                     render={(props) => (
