@@ -5,8 +5,6 @@ import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 
 import FamilyContactsTable from '../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTable';
 
-
-
 const noFamilyMembers = 'לא קיימים נתונים ממרשם האוכלוסין';
 
 const FamilyMembers: React.FC = () => {
@@ -16,10 +14,10 @@ const FamilyMembers: React.FC = () => {
         familyMembers.length > 0 ?
             <FamilyContactsTable
                 familyMembers={familyMembers}
+                showCheckBoxes={true}
             />
             :
             <Typography variant='h5'>{noFamilyMembers}</Typography>
-
     );
 };
 

@@ -1,6 +1,6 @@
-import React from 'react';
 import { format } from 'date-fns';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import React, { useState } from 'react';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
 
@@ -11,7 +11,20 @@ const birthDateFormat = 'dd/MM/yyyy';
 
 const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
-    const { familyMembers, className } = props;
+    const { familyMembers, className, showCheckBoxes } = props;
+
+    const [checkedRowsIds, setCheckedRowsIds] = useState<string[]>([]);
+
+    const selectRow = (identificationNumber: string) => {
+        const identificationNumberIndex = checkedRowsIds.findIndex(checkedRow => identificationNumber === checkedRow);
+        if (identificationNumberIndex !== -1) {
+            setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== identificationNumber));
+        } else {
+            setCheckedRowsIds([...checkedRowsIds, identificationNumber]);
+        }
+    }
+
+    const isRowSelected = (identificationNumber: string) => checkedRowsIds.includes(identificationNumber);
 
     const classes = useStyles();
 
@@ -45,24 +58,39 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
                 <TableHead>
                     <TableRow>
                         {
-                            Object.values(FamilyContactsTableHeaders).map(cellName => {
-                                return (
-                                    <TableCell>{cellName}</TableCell>
-                                )
-                            })
+                            showCheckBoxes ?
+                                [''].concat(Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                    return (
+                                        <TableCell>{cellName}</TableCell>
+                                    )
+                                })
+                                : (Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                    return (
+                                        <TableCell>{cellName}</TableCell>
+                                    )
+                                })
                         }
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {
                         familyMembers.map(member => (
+                            <>
                             <TableRow>
+                                {
+                                    showCheckBoxes &&
+                                    <Checkbox onClick={(event) => {
+                                        event.stopPropagation();
+                                        selectRow(member.identificationNumber);
+                                    }} color='primary' checked={isRowSelected(member.identificationNumber)} />
+                                }
                                 {
                                     Object.keys(FamilyContactsTableHeaders).map(cellName => (
                                         <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(member), cellName)}</TableCell>
                                     ))
                                 }
                             </TableRow>
+                            </>
                         ))
                     }
                 </TableBody>
@@ -74,6 +102,7 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 interface Props {
     familyMembers: InvolvedContact[];
     className?: string;
+    showCheckBoxes?: boolean;
 };
 
 export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
