@@ -161,7 +161,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage =  (ev) => setIsInInvestigation(ev.data.isInInvestigation);
+        windowTabsBroadcatChannel.current.onmessage =  (broadcastEvent: MessageEvent) => 
+            setIsInInvestigation(broadcastEvent.data.isInInvestigation);
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
