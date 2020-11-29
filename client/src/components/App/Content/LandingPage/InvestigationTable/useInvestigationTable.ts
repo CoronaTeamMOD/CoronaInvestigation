@@ -7,13 +7,14 @@ import User from 'models/User';
 import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
-import { persistor, store } from 'redux/store';
+import { Severity } from 'models/Logger';
 import userType from 'models/enums/UserType';
+import { persistor, store } from 'redux/store';
 import Investigator from 'models/Investigator';
 import { timeout } from 'Utils/Timeout/Timeout';
 import { activateIsLoading } from 'Utils/axios';
-import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
+import  { BC_TABS_NAME }  from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -109,6 +110,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
+
+    const bc = new BroadcastChannel(BC_TABS_NAME);
+    bc.onmessage = function (ev) { 
+        setIsInInvestigation(ev.data.isInInvestigation);
+    }
 
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({

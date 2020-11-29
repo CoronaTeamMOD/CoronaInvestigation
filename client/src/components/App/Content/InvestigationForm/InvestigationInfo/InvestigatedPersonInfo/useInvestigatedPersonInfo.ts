@@ -3,16 +3,16 @@ import { useSelector } from 'react-redux';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
+import { Severity } from 'models/Logger';
 import userType from 'models/enums/UserType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
 import { inProcess } from './InvestigatedPersonInfo';
@@ -27,6 +27,8 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const userRole = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
+    
+    const bc = new BroadcastChannel(BC_TABS_NAME);
 
     const handleInvestigationFinish = async () => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
@@ -34,7 +36,11 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             showConfirmButton: false
         });
         timeout(1500).then(() => {
-            setIsInInvestigation(false);
+            const broadcastMessage : BroadcastMessage = {
+                message: 'Closing the investigation',
+                isInInvestigation: false
+            }
+            bc.postMessage(broadcastMessage);
             window.close();
         });
     };
