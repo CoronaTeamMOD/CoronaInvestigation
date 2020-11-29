@@ -1,17 +1,17 @@
 import React, {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {yupResolver} from "@hookform/resolvers";
-import InteractionEventForm, {InteractionEventFormProps} from '../InteractionSection/InteractionEventForm';
-import ContactsTabs from '../ContactsSection/ContactsTabs';
+import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
+import ContactsTabs from './ContactsSection/ContactsTabs';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import InteractionEventSchema from '../InteractionSection/InteractionEventSchema';
+import InteractionEventSchema from './InteractionSection/InteractionEventSchema';
 import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
 import InteractionEventContactFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import Contact from 'models/Contact';
-import useInteractionsForm from '../useInteractionsForm';
+import useInteractionsForm from './useInteractionsForm';
 import PlaceSubType from 'models/PlaceSubType';
 
 const InteractionDetailsForm = (props: Props) => {

@@ -54,59 +54,59 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
 
     return (
         <div test-id='contactFormContainer' key='addContactFields'>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
-                    <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphabetTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    key='contactedPersonFirstName'
-                                    value={props.value}
-                                    onChange={props.onChange}
-                                    label={FIRST_NAME_LABEL}
-                                    onBlur={props.onBlur}
-                                    className={classes.newContactField}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                    <FormInput xs={4} labelLength={4} fieldName={contactedPersonLastName}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
-                            control={control}
-                            render={(props) => (
-                                <AlphabetTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    key='contactedPersonLastName'
-                                    value={props.value}
-                                    onChange={props.onChange}
-                                    onBlur={props.onBlur}
-                                    label={LAST_NAME_LABEL}
-                                    className={classes.newContactField}
-                                />
-                            )}
-                        />
-                    </FormInput>
-                    <FormInput xs={4} fieldName={contactedPersonPhone}>
-                        <Controller 
-                            name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
-                            control={control}
-                            render={(props) => (
-                                <NumericTextField
-                                    disabled={isFieldDisabled}
-                                    name={props.name}
-                                    value={props.value}
-                                    onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
-                                    onBlur={props.onBlur}
-                                    label={PHONE_NUMBER_LABEL}
-                                />
-                            )}
-                        />
-                    </FormInput>
+            <Grid className={formClasses.formRow} container justify='flex-start' spacing={1}>
+                <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphabetTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                key='contactedPersonFirstName'
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                label={FIRST_NAME_LABEL}
+                                onBlur={props.onBlur}
+                                className={classes.newContactField}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} labelLength={4} fieldName={contactedPersonLastName}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphabetTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                key='contactedPersonLastName'
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                                label={LAST_NAME_LABEL}
+                                className={classes.newContactField}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} fieldName={contactedPersonPhone}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
+                        control={control}
+                        render={(props) => (
+                            <NumericTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue === '' ? null : newValue as String)}
+                                onBlur={props.onBlur}
+                                label={PHONE_NUMBER_LABEL}
+                            />
+                        )}
+                    />
+                </FormInput>
             </Grid>
             <Grid className={formClasses.formRow} container justify='flex-start'>
                 <FormInput xs={4} fieldName={contactedPersonID}>
@@ -125,7 +125,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} fieldName={contactTypeName}>
+                <FormInput xs={5} fieldName={contactTypeName}>
                     <FormControl fullWidth>
                         <div className={classes.newContactField}>
                             <Controller
