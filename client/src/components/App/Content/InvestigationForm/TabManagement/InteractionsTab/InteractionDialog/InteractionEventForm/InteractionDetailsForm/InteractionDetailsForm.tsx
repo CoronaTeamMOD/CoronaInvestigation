@@ -53,6 +53,7 @@ const InteractionDetailsForm = (props: Props) => {
     };
 
     const onSubmit = (data: InteractionEventDialogData) => {
+        console.log('onsub', data)
         const interactionDataToSave = convertData(data);
         const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
             .flat()

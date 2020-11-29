@@ -1,11 +1,8 @@
+import React from 'react';
 import { format } from 'date-fns';
-import React, { useMemo, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
-import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './FamilyContactsTableStyles';
 import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
@@ -14,32 +11,7 @@ const birthDateFormat = 'dd/MM/yyyy';
 
 const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
-    const { familyMembers, className, showCheckBoxes } = props;
-
-    const { control } = useFormContext();
-    const { fields, append } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
-    const contacts = fields;
-
-    const [checkedRowsIds, setCheckedRowsIds] = useState<string[]>([]);
-
-    const selectRow = (identificationNumber: string) => {
-        const identificationNumberIndex = checkedRowsIds.findIndex(checkedRow => identificationNumber === checkedRow);
-        if (identificationNumberIndex !== -1) {
-            setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== identificationNumber));
-        } else {
-            setCheckedRowsIds([...checkedRowsIds, identificationNumber]);
-        }
-    }
-
-    const counterDescription: string = useMemo(() => {
-        return checkedRowsIds.length > 0 ?
-            checkedRowsIds.length === 1 ?
-                'נבחר מגע משפחה אחד' :
-                'בסה"כ נבחרו ' + checkedRowsIds.length + ' מגעי משפחה'
-            : ''
-    }, [checkedRowsIds]);
-
-    const isRowSelected = (identificationNumber: string) => checkedRowsIds.includes(identificationNumber);
+    const { familyMembers, className } = props;
 
     const classes = useStyles();
 
@@ -68,59 +40,40 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
     }
 
     return (
-        <>
-            <TableContainer className={className} component={Paper}>
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {
-                                showCheckBoxes ?
-                                    [''].concat(Object.values(FamilyContactsTableHeaders)).map(cellName => {
-                                        return (
-                                            <TableCell>{cellName}</TableCell>
-                                        )
-                                    })
-                                    : (Object.values(FamilyContactsTableHeaders)).map(cellName => {
-                                        return (
-                                            <TableCell>{cellName}</TableCell>
-                                        )
-                                    })
-                            }
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+        <TableContainer className={className} component={Paper}>
+            <Table stickyHeader>
+                <TableHead>
+                    <TableRow>
                         {
-                            familyMembers.map(member => (
-                                <>
-                                    <TableRow className={isRowSelected(member.identificationNumber) ? classes.checkedRow : ''}>
-                                        {
-                                            showCheckBoxes &&
-                                            <Checkbox onClick={(event) => {
-                                                event.stopPropagation();
-                                                selectRow(member.identificationNumber);
-                                            }} color='primary' checked={isRowSelected(member.identificationNumber)} />
-                                        }
-                                        {
-                                            Object.keys(FamilyContactsTableHeaders).map(cellName => (
-                                                <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(member), cellName)}</TableCell>
-                                            ))
-                                        }
-                                    </TableRow>
-                                </>
-                            ))
+                            (Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                return (
+                                    <TableCell>{cellName}</TableCell>
+                                )
+                            })
                         }
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Typography><b>{counterDescription}</b></Typography>
-        </>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        familyMembers.map(member => (
+                            <TableRow>
+                                {
+                                    Object.keys(FamilyContactsTableHeaders).map(cellName => (
+                                        <TableCell className={classes.cell}>{getTableCell(convertToIndexedRow(member), cellName)}</TableCell>
+                                    ))
+                                }
+                            </TableRow>
+                        ))
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 
 interface Props {
     familyMembers: InvolvedContact[];
-    className?: string;
-    showCheckBoxes?: boolean;
+    className: string;
 };
 
 export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
