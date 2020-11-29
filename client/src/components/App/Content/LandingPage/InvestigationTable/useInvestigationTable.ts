@@ -111,7 +111,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
 
-    const WindowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
+    const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
     
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
@@ -161,7 +161,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        WindowTabsBroadcatChannel.current.onmessage =  (ev) => setIsInInvestigation(ev.data.isInInvestigation);
+        windowTabsBroadcatChannel.current.onmessage =  (ev) => setIsInInvestigation(ev.data.isInInvestigation);
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {

@@ -224,12 +224,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() => {
-            const WindowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
+            const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
             const finishingBroadcastMessage : BroadcastMessage = {
                 message: 'Investigaion finished',
                 isInInvestigation: false
             }
-            WindowTabsBroadcatChannel.postMessage(finishingBroadcastMessage);
+            windowTabsBroadcatChannel.postMessage(finishingBroadcastMessage);
             window.close();
         });
     };
