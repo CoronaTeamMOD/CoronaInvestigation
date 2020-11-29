@@ -121,7 +121,7 @@ const InteractionDetailsForm = (props: Props) => {
                 }
             }
             if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
-                onSubmit(methods.getValues())
+                onSubmit(methods.getValues());
             }
         })
 

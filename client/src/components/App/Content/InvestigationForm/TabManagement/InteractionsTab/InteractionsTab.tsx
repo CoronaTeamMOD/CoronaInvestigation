@@ -74,7 +74,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const saveInteraction = (event : React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
+        const uncontactedFamilyMembersArray: InvolvedContact[] = familyMembersStateContext.familyMembers.filter(member => !member.isContactedPerson);
         const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
         if (!interactionsTabSettings.allowUncontactedFamily && areThereUncontactedMembers) {
             setUncontactedFamilyMembers(uncontactedFamilyMembersArray);
@@ -127,7 +127,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactions={interactions}
                     />
                 }
-                <FamilyContactsDialog 
+                <FamilyContactsDialog
                     uncontactedFamilyMembers={uncontactedFamilyMembers}
                     isOpen={uncontactedFamilyMembers.length > 0} 
                     closeDialog={closeFamilyDialog}

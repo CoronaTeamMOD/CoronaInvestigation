@@ -1,8 +1,11 @@
 import { format } from 'date-fns';
 import React, { useMemo, useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
 
+import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './FamilyContactsTableStyles';
 import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
@@ -12,6 +15,10 @@ const birthDateFormat = 'dd/MM/yyyy';
 const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
     const { familyMembers, className, showCheckBoxes } = props;
+
+    const { control } = useFormContext();
+    const { fields, append } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
+    const contacts = fields;
 
     const [checkedRowsIds, setCheckedRowsIds] = useState<string[]>([]);
 
