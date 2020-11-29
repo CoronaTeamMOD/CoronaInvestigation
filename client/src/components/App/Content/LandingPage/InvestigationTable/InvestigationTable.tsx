@@ -58,7 +58,7 @@ const defaultCounty = {
     displayName: ''
 }
 
-export const rowsPerPage = 10;
+export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const unassignedToDesk = 'לא שוייך לדסק';
