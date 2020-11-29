@@ -5,7 +5,7 @@ import { Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_GROUPED_INVESTIGATIONS_REASONS } from '../../DBService/GroupedInvestigations/Query';
-import { CREATE_GROUP_FOR_INVESTIGATIONS, UPDATE_GROUPED_INVESTIGATIONS } from '../../DBService/GroupedInvestigations/Mutation';
+import { CREATE_GROUP_FOR_INVESTIGATIONS } from '../../DBService/GroupedInvestigations/Mutation';
 
 const groupedInvestigationsRoute = Router();
 const errorStatusCode = 500;
@@ -33,49 +33,28 @@ groupedInvestigationsRoute.get('/reasons', adminMiddleWare, (request: Request, r
 });
 
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
+    const invetigationsToGroup: number[] = request.body.invetigationsToGroupIds;
+    const invetigationsToGroupMessage = invetigationsToGroup.join(', ');
     const groupToCreateLogger = logger.setup({
-        workflow: 'create group for investigations',
+        workflow: `create grouped investigations ${invetigationsToGroupMessage}`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    const groupToCreate = request.body.groupToCreate; 
-    groupToCreateLogger.info(`launching create group info with the parameters ${JSON.stringify(groupToCreate)}`, Severity.LOW);
+
+    const groupToCreate = {...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup}; 
+    groupToCreateLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupToCreate)}`, Severity.LOW);
     graphqlRequest(CREATE_GROUP_FOR_INVESTIGATIONS, response.locals, {input: groupToCreate})
     .then(result => {
         if (result?.data) {
-            groupToCreateLogger.info('create group successfully', Severity.LOW);
-            const groupedInvestigationsLogger = logger.setup({
-                workflow: 'update groupId for investigations',
-                user: response.locals.user.id,
-                investigation: response.locals.epidemiologynumber
-            })
-            const invetigationsToGroup: number[] = request.body.invetigationsToGroupIds;
-            const invetigationsToGroupMessage = invetigationsToGroup.join(', ');
-            groupedInvestigationsLogger.info(`updating investigations ${invetigationsToGroupMessage} to be part of group ${groupToCreate.id}`, Severity.LOW);
-            graphqlRequest(UPDATE_GROUPED_INVESTIGATIONS, response.locals, {
-                epidemiologyNumbers: invetigationsToGroup,
-                groupId: groupToCreate.id
-            })
-            .then(result => {
-                if (result?.data?.updateGroupedInvestigations) {
-                    groupedInvestigationsLogger.info(`investigations ${invetigationsToGroupMessage} were updated successfully`, Severity.LOW);
-                    response.send(result);
-                } else {
-                    groupedInvestigationsLogger.error(`investigations ${invetigationsToGroupMessage} were failed to update due to ${result.errors[0]?.message}`, Severity.HIGH);
-                    response.status(errorStatusCode).send(result.errors[0]?.message);
-                }
-            })
-            .catch(err => {
-                groupedInvestigationsLogger.error(`investigations ${invetigationsToGroupMessage} were failed to update due to ${err}`, Severity.HIGH);
-                response.status(errorStatusCode).send(err);
-            })
+            groupToCreateLogger.info('created grouped investigations successfully', Severity.LOW);
+            response.send(result);
         } else {
-            groupToCreateLogger.error(`create group was failde due to ${result.errors[0]?.message}`, Severity.HIGH);
+            groupToCreateLogger.error(`create grouped investigations has been failed due to ${result.errors[0]?.message}`, Severity.HIGH);
             response.status(errorStatusCode).send(result.errors[0]?.message);
         }
     })
     .catch(err => {
-        groupToCreateLogger.error(`create group was failde due to ${err}`, Severity.HIGH);
+        groupToCreateLogger.error(`create grouped investigations has been failed failed due to ${err}`, Severity.HIGH);
         response.status(errorStatusCode).send(err);
     })
 
