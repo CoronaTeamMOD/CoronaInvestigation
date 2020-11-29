@@ -10,7 +10,7 @@ mutation createGroupForInvestigations ($input: CreateGroupForInvestigationsInput
 
 export const UPDATE_GROUPED_INVESTIGATIONS = gql`
 mutation UpdateGroupedInvestigations($epidemiologyNumbers: [Int], $groupId: UUID ) {
-    updateGroupedInvestigations(input: {epidemiologyNumbers: $epidemiologyNumbers, groupId: $groupId }) {
+updateGroupedInvestigations(input: {epidemiologyNumbers: $epidemiologyNumbers, val: $groupId }) {
     clientMutationId
   }
 }
