@@ -5,16 +5,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } fr
 
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
+import useGroupedInvestigations, { GroupForm } from './useGroupedInvestigations';
 import validationSchema from './GroupedInvestigationsForm/GroupedInvestigationsSchema';
 import GroupedInvestigationsForm from './GroupedInvestigationsForm/GroupedInvestigationsForm';
 import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInvestigationsTable';
 import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInvestigationsFields';
-
 const title = 'קיבוץ חקירות'
 
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose }: Props) => {
 
-    const methods = useForm({
+    const methods = useForm<GroupForm>({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues: {
@@ -22,6 +22,8 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
             [GroupedInvestigationsFields.OTHER_REASON]: ''
         }
     });
+ 
+    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose});
 
     return (
         <Dialog open={open}>
@@ -31,7 +33,7 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
                 </b>
             </DialogTitle>
             <FormProvider {...methods}>
-                <form>
+                <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <DialogContent>
                         <GroupedInvestigationsTable invetigationsToGroup={invetigationsToGroup} />
                         <GroupedInvestigationsForm />
@@ -46,6 +48,7 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
                         </Button>
                         <Tooltip open={!methods.formState.isValid} title='יש לבחור סיבה'>
                             <Button
+                                type='submit'
                                 disabled={!methods.formState.isValid}
                                 variant='contained' 
                                 color='primary'
