@@ -1,6 +1,6 @@
 import { gql } from "postgraphile";
 
-export const ORDERED_INVESTIGATIONS = (investigationGroup: number) => gql`
+export const USER_INVESTIGATIONS = (investigationGroup: number) => gql`
 query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
@@ -36,6 +36,59 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       userByCreator {
         id
         userName
+      }
+    }
+    totalCount
+  }
+  unassignedInvestigations: orderedInvestigations(filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}, and: $unassignedFilter}) {
+    totalCount
+  }
+}
+`;
+
+export const GROUP_INVESTIGATIONS = (investigationGroup: number) => gql`
+query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
+  orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
+    nodes {
+      comment
+      epidemiologyNumber
+      coronaTestDate
+      complexityCode
+      priority
+      statusReason
+      transferReason
+      wasInvestigationTransferred
+      deskByDeskId {
+        deskName
+      }
+      investigatedPatientByInvestigatedPatientId {
+        covidPatientByCovidPatient {
+          birthDate
+          fullName
+          primaryPhone
+          addressByAddress {
+            cityByCity {
+              displayName
+            }
+          }
+        }
+      }
+      investigationStatusByInvestigationStatus {
+        displayName
+      }
+      investigationSubStatusByInvestigationSubStatus {
+        displayName
+      }
+      userByCreator {
+        id
+        userName
+        countyByInvestigationGroup {
+          displayName
+          id
+          districtByDistrictId {
+            displayName
+          }
+        }
       }
     }
     totalCount
