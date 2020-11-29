@@ -4,6 +4,7 @@ import {FormProvider, useForm} from 'react-hook-form';
 
 import Contact from 'models/Contact';
 import PlaceSubType from 'models/PlaceSubType';
+import InvolvedContact from 'models/InvolvedContact';
 import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
@@ -57,8 +58,8 @@ const InteractionDetailsForm = (props: Props) => {
         }
     };
 
-    const onSubmit = (data: InteractionEventDialogData) => {
-        familyMembers.map((familyMember) => {
+    const addFamilyMemberContacts = (contacts: Contact[]) => {
+        familyMembers?.map((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
                 const familyContact = {
                     firstName: familyMember.firstName,
@@ -69,19 +70,21 @@ const InteractionDetailsForm = (props: Props) => {
                     creationTime: new Date()
                 };
 
-                data.contacts.push(familyContact);
+                contacts.push(familyContact);
             };
         });
-        
+    };
+
+    const onSubmit = (data: InteractionEventDialogData) => {
+        data.contacts && addFamilyMemberContacts(data.contacts);
+
         const interactionDataToSave = convertData(data);
-        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
-            .flat()
-            .map((contact) => {
-                return ({
-                    id: contact[InteractionEventContactFields.ID],
-                    serialId: contact[InteractionEventContactFields.SERIAL_ID]
-                })
-            });
+        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
+            return ({
+                id: contact[InteractionEventContactFields.ID],
+                serialId: contact[InteractionEventContactFields.SERIAL_ID]
+            })
+        });
 
         const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
             return ({
