@@ -103,9 +103,9 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                         {
                             familyMembers.map(familyMember => (
                                 <>
-                                    <TableRow className={isRowSelected(familyMember) ? classes.checkedRow : ''}>
+                                    <TableRow className={isRowSelected(familyMember) ? classes.checkedRow : familyMember.isContactedPerson ? classes.disabledRow : ''}>
                                         {
-                                            <Checkbox onClick={(event) => {
+                                            <Checkbox disabled={familyMember.isContactedPerson} onClick={(event) => {
                                                 event.stopPropagation();
                                                 selectRow(familyMember);
                                             }} color='primary' checked={isRowSelected(familyMember)} />

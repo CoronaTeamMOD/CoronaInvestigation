@@ -7,6 +7,9 @@ const useStyles = makeStyles({
     checkedRow: {
         backgroundColor: 'rgb(202, 222, 234)',
     },
+    disabledRow: {
+        backgroundColor: 'lightgray',
+    }
 });
 
 export default useStyles;
