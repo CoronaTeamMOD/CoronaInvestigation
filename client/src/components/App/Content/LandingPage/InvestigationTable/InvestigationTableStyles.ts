@@ -10,6 +10,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
+    tableCell: {
+        padding: '7px'
+    },
     title: {
         margin: 'auto',
         height: '14vh',
@@ -29,7 +32,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontFamily: 'Assistant'
     },
     investigationRow: {
-        textDecoration: 'none',
+        textDecoration: 'none'
     },
     clickableInvestigationRow: {
         cursor: 'pointer'
@@ -41,7 +44,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         borderBottom: '3px solid rgb(222, 218, 218)'
     },
     font: {
-        color:'#424242'
+        color:'#424242',
+        whiteSpace: 'nowrap'
     },
     swalTitle: {
         fontSize: '1.5vw',
@@ -61,7 +65,11 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         alignItems: 'center',    
         flexDirection: 'row',
         justifyContent: 'space-between',
-        display: 'flex'
+        display: 'flex',
+    },
+    tableHeaderCell: {
+        whiteSpace: 'nowrap',
+        fontSize: '1.1rem'
     },
     sortResetButton: {
         fontWeight: 600
@@ -102,12 +110,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     icon: {},
     active: {},
-    testDateCell: {
-        width: '6vw'
-    }, 
-    epiNumberCell: {
-        width: '7vw'
-    },
     userSelectOption: {
         borderBottom: '2px solid rgba(224, 224, 224, 1)'
     },

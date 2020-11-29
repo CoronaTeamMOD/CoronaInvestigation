@@ -492,7 +492,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 {
                                     Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
-                                            className={key === TableHeadersNames.investigatorName ? classes.columnBorder : ''}
+                                            className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName ? classes.columnBorder : '')}
                                             sortDirection={orderBy === key ? order : false}
                                         >
                                             {
