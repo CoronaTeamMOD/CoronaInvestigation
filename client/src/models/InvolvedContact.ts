@@ -5,6 +5,7 @@ interface InvolvedContact extends Person {
 	isContactedPerson: boolean;
 	isolationCity: string;
 	familyRelationship: string;
+	selected?: boolean;
 };
 
 export default InvolvedContact;

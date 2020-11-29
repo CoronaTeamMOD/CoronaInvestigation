@@ -1,21 +1,24 @@
-import React, {useState} from 'react';
+import {yupResolver} from '@hookform/resolvers';
+import React, {useContext, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {yupResolver} from "@hookform/resolvers";
-import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
-import ContactsTabs from './ContactsSection/ContactsTabs';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import InteractionEventSchema from './InteractionSection/InteractionEventSchema';
-import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
-import InteractionEventContactFields
-    from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import InteractionEventDialogFields
-    from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+
 import Contact from 'models/Contact';
-import useInteractionsForm from './useInteractionsForm';
 import PlaceSubType from 'models/PlaceSubType';
+import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
+import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
+
+import useInteractionsForm from './useInteractionsForm';
+import ContactsTabs from './ContactsSection/ContactsTabs';
+import ContactTypeKeys from './InteractionSection/ContactForm/ContactTypeKeys';
+import InteractionEventSchema from './InteractionSection/InteractionEventSchema';
+import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
 
 const InteractionDetailsForm = (props: Props) => {
     const  { interactions, interactionData, loadInteractions, onDialogClose,isAddingContacts,isNewInteraction } = props;
+    
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
     const { saveInteractions } = useInteractionsForm({ loadInteractions, onDialogClose});
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
@@ -25,6 +28,8 @@ const InteractionDetailsForm = (props: Props) => {
         mode: 'all',
         resolver: yupResolver(InteractionEventSchema)
     });
+
+    const { familyMembers } = useContext(familyMembersContext);
 
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
 
@@ -53,7 +58,21 @@ const InteractionDetailsForm = (props: Props) => {
     };
 
     const onSubmit = (data: InteractionEventDialogData) => {
-        console.log('onsub', data)
+        familyMembers.map((familyMember) => {
+            if (familyMember.selected) {
+                const familyContact = {
+                    firstName: familyMember.firstName,
+                    lastName: familyMember.lastName,
+                    phoneNumber: familyMember.phoneNumber,
+                    idNumber: familyMember.identificationNumber,
+                    contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
+                    creationTime: new Date()
+                };
+
+                data.contacts.push(familyContact);
+            };
+        });
+        
         const interactionDataToSave = convertData(data);
         const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
             .flat()
@@ -125,7 +144,6 @@ const InteractionDetailsForm = (props: Props) => {
                 onSubmit(methods.getValues());
             }
         })
-
 
     return (
         <FormProvider {...methods}>

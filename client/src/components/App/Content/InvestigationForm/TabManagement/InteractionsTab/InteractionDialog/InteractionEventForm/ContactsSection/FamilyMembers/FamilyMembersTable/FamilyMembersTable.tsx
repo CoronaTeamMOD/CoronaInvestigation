@@ -1,14 +1,10 @@
 import { format } from 'date-fns';
 import React, { useMemo, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
 
-import Contact from 'models/Contact';
 import InvolvedContact from 'models/InvolvedContact';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './FamilyMembersTableStyles';
-import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
 import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from '../../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTableHeaders';
 
 const birthDateFormat = 'dd/MM/yyyy';
@@ -20,32 +16,14 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const [selectedFamilyMembers, setSelectedFamilyMembers] = useState<InvolvedContact[]>([]);
 
-    const { control } = useFormContext();
-    const { fields, append, remove } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
-    const contacts = fields;
-
-    const addFamilyMemberToContacts = (familyMember: InvolvedContact) => {
-        append({
-            firstName: familyMember.firstName,
-            lastName: familyMember.lastName,
-            phoneNumber: familyMember.phoneNumber,
-            idNumber: familyMember.identificationNumber,
-            contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
-            creationTime: new Date()
-        });
-    };
-
     const selectRow = (selectedFamilyMember: InvolvedContact) => {
         const familyMemberIndex = selectedFamilyMembers.findIndex(checkedRow => selectedFamilyMember === checkedRow);
         if (familyMemberIndex !== -1) {
             setSelectedFamilyMembers(selectedFamilyMembers.filter(member => member !== selectedFamilyMember));
-            const contactIndex = contacts.findIndex(contact => contact.idNumber === selectedFamilyMember.identificationNumber);
-            if (contactIndex !== -1) {
-                remove(contactIndex);
-            }
+            selectedFamilyMember.selected = false;
         } else {
             setSelectedFamilyMembers([...selectedFamilyMembers, selectedFamilyMember]);
-            addFamilyMemberToContacts(selectedFamilyMember);
+            selectedFamilyMember.selected = true;
         }
     }
 
@@ -58,7 +36,6 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     }, [selectedFamilyMembers]);
 
     const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
-
 
     const convertToIndexedRow = (row: InvolvedContact) : IndexedContactRow => ({
         [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: row.familyRelationship,

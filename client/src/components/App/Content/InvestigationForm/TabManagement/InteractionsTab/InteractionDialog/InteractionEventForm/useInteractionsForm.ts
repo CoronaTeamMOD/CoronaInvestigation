@@ -20,7 +20,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
-            console.log(interactionsDataToSave);
             const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ?
                 await parseLocation(interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS]) : null;
             const parsedData = {
