@@ -25,7 +25,7 @@ const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFo
             investigation: epidemiologyNumber
         });
         reasonsLogger.info('launching reasons request', Severity.LOW);
-        axios.get('/investigationInfo/groupedInvestigations/reasons')
+        axios.get('/groupedInvestigations/reasons')
             .then((result: any) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     setReasons(result.data.nodes);
