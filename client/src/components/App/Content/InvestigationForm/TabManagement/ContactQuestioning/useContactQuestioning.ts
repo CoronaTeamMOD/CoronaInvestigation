@@ -7,18 +7,13 @@ import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
+import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
-import { setFormState } from 'redux/Form/formActionCreators';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import {
-    convertDate,
-    nonSymptomaticPatient,
-    symptomsWithKnownStartDate,
-    symptomsWithUnknownStartDate,
-} from '../InteractionsTab/useInteractionsTab';
+import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, convertDate } from 'Utils/DateUtils/useDateUtils';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
@@ -90,7 +85,6 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                 earliestDate = subDays(coronaTestDate, nonSymptomaticPatient)
             }
         }
-
         return earliestDate;
     }
 
@@ -101,7 +95,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             investigation: epidemiologyNumber
         })
         interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
-        axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
+        axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
             if (res.data !== null) {
                 interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
                 setInteractedContactsByMinimalDate(calculateEarliestDateToInvestigate(

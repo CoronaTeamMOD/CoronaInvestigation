@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { yupResolver } from '@hookform/resolvers';
@@ -20,7 +20,7 @@ import { useStyles } from './ClinicalDetailsStyles';
 import IsolationDatesFields from './IsolationDatesFields';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import IsolationProblemFields from './IsolationProblemFields';
-import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields';
+import SymptomsFields, { otherSymptomFieldName } from './SymptomsFields/SymptomsFields';
 import useClinicalDetails, { initialClinicalDetails } from './useClinicalDetails';
 import BackgroundDiseasesFields, { otherBackgroundDiseaseFieldName } from './BackgroundDiseasesFields';
 
@@ -35,15 +35,16 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
         resolver: yupResolver(ClinicalDetailsSchema(validationDate))
     });
     
-    const [symptoms, setSymptoms] = React.useState<string[]>([]);
-    const [backgroundDiseases, setBackgroundDiseases] = React.useState<string[]>([]);
+    const [symptoms, setSymptoms] = useState<string[]>([]);
+    const [backgroundDiseases, setBackgroundDiseases] = useState<string[]>([]);
     const [streetsInCity, setStreetsInCity] = React.useState<Map<string, Street>>(new Map());
+    const [didSymptomsDateChangeOccur, setDidSymptomsDateChangeOccur] = useState<boolean>(false);
 
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } = 
-        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, setStreetsInCity });
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } =
+        useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, setStreetsInCity, didSymptomsDateChangeOccur });
 
     const handleSymptomCheck = (
         checkedSymptom: string,
@@ -94,7 +95,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     useEffect(() => {
         if (watchAddress.city) {
             getStreetByCity(watchAddress.city);
-        } 
+        }
     }, [watchAddress?.city]);
 
     useEffect(() => {
@@ -271,6 +272,8 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 watchIsSymptomsDateUnknown={watchIsSymptomsDateUnknown}
                                 handleSymptomCheck={handleSymptomCheck}
                                 symptoms={symptoms}
+                                didSymptomsDateChangeOccur={didSymptomsDateChangeOccur}
+                                setDidSymptomsDateChangeOccur={setDidSymptomsDateChangeOccur}
                             />
                         </Grid>
                         <Grid item xs={12}>
