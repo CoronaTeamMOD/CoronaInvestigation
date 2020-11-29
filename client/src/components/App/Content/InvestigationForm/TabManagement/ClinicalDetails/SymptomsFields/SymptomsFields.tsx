@@ -69,6 +69,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             onChange: (e, value) => {
                                                 handleSymptomsDateDataChange().then((result) => {
                                                     if(result.value) {
+                                                        !didSymptomsDateChangeOccur &&
+                                                            setDidSymptomsDateChangeOccur(true);
                                                         props.onChange(value);
                                                     }
                                                 })
@@ -95,6 +97,8 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onChange={(newDate: Date) =>
                                                     handleSymptomsDateDataChange().then((result) => {
                                                         if(result.value) {
+                                                            !didSymptomsDateChangeOccur &&
+                                                                setDidSymptomsDateChangeOccur(true);
                                                             props.onChange(newDate)
                                                         }
                                                     })
