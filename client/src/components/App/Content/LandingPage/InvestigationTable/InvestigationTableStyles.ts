@@ -154,6 +154,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     pagination: {
         marginTop: '0'
+    },
+    horizontalSticky: {
+        left: 'unset'
     }
 }));
 
