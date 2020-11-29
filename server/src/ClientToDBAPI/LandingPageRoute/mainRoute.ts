@@ -5,10 +5,10 @@ import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { CHANGE_DESK_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
-import { GET_ALL_INVESTIGATION_STATUS, ORDERED_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
+import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 
-import { convertOrderedInvestigationsData } from './utils';
+import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
 
 const errorStatusResponse = 500;
 
@@ -35,12 +35,12 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(ORDERED_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
+    graphqlRequest(USER_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
         .then((result: any) => {
             if (result && result.data && result.data.orderedInvestigations &&
                 result.data.orderedInvestigations.nodes) {
                 investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send({allInvestigations: convertOrderedInvestigationsData(result.data), totalCount: +result.data.orderedInvestigations.totalCount});
+                response.send({allInvestigations: convertUserInvestigationsData(result.data), totalCount: +result.data.orderedInvestigations.totalCount});
             }
             else {
                 investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
@@ -77,13 +77,13 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(ORDERED_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
+    graphqlRequest(GROUP_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
         .then((result: any) => {
             if (result && result.data && result.data.orderedInvestigations &&
                 result.data.orderedInvestigations.nodes) {
                 groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
                 response.send({
-                    allInvestigations: convertOrderedInvestigationsData(result.data), 
+                    allInvestigations: convertGroupInvestigationsData(result.data), 
                     totalCount: +result.data.orderedInvestigations.totalCount,
                     unassignedInvestigationsCount: +result.data.unassignedInvestigations.totalCount
                 });
