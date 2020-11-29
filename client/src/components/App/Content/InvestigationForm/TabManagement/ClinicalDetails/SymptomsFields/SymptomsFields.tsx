@@ -22,6 +22,11 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
     const { wasInvestigationReopend } = useStatusUtils();
     const { handleSymptomsDateDataChange } = useSymptomsFields();
 
+    const handleDidSymptomsDateChangeOccur = () => {
+        !didSymptomsDateChangeOccur &&
+            setDidSymptomsDateChangeOccur(true);
+    }
+
     return (
         <>
             <FormRowWithInput fieldName='האם יש תסמינים:'>
@@ -38,8 +43,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                     if (value !== null) {
                                         handleSymptomsDateDataChange().then((result) => {
                                             if(result.value) {
-                                                !didSymptomsDateChangeOccur &&
-                                                    setDidSymptomsDateChangeOccur(true);
+                                                handleDidSymptomsDateChangeOccur();
                                                 props.onChange(value)
                                             }
                                         })
@@ -69,8 +73,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                             onChange: (e, value) => {
                                                 handleSymptomsDateDataChange().then((result) => {
                                                     if(result.value) {
-                                                        !didSymptomsDateChangeOccur &&
-                                                            setDidSymptomsDateChangeOccur(true);
+                                                        handleDidSymptomsDateChangeOccur();
                                                         props.onChange(value);
                                                     }
                                                 })
@@ -97,8 +100,7 @@ const SymptomsFields: React.FC<Props> = (props: Props): JSX.Element => {
                                                 onChange={(newDate: Date) =>
                                                     handleSymptomsDateDataChange().then((result) => {
                                                         if(result.value) {
-                                                            !didSymptomsDateChangeOccur &&
-                                                                setDidSymptomsDateChangeOccur(true);
+                                                            handleDidSymptomsDateChangeOccur();
                                                             props.onChange(newDate)
                                                         }
                                                     })
