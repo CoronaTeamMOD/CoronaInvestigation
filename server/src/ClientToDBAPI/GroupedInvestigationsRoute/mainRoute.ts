@@ -23,7 +23,7 @@ groupedInvestigationsRoute.get('/reasons', adminMiddleWare, (request: Request, r
             reasonsLogger.info('query reasons successfully', Severity.LOW);
             response.send(groupedInvestigationsGrouped);
         } else {
-            reasonsLogger.error(`failed to fetch reasons due to ${JSON.stringify(result)}`, Severity.HIGH);
+            reasonsLogger.error(`failed to fetch reasons due to ${JSON.stringify(result.error[0]?.message)}`, Severity.HIGH);
             response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
         }
     }).catch((error) => {
@@ -43,7 +43,6 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
     graphqlRequest(CREATE_GROUP_FOR_INVESTIGATIONS, response.locals, {input: groupToCreate})
     .then(result => {
         if (result?.data) {
-            console.log(result.data?.createGroupForInvestigations);
             groupToCreateLogger.info('create group successfully', Severity.LOW);
             const groupedInvestigationsLogger = logger.setup({
                 workflow: 'update groupId for investigations',
