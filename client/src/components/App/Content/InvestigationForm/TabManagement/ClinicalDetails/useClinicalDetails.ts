@@ -232,7 +232,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         if(Boolean(coronaTestDate)) {
             const earliestDateToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate)[0];
             deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
-            axios.post('/intersections/deleteContactEventsByDate', {earliestDate: earliestDateToInvestigate}).then((result) => {
+            axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate}}).then((result) => {
                 if(result.data?.data?.deleteContactEventsBeforeDate) {
                     deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
                 } else {
@@ -248,8 +248,9 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         }
     }
     const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
-        didSymptomsDateChangeOccur &&
+        if(didSymptomsDateChangeOccur) {
             deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms)
+        }
         if(didDeletingContactEventsSucceed) {
             const saveClinicalDetailsLogger = logger.setup({
                 workflow: 'Saving clinical details tab',
