@@ -10,12 +10,15 @@ import InteractionEventDialogFields
 import useFormStyles from 'styles/formStyles';
 import useStyles from '../../InteractionSection/InteractionEventFormStyles';
 
-const addContactButton: string = 'הוסף מגע';
+const addContactText = 'הוסף מגע';
+const additionalContactText = ' נוסף';
 
 const ManualContactsForm = () => {
     const { control } = useFormContext();
     const { fields, append } = useFieldArray<Contact>({ control, name: InteractionEventDialogFields.CONTACTS });
     const contacts = fields;
+
+    const addContactButton = contacts.length > 0 ? addContactText.concat(additionalContactText): addContactText;
 
     const formClasses = useFormStyles();
     const classes = useStyles();

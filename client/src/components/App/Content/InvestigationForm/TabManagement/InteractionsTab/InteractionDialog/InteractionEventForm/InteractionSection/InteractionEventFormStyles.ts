@@ -11,11 +11,12 @@ const useStyles = makeStyles({
         whiteSpace: 'nowrap',
     },
     newContactFieldsContainer: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         overflowY: 'auto',
         paddingRight: '1vw',
-        flip:false
+        flip: false
     },
     contactedPersonContainer: {
         paddingBottom: '5vh'

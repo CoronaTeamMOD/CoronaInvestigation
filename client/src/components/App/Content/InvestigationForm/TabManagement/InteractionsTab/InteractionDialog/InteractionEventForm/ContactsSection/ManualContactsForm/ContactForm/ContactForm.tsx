@@ -54,7 +54,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
 
     return (
         <div test-id='contactFormContainer' key='addContactFields'>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
+            <Grid className={formClasses.formRow} container justify='flex-start' spacing={1}>
                 <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
@@ -125,7 +125,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} fieldName={contactTypeName}>
+                <FormInput xs={5} fieldName={contactTypeName}>
                     <FormControl fullWidth>
                         <div className={classes.newContactField}>
                             <Controller

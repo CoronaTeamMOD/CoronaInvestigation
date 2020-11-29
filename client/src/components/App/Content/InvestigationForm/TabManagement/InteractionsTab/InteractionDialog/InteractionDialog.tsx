@@ -5,7 +5,7 @@ import {ChevronLeft, ChevronRight} from '@material-ui/icons';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
-import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm/InteractionDetailsForm';
+import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm';
 import useStyles from './InteractionDialogStyles';
 
 const InteractionDialog = (props: Props) => {
@@ -54,7 +54,7 @@ const InteractionDialog = (props: Props) => {
                         type='submit'
                         id='createContact'
                     >
-                        שמור שינויים
+                        צור מקום ומגעים
                     </PrimaryButton>
                 </div>
             </DialogActions>

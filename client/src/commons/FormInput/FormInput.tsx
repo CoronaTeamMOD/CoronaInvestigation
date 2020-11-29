@@ -2,16 +2,18 @@ import React from 'react';
 import {Typography, TypographyProps, Grid, GridSize} from '@material-ui/core';
 
 import useFormStyles from 'styles/formStyles';
+import useStyles from './FormInputStyles';
 
 const FormInput: React.FC<Props> = (props: Props): JSX.Element => {
     const formClasses = useFormStyles();
+    const classes = useStyles();
 
     const { fieldName, children, labelLength, xs, className, ...rest } = props;
 
     return (
         <Grid container item alignItems='center'
                test-id={'textFormInput'} xs={xs} className={className || ''}>
-            <Grid item xs={labelLength ? labelLength : 3}>
+            <Grid item className={classes.inputLabel} xs={labelLength ? labelLength : 3}>
                 <Typography className={formClasses.fieldName} variant='caption' {...rest}>
                 {fieldName && <b>{fieldName + ':'}</b>}
                 </Typography>
