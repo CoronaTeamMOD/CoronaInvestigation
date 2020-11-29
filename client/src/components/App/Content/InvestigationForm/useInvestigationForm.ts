@@ -164,14 +164,16 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchCities();
             fetchCountries();
             fetchContactTypes();
-            fetchSubStatusesByStatus(investigationStatus.mainStatus);
             fetchStatuses();
             initializeTabShow();
+            investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
         }
     }, [epidemiologyNumber, userId]);
 
     useEffect(() => {
-        if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
+        if (investigationStatus.mainStatus &&
+            epidemiologyNumber !== defaultEpidemiologyNumber &&
+            userId !== defaultUser.id) {
             fetchSubStatusesByStatus(investigationStatus.mainStatus);
         }
     }, [investigationStatus.mainStatus]);
