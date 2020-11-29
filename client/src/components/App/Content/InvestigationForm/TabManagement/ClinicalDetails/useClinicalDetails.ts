@@ -1,22 +1,21 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
+import React, {useState} from 'react';
+import { useSelector } from 'react-redux';
 
 import Street from 'models/Street';
-import DBAddress, { initDBAddress } from 'models/DBAddress';
-import { Severity } from 'models/Logger';
 import logger from 'logger/logger';
+import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import IsolationSource from 'models/IsolationSource';
+import DBAddress, {initDBAddress} from 'models/DBAddress';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
+import {convertDate, getDatesToInvestigate} from 'Utils/DateUtils/useDateUtils';
 
-import { useClinicalDetailsIncome, useClinicalDetailsOutcome } from './useClinicalDetailsInterfaces';
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
-
-export const convertDate = (dbDate: Date | null) => dbDate === null ? null : new Date(dbDate);
+import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
 
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
@@ -41,25 +40,27 @@ export const initialClinicalDetails: ClinicalDetailsData = {
     otherBackgroundDiseasesMoreInfo: ''
 };
 
+const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירועים מיותרים';
+
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
-
     const { id, setSymptoms, setBackgroundDiseases,
-            setStreetsInCity } = parameters;
+            setStreetsInCity, didSymptomsDateChangeOccur } = parameters;
 
+    const { alertError } = useCustomSwal();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
-    
+    const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
-
-    const { alertError } = useCustomSwal();
+    const [didDeletingContactEventsSucceed, setDidDeletingContactEventsSucceed] = React.useState<boolean>(true);
     
     React.useEffect(() => {
         getSymptoms();
         getBackgroundDiseases();
         getIsolationSources();
+        getCoronaTestDate();
     }, []);
 
     const getSymptoms = () => {
@@ -80,6 +81,25 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     };
 
+    const getCoronaTestDate = () => {
+        const fetchCoronaTestDateLogger = logger.setup({
+            workflow: 'Fetching corona test date',
+            investigation: epidemiologyNumber,
+            user: userId
+        });
+        fetchCoronaTestDateLogger.info('launching corona test date post request', Severity.LOW);
+        axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
+            if (Boolean(res?.data)) {
+                fetchCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
+                setCoronaTestDate(convertDate(res.data.coronaTestDate));
+            } else {
+                fetchCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH);
+            }
+        }).catch(err => {
+            fetchCoronaTestDateLogger.warn(`Got 500 from coronaTestDate request: ${err}`, Severity.HIGH);
+        });
+    }
+
     const getBackgroundDiseases = () => {
         const getBackgroundDiseasesLogger = logger.setup({
             workflow: 'Fetching Background Diseases',
@@ -94,8 +114,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
             } else {
                 getBackgroundDiseasesLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }
-        }
-        );
+        });
     };
 
     const getIsolationSources = () => {
@@ -155,7 +174,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (tabsValidations[id] === null && !patientAddress.cityByCity && !patientAddress.streetByStreet && 
+                    if (tabsValidations[id] === null && !patientAddress.cityByCity && !patientAddress.streetByStreet &&
                         !patientAddress.floor && !patientAddress.houseNum) {
                         patientAddress = address;
                     }
@@ -204,30 +223,63 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         );
     };
 
-    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
-        const saveClinicalDetailsLogger = logger.setup({
-            workflow: 'Saving clinical details tab',
-            investigation: epidemiologyNumber,
-            user: userId
+    const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {
+        const deleteIrrelevantEventsLogger = logger.setup({
+           workflow: 'Deleting irrelevant contact events',
+           investigation: epidemiologyNumber,
+           user: userId
         });
-        saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
-        setIsLoading(true);
-        axios.post('/clinicalDetails/saveClinicalDetails', ({ clinicalDetails: { ...clinicalDetails, epidemiologyNumber, investigatedPatientId } }))
-            .then(() => {
-                saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
+        if(Boolean(coronaTestDate)) {
+            const earliestDateToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate)[0];
+            deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
+            axios.post('/intersections/deleteContactEventsByDate', {earliestDate: earliestDateToInvestigate}).then((result) => {
+                if(result.data?.data?.deleteContactEventsBeforeDate) {
+                    deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
+                } else {
+                    deleteIrrelevantEventsLogger.error(`Deleting contact events finished with errors: ${result.data}`, Severity.LOW);
+                    alertError(deletingContactEventsErrorMsg);
+                    setDidDeletingContactEventsSucceed(false);
+                }
+            }).catch(err => {
+                deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
+                alertError(deletingContactEventsErrorMsg);
+                setDidDeletingContactEventsSucceed(false);
             })
-            .catch((error) => {
-                saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
-                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
-            })
-            .finally(() => {
-                setIsLoading(false);
-                ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
-                    setFormState(epidemiologyNumber, id, valid);
-                })
-            })
-        
+        }
     }
+    const saveClinicalDetails = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number): void => {
+        didSymptomsDateChangeOccur &&
+            deleteIrrelevantContactEvents(clinicalDetails.symptomsStartDate, clinicalDetails.doesHaveSymptoms)
+        if(didDeletingContactEventsSucceed) {
+            const saveClinicalDetailsLogger = logger.setup({
+                workflow: 'Saving clinical details tab',
+                investigation: epidemiologyNumber,
+                user: userId
+            });
+            saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
+            setIsLoading(true);
+            axios.post('/clinicalDetails/saveClinicalDetails', ({
+                clinicalDetails: {
+                    ...clinicalDetails,
+                    epidemiologyNumber,
+                    investigatedPatientId
+                }
+            })).then(() => {
+                    saveClinicalDetailsLogger.info('saved clinical details successfully', Severity.LOW);
+                })
+                .catch((error) => {
+                    saveClinicalDetailsLogger.error(`got error from server: ${error}`, Severity.HIGH);
+                    alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד מספר דקות');
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                    ClinicalDetailsSchema(validationDate).isValid(clinicalDetails).then(valid => {
+                        setFormState(epidemiologyNumber, id, valid);
+                    })
+                })
+        }
+    }
+
 
     return {
         getStreetByCity,
@@ -235,6 +287,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         fetchClinicalDetails,
         isolationSources
     };
-};
+}
 
 export default useClinicalDetails;

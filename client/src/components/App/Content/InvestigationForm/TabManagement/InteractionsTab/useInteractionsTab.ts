@@ -1,34 +1,28 @@
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
+import {useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
 
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
-import { Severity } from 'models/Logger';
+import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
+import { getDatesToInvestigate, convertDate } from 'Utils/DateUtils/useDateUtils'
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
-import { useInteractionsTabOutcome, useInteractionsTabParameters } from './useInteractionsTabInterfaces';
+import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInteractionsTabInterfaces';
 
-export const symptomsWithKnownStartDate: number = 4;
-export const nonSymptomaticPatient: number = 7;
-export const symptomsWithUnknownStartDate: number = 7;
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
 const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
-const maxInvestigatedDays: number = 21;
 
 interface GroupedInvolvedGroups {
     familyMembers: InvolvedContact[],
     educationMembers: InvolvedContact[],
 }
-
-export const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : null;
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
@@ -52,7 +46,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
         getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW);
 
-        axios.get(`/clinicalDetails/coronaTestDate/${epidemiologyNumber}`).then((res: any) => {
+        axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
             if (res.data !== null) {
                 getCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
                 setCoronaTestDate(convertDate(res.data.coronaTestDate));
@@ -83,7 +77,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const groupInvolvedContacts = (involvedContacts: InvolvedContact[]) : GroupedInvolvedGroups => {
-        return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {    
+        return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
             if (contact.involvementReason === InvolvementReason.FAMILY) {
                 return {
                     familyMembers: [...previous.familyMembers, contact],
@@ -113,7 +107,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 familyMembersStateContext.familyMembers = familyMembers;
                 setEducationMembers(educationMembers);
             } else {
-                loadInvolvedContactsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
+                loadInvolvedContactsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);
             }
         }).catch((error) => {
             loadInvolvedContactsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
@@ -133,7 +127,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                   interactionsTabSettingsLogger.info('got response successfully', Severity.LOW);
                   setInteractionsTabSettings(result?.data);
               } else {
-                  interactionsTabSettingsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);    
+                  interactionsTabSettingsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);
               }
           }).catch((error) => {
               interactionsTabSettingsLogger.error(`failed to get response due to ${error}`, Severity.HIGH);
@@ -170,33 +164,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         getInteractionsTabSettings();
     }, []);
 
-    const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null): Date[] => {
-        if (coronaTestDate !== null) {
-            const endInvestigationDate = new Date();
-            let startInvestigationDate: Date;
-            if (doesHaveSymptoms) {
-                if (symptomsStartDate) {
-                    const TestAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
-                    if (TestAndSymptomsInterval > maxInvestigatedDays) {
-                        alertError('תאריך תחילת התסמינים לא חוקי');
-                        return []
-                    }
-                    startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);
-                }
-                else
-                    startInvestigationDate = subDays(coronaTestDate, symptomsWithUnknownStartDate)
-            } else {
-                startInvestigationDate = subDays(coronaTestDate, nonSymptomaticPatient)
-            }
-            try {
-                return eachDayOfInterval({ start: startInvestigationDate, end: endInvestigationDate });
-            } catch (e) {
-                return []
-            }
-        }
-        return [];
-    }
-
     useEffect(() => {
         setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
@@ -227,17 +194,14 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).then((result) => {
             if (result.value) {
                 deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
-                axios.delete('/intersections/deleteContactEvent', {
-                    params: { contactEventId }
-                }).then(() => {
-                    deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW);
+                axios.delete('/intersections/deleteContactEvent', {params: contactEventId}).then(() => {
+                    deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch((error) => {
                     deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(eventDeleteFailedMsg);
                 })
             }
-            ;
         });
     }
 
@@ -289,7 +253,6 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     return {
-        getDatesToInvestigate,
         loadInteractions,
         handleDeleteContactEvent,
         handleDeleteContactedPerson,
