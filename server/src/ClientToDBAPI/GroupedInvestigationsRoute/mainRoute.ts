@@ -59,7 +59,6 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
             .then(result => {
                 if (result?.data?.updateGroupedInvestigations) {
                     groupedInvestigationsLogger.info(`investigations ${invetigationsToGroupMessage} were updated successfully`, Severity.LOW);
-                    console.log(result);
                     response.send(result);
                 } else {
                     groupedInvestigationsLogger.error(`investigations ${invetigationsToGroupMessage} were failed to update due to ${result.errors[0]?.message}`, Severity.HIGH);

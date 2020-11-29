@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import logger from 'logger/logger'
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal'
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal'
 
 import { Reason } from './GroupedInvestigationsForm/useGroupedInvestigationsForm';
 
@@ -45,6 +45,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
             groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
         })
         .catch((err) => {
+            setIsLoading(false);
             groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
             alertError('לא ניתן היה לקבץ חקירות אלו');
         })
