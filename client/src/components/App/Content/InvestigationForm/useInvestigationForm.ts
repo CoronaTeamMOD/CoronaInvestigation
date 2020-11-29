@@ -225,11 +225,11 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         });
         timeout(LandingPageTimer).then(() => {
             const WindowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
-            const broadcastMessage : BroadcastMessage = {
-                message: 'Ending the investigaion',
+            const finishingBroadcastMessage : BroadcastMessage = {
+                message: 'Investigaion finished',
                 isInInvestigation: false
             }
-            WindowTabsBroadcatChannel.postMessage(broadcastMessage);
+            WindowTabsBroadcatChannel.postMessage(finishingBroadcastMessage);
             window.close();
         });
     };

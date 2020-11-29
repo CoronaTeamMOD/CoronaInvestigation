@@ -35,11 +35,11 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         });
         timeout(1500).then(() => {
             const WindowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
-            const broadcastMessage : BroadcastMessage = {
-                message: 'Closing the investigation',
+            const closingBroadcastMessage : BroadcastMessage = {
+                message: 'Investigation closed',
                 isInInvestigation: false
             }
-            WindowTabsBroadcatChannel.postMessage(broadcastMessage);
+            WindowTabsBroadcatChannel.postMessage(closingBroadcastMessage);
             window.close();
         });
     };
