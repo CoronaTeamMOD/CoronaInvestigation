@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -111,11 +111,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
 
-    const bc = new BroadcastChannel(BC_TABS_NAME);
-    bc.onmessage = function (ev) { 
-        setIsInInvestigation(ev.data.isInInvestigation);
-    }
-
+    const bc = useRef(new BroadcastChannel(BC_TABS_NAME));
+    
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
             workflow: 'Getting Desks by county id',
@@ -164,6 +161,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
+        bc.current.onmessage = function (ev) { 
+            setIsInInvestigation(ev.data.isInInvestigation);
+        }
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {

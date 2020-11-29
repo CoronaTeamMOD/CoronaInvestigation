@@ -40,8 +40,6 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
-    const bc = new BroadcastChannel(BC_TABS_NAME);
-
     const initializeTabShow = () => {
         const tabShowLogger = logger.setup({
             workflow: 'Getting Amount Of Contacts',
@@ -226,6 +224,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() => {
+            const bc = new BroadcastChannel(BC_TABS_NAME);
             const broadcastMessage : BroadcastMessage = {
                 message: 'Ending the investigaion',
                 isInInvestigation: false

@@ -28,14 +28,13 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
     
-    const bc = new BroadcastChannel(BC_TABS_NAME);
-
     const handleInvestigationFinish = async () => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
         });
         timeout(1500).then(() => {
+            const bc = new BroadcastChannel(BC_TABS_NAME);
             const broadcastMessage : BroadcastMessage = {
                 message: 'Closing the investigation',
                 isInInvestigation: false
