@@ -1,8 +1,7 @@
 CREATE OR REPLACE FUNCTION public.update_contact_persons(contacted_persons json)
  RETURNS void
  LANGUAGE plpgsql
-AS $function$
-declare
+AS $function$declare
 --This function updates list of contacted person from avarious contacts 
 contactPersonArr json[];
 contactedPerson json;
@@ -35,8 +34,14 @@ birthDate timestamp;
 additionalPhoneNumber varchar;
 personId int4;
 contactEvent int4;
+maxDuplicateIds int4;
+completionTime timestamp;
+
 begin 
+
+	
 	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
+	
 	contactPersonArr :=(
 					select  array_agg(p_data.value)
 					from json_array_elements(contacted_persons->'unSavedContacts'->'contacts') p_data
@@ -52,7 +57,7 @@ begin
 	foreach contactedPerson in array contactPersonArr 
 	loop
 			raise notice '%',contactedPerson;			 	 
-
+		
 		select trim(nullif((contactedPerson->'contactEvent')::text,'null'),'"')::int4 into contactEvent;
 		select trim(nullif((contactedPerson->'firstName')::text,'null'),'"')  into firstName;
 		select trim(nullif((contactedPerson->'lastName')::text,'null'),'"')  into lastName;
@@ -91,9 +96,12 @@ begin
 				having count(p.identification_number) > maxDuplicateIds) then
 					raise exception 'found duplicate ids:%', identificationnumber;
 			end if;
-		end if;		
+		end if;
+	
 	if contactedPersonId is not null then
 	    	/*update person and contacted person */
+		select completion_time from contacted_person cp where cp.id = contactedPersonId into completionTime;
+	
  		raise notice 'update contacted person %', contactedPersonId;
 	    	update contacted_person 
 	    	set does_need_isolation = doesNeedIsolation,
@@ -109,9 +117,11 @@ begin
 			does_live_with_confirmed  =doesLiveWithConfirmed ,
 			contact_status =contactStatus ,
 			does_work_with_crowd = doesWorkWithCrowd,
-			relationship=	personRelationship 
-			where id = contactedPersonId ;
-
+			relationship=	personRelationship,	
+			completion_time = (case when completionTime is null and contactStatus = 5 then now() 
+									when completionTime is not null then completionTime
+									else null end)
+			where id = contactedPersonId;
 	    
 	    	raise notice '%', identificationType;
 		   update person 
