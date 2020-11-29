@@ -247,8 +247,8 @@ intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, 
     });
 });
 
-intersectionsRoute.post('/deleteContactEventsByDate', (request: Request, response: Response) => {
-    const dateToDeleteBy = request.body.earliestDate;
+intersectionsRoute.delete('/deleteContactEventsByDate', (request: Request, response: Response) => {
+    const dateToDeleteBy = request.query.earliestDateToInvestigate;
     const deleteEventsByDateLogger = logger.setup({
         workflow: `Deleting Contact Events earlier than ${dateToDeleteBy}`,
         investigation: response.locals.epidemiologynumber,

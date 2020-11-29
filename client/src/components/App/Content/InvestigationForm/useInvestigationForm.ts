@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import City from 'models/City';
-import logger from 'logger/logger';
 import theme from 'styles/theme';
+import logger from 'logger/logger';
 import Country from 'models/Country';
+import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
-import { Severity } from 'models/Logger';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -17,14 +17,15 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
+import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
 import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
+
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
 
@@ -223,7 +224,12 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             showConfirmButton: false
         });
         timeout(LandingPageTimer).then(() => {
-            setIsInInvestigation(false);
+            const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
+            const finishingBroadcastMessage : BroadcastMessage = {
+                message: 'Investigaion finished',
+                isInInvestigation: false
+            }
+            windowTabsBroadcatChannel.postMessage(finishingBroadcastMessage);
             window.close();
         });
     };
