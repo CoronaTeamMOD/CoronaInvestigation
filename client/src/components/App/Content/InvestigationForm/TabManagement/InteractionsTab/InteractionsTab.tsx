@@ -41,7 +41,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         setFormState(investigationId, id, true);
     }
 
-    const { loadInteractions, handleDeleteContactEvent, handleDeleteContactedPerson, saveInvestigaionSettingsFamily } =
+    const { loadInteractions, loadInvolvedContacts, handleDeleteContactEvent, handleDeleteContactedPerson, saveInvestigaionSettingsFamily } =
         useInteractionsTab({
             setInteractions,
             interactions,
@@ -90,6 +90,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             <ContactDateCard
                 allInteractions={interactions}
                 loadInteractions={loadInteractions}
+                loadInvolvedContacts={loadInvolvedContacts}
                 contactDate={interactionDate}
                 onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
                 onDeleteClick={handleDeleteContactEvent}
@@ -115,6 +116,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         interactionDate={newInteractionEventDate}
                         closeNewDialog={() => setNewInteractionEventDate(undefined)}
                         loadInteractions={loadInteractions}
+                        loadInvolvedContacts={loadInvolvedContacts}
                         interactions={interactions}
                     />
                 }
@@ -124,6 +126,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                         eventToEdit={interactionToEdit}
                         closeEditDialog={() => setInteractionToEdit(undefined)}
                         loadInteractions={loadInteractions}
+                        loadInvolvedContacts={loadInvolvedContacts}
                         interactions={interactions}
                     />
                 }

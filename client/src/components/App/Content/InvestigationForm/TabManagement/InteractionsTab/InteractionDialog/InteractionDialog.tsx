@@ -1,15 +1,16 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import {ChevronLeft, ChevronRight} from '@material-ui/icons';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
-import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm';
+
 import useStyles from './InteractionDialogStyles';
+import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm';
+import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 
 const InteractionDialog = (props: Props) => {
-    const { isOpen, dialogTitle, loadInteractions, interactions, onDialogClose, interactionData, isNewInteraction } = props;
+    const { isOpen, dialogTitle, loadInteractions, loadInvolvedContacts, interactions, onDialogClose, interactionData, isNewInteraction } = props;
     const [isAddingContacts, setIsAddingContacts] = React.useState(false);
     const classes = useStyles();
     const hebrewActionName = isNewInteraction ? 'יצירת' : 'עריכת';
@@ -25,6 +26,7 @@ const InteractionDialog = (props: Props) => {
                     interactions={interactions}
                     interactionData={interactionData}
                     loadInteractions={loadInteractions}
+                    loadInvolvedContacts={loadInvolvedContacts}
                     onDialogClose={onDialogClose}
                     isNewInteraction={isNewInteraction}
                 />
@@ -71,6 +73,7 @@ interface Props {
     isNewInteraction:InteractionEventFormProps['isNewInteraction'];
     onDialogClose: () => void;
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     interactions: InteractionEventDialogData[];
     testIds: Record<DialogTestIds, string>;
 };

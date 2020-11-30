@@ -18,10 +18,10 @@ import InteractionEventSchema from './InteractionSection/InteractionEventSchema'
 import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
 
 const InteractionDetailsForm = (props: Props) => {
-    const  { interactions, interactionData, loadInteractions, onDialogClose,isAddingContacts,isNewInteraction } = props;
+    const  { interactions, interactionData, loadInteractions, loadInvolvedContacts, onDialogClose,isAddingContacts,isNewInteraction } = props;
     
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-    const { saveInteractions } = useInteractionsForm({ loadInteractions, onDialogClose});
+    const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose});
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
     const methods = useForm<InteractionEventDialogData>({
@@ -169,6 +169,7 @@ interface Props {
     isAddingContacts: boolean;
     interactions: InteractionEventDialogData[];
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     onDialogClose: () => void;
     interactionData?: InteractionEventFormProps['interactionData'];
     isNewInteraction?: InteractionEventFormProps['isNewInteraction'];

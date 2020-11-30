@@ -13,7 +13,7 @@ import InteractionCard from './InteractionCard/InteractionCard';
 const ContactDateCard: React.FC<Props> = (props: Props) => {
 
     const { contactDate, interactions, createNewInteractionEvent,
-        onEditClick, onDeleteClick, loadInteractions, onDeleteContactClick, allInteractions  } = props;
+        onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
@@ -53,6 +53,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     <InteractionCard
                         allInteractions={allInteractions}
                         loadInteractions={loadInteractions}
+                        loadInvolvedContacts={loadInvolvedContacts}
                         onEditClick={() => onEditClick(interaction)}
                         onDeleteContactClick={onDeleteContactClick}
                         onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
@@ -71,6 +72,7 @@ interface Props {
     onEditClick: (interaction: Interaction) => void;
     onDeleteClick: (contactEventId: number) => void;
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
 };
 

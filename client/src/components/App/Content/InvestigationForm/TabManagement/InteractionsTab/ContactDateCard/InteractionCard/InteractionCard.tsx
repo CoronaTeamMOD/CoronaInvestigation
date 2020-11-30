@@ -149,6 +149,7 @@ interface Props {
     onEditClick: () => void;
     onDeleteClick: () => void;
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
 };
 

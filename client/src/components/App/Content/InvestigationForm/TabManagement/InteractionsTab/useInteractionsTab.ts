@@ -254,6 +254,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     return {
         loadInteractions,
+        loadInvolvedContacts,
         handleDeleteContactEvent,
         handleDeleteContactedPerson,
         saveInvestigaionSettingsFamily

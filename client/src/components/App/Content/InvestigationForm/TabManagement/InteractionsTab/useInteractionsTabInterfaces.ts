@@ -18,6 +18,7 @@ export interface useInteractionsTabParameters {
 
 export interface useInteractionsTabOutcome {
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     handleDeleteContactEvent: (contactEventId: number) => void;
     handleDeleteContactedPerson: (contactedPersonId: number, contactEventId: number) => void;
     saveInvestigaionSettingsFamily: () => void;
