@@ -73,7 +73,6 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
 
 const convertDBEvent = (event: ContactEvent) => {
     const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
-    console.log(contactedPeopleByContactEvent.nodes[0]);
     const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
         const {personByPersonInfo, involvedContact ,...personNoData} = person;
         let convertedInvolvedContact = null;
