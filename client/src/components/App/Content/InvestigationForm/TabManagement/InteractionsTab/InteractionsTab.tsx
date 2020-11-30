@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 import InvolvedContact from 'models/InvolvedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import InteractionsTabSettings from 'models/InteractionsTabSettings';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -14,7 +15,6 @@ import ContactDateCard from './ContactDateCard/ContactDateCard';
 import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
-import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
 const defaultInteractionsTabSettings : InteractionsTabSettings = {
     allowUncontactedFamily: false

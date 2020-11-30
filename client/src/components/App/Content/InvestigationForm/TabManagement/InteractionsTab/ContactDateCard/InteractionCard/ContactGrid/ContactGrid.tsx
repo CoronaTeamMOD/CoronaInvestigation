@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Delete } from '@material-ui/icons';
 import { differenceInYears, format } from 'date-fns';
@@ -9,12 +9,12 @@ import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
+import InvolvedContact from 'models/InvolvedContact';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
 import useStyles from './ContactGridStyles';
-import InvolvedContact from 'models/InvolvedContact';
-import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 
 const contactedPersonPhone: string = 'טלפון ראשי';
 const contactedPersonFirstName: string = 'שם פרטי';
@@ -58,7 +58,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
         const { birthDate, familyRelationship, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
         return (<>
             {
-                <FormInput xs={3} fieldName={contactedFamilyRelationshop}>
+                <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
                     <Typography variant='caption'>
                         {familyRelationship || noDataIndication}
                     </Typography>
@@ -102,7 +102,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                             {contact.firstName || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={3} fieldName={contactedPersonLastName}>
+                    <FormInput xs={2} fieldName={contactedPersonLastName}>
                         <Typography variant='caption'>
                             {contact.lastName || noDataIndication}
                         </Typography>
