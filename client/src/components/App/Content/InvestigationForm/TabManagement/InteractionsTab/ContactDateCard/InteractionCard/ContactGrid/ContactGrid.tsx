@@ -57,13 +57,11 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const involvedContactsAdditionalFields = () => {
         const { birthDate, familyRelationship, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
         return (<>
-            {
-                <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
-                    <Typography variant='caption'>
-                        {familyRelationship || noDataIndication}
-                    </Typography>
-                </FormInput>
-            }
+            <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
+                <Typography variant='caption'>
+                    {familyRelationship || noDataIndication}
+                </Typography>
+            </FormInput>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
                 <Typography variant='caption'>
                     {additionalPhoneNumber || noDataIndication}
