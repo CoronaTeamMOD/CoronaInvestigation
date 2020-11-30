@@ -25,6 +25,14 @@ export interface InvolvedContactDB {
     involvementReason: number,
     isContactedPerson: boolean,
     cityByIsolationCity: {
-        displayName: string
+        city: string
+    },
+    educationGrade: string,
+    educationClassNumber: number,
+    investigatedPatientRoleByRole: {
+        role: string
+    },
+    subOccupationByInstitutionName: {
+        institutionName: string
     }
 }

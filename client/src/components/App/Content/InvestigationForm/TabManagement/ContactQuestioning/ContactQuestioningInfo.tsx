@@ -12,7 +12,9 @@ import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import InteractedContactFields from 'models/enums/InteractedContact';
+import EducationContactIcon from 'commons/Icons/EducationContactIcon';
 import useContactFields, {COMPLETE_STATUS} from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
@@ -20,10 +22,10 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses, saveContact, isFamilyContact} = props;
+    const { interactedContact, updateInteractedContact, contactStatuses, saveContact } = props;
 
     const {alertWarning} = useCustomSwal();
-
+    const { isInvolvedThroughFamily, isInvolvedThroughEducation, isInvolved } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
@@ -97,7 +99,11 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 <Divider variant='fullWidth' orientation='vertical' flexItem/>
             </Grid>
             <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-evenly'>
-                {isFamilyContact && <FamilyContactIcon/>}
+                {
+                    isInvolved(interactedContact.involvementReason) &&
+                    (isInvolvedThroughFamily(interactedContact.involvementReason) ? <FamilyContactIcon/>
+                    : isInvolvedThroughEducation(interactedContact.involvementReason) && <EducationContactIcon/>)
+                }
                 <Typography variant='body2'>
                     <b>שם פרטי:</b> {interactedContact.firstName}
                 </Typography>
@@ -134,5 +140,4 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-    isFamilyContact: boolean;
 }
