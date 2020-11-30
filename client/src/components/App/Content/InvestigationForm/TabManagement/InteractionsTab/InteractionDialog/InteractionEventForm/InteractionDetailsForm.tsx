@@ -61,17 +61,18 @@ const InteractionDetailsForm = (props: Props) => {
     const addFamilyMemberContacts = (contacts: Contact[]) => {
         familyMembers?.map((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
-                const familyContact = {
+                const familyContact: Contact = {
                     firstName: familyMember.firstName,
                     lastName: familyMember.lastName,
                     phoneNumber: familyMember.phoneNumber,
                     idNumber: familyMember.identificationNumber,
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
-                    creationTime: new Date()
+                    creationTime: new Date(),
+                    involvedContactId: familyMember.id
                 };
 
                 contacts.push(familyContact);
-            };
+            }
         });
     };
 

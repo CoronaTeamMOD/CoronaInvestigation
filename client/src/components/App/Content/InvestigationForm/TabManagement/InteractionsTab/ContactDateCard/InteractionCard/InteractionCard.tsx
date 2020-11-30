@@ -5,13 +5,13 @@ import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material
 
 import Contact from 'models/Contact';
 import { timeFormat } from 'Utils/displayUtils';
+import useContactFields from 'Utils/vendor/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import useStyles from './InteractionCardStyles';
 import ContactGrid from './ContactGrid/ContactGrid';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import useContactFields from 'Utils/vendor/useContactFields';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
 import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
@@ -36,7 +36,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
     
     const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime);
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime) || interaction.contacts.some((contact: Contact) => contact.involvedContactId !== null);
 
     return (
         <Card className={classes.container}>

@@ -216,6 +216,7 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
 });
 
 const convertInvolvedContact = (contact: InvolvedContactDB) => ({
+    id: contact.id,
     isContactedPerson: contact.isContactedPerson,
     involvementReason: contact.involvementReason,
     ...contact.familyRelationshipByFamilyRelationship,

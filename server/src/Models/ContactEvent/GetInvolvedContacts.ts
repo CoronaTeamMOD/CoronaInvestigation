@@ -10,6 +10,7 @@ export interface GetInvolvedContactsResponse {
 }
 
 export interface InvolvedContactDB {
+    id: number;
     familyRelationshipByFamilyRelationship: {
         displayName: string;
     },

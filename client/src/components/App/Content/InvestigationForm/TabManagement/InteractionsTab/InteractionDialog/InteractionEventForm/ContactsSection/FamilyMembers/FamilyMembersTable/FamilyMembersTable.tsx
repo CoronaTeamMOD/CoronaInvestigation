@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
@@ -26,6 +26,12 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
             selectedFamilyMember.selected = true;
         }
     }
+    
+    useEffect(() => {
+        familyMembers.map((familyMember: InvolvedContact) => {
+            familyMember.selected = false;
+        });
+    }, []);
 
     const counterDescription: string = useMemo(() => {
         return selectedFamilyMembers.length > 0 ?

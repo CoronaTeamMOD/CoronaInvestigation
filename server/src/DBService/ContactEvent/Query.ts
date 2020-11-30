@@ -75,6 +75,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           contactType
           extraInfo
           creationTime
+          involvedContactId
           personByPersonInfo {
             firstName
             identificationNumber
@@ -93,6 +94,7 @@ export const GET_ALL_INVOLVED_CONTACTS = gql`
 query getAllInvolvedContacts($currInvestigation: Int!) {
   allInvolvedContacts(filter: {investigationId: {equalTo: $currInvestigation}}) {
     nodes {
+      id
       familyRelationshipByFamilyRelationship {
         familyRelationship: displayName
       }
