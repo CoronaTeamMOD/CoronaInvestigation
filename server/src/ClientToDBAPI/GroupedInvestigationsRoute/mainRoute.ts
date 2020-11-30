@@ -43,21 +43,20 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
 
     const groupToCreate = { ...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup };
     groupToCreateLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupToCreate)}`, Severity.LOW);
-    graphqlRequest(CREATE_GROUP_FOR_INVESTIGATIONS, response.locals, { input: groupToCreate })
-        .then(result => {
-            if (result?.data) {
-                groupToCreateLogger.info('created grouped investigations successfully', Severity.LOW);
-                response.send(result);
-            } else {
-                groupToCreateLogger.error(`create grouped investigations has been failed due to ${result.errors[0]?.message}`, Severity.HIGH);
-                response.status(errorStatusCode).send(result.errors[0]?.message);
-            }
-        })
-        .catch(err => {
-            groupToCreateLogger.error(`create grouped investigations has been failed failed due to ${err}`, Severity.HIGH);
-            response.status(errorStatusCode).send(err);
-        })
-
+    graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, {input: groupToCreate})
+    .then(result => {
+        if (result?.data) {
+            groupToCreateLogger.info('grouped investigations creation was successfull', Severity.LOW);
+            response.send(result);
+        } else {
+            groupToCreateLogger.error(`grouped investigations creation failed due to ${result.errors[0]?.message}`, Severity.HIGH);
+            response.status(errorStatusCode).send(result.errors[0]?.message);
+        }
+    })
+    .catch(err => {
+        groupToCreateLogger.error(`grouped investigations creation failed due to ${err}`, Severity.HIGH);
+        response.status(errorStatusCode).send(err);
+    })
 })
 
 groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
