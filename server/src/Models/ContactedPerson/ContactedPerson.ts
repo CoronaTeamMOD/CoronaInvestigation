@@ -20,6 +20,9 @@ interface InteractedContact extends Person {
     doesLiveWithConfirmed: boolean;
     doesWorkWithCrowd: boolean;
     creationTime: Date;
+    involvementReason: {
+        involvementReason: number
+    } | null
 };
 
 export default InteractedContact;

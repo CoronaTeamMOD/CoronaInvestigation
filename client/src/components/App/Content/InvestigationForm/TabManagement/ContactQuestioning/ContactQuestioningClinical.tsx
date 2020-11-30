@@ -29,7 +29,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
     
-    const { familyRelationships, interactedContact, updateInteractedContact } = props;
+    const { familyRelationships, interactedContact, updateInteractedContact, isFamilyContact } = props;
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
@@ -79,7 +79,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
                         <Grid item xs={6}>
                             <FormControl>
                                 <Select
-                                    disabled={isFieldDisabled}
+                                    disabled={isFieldDisabled || isFamilyContact}
                                     test-id='familyRelationshipSelect'
                                     name={InteractedContactFields.FAMILY_RELATIONSHIP}
                                     placeholder='קרבה משפחתית'
@@ -196,5 +196,6 @@ export default ContactQuestioningClinical;
 interface Props {
     familyRelationships: FamilyRelationship[];
     interactedContact: InteractedContact;
+    isFamilyContact: boolean;
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
 };

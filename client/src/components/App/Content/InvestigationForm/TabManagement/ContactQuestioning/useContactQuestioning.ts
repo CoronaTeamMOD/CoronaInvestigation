@@ -158,9 +158,9 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         let interactedContacts: InteractedContact[] = [];
         interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
         axios.get('/contactedPeople/allContacts/' + epidemiologyNumber).then((result: any) => {
-            if (result?.data?.data?.allContactedPeople?.nodes) {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
                 interactedContactsLogger.info('got respond from the server that has data', Severity.LOW);
-                result.data.data.allContactedPeople.nodes.forEach((contact: any) => {
+                result.data.forEach((contact: any) => {
                     interactedContacts.push(
                         {
                             id: contact.id,
@@ -189,6 +189,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
                             doesNeedIsolation: contact.doesNeedIsolation ? contact.doesNeedIsolation : false,
                             creationTime: contact.creationTime,
+                            involvementReason: contact.involvementReason,
+                            involvedContactId: contact.involvedContactId,
                         }
                     )
                 });

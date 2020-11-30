@@ -11,6 +11,7 @@ import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import useContactFields, {COMPLETE_STATUS} from 'Utils/vendor/useContactFields';
 
@@ -19,7 +20,7 @@ import useStyles from './ContactQuestioningStyles';
 const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const {interactedContact, updateInteractedContact, contactStatuses, saveContact} = props;
+    const {interactedContact, updateInteractedContact, contactStatuses, saveContact, isFamilyContact} = props;
 
     const {alertWarning} = useCustomSwal();
 
@@ -95,7 +96,8 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                 </div>
                 <Divider variant='fullWidth' orientation='vertical' flexItem/>
             </Grid>
-            <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-between'>
+            <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-evenly'>
+                {isFamilyContact && <FamilyContactIcon/>}
                 <Typography variant='body2'>
                     <b>שם פרטי:</b> {interactedContact.firstName}
                 </Typography>
@@ -132,4 +134,5 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
+    isFamilyContact: boolean;
 }

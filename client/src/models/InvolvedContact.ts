@@ -2,10 +2,10 @@ import Person from './Person';
 
 interface InvolvedContact extends Person {
 	id: number;
-    involvementReason: number;
+    involvementReason: number | null;
 	isContactedPerson: boolean;
 	isolationCity: string;
-	familyRelationship: string;
+	familyRelationship: string | null;
 	selected?: boolean;
 };
 
