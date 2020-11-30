@@ -232,10 +232,11 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
            user: userId
         });
         if(Boolean(coronaTestDate)) {
-            const earliestDateToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate)[0];
-            if(Boolean(earliestDateToInvestigate)) {
+            const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate);
+            if(allDatesToInvestigate.length > 0) {
                 deleteIrrelevantEventsLogger.info('Sending to server date to delete contact events by', Severity.LOW);
-                axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate}}).then((result) => {
+                setIsLoading(true);
+                axios.delete('/intersections/deleteContactEventsByDate', {params: {earliestDateToInvestigate: allDatesToInvestigate[0]}}).then((result) => {
                     if(result.data?.data?.deleteContactEventsBeforeDate) {
                         deleteIrrelevantEventsLogger.info('Deleting contact events finished with success', Severity.LOW);
                     } else {
@@ -247,6 +248,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     deleteIrrelevantEventsLogger.error(`Failed to delete irrelevant contact events: ${err}`, Severity.LOW);
                     alertError(deletingContactEventsErrorMsg);
                     setDidDeletingContactEventsSucceed(false);
+                }).finally(() => {
+                    setIsLoading(false);
                 })
             }
         }
