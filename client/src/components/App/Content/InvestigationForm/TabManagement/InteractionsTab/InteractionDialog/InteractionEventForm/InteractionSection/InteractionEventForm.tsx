@@ -27,6 +27,7 @@ export const defaultContact: Contact = {
     idNumber: '',
     contactType: -1,
     creationTime: new Date(),
+    involvedContact: null
 };
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
