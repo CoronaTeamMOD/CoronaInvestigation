@@ -2,7 +2,6 @@ import { SweetAlertResult } from 'sweetalert2';
 
 import theme from 'styles/theme';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import React from "react";
 
 const useSymptomsFields = (): useSymptomsFieldsOutCome => {
     const { alertWarning } = useCustomSwal();
