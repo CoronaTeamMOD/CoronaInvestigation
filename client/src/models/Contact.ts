@@ -1,3 +1,4 @@
+import InvolvedContact from './InvolvedContact';
 import InteractedContact from './InteractedContact';
 
 interface Contact {
@@ -11,6 +12,7 @@ interface Contact {
     contactStatus?: InteractedContact['contactStatus'];
     creationTime: Date;
     startTime?: Date;
+    involvedContact: InvolvedContact | null;
 }
 
 export default Contact;

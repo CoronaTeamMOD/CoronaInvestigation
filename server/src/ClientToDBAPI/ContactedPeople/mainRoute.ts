@@ -74,12 +74,20 @@ ContactedPeopleRoute.get('/allContacts/:investigationId', (request: Request, res
     allContactsLogger.info(`launching server request with parameter ${JSON.stringify(getContactsQueryVariables)}`, Severity.LOW);
     graphqlRequest(GET_CONTACTED_PEOPLE, response.locals, getContactsQueryVariables)
         .then((result: any) => {
-            allContactsLogger.info('got respond from the DB', Severity.LOW);
-            response.send(result)
+            const allContactedPersons = result?.data?.allContactedPeople?.nodes;
+            if (allContactedPersons) {
+                allContactsLogger.info('got respond from the DB', Severity.LOW);
+                const convertedContacts = allContactedPersons.map((contact: InteractedContact) => ({...contact, ...contact.involvementReason}));
+                response.send(convertedContacts);
+            } else {
+                const errorMessage = result?.errors && result?.errors[0]?.message; 
+                allContactsLogger.error(`got error from the graphql API ${errorMessage}`, Severity.HIGH);
+                response.status(errorStatusCode).json({error: 'failed to fetch contacted people'});
+            }
         })
         .catch(error => {
             allContactsLogger.error(`got error from the graphql API ${error}`, Severity.HIGH);
-            response.status(errorStatusCode).json({error: 'failed to fetch contacted people'})
+            response.status(errorStatusCode).json({error: 'failed to fetch contacted people'});
         })
 });
 

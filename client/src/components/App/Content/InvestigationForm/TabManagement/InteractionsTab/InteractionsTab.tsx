@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 import InvolvedContact from 'models/InvolvedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import InteractionsTabSettings from 'models/InteractionsTabSettings';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
@@ -35,6 +36,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [familyMembers, setFamilyMembers] = useState<InvolvedContact[]>([]);
     const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
 
+    const { isInvolved } = useInvolvedContact();
+    
     const completeTabChange = () => {
         setFormState(investigationId, id, true);
     }
@@ -83,13 +86,18 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const closeFamilyDialog = () => setUncontactedFamilyMembers([]);
 
+    const filteredInteractionUnInvolved = (interaction: Interaction) => ({
+        ...interaction,
+        contacts: interaction.contacts.filter(contact => !isInvolved(contact.involvedContact?.involvementReason))
+    });
+
     const generateContactCard = (interactionDate: Date) => {
         return (
             <ContactDateCard
                 allInteractions={interactions}
                 loadInteractions={loadInteractions}
                 contactDate={interactionDate}
-                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(filteredInteractionUnInvolved(interaction))}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
                 createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}

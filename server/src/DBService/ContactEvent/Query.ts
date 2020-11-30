@@ -27,6 +27,25 @@ query getAllContactTypes {
 }
 `;
 
+const invovledFieldsToQuery = `
+familyRelationshipByFamilyRelationship {
+  familyRelationship: displayName
+}
+personByPersonId {
+  birthDate
+  additionalPhoneNumber
+  firstName
+  identificationNumber
+  identificationType
+  lastName
+  phoneNumber
+}
+involvementReason,
+isContactedPerson
+cityByIsolationCity {
+  city: displayName
+}`;
+
 export const GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID = gql`
 query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
   allContactEvents(condition: {investigationId: $currInvestigation}) {
@@ -82,6 +101,9 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
             gender
             phoneNumber
           }
+          involvedContact: involvedContactByInvolvedContactId {
+            ${invovledFieldsToQuery}
+          }
         }
       }
     }
@@ -93,23 +115,7 @@ export const GET_ALL_INVOLVED_CONTACTS = gql`
 query getAllInvolvedContacts($currInvestigation: Int!) {
   allInvolvedContacts(filter: {investigationId: {equalTo: $currInvestigation}}) {
     nodes {
-      familyRelationshipByFamilyRelationship {
-        familyRelationship: displayName
-      }
-      personByPersonId {
-        birthDate
-        additionalPhoneNumber
-        firstName
-        identificationNumber
-        identificationType
-        lastName
-        phoneNumber
-      }
-      involvementReason,
-      isContactedPerson
-      cityByIsolationCity {
-        city: displayName
-      }
+      ${invovledFieldsToQuery}
     }
   }
 }

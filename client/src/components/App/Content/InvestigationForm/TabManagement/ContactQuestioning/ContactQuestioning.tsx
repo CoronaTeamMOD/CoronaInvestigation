@@ -8,6 +8,7 @@ import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import useContactFields from 'Utils/vendor/useContactFields';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 
 import useStyles from './ContactQuestioningStyles';
@@ -24,7 +25,8 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
     const [familyRelationships, setFamilyRelationships] = useState<FamilyRelationship[]>([]);
     const [contactStatuses, setContactStatuses] = useState<ContactStatus[]>([]);
 
-    const {shouldDisable} = useContactFields();
+    const { shouldDisable } = useContactFields();
+    const { isInvolvedThroughFamily } = useInvolvedContact();
 
     const methods = useForm();
 
@@ -57,8 +59,9 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                     <FormTitle title={`טופס תשאול מגעים (${allContactedInteractions.length})`}/>
                     {
                         allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
-                            firstInteractedContact.phoneNumber ? firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber) : 0).map((interactedContact) => (
-                            <div key={interactedContact.id} className={classes.form}>
+                            firstInteractedContact.phoneNumber ? firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber) : 0).map((interactedContact) => {
+                            const isFamilyContact : boolean = isInvolvedThroughFamily(interactedContact.involvementReason);
+                            return <div key={interactedContact.id} className={classes.form}>
                                 <Accordion className={classes.accordion} style={{borderRadius: '3vw'}}>
                                     <AccordionSummary
                                         test-id='contactLocation'
@@ -72,6 +75,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                                             updateInteractedContact={updateInteractedContact}
                                             contactStatuses={contactStatuses}
                                             saveContact={saveContact}
+                                            isFamilyContact={isFamilyContact}
                                         />
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -86,6 +90,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                                                 familyRelationships={familyRelationships as FamilyRelationship[]}
                                                 interactedContact={interactedContact}
                                                 updateInteractedContact={updateInteractedContact}
+                                                isFamilyContact={isFamilyContact}
                                             />
                                             <Divider orientation='vertical' variant='middle' light={true}/>
                                             <ContactQuestioningCheck
@@ -106,7 +111,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                                     </PrimaryButton>
                                 </Accordion>
                             </div>
-                        ))
+                        })
                     }
                 </form>
             </FormProvider>

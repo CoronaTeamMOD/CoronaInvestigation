@@ -34,12 +34,10 @@ birthDate timestamp;
 additionalPhoneNumber varchar;
 personId int4;
 contactEvent int4;
-maxDuplicateIds int4;
 completionTime timestamp;
+involvedContactId int4;
 
-begin 
-
-	
+begin 	
 	/*contacted_persons is a Jsonthat may recieved in 2 different structures: */
 	
 	contactPersonArr :=(
@@ -81,24 +79,11 @@ begin
 		select nullif((contactedPerson->'repeatingOccuranceWithConfirmed')::text,'null')::bool into repeatingOccuranceWithConfirmed;
 		select nullif((contactedPerson->'doesLiveWithConfirmed')::text,'null')::bool into doesLiveWithConfirmed;
 		select nullif((contactedPerson->'contactStatus')::text,'null')::int4 into contactStatus;
+		select nullif((contactedPerson->'involvedContactId')::text,'null')::int4 into involvedContactId;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
-	if identificationNumber is not null then
-			maxDuplicateIds := case when contactedPersonId is null then 0 else 1 end;
-			if exists (select  1
-				from public.contacted_person cp
-				join person p on cp.person_info = p.id join contact_event ce on ce.id = cp.contact_event
-				where ce.investigation_id = (
-						select ce.investigation_id
-						from  contact_event ce
-						where ce.id = contactEvent) and  p.identification_number = identificationNumber and p.identification_number is not null
-				group by p.identification_number
-				having count(p.identification_number) > maxDuplicateIds) then
-					raise exception 'found duplicate ids:%', identificationnumber;
-			end if;
-		end if;
 	
-	if contactedPersonId is not null then
+		if contactedPersonId is not null then
 	    	/*update person and contacted person */
 		select completion_time from contacted_person cp where cp.id = contactedPersonId into completionTime;
 	
@@ -108,7 +93,7 @@ begin
 			extra_info = extraInfo,
 			contact_type = contactType,
 			family_relationship=familyRelationship ,
-			occupation = personOccupation ,
+			occupation = personOccupation,
 			contacted_person_city =contactedPersonCity ,
 			does_have_background_diseases = doesHaveBackgroundDiseases ,
 			does_feel_good =doesFeelGood ,
@@ -137,6 +122,12 @@ begin
 	  		  	phone_number = phoneNumber
 			from contacted_person 
 	    	where person.id= contacted_person.person_info and contacted_person.id = contactedPersonId;
+			
+			if (involvedContactId is not null ) then
+				update public.involved_contact
+				set isolation_city = contactedPersonCity
+				where id = involvedContactId;
+			end if;
 	   else
 			INSERT INTO public.person (first_name, last_name, identification_type, identification_number, phone_number, additional_phone_number, gender, birth_date) 
 			VALUES(firstName, lastName,  (case when identificationNumber is null then null
@@ -157,4 +148,3 @@ begin
 	end loop;
 end;
 $function$
-;
