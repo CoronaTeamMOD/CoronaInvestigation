@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
-import PeopleIcon from '@material-ui/icons/People';
+import PeopleIcon from '@material-ui/icons/GroupOutlined';
 
 const contactTitle = 'מגע משפחה';
 

@@ -23,6 +23,7 @@ interface InteractedContact extends Person {
     doesNeedIsolation: boolean;
     creationTime?: Date;
     involvementReason: number | null;
+    involvedContactId: number | null;
 };
 
 export default InteractedContact;

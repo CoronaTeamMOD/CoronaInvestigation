@@ -189,7 +189,8 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
                             doesWorkWithCrowd: contact.doesWorkWithCrowd ? contact.doesWorkWithCrowd : false,
                             doesNeedIsolation: contact.doesNeedIsolation ? contact.doesNeedIsolation : false,
                             creationTime: contact.creationTime,
-                            involvementReason: contact.involvementReason
+                            involvementReason: contact.involvementReason,
+                            involvedContactId: contact.involvedContactId,
                         }
                     )
                 });

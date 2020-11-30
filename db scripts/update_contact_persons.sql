@@ -79,6 +79,7 @@ begin
 		select nullif((contactedPerson->'repeatingOccuranceWithConfirmed')::text,'null')::bool into repeatingOccuranceWithConfirmed;
 		select nullif((contactedPerson->'doesLiveWithConfirmed')::text,'null')::bool into doesLiveWithConfirmed;
 		select nullif((contactedPerson->'contactStatus')::text,'null')::int4 into contactStatus;
+		select nullif((contactedPerson->'involvedContactId')::text,'null')::int4 into involvedContactId;
 		select nullif((contactedPerson->'doesWorkWithCrowd')::text,'null')::bool into doesWorkWithCrowd;
 		    identificationType:= REPLACE(identificationType, '\', '' );
 	
@@ -121,10 +122,6 @@ begin
 	  		  	phone_number = phoneNumber
 			from contacted_person 
 	    	where person.id= contacted_person.person_info and contacted_person.id = contactedPersonId;
-			
-			select involved_contact_id into involvedContactId
-			from public.contacted_person
-			where id = contactedPersonId;
 			
 			if (involvedContactId is not null ) then
 				update public.involved_contact
