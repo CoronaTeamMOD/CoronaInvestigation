@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         width: '88%'
     },
+    hiddenCollapse: {
+      display: 'none'
+    },
     tabIndicator: {
         width: '4px'
     }

@@ -27,7 +27,10 @@ const useStyles = makeStyles({
     },
     arrowWrapper: {
         width: '5vw'
-    }
+    },
+    hiddenInteractions: {
+        display: 'none',
+    },
 });
 
 export default useStyles;

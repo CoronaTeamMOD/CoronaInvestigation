@@ -62,7 +62,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                 </div>
             </div>
-            <Collapse in={areDetailsOpen}>
+            <Collapse classes={{hidden: classes.hiddenDetails}} in={areDetailsOpen}>
                 <Grid container justify='flex-start' className={classes.detailsGrid} >
                     {
                         interaction.placeType === privateHouse.code &&

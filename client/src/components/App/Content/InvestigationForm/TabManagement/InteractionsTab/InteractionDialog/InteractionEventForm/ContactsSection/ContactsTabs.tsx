@@ -7,26 +7,27 @@ import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 import useFormStyles from 'styles/formStyles';
 import useStyles from './ContactsTabsStyles';
 
-enum contactFormTabs {
-    manualContactsForm = 0,
-    familyMembers = 1,
-}
+const contactFormTabs = [
+    {id: 0, Component: < ManualContactsForm/>},
+    {id: 1, Component: <React.Fragment/>},
+];
 
 const FormComponent = ({currentTab}: {currentTab: number;}) => {
     const classes = useStyles();
-
     return <>
-        <Collapse classes={{container: classes.collapse}}
-                  in={currentTab === contactFormTabs.manualContactsForm}>
-            <ManualContactsForm/>
-        </Collapse>
+        {contactFormTabs.map(tab =>
+            <Collapse classes={{container: classes.collapse, hidden: classes.hiddenCollapse}} in={currentTab === tab.id}>
+                {tab.Component}
+            </Collapse>
+        )}
     </>
 };
 
 const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
-    const [currentTab, setTab] = React.useState<contactFormTabs>(0);
+    const [currentTab, setTab] = React.useState<number>(0);
     const formClasses = useFormStyles();
     const classes = useStyles();
+
     const {palette: {action: {active}}} = useTheme();
     const tabClasses = {wrapper: classes.tab, selected: classes.selected, labelIcon: classes.icon};
 

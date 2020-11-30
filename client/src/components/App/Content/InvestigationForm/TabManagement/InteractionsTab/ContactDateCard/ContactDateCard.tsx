@@ -48,7 +48,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     צור מקום/מגע
                 </PrimaryButton>
             </div>
-            <Collapse in={areInteractionsOpen}>
+            <Collapse classes={{hidden: classes.hiddenInteractions}} in={areInteractionsOpen}>
                 {interactions?.map(interaction =>
                     <InteractionCard
                         allInteractions={allInteractions}

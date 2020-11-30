@@ -15,6 +15,7 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         overflowY: 'auto',
+        overflowX: 'hidden',
         paddingRight: '1vw',
         flip: false
     },
