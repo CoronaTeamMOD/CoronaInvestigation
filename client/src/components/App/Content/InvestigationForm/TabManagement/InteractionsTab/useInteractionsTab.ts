@@ -83,11 +83,13 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                     familyMembers: [...previous.familyMembers, contact],
                     educationMembers: previous.educationMembers
                 }
+            } else if (contact.involvementReason === InvolvementReason.EDUCATION) {
+                return {
+                    educationMembers: [...previous.educationMembers, contact],
+                    familyMembers: previous.familyMembers
+                }
             }
-            return {
-                educationMembers: [...previous.educationMembers, contact],
-                familyMembers: previous.familyMembers
-            }
+            return previous;
         }, {familyMembers: [], educationMembers: []});
     }
 

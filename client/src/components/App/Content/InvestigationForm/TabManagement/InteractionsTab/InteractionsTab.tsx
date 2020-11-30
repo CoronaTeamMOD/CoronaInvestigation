@@ -14,6 +14,7 @@ import ContactDateCard from './ContactDateCard/ContactDateCard';
 import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
 const defaultInteractionsTabSettings : InteractionsTabSettings = {
     allowUncontactedFamily: false
@@ -35,6 +36,8 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [familyMembers, setFamilyMembers] = useState<InvolvedContact[]>([]);
     const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
 
+    const { isInvolved } = useInvolvedContact();
+    
     const completeTabChange = () => {
         setFormState(investigationId, id, true);
     }
@@ -83,13 +86,18 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
 
     const closeFamilyDialog = () => setUncontactedFamilyMembers([]);
 
+    const filteredInteractionUnInvolved = (interaction: Interaction) => ({
+        ...interaction,
+        contacts: interaction.contacts.filter(contact => !isInvolved(contact.involvedContact?.involvementReason))
+    });
+
     const generateContactCard = (interactionDate: Date) => {
         return (
             <ContactDateCard
                 allInteractions={interactions}
                 loadInteractions={loadInteractions}
                 contactDate={interactionDate}
-                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(interaction)}
+                onEditClick={(interaction: InteractionEventDialogData) => setInteractionToEdit(filteredInteractionUnInvolved(interaction))}
                 onDeleteClick={handleDeleteContactEvent}
                 onDeleteContactClick={handleDeleteContactedPerson}
                 createNewInteractionEvent={() => setNewInteractionEventDate(interactionDate)}

@@ -35,6 +35,7 @@ export const defaultContact: Contact = {
     idNumber: '',
     contactType: -1,
     creationTime: new Date(),
+    involvedContact: null,
 };
 
 const addContactButton: string = 'הוסף מגע';

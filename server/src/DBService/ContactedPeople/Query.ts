@@ -42,6 +42,9 @@ query ContactedPeopleByInvestigationId ($investigationId: Int!) {
       doesNeedIsolation
       contactStatus
       creationTime
+      involvementReason : involvedContactByInvolvedContactId {
+        involvementReason
+      }
     }
   }
 }

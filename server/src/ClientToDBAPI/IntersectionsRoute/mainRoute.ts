@@ -73,8 +73,13 @@ intersectionsRoute.get('/getPlacesSubTypesByTypes', (request: Request, response:
 
 const convertDBEvent = (event: ContactEvent) => {
     const {contactedPeopleByContactEvent, ...eventObjectToClient} = event;
+    console.log(contactedPeopleByContactEvent.nodes[0]);
     const contacts: any = contactedPeopleByContactEvent.nodes.map((person) => {
-        const {personByPersonInfo, ...personNoData} = person;
+        const {personByPersonInfo, involvedContact ,...personNoData} = person;
+        let convertedInvolvedContact = null;
+        if (involvedContact) {
+            convertedInvolvedContact = convertInvolvedContact(involvedContact);
+        }
         return {
             ...personNoData,
             serialId: personNoData.id,
@@ -82,6 +87,7 @@ const convertDBEvent = (event: ContactEvent) => {
             lastName: personByPersonInfo.lastName,
             phoneNumber: personByPersonInfo.phoneNumber,
             idNumber: personByPersonInfo.identificationNumber,
+            involvedContact: convertedInvolvedContact,
         };
     });
     return {

@@ -1,5 +1,6 @@
 import { PlaceSubType } from './GetPlacesSubTypesByTypes';
 import { ContactedPerson } from '../ContactedPerson/ContactedPerson'
+import { InvolvedContactDB } from './GetInvolvedContacts';
 
 export interface GetContactEventResponse {
     data: {
@@ -53,4 +54,5 @@ export interface ContactEvent {
     contactedPeopleByContactEvent: {
         nodes: ContactedPerson[]
     }
+    involvedContact: InvolvedContactDB | null
 }
