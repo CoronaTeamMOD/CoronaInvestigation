@@ -1,4 +1,4 @@
-import {SweetAlertOptions, SweetAlertResult} from 'sweetalert2';
+import Swal from "sweetalert2";
 import {differenceInDays, eachDayOfInterval, subDays} from 'date-fns';
 
 export const symptomsWithKnownStartDate: number = 4;
@@ -17,6 +17,10 @@ export const getDatesToInvestigate = (doesHaveSymptoms: boolean, symptomsStartDa
             if (symptomsStartDate) {
                 const testAndSymptomsInterval = Math.abs(differenceInDays(symptomsStartDate, coronaTestDate));
                 if (testAndSymptomsInterval > maxInvestigatedDays) {
+                    Swal.fire({
+                        title: 'תאריך התחלת סימפטומים לא חוקי',
+                        icon: 'error'
+                    });
                     return [];
                 }
                 startInvestigationDate = subDays(symptomsStartDate, symptomsWithKnownStartDate);

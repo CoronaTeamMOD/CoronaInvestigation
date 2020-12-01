@@ -167,7 +167,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }, []);
 
     useEffect(() => {
-        if(Boolean(coronaTestDate) && Boolean(symptomsStartDate)) {
+        if(Boolean(coronaTestDate)) {
             const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate);
             allDatesToInvestigate.length > 0 ? setDatesToInvestigate(allDatesToInvestigate) : alertError('תאריך תסמינים לא חוקי');
         }
