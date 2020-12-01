@@ -11,14 +11,16 @@ const useStyles = makeStyles({
         whiteSpace: 'nowrap',
     },
     newContactFieldsContainer: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         overflowY: 'auto',
-        height: '37vh',
-        paddingRight: '0.5vw'
+        overflowX: 'hidden',
+        paddingRight: '1vw',
+        flip: false
     },
     contactedPersonContainer: {
-        paddingBottom: '2%'
+        paddingBottom: '5vh'
     },
     contactDate: {
         '@media screen and (min-width: 1870px)': {

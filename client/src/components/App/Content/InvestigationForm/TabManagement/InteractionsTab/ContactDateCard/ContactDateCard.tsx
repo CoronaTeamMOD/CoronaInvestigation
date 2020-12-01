@@ -6,6 +6,7 @@ import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import useFormStyles from 'styles/formStyles';
 
 import useStyles from './ContactDateCardStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
@@ -18,7 +19,8 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
 
     const classes = useStyles();
-    
+    const formClasses = useFormStyles();
+
     return (
         <Card test-id='contactLocationDateCard' key={contactDate.getTime()} className={classes.investigatedDateCard}>
             <div className={classes.dateInfo}>
@@ -48,7 +50,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                     צור מקום/מגע
                 </PrimaryButton>
             </div>
-            <Collapse in={areInteractionsOpen}>
+            <Collapse classes={{hidden: formClasses.hidden}} in={areInteractionsOpen}>
                 {interactions?.map(interaction =>
                     <InteractionCard
                         allInteractions={allInteractions}

@@ -5,7 +5,7 @@ const useStyles = makeStyles({
         height: '70vh',
     },
     displayedTab: {
-        height: '55vh',
+        height: '93%',
         overflow: 'auto'
     },
     errorIcon:{

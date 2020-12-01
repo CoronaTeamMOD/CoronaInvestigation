@@ -1,13 +1,13 @@
 import BusEventForm
-    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/BusEventForm';
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/BusEventForm';
 import TrainEventForm
-    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/TrainEventForm';
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/TrainEventForm';
 import FlightEventForm
-    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/TransportationAdditionalForms/FlightEventForm';
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/TransportationForms/FlightEventForm';
 import SchoolEventForm
-    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/SchoolEventForm';
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/SchoolEventForm/SchoolEventForm';
 import HospitalEventForm
-    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionEventForm/PlacesAdditionalForms/HospitalEventForm';
+    from '../components/App/Content/InvestigationForm/TabManagement/InteractionsTab/InteractionDialog/InteractionEventForm/InteractionSection/HospitalEventForm/HospitalEventForm';
 
 export interface FormOptions {
     code: number | string;

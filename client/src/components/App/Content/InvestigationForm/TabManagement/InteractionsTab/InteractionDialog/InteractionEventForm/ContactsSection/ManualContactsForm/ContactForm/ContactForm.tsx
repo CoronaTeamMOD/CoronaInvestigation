@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
 
 import ContactType from 'models/ContactType';
 import useFormStyles from 'styles/formStyles';
@@ -53,8 +53,8 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     }
 
     return (
-        <div test-id='contactFormContainer' className={classes.addContactFields} key='addContactFields'>
-            <Grid className={formClasses.formRow} container justify='flex-start'>
+        <div test-id='contactFormContainer' key='addContactFields'>
+            <Grid className={formClasses.formRow} container justify='flex-start' spacing={1}>
                 <FormInput xs={4} labelLength={4} fieldName={contactedPersonFirstName}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
@@ -125,7 +125,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} fieldName={contactTypeName}>
+                <FormInput xs={5} fieldName={contactTypeName}>
                     <FormControl fullWidth>
                         <div className={classes.newContactField}>
                             <Controller
