@@ -7,9 +7,9 @@ import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
+import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
-import { useDateUtils } from 'Utils/DateUtils/useDateUtils'
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
@@ -27,7 +27,6 @@ interface GroupedInvolvedGroups {
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
             setEducationMembers, setFamilyMembers, setInteractionsTabSettings, completeTabChange } = parameters;
-
     const { convertDate, getDatesToInvestigate} = useDateUtils();
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
