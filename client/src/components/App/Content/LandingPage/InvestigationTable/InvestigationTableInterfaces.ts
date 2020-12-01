@@ -5,6 +5,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import Desk from 'models/Desk';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
+import { MutableRefObject } from 'react';
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
@@ -18,6 +19,8 @@ export interface useInvestigationTableParameters {
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;
+    coloredGroupedRows: MutableRefObject<number[]>;
+    investigationColor: MutableRefObject<Map<string, string>>;
 }
 
 export interface useInvestigationTableOutcome {

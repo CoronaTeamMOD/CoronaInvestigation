@@ -161,6 +161,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     groupedInvestigation: {
         flip: false,
         borderRight: '10px solid #ffffff00'
+    },
+    padCheckboxWithoutGroup: {
+        marginRight: theme.spacing(6.5)
     }
 }));
 

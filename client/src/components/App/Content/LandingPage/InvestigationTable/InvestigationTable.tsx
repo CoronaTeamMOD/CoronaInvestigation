@@ -62,7 +62,6 @@ export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const unassignedToDesk = 'לא שוייך לדסק';
-const groupedInvestigationsColors = ['#f05454', '#30475e', '#9ddfd3', '#ea86b6', '#ffa36c', '#ffe05d', '#c56183', '#794c74', '#158467', '#a8dda8'];
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -99,7 +98,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, getInvestigationsByGroupId
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
-        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations
+        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
+        coloredGroupedRows, investigationColor
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -107,31 +107,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
     const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
-
-
-    useEffect(() => {
-        coloredGroupedRows.current.splice(0, coloredGroupedRows.current.length);
-        investigationColor.current.clear();
-        tableRows.forEach((row) => {
-            const colorIndex = getRandomIndex();
-            coloredGroupedRows.current.push(colorIndex);
-            investigationColor.current.set(row.groupId, groupedInvestigationsColors[colorIndex]);
-        })
-    }, [tableRows]);
-
-    const getRandomIndex = () => {
-        const min = 0;
-        const max = groupedInvestigationsColors.length - 1;
-        let index = Math.floor(Math.random() * (max - min + 1) + min);
-        while (coloredGroupedRows.current.indexOf(index) > -1 && coloredGroupedRows.current.length < max) {
-            if (index < max) {
-                index++;
-            } else {
-                index = 0;
-            }
-        }
-        return index;
-    }
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
         switch (key) {
@@ -184,6 +159,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.epidemiologyNumber:
                 return <InvestigationNumberColumn
@@ -193,7 +169,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 />
             case TableHeadersNames.investigatorName:
                 const isUnassigned = indexedRow.investigatorName === 'לא משויך';
-                if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked) {
+                if (selectedRow === indexedRow.epidemiologyNumber && investigatorAutoCompleteClicked && !wasInvestigationFetchedByGroup) {
                     return (
                         <div className={classes.selectedInvestigator}>
                             {isUnassigned && <UnassignedWarning />}
@@ -307,7 +283,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 }
             case TableHeadersNames.investigationDesk:
                 if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
-                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN)) {
+                    (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN ) && !wasInvestigationFetchedByGroup) {
                     return (
                         <Autocomplete
                             options={allDesks}
@@ -369,16 +345,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.multipleCheck:
                 return (
                     <>
-                        <Checkbox onClick={(event) => {
+                        {(!wasInvestigationFetchedByGroup) && <Checkbox onClick={(event) => {
                             event.stopPropagation();
-                            markRow(indexedRow.epidemiologyNumber);
-                        }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
-                        {indexedRow.groupId && <IconButton onClick={(event) => {
+                            markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
+                        }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} 
+                        className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
+                        {indexedRow.canFetchGroup && <IconButton onClick={(event) => {
                             event.stopPropagation();
                             openGroupedInvestigation(indexedRow.epidemiologyNumber)
-                            if (checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber)) {
-                                getInvestigationsByGroupId(indexedRow.groupId)
-                            }
+                            getInvestigationsByGroupId(indexedRow.groupId)
                         }}>
                             {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) ?
                                 <KeyboardArrowDown /> :
@@ -403,12 +378,30 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
-    const markRow = (epidemiologyNumber: number) => {
+    const markRow = async (epidemiologyNumber: number, groupId: string) => {
         const epidemiologyNumberIndex = checkedRowsIds.findIndex(checkedRow => epidemiologyNumber === checkedRow);
         if (epidemiologyNumberIndex !== -1) {
-            setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epidemiologyNumber));
+            const gropuedInvestigationsById = allGroupedInvestigations.get(groupId)
+            if (gropuedInvestigationsById) {
+                let checkedGroupRows: number[] = []
+                gropuedInvestigationsById.forEach(row => {
+                    checkedGroupRows.push(row.epidemiologyNumber)
+                })
+                setCheckedRowsIds(checkedRowsIds.filter(rowId => checkedGroupRows.indexOf(rowId) === -1));
+            } else {
+                setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epidemiologyNumber));
+            }
         } else {
-            setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
+            if (groupId) {
+                await getInvestigationsByGroupId(groupId)
+                let checkedGroupRows: number[] = []
+                allGroupedInvestigations.get(groupId)?.forEach(row => {
+                    checkedGroupRows.push(row.epidemiologyNumber)
+                })
+                setCheckedRowsIds([...checkedRowsIds, ...checkedGroupRows]);
+            } else {
+                setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
+            }
         }
     }
 
@@ -588,9 +581,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             }
                                         </TableRow>
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
-                                            <TableRow>
-                                                WASSSSUP
-                                            </TableRow>
+                                            allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow) => {
+                                                const indexedGroupedInvestigationRow = convertToIndexedRow(row);
+                                                const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
+                                                return(
+                                                    <TableRow selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
+                                                    key={indexedGroupedInvestigationRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
+                                                    className={[classes.investigationRow, isGroupedRowClickable && classes.clickableInvestigationRow].join(' ')}
+                                                    onClick={() => isGroupedRowClickable && onInvestigationRowClick(indexedGroupedInvestigationRow)}
+                                                    >
+                                                        {
+                                                            Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
+                                                                <TableCell
+                                                                    style={{ borderRightColor: indexedGroupedInvestigationRow.groupId && key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.groupId) : '' }}
+                                                                    className={getTableCellStyles(index, key).join(' ')}
+                                                                    onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
+                                                                >
+                                                                    {
+                                                                        getTableCell(key, indexedGroupedInvestigationRow)
+                                                                    }
+                                                            </TableCell>
+                                                        ))
+                                            }
+                                                    </TableRow>
+                                                )
+                                            })
                                         }
                                     </>
                                 )

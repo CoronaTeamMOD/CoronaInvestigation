@@ -40,6 +40,7 @@ import useInvestigatedPersonInfo
     from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
+const groupedInvestigationsColors = ['#f05454', '#30475e', '#9ddfd3', '#ea86b6', '#ffa36c', '#ffe05d', '#c56183', '#794c74', '#158467', '#a8dda8'];
 
 export const createRowData = (
     epidemiologyNumber: number,
@@ -59,7 +60,8 @@ export const createRowData = (
     statusReason: string,
     wasInvestigationTransferred: boolean,
     transferReason: string,
-    groupId: string
+    groupId: string,
+    canFetchGroup: boolean
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -79,7 +81,8 @@ export const createRowData = (
     statusReason,
     wasInvestigationTransferred,
     transferReason,
-    groupId
+    groupId,
+    canFetchGroup
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -92,7 +95,8 @@ export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations } = parameters;
+        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations, 
+        coloredGroupedRows, investigationColor } = parameters;
 
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
@@ -310,6 +314,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                                 const transferReason = user ? investigation.transferReason : '';
                                 const groupId = user ? investigation.groupId : '';
+                                const canFetchGroup = Boolean(groupId);
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
@@ -331,10 +336,18 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     statusReason,
                                     wasInvestigationTransferred,
                                     transferReason,
-                                    groupId
+                                    groupId,
+                                    canFetchGroup
                                 )
                             });
                         setRows(investigationRows);
+                        if(coloredGroupedRows.current.length === 0){
+                            investigationRows.forEach((row) => {
+                                const colorIndex = getRandomIndex();
+                                coloredGroupedRows.current.push(colorIndex);
+                                investigationColor.current.set(row.groupId, groupedInvestigationsColors[colorIndex]);
+                            })
+                        }
                         setIsLoading(false);
                     } else {
                         fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM);
@@ -467,6 +480,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
             [TableHeadersNames.transferReason]: row.transferReason,
             [TableHeadersNames.groupId]: row.groupId,
+            [TableHeadersNames.canFetchGroup]: row.canFetchGroup,
         }
     }
 
@@ -608,6 +622,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
+    const getRandomIndex = () => {
+        const min = 0;
+        const max = groupedInvestigationsColors.length - 1;
+        let index = Math.floor(Math.random() * (max - min + 1) + min);
+        while (coloredGroupedRows.current.indexOf(index) > -1 && coloredGroupedRows.current.length < max) {
+            if (index < max) {
+                index++;
+            } else {
+                index = 0;
+            }
+        }
+        return index;
+    }
+
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
         let classNames = [];
 
@@ -636,23 +664,61 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setOrderBy(orderByValue);
     }
 
-    const getInvestigationsByGroupId = (groupId: string) => {
+    const getInvestigationsByGroupId = async (groupId: string) => {
         const investigationsByGroupIdLogger = logger.setup({
             workflow: 'get investigations by group id',
             user: user.id,
             investigation: epidemiologyNumber
         });
-        let investigationsByGroupId: InvestigationTableRow[] = []
 
         investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
-        axios.get('/groupedInvestigations/investigations/' + groupId).then((result) => {
+        setIsLoading(true)
+        !allGroupedInvestigations.get(groupId) && 
+        await axios.get('/groupedInvestigations/investigations/' + groupId).then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
-                //setAllDesks(result.data);
-                result && result.data && result.data.forEach((investigation: InvestigationTableRow) => {
-                    investigationsByGroupId.push(investigation)
-                });
-                setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationsByGroupId))
+                const investigationRows: InvestigationTableRow[] = result.data.nodes
+                            .filter((investigation: any) =>
+                                investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                investigation?.userByCreator)
+                            .map((investigation: any) => {
+                                const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                const desk = investigation.desk;
+                                const covidPatient = patient.covidPatientByCovidPatient;
+                                const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                const user = investigation.userByCreator;
+                                const county = user ? user.countyByInvestigationGroup : '';
+                                const statusReason = user ? investigation.statusReason : '';
+                                const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
+                                const transferReason = user ? investigation.transferReason : '';
+                                const groupId = user ? investigation.groupId : '';
+                                const canFetchGroup = false;
+                                const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                    investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                    '';
+                                return createRowData(
+                                    investigation.epidemiologyNumber,
+                                    investigation.coronaTestDate,
+                                    investigation.isComplex,
+                                    investigation.priority,
+                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    subStatus,
+                                    covidPatient.fullName,
+                                    covidPatient.primaryPhone,
+                                    covidPatient.age,
+                                    patientCity ? patientCity.displayName : '',
+                                    desk,
+                                    county,
+                                    { id: user.id, userName: user.userName },
+                                    investigation.comment,
+                                    statusReason,
+                                    wasInvestigationTransferred,
+                                    transferReason,
+                                    groupId,
+                                    canFetchGroup
+                                )
+                            });
+                setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
             } else {
                 investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
             }
@@ -661,6 +727,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
                 investigationsByGroupIdLogger.error(err, Severity.HIGH);
             })
+            setIsLoading(false)
     }
 
     return {

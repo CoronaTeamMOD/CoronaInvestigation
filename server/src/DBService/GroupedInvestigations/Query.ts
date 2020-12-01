@@ -12,7 +12,7 @@ query GetAllGroupedInvestigationsReasons {
 `;
 
 export const GET_INVESTIGATIONS_BY_GROUP_ID = gql`
-query GetAllInvestigationsByGroupId($groupId: GetAllInvestigationsByGroupIdInput!) {
+query GetAllInvestigationsByGroupId($groupId: UUID!) {
   allInvestigations(filter: {groupId: {equalTo: $groupId}}) {
     nodes {
       comment
