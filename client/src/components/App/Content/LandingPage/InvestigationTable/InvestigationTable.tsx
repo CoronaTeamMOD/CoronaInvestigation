@@ -33,6 +33,7 @@ import InvestigationStatusColumn from './InvestigationStatusColumn/Investigation
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import { defaultUser } from 'Utils/UsersUtils/useUsersUtils';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -87,6 +88,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
+
+    const closeDropdowns = () => {
+        setInvestigatorAutoCompleteClicked(false);
+        setCountyAutoCompleteClicked(false);
+        setDeskAutoCompleteClicked(false);
+    }
 
     const tableContainerRef = React.useRef<HTMLElement>();
     const investigationColor = React.useRef<Map<string, string>>(new Map())
@@ -259,7 +266,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             getOptionLabel={(option) => option.value.displayName}
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
-                                onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
+                                if (event?.type !== 'blur') {
+                                    onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
+                                }
                             }}
                             onInputChange={(event, selectedCounty) => {
                                 if (event?.type !== 'blur') {
@@ -443,7 +452,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }, [tableRows, unassignedInvestigationsCount]);
 
     return (
-        <>
+        <div tabIndex={0}
+            onClick={closeDropdowns}
+            onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) =>
+                event.key === 'Escape' && closeDropdowns()}
+        >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
                 <Grid item xs={2}></Grid>
                 <Grid item xs={8}>
@@ -634,7 +647,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
                 message={refreshPromptMessage} />
-        </>
+        </div>
     );
 }
 
