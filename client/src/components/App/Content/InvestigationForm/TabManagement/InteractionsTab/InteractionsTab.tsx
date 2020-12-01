@@ -73,7 +73,7 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
         setAreThereContacts(!(interactions.findIndex((interaction) => interaction.contacts.length > 0) === -1));
     }, [interactions]);
 
-    const saveInteraction = (e : React.FormEvent<HTMLFormElement>) => {
+    const submitTab = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const uncontactedFamilyMembersArray : InvolvedContact[] = familyMembers.filter(member => !member.isContactedPerson);
         const areThereUncontactedMembers = uncontactedFamilyMembersArray.length > 0;
@@ -109,36 +109,35 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     
     return (
         <>
-            <form id={`form-${id}`} onSubmit={(e) => saveInteraction(e)}>
-                {
-                    datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
-                        datesToInvestigate.reverse().map(date => generateContactCard(date)) :
-                        datesToInvestigate.map(date => generateContactCard(date))
-                }
-                {
-                    newInteractionEventDate && <NewInteractionEventDialog
-                        isOpen={Boolean(newInteractionEventDate)}
-                        interactionDate={newInteractionEventDate}
-                        closeNewDialog={() => setNewInteractionEventDate(undefined)}
-                        loadInteractions={loadInteractions}
-                        interactions={interactions}
-                    />
-                }
-                {
-                    interactionToEdit && <EditInteractionEventDialog
-                        isOpen={Boolean(interactionToEdit)}
-                        eventToEdit={interactionToEdit}
-                        closeEditDialog={() => setInteractionToEdit(undefined)}
-                        loadInteractions={loadInteractions}
-                        interactions={interactions}
-                    />
-                }
-                <FamilyContactsDialog 
-                    uncontactedFamilyMembers={uncontactedFamilyMembers}
-                    isOpen={uncontactedFamilyMembers.length > 0} 
-                    closeDialog={closeFamilyDialog}
-                    confirmDialog={saveInvestigaionSettingsFamily}/>
-            </form>
+            <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
+            {
+                datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
+                    datesToInvestigate.reverse().map(date => generateContactCard(date)) :
+                    datesToInvestigate.map(date => generateContactCard(date))
+            }
+            {
+                newInteractionEventDate && <NewInteractionEventDialog
+                    isOpen={Boolean(newInteractionEventDate)}
+                    interactionDate={newInteractionEventDate}
+                    closeNewDialog={() => setNewInteractionEventDate(undefined)}
+                    loadInteractions={loadInteractions}
+                    interactions={interactions}
+                />
+            }
+            {
+                interactionToEdit && <EditInteractionEventDialog
+                    isOpen={Boolean(interactionToEdit)}
+                    eventToEdit={interactionToEdit}
+                    closeEditDialog={() => setInteractionToEdit(undefined)}
+                    loadInteractions={loadInteractions}
+                    interactions={interactions}
+                />
+            }
+            <FamilyContactsDialog 
+                uncontactedFamilyMembers={uncontactedFamilyMembers}
+                isOpen={uncontactedFamilyMembers.length > 0} 
+                closeDialog={closeFamilyDialog}
+                confirmDialog={saveInvestigaionSettingsFamily}/>
         </>
     )
 };
