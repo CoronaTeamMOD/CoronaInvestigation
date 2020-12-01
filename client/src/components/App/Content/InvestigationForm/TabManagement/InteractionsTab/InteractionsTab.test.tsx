@@ -7,7 +7,7 @@ import { testHooksFunction } from 'TestHooks';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
 import useInteractionsTab from './useInteractionsTab';
-import { getDatesToInvestigate } from 'Utils/DateUtils/useDateUtils';
+import { useDateUtils, useDateUtilsOutCome } from 'Utils/DateUtils/useDateUtils';
 import { useInteractionsTabOutcome as useInteactionsTabsOutcomeInterface,
     useInteractionsTabParameters as useInteactionsTabsInputInterface } from './useInteractionsTabInterfaces';
 
@@ -15,6 +15,7 @@ const spy = jest.spyOn(redux, 'useSelector');
 spy.mockReturnValue({});
 
 let useInteractionsTabOutcome: useInteactionsTabsOutcomeInterface;
+let useDateUtilsOutcome: useDateUtilsOutCome;
 let interactionsForTests: Interaction[] = [];
 let useInteractionsTabInput: useInteactionsTabsInputInterface = {
     interactions: interactionsForTests,
@@ -48,13 +49,18 @@ describe('useInteractionsTab tests', () => {
             });
         });
         describe('symptomatic investigated person tests:', () => {
+            beforeEach(async () => {
+                await testHooksFunction(() => {
+                    useDateUtilsOutcome = useDateUtils();
+                })
+            })
             it('get dates when symptoms start date is available', async () => {
-                const receivedDates = getDatesToInvestigate(true, symptomsStartDate, coronaTestDate);
+                const receivedDates = useDateUtilsOutcome.getDatesToInvestigate(true, symptomsStartDate, coronaTestDate);
                 expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(symptomsStartDate, 4), end: investigationStartDate}));
             })
 
             it('get dates when symptoms start is not available', async () => {
-                const receivedDates = getDatesToInvestigate(true, null, coronaTestDate);
+                const receivedDates = useDateUtilsOutcome.getDatesToInvestigate(true, null, coronaTestDate);
 
                 expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 10), end: investigationStartDate}));
             });
@@ -62,7 +68,7 @@ describe('useInteractionsTab tests', () => {
 
         describe('asymptomatic investigated person tests:', () => {
             it('get dates when the investigated person is asymptomatic', async () => {
-                const receivedDates = getDatesToInvestigate(false, null, coronaTestDate);
+                const receivedDates = useDateUtilsOutcome.getDatesToInvestigate(false, null, coronaTestDate);
 
                 expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 7), end: investigationStartDate}));
             });

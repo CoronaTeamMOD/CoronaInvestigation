@@ -45,7 +45,7 @@ export const useDateUtils = (): useDateUtilsOutCome => {
     }
 }
 
-interface useDateUtilsOutCome {
+export interface useDateUtilsOutCome {
     convertDate: (dbDate: Date | null) => Date | null;
     getDatesToInvestigate: (doesHaveSymptoms: boolean, symptomsStartDate: Date | null, coronaTestDate: Date | null) => Date[];
 }
