@@ -7,10 +7,10 @@ import {defaultContact} from '../../InteractionSection/InteractionEventForm';
 import Contact from 'models/Contact';
 import InteractionEventDialogFields
     from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import useFormStyles from 'styles/formStyles';
 
 import ContactForm from './ContactForm/ContactForm';
 
-import useFormStyles from 'styles/formStyles';
 import useStyles from '../../InteractionSection/InteractionEventFormStyles';
 
 const addContactText = 'הוסף מגע';

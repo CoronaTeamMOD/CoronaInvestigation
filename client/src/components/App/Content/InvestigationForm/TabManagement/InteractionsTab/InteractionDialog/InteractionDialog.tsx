@@ -3,8 +3,8 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mate
 import {ChevronLeft, ChevronRight} from '@material-ui/icons';
 
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
 import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm';
 import useStyles from './InteractionDialogStyles';
 

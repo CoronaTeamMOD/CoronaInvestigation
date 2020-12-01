@@ -6,9 +6,9 @@ import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 import DayOfWeek from 'models/enums/DayOfWeek';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
+import useFormStyles from 'styles/formStyles';
 
 import useStyles from './ContactDateCardStyles';
-import useFormStyles from 'styles/formStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
 
 const ContactDateCard: React.FC<Props> = (props: Props) => {

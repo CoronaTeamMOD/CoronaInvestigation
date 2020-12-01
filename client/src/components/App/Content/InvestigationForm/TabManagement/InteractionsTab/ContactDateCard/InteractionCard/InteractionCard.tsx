@@ -7,6 +7,7 @@ import Contact from 'models/Contact';
 import { timeFormat } from 'Utils/displayUtils';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
+import useFormStyles from 'styles/formStyles';
 
 import ContactGrid from './ContactGrid/ContactGrid';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
@@ -22,7 +23,6 @@ import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocation
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
 import useStyles from './InteractionCardStyles';
-import useFormStyles from 'styles/formStyles';
 
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
