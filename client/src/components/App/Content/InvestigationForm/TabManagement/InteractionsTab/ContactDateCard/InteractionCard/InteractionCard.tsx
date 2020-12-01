@@ -8,7 +8,6 @@ import { timeFormat } from 'Utils/displayUtils';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 
-import useStyles from './InteractionCardStyles';
 import ContactGrid from './ContactGrid/ContactGrid';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 import useContactFields from 'Utils/vendor/useContactFields';
@@ -22,10 +21,14 @@ import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
+import useStyles from './InteractionCardStyles';
+import useFormStyles from 'styles/formStyles';
+
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
 
     const { interaction, allInteractions, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
@@ -62,7 +65,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                 </div>
             </div>
-            <Collapse classes={{hidden: classes.hiddenDetails}} in={areDetailsOpen}>
+            <Collapse classes={{hidden: formClasses.hidden}} in={areDetailsOpen}>
                 <Grid container justify='flex-start' className={classes.detailsGrid} >
                     {
                         interaction.placeType === privateHouse.code &&

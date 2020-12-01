@@ -14,9 +14,11 @@ const contactFormTabs = [
 
 const FormComponent = ({currentTab}: {currentTab: number;}) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
+
     return <>
         {contactFormTabs.map(tab =>
-            <Collapse classes={{container: classes.collapse, hidden: classes.hiddenCollapse}} in={currentTab === tab.id}>
+            <Collapse classes={{container: classes.collapse, hidden: formClasses.hidden}} in={currentTab === tab.id}>
                 {tab.Component}
             </Collapse>
         )}

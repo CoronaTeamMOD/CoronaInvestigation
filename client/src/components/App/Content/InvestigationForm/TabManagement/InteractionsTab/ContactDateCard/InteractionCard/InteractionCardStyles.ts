@@ -31,9 +31,6 @@ const useStyle = makeStyles({
     excelControllers: {
         display: 'flex'
     },
-    hiddenDetails: {
-        display: 'none',
-    }
 });
 
 export default useStyle;
