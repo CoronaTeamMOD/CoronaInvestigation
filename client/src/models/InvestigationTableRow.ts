@@ -20,6 +20,8 @@ interface InvestigationTableRow {
     statusReason: string;
     wasInvestigationTransferred: boolean;
     transferReason: string;
+    groupId: string;
+    canFetchGroup: boolean;
 };
 
 export default InvestigationTableRow;

@@ -1,21 +1,27 @@
+import { MutableRefObject } from 'react';
+
 import User from 'models/User';
 import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import Desk from 'models/Desk';
 
-import { IndexedInvestigation, IndexedInvestigationData} from './InvestigationTablesHeaders';
+import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
     checkedRowsIds: number[];
     currentPage: number;
+    allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+    setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;
+    coloredGroupedRows: MutableRefObject<number[]>;
+    investigationColor: MutableRefObject<Map<string, string>>;
 }
 
 export interface useInvestigationTableOutcome {
@@ -37,4 +43,5 @@ export interface useInvestigationTableOutcome {
     totalCount: number;
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
 };
