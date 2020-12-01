@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
-import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark } from '@material-ui/icons';
+import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -17,7 +17,13 @@ export interface CardActionDescription {
     icon: SvgIconComponent;
     displayTitle: string;
     onClick: () => void;
+    disabled?: boolean;
 };
+
+interface DisbandAction {
+    disabled: boolean;
+    groupIds: string[];
+}
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
@@ -36,7 +42,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
-        handleConfirmInvestigatorsDialog
+        handleConfirmInvestigatorsDialog,
+        handleDispandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
                                       checkedRowsIds, tableRows, setTableRows })
 
@@ -49,11 +56,35 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const singleAssignment = 'הקצאה';
     const multipleAssignments = 'הקצאות';
 
+    const disbandAction: DisbandAction = useMemo(() => {
+        let investigationsToDispand: string[] = []; 
+        tableRows.forEach((tableRow: InvestigationTableRow) => {
+            tableRow.groupId ? investigationsToDispand.push(tableRow.groupId) : investigationsToDispand.push('-1');
+        })
+        if (investigationsToDispand.find((groupId: string) => groupId === '-1')) {
+            return {
+                disabled: true,
+                groupIds: []
+            };
+        } else {
+            return {
+                disabled: false,
+                groupIds: new Set(investigationsToDispand.filter((groupId: string) => groupId !== '-1'))
+            }
+        }
+    }, [tableRows])
+
     const cardActions: CardActionDescription[] = [
         {
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
             onClick: handleOpenGroupedInvestigations
+        },
+        {
+            icon: CallSplit,
+            displayTitle: 'ביטול קיבוץ',
+            disabled: disbandAction.disabled,
+            onClick: () => handleDispandGroupedInvestigations(disbandAction.groupIds)
         },
         {
             icon: Send,
@@ -78,11 +109,12 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                     <Typography>{isSingleInvestigation ? singleInvestigation : checkedRowsIds.length}</Typography>
                     <Typography>{isSingleInvestigation ? 'אחת' : multipleInvestigations}</Typography>
                 </div>
-                {cardActions.map(cardAction => <FooterAction 
+                {cardActions.map(cardAction => <FooterAction
                                                     key={cardAction.displayTitle} 
                                                     icon={cardAction.icon} 
                                                     displayTitle={cardAction.displayTitle} 
                                                     onClick={cardAction.onClick} 
+                                                    disabled={cardAction.disabled}
                                                />)}
                 <IconButton onClick={onClose}>
                     <Close />
