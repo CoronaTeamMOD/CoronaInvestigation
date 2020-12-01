@@ -9,7 +9,7 @@ import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
-import { getDatesToInvestigate, convertDate } from 'Utils/DateUtils/useDateUtils'
+import { useDateUtils } from 'Utils/DateUtils/useDateUtils'
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
@@ -28,6 +28,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
             setEducationMembers, setFamilyMembers, setInteractionsTabSettings, completeTabChange } = parameters;
 
+    const { convertDate, getDatesToInvestigate} = useDateUtils();
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
 
