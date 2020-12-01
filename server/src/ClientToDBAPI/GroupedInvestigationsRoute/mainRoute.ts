@@ -60,9 +60,9 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
 
 })
 
-groupedInvestigationsRoute.get('/investigations/:groupId', adminMiddleWare, (request: Request, response: Response) => {
+groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
     const investigationsByGroupIdLogger = logger.setup({
-        workflow: 'get investigations by group id',
+        workflow: `get investigations by group id ${request.params.groupId}`,
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })

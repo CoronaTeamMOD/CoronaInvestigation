@@ -670,11 +670,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id,
             investigation: epidemiologyNumber
         });
-
         investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
         setIsLoading(true)
         !allGroupedInvestigations.get(groupId) && 
-        await axios.get('/groupedInvestigations/investigations/' + groupId).then((result) => {
+        await axios.get('/groupedInvestigations/' + groupId).then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
                 const investigationRows: InvestigationTableRow[] = result.data.nodes
@@ -722,12 +721,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             } else {
                 investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
             }
-        })
+            })
             .catch((err) => {
                 alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
                 investigationsByGroupIdLogger.error(err, Severity.HIGH);
             })
-            setIsLoading(false)
+            .finally(() => {
+                setIsLoading(false)
+            })
     }
 
     return {

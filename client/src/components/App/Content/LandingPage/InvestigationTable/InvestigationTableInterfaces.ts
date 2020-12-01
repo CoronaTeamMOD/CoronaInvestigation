@@ -1,3 +1,5 @@
+import { MutableRefObject } from 'react';
+
 import User from 'models/User';
 import County from 'models/County';
 import Investigator from 'models/Investigator';
@@ -5,7 +7,6 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import Desk from 'models/Desk';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
-import { MutableRefObject } from 'react';
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
