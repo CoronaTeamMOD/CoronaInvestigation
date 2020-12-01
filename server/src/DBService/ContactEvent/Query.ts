@@ -44,7 +44,16 @@ involvementReason,
 isContactedPerson
 cityByIsolationCity {
   city: displayName
-}`;
+}
+educationGrade
+educationClassNumber
+investigatedPatientRoleByRole {
+  role: displayName
+}
+subOccupationByInstitutionName {
+  institutionName: displayName
+}
+`;
 
 export const GET_FULL_CONTACT_EVENT_BY_INVESTIGATION_ID = gql`
 query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
