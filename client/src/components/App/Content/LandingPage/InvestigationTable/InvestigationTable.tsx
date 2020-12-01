@@ -95,7 +95,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, getInvestigationsByGroupId
+        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, fetchInvestigationsByGroupId
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
@@ -353,7 +353,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {indexedRow.canFetchGroup && <IconButton onClick={(event) => {
                             event.stopPropagation();
                             openGroupedInvestigation(indexedRow.epidemiologyNumber)
-                            getInvestigationsByGroupId(indexedRow.groupId)
+                            fetchInvestigationsByGroupId(indexedRow.groupId)
                         }}>
                             {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) ?
                                 <KeyboardArrowDown /> :
@@ -393,7 +393,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         } else {
             if (groupId) {
-                await getInvestigationsByGroupId(groupId)
+                await fetchInvestigationsByGroupId(groupId)
                 let checkedGroupRows: number[] = []
                 allGroupedInvestigations.get(groupId)?.forEach(row => {
                     checkedGroupRows.push(row.epidemiologyNumber)

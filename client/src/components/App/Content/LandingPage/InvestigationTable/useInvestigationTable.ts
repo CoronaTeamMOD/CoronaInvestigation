@@ -664,7 +664,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setOrderBy(orderByValue);
     }
 
-    const getInvestigationsByGroupId = async (groupId: string) => {
+    const fetchInvestigationsByGroupId = async (groupId: string) => {
         const investigationsByGroupIdLogger = logger.setup({
             workflow: 'get investigations by group id',
             user: user.id,
@@ -750,7 +750,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         totalCount,
         handleFilterChange,
         unassignedInvestigationsCount,
-        getInvestigationsByGroupId
+        fetchInvestigationsByGroupId
     };
 };
 

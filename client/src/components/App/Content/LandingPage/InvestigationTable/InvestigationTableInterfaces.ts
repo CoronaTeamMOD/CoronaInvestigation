@@ -43,5 +43,5 @@ export interface useInvestigationTableOutcome {
     totalCount: number;
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
-    getInvestigationsByGroupId: (groupId: string) => void;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
 };
