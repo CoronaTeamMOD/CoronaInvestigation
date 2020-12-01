@@ -2,9 +2,9 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 import {ChevronLeft, ChevronRight} from '@material-ui/icons';
 
-import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import {InteractionEventFormProps} from './InteractionEventForm/InteractionSection/InteractionEventForm';
+import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
 import InteractionDetailsForm from './InteractionEventForm/InteractionDetailsForm';
 import useStyles from './InteractionDialogStyles';
 
