@@ -167,8 +167,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }, []);
 
     useEffect(() => {
-        const datesToInvestigate = getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate);
-        datesToInvestigate.length > 0 ? setDatesToInvestigate(datesToInvestigate) : alertError('תאריך תסמינים לא חוקי');
+        if(Boolean(coronaTestDate) && Boolean(symptomsStartDate)) {
+            const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate);
+            allDatesToInvestigate.length > 0 ? setDatesToInvestigate(allDatesToInvestigate) : alertError('תאריך תסמינים לא חוקי');
+        }
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
