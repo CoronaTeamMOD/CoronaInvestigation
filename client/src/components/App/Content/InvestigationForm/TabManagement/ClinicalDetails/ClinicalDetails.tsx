@@ -43,7 +43,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const patientGender = useSelector<StoreStateType, string>(state => state.gender);
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
 
-    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetails, isolationSources } =
+    const { fetchClinicalDetails, getStreetByCity, saveClinicalDetailsAndDeleteContactEvents, isolationSources } =
         useClinicalDetails({ id, setSymptoms, setBackgroundDiseases, setStreetsInCity, didSymptomsDateChangeOccur });
 
     const handleSymptomCheck = (
@@ -73,7 +73,7 @@ const ClinicalDetails: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const saveForm = (e: any) => {
         e.preventDefault();
         const values = methods.getValues();
-        saveClinicalDetails(values as ClinicalDetailsData, validationDate, id);
+        saveClinicalDetailsAndDeleteContactEvents(values as ClinicalDetailsData, validationDate, id);
     }
 
     const watchIsInIsolation = methods.watch(ClinicalDetailsFields.IS_IN_ISOLATION);
