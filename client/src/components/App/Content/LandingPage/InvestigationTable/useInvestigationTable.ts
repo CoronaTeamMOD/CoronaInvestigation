@@ -726,9 +726,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
                 investigationsByGroupIdLogger.error(err, Severity.HIGH);
             })
-            .finally(() => {
-                setIsLoading(false)
-            })
+            .finally(() => setIsLoading(false))
     }
 
     return {
