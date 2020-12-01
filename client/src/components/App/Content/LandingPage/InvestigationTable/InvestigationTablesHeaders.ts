@@ -20,11 +20,12 @@ export enum TableHeadersNames {
     investigationDesk = 'investigationDesk',
     comment = 'comment',
     wasInvestigationTransferred = 'wasInvestigationTransferred',
-    transferReason = 'transferReason'
+    transferReason = 'transferReason',
+    groupId = 'groupId'
 }
 
-export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean};
-export interface IndexedInvestigationData extends IndexedInvestigation {[investigatorIdPropertyName]: string;}
+export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean };
+export interface IndexedInvestigationData extends IndexedInvestigation { [investigatorIdPropertyName]: string; }
 export type Order = SortOrder.asc | SortOrder.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
@@ -48,6 +49,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.statusReason]: '',
     [TableHeadersNames.wasInvestigationTransferred]: '',
     [TableHeadersNames.transferReason]: '',
+    [TableHeadersNames.groupId]: '',
 }
 
 export const adminCols: string[] = [
@@ -99,4 +101,5 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.statusReason]: false,
     [TableHeadersNames.wasInvestigationTransferred]: false,
     [TableHeadersNames.transferReason]: false,
+    [TableHeadersNames.groupId]: false,
 }

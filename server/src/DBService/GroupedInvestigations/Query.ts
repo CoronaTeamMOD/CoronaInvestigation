@@ -10,3 +10,46 @@ query GetAllGroupedInvestigationsReasons {
   }
 }
 `;
+
+export const GET_INVESTIGATIONS_BY_GROUP_ID = gql`
+query GetAllInvestigationsByGroupId($groupId: GetAllInvestigationsByGroupIdInput!) {
+  allInvestigations(filter: {groupId: {equalTo: $groupId}}) {
+    nodes {
+      comment
+      epidemiologyNumber
+      coronaTestDate
+      complexityCode
+      priority
+      statusReason
+      transferReason
+      wasInvestigationTransferred
+      groupId
+      deskByDeskId {
+        deskName
+      }
+      investigatedPatientByInvestigatedPatientId {
+        covidPatientByCovidPatient {
+          birthDate
+          fullName
+          primaryPhone
+          addressByAddress {
+            cityByCity {
+              displayName
+            }
+          }
+        }
+      }
+      investigationStatusByInvestigationStatus {
+        displayName
+      }
+      investigationSubStatusByInvestigationSubStatus {
+        displayName
+      }
+      userByCreator {
+        id
+        userName
+      }
+    }
+  }
+}
+`;

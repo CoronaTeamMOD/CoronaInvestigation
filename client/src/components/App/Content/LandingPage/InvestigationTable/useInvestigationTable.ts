@@ -58,7 +58,8 @@ export const createRowData = (
     comment: string,
     statusReason: string,
     wasInvestigationTransferred: boolean,
-    transferReason: string
+    transferReason: string,
+    groupId: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -77,7 +78,8 @@ export const createRowData = (
     comment,
     statusReason,
     wasInvestigationTransferred,
-    transferReason
+    transferReason,
+    groupId
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -90,7 +92,7 @@ export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks, currentPage, setCurrentPage } = parameters;
+        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations } = parameters;
 
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
@@ -307,6 +309,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const statusReason = user ? investigation.statusReason : '';
                                 const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
                                 const transferReason = user ? investigation.transferReason : '';
+                                const groupId = user ? investigation.groupId : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
@@ -328,6 +331,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     statusReason,
                                     wasInvestigationTransferred,
                                     transferReason,
+                                    groupId
                                 )
                             });
                         setRows(investigationRows);
@@ -461,7 +465,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.comment]: row.comment,
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
-            [TableHeadersNames.transferReason]: row.transferReason
+            [TableHeadersNames.transferReason]: row.transferReason,
+            [TableHeadersNames.groupId]: row.groupId,
         }
     }
 
@@ -612,6 +617,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
+        } else if (cellKey === TableHeadersNames.multipleCheck) {
+            classNames.push(classes.groupedInvestigation);
         }
 
         if ((isDefaultOrder && !isLoading) &&
@@ -627,6 +634,33 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const sortInvestigationTable = (orderByValue: string) => {
         setIsDefaultOrder(orderByValue === defaultOrderBy);
         setOrderBy(orderByValue);
+    }
+
+    const getInvestigationsByGroupId = (groupId: string) => {
+        const investigationsByGroupIdLogger = logger.setup({
+            workflow: 'get investigations by group id',
+            user: user.id,
+            investigation: epidemiologyNumber
+        });
+        let investigationsByGroupId: InvestigationTableRow[] = []
+
+        investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
+        axios.get('/groupedInvestigations/investigations/' + groupId).then((result) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
+                //setAllDesks(result.data);
+                result && result.data && result.data.forEach((investigation: InvestigationTableRow) => {
+                    investigationsByGroupId.push(investigation)
+                });
+                setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationsByGroupId))
+            } else {
+                investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+            }
+        })
+            .catch((err) => {
+                alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
+                investigationsByGroupIdLogger.error(err, Severity.HIGH);
+            })
     }
 
     return {
@@ -647,7 +681,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onDeskChange,
         totalCount,
         handleFilterChange,
-        unassignedInvestigationsCount
+        unassignedInvestigationsCount,
+        getInvestigationsByGroupId
     };
 };
 

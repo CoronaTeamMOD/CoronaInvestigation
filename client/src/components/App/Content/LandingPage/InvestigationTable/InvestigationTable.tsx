@@ -84,21 +84,22 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]); 
+    const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]);
     const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
+    const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
 
     const tableContainerRef = React.useRef<HTMLElement>();
-    const investigationColor = React.useRef<Map<number, string>>(new Map())
+    const investigationColor = React.useRef<Map<string, string>>(new Map())
     const coloredGroupedRows = useRef<number[]>([]);
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount
+        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, getInvestigationsByGroupId
     } = useInvestigationTable({
-        selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty,
-        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage
+        selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
+        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -114,7 +115,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         tableRows.forEach((row) => {
             const colorIndex = getRandomIndex();
             coloredGroupedRows.current.push(colorIndex);
-            investigationColor.current.set(row.epidemiologyNumber, groupedInvestigationsColors[colorIndex]);
+            investigationColor.current.set(row.groupId, groupedInvestigationsColors[colorIndex]);
         })
     }, [tableRows]);
 
@@ -372,14 +373,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             event.stopPropagation();
                             markRow(indexedRow.epidemiologyNumber);
                         }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} />
-                        <IconButton onClick={(event) => {
+                        {indexedRow.groupId && <IconButton onClick={(event) => {
                             event.stopPropagation();
                             openGroupedInvestigation(indexedRow.epidemiologyNumber)
+                            if (checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber)) {
+                                getInvestigationsByGroupId(indexedRow.groupId)
+                            }
                         }}>
                             {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) ?
                                 <KeyboardArrowDown /> :
                                 <KeyboardArrowLeft />}
-                        </IconButton>
+                        </IconButton>}
                     </>
                 )
             default:
@@ -415,7 +419,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
-        const nextFilterByStatuses = selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS) ? 
+        const nextFilterByStatuses = selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS) ?
             []
             :
             selectedStatuses;
@@ -537,7 +541,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 {
                                     Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key) => (
                                         <TableCell
-                                            classes={{stickyHeader: classes.horizontalSticky}}
+                                            classes={{ stickyHeader: classes.horizontalSticky }}
                                             className={classes.tableHeaderCell + ' ' + (key === TableHeadersNames.investigatorName ? classes.columnBorder : '')}
                                             sortDirection={orderBy === key ? order : false}
                                         >
@@ -572,7 +576,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                     <TableCell
-                                                        style={{ borderRightColor: key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.epidemiologyNumber) : '' }}
+                                                        style={{ borderRightColor: indexedRow.groupId && key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.groupId) : '' }}
                                                         className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >

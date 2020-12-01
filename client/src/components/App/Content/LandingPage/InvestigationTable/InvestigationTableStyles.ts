@@ -157,6 +157,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     horizontalSticky: {
         left: 'unset'
+    },
+    groupedInvestigation: {
+        flip: false,
+        borderRight: '10px solid #ffffff00'
     }
 }));
 
