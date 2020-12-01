@@ -8,11 +8,11 @@ import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import IsolationSource from 'models/IsolationSource';
 import DBAddress, {initDBAddress} from 'models/DBAddress';
+import { useDateUtils} from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
-import {convertDate, getDatesToInvestigate} from 'Utils/DateUtils/useDateUtils';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import useSymptomsFields from './SymptomsFields/useSymptomsFields';
@@ -46,7 +46,7 @@ const deletingContactEventsErrorMsg = 'קרתה תקלה במחיקת אירוע
 const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDetailsOutcome => {
     const { id, setSymptoms, setBackgroundDiseases,
             setStreetsInCity, didSymptomsDateChangeOccur } = parameters;
-
+    const { getDatesToInvestigate, convertDate } = useDateUtils();
     const { alertError } = useCustomSwal();
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
