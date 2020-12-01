@@ -1,6 +1,7 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 import { MethodsLogMessage, LogMessage, LogType, Environment, InitialLogData, Severity, Service } from 'models/Logger';
+import { store } from 'redux/store';
 
 class Logger {
 
@@ -55,7 +56,36 @@ class Logger {
         this._buildLogMessage(logMessage, LogType.ERROR)
     }
 
-    setup(logData: InitialLogData) {
+    setup(workflow: string) {
+        const storeState = store.getState();
+        const userId = storeState.user.data.id;
+        const epidemiologyNumber = storeState.investigation.epidemiologyNumber;
+        return {
+            info: (step: string, severity: Severity) => this.info({
+                workflow,
+                user: userId,
+                investigation: epidemiologyNumber,
+                step,
+                severity
+            }),
+            warn: (step: string, severity: Severity) => this.warn({
+                workflow,
+                user: userId,
+                investigation: epidemiologyNumber,
+                step,
+                severity
+            }),
+            error: (step: string, severity: Severity) => this.error({
+                workflow,
+                user: userId,
+                investigation: epidemiologyNumber,
+                step,
+                severity
+            })
+        }
+    }
+
+    setupVerbose(logData: InitialLogData) {
         return {
             info: (step: string, severity: Severity) => this.info({ ...logData, step, severity }),
             warn: (step: string, severity: Severity) => this.warn({ ...logData, step, severity }),

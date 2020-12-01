@@ -18,7 +18,6 @@ import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownS
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
     
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const { convertDate } = useDateUtils();
     const { checkDuplicateIds } = useDuplicateContactId();
@@ -27,11 +26,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         if (checkDuplicateIds(allContactedInteractions.map((contact: InteractedContact) => contact.identificationNumber))) {
             return false;
         } else {
-            const contactLogger = logger.setup({
-                workflow: 'Saving single contact',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            const contactLogger = logger.setup('Saving single contact');
             const contacts = [interactedContact];
             const contactsSavingVariable = {
                 unSavedContacts: { contacts }
@@ -53,11 +48,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             const contactsSavingVariable = {
                 unSavedContacts: {contacts: allContactedInteractions}
             }
-            const contactLogger = logger.setup({
-                workflow: 'Saving all contacts',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            const contactLogger = logger.setup('Saving all contacts');
             contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);
             axios.post('/contactedPeople/interactedContacts', contactsSavingVariable)
             .then((response: AxiosResponse<any>) => {
@@ -89,11 +80,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const loadInteractedContacts = () => {
-        const interactedContactsLogger = logger.setup({
-            workflow: 'Getting corona test date',
-            user: userId,
-            investigation: epidemiologyNumber
-        })
+        const interactedContactsLogger = logger.setup('Getting corona test date')
         interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
         axios.get('/clinicalDetails/coronaTestDate').then((res: any) => {
             if (res.data !== null) {
@@ -112,11 +99,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const loadFamilyRelationships = () => {
-        const familyRelationshipsLogger = logger.setup({
-            workflow: 'Getting family relationships',
-            user: userId,
-            investigation: epidemiologyNumber
-        })
+        const familyRelationshipsLogger = logger.setup('Getting family relationships')
         familyRelationshipsLogger.info('launching server request', Severity.LOW);
         axios.get('/contactedPeople/familyRelationships').then((result: any) => {
             if (result?.data?.data?.allFamilyRelationships) {
@@ -131,11 +114,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const loadContactStatuses = () => {
-        const contactStatusesLogger = logger.setup({
-            workflow: 'Getting contact statuses',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const contactStatusesLogger = logger.setup('Getting contact statuses');
         contactStatusesLogger.info('launching server request', Severity.LOW);
         axios.get('/contactedPeople/contactStatuses').then((result: any) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -150,11 +129,7 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     }
 
     const setInteractedContactsByMinimalDate = (minimalDateToFilter: Date) => {
-        const interactedContactsLogger = logger.setup({
-            workflow: 'Getting contacts',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const interactedContactsLogger = logger.setup('Getting contacts');
         let interactedContacts: InteractedContact[] = [];
         interactedContactsLogger.info(`launching server request with epidemiology number ${epidemiologyNumber}`, Severity.LOW);
         axios.get('/contactedPeople/allContacts/' + epidemiologyNumber).then((result: any) => {

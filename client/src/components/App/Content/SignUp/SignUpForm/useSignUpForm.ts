@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
 import SignUpUser from 'models/SignUpUser';
 import City from 'models/City';
@@ -9,7 +8,6 @@ import Language from 'models/Language';
 import { Severity } from 'models/Logger';
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
-import StoreStateType from 'redux/storeStateType';
 import { setCities } from 'redux/City/cityActionCreators';
 import SourceOrganization from 'models/SourceOrganization';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -21,17 +19,10 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     const [desks, setDesks] = useState<Desk[]>([]);
     const [sourcesOrganization, setSourcesOrganization] = useState<SourceOrganization[]>([])
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
     const { alertError } = useCustomSwal();
 
     const fetchCities = () => {
-        const fetchCitiesLogger = logger.setup({
-            workflow: 'Fetching cities',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const fetchCitiesLogger = logger.setup('Fetching cities');
         fetchCitiesLogger.info('launching cities request', Severity.LOW);
         axios.get('/addressDetails/cities')
             .then((result: any) => {
@@ -49,11 +40,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     };
 
     const fetchCounties = () => {
-        const fetchCountiesLogger = logger.setup({
-            workflow: 'Fetching counties',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const fetchCountiesLogger = logger.setup('Fetching counties');
         fetchCountiesLogger.info('launching counties request', Severity.LOW);
         axios.get('/counties')
             .then(result => {
@@ -67,11 +54,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     };
 
     const fetchSourcesOrganization = () => {
-        const fetchSourcesOrganizationLogger = logger.setup({
-            workflow: 'Fetching sourcesOrganization',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const fetchSourcesOrganizationLogger = logger.setup('Fetching sourcesOrganization');
         fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW);
         axios.get('/users/sourcesOrganization')
             .then(result => {
@@ -85,11 +68,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }
 
     const fetchLanguages = () => {
-        const fetchLanguagesLogger = logger.setup({
-            workflow: 'Fetching languages',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const fetchLanguagesLogger = logger.setup('Fetching languages');
         fetchLanguagesLogger.info('launching languages request', Severity.LOW);
         axios.get('/users/languages')
             .then(result => {
@@ -103,11 +82,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }
     
     const fetchDesks = () => {
-        const fetchDesksLogger = logger.setup({
-            workflow: 'Getting desks',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const fetchDesksLogger = logger.setup('Getting desks');
         fetchDesksLogger.info('launching desks request', Severity.LOW);
         axios.get('/desks').then(response => {
             fetchDesksLogger.info('The desks were fetched successfully', Severity.LOW);
@@ -127,11 +102,7 @@ const useSignUp = ({ handleSaveUser }: useSignUpFormInCome) : useSignUpFormOutCo
     }, [])
 
     const createUser = (newUser: SignUpUser) => {
-        const createUserLogger = logger.setup({
-            workflow: 'Create user',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const createUserLogger = logger.setup('Create user');
         createUserLogger.info('launching createUser request', Severity.LOW);
         axios.post('/users', {...newUser, languages : newUser.languages || []})
         .then(() => {

@@ -13,17 +13,11 @@ const useStatusUtils = () => {
     const { complexityErrorAlert } = useComplexitySwal();
 
     const investigatedPatient = useSelector<StoreStateType, InvestigatedPatient>(state => state.investigation.investigatedPatient);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const investigationEndTime = useSelector<StoreStateType, Date | null>(state => state.investigation.endTime);
     const wasInvestigationReopend = investigationEndTime !== null;
 
     const updateIsDeceased = (onInvestigationFinish: Function) => {
-        const updateIsDeceasedLogger = logger.setup({
-            workflow: 'Update isDeceased',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const updateIsDeceasedLogger = logger.setup('Update isDeceased');
         if (!investigatedPatient.isDeceased) {
             axios.get('/clinicalDetails/isDeceased/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {
@@ -40,11 +34,7 @@ const useStatusUtils = () => {
     }
 
     const updateIsCurrentlyHospitialized = (onInvestigationFinish: Function) => {
-        const updateIsCurrentlyHospitializedLogger = logger.setup({
-            workflow: 'Update isCurrentlyHospitialized',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const updateIsCurrentlyHospitializedLogger = logger.setup('Update isCurrentlyHospitialized');
         if (!investigatedPatient.isCurrentlyHospitialized) {
             axios.get('/clinicalDetails/isCurrentlyHospitialized/' + investigatedPatient.investigatedPatientId + '/' + true)
                 .then((result: any) => {

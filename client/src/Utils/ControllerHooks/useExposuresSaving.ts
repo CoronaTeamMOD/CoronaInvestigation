@@ -22,15 +22,10 @@ interface DBExposure extends Omit<Exposure, 'exposureAddress'> {
 const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDetailsAndSet) => {
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const saveResortsData = () : Promise<void> => {
         let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
-        const saveResortsDataLogger = logger.setup({
-            workflow: 'Saving investigated patient resort data',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const saveResortsDataLogger = logger.setup('Saving investigated patient resort data');
         saveResortsDataLogger.info('launching the server request', Severity.LOW);
 
         return axios.post('/investigationInfo/resorts', {
@@ -43,11 +38,7 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     const saveExposureAndFlightData = async () : Promise<void> => {
         let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
         let filteredExposures : (Exposure | DBExposure)[] = [];
-        const saveExposureAndFlightDataLogger = logger.setup({
-            workflow: 'Saving Exposures And Flights',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
         if (!wereFlights && !wereConfirmedExposures) {
             exposuresToDelete = exposures.map(exposure => exposure.id).filter(id => id);
         } else {
