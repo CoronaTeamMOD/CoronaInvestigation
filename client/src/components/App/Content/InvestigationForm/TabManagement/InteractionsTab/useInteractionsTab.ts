@@ -165,7 +165,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }, []);
 
     useEffect(() => {
-        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+        const datesToInvestigate = getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate);
+        datesToInvestigate.length > 0 ? setDatesToInvestigate(datesToInvestigate) : alertError('תאריך תסמינים לא חוקי');
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
