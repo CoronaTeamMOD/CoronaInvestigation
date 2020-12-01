@@ -10,12 +10,12 @@ import IsolationSource from 'models/IsolationSource';
 import DBAddress, {initDBAddress} from 'models/DBAddress';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setFormState } from 'redux/Form/formActionCreators';
-import useSymptomsFields from './SymptomsFields/useSymptomsFields';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import ClinicalDetailsData from 'models/Contexts/ClinicalDetailsContextData';
 import {convertDate, getDatesToInvestigate} from 'Utils/DateUtils/useDateUtils';
 
 import ClinicalDetailsSchema from './ClinicalDetailsSchema';
+import useSymptomsFields from './SymptomsFields/useSymptomsFields';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
 
 export const initialClinicalDetails: ClinicalDetailsData = {
