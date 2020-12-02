@@ -79,7 +79,7 @@ const InvestigationForm: React.FC = (): JSX.Element => {
                             />
                             <div className={classes.buttonSection}>
                                 <PrimaryButton 
-                                    type="submit"
+                                    type='submit'
                                     form={`form-${currentTab}`}
                                     test-id={currentTab === lastTabDisplayedId ? 'endInvestigation' : 'continueToNextStage'}
                                     onClick={() => setNextTab(currentTab + 1)}                                    

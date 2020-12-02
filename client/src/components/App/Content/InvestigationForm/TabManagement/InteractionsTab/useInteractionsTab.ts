@@ -7,9 +7,9 @@ import logger from 'logger/logger';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
+import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
-import { getDatesToInvestigate, convertDate } from 'Utils/DateUtils/useDateUtils'
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 
@@ -20,8 +20,8 @@ const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנ
 const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
 
 interface GroupedInvolvedGroups {
-    familyMembers: InvolvedContact[],
-    educationMembers: InvolvedContact[],
+    familyMembers: InvolvedContact[];
+    educationMembers: InvolvedContact[];
 }
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
@@ -38,6 +38,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
+    const { getDatesToInvestigate, convertDate } = useDateUtils();
+    
     const getCoronaTestDate = () => {
         const getCoronaTestDateLogger = logger.setup({
             workflow: 'Getting Corona Test Date',
@@ -167,7 +169,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }, []);
 
     useEffect(() => {
-        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+            setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {

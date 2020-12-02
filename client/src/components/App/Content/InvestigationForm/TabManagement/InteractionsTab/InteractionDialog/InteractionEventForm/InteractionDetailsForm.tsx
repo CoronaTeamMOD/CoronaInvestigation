@@ -19,7 +19,7 @@ import InteractionEventForm, {InteractionEventFormProps} from './InteractionSect
 
 const InteractionDetailsForm = (props: Props) => {
     const  { interactions, interactionData, loadInteractions, loadInvolvedContacts, onDialogClose,isAddingContacts,isNewInteraction } = props;
-    
+
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
     const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose});
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
@@ -146,7 +146,7 @@ const InteractionDetailsForm = (props: Props) => {
                 }
             }
             if (Boolean(interactionStartTime && interactionEndTime) || isUnknownTime) {
-                onSubmit(methods.getValues());
+                onSubmit(methods.getValues())
             }
         })
 
@@ -174,6 +174,6 @@ interface Props {
     onDialogClose: () => void;
     interactionData?: InteractionEventFormProps['interactionData'];
     isNewInteraction?: InteractionEventFormProps['isNewInteraction'];
-}
+};
 
 export default InteractionDetailsForm;

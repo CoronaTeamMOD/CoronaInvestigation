@@ -4,13 +4,13 @@ import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
 import Contact from 'models/Contact';
+import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
 import useContactFields from 'Utils/vendor/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
-import useStyles from './InteractionCardStyles';
 import ContactGrid from './ContactGrid/ContactGrid';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
@@ -22,10 +22,13 @@ import PrivateHouseEventGrid from './PlacesAdditionalGrids/PrivateHouseEventGrid
 import OtherPublicLocationGrid from './PlacesAdditionalGrids/OtherPublicLocationGrid';
 import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAdditionalGrids/TransportationEventGrid';
 
+import useStyles from './InteractionCardStyles';
+
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    const formClasses = useFormStyles();
 
     const { interaction, allInteractions, onEditClick, onDeleteClick, onDeleteContactClick } = props;
 
@@ -62,7 +65,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                     </IconButton>
                 </div>
             </div>
-            <Collapse in={areDetailsOpen}>
+            <Collapse classes={{hidden: formClasses.hidden}} in={areDetailsOpen}>
                 <Grid container justify='flex-start' className={classes.detailsGrid} >
                     {
                         interaction.placeType === privateHouse.code &&

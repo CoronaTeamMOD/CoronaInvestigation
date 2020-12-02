@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     },
     arrowWrapper: {
         width: '5vw'
-    }
+    },
 });
 
 export default useStyles;

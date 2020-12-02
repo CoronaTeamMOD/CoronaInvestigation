@@ -13,6 +13,7 @@ import InvolvedContact from 'models/InvolvedContact';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
+import EducationContactIcon from 'commons/Icons/EducationContactIcon';
 
 import useStyles from './ContactGridStyles';
 
@@ -27,6 +28,9 @@ const contactedAge: string = 'גיל';
 const contactedAdditionalPhone: string = 'טלפון משני';
 const contactedIsolationCity: string = 'יישוב השהייה בבידוד';
 const contactedFamilyRelationshop: string = 'קרבה משפחתית';
+const contactedGrade: string = 'כיתה';
+const contactedRole: string = 'תפקיד';
+const contactedInstitutionName: string = 'שם מוסד';
 
 const noDataIndication = '---';
 const birthDateFormat = 'dd/MM/yyyy';
@@ -42,7 +46,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime) || (contact.involvedContactId && contact.involvedContactId !== null) as boolean;
-    const { isInvolved, isInvolvedThroughFamily } = useInvolvedContact();
+    const { isInvolved, isInvolvedThroughFamily, isInvolvedThroughEducation } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -53,15 +57,13 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     );
 
     const involvementReason = contact.involvedContact?.involvementReason || null;
+    const isFamilyContact = isInvolvedThroughFamily(involvementReason);
+    const isEducationContact = isInvolvedThroughEducation(involvementReason);
 
     const involvedContactsAdditionalFields = () => {
-        const { birthDate, familyRelationship, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
+        const { birthDate, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
         return (<>
-            <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
-                <Typography variant='caption'>
-                    {familyRelationship || noDataIndication}
-                </Typography>
-            </FormInput>
+            <Grid xs={1}/>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
                 <Typography variant='caption'>
                     {additionalPhoneNumber || noDataIndication}
@@ -85,14 +87,57 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
         </>)
     }
 
+    const familyContactsAdditionalFields = () => {
+        const { familyRelationship } = contact.involvedContact as InvolvedContact;
+        return (
+            <Grid item xs={12} className={formClasses.formRow}>
+                {involvedContactsAdditionalFields()}
+                <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
+                    <Typography variant='caption'>
+                        {familyRelationship || noDataIndication}
+                    </Typography>
+                </FormInput>
+            </Grid>
+        )
+    }
+
+    const educationContactsAdditionalFields = () => {
+        const { educationClassNumber, educationGrade, role, institutionName } = contact.involvedContact as InvolvedContact;
+        return (<>
+            <Grid item xs={12} className={formClasses.formRow}>
+                {involvedContactsAdditionalFields()}
+            </Grid>
+            <Grid item xs={12} className={formClasses.formRow}>
+                <Grid xs={1}/>
+                <FormInput xs={2} fieldName={contactedGrade}>
+                    <Typography variant='caption'>
+                        {educationGrade ? (educationGrade + educationClassNumber) : noDataIndication}
+                    </Typography>
+                </FormInput>
+                <FormInput xs={2} fieldName={contactedRole}>
+                    <Typography variant='caption'>
+                        {role || noDataIndication}
+                    </Typography>
+                </FormInput>
+                <FormInput xs={4} fieldName={contactedInstitutionName}>
+                    <Typography variant='caption'>
+                        {institutionName || noDataIndication}
+                    </Typography>
+                </FormInput>
+            </Grid>
+        </>)
+    }
+
     return (
         <>
             <Grid className={formClasses.formRow + ' ' + classes.fullWidthGrid} container justify='flex-start' key='addContactFields'>
                 <Grid item xs={12} className={formClasses.formRow}>
                     {
-                        (isInvolved(involvementReason) && isInvolvedThroughFamily(involvementReason)) &&
+                        isInvolved(involvementReason) &&
                         <Grid item xs={1}>
-                            <FamilyContactIcon/>
+                            {
+                                isFamilyContact ? <FamilyContactIcon/> : isEducationContact && <EducationContactIcon/>
+                            }
                         </Grid>
                     }
                     <FormInput xs={2} fieldName={contactedPersonFirstName}>
@@ -123,9 +168,11 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                 </Grid>
                 <Grid item xs={12} className={formClasses.formRow}>
                     {
-                        isInvolved(involvementReason) ?
-                            involvedContactsAdditionalFields()
-                        : contact.extraInfo && 
+                        isFamilyContact ?
+                            familyContactsAdditionalFields()
+                        : isEducationContact ?
+                            educationContactsAdditionalFields()
+                        :
                             <FormInput fieldName={contactTypeMoreDetails}>
                                 <Typography variant='caption'>
                                     {contact.extraInfo}

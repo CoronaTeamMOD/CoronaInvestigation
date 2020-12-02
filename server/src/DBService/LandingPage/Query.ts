@@ -12,6 +12,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       statusReason
       transferReason
       wasInvestigationTransferred
+      groupId
       deskByDeskId {
         deskName
       }
@@ -58,6 +59,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       statusReason
       transferReason
       wasInvestigationTransferred
+      groupId
       deskByDeskId {
         deskName
       }

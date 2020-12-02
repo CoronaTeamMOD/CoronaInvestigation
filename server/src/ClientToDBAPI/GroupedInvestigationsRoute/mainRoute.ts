@@ -4,7 +4,7 @@ import logger from '../../Logger/Logger';
 import { Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { GET_GROUPED_INVESTIGATIONS_REASONS } from '../../DBService/GroupedInvestigations/Query';
+import { GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGATIONS_BY_GROUP_ID } from '../../DBService/GroupedInvestigations/Query';
 import { CREATE_GROUP_FOR_INVESTIGATIONS } from '../../DBService/GroupedInvestigations/Mutation';
 
 const groupedInvestigationsRoute = Router();
@@ -41,23 +41,45 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
         investigation: response.locals.epidemiologynumber
     })
 
-    const groupToCreate = {...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup}; 
+    const groupToCreate = { ...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup };
     groupToCreateLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupToCreate)}`, Severity.LOW);
-    graphqlRequest(CREATE_GROUP_FOR_INVESTIGATIONS, response.locals, {input: groupToCreate})
-    .then(result => {
-        if (result?.data) {
-            groupToCreateLogger.info('created grouped investigations successfully', Severity.LOW);
-            response.send(result);
-        } else {
-            groupToCreateLogger.error(`create grouped investigations has been failed due to ${result.errors[0]?.message}`, Severity.HIGH);
-            response.status(errorStatusCode).send(result.errors[0]?.message);
-        }
-    })
-    .catch(err => {
-        groupToCreateLogger.error(`create grouped investigations has been failed failed due to ${err}`, Severity.HIGH);
-        response.status(errorStatusCode).send(err);
-    })
+    graphqlRequest(CREATE_GROUP_FOR_INVESTIGATIONS, response.locals, { input: groupToCreate })
+        .then(result => {
+            if (result?.data) {
+                groupToCreateLogger.info('created grouped investigations successfully', Severity.LOW);
+                response.send(result);
+            } else {
+                groupToCreateLogger.error(`create grouped investigations has been failed due to ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(errorStatusCode).send(result.errors[0]?.message);
+            }
+        })
+        .catch(err => {
+            groupToCreateLogger.error(`create grouped investigations has been failed failed due to ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send(err);
+        })
 
 })
+
+groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
+    const investigationsByGroupIdLogger = logger.setup({
+        workflow: `get investigations by group id ${request.params.groupId}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    investigationsByGroupIdLogger.info('requesting the graphql API to query reasons', Severity.LOW);
+    graphqlRequest(GET_INVESTIGATIONS_BY_GROUP_ID, response.locals, { groupId: request.params.groupId }).then((result: any) => {
+        if (result?.data?.allInvestigations) {
+            const groupedInvestigationsGrouped = result.data.allInvestigations
+            investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
+            response.send(groupedInvestigationsGrouped);
+        } else {
+            investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${JSON.stringify(result.error[0]?.message)}`, Severity.HIGH);
+            response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+        }
+    }).catch((error) => {
+        investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${error}`, Severity.HIGH);
+        response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+    });
+});
 
 export default groupedInvestigationsRoute;

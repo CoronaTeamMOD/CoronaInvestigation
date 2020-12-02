@@ -224,9 +224,13 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => ({
     id: contact.id,
     isContactedPerson: contact.isContactedPerson,
     involvementReason: contact.involvementReason,
+    educationGrade: contact.educationGrade,
+    educationClassNumber: contact.educationClassNumber,
     ...contact.familyRelationshipByFamilyRelationship,
     ...contact.cityByIsolationCity,
     ...contact.personByPersonId,
+    ...contact.subOccupationByInstitutionName,
+    ...contact.investigatedPatientRoleByRole,
 });
 
 intersectionsRoute.get('/involvedContacts/:investigationId', (request: Request, response: Response) => {

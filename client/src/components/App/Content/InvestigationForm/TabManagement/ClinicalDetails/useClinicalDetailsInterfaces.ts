@@ -18,6 +18,6 @@ export interface useClinicalDetailsOutcome {
         trigger: (payload?: string | string[]) => Promise<boolean>
     ) => void;
     getStreetByCity: (cityId: string) => void;
-    saveClinicalDetails: (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => void;
+    saveClinicalDetailsAndDeleteContactEvents: (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => void;
     isolationSources: IsolationSource[];
 }

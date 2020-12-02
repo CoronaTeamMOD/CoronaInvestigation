@@ -20,12 +20,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     collapse: {
         '@media screen and (max-width: 1700px)': {
-            width: '84%'
+            width: '60vw'
         },
-        width: '88%'
+        width: '64vw'
     },
     tabIndicator: {
-        width: '4px'
+        width: '0.2vw'
     }
 }));
 

@@ -30,7 +30,7 @@ const useStyle = makeStyles({
     },
     excelControllers: {
         display: 'flex'
-    }
+    },
 });
 
 export default useStyle;

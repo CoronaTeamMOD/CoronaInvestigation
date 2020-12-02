@@ -1,7 +1,7 @@
 import React from 'react';
-import { AddCircle as AddCircleIcon } from '@material-ui/icons';
-import { useFieldArray, useFormContext } from 'react-hook-form';
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import {AddCircle as AddCircleIcon} from '@material-ui/icons';
+import {useFieldArray, useFormContext} from 'react-hook-form';
+import {Grid, IconButton, Typography} from '@material-ui/core';
 
 import Contact from 'models/Contact';
 import useFormStyles from 'styles/formStyles';
@@ -9,7 +9,7 @@ import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogCo
 
 import ContactForm from './ContactForm/ContactForm';
 import useStyles from '../../InteractionSection/InteractionEventFormStyles';
-import { defaultContact } from '../../InteractionSection/InteractionEventForm';
+import {defaultContact} from '../../InteractionSection/InteractionEventForm';
 
 const addContactText = 'הוסף מגע';
 const additionalContactText = ' נוסף';

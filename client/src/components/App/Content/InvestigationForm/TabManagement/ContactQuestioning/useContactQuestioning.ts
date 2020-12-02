@@ -13,14 +13,14 @@ import InteractedContactFields from 'models/enums/InteractedContact';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 
 import {useContactQuestioningOutcome, useContactQuestioningParameters} from './ContactQuestioningInterfaces';
-import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, convertDate } from 'Utils/DateUtils/useDateUtils';
+import { nonSymptomaticPatient, symptomsWithKnownStartDate, symptomsWithUnknownStartDate, useDateUtils } from 'Utils/DateUtils/useDateUtils';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
     const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
     
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
+    const { convertDate } = useDateUtils();
     const { checkDuplicateIds } = useDuplicateContactId();
 
     const saveContact = (interactedContact: InteractedContact): boolean => {
