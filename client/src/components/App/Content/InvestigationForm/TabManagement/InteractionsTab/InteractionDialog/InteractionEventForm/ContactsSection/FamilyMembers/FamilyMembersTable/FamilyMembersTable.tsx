@@ -16,6 +16,14 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 
     const [selectedFamilyMembers, setSelectedFamilyMembers] = useState<InvolvedContact[]>([]);
 
+    const FamilyTableHeadersWithCheckbox = [''].concat(Object.values(FamilyContactsTableHeaders));
+
+    useEffect(() => {
+        familyMembers.map((familyMember: InvolvedContact) => {
+            familyMember.selected = false;
+        });
+    }, []);
+
     const selectRow = (selectedFamilyMember: InvolvedContact) => {
         const familyMemberIndex = selectedFamilyMembers.findIndex(checkedRow => selectedFamilyMember === checkedRow);
         if (familyMemberIndex !== -1) {
@@ -25,13 +33,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
             setSelectedFamilyMembers([...selectedFamilyMembers, selectedFamilyMember]);
             selectedFamilyMember.selected = true;
         }
-    }
-    
-    useEffect(() => {
-        familyMembers.map((familyMember: InvolvedContact) => {
-            familyMember.selected = false;
-        });
-    }, []);
+    };
 
     const counterDescription: string = useMemo(() => {
         return selectedFamilyMembers.length > 0 ?
@@ -74,7 +76,7 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                     <TableHead>
                         <TableRow>
                             {
-                                [''].concat(Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                                FamilyTableHeadersWithCheckbox.map(cellName => {
                                     return (
                                         <TableCell>{cellName}</TableCell>
                                     )
@@ -88,10 +90,12 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
                                 <>
                                     <TableRow className={isRowSelected(familyMember) ? classes.checkedRow : familyMember.isContactedPerson ? classes.disabledRow : ''}>
                                         {
-                                            <Checkbox disabled={familyMember.isContactedPerson} onClick={(event) => {
-                                                event.stopPropagation();
-                                                selectRow(familyMember);
-                                            }} color='primary' checked={isRowSelected(familyMember)} />
+                                            <Checkbox
+                                                disabled={familyMember.isContactedPerson}
+                                                onClick={() => selectRow(familyMember)}
+                                                color='primary'
+                                                checked={isRowSelected(familyMember)}
+                                            />
                                         }
                                         {
                                             Object.keys(FamilyContactsTableHeaders).map(cellName => (
