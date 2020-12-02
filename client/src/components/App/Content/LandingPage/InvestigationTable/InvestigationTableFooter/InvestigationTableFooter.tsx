@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Card, IconButton, Typography, useMediaQuery, Tooltip } from '@material-ui/core';
+import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
