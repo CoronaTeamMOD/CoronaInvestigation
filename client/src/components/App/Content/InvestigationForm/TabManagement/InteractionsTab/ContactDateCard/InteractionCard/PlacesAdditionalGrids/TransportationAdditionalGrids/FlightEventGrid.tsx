@@ -65,6 +65,13 @@ const FlightEventGrid : React.FC<Props> = (props: Props) : JSX.Element => {
                         </Typography>
                     </FormInput>
             </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
+                <FormInput xs={12} fieldName='מושבים הצריכים להכנס לבידוד - מיועד להחצנה'>
+                    <Typography>
+                        {interaction.placeDescription}
+                    </Typography>
+                </FormInput>
+            </Grid>
         </>
     );
 };

@@ -59,16 +59,19 @@ const useStyles = makeStyles({
         maxWidth: '100vw',
     },
     formValue: {
-            marginLeft: '-4vw',
-            '@media screen and (max-width: 1700px)': {
-                marginRight: '2vw',
-            },
+        marginLeft: '-4vw',
+        '@media screen and (max-width: 1700px)': {
+            marginRight: '2vw',
+        },
     },
     inputRow: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         minWidth: '45vw',
+    },
+    longTextInput: {
+        width: '30vw'
     }
 });
 
