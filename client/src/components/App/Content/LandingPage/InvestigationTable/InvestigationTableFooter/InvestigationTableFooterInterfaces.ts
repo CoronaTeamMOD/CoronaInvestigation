@@ -20,5 +20,5 @@ export interface InvestigationTableFooterOutcome {
     handleCloseGroupedInvestigations: () => void;
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
     handleConfirmInvestigatorsDialog: (updatedIvestigator: InvestigatorOption, transferReason: string) => void;
-    handleDispandGroupedInvestigations: (groupIds: string[]) => void;
+    handleDisbandGroupedInvestigations: (groupIds: string[]) => void;
 };

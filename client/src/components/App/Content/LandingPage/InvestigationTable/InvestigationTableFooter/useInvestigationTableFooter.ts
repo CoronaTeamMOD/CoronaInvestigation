@@ -93,7 +93,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseGroupedInvestigations = () => setOpenGroupedInvestigations(false);
 
-    const handleDispandGroupedInvestigations = (groupIds: string[]) => {
+    const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
         alertWarning('האם אתה בטוח שברצונך לפרק את הקבוצה כולה?', {
             showCancelButton: true,
             cancelButtonText: 'בטל',
@@ -134,7 +134,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
-        handleDispandGroupedInvestigations
+        handleDisbandGroupedInvestigations
     }
 }
 

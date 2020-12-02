@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import { Card, IconButton, Typography, useMediaQuery, Tooltip } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
@@ -16,8 +16,9 @@ import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/T
 export interface CardActionDescription {
     icon: SvgIconComponent;
     displayTitle: string;
-    onClick: () => void;
     disabled?: boolean;
+    errorMessage: string;
+    onClick: () => void;
 };
 
 interface DisbandAction {
@@ -48,7 +49,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
-        handleDispandGroupedInvestigations
+        handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
                                       checkedRowsIds, tableRows, setTableRows })
 
@@ -83,22 +84,26 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
             disabled: shouldGroupActionDisabled,
+            errorMessage: shouldGroupActionDisabled ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת': '',
             onClick: handleOpenGroupedInvestigations
         },
         {
             icon: CallSplit,
             displayTitle: 'ביטול קיבוץ',
             disabled: disbandAction.disabled,
-            onClick: () => handleDispandGroupedInvestigations(disbandAction.groupIds)
+            errorMessage: disbandAction.disabled ? 'שים לב, לא ניתן לבטל חקירה שאינה מקובצת': '',
+            onClick: () => handleDisbandGroupedInvestigations(disbandAction.groupIds)
         },
         {
             icon: Send,
             displayTitle: `העברת ${isSingleInvestigation ? singleInvestigation : multipleInvestigations}`,
+            errorMessage: '',
             onClick: handleOpenDesksDialog
         },
         {
             icon: PersonPin,
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
+            errorMessage: '',
             onClick: handleOpenInvestigatorsDialog
         }
     ]
@@ -116,7 +121,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                                                     displayTitle={cardAction.displayTitle} 
                                                     onClick={cardAction.onClick} 
                                                     disabled={cardAction.disabled}
-                                               />)}
+                                                    errorMessage={cardAction.errorMessage}
+                                                />)}
                 <IconButton onClick={onClose}>
                     <Close />
                 </IconButton>
