@@ -21,7 +21,7 @@ export interface CardActionDescription {
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-    const { checkedRowsIds, allDesks, allInvestigators, onClose, tableRows, setTableRows } = props;
+    const { checkedRowsIds, allDesks, allInvestigators, onClose, tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -104,6 +104,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
                 invetigationsToGroup={investigationsToGroup}
+                fetchTableData={fetchTableData}
             />
         </>
     );
@@ -118,4 +119,5 @@ interface Props {
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
+    fetchTableData: () => void;
 }

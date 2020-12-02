@@ -16,7 +16,7 @@ export interface GroupForm {
     otherReason: string;
 }
 
-const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome  => {
+const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome  => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -40,8 +40,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
         setIsLoading(true);
         axios.post('/groupedInvestigations', { groupToCreate, invetigationsToGroupIds })
         .then(() => {
-            setIsLoading(false);
             onClose();
+            fetchTableData();
             groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
         })
         .catch((err) => {
@@ -59,6 +59,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
 interface useGroupedInvestigationsIncome {
     invetigationsToGroup: InvestigationTableRow[];
     onClose: () => void;
+    fetchTableData: () => void;
 }
 
 interface useGroupedInvestigationsOutcome {

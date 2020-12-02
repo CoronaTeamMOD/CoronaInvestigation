@@ -12,7 +12,7 @@ import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInve
 import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInvestigationsFields';
 const title = 'קיבוץ חקירות'
 
-const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose }: Props) => {
+const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose, fetchTableData }: Props) => {
 
     const methods = useForm<GroupForm>({
         mode: 'all',
@@ -23,7 +23,7 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
         }
     });
  
-    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose});
+    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose, fetchTableData});
 
     return (
         <Dialog open={open}>
@@ -66,7 +66,8 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
 interface Props {
     open: boolean;
     onClose: () => void;
-    invetigationsToGroup: InvestigationTableRow[]
+    invetigationsToGroup: InvestigationTableRow[];
+    fetchTableData: () => void;
 }
 
 export default GroupedInvestigations;

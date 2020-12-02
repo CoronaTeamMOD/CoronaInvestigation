@@ -750,7 +750,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         totalCount,
         handleFilterChange,
         unassignedInvestigationsCount,
-        fetchInvestigationsByGroupId
+        fetchInvestigationsByGroupId,
+        fetchTableData
     };
 };
 

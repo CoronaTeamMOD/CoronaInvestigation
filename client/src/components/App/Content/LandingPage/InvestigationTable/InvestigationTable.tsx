@@ -102,7 +102,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, fetchInvestigationsByGroupId
+        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, fetchInvestigationsByGroupId,
+        fetchTableData
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
@@ -642,6 +643,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onClose={() => setCheckedRowsIds([])}
                     tableRows={tableRows}
                     setTableRows={setTableRows}
+                    fetchTableData={fetchTableData}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
