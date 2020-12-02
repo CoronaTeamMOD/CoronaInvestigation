@@ -9,6 +9,7 @@ interface InvolvedContact extends Person {
 	educationClassNumber: number,
 	role: string,
 	institutionName: string,
+	contactType: number,
 };
 
 export default InvolvedContact;

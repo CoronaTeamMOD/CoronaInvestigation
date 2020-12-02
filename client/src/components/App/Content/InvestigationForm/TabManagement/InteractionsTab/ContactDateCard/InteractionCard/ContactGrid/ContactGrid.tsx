@@ -59,8 +59,8 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const involvementReason = contact.involvedContact?.involvementReason || null;
     const isFamilyContact = isInvolvedThroughFamily(involvementReason);
 
-    const involvedContactsAdditionalFields = () => {
-        const { birthDate, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
+    const familyContactsAdditionalFields = () => {
+        const { birthDate, isolationCity, additionalPhoneNumber, familyRelationship } = contact.involvedContact as InvolvedContact;
         return (<>
             <Grid xs={1}/>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
@@ -83,50 +83,13 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     {isolationCity || noDataIndication}
                 </Typography>
             </FormInput>
+            <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
+                <Typography variant='caption'>
+                    {familyRelationship || noDataIndication}
+                </Typography>
+            </FormInput>
         </>)
     }
-
-    const familyContactsAdditionalFields = () => {
-        const { familyRelationship } = contact.involvedContact as InvolvedContact;
-        return (
-            <Grid item xs={12} className={formClasses.formRow}>
-                {involvedContactsAdditionalFields()}
-                <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
-                    <Typography variant='caption'>
-                        {familyRelationship || noDataIndication}
-                    </Typography>
-                </FormInput>
-            </Grid>
-        )
-    }
-
-    const educationContactsAdditionalFields = () => {
-        const { educationClassNumber, educationGrade, role, institutionName } = contact.involvedContact as InvolvedContact;
-        return (<>
-            <Grid item xs={12} className={formClasses.formRow}>
-                {involvedContactsAdditionalFields()}
-            </Grid>
-            <Grid item xs={12} className={formClasses.formRow}>
-                <Grid xs={1}/>
-                <FormInput xs={2} fieldName={contactedGrade}>
-                    <Typography variant='caption'>
-                        {educationGrade ? (educationGrade + educationClassNumber) : noDataIndication}
-                    </Typography>
-                </FormInput>
-                <FormInput xs={2} fieldName={contactedRole}>
-                    <Typography variant='caption'>
-                        {role || noDataIndication}
-                    </Typography>
-                </FormInput>
-                <FormInput xs={4} fieldName={contactedInstitutionName}>
-                    <Typography variant='caption'>
-                        {institutionName || noDataIndication}
-                    </Typography>
-                </FormInput>
-            </Grid>
-        </>)
-    }
-
     return (
         <>
             <Grid className={formClasses.formRow + ' ' + classes.fullWidthGrid} container justify='flex-start' key='addContactFields'>
