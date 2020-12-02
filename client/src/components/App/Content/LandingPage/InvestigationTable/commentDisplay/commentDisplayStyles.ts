@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: 'rgba(0, 0, 0, 0.87)',
         boxShadow: theme.shadows[1],
         fontSize: 14,
+        whiteSpace: 'normal'
       },
     popper: {
         zIndex: 1,
