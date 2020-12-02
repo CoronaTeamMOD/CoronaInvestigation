@@ -7,7 +7,7 @@ import FamilyMembersTable from './FamilyMembersTable/FamilyMembersTable';
 
 const noFamilyMembers = 'לא קיימים נתונים ממרשם האוכלוסין';
 
-const FamilyMembers: React.FC = () => {
+const FamilyMembersForm: React.FC = () => {
 
     const { familyMembers } = useContext(familyMembersContext);
 
@@ -21,4 +21,4 @@ const FamilyMembers: React.FC = () => {
     );
 };
 
-export default FamilyMembers;
+export default FamilyMembersForm;

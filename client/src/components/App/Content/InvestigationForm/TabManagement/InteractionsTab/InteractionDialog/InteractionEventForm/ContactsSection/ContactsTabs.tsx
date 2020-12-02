@@ -1,17 +1,18 @@
 import React from 'react';
-import useFormStyles from 'styles/formStyles';
 import {GroupOutlined} from '@material-ui/icons';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
 
+import useFormStyles from 'styles/formStyles';
+
 import useStyles from './ContactsTabsStyles';
-import FamilyMembers from './FamilyMembers/FamilyMembers';
+import FamilyMembersForm from './FamilyMembers/FamilyMembersForm';
 import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 
 const contactFormTabs = [
     {id: 0, Component: <ManualContactsForm />},
-    {id: 1, Component: <FamilyMembers />},
+    {id: 1, Component: <FamilyMembersForm />},
 ];
 
 const FormComponent = ({ currentTab }: { currentTab: number }) => {
