@@ -78,7 +78,10 @@ const InteractionDetailsForm = (props: Props) => {
     };
 
     const onSubmit = (data: InteractionEventDialogData) => {
-        data.contacts && addFamilyMemberContacts(data.contacts);
+        if (!data.contacts) {
+            data.contacts = [];
+        }
+        addFamilyMemberContacts(data.contacts);
 
         const interactionDataToSave = convertData(data);
         const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {

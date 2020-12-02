@@ -189,11 +189,17 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         investigation: response.locals.epidemiologynumber
     });
     deleteContactEventLogger.info('launcing DB request', Severity.LOW);
-    const contactEventId = +request.query.contactEventId;
-    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
+    const contactEventIdToDelete = +request.query.contactEventId;
+    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventIdToDelete})
         .then(result => {
-            deleteContactEventLogger.info('got response from DB', Severity.LOW);
-            response.send(result);
+            if (result?.data && !result.errors) {
+                deleteContactEventLogger.info('got response from DB', Severity.LOW);
+                response.send(result);
+            } else {
+                const errorMessage = result.errors[0]?.message;
+                deleteContactEventLogger.error(`got errors approaching the graphql API ${errorMessage}`, Severity.HIGH);
+                response.status(errorStatusCode).send(`error in deleting event: ${errorMessage}`);
+            }
         })
         .catch(err => {
             deleteContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
