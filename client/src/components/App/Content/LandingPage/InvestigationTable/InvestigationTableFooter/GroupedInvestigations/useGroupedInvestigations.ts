@@ -40,15 +40,14 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
         setIsLoading(true);
         axios.post('/groupedInvestigations', { groupToCreate, invetigationsToGroupIds })
         .then(() => {
-            setIsLoading(false);
             onClose();
             groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
         })
         .catch((err) => {
-            setIsLoading(false);
             groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
             alertError('לא ניתן היה לקבץ חקירות אלו');
         })
+        .finally(() => setIsLoading(false))
     }
 
     return {

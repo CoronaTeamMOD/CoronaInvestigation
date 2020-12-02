@@ -10,6 +10,9 @@ const useStyle = (isWide: boolean) => makeStyles({
     },
     icon: {
         color: theme.palette.primary.main
+    },
+    disabled: {
+        color: 'rgba(0, 0, 0, 0.26)'
     }
 });
 
