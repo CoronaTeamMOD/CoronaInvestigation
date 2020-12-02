@@ -4,8 +4,8 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
 
 import InvolvedContact from 'models/InvolvedContact';
 
-import EducationContact from './EducationContact';
 import useStyles from './EducationContactsDialogStyles';
+import EducationContact from './EducationContact/EducationContact';
 
 const title = 'מגעי חינוך';
 

@@ -1,5 +1,6 @@
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
+import { Typography } from '@material-ui/core';
 import StoreStateType from 'redux/storeStateType';
 import React, { useState, useEffect } from 'react';
 import SchoolIcon from '@material-ui/icons/SchoolOutlined';
@@ -11,14 +12,13 @@ import InteractionsTabSettings from 'models/InteractionsTabSettings';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
-import useInteractionsTab from './useInteractionsTab';
 import useStyles from './InteractionsTabStyles';
+import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
+import EducationContactsDialog from './EducationContactsDialog/EducationContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
-import { Typography } from '@material-ui/core';
-import EducationContactsDialog from './EducationContactsDialog/EducationContactsDialog';
 
 const defaultInteractionsTabSettings : InteractionsTabSettings = {
     allowUncontactedFamily: false
