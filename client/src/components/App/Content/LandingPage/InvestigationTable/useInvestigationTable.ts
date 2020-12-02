@@ -679,7 +679,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (!allGroupedInvestigations.get(groupId)) { 
             setIsLoading(true)
             try {
-                const result = await axios.get('/groupedInvestigations/investigations/' + groupId)
+                const result = await axios.get('/groupedInvestigations/' + groupId)
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
                         investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
                         const investigationRows: InvestigationTableRow[] = result.data
