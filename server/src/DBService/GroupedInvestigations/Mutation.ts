@@ -9,8 +9,8 @@ mutation createGroupForInvestigations ($input: CreateGroupedInvestigationsInput!
 `;
 
 export const DISBAND_GROUP_IDS = gql`
-mutation disbandGroupId($groupId: UUID) {
-  disband_group_id(input:{ groupId: $groupId }) {
+mutation disbandGroupIds($groupIds: [UUID]) {
+  disbandGroupIds(input:{ groupIds: $groupIds }) {
     clientMutationId
   }
 }

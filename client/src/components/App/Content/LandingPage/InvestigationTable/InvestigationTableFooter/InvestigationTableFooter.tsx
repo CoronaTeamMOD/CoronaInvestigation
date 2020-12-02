@@ -24,6 +24,11 @@ interface DisbandAction {
     disabled: boolean;
     groupIds: string[];
 }
+
+const singleInvestigation = 'חקירה';
+const multipleInvestigations = 'חקירות';
+const singleAssignment = 'הקצאה';
+const multipleAssignments = 'הקצאות';
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
@@ -51,33 +56,33 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const isSingleInvestigation = checkedRowsIds.length === 1;
     
-    const singleInvestigation = 'חקירה';
-    const multipleInvestigations = 'חקירות';
-    const singleAssignment = 'הקצאה';
-    const multipleAssignments = 'הקצאות';
+    const checkedInvestigations: InvestigationTableRow[] = useMemo(() => {
+        return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
+    }, [tableRows, checkedRowsIds])
 
     const disbandAction: DisbandAction = useMemo(() => {
-        let investigationsToDispand: string[] = []; 
-        tableRows.forEach((tableRow: InvestigationTableRow) => {
-            tableRow.groupId ? investigationsToDispand.push(tableRow.groupId) : investigationsToDispand.push('-1');
-        })
-        if (investigationsToDispand.find((groupId: string) => groupId === '-1')) {
+        if (checkedInvestigations.find((investigation: InvestigationTableRow) => investigation.groupId === null)) {
             return {
                 disabled: true,
                 groupIds: []
-            };
+            } 
         } else {
             return {
                 disabled: false,
-                groupIds: new Set(investigationsToDispand.filter((groupId: string) => groupId !== '-1'))
+                groupIds: Array.from(new Set(checkedInvestigations.map((investigationToDisband: InvestigationTableRow) => investigationToDisband.groupId)))
             }
         }
-    }, [tableRows])
+    }, [checkedInvestigations])
+
+    const shouldGroupActionDisabled: boolean = useMemo(() => {
+        return Boolean(checkedInvestigations.find((investigationToGroup: InvestigationTableRow) => investigationToGroup.groupId !== null))
+    }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [
         {
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
+            disabled: shouldGroupActionDisabled,
             onClick: handleOpenGroupedInvestigations
         },
         {
@@ -97,10 +102,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             onClick: handleOpenInvestigatorsDialog
         }
     ]
-
-    const investigationsToGroup: InvestigationTableRow[] = useMemo(() => {
-        return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
-    }, [tableRows, checkedRowsIds])
 
     return (
         <>
@@ -135,7 +136,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             <GroupedInvestigations
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
-                invetigationsToGroup={investigationsToGroup}
+                invetigationsToGroup={checkedInvestigations}
             />
         </>
     );

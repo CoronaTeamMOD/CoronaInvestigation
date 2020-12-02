@@ -32,6 +32,28 @@ groupedInvestigationsRoute.get('/reasons', adminMiddleWare, (request: Request, r
     });
 });
 
+groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
+    const investigationsByGroupIdLogger = logger.setup({
+        workflow: `get investigations by group id ${request.params.groupId}`,
+        user: response.locals.user.id,
+        investigation: response.locals.epidemiologynumber
+    })
+    investigationsByGroupIdLogger.info('requesting the graphql API to query reasons', Severity.LOW);
+    graphqlRequest(GET_INVESTIGATIONS_BY_GROUP_ID, response.locals, { groupId: request.params.groupId }).then((result: any) => {
+        if (result?.data?.allInvestigations) {
+            const groupedInvestigationsGrouped = result.data.allInvestigations
+            investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
+            response.send(groupedInvestigationsGrouped);
+        } else {
+            investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${JSON.stringify(result.error[0]?.message)}`, Severity.HIGH);
+            response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+        }
+    }).catch((error) => {
+        investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${error}`, Severity.HIGH);
+        response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
+    });
+});
+
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
     const invetigationsToGroup: number[] = request.body.invetigationsToGroupIds;
     const groupedInvestigationsLogger = logger.setup({
@@ -39,7 +61,7 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    const groupedInvestigationsToCreate = {...request.body.groupedInvestigationsToCreate, epidemiologyNumbers: invetigationsToGroup}; 
+    const groupedInvestigationsToCreate = {...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup}; 
     groupedInvestigationsLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupedInvestigationsToCreate)}`, Severity.LOW);
     graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, {input: groupedInvestigationsToCreate})
     .then(result => {
@@ -65,7 +87,7 @@ groupedInvestigationsRoute.post('/disband', adminMiddleWare, (request: Request, 
         investigation: response.locals.epidemiologynumber
     })
     groupIdsToDisbandLogger.info('launching disband group ids request', Severity.LOW);
-    graphqlRequest(DISBAND_GROUP_IDS, response.locals, { input: groupIdsToDisband })
+    graphqlRequest(DISBAND_GROUP_IDS, response.locals, { groupIds: groupIdsToDisband })
     .then(result => {
         if (result?.data) {
             groupIdsToDisbandLogger.info('group ids disbandation was successful', Severity.LOW);
@@ -80,27 +102,5 @@ groupedInvestigationsRoute.post('/disband', adminMiddleWare, (request: Request, 
         response.status(errorStatusCode).send(err);
     })
 })
-
-groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, response: Response) => {
-    const investigationsByGroupIdLogger = logger.setup({
-        workflow: `get investigations by group id ${request.params.groupId}`,
-        user: response.locals.user.id,
-        investigation: response.locals.epidemiologynumber
-    })
-    investigationsByGroupIdLogger.info('requesting the graphql API to query reasons', Severity.LOW);
-    graphqlRequest(GET_INVESTIGATIONS_BY_GROUP_ID, response.locals, { groupId: request.params.groupId }).then((result: any) => {
-        if (result?.data?.allInvestigations) {
-            const groupedInvestigationsGrouped = result.data.allInvestigations
-            investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
-            response.send(groupedInvestigationsGrouped);
-        } else {
-            investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${JSON.stringify(result.error[0]?.message)}`, Severity.HIGH);
-            response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
-        }
-    }).catch((error) => {
-        investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${error}`, Severity.HIGH);
-        response.status(errorStatusCode).json({ error: 'failed to fetch reasons' });
-    });
-});
 
 export default groupedInvestigationsRoute;
