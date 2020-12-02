@@ -192,8 +192,14 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
     const contactEventId = +request.query.contactEventId;
     graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
         .then(result => {
-            deleteContactEventLogger.info('got response from DB', Severity.LOW);
-            response.send(result);
+            if (result?.data && !result.errors) {
+                deleteContactEventLogger.info('got response from DB', Severity.LOW);
+                response.send(result);
+            } else {
+                const errorMessage = result.errors[0]?.message;
+                deleteContactEventLogger.error(`got errors approaching the graphql API ${errorMessage}`, Severity.HIGH);
+                response.status(errorStatusCode).send(`error in deleting event: ${errorMessage}`);
+            }
         })
         .catch(err => {
             deleteContactEventLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);
