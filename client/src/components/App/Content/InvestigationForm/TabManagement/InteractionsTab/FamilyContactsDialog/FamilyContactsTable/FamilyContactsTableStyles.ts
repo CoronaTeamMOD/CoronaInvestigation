@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     cell: {
-        textAlign: 'center',
+        textAlign: 'center'
     }
 });
 

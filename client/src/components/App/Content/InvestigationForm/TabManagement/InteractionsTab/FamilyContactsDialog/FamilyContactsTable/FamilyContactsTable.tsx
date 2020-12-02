@@ -45,7 +45,7 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
                 <TableHead>
                     <TableRow>
                         {
-                            (Object.values(FamilyContactsTableHeaders)).map(cellName => {
+                            Object.values(FamilyContactsTableHeaders).map(cellName => {
                                 return (
                                     <TableCell>{cellName}</TableCell>
                                 )
