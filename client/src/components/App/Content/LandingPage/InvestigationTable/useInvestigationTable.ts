@@ -97,7 +97,7 @@ export const transferredSubStatus = 'נדרשת העברה';
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
-        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations, 
+        setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         coloredGroupedRows, investigationColor } = parameters;
 
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
@@ -113,6 +113,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
     const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -345,13 +346,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 )
                             });
                         setRows(investigationRows);
-                        if(coloredGroupedRows.current.length === 0){
-                            investigationRows.forEach((row) => {
-                                const colorIndex = getRandomIndex();
+                        investigationRows
+                            .filter((row) => row.groupId !== null || !investigationColor.current.has(row.groupId))
+                            .forEach((row) => {
+                                const colorIndex = getRandomIndex(0, groupedInvestigationsColors.length - 1);
                                 coloredGroupedRows.current.push(colorIndex);
                                 investigationColor.current.set(row.groupId, groupedInvestigationsColors[colorIndex]);
-                            })
-                        }
+                            });
                         setIsLoading(false);
                     } else {
                         fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM);
@@ -381,12 +382,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     useEffect(() => {
         setCurrentPage(defaultPage);
-        currentPage === defaultPage && fetchTableData();
-    }, [filterRules, orderBy])
+    }, [filterRules, orderBy]);
 
     useEffect(() => {
-        fetchTableData()
-    }, [user.id, user, isInInvestigations, currentPage]);
+        if (isLoggedIn) {
+            fetchTableData();
+        }
+    }, [isLoggedIn, isInInvestigations, currentPage]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
@@ -627,18 +629,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getRandomIndex = () => {
-        const min = 0;
-        const max = groupedInvestigationsColors.length - 1;
-        let index = Math.floor(Math.random() * (max - min + 1) + min);
-        while (coloredGroupedRows.current.indexOf(index) > -1 && coloredGroupedRows.current.length < max) {
-            if (index < max) {
-                index++;
+    const getRandomIndex = (min: number, max: number) => {
+        let randomIndex = Math.floor(Math.random() * (max - min + 1) + min);
+        while (
+            coloredGroupedRows.current.includes(randomIndex) &&
+            coloredGroupedRows.current.length < max
+        ) {
+            if (randomIndex < max) {
+                randomIndex++;
             } else {
-                index = 0;
+                randomIndex = 0;
             }
         }
-        return index;
+        return randomIndex;
     }
 
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
@@ -676,7 +679,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigation: epidemiologyNumber
         });
         investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
-        if (!allGroupedInvestigations.get(groupId)) { 
+        if (!allGroupedInvestigations.get(groupId)) {
             setIsLoading(true)
             try {
                 const result = await axios.get('/groupedInvestigations/' + groupId)
@@ -729,7 +732,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     } else {
                         investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
-            } catch(err) {
+            } catch (err) {
                 alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
                 investigationsByGroupIdLogger.error(err, Severity.HIGH);
             } finally {
