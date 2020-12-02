@@ -63,8 +63,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             name={InteractedContactFields.IDENTIFICATION_NUMBER}
                             value={interactedContact.identificationNumber}
                             onChange={(newValue: string) =>
-                                updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue as string
-                            )}
+                                updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue || null)
+                            }
                             placeholder='מספר תעודה'
                             className={classes.idTextField}
                         />
