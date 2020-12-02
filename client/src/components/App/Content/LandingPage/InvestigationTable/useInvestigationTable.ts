@@ -61,7 +61,8 @@ export const createRowData = (
     wasInvestigationTransferred: boolean,
     transferReason: string,
     groupId: string,
-    canFetchGroup: boolean
+    canFetchGroup: boolean,
+    groupReason: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -82,7 +83,8 @@ export const createRowData = (
     wasInvestigationTransferred,
     transferReason,
     groupId,
-    canFetchGroup
+    canFetchGroup,
+    groupReason
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -315,6 +317,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const transferReason = user ? investigation.transferReason : '';
                                 const groupId = user ? investigation.groupId : '';
                                 const canFetchGroup = Boolean(groupId);
+                                const groupReason = user ? investigation?.investigationGroupReasonByGroupId?.reason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                     '';
@@ -337,7 +340,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     wasInvestigationTransferred,
                                     transferReason,
                                     groupId,
-                                    canFetchGroup
+                                    canFetchGroup,
+                                    groupReason
                                 )
                             });
                         setRows(investigationRows);
@@ -481,6 +485,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.transferReason]: row.transferReason,
             [TableHeadersNames.groupId]: row.groupId,
             [TableHeadersNames.canFetchGroup]: row.canFetchGroup,
+            [TableHeadersNames.groupReason]: row.groupReason,
         }
     }
 
@@ -674,10 +679,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (!allGroupedInvestigations.get(groupId)) { 
             setIsLoading(true)
             try {
-                const result = await axios.get('/groupedInvestigations/' + groupId)
+                const result = await axios.get('/groupedInvestigations/investigations/' + groupId)
                     if (result?.data && result.headers['content-type'].includes('application/json')) {
                         investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
-                        const investigationRows: InvestigationTableRow[] = result.data.nodes
+                        const investigationRows: InvestigationTableRow[] = result.data
                                     .filter((investigation: any) =>
                                         investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
                                         investigation?.userByCreator)
@@ -693,6 +698,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                         const transferReason = user ? investigation.transferReason : '';
                                         const groupId = user ? investigation.groupId : '';
                                         const canFetchGroup = false;
+                                        const groupReason =  user ? investigation.investigationGroupReasonByGroupId.reason : ''
                                         const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                             investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                                             '';
@@ -715,7 +721,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                             wasInvestigationTransferred,
                                             transferReason,
                                             groupId,
-                                            canFetchGroup
+                                            canFetchGroup,
+                                            groupReason
                                         )
                                     });
                         setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))

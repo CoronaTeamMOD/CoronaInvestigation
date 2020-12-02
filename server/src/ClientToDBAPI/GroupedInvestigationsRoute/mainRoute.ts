@@ -6,6 +6,7 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGATIONS_BY_GROUP_ID } from '../../DBService/GroupedInvestigations/Query';
 import { CREATE_GROUPED_INVESTIGATIONS, DISBAND_GROUP_IDS } from '../../DBService/GroupedInvestigations/Mutation';
+import { convertGroupedInvestigationsData } from '../LandingPageRoute/utils';
 
 const groupedInvestigationsRoute = Router();
 const errorStatusCode = 500;
@@ -41,7 +42,8 @@ groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, 
     investigationsByGroupIdLogger.info('requesting the graphql API to query reasons', Severity.LOW);
     graphqlRequest(GET_INVESTIGATIONS_BY_GROUP_ID, response.locals, { groupId: request.params.groupId }).then((result: any) => {
         if (result?.data?.allInvestigations) {
-            const groupedInvestigationsGrouped = result.data.allInvestigations
+            result.data.orderedInvestigations = result.data.allInvestigations
+            const groupedInvestigationsGrouped = convertGroupedInvestigationsData(result.data);
             investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
             response.send(groupedInvestigationsGrouped);
         } else {
