@@ -46,7 +46,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime);
-    const { isInvolved, isInvolvedThroughFamily, isInvolvedThroughEducation } = useInvolvedContact();
+    const { isInvolvedThroughFamily } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -58,7 +58,6 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const involvementReason = contact.involvedContact?.involvementReason || null;
     const isFamilyContact = isInvolvedThroughFamily(involvementReason);
-    const isEducationContact = isInvolvedThroughEducation(involvementReason);
 
     const involvedContactsAdditionalFields = () => {
         const { birthDate, isolationCity, additionalPhoneNumber } = contact.involvedContact as InvolvedContact;
@@ -133,11 +132,9 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             <Grid className={formClasses.formRow + ' ' + classes.fullWidthGrid} container justify='flex-start' key='addContactFields'>
                 <Grid item xs={12} className={formClasses.formRow}>
                     {
-                        isInvolved(involvementReason) &&
+                        isFamilyContact &&
                         <Grid item xs={1}>
-                            {
-                                isFamilyContact ? <FamilyContactIcon/> : isEducationContact && <EducationContactIcon/>
-                            }
+                            <FamilyContactIcon/>
                         </Grid>
                     }
                     <FormInput xs={2} fieldName={contactedPersonFirstName}>
@@ -170,8 +167,6 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     {
                         isFamilyContact ?
                             familyContactsAdditionalFields()
-                        : isEducationContact ?
-                            educationContactsAdditionalFields()
                         :
                             <FormInput fieldName={contactTypeMoreDetails}>
                                 <Typography variant='caption'>
