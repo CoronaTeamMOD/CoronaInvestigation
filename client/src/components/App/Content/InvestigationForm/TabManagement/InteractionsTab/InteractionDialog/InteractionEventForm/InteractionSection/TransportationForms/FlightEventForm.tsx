@@ -1,17 +1,27 @@
+import * as yup from 'yup';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import { Grid, TextField } from '@material-ui/core';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import useStyles from './TransportationFormsStyles';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+
+const errorMessage = 'השדה יכול להכיל רק אותיות באנגלית, מספרים, פסיקים ומקפים';
+const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
+
+const flighSeatMatch = yup
+  .string()
+  .matches(/^[a-zA-Z0-9\s,-]*$/, errorMessage)
+  .max(50, maxLengthErrorMessage);
 
 const FlightEventForm: React.FC = (): JSX.Element => {
     const { control } = useFormContext();
@@ -163,6 +173,25 @@ const FlightEventForm: React.FC = (): JSX.Element => {
                             )}
                         />
                     </FormInput>
+            </Grid>
+            <Grid container justify='flex-start' className={formClasses.formRow}>
+                <FormInput xs={12} labelLength={4} fieldName='מושבים הצריכים להכנס לבידוד - מיועד להחצנה'>
+                    <Controller
+                        name={InteractionEventDialogFields.PLACE_DESCRIPTION}
+                        control={control}
+                        render={(props) => (
+                            <TypePreventiveTextField
+                                {...props}
+                                name={props.name}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                                value={props.value || ''}
+                                validationSchema={flighSeatMatch}
+                                className={formClasses.longTextInput}
+                            />
+                        )}
+                    />
+                </FormInput>
             </Grid>
         </>
     );
