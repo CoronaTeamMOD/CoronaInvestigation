@@ -13,7 +13,6 @@ import InvolvedContact from 'models/InvolvedContact';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
-import EducationContactIcon from 'commons/Icons/EducationContactIcon';
 
 import useStyles from './ContactGridStyles';
 
@@ -28,9 +27,6 @@ const contactedAge: string = 'גיל';
 const contactedAdditionalPhone: string = 'טלפון משני';
 const contactedIsolationCity: string = 'יישוב השהייה בבידוד';
 const contactedFamilyRelationshop: string = 'קרבה משפחתית';
-const contactedGrade: string = 'כיתה';
-const contactedRole: string = 'תפקיד';
-const contactedInstitutionName: string = 'שם מוסד';
 
 const noDataIndication = '---';
 const birthDateFormat = 'dd/MM/yyyy';

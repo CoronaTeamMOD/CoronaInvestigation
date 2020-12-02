@@ -18,7 +18,7 @@ const contactedBirthdate: string = 'תאריך לידה';
 const contactedAge: string = 'גיל';
 const contactedGrade: string = 'כיתה';
 const contactedInstitutionName: string = 'שם מוסד';
-const contactedIsInIsolation: string = 'האם הוקם בידוד?';
+const contactedIsInIsolation: string = 'האם הוקם בידוד';
 const contactedIsInIsolationAnswer: string = 'כן';
 
 
