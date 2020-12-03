@@ -119,7 +119,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         })
         .then((result) => {
             if (result.value) {
-                const groupIdsToDisbandLogger = logger.setup({
+                const groupIdsToDisbandLogger = logger.setupVerbose({
                     workflow: `disband group ids ${groupIds}`,
                     investigation: checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).join(', '),
                     user: userId
