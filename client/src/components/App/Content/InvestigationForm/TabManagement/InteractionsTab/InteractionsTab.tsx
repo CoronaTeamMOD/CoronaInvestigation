@@ -1,7 +1,9 @@
 import { startOfDay } from 'date-fns';
 import { useSelector } from 'react-redux';
+import { Typography } from '@material-ui/core';
 import StoreStateType from 'redux/storeStateType';
 import React, { useState, useEffect } from 'react';
+import SchoolIcon from '@material-ui/icons/SchoolOutlined';
 
 import InvolvedContact from 'models/InvolvedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
@@ -10,9 +12,11 @@ import InteractionsTabSettings from 'models/InteractionsTabSettings';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 
+import useStyles from './InteractionsTabStyles';
 import useInteractionsTab from './useInteractionsTab';
 import ContactDateCard from './ContactDateCard/ContactDateCard';
 import FamilyContactsDialog from './FamilyContactsDialog/FamilyContactsDialog';
+import EducationContactsDialog from './EducationContactsDialog/EducationContactsDialog';
 import NewInteractionEventDialog from './NewInteractionEventDialog/NewInteractionEventDialog';
 import EditInteractionEventDialog from './EditInteractionEventDialog/EditInteractionEventDialog';
 
@@ -35,9 +39,11 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
     const [educationMembers, setEducationMembers] = useState<InvolvedContact[]>([]);
     const [familyMembers, setFamilyMembers] = useState<InvolvedContact[]>([]);
     const [uncontactedFamilyMembers, setUncontactedFamilyMembers] = useState<InvolvedContact[]>([]);
+    const [showEducationMembers, setShowEducationMembers] = useState<boolean>(false);
 
     const { isInvolved } = useInvolvedContact();
-    
+    const classes = useStyles();
+
     const completeTabChange = () => {
         setFormState(investigationId, id, true);
     }
@@ -106,9 +112,22 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
             />
         )
     }
+
+    const closeDialog = () => setShowEducationMembers(false);
     
     return (
         <>
+            {
+                educationMembers.length > 0 &&    
+                <div className={classes.eudcationContactsTrigger}>
+                    <SchoolIcon/>
+                    <Typography 
+                        variant='body1' 
+                        onClick={() => setShowEducationMembers(true)}>
+                            לחקירה זו יש מגעי חינוך, לצפיה לחצו כאן
+                    </Typography>
+                </div>
+            }
             <form id={`form-${id}`} onSubmit={(e) => submitTab(e)}/>
             {
                 datesToInvestigate[0] < datesToInvestigate[datesToInvestigate.length -1] ?
@@ -138,6 +157,10 @@ const InteractionsTab: React.FC<Props> = (props: Props): JSX.Element => {
                 isOpen={uncontactedFamilyMembers.length > 0} 
                 closeDialog={closeFamilyDialog}
                 confirmDialog={saveInvestigaionSettingsFamily}/>
+            <EducationContactsDialog 
+                isOpen={showEducationMembers} 
+                educationContacts={educationMembers}
+                closeDialog={() => closeDialog()}/>
         </>
     )
 };

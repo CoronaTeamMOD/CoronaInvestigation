@@ -7,8 +7,8 @@ interface InvolvedContact extends Person {
 	familyRelationship: string | null;
 	educationGrade: string,
 	educationClassNumber: number,
-	role: string,
 	institutionName: string,
+	contactType: number,
 };
 
 export default InvolvedContact;

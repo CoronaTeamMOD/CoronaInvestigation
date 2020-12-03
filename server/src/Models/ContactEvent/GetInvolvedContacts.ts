@@ -29,9 +29,6 @@ export interface InvolvedContactDB {
     },
     educationGrade: string,
     educationClassNumber: number,
-    investigatedPatientRoleByRole: {
-        role: string
-    },
     subOccupationByInstitutionName: {
         institutionName: string
     }

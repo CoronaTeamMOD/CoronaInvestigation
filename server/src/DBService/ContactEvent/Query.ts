@@ -47,9 +47,6 @@ cityByIsolationCity {
 }
 educationGrade
 educationClassNumber
-investigatedPatientRoleByRole {
-  role: displayName
-}
 subOccupationByInstitutionName {
   institutionName: displayName
 }
