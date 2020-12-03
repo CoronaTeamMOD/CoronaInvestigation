@@ -76,7 +76,9 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     }, [checkedInvestigations])
 
     const shouldGroupActionDisabled: boolean = useMemo(() => {
-        return Boolean(checkedInvestigations.find((investigationToGroup: InvestigationTableRow) => investigationToGroup.groupId !== null))
+        const groupIdsWithRepeation = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
+        const groupIdsWithoutRepeation = groupIdsWithRepeation.filter((item, pos) => groupIdsWithRepeation.indexOf(item) === pos && item !== null);
+        return groupIdsWithoutRepeation.length > 1 || checkedInvestigations.length < 2
     }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [

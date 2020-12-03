@@ -16,39 +16,64 @@ export interface GroupForm {
     otherReason: string;
 }
 
-const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome  => {
+const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    
+
     const { alertError } = useCustomSwal();
-    
+
     const onSubmit = (data: GroupForm) => {
-        const groupId = uuidv4();
-        const groupToCreate = {
-            id: groupId,
-            reason: data.reason?.id,
-            otherReason: data.otherReason
-        };
-        const groupToCreateLogger = logger.setup({
-            workflow: 'create grouped investigations',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
-        groupToCreateLogger.info('launching grouped investigations request', Severity.LOW);
-        const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
-        setIsLoading(true);
-        axios.post('/groupedInvestigations', { groupToCreate, invetigationsToGroupIds })
-        .then(() => {
-            groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
-            onClose();
-            fetchTableData()
-        })
-        .catch((err) => {
-            groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
-            alertError('לא ניתן היה לקבץ חקירות אלו');
-        })
-        .finally(() => setIsLoading(false))
+        const groupIdsWithRepeation = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
+        const groupIdsWithoutRepeation = groupIdsWithRepeation.filter((item, pos) => groupIdsWithRepeation.indexOf(item) === pos && item !== null);
+        if (groupIdsWithoutRepeation.length > 0) {
+            const group = groupIdsWithoutRepeation[0];
+            const createOrUpdate = 'Update'
+            const groupToUpdateLogger = logger.setup({
+                workflow: 'update grouped investigations',
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            groupToUpdateLogger.info('launching grouped investigations request', Severity.LOW);
+            const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
+            setIsLoading(true);
+            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds, createOrUpdate })
+                .then(() => {
+                    onClose();
+                    groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
+                })
+                .catch((err) => {
+                    groupToUpdateLogger.error(`update grouped investigations was failde due to${err}`, Severity.HIGH);
+                    alertError('לא ניתן היה לקבץ חקירות אלו');
+                })
+                .finally(() => setIsLoading(false))
+        } else {
+            const groupId = uuidv4();
+            const group = {
+                id: groupId,
+                reason: data.reason?.id,
+                otherReason: data.otherReason
+            };
+            const groupToCreateLogger = logger.setup({
+                workflow: 'create grouped investigations',
+                user: userId,
+                investigation: epidemiologyNumber
+            });
+            groupToCreateLogger.info('launching grouped investigations request', Severity.LOW);
+            const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
+            setIsLoading(true);
+            const createOrUpdate = 'Create'
+            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds, createOrUpdate })
+                .then(() => {
+                    onClose();
+                    groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
+                })
+                .catch((err) => {
+                    groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
+                    alertError('לא ניתן היה לקבץ חקירות אלו');
+                })
+                .finally(() => setIsLoading(false))
+        }
     }
 
     return {
