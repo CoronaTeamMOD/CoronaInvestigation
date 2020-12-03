@@ -1,6 +1,6 @@
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
-const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any[]) => Exclude<any, void>) } = {
+const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
         return values.length > 0 ?
             {investigationStatus: {in: values}}
@@ -12,6 +12,20 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any[]) =>
             {deskId: {in: values}}
             :
             {deskId: null};
+    },
+    [InvestigationsFilterByFields.FULL_NAME]: (values: string) => {
+        return Boolean(values) ?
+            {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {fullName: {includes: values}}}} :
+            {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {fullName: {includes: ""}}}};
+    },
+    [InvestigationsFilterByFields.NUMERIC_PROPERTIES]: (values: string) => {
+      return Boolean(values) ?
+          {or: [{epidemiologyNumber: {equalTo: Number(values)}},
+              {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {primaryPhone: {includes: values}}}},
+              {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {identityNumber: {includes: values}}}}]} :
+          {or: [{epidemiologyNumber: {equalTo: 0}},
+                  {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {primaryPhone: {includes: ""}}}},
+                  {investigatedPatientByInvestigatedPatientId: {covidPatientByCovidPatient: {identityNumber: {includes: ""}}}}]}
     }
 };
 
