@@ -16,7 +16,7 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedRowsIds, tableRows, setTableRows } = parameters;
+            checkedRowsIds, tableRows, setTableRows, fetchTableData } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -94,7 +94,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleCloseGroupedInvestigations = () => setOpenGroupedInvestigations(false);
 
     const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
-        alertWarning('האם אתה בטוח שברצונך לפרק את הקבוצה כולה?', {
+        alertWarning(`האם אתה בטוח שברצונך לפרק את ${groupIds.length === 1 ? 'הקבוצה': 'הקבוצות'}?`, {
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -113,8 +113,9 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 axios.post('/groupedInvestigations/disband', {
                     groupIdsToDisband: groupIds
                 })
-                .then(result => {
+                .then(() => {
                     groupIdsToDisbandLogger.info('group ids was disbanded successfully', Severity.LOW);
+                    fetchTableData();
                 })
                 .catch(err => {
                     groupIdsToDisbandLogger.error(`group ids disbandtation failed due to ${err}`, Severity.HIGH);

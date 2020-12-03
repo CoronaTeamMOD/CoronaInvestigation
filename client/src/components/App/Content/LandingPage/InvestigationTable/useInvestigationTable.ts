@@ -192,7 +192,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     }
 
-
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
@@ -482,6 +481,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
             [TableHeadersNames.transferReason]: row.transferReason,
+            [TableHeadersNames.settings]: '',
             [TableHeadersNames.groupId]: row.groupId,
             [TableHeadersNames.canFetchGroup]: row.canFetchGroup,
             [TableHeadersNames.groupReason]: row.groupReason,
@@ -725,6 +725,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     return {
         tableRows: rows,
+        fetchTableData,
         setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
