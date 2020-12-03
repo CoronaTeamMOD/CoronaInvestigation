@@ -39,7 +39,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
-    const { isInvolved, isInvolvedThroughFamily, isInvolvedThroughEducation, shouldDisableDeleteContact } = useInvolvedContact();
+    const { isInvolved, isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
