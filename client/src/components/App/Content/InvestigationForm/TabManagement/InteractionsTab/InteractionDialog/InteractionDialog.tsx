@@ -32,11 +32,11 @@ const InteractionDialog = (props: Props) => {
             <DialogActions className={classes.dialogFooter}>
                 {
                     isAddingContacts
-                        ?  <Button variant='text' onClick={() => setIsAddingContacts(false)}>
+                        ?  <Button variant='text' className={classes.changeEventSubFormButton} onClick={() => setIsAddingContacts(false)}>
                             <ChevronRight/>
                             חזרה ל{hebrewActionName} מקום
                         </Button>
-                        : <Button variant='text' onClick={() => setIsAddingContacts(true)}>
+                        : <Button variant='text' className={classes.changeEventSubFormButton} onClick={() => setIsAddingContacts(true)}>
                             המשך ל{hebrewActionName} מגעים
                             <ChevronLeft/>
                         </Button>
