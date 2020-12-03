@@ -36,7 +36,6 @@ import InvestigationStatusColumn from './InvestigationStatusColumn/Investigation
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
-import { defaultUser } from 'Utils/UsersUtils/useUsersUtils';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
