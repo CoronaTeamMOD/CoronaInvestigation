@@ -1,18 +1,18 @@
-import { format } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Checkbox, Typography } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
+import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
 
 import useStyles from './FamilyMembersTableStyles';
-import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from '../../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTableHeaders';
-
-const birthDateFormat = 'dd/MM/yyyy';
+import { FamilyContactsTableHeaders } from '../../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTableHeaders';
 
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     
     const { familyMembers } = props;
     const classes = useStyles();
+
+    const { convertToIndexedRow, getTableCell } = useFamilyContactsUtils();
 
     const [selectedFamilyMembers, setSelectedFamilyMembers] = useState<InvolvedContact[]>([]);
 
@@ -44,30 +44,6 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     }, [selectedFamilyMembers]);
 
     const isRowSelected = (selectedFamilyMember: InvolvedContact) => selectedFamilyMembers?.includes(selectedFamilyMember);
-
-    const convertToIndexedRow = (row: InvolvedContact) : IndexedContactRow => ({
-        [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: row.familyRelationship,
-        [FamilyContactsTableHeadersNames.FIRST_NAME]: row.firstName,
-        [FamilyContactsTableHeadersNames.LAST_NAME]: row.lastName,
-        [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: row.identificationType,
-        [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: row.identificationNumber,
-        [FamilyContactsTableHeadersNames.BIRTH_DATE]: row.birthDate,
-        [FamilyContactsTableHeadersNames.PHONE_NUMBER]: row.phoneNumber,
-        [FamilyContactsTableHeadersNames.ADDITIONAL_PHONE_NUMBER]: row.additionalPhoneNumber,
-        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationCity
-    });
-
-    const getTableCell = (row: IndexedContactRow, cellName: string) => {
-        const cellValue = row[cellName as FamilyContactsTableHeadersNames];
-        if (!cellValue) return '---'; 
-        switch (cellName) {
-            case FamilyContactsTableHeadersNames.BIRTH_DATE: {
-                return format(new Date(cellValue), birthDateFormat);
-            }
-            default: 
-                return cellValue;
-        }
-    }
 
     return (
         <>
@@ -117,7 +93,5 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
 interface Props {
     familyMembers: InvolvedContact[];
 };
-
-export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
 
 export default FamilyMembersTable;

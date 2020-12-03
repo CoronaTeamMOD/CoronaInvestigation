@@ -1,13 +1,11 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 import InvolvedContact from 'models/InvolvedContact';
+import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
 
 import useStyles from './FamilyContactsTableStyles';
-import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
-
-const birthDateFormat = 'dd/MM/yyyy';
+import { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
 
 const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
@@ -15,29 +13,7 @@ const FamilyContactsTable: React.FC<Props> = (props: Props) => {
 
     const classes = useStyles();
 
-    const convertToIndexedRow = (row: InvolvedContact) : IndexedContactRow => ({
-        [FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP]: row.familyRelationship,
-        [FamilyContactsTableHeadersNames.FIRST_NAME]: row.firstName,
-        [FamilyContactsTableHeadersNames.LAST_NAME]: row.lastName,
-        [FamilyContactsTableHeadersNames.IDENTIFICATION_TYPE]: row.identificationType,
-        [FamilyContactsTableHeadersNames.IDENTIFICATION_NUMBER]: row.identificationNumber,
-        [FamilyContactsTableHeadersNames.BIRTH_DATE]: row.birthDate,
-        [FamilyContactsTableHeadersNames.PHONE_NUMBER]: row.phoneNumber,
-        [FamilyContactsTableHeadersNames.ADDITIONAL_PHONE_NUMBER]: row.additionalPhoneNumber,
-        [FamilyContactsTableHeadersNames.ISOLATION_CITY]: row.isolationCity
-    })
-
-    const getTableCell = (row: IndexedContactRow, cellName: string) => {
-        const cellValue = row[cellName as FamilyContactsTableHeadersNames];
-        if (!cellValue) return '---'; 
-        switch (cellName) {
-            case FamilyContactsTableHeadersNames.BIRTH_DATE: {
-                return format(new Date(cellValue), birthDateFormat);
-            }
-            default: 
-                return cellValue;
-        }
-    }
+    const { convertToIndexedRow, getTableCell } = useFamilyContactsUtils();
 
     return (
         <TableContainer className={className} component={Paper}>
@@ -75,7 +51,5 @@ interface Props {
     familyMembers: InvolvedContact[];
     className: string;
 };
-
-export type IndexedContactRow = { [T in keyof typeof FamilyContactsTableHeaders]: any};
 
 export default FamilyContactsTable;
