@@ -6,7 +6,7 @@ import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGATIONS_BY_GROUP_ID } from '../../DBService/GroupedInvestigations/Query';
 import { CREATE_GROUPED_INVESTIGATIONS, DISBAND_GROUP_IDS } from '../../DBService/GroupedInvestigations/Mutation';
-import { convertGroupedInvestigationsData } from '../LandingPageRoute/utils';
+import { convertGroupedInvestigationsData } from './utils';
 
 const groupedInvestigationsRoute = Router();
 const errorStatusCode = 500;
