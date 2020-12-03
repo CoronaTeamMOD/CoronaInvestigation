@@ -1,24 +1,27 @@
-import React, {useState} from 'react';
+import {yupResolver} from '@hookform/resolvers';
+import React, {useContext, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {yupResolver} from "@hookform/resolvers";
-import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
-import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import PlaceSubType from 'models/PlaceSubType';
-import InteractionEventSchema from './InteractionSection/InteractionEventSchema';
-import InteractionEventContactFields
-    from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import InteractionEventDialogFields
-    from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+
 import Contact from 'models/Contact';
+import PlaceSubType from 'models/PlaceSubType';
+import InvolvedContact from 'models/InvolvedContact';
+import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
+import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useInteractionsForm from './useInteractionsForm';
 import ContactsTabs from './ContactsSection/ContactsTabs';
+import ContactTypeKeys from './InteractionSection/ContactForm/ContactTypeKeys';
+import InteractionEventSchema from './InteractionSection/InteractionEventSchema';
+import InteractionEventForm, {InteractionEventFormProps} from './InteractionSection/InteractionEventForm';
 
 const InteractionDetailsForm = (props: Props) => {
-    const  { interactions, interactionData, loadInteractions, onDialogClose,isAddingContacts,isNewInteraction } = props;
+    const  { interactions, interactionData, loadInteractions, loadInvolvedContacts, onDialogClose,isAddingContacts,isNewInteraction } = props;
+
     const initialInteractionDate = React.useRef<Date>(new Date(interactionData?.startTime as Date));
-    const { saveInteractions } = useInteractionsForm({ loadInteractions, onDialogClose});
+    const { saveInteractions } = useInteractionsForm({ loadInteractions, loadInvolvedContacts, onDialogClose});
     const { checkDuplicateIdsForInteractions } = useDuplicateContactId();
 
     const methods = useForm<InteractionEventDialogData>({
@@ -26,6 +29,8 @@ const InteractionDetailsForm = (props: Props) => {
         mode: 'all',
         resolver: yupResolver(InteractionEventSchema)
     });
+
+    const { familyMembers } = useContext(familyMembersContext);
 
     const [placeSubtypeName, setPlaceSubtypeName] = useState<string>('');
 
@@ -53,16 +58,38 @@ const InteractionDetailsForm = (props: Props) => {
         }
     };
 
+    const addFamilyMemberContacts = (contacts: Contact[]) => {
+        familyMembers.forEach((familyMember: InvolvedContact) => {
+            if (familyMember.selected) {
+                const familyContact: Contact = {
+                    firstName: familyMember.firstName,
+                    lastName: familyMember.lastName,
+                    phoneNumber: familyMember.phoneNumber,
+                    idNumber: familyMember.identificationNumber,
+                    contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
+                    creationTime: new Date(),
+                    involvedContactId: familyMember.id,
+                    involvedContact: null
+                };
+
+                contacts.push(familyContact);
+            }
+        });
+    };
+
     const onSubmit = (data: InteractionEventDialogData) => {
+        if (!data.contacts) {
+            data.contacts = [];
+        }
+        addFamilyMemberContacts(data.contacts);
+
         const interactionDataToSave = convertData(data);
-        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts)
-            .flat()
-            .map((contact) => {
-                return ({
-                    id: contact[InteractionEventContactFields.ID],
-                    serialId: contact[InteractionEventContactFields.SERIAL_ID]
-                })
-            });
+        const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
+            return ({
+                id: contact[InteractionEventContactFields.ID],
+                serialId: contact[InteractionEventContactFields.SERIAL_ID]
+            })
+        });
 
         const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
             return ({
@@ -126,7 +153,6 @@ const InteractionDetailsForm = (props: Props) => {
             }
         })
 
-
     return (
         <FormProvider {...methods}>
             <form id='interactionEventForm' onSubmit={validateAndHandleSubmit}>
@@ -147,9 +173,10 @@ interface Props {
     isAddingContacts: boolean;
     interactions: InteractionEventDialogData[];
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     onDialogClose: () => void;
     interactionData?: InteractionEventFormProps['interactionData'];
     isNewInteraction?: InteractionEventFormProps['isNewInteraction'];
-}
+};
 
 export default InteractionDetailsForm;

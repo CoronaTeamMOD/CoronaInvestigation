@@ -20,14 +20,14 @@ const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנ
 const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
 
 interface GroupedInvolvedGroups {
-    familyMembers: InvolvedContact[],
-    educationMembers: InvolvedContact[],
+    familyMembers: InvolvedContact[];
+    educationMembers: InvolvedContact[];
 }
 
 const useInteractionsTab = (parameters: useInteractionsTabParameters): useInteractionsTabOutcome => {
     const { interactions, setInteractions, setAreThereContacts, setDatesToInvestigate,
-            setEducationMembers, setFamilyMembers, setInteractionsTabSettings, completeTabChange } = parameters;
-    const { convertDate, getDatesToInvestigate} = useDateUtils();
+            setEducationMembers, familyMembersStateContext, setInteractionsTabSettings, completeTabChange } = parameters;
+
     const { parseAddress } = useGoogleApiAutocomplete();
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -38,6 +38,8 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
+    const { getDatesToInvestigate, convertDate } = useDateUtils();
+    
     const getCoronaTestDate = () => {
         const getCoronaTestDateLogger = logger.setup({
             workflow: 'Getting Corona Test Date',
@@ -106,7 +108,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
                 loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
                 const involvedContacts : InvolvedContact[] = result?.data;
                 const { familyMembers, educationMembers } = groupInvolvedContacts(involvedContacts);
-                setFamilyMembers(familyMembers);
+                familyMembersStateContext.familyMembers = familyMembers;
                 setEducationMembers(educationMembers);
             } else {
                 loadInvolvedContactsLogger.error(`failed to get response due to ${result}`, Severity.HIGH);
@@ -256,6 +258,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
 
     return {
         loadInteractions,
+        loadInvolvedContacts,
         handleDeleteContactEvent,
         handleDeleteContactedPerson,
         saveInvestigaionSettingsFamily

@@ -4,14 +4,14 @@ import { KeyboardArrowDown, KeyboardArrowLeft, Edit, Delete } from '@material-ui
 import { Card, Collapse, IconButton, Typography, Grid, Divider } from '@material-ui/core';
 
 import Contact from 'models/Contact';
+import useFormStyles from 'styles/formStyles';
 import { timeFormat } from 'Utils/displayUtils';
+import useContactFields from 'Utils/vendor/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import useFormStyles from 'styles/formStyles';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
 
 import ContactGrid from './ContactGrid/ContactGrid';
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import useContactFields from 'Utils/vendor/useContactFields';
 import ContactUploader from './ExcelUploader/ContactUploader';
 import OfficeEventGrid from './PlacesAdditionalGrids/OfficeEventGrid';
 import SchoolEventGrid from './PlacesAdditionalGrids/SchoolEventGrid';
@@ -39,7 +39,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
     
     const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime);
+    
+    const areThereInvolvedContacts = interaction.contacts.some((contact: Contact) => contact.involvedContactId !== null);
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime) || areThereInvolvedContacts;
 
     return (
         <Card className={classes.container}>
@@ -152,6 +154,7 @@ interface Props {
     onEditClick: () => void;
     onDeleteClick: () => void;
     loadInteractions: () => void;
+    loadInvolvedContacts: () => void;
     onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
 };
 

@@ -11,7 +11,7 @@ import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogDa
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
-        const { loadInteractions, onDialogClose} = props;
+        const { loadInteractions, loadInvolvedContacts, onDialogClose} = props;
         
         const { parseLocation } = useDBParser();
         const { alertError } = useCustomSwal();
@@ -43,6 +43,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     if (response.data?.data?.updateContactEventFunction) {
                         updateInteractionsLogger.info('updated interaction successfully', Severity.LOW);
                         loadInteractions();
+                        loadInvolvedContacts();
                         onDialogClose();
                     }
                 })
@@ -62,6 +63,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     if (response.data?.data?.updateContactEventFunction) {
                         createInteractionsLogger.info('created interaction successfully', Severity.LOW);
                         loadInteractions();
+                        loadInvolvedContacts();
                         onDialogClose();
                     } 
                 })
@@ -81,6 +83,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
 
 interface useInteractionFormIncome {
     loadInteractions: () => void;
+    loadInvolvedContacts:() => void;
     onDialogClose: () => void;
 }
 

@@ -12,7 +12,8 @@ interface Contact {
     contactStatus?: InteractedContact['contactStatus'];
     creationTime: Date;
     startTime?: Date;
+    involvedContactId?: number;
     involvedContact: InvolvedContact | null;
-}
+};
 
 export default Contact;

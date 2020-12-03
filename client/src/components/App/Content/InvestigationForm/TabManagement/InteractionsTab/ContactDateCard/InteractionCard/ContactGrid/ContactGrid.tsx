@@ -10,7 +10,6 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InvolvedContact from 'models/InvolvedContact';
-import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
@@ -40,9 +39,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
-    const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime);
-    const { isInvolvedThroughFamily } = useInvolvedContact();
+    const { isInvolved, isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -137,16 +134,13 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <div className={classes.deleteIconDiv}>
                 <CompletedQuestioningTooltip>
-                    <IconButton 
-                        disabled={shouldDisableDeleteContact}
-                        test-id='deleteContactLocation' 
+                    <IconButton
+                        disabled={shouldDisableDeleteContact(isContactComplete, contact)}
+                        test-id='deleteContactLocation'
                         onClick={() => {
-                        contact.serialId && onDeleteContactClick(
-                            contact.serialId,
-                            eventId
-                        )
-                    }}>
-                        <Delete/>
+                            contact.serialId && onDeleteContactClick(contact.serialId, eventId)
+                        }}>
+                        <Delete />
                     </IconButton>
                 </CompletedQuestioningTooltip>
             </div>
@@ -161,4 +155,4 @@ interface Props {
     onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
     eventId: number;
     isContactComplete: boolean;
-}
+};

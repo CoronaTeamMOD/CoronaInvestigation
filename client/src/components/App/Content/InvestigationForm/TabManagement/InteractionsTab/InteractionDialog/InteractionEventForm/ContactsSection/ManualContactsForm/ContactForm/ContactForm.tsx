@@ -16,8 +16,8 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
-import ContactTypeKeys from './ContactTypeKeys';
 import useStyles from './ContactFormStyles';
+import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
 
 const contactedPersonPhone: string = 'מספר טלפון';
 const contactedPersonFirstName: string = 'שם פרטי';

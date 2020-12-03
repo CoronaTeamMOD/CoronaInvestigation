@@ -1,26 +1,28 @@
 import React from 'react';
-import {Divider, Tab, Tabs, Collapse, useTheme} from '@material-ui/core';
 import {GroupOutlined} from '@material-ui/icons';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
+import { Divider, Tab, Tabs, useTheme } from '@material-ui/core';
+
 import useFormStyles from 'styles/formStyles';
+
 import useStyles from './ContactsTabsStyles';
+import FamilyMembersForm from './FamilyMembers/FamilyMembersForm';
+import ManualContactsForm from './ManualContactsForm/ManualContactsForm';
 
 const contactFormTabs = [
-    {id: 0, Component: < ManualContactsForm/>},
-    {id: 1, Component: <React.Fragment/>},
+    {id: 0, Component: <ManualContactsForm />},
+    {id: 1, Component: <FamilyMembersForm />},
 ];
 
-const FormComponent = ({currentTab}: {currentTab: number;}) => {
-    const classes = useStyles();
+const FormComponent = ({ currentTab }: { currentTab: number }) => {
     const formClasses = useFormStyles();
 
     return <>
         {contactFormTabs.map(tab =>
-            <Collapse classes={{container: classes.collapse, hidden: formClasses.hidden}} in={currentTab === tab.id}>
+            <div className={currentTab !== tab.id ? formClasses.hidden : ''}>
                 {tab.Component}
-            </Collapse>
+            </div>
         )}
     </>
 };
@@ -39,7 +41,8 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
 
     return (
         <div className={isVisible ? classes.tabs : formClasses.hidden}>
-            <Tabs classes={{indicator: classes.tabIndicator}}
+            <Tabs
+                classes={{indicator: classes.tabIndicator}}
                 indicatorColor='primary'
                 orientation='vertical'
                 value={currentTab}
@@ -48,10 +51,10 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
                 <Tab classes={tabClasses}
                      icon={<FontAwesomeIcon color={active} icon={faUserEdit}/>}
                      label='הוספת מגע ידנית'/>
-                <Divider light={true}/>
-                <Tab classes={tabClasses}
-                     icon={<GroupOutlined color='action'/>}
-                     label='בני משפחה'/>
+                <Tab
+                    classes={tabClasses}
+                    icon={<GroupOutlined color='action'/>}
+                    label='בני משפחה'/>
             </Tabs>
             <Divider orientation='vertical' variant='fullWidth' light={true}/>
             <FormComponent currentTab={currentTab}/>

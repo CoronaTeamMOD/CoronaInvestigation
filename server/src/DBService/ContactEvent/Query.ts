@@ -27,7 +27,8 @@ query getAllContactTypes {
 }
 `;
 
-const invovledFieldsToQuery = `
+const involvedFieldsToQuery = `
+id
 familyRelationshipByFamilyRelationship {
   familyRelationship: displayName
 }
@@ -100,6 +101,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           contactType
           extraInfo
           creationTime
+          involvedContactId
           personByPersonInfo {
             firstName
             identificationNumber
@@ -108,7 +110,7 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
             phoneNumber
           }
           involvedContact: involvedContactByInvolvedContactId {
-            ${invovledFieldsToQuery}
+            ${involvedFieldsToQuery}
           }
         }
       }
@@ -121,7 +123,7 @@ export const GET_ALL_INVOLVED_CONTACTS = gql`
 query getAllInvolvedContacts($currInvestigation: Int!) {
   allInvolvedContacts(filter: {investigationId: {equalTo: $currInvestigation}}) {
     nodes {
-      ${invovledFieldsToQuery}
+      ${involvedFieldsToQuery}
     }
   }
 }
