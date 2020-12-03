@@ -1,13 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import Desk from 'models/Desk';
-import axios from 'Utils/axios';
+import axios from 'axios';
+import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
 
@@ -16,7 +18,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
             checkedRowsIds, tableRows, setTableRows } = parameters;
 
-    const { alertError } = useCustomSwal();
+    const { alertError, alertWarning } = useCustomSwal();
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
@@ -41,6 +43,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             investigation: checkedRowsIds.join(', '),
             user: userId
         });
+        setIsLoading(true);
         axios.post('/landingPage/changeDesk', {
             epidemiologyNumbers: checkedRowsIds,
             updatedDesk: updatedDesk.id,
@@ -55,6 +58,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             handleCloseDesksDialog();
             alertError('לא ניתן היה לבצע את ההעברה לדסק');
         })
+        .finally(() => setIsLoading(false));
     }
 
     const handleOpenInvestigatorsDialog = () => setOpenInvestigatorsDialog(true);
@@ -67,6 +71,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             investigation: checkedRowsIds.join(', '),
             user: userId
         });
+        setIsLoading(true);
         axios.post('/users/changeInvestigator', {
             epidemiologyNumbers: checkedRowsIds,
             user: updatedIvestigator.id,
@@ -81,11 +86,44 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             handleCloseInvestigatorsDialog();
             alertError('לא ניתן היה לבצע את ההעברה לחוקר');
         })
+        .finally(() => setIsLoading(false));
     }
 
     const handleOpenGroupedInvestigations = () => setOpenGroupedInvestigations(true);
 
     const handleCloseGroupedInvestigations = () => setOpenGroupedInvestigations(false);
+
+    const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
+        alertWarning('האם אתה בטוח שברצונך לפרק את הקבוצה כולה?', {
+            showCancelButton: true,
+            cancelButtonText: 'בטל',
+            cancelButtonColor: theme.palette.error.main,
+            confirmButtonColor: theme.palette.primary.main,
+            confirmButtonText: 'כן, המשך',
+        })
+        .then((result) => {
+            if (result.value) {
+                const groupIdsToDisbandLogger = logger.setup({
+                    workflow: `disband group ids ${groupIds}`,
+                    investigation: checkedRowsIds.join(', '),
+                    user: userId
+                });
+                groupIdsToDisbandLogger.info('launching disband group ids request', Severity.LOW);
+                setIsLoading(true);
+                axios.post('/groupedInvestigations/disband', {
+                    groupIdsToDisband: groupIds
+                })
+                .then(result => {
+                    groupIdsToDisbandLogger.info('group ids was disbanded successfully', Severity.LOW);
+                })
+                .catch(err => {
+                    groupIdsToDisbandLogger.error(`group ids disbandtation failed due to ${err}`, Severity.HIGH);
+                    alertError('לא ניתן היה לפרק קבוצות אלו');
+                })
+                .finally(() => setIsLoading(false)); 
+            }
+        })
+    }
 
     return {
         handleOpenDesksDialog,
@@ -95,7 +133,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
-        handleConfirmInvestigatorsDialog
+        handleConfirmInvestigatorsDialog,
+        handleDisbandGroupedInvestigations
     }
 }
 

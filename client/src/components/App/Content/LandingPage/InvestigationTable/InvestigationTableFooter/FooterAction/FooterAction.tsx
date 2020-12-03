@@ -1,19 +1,25 @@
 import React from 'react';
-import { IconButton, Typography, useMediaQuery } from '@material-ui/core';
+import { IconButton, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
 
 import useStyle from './FooterActionStyles';
 import { CardActionDescription } from '../InvestigationTableFooter';
 
-const FooterAction: React.FC<Props> = ({ icon, displayTitle, onClick }) => {
+const FooterAction: React.FC<Props> = ({ icon, displayTitle, onClick, disabled, errorMessage }) => {
     
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyle(isScreenWide)();
 
     return (
-        <IconButton onClick={onClick} classes={{label: classes.button}}>
-            {React.createElement(icon, {className: classes.icon})}
-            <Typography>{displayTitle}</Typography>
-        </IconButton>
+        <Tooltip open={disabled} title={errorMessage}>
+            <IconButton
+                disabled={disabled}
+                onClick={onClick}
+                classes={{label: classes.button}}
+            >
+                {React.createElement(icon, { className: `${classes.icon} ${disabled ? classes.disabled: null}` })}
+                <Typography>{displayTitle}</Typography>
+            </IconButton>
+        </Tooltip>
     )
 };
 

@@ -16,7 +16,7 @@ const interactionEventSchema = yup.object().shape({
         then: yup.number().nullable().required('תת סוג אתר חובה'),
         otherwise: yup.number().nullable()
       }
-      ),
+    ),
     [InteractionEventDialogFields.CONTACT_PERSON_PHONE_NUMBER]: yup.string().nullable()
       .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
     [InteractionEventDialogFields.UNKNOWN_TIME]: yup.boolean(),
