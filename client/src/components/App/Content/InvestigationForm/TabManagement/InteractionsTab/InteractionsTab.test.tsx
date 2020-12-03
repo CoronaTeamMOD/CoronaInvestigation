@@ -73,56 +73,5 @@ describe('useInteractionsTab tests', () => {
                 expect(receivedDates).toEqual(eachDayOfInterval({start: subDays(coronaTestDate, 7), end: investigationStartDate}));
             });
         });
-
-        describe('loadInteractions tests', () => {
-            // TODO: add the test
-            // it('when getting interactions from DB then it should be loaded into the state map', async () => {
-            //     mockAdapter.onGet('/intersections').reply(200, {
-            //         data: {
-            //             investigationByEpidemioligyNumbe: {
-            //               contactEventsByInvestigationId: {
-            //                 nodes: [
-            //                   {
-            //                     contactedPeopleByContactEvent: {
-            //                       nodes: [
-            //                         {
-            //                           personByPersonInfo: {
-            //                             firstName: "חיים",
-            //                             lastName: "רובין",
-            //                             identificationNumber: 20060049
-            //                           }
-            //                         }
-            //                       ]
-            //                     },
-            //                     placeTypeByPlaceType: {
-            //                       displayName: "מבנה דת"
-            //                     },
-            //                     placeName: "בית כנסת שירת הים",
-            //                     addressByLocationAddress: {
-            //                       city: "בני ברק",
-            //                       neighbourhood: null,
-            //                       street: "כהנמן",
-            //                       houseNum: 106,
-            //                       floor: 4,
-            //                       apartment: 18,
-            //                       entrance: null
-            //                     },
-            //                     contactPhoneNumber: "050-0000000",
-            //                     startTime: new Date("2020-09-02T16:07:43.238806+00:00"),
-            //                     endTime: new Date("2020-09-02T15:07:43.238806+00:00")
-            //                   }
-            //                 ]
-            //               }
-            //             }
-            //           }
-            //     });
-
-            //     await act(async () => {
-            //         await useInteractionsTabOutcome.loadInteractions();
-            //     });
-
-            //     expect(true).toBeTruthy();
-            // })
-        })
     });
 });
