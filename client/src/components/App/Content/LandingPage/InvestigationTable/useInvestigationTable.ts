@@ -40,7 +40,9 @@ import useInvestigatedPersonInfo
     from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
-const groupedInvestigationsColors = ['#f05454', '#30475e', '#9ddfd3', '#ea86b6', '#ffa36c', '#ffe05d', '#c56183', '#794c74', '#158467', '#a8dda8'];
+const getFlooredRandomNumber = (min: number, max: number): number => (
+    Math.floor(Math.random() * (max - min) + min)
+)
 
 export const createRowData = (
     epidemiologyNumber: number,
@@ -98,7 +100,7 @@ export const transferredSubStatus = 'נדרשת העברה';
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
-        coloredGroupedRows, investigationColor } = parameters;
+        investigationColor } = parameters;
 
     const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
 
@@ -349,9 +351,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         investigationRows
                             .filter((row) => row.groupId !== null || !investigationColor.current.has(row.groupId))
                             .forEach((row) => {
-                                const colorIndex = getRandomIndex(0, groupedInvestigationsColors.length - 1);
-                                coloredGroupedRows.current.push(colorIndex);
-                                investigationColor.current.set(row.groupId, groupedInvestigationsColors[colorIndex]);
+                                // We have this color range so the group colors aren't too dark nor bright
+                                const minColorValue = 50;
+                                const maxColorValue = 200;
+                                const red = getFlooredRandomNumber(minColorValue, maxColorValue);
+                                const green = getFlooredRandomNumber(minColorValue, maxColorValue);
+                                const blue = getFlooredRandomNumber(minColorValue, maxColorValue);
+                                investigationColor.current.set(row.groupId, `rgb(${red}, ${green}, ${blue})`);
                             });
                         setIsLoading(false);
                     } else {
@@ -627,21 +633,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }
             })
         }
-    }
-
-    const getRandomIndex = (min: number, max: number) => {
-        let randomIndex = Math.floor(Math.random() * (max - min + 1) + min);
-        while (
-            coloredGroupedRows.current.includes(randomIndex) &&
-            coloredGroupedRows.current.length < max
-        ) {
-            if (randomIndex < max) {
-                randomIndex++;
-            } else {
-                randomIndex = 0;
-            }
-        }
-        return randomIndex;
     }
 
     const getTableCellStyles = (rowIndex: number, cellKey: string) => {
