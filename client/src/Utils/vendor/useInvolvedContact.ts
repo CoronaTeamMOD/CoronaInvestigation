@@ -8,13 +8,11 @@ const useInvolvedContact = () => {
     
     const isInvolved = (involvementReason: number | null | undefined) => involvementReason;
     const isInvolvedThroughFamily = (involvementReason: number | null) => involvementReason === InvolvementReason.FAMILY;
-    const isInvolvedThroughEducation = (involvementReason: number | null) => involvementReason === InvolvementReason.EDUCATION;
     const shouldDisableDeleteContact = (isContactComplete: boolean, contact: Contact) => isContactComplete || shouldDisableContact(contact.creationTime) || (contact.involvedContactId && contact.involvedContactId !== null) as boolean;
 
     return {
         isInvolved,
         isInvolvedThroughFamily,
-        isInvolvedThroughEducation,
         shouldDisableDeleteContact,
     }
 };

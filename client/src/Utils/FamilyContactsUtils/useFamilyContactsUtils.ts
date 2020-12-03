@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
 
 import InvolvedContact from 'models/InvolvedContact';
-import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from 'components/App/Content/InvestigationForm/TabManagement/InteractionsTab/FamilyContactsDialog/FamilyContactsTable/FamilyContactsTableHeaders';
+
+import FamilyContactsTableHeadersNames, { FamilyContactsTableHeaders } from './FamilyContactsTableHeaders';
 
 const birthDateFormat = 'dd/MM/yyyy';
 

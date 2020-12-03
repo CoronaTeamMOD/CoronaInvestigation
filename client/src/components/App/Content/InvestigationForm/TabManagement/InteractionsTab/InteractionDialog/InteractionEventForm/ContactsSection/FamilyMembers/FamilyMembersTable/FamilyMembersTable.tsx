@@ -3,9 +3,9 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 
 import InvolvedContact from 'models/InvolvedContact';
 import useFamilyContactsUtils from 'Utils/FamilyContactsUtils/useFamilyContactsUtils';
+import { FamilyContactsTableHeaders } from 'Utils/FamilyContactsUtils/FamilyContactsTableHeaders';
 
 import useStyles from './FamilyMembersTableStyles';
-import { FamilyContactsTableHeaders } from '../../../../../FamilyContactsDialog/FamilyContactsTable/FamilyContactsTableHeaders';
 
 const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     
