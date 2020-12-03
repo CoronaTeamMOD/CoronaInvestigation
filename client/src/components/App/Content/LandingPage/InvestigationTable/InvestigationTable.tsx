@@ -99,7 +99,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const tableContainerRef = React.useRef<HTMLElement>();
     const investigationColor = React.useRef<Map<string, string>>(new Map())
-    const coloredGroupedRows = useRef<number[]>([]);
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
@@ -108,7 +107,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
-        coloredGroupedRows, investigationColor
+        investigationColor
     });
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
