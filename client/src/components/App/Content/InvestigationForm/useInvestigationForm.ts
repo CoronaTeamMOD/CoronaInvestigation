@@ -224,8 +224,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         alertSuccess('החקירה הסתיימה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
-        });
-        timeout(LandingPageTimer).then(() => {
+        }).then(() => {
             const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
             const finishingBroadcastMessage : BroadcastMessage = {
                 message: 'Investigaion finished',

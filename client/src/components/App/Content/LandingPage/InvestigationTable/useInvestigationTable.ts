@@ -403,15 +403,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id
         });
 
-        axios.interceptors.request.use(
-            (config) => {
-                config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
-                setIsLoading(true);
-                activateIsLoading(config);
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
+        // axios.interceptors.request.use(
+        //     (config) => {
+        //         config.headers.EpidemiologyNumber = investigationRow.epidemiologyNumber;
+        //         //setIsLoading(true);
+        //         activateIsLoading(config);
+        //         return config;
+        //     },
+        //     (error) => Promise.reject(error)
+        // );
         if (epidemiologyNumber !== investigationRow.epidemiologyNumber) {
             investigationClickLogger.info('the clicked investigation is not the first one', Severity.LOW);
             const newInterceptor = axios.interceptors.request.use(
