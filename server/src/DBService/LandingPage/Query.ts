@@ -38,6 +38,12 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         id
         userName
       }
+      investigationGroupByGroupId {
+        investigationGroupReasonByReason {
+          displayName
+        }
+        otherReason
+      }
     }
     totalCount
   }
@@ -91,6 +97,12 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
             displayName
           }
         }
+      }
+      investigationGroupByGroupId {
+        investigationGroupReasonByReason {
+          displayName
+        }
+        otherReason
       }
     }
     totalCount

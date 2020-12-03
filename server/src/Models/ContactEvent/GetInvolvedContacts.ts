@@ -28,11 +28,8 @@ export interface InvolvedContactDB {
     cityByIsolationCity: {
         city: string;
     },
-    educationGrade: string;
-    educationClassNumber: number;
-    investigatedPatientRoleByRole: {
-        role: string;
-    },
+    educationGrade: string,
+    educationClassNumber: number,
     subOccupationByInstitutionName: {
         institutionName: string;
     }

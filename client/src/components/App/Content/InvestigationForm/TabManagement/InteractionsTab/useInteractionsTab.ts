@@ -198,7 +198,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).then((result) => {
             if (result.value) {
                 deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
-                axios.delete('/intersections/deleteContactEvent', {params: contactEventId}).then(() => {
+                axios.delete('/intersections/deleteContactEvent', {params: {contactEventId}}).then(() => {
                     deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
                     setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
                 }).catch((error) => {

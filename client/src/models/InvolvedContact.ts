@@ -7,10 +7,10 @@ interface InvolvedContact extends Person {
 	isolationCity: string;
 	familyRelationship: string | null;
 	selected?: boolean;
-	educationGrade: string;
-	educationClassNumber: number;
-	role: string;
-	institutionName: string;
+	educationGrade: string,
+	educationClassNumber: number,
+	institutionName: string,
+	contactType: number,
 };
 
 export default InvolvedContact;

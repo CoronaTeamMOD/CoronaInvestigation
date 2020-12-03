@@ -7,7 +7,7 @@ import {
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
     Slide, Box
 } from '@material-ui/core';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Help } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -63,6 +63,8 @@ export const rowsPerPage = 100;
 
 const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקירות חדשות';
 const unassignedToDesk = 'לא שוייך לדסק';
+const showInvestigationGroupText = 'הצג חקירות קשורות';
+const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 
 const InvestigationTable: React.FC = (): JSX.Element => {
 
@@ -352,22 +354,28 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />
             case TableHeadersNames.multipleCheck:
+                const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
                 return (
                     <>
-                        {(!wasInvestigationFetchedByGroup) && <Checkbox onClick={(event) => {
-                            event.stopPropagation();
-                            markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
-                        }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} 
-                        className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
-                        {indexedRow.canFetchGroup && <IconButton onClick={(event) => {
-                            event.stopPropagation();
-                            openGroupedInvestigation(indexedRow.epidemiologyNumber)
-                            fetchInvestigationsByGroupId(indexedRow.groupId)
-                        }}>
-                            {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) ?
-                                <KeyboardArrowDown /> :
-                                <KeyboardArrowLeft />}
-                        </IconButton>}
+                        {(!wasInvestigationFetchedByGroup) && 
+                            <Checkbox onClick={(event) => {
+                                event.stopPropagation();
+                                markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
+                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} 
+                            className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
+                        {indexedRow.canFetchGroup && 
+                        <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
+                            <IconButton onClick={(event) => {
+                                event.stopPropagation();
+                                openGroupedInvestigation(indexedRow.epidemiologyNumber)
+                                fetchInvestigationsByGroupId(indexedRow.groupId)
+                            }}>
+                                {isGroupShown ?
+                                    <KeyboardArrowDown /> :
+                                    <KeyboardArrowLeft />}
+                            </IconButton>
+                        </Tooltip>
+                        }
                     </>
                 )
             default:

@@ -38,6 +38,12 @@ interface UserInvestigations {
                 id: string;
                 userName: string;
             };
+            investigationGroupByGroupId: {
+                investigationGroupReasonByReason : {
+                    displayName: string;
+                }
+                otherReason: string;
+            } | null;
         }]
     }
 }
@@ -84,6 +90,12 @@ interface GroupIvestigations {
                     displayName: string;
                 }
             };
+            investigationGroupByGroupId: {
+                investigationGroupReasonByReason : {
+                    displayName: string | null;
+                }
+                otherReason: string | null;
+            } | null;
         }]
     }
 }
@@ -99,17 +111,24 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
                 age: differenceInYears(new Date(), new Date(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate))
             }
         },
-        desk: investigation.deskByDeskId?.deskName
+        desk: investigation.deskByDeskId?.deskName,
+        investigationGroupReasonByGroupId: {
+            reason: investigation.investigationGroupByGroupId?
+            (investigation.investigationGroupByGroupId.otherReason ? 
+            investigation.investigationGroupByGroupId.otherReason :
+            investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName) : null
+        }
     };
 
     delete newObject.complexityCode;
     delete newObject.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate;
     delete newObject.deskByDeskId;
+    delete newObject.investigationGroupByGroupId;
 
     return newObject;
 }
 
-const mappingGroupInvestigations = (investigation: GroupIvestigations['orderedInvestigations']['nodes'][number]) => {
+const mappingGroupInvestigations = (investigation: UserInvestigations['orderedInvestigations']['nodes'][number]) => {
     const newObject = {
         ...investigation,
         isComplex: investigation.complexityCode !== 2,
@@ -120,22 +139,19 @@ const mappingGroupInvestigations = (investigation: GroupIvestigations['orderedIn
                 age: differenceInYears(new Date(), new Date(investigation.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate))
             }
         },
-        userByCreator: {
-            ...investigation.userByCreator,
-            countyByInvestigationGroup: {
-                ...investigation.userByCreator.countyByInvestigationGroup,
-                displayName: investigation.userByCreator.countyByInvestigationGroup.displayName + 
-                             '-' + 
-                             investigation.userByCreator.countyByInvestigationGroup.districtByDistrictId.displayName
-            }
-        },
-        desk: investigation.deskByDeskId?.deskName
+        desk: investigation.deskByDeskId?.deskName,
+        investigationGroupReasonByGroupId: {
+            reason: investigation.investigationGroupByGroupId?
+            (investigation.investigationGroupByGroupId.otherReason ? 
+            investigation.investigationGroupByGroupId.otherReason :
+            investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName) : null
+        }
     };
 
     delete newObject.complexityCode;
     delete newObject.investigatedPatientByInvestigatedPatientId.covidPatientByCovidPatient.birthDate;
     delete newObject.deskByDeskId;
-    delete newObject.userByCreator.countyByInvestigationGroup.districtByDistrictId;
+    delete newObject.investigationGroupByGroupId;
 
     return newObject;
 }

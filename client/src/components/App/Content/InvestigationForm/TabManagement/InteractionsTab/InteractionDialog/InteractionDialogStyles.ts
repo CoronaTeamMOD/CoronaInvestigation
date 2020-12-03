@@ -27,6 +27,10 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'space-between'
     },
+    changeEventSubFormButton: {
+        color: '#107F9B',
+        fontWeight: 'bold'
+    }
 });
 
 export default useStyles;

@@ -14,7 +14,6 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import EducationContactIcon from 'commons/Icons/EducationContactIcon';
 import useContactFields, {COMPLETE_STATUS} from 'Utils/vendor/useContactFields';
 
 import useStyles from './ContactQuestioningStyles';
@@ -25,7 +24,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
     const { interactedContact, updateInteractedContact, contactStatuses, saveContact } = props;
 
     const {alertWarning} = useCustomSwal();
-    const { isInvolvedThroughFamily, isInvolvedThroughEducation, isInvolved } = useInvolvedContact();
+    const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
     const [contactStatusInput, setContactStatusInput] = React.useState<string>('');
@@ -100,9 +99,7 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
             </Grid>
             <Grid container item xs={10} direction='row-reverse' alignItems='center' justify='space-evenly'>
                 {
-                    isInvolved(interactedContact.involvementReason) &&
-                    (isInvolvedThroughFamily(interactedContact.involvementReason) ? <FamilyContactIcon/>
-                    : isInvolvedThroughEducation(interactedContact.involvementReason) && <EducationContactIcon/>)
+                    isInvolvedThroughFamily(interactedContact.involvementReason) && <FamilyContactIcon/>
                 }
                 <Typography variant='body2'>
                     <b>שם פרטי:</b> {interactedContact.firstName}

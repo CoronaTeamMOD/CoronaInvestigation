@@ -22,6 +22,7 @@ export enum TableHeadersNames {
     wasInvestigationTransferred = 'wasInvestigationTransferred',
     transferReason = 'transferReason',
     groupId = 'groupId',
+    groupReason = 'groupReason',
     canFetchGroup = 'canFetchGroup'
 }
 
@@ -52,6 +53,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.transferReason]: '',
     [TableHeadersNames.groupId]: '',
     [TableHeadersNames.canFetchGroup]: '',
+    [TableHeadersNames.groupReason]: '',
 }
 
 export const adminCols: string[] = [
@@ -105,4 +107,5 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.transferReason]: false,
     [TableHeadersNames.groupId]: false,
     [TableHeadersNames.canFetchGroup]: false,
+    [TableHeadersNames.groupReason]: false,
 }

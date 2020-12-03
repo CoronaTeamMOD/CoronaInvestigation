@@ -17,8 +17,8 @@ export const CREATE_CONTACT_EVENT = gql`
 `;
 
 export const DELETE_CONTACT_EVENT = gql`
-    mutation deleteContactEvent($contactEventIdToDelete: Int!) {
-        deleteContactEventById(input: {id: $contactEventIdToDelete}) {
+    mutation deleteContactEvent($contactEventId: Int!) {
+        deleteContactEventById(input: {id: $contactEventId}) {
             clientMutationId
         }
     }
