@@ -7,7 +7,7 @@ import TypePreventiveTextField from '../TypingPreventionTextField/TypingPreventi
 const errorMessage = 'השדה יכול להכיל רק אותיות ומספרים';
 const maxLengthErrorMessage = 'השדה יכול להכיל 50 תוים בלבד';
 
-const stringAlphanum = yup
+export const stringAlphanum = yup
   .string()
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\s]*$/, errorMessage)
   .max(50, maxLengthErrorMessage);

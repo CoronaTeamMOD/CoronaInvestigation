@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
+import React, { useMemo, useState, useRef } from 'react';
 import { Autocomplete, Pagination } from '@material-ui/lab';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box
+    Slide, Box, InputAdornment
 } from '@material-ui/core';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Help } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Help, Search } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -24,6 +24,8 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
 
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
@@ -47,6 +49,8 @@ const hasNoSourceOrganization = 'לא שויך למסגרת';
 const hasNoDesk = 'לא שויך לדסק';
 const complexInvestigationMessage = 'חקירה מורכבת';
 const noPriorityMessage = 'חסר תעדוף';
+const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם או טלפון...';
+const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const defaultInvestigator = {
     id: '',
@@ -88,6 +92,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
     const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]);
     const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
+    const [searchBarQuery, setSearchBarQuery] = useState<string>('');
+    const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
 
@@ -356,13 +362,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
                 return (
                     <>
-                        {(!wasInvestigationFetchedByGroup) && 
+                        {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
                                 markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
-                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} 
+                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)}
                             className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
-                        {indexedRow.canFetchGroup && 
+                        {indexedRow.canFetchGroup &&
                         <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
                             <IconButton onClick={(event) => {
                                 event.stopPropagation();
@@ -393,6 +399,22 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const closeFilterRow = () => setShowFilterRow(false);
 
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
+
+    const clearSearchBarQuery = () => {
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](''));
+        setSearchBarQuery('');
+    }
+
+    const onSearchBarType = (typedInQuery: string) => {
+
+        if (stringAlphanum.isValidSync(typedInQuery)) {
+            setSearchBarQuery(typedInQuery)
+            !isSearchBarValid &&
+            setIsSearchBarValid(true);
+        } else {
+            setIsSearchBarValid(false);
+        }
+    }
 
     const markRow = async (epidemiologyNumber: number, groupId: string) => {
         const epidemiologyNumberIndex = checkedRowsIds.findIndex(checkedRow => epidemiologyNumber === checkedRow);
@@ -439,6 +461,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
         setFilterByDesks(selectedDesks);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
+    }
+
+    const onSearchClick = () => {
+        phoneAndIdentityNumberRegex.test(searchBarQuery) ?
+            handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](searchBarQuery)) :
+            handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](searchBarQuery));
     }
 
     const filterIconByToggle = () => {
@@ -498,11 +526,37 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             </Grid>
             <Grid className={classes.content}>
                 <div className={classes.tableHeaderRow}>
-
                     <Typography color='primary' className={classes.counterLabel} >
                         {counterDescription}
                     </Typography>
                     <Box justifyContent='flex-end'>
+                        <TextField
+                            className={classes.searchBar}
+                            value={searchBarQuery}
+                            onChange={event => onSearchBarType(event.target.value)}
+                            onKeyPress={event => {
+                                event.key === 'Enter' &&
+                                    onSearchClick();
+                            }}
+                            label={isSearchBarValid ? searchBarLabel : searchBarError}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position='end'>
+                                        {
+                                            Boolean(searchBarQuery) &&
+                                                <IconButton className={classes.searchBarIcons} onClick={clearSearchBarQuery}>
+                                                    <Close/>
+                                                </IconButton>
+                                        }
+                                        <IconButton className={classes.searchBarIcons} onClick={onSearchClick}>
+                                            <Search />
+                                        </IconButton>
+                                    </InputAdornment>
+
+                                ),
+                            }}
+                            error={!isSearchBarValid}
+                        />
                         <Button
                             color='primary'
                             className={classes.filterButton}

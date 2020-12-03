@@ -39,7 +39,7 @@ const minFullNameLengthToSearch = 2;
 const minNumbersLengthToSearch = 4;
 const invalidAge = -1;
 
-const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
+export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {
   const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, coronaTestDate, } = props;

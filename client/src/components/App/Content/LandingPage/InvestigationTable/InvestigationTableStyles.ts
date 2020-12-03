@@ -94,6 +94,11 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         justifyContent: 'flex-end',
         direction: 'ltr'
     },
+    searchButton: {
+        fontWeight: 600,
+        justifyContent: 'flex-end',
+        direction: 'ltr'
+    },
     autocompleteInput: {
         paddingRight: 'unset' + '!important',
         padding: '1vh 0',
@@ -154,6 +159,13 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     pagination: {
         marginTop: '0'
+    },
+    searchBar: {
+        justifyContent: 'flex-end',
+        width: '20vw'
+    },
+    searchBarIcons: {
+        marginRight: '-1vw'
     },
     horizontalSticky: {
         left: 'unset'
