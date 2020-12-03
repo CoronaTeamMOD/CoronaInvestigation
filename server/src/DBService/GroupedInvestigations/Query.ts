@@ -48,6 +48,19 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
       userByCreator {
         id
         userName
+        countyByInvestigationGroup {
+          displayName
+          districtByDistrictId {
+            displayName
+          }
+          id
+        }
+      }
+      investigationGroupByGroupId {
+        investigationGroupReasonByReason {
+          displayName
+        }
+        otherReason
       }
     }
   }
