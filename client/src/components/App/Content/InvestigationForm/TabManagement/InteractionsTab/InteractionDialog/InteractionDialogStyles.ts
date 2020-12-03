@@ -28,7 +28,8 @@ const useStyles = makeStyles({
         justifyContent: 'space-between'
     },
     changeEventSubFormButton: {
-        color: '#107F9B'
+        color: '#107F9B',
+        fontWeight: 'bold'
     }
 });
 
