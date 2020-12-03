@@ -406,7 +406,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const onSearchBarType = (typedInQuery: string) => {
-
         if (stringAlphanum.isValidSync(typedInQuery)) {
             setSearchBarQuery(typedInQuery)
             !isSearchBarValid &&
