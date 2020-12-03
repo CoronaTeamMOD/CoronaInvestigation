@@ -32,8 +32,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
-        });
-        timeout(1500).then(() => {
+        }).then(() => {
             const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
             const closingBroadcastMessage : BroadcastMessage = {
                 message: 'Investigation closed',
