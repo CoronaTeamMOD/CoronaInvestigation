@@ -19,10 +19,9 @@ const FamilyMembersTable: React.FC<Props> = (props: Props) => {
     const FamilyTableHeadersWithCheckbox = [''].concat(Object.values(FamilyContactsTableHeaders));
 
     useEffect(() => {
-        familyMembers.map((familyMember: InvolvedContact) => ({
-            ...familyMember,
-            selected: false
-        }));
+        familyMembers.forEach((familyMember: InvolvedContact) => {
+            familyMember.selected = false;
+        });
     }, []);
 
     const selectRow = (selectedFamilyMember: InvolvedContact) => {
