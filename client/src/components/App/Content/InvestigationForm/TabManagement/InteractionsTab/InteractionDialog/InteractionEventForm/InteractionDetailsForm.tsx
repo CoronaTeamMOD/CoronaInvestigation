@@ -59,7 +59,7 @@ const InteractionDetailsForm = (props: Props) => {
     };
 
     const addFamilyMemberContacts = (contacts: Contact[]) => {
-        familyMembers?.map((familyMember: InvolvedContact) => {
+        familyMembers.forEach((familyMember: InvolvedContact) => {
             if (familyMember.selected) {
                 const familyContact: Contact = {
                     firstName: familyMember.firstName,

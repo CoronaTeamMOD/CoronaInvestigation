@@ -10,7 +10,6 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InvolvedContact from 'models/InvolvedContact';
-import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import EducationContactIcon from 'commons/Icons/EducationContactIcon';
@@ -44,9 +43,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
-    const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableDeleteContact = isContactComplete || shouldDisableContact(contact.creationTime) || (contact.involvedContactId && contact.involvedContactId !== null) as boolean;
-    const { isInvolved, isInvolvedThroughFamily, isInvolvedThroughEducation } = useInvolvedContact();
+    const { isInvolved, isInvolvedThroughFamily, isInvolvedThroughEducation, shouldDisableDeleteContact } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -184,7 +181,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             <div className={classes.deleteIconDiv}>
                 <CompletedQuestioningTooltip>
                     <IconButton
-                        disabled={shouldDisableDeleteContact}
+                        disabled={shouldDisableDeleteContact(isContactComplete, contact)}
                         test-id='deleteContactLocation'
                         onClick={() => {
                             contact.serialId && onDeleteContactClick(contact.serialId, eventId)

@@ -39,7 +39,9 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     const isFieldDisabled = (contactId: Contact['serialId']) => !!completedContacts.find(contact => contact.serialId === contactId);
     
     const { shouldDisableContact } = useStatusUtils();
-    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime) || interaction.contacts.some((contact: Contact) => contact.involvedContactId !== null);
+    
+    const areThereInvolvedContacts = interaction.contacts.some((contact: Contact) => contact.involvedContactId !== null);
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime) || areThereInvolvedContacts;
 
     return (
         <Card className={classes.container}>
