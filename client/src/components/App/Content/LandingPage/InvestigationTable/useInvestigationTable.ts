@@ -394,7 +394,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, isInInvestigations, currentPage]);
+    }, [isLoggedIn, isInInvestigations, currentPage, orderBy, filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
