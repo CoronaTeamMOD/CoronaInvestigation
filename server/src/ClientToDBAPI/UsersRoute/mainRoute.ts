@@ -147,10 +147,10 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
         workflow: 'change county for grouped investigatios',
         user: response.locals.user.id,
     });
-    let userAdmin = 'admin.group' + request.body.county;
+    let newInvestigator = 'admin.group' + request.body.county;
     const selectedGroups = request.body.groupIds;
     changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {userAdmin, selectedGroups})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups})
     .then((result: any) => {
         if (result?.data && !result.errors) {
             changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
