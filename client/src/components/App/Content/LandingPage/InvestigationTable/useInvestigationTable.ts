@@ -574,18 +574,34 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (result.isConfirmed) {
             changeCountyLogger.info(`confirmed changing county in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
 
-            try {
-                changeCountyLogger.info('performing county change request', Severity.LOW);
-                axios.post('/users/changeCounty', {
-                    epidemiologyNumber: indexedRow.epidemiologyNumber,
-                    updatedCounty: newSelectedCounty?.id,
-                });
-                changeCountyLogger.info('changed the county successfully', Severity.LOW);
-                setSelectedRow(UNDEFINED_ROW);
-                fetchTableData();
-            } catch(error) {
-                changeCountyLogger.error(`couldn't change the county due to ${error}`, Severity.HIGH);
-                alertError(UPDATE_ERROR_TITLE);
+            if(indexedRow.groupId) {
+                try {
+                    changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
+                    axios.post('/users/changeGroupCounty', {
+                        groupIds: [indexedRow.groupId],
+                        county: newSelectedCounty?.id,
+                    });
+                    changeCountyLogger.info(`changed the county successfully for group ${indexedRow.groupId}`, Severity.LOW);
+                    setSelectedRow(UNDEFINED_ROW);
+                    fetchTableData();
+                } catch(error) {
+                    changeCountyLogger.error(`couldn't change the county for group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
+                    alertError(UPDATE_ERROR_TITLE);
+                }    
+            } else {
+                try {
+                    changeCountyLogger.info('performing county change request', Severity.LOW);
+                    axios.post('/users/changeCounty', {
+                        epidemiologyNumber: indexedRow.epidemiologyNumber,
+                        updatedCounty: newSelectedCounty?.id,
+                    });
+                    changeCountyLogger.info('changed the county successfully', Severity.LOW);
+                    setSelectedRow(UNDEFINED_ROW);
+                    fetchTableData();
+                } catch(error) {
+                    changeCountyLogger.error(`couldn't change the county due to ${error}`, Severity.HIGH);
+                    alertError(UPDATE_ERROR_TITLE);
+                }
             }
         } else if (result.isDismissed) {
             changeCountyLogger.info('dismissed changing the county', Severity.LOW);
