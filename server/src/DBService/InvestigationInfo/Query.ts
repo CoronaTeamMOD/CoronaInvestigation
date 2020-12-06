@@ -42,18 +42,8 @@ query InvestigationStaticDetails($investigationId: Int!) {
 }
 `;
 
-export const GET_SUB_STATUSES = gql`
-query GetAllSubStatuses {
-  allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC) {
-    nodes {
-      displayName
-    }
-  }
-}
-`;
-
 export const GET_SUB_STATUSES_BY_STATUS = gql`
-query GetAllSubStatuses($parentStatus: String!) {
+query GetAllSubStatuses($parentStatus: Int!) {
   allInvestigationSubStatuses(orderBy: DISPLAY_NAME_ASC, filter: {parentStatus: {equalTo: $parentStatus}}) {
     nodes {
       displayName

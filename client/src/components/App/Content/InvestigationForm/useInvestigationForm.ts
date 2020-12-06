@@ -8,7 +8,6 @@ import logger from 'logger/logger';
 import Country from 'models/Country';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
-import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
@@ -17,14 +16,15 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setStatuses } from 'redux/Status/statusesActionCreators';
 import { setCountries } from 'redux/Country/countryActionCreators';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
+import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 import { useInvestigationFormOutcome } from './InvestigationFormInterfaces';
-import { LandingPageTimer, defaultUser } from './InvestigationInfo/InvestigationInfoBar';
 
 
 const useInvestigationForm = (): useInvestigationFormOutcome => {
@@ -120,7 +120,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             });
     };
 
-    const fetchSubStatusesByStatus = (parentStatus: string) => {
+    const fetchSubStatusesByStatus = (parentStatus: number) => {
         const subStatusesByStatusLogger = logger.setup({
             workflow: 'Fetching Sub Statuses',
             user: userId,
@@ -148,7 +148,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     statusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
-                    const allStatuses: string[] = result.data;
+                    const allStatuses: InvestigationMainStatus[] = result.data;
                     setStatuses(allStatuses);
                 } else {
                     statusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
@@ -195,7 +195,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             if (result.value) {
                 finishInvestigationLogger.info('launching investigation status request', Severity.LOW);
                 axios.post('/investigationInfo/updateInvestigationStatus', {
-                    investigationMainStatus: InvestigationMainStatus.DONE,
+                    investigationMainStatus: InvestigationMainStatusCodes.DONE,
                     investigationSubStatus: null,
                     statusReason: null,
                     epidemiologyNumber: epidemiologyNumber

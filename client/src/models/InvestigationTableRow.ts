@@ -1,5 +1,6 @@
 import County from './County';
 import Investigator from './Investigator';
+import InvestigationMainStatus from './InvestigationMainStatus';
 
 interface InvestigationTableRow {
     isChecked: boolean;
@@ -7,7 +8,7 @@ interface InvestigationTableRow {
     coronaTestDate: string;
     isComplex: boolean;
     priority: number;
-    mainStatus: string;
+    mainStatus: InvestigationMainStatus;
     subStatus: string;
     fullName: string;
     phoneNumber: string;

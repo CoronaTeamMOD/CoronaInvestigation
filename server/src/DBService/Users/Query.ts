@@ -1,4 +1,5 @@
 import { gql } from 'postgraphile';
+import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
 export const GET_IS_USER_ACTIVE = gql`
     query isUserActive($id: String!){
@@ -34,10 +35,10 @@ query AllGroupUsers($investigationGroup: Int!) {
       serialNumber
       userName
       investigationGroup
-      newInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: "חדשה"}}) {
+      newInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.NEW)}}}) {
         totalCount
       }
-      activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: "בטיפול"}}) {
+      activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}}) {
         totalCount
       }
       userType

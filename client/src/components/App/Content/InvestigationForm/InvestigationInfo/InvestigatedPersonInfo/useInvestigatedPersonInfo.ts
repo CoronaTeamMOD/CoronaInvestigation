@@ -10,7 +10,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
@@ -110,7 +110,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatus.NEW ?
+            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW ? 
             (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
             true;
         }

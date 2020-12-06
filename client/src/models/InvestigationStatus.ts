@@ -1,5 +1,5 @@
 export interface InvestigationStatus {
-    mainStatus: string;
+    mainStatus: number;
     subStatus: string | null;
     statusReason: string | null;
 }

@@ -10,9 +10,10 @@ import StoreStateType from 'redux/storeStateType';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import InvestigatedPatientStaticInfo from 'models/InvestigatedPatientStaticInfo';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setInvestigationStatus } from 'redux/Investigation/investigationActionCreators';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
@@ -50,7 +51,7 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    const statuses = useSelector<StoreStateType, string[]>(state => state.statuses);
+    const statuses = useSelector<StoreStateType, InvestigationMainStatus[]>(state => state.statuses);
     const subStatuses = useSelector<StoreStateType, string[]>(state => state.subStatuses);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
@@ -68,10 +69,10 @@ const InvestigatedPersonInfo = (props: Props) => {
     }, [investigationStatus.subStatus]);
 
     const updatedSubStatuses = useMemo(() =>
-        investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
+        investigationStatus.mainStatus === InvestigationMainStatusCodes.IN_PROCESS ? subStatuses.concat(inProcess) : subStatuses,
         [subStatuses, investigationStatus]);
     
-    const permittedStatuses = statuses.filter((status: string) => status !== InvestigationMainStatus.DONE);
+    const permittedStatuses = statuses.filter(status => status.id !== InvestigationMainStatusCodes.DONE);
 
     const handleLeaveInvestigationClick = (event: React.ChangeEvent<{}>) => {
         if (isEventTrigeredByMouseClicking(event)) {
@@ -99,11 +100,11 @@ const InvestigatedPersonInfo = (props: Props) => {
 
     const isMandatoryInfoMissing: boolean = !birthDate && !fullName && !isLoading;
 
-    const isStatusDisable = (status: string) => {
+    const isStatusDisable = (status: number) => {
         if (userType === UserType.ADMIN || userType === UserType.SUPER_ADMIN) {
-            return status === InvestigationMainStatus.NEW && wasInvestigationReopend
+            return status === InvestigationMainStatusCodes.NEW && wasInvestigationReopend
         }
-        return status === InvestigationMainStatus.NEW;
+        return status === InvestigationMainStatusCodes.NEW;
     };
 
     return (
@@ -156,12 +157,12 @@ const InvestigatedPersonInfo = (props: Props) => {
                                         test-id='currentStatus'
                                         variant='outlined'
                                         label={statusLabel}
-                                        value={investigationStatus.mainStatus as string}
+                                        value={investigationStatus.mainStatus}
                                         onChange={(event) => {
                                             const newStatus = event.target.value as string
                                             if (newStatus) {
                                                 setInvestigationStatus({
-                                                    mainStatus: newStatus,
+                                                    mainStatus: +newStatus,
                                                     subStatus: '',
                                                     statusReason: ''
                                                 });
@@ -169,20 +170,20 @@ const InvestigatedPersonInfo = (props: Props) => {
                                         }}
                                     >
                                         {
-                                            permittedStatuses.map((status: string) => (
+                                            permittedStatuses.map(status => (
                                                 <MenuItem
-                                                    key={status}
-                                                    disabled={isStatusDisable(status)}
-                                                    value={status}>
-                                                    {status}
+                                                    key={status.id}
+                                                    disabled={isStatusDisable(status.id)}
+                                                    value={status.id}>
+                                                    {status.displayName}
                                                 </MenuItem>
                                             ))
                                         }
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE ||
-                                investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS}>
+                            <Collapse in={investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE ||
+                                investigationStatus.mainStatus ===  InvestigationMainStatusCodes.IN_PROCESS}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <FormControl variant='outlined' className={classes.subStatusSelect}>
                                         <InputLabel className={classes.subStatusLabel} id='sub-status-label'>{subStatusLabel}</InputLabel>
@@ -224,7 +225,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                                     </FormControl>
                                 </Grid>
                             </Collapse>
-                            <Collapse in={investigationStatus.mainStatus === InvestigationMainStatus.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
+                            <Collapse in={investigationStatus.mainStatus ===  InvestigationMainStatusCodes.IN_PROCESS && investigationStatus.subStatus !== '' && investigationStatus.subStatus !== inProcess}>
                                 <Grid item className={classes.statusSelectGrid}>
                                     <TextField
                                         className={classes.subStatusSelect}
@@ -297,7 +298,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     {
                         (isDeceased ||
-                            (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                            (investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED)) &&
                         <ComplexityIcon tooltipText='המאומת נפטר' />
                     }
@@ -307,7 +308,7 @@ const InvestigatedPersonInfo = (props: Props) => {
                     />
                     {
                         (isCurrentlyHospitalized ||
-                            (investigationStatus.mainStatus === InvestigationMainStatus.CANT_COMPLETE &&
+                            (investigationStatus.mainStatus ===  InvestigationMainStatusCodes.CANT_COMPLETE &&
                                 investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED)) &&
                         <ComplexityIcon tooltipText='המאומת מאושפז' />
                     }

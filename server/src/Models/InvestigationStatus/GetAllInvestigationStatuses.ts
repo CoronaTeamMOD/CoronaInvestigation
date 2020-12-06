@@ -1,13 +1,11 @@
+import InvestigationStatus from './InvestigationMainStatus';
+
 interface GetAllInvestigationStatuses {
     data: {
         allInvestigationStatuses: {
-            nodes: InvestigationStatusName[]
+            nodes: InvestigationStatus[]
         }
     }
-}
-
-interface InvestigationStatusName {
-    displayName: string;
 }
 
 export default GetAllInvestigationStatuses;

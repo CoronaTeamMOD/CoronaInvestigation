@@ -19,8 +19,9 @@ import usePageRefresh from 'Utils/vendor/usePageRefresh';
 import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
@@ -29,7 +30,6 @@ import InvestigatorOption from 'models/InvestigatorOption';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
-
 import {
     TableHeadersNames,
     IndexedInvestigation,
@@ -50,7 +50,7 @@ export const createRowData = (
     coronaTestDate: string,
     isComplex: boolean,
     priority: number,
-    mainStatus: string,
+    mainStatus: InvestigationMainStatus,
     subStatus: string,
     fullName: string,
     phoneNumber: string,
@@ -66,7 +66,7 @@ export const createRowData = (
     groupId: string,
     canFetchGroup: boolean,
     groupReason: string
-): InvestigationTableRow => ({
+    ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
     coronaTestDate,
@@ -95,8 +95,8 @@ export const UNDEFINED_ROW = -1;
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
-export const ALL_STATUSES_FILTER_OPTIONS = 'הכל';
 export const transferredSubStatus = 'נדרשת העברה';
+export const allStatusesOption : InvestigationMainStatus = {id: -1, displayName: 'הכל'};
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
@@ -152,8 +152,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     investigationStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
-                    const allStatuses: string[] = result.data;
-                    allStatuses.unshift(ALL_STATUSES_FILTER_OPTIONS);
+                    const allStatuses: InvestigationMainStatus[] = result.data;
+                    allStatuses.unshift(allStatusesOption);
                     setAllStatuses(allStatuses);
                 } else {
                     investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
@@ -329,7 +329,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     investigation.coronaTestDate,
                                     investigation.isComplex,
                                     investigation.priority,
-                                    investigation.investigationStatusByInvestigationStatus.displayName,
+                                    investigation.investigationStatusByInvestigationStatus,
                                     subStatus,
                                     covidPatient.fullName,
                                     covidPatient.primaryPhone,
@@ -419,7 +419,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if (investigationRow.investigationStatus === InvestigationMainStatus.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
+        if (investigationRow.investigationStatus.id === InvestigationMainStatusCodes.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
             investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
@@ -428,12 +428,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     investigationClickLogger.info('updated investigation start time now sending request to update status', Severity.LOW);
                     try {
                         await axios.post('/investigationInfo/updateInvestigationStatus', {
-                            investigationMainStatus: InvestigationMainStatus.IN_PROCESS,
+                            investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
                             investigationSubStatus: null,
                             epidemiologyNumber: investigationRow.epidemiologyNumber
                         });
                         setInvestigationStatus({
-                            mainStatus: InvestigationMainStatus.IN_PROCESS,
+                            mainStatus: InvestigationMainStatusCodes.IN_PROCESS,
                             subStatus: null,
                             statusReason: null
                         });
@@ -452,7 +452,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else {
             investigationClickLogger.info(`the investigator got into the investigation, investigated person: ${investigationRow.fullName}, investigator name: ${user.userName}, investigator phone number: ${user.phoneNumber}`, Severity.LOW);
             setInvestigationStatus({
-                mainStatus: investigationRow.investigationStatus,
+                mainStatus: investigationRow.investigationStatus.id,
                 subStatus: investigationRow.investigationSubStatus,
                 statusReason: investigationRow.statusReason
             });
@@ -699,7 +699,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                         investigation.coronaTestDate,
                                         investigation.isComplex,
                                         investigation.priority,
-                                        investigation.investigationStatusByInvestigationStatus.displayName,
+                                        investigation.investigationStatusByInvestigationStatus,
                                         subStatus,
                                         covidPatient.fullName,
                                         covidPatient.primaryPhone,

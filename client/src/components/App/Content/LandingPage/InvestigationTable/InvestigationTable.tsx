@@ -20,12 +20,12 @@ import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
-import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
+import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
@@ -34,8 +34,9 @@ import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
-import useInvestigationTable, { UNDEFINED_ROW, ALL_STATUSES_FILTER_OPTIONS } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -86,11 +87,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allCounties, setAllCounties] = useState<Map<number, County>>(new Map());
     const [order, setOrder] = useState<Order>(SortOrder.asc);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
-    const [allStatuses, setAllStatuses] = useState<string[]>([]);
+    const [allStatuses, setAllStatuses] = useState<InvestigationMainStatus[]>([]);
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<string[]>([]);
+    const [filterByStatuses, setFilterByStatuses] = useState<InvestigationMainStatus[]>([]);
     const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
     const [searchBarQuery, setSearchBarQuery] = useState<string>('');
     const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
@@ -352,13 +353,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
-                return <InvestigationStatusColumn
+                return investigationStatus && <InvestigationStatusColumn
                     investigationStatus={investigationStatus}
                     investigationSubStatus={indexedRow.investigationSubStatus}
                     statusReason={indexedRow.statusReason}
                     epidemiologyNumber={epidemiologyNumber}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
-                />
+                />;
             case TableHeadersNames.multipleCheck:
                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
                 return (
@@ -461,13 +462,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
-        const nextFilterByStatuses = selectedStatuses.includes(ALL_STATUSES_FILTER_OPTIONS) ?
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
+        const nextFilterByStatuses = selectedStatuses.map(status => status.id).includes(allStatusesOption.id) ?
             []
             :
             selectedStatuses;
         setFilterByStatuses(nextFilterByStatuses);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
     }
 
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
@@ -489,8 +490,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         return filterIcon
     }
 
-    const isInvestigationRowClickable = (investigationStatus: string) =>
-        !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
+    const isInvestigationRowClickable = (investigationStatus: InvestigationMainStatus) =>
+        !(user.userType === userType.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
 
     const counterDescription: string = useMemo(() => {
         const adminMessage = `, מתוכן ${unassignedInvestigationsCount} לא מוקצות`;
@@ -595,7 +596,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 disableCloseOnSelect
                                 multiple
                                 options={allStatuses}
-                                getOptionLabel={(option) => option}
+                                getOptionLabel={(option) => option.displayName}
                                 onChange={onSelectedStatusesChange}
                                 value={filterByStatuses}
                                 renderInput={(params) =>
@@ -606,7 +607,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 renderTags={(tags) => {
                                     const additionalTagsAmount = tags.length - 1;
                                     const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                    return tags[0] + additionalDisplay;
+                                    return tags[0].displayName + additionalDisplay;
                                 }}
                             />
                             <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>

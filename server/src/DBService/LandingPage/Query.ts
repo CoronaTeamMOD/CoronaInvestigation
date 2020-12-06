@@ -1,7 +1,7 @@
 import { gql } from "postgraphile";
 
-export const USER_INVESTIGATIONS = (investigationGroup: number) => gql`
-query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter, $unassignedFilter: [InvestigationFilter!]) {
+export const USER_INVESTIGATIONS = gql`
+query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: InvestigationFilter) {
   orderedInvestigations(orderBy: $orderBy, filter: $filter, offset: $offset, first: $size) {
     nodes {
       comment
@@ -29,6 +29,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         }
       }
       investigationStatusByInvestigationStatus {
+        id
         displayName
       }
       investigationSubStatusByInvestigationSubStatus {
@@ -45,9 +46,6 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         otherReason
       }
     }
-    totalCount
-  }
-  unassignedInvestigations: orderedInvestigations(filter: {userByCreator: {id: {equalTo: "admin.group${investigationGroup.toString()}"}}, and: $unassignedFilter}) {
     totalCount
   }
 }
@@ -82,6 +80,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         }
       }
       investigationStatusByInvestigationStatus {
+        id
         displayName
       }
       investigationSubStatusByInvestigationSubStatus {
@@ -144,6 +143,7 @@ export const GET_ALL_INVESTIGATION_STATUS = gql`
 query allInvestigationStatuses {
   allInvestigationStatuses {
     nodes {
+      id
       displayName
     }
   }

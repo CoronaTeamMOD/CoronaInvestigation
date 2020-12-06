@@ -40,6 +40,7 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
         }
       }
       investigationStatusByInvestigationStatus {
+        id
         displayName
       }
       investigationSubStatusByInvestigationSubStatus {

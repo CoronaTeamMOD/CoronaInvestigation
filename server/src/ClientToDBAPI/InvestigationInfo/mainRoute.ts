@@ -4,7 +4,6 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { Severity } from '../../Models/Logger/types';
-import InvestigationMainStatus from '../../Models/InvestigationMainStatus';
 import { GET_INVESTIGATION_INFO, GET_SUB_STATUSES_BY_STATUS, GET_INVESTIGAION_SETTINGS_FAMILY_DATA } from '../../DBService/InvestigationInfo/Query';
 import {
     UPDATE_INVESTIGATION_STATUS,
@@ -15,6 +14,7 @@ import {
     UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
+import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
 
 const errorStatusCode = 500;
 
@@ -100,7 +100,7 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
 
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
-    const currentWorkflow = investigationMainStatus === InvestigationMainStatus.DONE ? 'Ending Investigation' : 'Investigation click';
+    const currentWorkflow = investigationMainStatus === InvestigationMainStatusCodes.DONE ? 'Ending Investigation' : 'Investigation click';
     const updateInvestigationStatusLogger = logger.setup({
         workflow: currentWorkflow,
         user: response.locals.user.id,
@@ -119,7 +119,7 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
         .then((result: any) => {
             if (result?.data && !result.errors) {
                 updateInvestigationStatusLogger.info('the investigation status was updated successfully', Severity.LOW);
-                if (investigationMainStatus === InvestigationMainStatus.DONE) {
+                if (investigationMainStatus === InvestigationMainStatusCodes.DONE) {
                             const investigationEndTime = new Date();
                             updateInvestigationStatusLogger.info(`launching graphql API request to update end time with parameters: ${JSON.stringify({
                                 epidemiologyNumber,
@@ -183,11 +183,17 @@ investigationInfo.get('/subStatuses/:parentStatus', (request: Request, response:
         workflow: 'GraphQL GET subStatuses request to the DB',
     });
     graphqlRequest(GET_SUB_STATUSES_BY_STATUS, response.locals, {
-        parentStatus: request.params.parentStatus
+        parentStatus: +request.params.parentStatus
     })
         .then((result: any) => {
-            subStatusesLogger.info('GraphQL GET subStatuses request to the DB', Severity.LOW);
-            response.send(result)
+            if (result?.data?.allInvestigationSubStatuses?.nodes) {
+                subStatusesLogger.info('GraphQL GET subStatuses request to the DB', Severity.LOW);
+                response.send(result);
+            } else {
+                const errorMessage = result?.errors && result?.errors[0]?.message;
+                subStatusesLogger.error(`graphqlResult failed ${errorMessage}`, Severity.HIGH);
+                response.status(errorStatusCode).send(`error in fetching data: ${errorMessage}`)    
+            }
         })
         .catch((err: any) => {
             subStatusesLogger.error(`graphqlResult CATCH fail ${err}`, Severity.HIGH);
