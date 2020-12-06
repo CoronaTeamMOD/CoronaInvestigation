@@ -33,12 +33,7 @@ const multipleAssignments = 'הקצאות';
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-<<<<<<< HEAD
-    const { checkedRowsIds, allDesks, allInvestigators, onClose,
-            tableRows, setTableRows, fetchTableData } = props;
-=======
-    const { checkedRowsIds, allDesks, allInvestigators, clearCheckedRows, tableRows, setTableRows } = props;
->>>>>>> fix(multiple investigations): cleares checked checkboxes when action completed
+    const { checkedRowsIds, allDesks, allInvestigators, clearCheckedRows, tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
