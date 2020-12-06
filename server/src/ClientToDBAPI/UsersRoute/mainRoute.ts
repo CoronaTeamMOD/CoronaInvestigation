@@ -9,7 +9,7 @@ import GetAllSourceOrganizations from '../../Models/User/GetAllSourceOrganizatio
 import { adminMiddleWare, superAdminMiddleWare } from '../../middlewares/Authentication';
 import GetAllLanguagesResponse, { Language } from '../../Models/User/GetAllLanguagesResponse';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
-import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER } from '../../DBService/Users/Mutation';
+import { UPDATE_IS_USER_ACTIVE, UPDATE_INVESTIGATOR, CREATE_USER, UPDATE_COUNTY_BY_USER, UPDATE_INVESTIGATOR_BY_GROUP_ID } from '../../DBService/Users/Mutation';
 import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
@@ -114,6 +114,25 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
     }).catch(err => {
         changeInvestigatorLogger.error(`querying the graphql API failed du to ${err}`, Severity.HIGH);
         response.sendStatus(RESPONSE_ERROR_CODE);
+    });
+});
+
+usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, response: Response) => {
+    const changeGroupInvestigatorLogger = logger.setup({
+        workflow: 'change investigator for grouped investigatios',
+        user: response.locals.user.id,
+    });
+    const user = request.body.user;
+    const groupId = request.body.groupId;
+    changeGroupInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {user, groupId})
+    .then((result: any) => {
+        changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${groupId}`, Severity.LOW);
+        response.send(result);
+    })
+    .catch(error => {
+        changeGroupInvestigatorLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
+        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${groupId}`);
     });
 });
 
