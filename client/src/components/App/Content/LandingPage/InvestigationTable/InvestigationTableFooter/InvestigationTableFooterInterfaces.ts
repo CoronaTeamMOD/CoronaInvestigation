@@ -1,9 +1,10 @@
 import Desk from 'models/Desk';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 export interface InvestigationTableFooterParameters {
-    checkedRowsIds: number[];
+    checkedIndexedRows: IndexedInvestigation[];
     tableRows: InvestigationTableRow[];
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     setOpenDesksDialog: React.Dispatch<React.SetStateAction<boolean>>;

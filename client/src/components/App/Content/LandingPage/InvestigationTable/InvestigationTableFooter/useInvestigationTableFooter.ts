@@ -16,7 +16,7 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedRowsIds, tableRows, setTableRows, onDialogClose, fetchTableData } = parameters;
+            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -31,7 +31,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
         const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
-            checkedRowsIds.includes(row.epidemiologyNumber) ? 
+            checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(row.epidemiologyNumber) ? 
             {...row, 
                 [newValueFieldName]: newValue, 
                 transferReason
@@ -41,6 +41,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     }
 
     const handleConfirmDesksDialog = (updatedDesk: Desk, transferReason: string) => {
+        const checkedRowsIds = checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber);
         const switchDeskLogger = logger.setup({
             workflow: 'Switch desk',
             investigation: checkedRowsIds.join(', '),
@@ -72,6 +73,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     }
 
     const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
+        const checkedRowsIds = checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber);
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Switch investigator',
             investigation: checkedRowsIds.join(', '),
@@ -114,7 +116,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             if (result.value) {
                 const groupIdsToDisbandLogger = logger.setup({
                     workflow: `disband group ids ${groupIds}`,
-                    investigation: checkedRowsIds.join(', '),
+                    investigation: checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).join(', '),
                     user: userId
                 });
                 groupIdsToDisbandLogger.info('launching disband group ids request', Severity.LOW);

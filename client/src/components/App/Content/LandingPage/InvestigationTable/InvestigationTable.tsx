@@ -36,7 +36,7 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
 
 export const defaultOrderBy = 'defaultOrder';
@@ -85,7 +85,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
 
-    const [checkedRowsIds, setCheckedRowsIds] = useState<number[]>([]);
+    const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
     const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
@@ -143,7 +143,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchInvestigationsByGroupId, fetchTableData
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
-        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
+        setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, 
         investigationColor
     });
 
@@ -151,7 +151,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
-    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
+    const isRowSelected = (epidemiologyNumber: number) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(epidemiologyNumber);
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
         switch (key) {
@@ -178,7 +178,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         }
         setSelectedRow(epidemiologyNumber);
-        setCheckedRowsIds([]);
+        setCheckedIndexedRows([]);
     }
 
     const CustomPopper = (props: any) => {
@@ -396,7 +396,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
-                                markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
+                                markRow(indexedRow);
                             }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)}
                             className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
@@ -456,31 +456,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
     }
 
-    const markRow = async (epidemiologyNumber: number, groupId: string) => {
-        const epidemiologyNumberIndex = checkedRowsIds.findIndex(checkedRow => epidemiologyNumber === checkedRow);
+    const markRow = async (indexedRow: IndexedInvestigation) => {
+        const epidemiologyNumberIndex = checkedIndexedRows.findIndex(checkedRow => indexedRow.epidemiologyNumber === checkedRow.epidemiologyNumber);
         if (epidemiologyNumberIndex !== -1) {
-            const gropuedInvestigationsById = allGroupedInvestigations.get(groupId)
+            const gropuedInvestigationsById = allGroupedInvestigations.get(indexedRow.groupId as string)
             if (gropuedInvestigationsById) {
                 let checkedGroupRows: number[] = []
                 gropuedInvestigationsById.forEach(row => {
                     checkedGroupRows.push(row.epidemiologyNumber)
                 })
-                setCheckedRowsIds(checkedRowsIds.filter(rowId => checkedGroupRows.indexOf(rowId) === -1));
+                setCheckedIndexedRows(checkedIndexedRows.filter(checkedRow => checkedGroupRows.indexOf(checkedRow.epidemiologyNumber as number) === -1));
             } else {
-                setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epidemiologyNumber));
+                setCheckedIndexedRows(checkedIndexedRows.filter(checkedRow => checkedRow.epidemiologyNumber !== indexedRow.epidemiologyNumber));
             }
         } else {
-            if (groupId) {
-                if (!allGroupedInvestigations.get(groupId)) {
-                    await fetchInvestigationsByGroupId(groupId)
+            if (indexedRow.groupId) {
+                if (!allGroupedInvestigations.get(indexedRow.groupId as string)) {
+                    await fetchInvestigationsByGroupId(indexedRow.groupId as string)
                 }
-                let checkedGroupRows: number[] = []
-                allGroupedInvestigations.get(groupId)?.forEach(row => {
-                    checkedGroupRows.push(row.epidemiologyNumber)
+                let checkedGroupRows: IndexedInvestigation[] = []
+                allGroupedInvestigations.get(indexedRow.groupId as string)?.forEach(row => {
+                    checkedGroupRows.push(convertToIndexedRow(row));
                 })
-                setCheckedRowsIds([...checkedRowsIds, ...checkedGroupRows]);
+                setCheckedIndexedRows([...checkedIndexedRows, ...checkedGroupRows]);
             } else {
-                setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
+                setCheckedIndexedRows([...checkedIndexedRows, indexedRow]);
             }
         }
     }
@@ -753,12 +753,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     className={classes.pagination}
                 />
             </Grid>
-            <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit>
+            <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     allInvestigators={getFilteredUsersOfCurrentCounty()}
-                    checkedRowsIds={checkedRowsIds}
+                    checkedIndexedRows={checkedIndexedRows}
                     allDesks={allDesks}
-                    onDialogClose={() => setCheckedRowsIds([])}
+                    onDialogClose={() => setCheckedIndexedRows([])}
                     tableRows={tableRows}
                     setTableRows={setTableRows}
                     fetchTableData={fetchTableData}

@@ -11,7 +11,6 @@ import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationT
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
-    checkedRowsIds: number[];
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;

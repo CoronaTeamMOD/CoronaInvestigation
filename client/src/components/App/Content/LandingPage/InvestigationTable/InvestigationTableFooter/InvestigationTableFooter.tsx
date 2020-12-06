@@ -13,6 +13,7 @@ import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
 import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
+import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -34,7 +35,7 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedRowsIds, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData } = props;
+    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -51,18 +52,16 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
-    } = useInvestigationTableFooter({
-        setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-        checkedRowsIds, tableRows, setTableRows, fetchTableData, onDialogClose
-    })
+    } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
+                                    checkedIndexedRows, tableRows, setTableRows, fetchTableData, onDialogClose });
 
     const classes = useStyle(isScreenWide)();
 
-    const isSingleInvestigation = checkedRowsIds.length === 1;
-
+    const isSingleInvestigation = checkedIndexedRows.length === 1;
+    
     const checkedInvestigations: InvestigationTableRow[] = useMemo(() => {
-        return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
-    }, [tableRows, checkedRowsIds])
+        return tableRows.filter((tableRow: InvestigationTableRow) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(tableRow.epidemiologyNumber));
+    }, [tableRows, checkedIndexedRows])
 
     const disbandAction: DisbandAction = useMemo(() => {
         if (checkedInvestigations.find((investigation: InvestigationTableRow) => investigation.groupId === null)) {
@@ -122,7 +121,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         <>
             <Card className={classes.card} ref={ref}>
                 <div className={classes.avatar}>
-                    <Typography>{isSingleInvestigation ? singleInvestigation : checkedRowsIds.length}</Typography>
+                    <Typography>{isSingleInvestigation ? singleInvestigation : checkedIndexedRows.length}</Typography>
                     <Typography>{isSingleInvestigation ? 'אחת' : multipleInvestigations}</Typography>
                 </div>
                 {cardActions.map(cardAction => <FooterAction
@@ -163,7 +162,7 @@ export default InvestigationTableFooter;
 
 interface Props {
     onDialogClose: () => void;
-    checkedRowsIds: number[];
+    checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
