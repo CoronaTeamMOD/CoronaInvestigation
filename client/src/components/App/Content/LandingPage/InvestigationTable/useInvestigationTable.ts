@@ -498,51 +498,54 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const onInvestigatorChange = (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
+    const onInvestigatorChange = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Change Investigation Investigator',
             user: user.id,
             investigation: epidemiologyNumber
         });
 
-        if (selectedInvestigator && newSelectedInvestigator.value !== '')
+        if (selectedInvestigator && newSelectedInvestigator.value !== '') {
             changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-        alertWarning(`<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
+        }
+
+        const result = await alertWarning(
+            `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
             showCancelButton: true,
             cancelButtonText: 'לא',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.post('/users/changeInvestigator', {
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await axios.post('/users/changeInvestigator', {
                     epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                     user: newSelectedInvestigator.id
-                }
-                ).then(() => timeout(1900).then(() => {
-                    changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW)
-                    setRows(rows.map((investigation: InvestigationTableRow) => (
-                        investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
-                            {
-                                ...investigation,
-                                investigator: {
-                                    id: newSelectedInvestigator.id,
-                                    userName: newSelectedInvestigator.value.userName
-                                }
-                            }
-                            : investigation
-                    )))
-                    setUnassignedInvestigationsCount(unassignedInvestigationsCount - 1);
-                })).catch((error) => {
-                    changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
-                    alertError(UPDATE_ERROR_TITLE);
-                })
-            } else if (result.isDismissed) {
-                changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
+                });
+                changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
                 setSelectedRow(UNDEFINED_ROW);
+                setRows(rows.map((investigation: InvestigationTableRow) => (
+                    investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
+                        {
+                            ...investigation,
+                            investigator: {
+                                id: newSelectedInvestigator.id,
+                                userName: newSelectedInvestigator.value.userName
+                            }
+                        }
+                        : investigation
+                )));
+                setUnassignedInvestigationsCount(unassignedInvestigationsCount - 1);
+            } catch(error) {
+                changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
+                alertError(UPDATE_ERROR_TITLE);
             }
-        })
+        } else if (result.isDismissed) {
+            changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
+            setSelectedRow(UNDEFINED_ROW);
+        }
     }
 
     const onCountyChange = (indexedRow: IndexedInvestigation, newSelectedCounty: any) => {
