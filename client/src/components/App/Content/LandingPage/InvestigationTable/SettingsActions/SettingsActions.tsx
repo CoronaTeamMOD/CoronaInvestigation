@@ -28,30 +28,34 @@ const SettingsActions = ({ epidemiologyNumber, groupId, fetchTableData }: Props)
         }
     ]
 
+    const onAnchorClick = (event: React.MouseEvent<HTMLElement>, target: HTMLElement | null) => {
+        event.stopPropagation();
+        setAnchorEl(target);
+    }
+
+    const onActionClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
+        event.stopPropagation();
+        settingsAction[index].onClick();
+    }
+
     return (
         <>
-            <IconButton onClick={(event: React.MouseEvent<HTMLElement>) => {
-                event.stopPropagation();
-                setAnchorEl(event.currentTarget);
-            }}>
+            <IconButton onClick={(event: React.MouseEvent<HTMLElement>) => onAnchorClick(event, event.currentTarget)}>
                 <MoreVert color='primary'/>
             </IconButton>
             <Menu
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}
                 keepMounted
-                onClose={(event: React.MouseEvent<HTMLElement>) => { event.stopPropagation(); setAnchorEl(null) }}
+                onClose={(event: React.MouseEvent<HTMLElement>) => onAnchorClick(event, null)}
             >
                 {
-                    settingsAction.map((action: settingsAction) => {
+                    settingsAction.map((action: settingsAction, index: number) => {
                         return (
                             <MenuItem
                                 key={action.key}
                                 disabled={action.disabled}
-                                onClick={(event: React.MouseEvent<HTMLElement>) => {
-                                    event.stopPropagation();
-                                    action.onClick()
-                                }}
+                                onClick={(event: React.MouseEvent<HTMLElement>) => onActionClick(event, index)}
                             >
                                 {React.createElement(action.icon)}
                                 <Typography>{action.displayTitle}</Typography>
