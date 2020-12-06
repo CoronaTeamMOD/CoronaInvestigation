@@ -46,15 +46,17 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
                         >
                             ביטול
                         </Button>
-                        <Tooltip open={!methods.formState.isValid} title='יש לבחור סיבה'>
-                            <Button
-                                type='submit'
-                                disabled={!methods.formState.isValid}
-                                variant='contained' 
-                                color='primary'
-                            >
-                                אישור
-                            </Button>
+                        <Tooltip title={!methods.formState.isValid ? 'יש לבחור סיבה': ''}>
+                            <span>
+                                <Button
+                                    type='submit'
+                                    disabled={!methods.formState.isValid}
+                                    variant='contained' 
+                                    color='primary'
+                                >
+                                    אישור
+                                </Button>
+                            </span>
                         </Tooltip>
                     </DialogActions>
                 </form>
