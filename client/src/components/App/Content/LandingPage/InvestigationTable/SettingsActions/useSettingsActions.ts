@@ -35,8 +35,8 @@ const useSettingsActions = ({ setAnchorEl, fetchTableData, fetchInvestigationsBy
                 .then(() => {
                     excludeInvestigationFromGroupLogger.info('investigation was excluded from group successfully', Severity.LOW);
                     setAnchorEl(null);
-                    fetchTableData();
                     fetchInvestigationsByGroupId(groupId);
+                    fetchTableData();
                 })
                 .catch(err => {
                     excludeInvestigationFromGroupLogger.error(`investigation was failed to excluded from group due to ${err}`, Severity.HIGH);
