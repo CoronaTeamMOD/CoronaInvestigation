@@ -502,7 +502,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Change Investigation Investigator',
             user: user.id,
-            investigation: epidemiologyNumber
+            investigation: +indexedRow.epidemiologyNumber
         });
 
         if (selectedInvestigator && newSelectedInvestigator.value !== '')
@@ -549,7 +549,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
-            investigation: epidemiologyNumber
+            investigation: +indexedRow.epidemiologyNumber
         });
 
         if (selectedInvestigator && newSelectedCounty.value !== '')
@@ -587,7 +587,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const changeDeskLogger = logger.setup({
             workflow: 'Change Investigation Desk',
             user: user.id,
-            investigation: epidemiologyNumber
+            investigation: +indexedRow.epidemiologyNumber
         });
 
         if (selectedInvestigator && newSelectedDesk.deskName !== '' && newSelectedDesk.deskName !== indexedRow.investigationDesk) {
