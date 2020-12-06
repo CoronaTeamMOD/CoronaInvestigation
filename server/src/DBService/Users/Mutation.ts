@@ -21,6 +21,12 @@ mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $trans
   }     
 `;
 
+export const UPDATE_INVESTIGATOR_BY_GROUP_ID = gql`
+mutation updateInvestigatorByGroupId($newInvestigator: String!, $selectedGroup: uuid!) {
+  updateInvestigatorByGroupId(input: {newInvestigator: $newInvestigator, selectedGroup: $selectedGroup})
+}
+`;
+
 export const UPDATE_COUNTY_BY_USER = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!) {
     updateInvestigationByEpidemiologyNumber(

@@ -47,9 +47,3 @@ mutation investigationSettingsFamilyData ($allowUncontactedFamily: Boolean!, $id
   }
 }
 `;
-
-export const UPDATE_INVESTIGATOR_BY_GROUP_ID = gql`
-mutation updateInvestigatorByGroupId($newInvestigator: String!, $selectedGroup: uuid!) {
-  updateInvestigatorByGroupId(input: {newInvestigator: $newInvestigator, selectedGroup: $selectedGroup})
-}
-`;
