@@ -516,34 +516,39 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
         
         if (result.isConfirmed) {
-            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-            try {
-                await axios.post('/users/changeInvestigator', {
-                    epidemiologyNumbers: [indexedRow.epidemiologyNumber],
-                    user: newSelectedInvestigator.id
-                });
-                changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
-                setSelectedRow(UNDEFINED_ROW);
-                setRows(rows.map((investigation: InvestigationTableRow) => (
-                    investigation.epidemiologyNumber === indexedRow.epidemiologyNumber ?
-                        {
-                            ...investigation,
-                            investigator: {
-                                id: newSelectedInvestigator.id,
-                                userName: newSelectedInvestigator.value.userName
-                            }
-                        }
-                        : investigation
-                )));
-                if(currentSelectedInvestigator === 'לא משויך') {
-                    setUnassignedInvestigationsCount(unassignedInvestigationsCount - 1);
+            changeInvestigatorLogger.info(`the admin approved the investigator change in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
+
+            if(indexedRow.groupId) {
+                try {
+                    changeInvestigatorLogger.info(`performing investigator change request for group ${indexedRow.groupId}`, Severity.LOW);
+                    await axios.post('/users/changeGroupInvestigator', {
+                        groupIds: [indexedRow.groupId],
+                        user: newSelectedInvestigator.id
+                    });
+                    changeInvestigatorLogger.info(`the investigator have been changed successfully for group ${indexedRow.groupId}`, Severity.LOW);
+                    setSelectedRow(UNDEFINED_ROW);
+                    fetchTableData();
+                } catch (error) {
+                    changeInvestigatorLogger.error(`couldn't change investigator of group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
+                    alertError(UPDATE_ERROR_TITLE);
                 }
-            } catch(error) {
-                changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
-                alertError(UPDATE_ERROR_TITLE);
+            } else {
+                try {
+                    changeInvestigatorLogger.info('performing investigator change request', Severity.LOW);
+                    await axios.post('/users/changeInvestigator', {
+                        epidemiologyNumbers: [indexedRow.epidemiologyNumber],
+                        user: newSelectedInvestigator.id
+                    });
+                    changeInvestigatorLogger.info('the investigator have been changed successfully', Severity.LOW);
+                    setSelectedRow(UNDEFINED_ROW);
+                    fetchTableData();
+                } catch(error) {
+                    changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.HIGH);
+                    alertError(UPDATE_ERROR_TITLE);
+                }
             }
         } else if (result.isDismissed) {
-            changeInvestigatorLogger.info('the admin denied the investigator from being switched', Severity.LOW);
+            changeInvestigatorLogger.info('the admin denied the investigator from being changed', Severity.LOW);
             setSelectedRow(UNDEFINED_ROW);
         }
     }

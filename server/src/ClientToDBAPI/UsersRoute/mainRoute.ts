@@ -122,17 +122,17 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
         workflow: 'change investigator for grouped investigatios',
         user: response.locals.user.id,
     });
-    const user = request.body.user;
-    const groupId = request.body.groupId;
+    const newInvestigator = request.body.user;
+    const selectedGroups = request.body.groupIds;
     changeGroupInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {user, groupId})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups})
     .then((result: any) => {
-        changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${groupId}`, Severity.LOW);
+        changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
         response.send(result);
     })
     .catch(error => {
         changeGroupInvestigatorLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
-        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${groupId}`);
+        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
     });
 });
 
