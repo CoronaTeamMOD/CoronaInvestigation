@@ -305,7 +305,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
                             onChange={(event, newSelectedDesk) => {
-                                onDeskChange(indexedRow, newSelectedDesk, indexedRow.investigationDesk)
+                                onDeskChange(indexedRow, newSelectedDesk);
                             }}
                             renderInput={(params) =>
                                 <TextField
