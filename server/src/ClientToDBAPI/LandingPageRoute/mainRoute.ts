@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 import logger from '../../Logger/Logger';
 import { Severity } from '../../Models/Logger/types';
 import { adminMiddleWare } from '../../middlewares/Authentication';
-import { CHANGE_DESK_ID, UPDATE_COUNTY_BY_GROUP_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
+import { CHANGE_DESK_ID, UPDATE_DESK_BY_GROUP_ID } from '../../DBService/LandingPage/Mutation';
 import GetAllInvestigationStatuses from '../../Models/InvestigationStatus/GetAllInvestigationStatuses';
 import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsValid } from '../../GraphqlHTTPRequest';
 import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
@@ -173,27 +173,5 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
     });
 });
 
-landingPageRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, response: Response) => {
-    const changeGroupCountyLogger = logger.setup({
-        workflow: 'change county for grouped investigatios',
-        user: response.locals.user.id,
-    });
-    const county = request.body.county;
-    const selectedGroups = request.body.groupIds;
-    changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_COUNTY_BY_GROUP_ID, response.locals, {county, selectedGroups})
-    .then((result: any) => {
-        if (result?.data && !result.errors) {
-            changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
-            response.send(result);
-        } else {
-            changeGroupCountyLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
-            response.status(errorStatusResponse).json({ message: `failed to change investigator for group ${selectedGroups}` });
-        }
-    })
-    .catch(error => {
-        changeGroupCountyLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
-        response.status(errorStatusResponse).send(`Error while trying to change investigator to group: ${selectedGroups}`);
-    });
-});
+
 export default landingPageRoute;

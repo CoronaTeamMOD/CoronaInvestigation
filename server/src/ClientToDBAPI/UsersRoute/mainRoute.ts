@@ -14,6 +14,7 @@ import {
     GET_IS_USER_ACTIVE, GET_USER_BY_ID, GET_ACTIVE_GROUP_USERS,
     GET_ALL_LANGUAGES, GET_ALL_SOURCE_ORGANIZATION, GET_ADMINS_OF_COUNTY, GET_USERS_BY_DISTRICT_ID, GET_ALL_USER_TYPES, GET_USERS_BY_COUNTY_ID
 } from '../../DBService/Users/Query';
+import { group } from 'console';
 
 const usersRoute = Router();
 const RESPONSE_ERROR_CODE = 500;
@@ -137,6 +138,30 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     })
     .catch(error => {
         changeGroupInvestigatorLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
+        response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
+    });
+});
+
+usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, response: Response) => {
+    const changeGroupCountyLogger = logger.setup({
+        workflow: 'change county for grouped investigatios',
+        user: response.locals.user.id,
+    });
+    let userAdmin = 'admin.group' + request.body.county;
+    const selectedGroups = request.body.groupIds;
+    changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {userAdmin, selectedGroups})
+    .then((result: any) => {
+        if (result?.data && !result.errors) {
+            changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
+            response.send(result);
+        } else {
+            changeGroupCountyLogger.error(`failed to change investigator for group ${selectedGroups} due to: ${JSON.stringify(result)}`, Severity.HIGH);
+            response.status(RESPONSE_ERROR_CODE).json({ message: `failed to change investigator for group ${selectedGroups}` });
+        }
+    })
+    .catch(error => {
+        changeGroupCountyLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
         response.status(RESPONSE_ERROR_CODE).send(`Error while trying to change investigator to group: ${selectedGroups}`);
     });
 });
