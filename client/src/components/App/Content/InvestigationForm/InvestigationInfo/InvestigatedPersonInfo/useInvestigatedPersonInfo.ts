@@ -5,7 +5,6 @@ import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import userType from 'models/enums/UserType';
-import { timeout } from 'Utils/Timeout/Timeout';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
@@ -27,28 +26,47 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const userRole = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
-    
-    const handleInvestigationFinish = async () => {
+
+    const handleInvestigationFinish = () => {
         alertSuccess('בחרת לצאת מהחקירה לפני השלמתה! הנך מועבר לעמוד הנחיתה', {
             timer: 1750,
             showConfirmButton: false
         }).then(() => {
-            const windowTabsBroadcatChannel = new BroadcastChannel(BC_TABS_NAME);
+            const windowTabsBroadcastChannel = new BroadcastChannel(BC_TABS_NAME);
             const closingBroadcastMessage : BroadcastMessage = {
                 message: 'Investigation closed',
                 isInInvestigation: false
             }
-            windowTabsBroadcatChannel.postMessage(closingBroadcastMessage);
+            windowTabsBroadcastChannel.postMessage(closingBroadcastMessage);
             window.close();
         });
     };
 
-    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
+    const updateInvestigationStatus = (epidemiologyNumber: number) => {
+        const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
+        const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
         const updateInvestigationStatusLogger = logger.setup({
             workflow: 'Update Investigation Status',
             user: userId,
             investigation: epidemiologyNumber
         });
+        if (shouldUpdateInvestigationStatus()) {
+            updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
+            axios.post('/investigationInfo/updateInvestigationStatus', {
+                investigationMainStatus: investigationStatus.mainStatus,
+                investigationSubStatus: subStatus !== inProcess ? subStatus : null,
+                statusReason: statusReason,
+                epidemiologyNumber: epidemiologyNumber
+            }).then(() => {
+                updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
+            }).catch((error) => {
+                updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+                alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
+            })
+        }
+    }
+
+    const confirmExitUnfinishedInvestigation = (epidemiologyNumber: number) => {
         if(investigationStatus.subStatus === transferredSubStatus && !investigationStatus.statusReason) {
             alertWarning('שים לב, כדי לצאת מחקירה יש להזין שדה פירוט' , {
                 confirmButtonColor: theme.palette.primary.main,
@@ -64,22 +82,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                 confirmButtonText: 'כן, המשך'
             }).then((result) => {
                 if (result.value) {
-                    updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
-                    const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
-                    const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
-                    if (shouldUpdateInvestigationStatus()) {
-                        axios.post('/investigationInfo/updateInvestigationStatus', {
-                            investigationMainStatus: investigationStatus.mainStatus,
-                            investigationSubStatus: subStatus !== inProcess ? subStatus : null,
-                            statusReason: statusReason,
-                            epidemiologyNumber: epidemiologyNumber
-                        }).then(() => {
-                            updateInvestigationStatusLogger.info('update investigation status request was successful', Severity.LOW);
-                        }).catch((error) => {
-                            updateInvestigationStatusLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
-                            alertError('לא הצלחנו לשמור את השינויים, אנא נסה שוב בעוד כמה דקות');
-                        })
-                    }
+                    updateInvestigationStatus(epidemiologyNumber);
                     if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_DECEASED) {
                         updateIsDeceased(handleInvestigationFinish);
                     } else if (investigationStatus.subStatus === InvestigationComplexityByStatus.IS_CURRENTLY_HOSPITIALIZED) {
@@ -88,7 +91,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
                         handleInvestigationFinish();
                     }
                 }
-                ;
             });
         }
     };
@@ -108,7 +110,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
         const investigatorTocheck = investigationInvestigator || currInvestigatorId;
         let shouldStatusUpdate = userRole === userType.INVESTIGATOR;
         if (!shouldStatusUpdate) {
-            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatus.NEW ? 
+            shouldStatusUpdate = investigationStatus.mainStatus === InvestigationMainStatus.NEW ?
             (userRole !== userType.ADMIN && userRole !== userType.SUPER_ADMIN) || (userId === investigatorTocheck) :
             true;
         }
