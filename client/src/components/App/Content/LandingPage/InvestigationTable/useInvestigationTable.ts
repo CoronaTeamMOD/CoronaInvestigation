@@ -632,18 +632,34 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             if (result.isConfirmed) {
                 changeDeskLogger.info(`confirmed changing desk in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
 
-                try {
-                    changeDeskLogger.info('performing desk change request', Severity.LOW);
-                    await axios.post('/landingPage/changeDesk', {
-                        epidemiologyNumbers: [indexedRow.epidemiologyNumber],
-                        updatedDesk: newSelectedDesk?.id,
-                    });
-                    changeDeskLogger.info('changed the desk successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch(error) {
-                    changeDeskLogger.error(`couldn't change the desk due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
+                if (indexedRow.groupId) {
+                    try {
+                        changeDeskLogger.info(`performing desk change request for group ${indexedRow.groupId}`, Severity.LOW);
+                        axios.post('/landingPage/changeGroupDesk', {
+                            groupIds: [indexedRow.groupId],
+                            desk: newSelectedDesk?.id,
+                        });
+                        changeDeskLogger.info(`changed the desk successfully for group ${indexedRow.groupId}`, Severity.LOW);
+                        setSelectedRow(UNDEFINED_ROW);
+                        fetchTableData();
+                    } catch (error) {
+                        changeDeskLogger.error(`couldn't change the desk for group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
+                        alertError(UPDATE_ERROR_TITLE);
+                    }
+                } else {
+                    try {
+                        changeDeskLogger.info('performing desk change request', Severity.LOW);
+                        await axios.post('/landingPage/changeDesk', {
+                            epidemiologyNumbers: [indexedRow.epidemiologyNumber],
+                            updatedDesk: newSelectedDesk?.id,
+                        });
+                        changeDeskLogger.info('changed the desk successfully', Severity.LOW);
+                        setSelectedRow(UNDEFINED_ROW);
+                        fetchTableData();
+                    } catch (error) {
+                        changeDeskLogger.error(`couldn't change the desk due to ${error}`, Severity.HIGH);
+                        alertError(UPDATE_ERROR_TITLE);
+                    }
                 }
             } else if (result.isDismissed) {
                 changeDeskLogger.info('dismissed changing the desk', Severity.LOW);
