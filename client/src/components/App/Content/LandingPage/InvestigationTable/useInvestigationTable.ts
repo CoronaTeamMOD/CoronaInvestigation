@@ -193,7 +193,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
     }
 
-
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
@@ -483,6 +482,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.statusReason]: row.statusReason,
             [TableHeadersNames.wasInvestigationTransferred]: row.wasInvestigationTransferred,
             [TableHeadersNames.transferReason]: row.transferReason,
+            [TableHeadersNames.settings]: '',
             [TableHeadersNames.groupId]: row.groupId,
             [TableHeadersNames.canFetchGroup]: row.canFetchGroup,
             [TableHeadersNames.groupReason]: row.groupReason,
@@ -669,70 +669,69 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             investigation: epidemiologyNumber
         });
         investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
-        if (!allGroupedInvestigations.get(groupId)) {
-            setIsLoading(true)
-            try {
-                const result = await axios.get('/groupedInvestigations/' + groupId)
-                    if (result?.data && result.headers['content-type'].includes('application/json')) {
-                        investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
-                        const investigationRows: InvestigationTableRow[] = result.data
-                                    .filter((investigation: any) =>
-                                        investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
-                                        investigation?.userByCreator)
-                                    .map((investigation: any) => {
-                                        const patient = investigation.investigatedPatientByInvestigatedPatientId;
-                                        const desk = investigation.desk;
-                                        const covidPatient = patient.covidPatientByCovidPatient;
-                                        const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
-                                        const user = investigation.userByCreator;
-                                        const county = user ? user.countyByInvestigationGroup : '';
-                                        const statusReason = user ? investigation.statusReason : '';
-                                        const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
-                                        const transferReason = user ? investigation.transferReason : '';
-                                        const groupId = user ? investigation.groupId : '';
-                                        const canFetchGroup = false;
-                                        const groupReason =  user ? investigation.investigationGroupReasonByGroupId.reason : ''
-                                        const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
-                                            investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                            '';
-                                        return createRowData(
-                                            investigation.epidemiologyNumber,
-                                            investigation.coronaTestDate,
-                                            investigation.isComplex,
-                                            investigation.priority,
-                                            investigation.investigationStatusByInvestigationStatus.displayName,
-                                            subStatus,
-                                            covidPatient.fullName,
-                                            covidPatient.primaryPhone,
-                                            covidPatient.age,
-                                            patientCity ? patientCity.displayName : '',
-                                            desk,
-                                            county,
-                                            { id: user.id, userName: user.userName },
-                                            investigation.comment,
-                                            statusReason,
-                                            wasInvestigationTransferred,
-                                            transferReason,
-                                            groupId,
-                                            canFetchGroup,
-                                            groupReason
-                                        )
-                                    });
-                        setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
-                    } else {
-                        investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
-                }
-            } catch (err) {
-                alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
-                investigationsByGroupIdLogger.error(err, Severity.HIGH);
-            } finally {
-                setIsLoading(false)
+        setIsLoading(true)
+        try {
+            const result = await axios.get('/groupedInvestigations/' + groupId)
+                if (result?.data && result.headers['content-type'].includes('application/json')) {
+                    investigationsByGroupIdLogger.info('The investigations were fetched successfully', Severity.LOW);
+                    const investigationRows: InvestigationTableRow[] = result.data
+                                .filter((investigation: any) =>
+                                    investigation?.investigatedPatientByInvestigatedPatientId?.covidPatientByCovidPatient &&
+                                    investigation?.userByCreator)
+                                .map((investigation: any) => {
+                                    const patient = investigation.investigatedPatientByInvestigatedPatientId;
+                                    const desk = investigation.desk;
+                                    const covidPatient = patient.covidPatientByCovidPatient;
+                                    const patientCity = (covidPatient && covidPatient.addressByAddress) ? covidPatient.addressByAddress.cityByCity : '';
+                                    const user = investigation.userByCreator;
+                                    const county = user ? user.countyByInvestigationGroup : '';
+                                    const statusReason = user ? investigation.statusReason : '';
+                                    const wasInvestigationTransferred = investigation.wasInvestigationTransferred;
+                                    const transferReason = user ? investigation.transferReason : '';
+                                    const groupId = user ? investigation.groupId : '';
+                                    const canFetchGroup = false;
+                                    const groupReason =  user ? investigation.investigationGroupReasonByGroupId.reason : ''
+                                    const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
+                                        investigation.investigationSubStatusByInvestigationSubStatus.displayName :
+                                        '';
+                                    return createRowData(
+                                        investigation.epidemiologyNumber,
+                                        investigation.coronaTestDate,
+                                        investigation.isComplex,
+                                        investigation.priority,
+                                        investigation.investigationStatusByInvestigationStatus.displayName,
+                                        subStatus,
+                                        covidPatient.fullName,
+                                        covidPatient.primaryPhone,
+                                        covidPatient.age,
+                                        patientCity ? patientCity.displayName : '',
+                                        desk,
+                                        county,
+                                        { id: user.id, userName: user.userName },
+                                        investigation.comment,
+                                        statusReason,
+                                        wasInvestigationTransferred,
+                                        transferReason,
+                                        groupId,
+                                        canFetchGroup,
+                                        groupReason
+                                    )
+                                });
+                    setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
+                } else {
+                    investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
             }
+        } catch (err) {
+            alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
+            investigationsByGroupIdLogger.error(err, Severity.HIGH);
+        } finally {
+            setIsLoading(false)
         }
     }
 
     return {
         tableRows: rows,
+        fetchTableData,
         setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,

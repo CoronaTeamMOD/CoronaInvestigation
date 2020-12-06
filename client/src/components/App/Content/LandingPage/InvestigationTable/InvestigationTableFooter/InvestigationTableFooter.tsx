@@ -33,7 +33,8 @@ const multipleAssignments = 'הקצאות';
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-    const { checkedRowsIds, allDesks, allInvestigators, onClose, tableRows, setTableRows } = props;
+    const { checkedRowsIds, allDesks, allInvestigators, onClose,
+            tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -51,7 +52,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                      checkedRowsIds, tableRows, setTableRows })
+                                      checkedRowsIds, tableRows, setTableRows, fetchTableData })
 
     const classes = useStyle(isScreenWide)();
 
@@ -143,6 +144,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
                 invetigationsToGroup={checkedInvestigations}
+                fetchTableData={fetchTableData}
             />
         </>
     );
@@ -157,4 +159,5 @@ interface Props {
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
+    fetchTableData: () => void;
 }

@@ -7,9 +7,9 @@ import {
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
     Slide, Box, InputAdornment
 } from '@material-ui/core';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Help, Search } from '@material-ui/icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -30,6 +30,7 @@ import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManageme
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
+import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
@@ -102,13 +103,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setDeskAutoCompleteClicked(false);
     }
 
-    const tableContainerRef = React.useRef<HTMLElement>();
-    const investigationColor = React.useRef<Map<string, string>>(new Map())
+    const tableContainerRef = useRef<HTMLElement>();
+    const investigationColor = useRef<Map<string, string>>(new Map())
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount, fetchInvestigationsByGroupId
+        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
+        fetchInvestigationsByGroupId, fetchTableData
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
@@ -372,7 +374,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <IconButton onClick={(event) => {
                                 event.stopPropagation();
                                 openGroupedInvestigation(indexedRow.epidemiologyNumber)
-                                fetchInvestigationsByGroupId(indexedRow.groupId)
+                                if (!allGroupedInvestigations.get(indexedRow.groupId)) {
+                                    fetchInvestigationsByGroupId(indexedRow.groupId)      
+                                }
                             }}>
                                 {isGroupShown ?
                                     <KeyboardArrowDown /> :
@@ -382,6 +386,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         }
                     </>
                 )
+            case TableHeadersNames.settings: 
+                return <SettingsActions
+                            epidemiologyNumber={indexedRow.epidemiologyNumber}
+                            groupId={indexedRow.groupId}
+                            fetchTableData={fetchTableData}
+                            fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
+                       />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
@@ -430,7 +441,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         } else {
             if (groupId) {
-                await fetchInvestigationsByGroupId(groupId)
+                if (!allGroupedInvestigations.get(groupId)) {
+                    await fetchInvestigationsByGroupId(groupId)
+                }
                 let checkedGroupRows: number[] = []
                 allGroupedInvestigations.get(groupId)?.forEach(row => {
                     checkedGroupRows.push(row.epidemiologyNumber)
@@ -702,6 +715,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onClose={() => setCheckedRowsIds([])}
                     tableRows={tableRows}
                     setTableRows={setTableRows}
+                    fetchTableData={fetchTableData}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}

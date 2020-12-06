@@ -25,6 +25,7 @@ export interface useInvestigationTableParameters {
 
 export interface useInvestigationTableOutcome {
     tableRows: InvestigationTableRow[];
+    fetchTableData: () => void;
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;

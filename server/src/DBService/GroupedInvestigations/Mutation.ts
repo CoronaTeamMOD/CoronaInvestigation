@@ -8,6 +8,14 @@ mutation createGroupForInvestigations ($input: CreateGroupedInvestigationsInput!
 }   
 `;
 
+export const EXCLUDE_FROM_GROUP = gql`
+mutation excludeInvestigationFromGroup($investigationToExclude: Int!) {
+  updateInvestigationByEpidemiologyNumber(input: {investigationPatch : { groupId: null }, epidemiologyNumber: $investigationToExclude}) {
+    clientMutationId
+  }
+}
+`;
+
 export const DISBAND_GROUP_IDS = gql`
 mutation disbandGroupIds($groupIds: [UUID]) {
   disbandGroupIds(input:{ groupIds: $groupIds }) {

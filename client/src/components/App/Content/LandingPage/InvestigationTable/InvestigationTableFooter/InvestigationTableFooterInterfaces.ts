@@ -9,6 +9,7 @@ export interface InvestigationTableFooterParameters {
     setOpenDesksDialog: React.Dispatch<React.SetStateAction<boolean>>;
     setOpenInvestigatorsDialog: React.Dispatch<React.SetStateAction<boolean>>;
     setOpenGroupedInvestigations: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchTableData: () => void;
 }
 
 export interface InvestigationTableFooterOutcome {
