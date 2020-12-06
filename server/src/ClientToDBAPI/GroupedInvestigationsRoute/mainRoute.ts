@@ -63,7 +63,7 @@ groupedInvestigationsRoute.post('/exclude', adminMiddleWare, (request: Request, 
         investigation: response.locals.epidemiologynumber
     })
     InvestigationToExcludeLogger.info('launching exclude investigation request', Severity.LOW);
-    graphqlRequest(EXCLUDE_FROM_GROUP, response.locals, { input: investigationToExclude })
+    graphqlRequest(EXCLUDE_FROM_GROUP, response.locals, { investigationToExclude })
     .then(result => {
         if (result?.data && !result.errors) {
             InvestigationToExcludeLogger.info('investigation was excluded from group successfully', Severity.LOW);
