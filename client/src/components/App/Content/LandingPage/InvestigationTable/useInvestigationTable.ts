@@ -514,9 +514,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך'
         });
-        changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-
+        
         if (result.isConfirmed) {
+            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
             try {
                 await axios.post('/users/changeInvestigator', {
                     epidemiologyNumbers: [indexedRow.epidemiologyNumber],
