@@ -189,8 +189,8 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         investigation: response.locals.epidemiologynumber
     });
     deleteContactEventLogger.info('launcing DB request', Severity.LOW);
-    const contactEventIdToDelete = +request.query.contactEventId;
-    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventIdToDelete})
+    const contactEventId = +request.query.contactEventId;
+    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
         .then(result => {
             if (result?.data && !result.errors) {
                 deleteContactEventLogger.info('got response from DB', Severity.LOW);
