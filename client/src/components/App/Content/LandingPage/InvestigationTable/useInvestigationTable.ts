@@ -375,16 +375,52 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
-    const handleFilterChange = (filterBy: any) => {
-        let nextFilterRules = {...filterRules};
-        if (Boolean(Object.values(filterBy)[0])) {
-            nextFilterRules = {
-                ...nextFilterRules,
-                ...filterBy
+    /*
+      return involvedContacts.reduce<GroupedInvolvedGroups>((previous, contact) => {
+            if (contact.involvementReason === InvolvementReason.FAMILY) {
+                return {
+                    familyMembers: [...previous.familyMembers, contact],
+                    educationMembers: previous.educationMembers
+                }
+            } else if (contact.involvementReason === InvolvementReason.EDUCATION) {
+                return {
+                    educationMembers: [...previous.educationMembers, contact],
+                    familyMembers: previous.familyMembers
+                }
             }
-        } else {
-            delete nextFilterRules[Object.keys(filterBy)[0]];
-        }
+            return previous;
+        }, {familyMembers: [], educationMembers: []});
+     */
+    const handleFilterChange = (filterBy: any) => {
+        console.log('handleFilterChange', filterBy);
+        // let nextFilterRules = { ...filterRules };
+        // Object.entries(filterBy).reduce((prevObject, [filterKey, filterValue]) => (Boolean(filterValue) ? prevObject : (prevObject[filterKey] = filterValue, prevObject)), {})
+
+        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey,filterValue ]) => {
+            // if(filterValue === null) {
+            //     return {
+            //         ...previousValue,
+            //         [filterKey]: []
+            //     }
+            // }
+            if (filterValue) {
+                return {
+                    ...previousValue,
+                   [filterKey]: filterValue
+                }
+            }
+            return previousValue;
+        }, filterRules);
+
+        // if (Object.values(filterBy)[0] !== null) {
+        //     nextFilterRules = {
+        //         ...nextFilterRules,
+        //         ...filterBy
+        //     }
+        // } else {
+        //     delete nextFilterRules[Object.keys(filterBy)[0]];
+        // }
+        console.log('filterRules', filterRules, 'nextFilterRules', nextFilterRules);
         setFilterRules(nextFilterRules);
     }
 
