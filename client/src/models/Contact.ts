@@ -10,10 +10,10 @@ interface Contact {
     contactType: number;
     extraInfo?: string;
     contactStatus?: InteractedContact['contactStatus'];
-    creationTime: Date;
+    creationTime?: Date;
     startTime?: Date;
     involvedContactId?: number;
-    involvedContact: InvolvedContact | null;
+    involvedContact?: InvolvedContact | null;
 };
 
 export default Contact;

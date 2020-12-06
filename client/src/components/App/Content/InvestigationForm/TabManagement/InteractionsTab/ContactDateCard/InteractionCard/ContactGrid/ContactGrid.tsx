@@ -39,7 +39,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
 
-    const { isInvolved, isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
+    const { isInvolvedThroughFamily, shouldDisableDeleteContact } = useInvolvedContact();
 
     const CompletedQuestioningTooltip = ({children}: {children: React.ReactElement}) => (
         isContactComplete ?
@@ -54,7 +54,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
     const familyContactsAdditionalFields = () => {
         const { birthDate, isolationCity, additionalPhoneNumber, familyRelationship } = contact.involvedContact as InvolvedContact;
-        return (<>
+        return <>
             <Grid xs={1}/>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
                 <Typography variant='caption'>
@@ -81,7 +81,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                     {familyRelationship || noDataIndication}
                 </Typography>
             </FormInput>
-        </>)
+        </>
     }
     return (
         <>
