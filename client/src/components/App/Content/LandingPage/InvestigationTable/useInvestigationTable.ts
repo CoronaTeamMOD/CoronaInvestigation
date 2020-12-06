@@ -25,6 +25,7 @@ import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationA
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
+import InvestigatorOption from 'models/InvestigatorOption';
 
 import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
@@ -498,16 +499,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const onInvestigatorChange = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => {
+    const onInvestigatorChange = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: InvestigatorOption, currentSelectedInvestigator: string) => {
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Change Investigation Investigator',
             user: user.id,
             investigation: epidemiologyNumber
         });
-
-        if (selectedInvestigator && newSelectedInvestigator.value !== '') {
-            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-        }
 
         const result = await alertWarning(
             `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
@@ -517,8 +514,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך'
         });
-
+        
         if (result.isConfirmed) {
+            changeInvestigatorLogger.info(`the admin approved the investigator switch in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
             try {
                 await axios.post('/users/changeInvestigator', {
                     epidemiologyNumbers: [indexedRow.epidemiologyNumber],
@@ -537,7 +535,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         }
                         : investigation
                 )));
-                setUnassignedInvestigationsCount(unassignedInvestigationsCount - 1);
+                if(currentSelectedInvestigator === 'לא משויך') {
+                    setUnassignedInvestigationsCount(unassignedInvestigationsCount - 1);
+                }
             } catch(error) {
                 changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.LOW);
                 alertError(UPDATE_ERROR_TITLE);
