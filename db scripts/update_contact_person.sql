@@ -51,7 +51,7 @@ begin
 		select trim(nullif((person->'id')::text,'null'),'"')  into identificationNumber;
 		select trim(nullif((person->'identificationType')::text,'null'),'"')  into identificationType;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
-	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;  
+	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;
  		select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;
 		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
 
@@ -69,7 +69,7 @@ begin
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
 	    	identification_type = (case when identificationNumber is null then null
-				 				  	     when identificationType is null then 'ת"ז' 
+				 				  	     when identificationType is null then 'ת"ז'
 				 				  	   else identificationType end)
 		  
 	   from contacted_person
