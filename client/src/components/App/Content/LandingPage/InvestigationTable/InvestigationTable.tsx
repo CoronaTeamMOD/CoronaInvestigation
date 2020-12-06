@@ -374,7 +374,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <IconButton onClick={(event) => {
                                 event.stopPropagation();
                                 openGroupedInvestigation(indexedRow.epidemiologyNumber)
-                                fetchInvestigationsByGroupId(indexedRow.groupId)
+                                if (!allGroupedInvestigations.get(indexedRow.groupId)) {
+                                    fetchInvestigationsByGroupId(indexedRow.groupId)      
+                                }
                             }}>
                                 {isGroupShown ?
                                     <KeyboardArrowDown /> :
@@ -389,6 +391,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             epidemiologyNumber={indexedRow.epidemiologyNumber}
                             groupId={indexedRow.groupId}
                             fetchTableData={fetchTableData}
+                            fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                        />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
@@ -437,7 +440,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         } else {
             if (groupId) {
-                await fetchInvestigationsByGroupId(groupId)
+                if (!allGroupedInvestigations.get(groupId)) {
+                    await fetchInvestigationsByGroupId(groupId)
+                }
                 let checkedGroupRows: number[] = []
                 allGroupedInvestigations.get(groupId)?.forEach(row => {
                     checkedGroupRows.push(row.epidemiologyNumber)

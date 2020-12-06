@@ -12,11 +12,13 @@ interface settingsAction {
     onClick: () => void;
 }
     
-const SettingsActions = ({ epidemiologyNumber, groupId, fetchTableData }: Props) => {
+const SettingsActions = (props: Props) => {
+
+    const { epidemiologyNumber, groupId, fetchTableData, fetchInvestigationsByGroupId } = props;
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const { excludeInvestigationFromGroup } = useSettingsActions({ fetchTableData, setAnchorEl });
+    const { excludeInvestigationFromGroup } = useSettingsActions({ setAnchorEl, fetchTableData, fetchInvestigationsByGroupId });
 
     const settingsAction: settingsAction[]  = [
         {
@@ -24,7 +26,7 @@ const SettingsActions = ({ epidemiologyNumber, groupId, fetchTableData }: Props)
             icon: CallSplit,
             disabled: groupId === null,
             displayTitle: 'הוצא חקירה מקבוצה',
-            onClick: () => excludeInvestigationFromGroup(epidemiologyNumber)
+            onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId)
         }
     ]
 
@@ -72,6 +74,7 @@ interface Props {
     epidemiologyNumber: number;
     groupId: string;
     fetchTableData: () => void;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
 }
 
 export default SettingsActions;
