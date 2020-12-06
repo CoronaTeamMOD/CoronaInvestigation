@@ -16,7 +16,7 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedRowsIds, tableRows, setTableRows, fetchTableData } = parameters;
+            checkedRowsIds, tableRows, setTableRows, clearCheckedRows, fetchTableData } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -24,7 +24,10 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleOpenDesksDialog = () => setOpenDesksDialog(true);
 
-    const handleCloseDesksDialog = () => setOpenDesksDialog(false);
+    const handleCloseDesksDialog = () => {
+        setOpenDesksDialog(false);
+        clearCheckedRows();
+    }
 
     const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
         const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
@@ -63,7 +66,10 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleOpenInvestigatorsDialog = () => setOpenInvestigatorsDialog(true);
 
-    const handleCloseInvestigatorsDialog = () => setOpenInvestigatorsDialog(false);
+    const handleCloseInvestigatorsDialog = () => {
+        setOpenInvestigatorsDialog(false);
+        clearCheckedRows();
+    }
 
     const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
         const changeInvestigatorLogger = logger.setup({
@@ -91,7 +97,10 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleOpenGroupedInvestigations = () => setOpenGroupedInvestigations(true);
 
-    const handleCloseGroupedInvestigations = () => setOpenGroupedInvestigations(false);
+    const handleCloseGroupedInvestigations = () => {
+        setOpenGroupedInvestigations(false);
+        clearCheckedRows();
+    }
 
     const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
         alertWarning(`האם אתה בטוח שברצונך לפרק את ${groupIds.length === 1 ? 'הקבוצה': 'הקבוצות'}?`, {

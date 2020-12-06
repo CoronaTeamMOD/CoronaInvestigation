@@ -33,8 +33,12 @@ const multipleAssignments = 'הקצאות';
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
+<<<<<<< HEAD
     const { checkedRowsIds, allDesks, allInvestigators, onClose,
             tableRows, setTableRows, fetchTableData } = props;
+=======
+    const { checkedRowsIds, allDesks, allInvestigators, clearCheckedRows, tableRows, setTableRows } = props;
+>>>>>>> fix(multiple investigations): cleares checked checkboxes when action completed
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -52,7 +56,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                      checkedRowsIds, tableRows, setTableRows, fetchTableData })
+                                      checkedRowsIds, tableRows, setTableRows, fetchTableData, clearCheckedRows })
 
     const classes = useStyle(isScreenWide)();
 
@@ -124,7 +128,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                                                     disabled={cardAction.disabled}
                                                     errorMessage={cardAction.errorMessage}
                                                 />)}
-                <IconButton onClick={onClose}>
+                <IconButton onClick={clearCheckedRows}>
                     <Close />
                 </IconButton>
             </Card>
@@ -153,7 +157,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 export default InvestigationTableFooter;
 
 interface Props {
-    onClose: () => void;
+    clearCheckedRows: () => void;
     checkedRowsIds: number[];
     allDesks: Desk[];
     allInvestigators: InvestigatorOption[];
