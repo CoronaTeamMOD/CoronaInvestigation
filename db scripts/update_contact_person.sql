@@ -26,8 +26,9 @@ identificationType varchar;
 extraInfo varchar;
 igender varchar;
 contacted_person_id int4;
-person_id int4;
+personId int4;
 contactType int4;
+involvedContactId int4;
 
 begin
 	if contact_event_id is null then
@@ -50,19 +51,10 @@ begin
 		select trim(nullif((person->'id')::text,'null'),'"')  into identificationNumber;
 		select trim(nullif((person->'identificationType')::text,'null'),'"')  into identificationType;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
-	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;
+	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;  
  		select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;
- 	--identificationType
-		if identificationNumber is not null then
-	 	 	if exists(select 1
-				from public.contacted_person cp join person p on cp.person_info = p.id join contact_event ce
-				on ce.id = cp.contact_event
-				where ce.investigation_id = investigationid and p.identification_number = identificationNumber
-					and (cp.id <> contacted_person_id or contacted_person_id is null) and p.identification_number is not null
-				having count(p.identification_number) > 0) then
-					raise exception 'found duplicate ids:%', identificationnumber;
-			end if;
-		end if;
+		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
+
 	    if contacted_person_id is not null then
 	    	raise notice 'UPDATE contacted person';
 			/*update person and contacted person */
@@ -70,33 +62,48 @@ begin
 	    set extra_info = extraInfo,
 		contact_type = contactType
 	    where id = contacted_person_id ;
+	    
 	    update person
 	    set first_name = firstName,
 	    	last_name  = LastName,
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
 	    	identification_type = (case when identificationNumber is null then null
-				 				  	     when identificationType is null then 'ת"ז'
+				 				  	     when identificationType is null then 'ת"ז' 
 				 				  	   else identificationType end)
+		  
 	   from contacted_person
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
+	
+	   else 
+	   		if (involvedContactId is not null) then
+				INSERT INTO public.contacted_person
+				(person_info, contact_event, contact_type, contact_status, creation_time, contacted_person_city, involved_contact_id)
+				select person_id, contact_event_id, contactType, 1, now(), isolation_city, involvedContactId
+				from public.involved_contact
+				where id = involvedContactId;
+				
+				UPDATE public.involved_contact
+				SET contact_type = 1,
+				is_contacted_person = true
+				where id = involvedContactId;
+			else
+				raise notice 'insert contacted person';
+				INSERT INTO public.person(first_name,
+				last_name,phone_number,
+				identification_type,
+				identification_number)
+				select firstName,lastName, phoneNumber,
+						(case when identificationNumber is null then null
+							  when identificationType is null then 'ת"ז'
+							  else identificationType end),
+							  identificationNumber;
 
-	   else
-	    	raise notice 'insert contacted person';
-	    	INSERT INTO public.person(first_name,
-	    	last_name,phone_number,
-	    	identification_type,
-	    	identification_number)
-			select firstName,lastName, phoneNumber,
-					(case when identificationNumber is null then null
-				 		  when identificationType is null then 'ת"ז'
-				 		  else identificationType end),
-				   		  identificationNumber  ;
-
-			person_id := currval('person_id_seq');
-			INSERT INTO public.contacted_person
-			(person_info, contact_event,extra_info, contact_type, contact_status, creation_time)
-			VALUES(person_id, contact_event_id,extraInfo, contactType, 1, now());
+				personId := currval('person_id_seq');
+				INSERT INTO public.contacted_person
+				(person_info, contact_event,extra_info, contact_type, contact_status, creation_time)
+				VALUES(personId, contact_event_id,extraInfo, contactType, 1, now());
+			end if;
 	    end if;
 	end loop;
 end;
