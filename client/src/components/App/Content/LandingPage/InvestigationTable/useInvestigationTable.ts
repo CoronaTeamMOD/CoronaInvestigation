@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { SweetAlertResult } from 'sweetalert2';
 
 import User from 'models/User';
 import theme from 'styles/theme';
@@ -553,39 +554,39 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const onCountyChange = (indexedRow: IndexedInvestigation, newSelectedCounty: any) => {
+    const onCountyChange = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County}) => {
         const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
             investigation: +indexedRow.epidemiologyNumber
         });
 
-        if (selectedInvestigator && newSelectedCounty.value !== '')
-            changeCountyLogger.info(`the admin has been offered to switch the investigation ${indexedRow.epidemiologyNumber} county from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`, Severity.LOW);
-        alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`, {
+        changeCountyLogger.info(`alerted user to change the county of investigation ${indexedRow.epidemiologyNumber} from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty.value)}`, Severity.LOW);
+        const result: SweetAlertResult<any> = await alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty.value.displayName}</b>?</p>`, {
             showCancelButton: true,
             cancelButtonText: 'לא',
             cancelButtonColor: theme.palette.error.main,
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך'
-        }).then((result) => {
-            if (result.isConfirmed) {
+        });
+
+        if (result.isConfirmed) {
+            try {
                 axios.post('/users/changeCounty', {
                     epidemiologyNumber: indexedRow.epidemiologyNumber,
                     updatedCounty: newSelectedCounty.id,
-                }).then(() => timeout(1900).then(() => {
-                    changeCountyLogger.info('changed the county successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    setRows(rows.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber));
-                }))
-                    .catch((error) => {
-                        changeCountyLogger.error(`couldnt change the county due to ${error}`, Severity.LOW);
-                        alertError(UPDATE_ERROR_TITLE);
-                    })
-            } else if (result.isDismissed) {
+                });
+                changeCountyLogger.info('changed the county successfully', Severity.LOW);
                 setSelectedRow(UNDEFINED_ROW);
+                fetchTableData();
+            } catch(error) {
+                changeCountyLogger.error(`couldn't change the county due to ${error}`, Severity.HIGH);
+                alertError(UPDATE_ERROR_TITLE);
             }
-        })
+        } else if (result.isDismissed) {
+            changeCountyLogger.info('the user dismissed changing the county', Severity.LOW);
+            setSelectedRow(UNDEFINED_ROW);
+        }
     }
 
     const onDeskChange = (indexedRow: IndexedInvestigation, newSelectedDesk: any) => {

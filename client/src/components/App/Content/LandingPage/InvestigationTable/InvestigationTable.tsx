@@ -274,7 +274,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
                                 if (event?.type !== 'blur') {
-                                    onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
+                                    onCountyChange(indexedRow, newSelectedCounty);
                                 }
                             }}
                             onInputChange={(event, selectedCounty) => {
