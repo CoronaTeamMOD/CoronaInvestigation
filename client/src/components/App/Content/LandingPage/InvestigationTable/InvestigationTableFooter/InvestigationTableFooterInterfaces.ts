@@ -13,7 +13,7 @@ export interface InvestigationTableFooterParameters {
     fetchTableData: () => void;
     onDialogClose: () => void;
     onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
-    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => Promise<void>;
+    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason: string) => Promise<void>;
     onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null) => Promise<void>;
 }
 

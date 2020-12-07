@@ -45,5 +45,5 @@ export interface useInvestigationTableOutcome {
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => void;
     changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null) => Promise<void>;
-    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => Promise<void>;
+    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason: string) => Promise<void>;
 };

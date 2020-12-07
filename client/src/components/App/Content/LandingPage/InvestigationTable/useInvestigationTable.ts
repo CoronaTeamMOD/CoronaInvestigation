@@ -533,7 +533,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => {
+    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeInvestigationsInvestigatorLogger = logger.setup({
             workflow: 'Change investigations investigator',
             user: user.id,
@@ -542,7 +542,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         try {
             await axios.post('/users/changeInvestigator', {
                 epidemiologyNumbers,
-                user: investigator?.id
+                user: investigator?.id,
+                transferReason
             });
             changeInvestigationsInvestigatorLogger.info('the investigator have been changed successfully', Severity.LOW);
         } catch (error) {

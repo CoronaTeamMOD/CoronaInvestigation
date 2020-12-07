@@ -12,7 +12,6 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
-import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
@@ -103,7 +102,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
         if(epidemiologyNumbers.length) {
             setIsLoading(true);
-            await onInvestigatorChange(epidemiologyNumbers, updatedIvestigator);
+            await onInvestigatorChange(epidemiologyNumbers, updatedIvestigator, transferReason);
         }
 
         handleCloseInvestigatorsDialog();
