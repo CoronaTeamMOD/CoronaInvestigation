@@ -498,7 +498,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const onFiltersChange = (selectedDesks: DeskFilter, selectedStatuses: StatusFilter) => {
         const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
-        const statusFilter = filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses);
+        const statusFilter = filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id));
         const desksFilter = filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id));
 
         setFilterByStatuses(nextFilterByStatuses);
@@ -508,18 +508,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     };
 
     const generateStatusFilterBySelectedStatues = (selectedStatuses: StatusFilter) => {
-        return selectedStatuses.map(status => status.id).includes(ALL_STATUSES_FILTER_OPTIONS)
+        return selectedStatuses.map(status => status.id).includes(allStatusesOption.id)
             ? [] : selectedStatuses;
     };
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: string[]) => {
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
         const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
         setFilterByStatuses(nextFilterByStatuses);
         console.log('onSelectedStatusesChange', nextFilterByStatuses)
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
         console.log('onSelectedDesksChange', selectedDesks);
 
         setFilterByDesks(selectedDesks);
