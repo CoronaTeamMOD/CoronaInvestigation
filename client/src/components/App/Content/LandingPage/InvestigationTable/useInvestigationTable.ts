@@ -105,7 +105,7 @@ export const transferredSubStatus = 'נדרשת העברה';
 export const allStatusesOption: InvestigationMainStatus = { id: -1, displayName: 'הכל' };
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
-    const { selectedInvestigator, setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
+    const { setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
@@ -514,7 +514,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const onInvestigatorChange = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: InvestigatorOption, currentSelectedInvestigator: string) => {
+    const changeInvestigator = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: InvestigatorOption, currentSelectedInvestigator: string) => {
         const changeInvestigatorLogger = logger.setup({
             workflow: 'Change Investigation Investigator',
             user: user.id,
@@ -568,7 +568,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const onCountyChange = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
+    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County} | null) => {
         const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
@@ -620,7 +620,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const onDeskChange = async (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => {
+    const changeDesk = async (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => {
         const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
         const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
 
@@ -782,17 +782,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
-        onInvestigatorChange,
+        changeInvestigator,
         getTableCellStyles,
         sortInvestigationTable,
         getUserMapKeyByValue,
         getCountyMapKeyByValue,
-        onCountyChange,
+        changeCounty,
         onCancel,
         onOk,
         snackbarOpen,
         moveToTheInvestigationForm,
-        onDeskChange,
+        changeDesk,
         totalCount,
         handleFilterChange,
         unassignedInvestigationsCount,

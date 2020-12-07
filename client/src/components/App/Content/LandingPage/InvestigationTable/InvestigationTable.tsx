@@ -138,7 +138,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
+        sortInvestigationTable, getUserMapKeyByValue, changeInvestigator, changeCounty, changeDesk, getTableCellStyles,
         moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData
     } = useInvestigationTable({
@@ -264,7 +264,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 )}
                                 inputValue={selectedInvestigator.userName}
                                 onChange={(event, newSelectedInvestigator) => {
-                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
+                                    changeInvestigator(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
                                     if (event?.type !== 'blur') {
@@ -305,7 +305,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
                                 if (event?.type !== 'blur') {
-                                    onCountyChange(indexedRow, newSelectedCounty);
+                                    changeCounty(indexedRow, newSelectedCounty);
                                 }
                             }}
                             onInputChange={(event, selectedCounty) => {
@@ -336,7 +336,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
                             onChange={(event, newSelectedDesk) => {
-                                onDeskChange(indexedRow, newSelectedDesk);
+                                changeDesk(indexedRow, newSelectedDesk);
                             }}
                             renderInput={(params) =>
                                 <TextField
