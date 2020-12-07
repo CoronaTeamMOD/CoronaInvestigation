@@ -58,8 +58,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 uniqueGroupIds: [],
                 epidemiologyNumbers: []
             });
-
-
         if (uniqueGroupIds.length) {
             setIsLoading(true);
             await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason);
@@ -82,7 +80,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     }
 
     const handleConfirmInvestigatorsDialog = async (updatedIvestigator: InvestigatorOption, transferReason: string) => {
-
         const { uniqueGroupIds, epidemiologyNumbers } = 
         checkedIndexedRows.reduce<{
             uniqueGroupIds: string[],
@@ -91,7 +88,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             uniqueGroupIds: [],
             epidemiologyNumbers: []
         });
-
         if(uniqueGroupIds.length) {
             setIsLoading(true);
             await onInvestigatorGroupChange(uniqueGroupIds, updatedIvestigator, transferReason);    

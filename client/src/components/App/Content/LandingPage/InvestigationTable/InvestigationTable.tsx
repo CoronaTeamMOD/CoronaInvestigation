@@ -275,7 +275,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         confirmButtonColor: theme.palette.primary.main,
                                         confirmButtonText: 'כן, המשך'
                                     });
-
                                     if(result.isConfirmed) {
                                         indexedRow.groupId ?
                                             await changeGroupsInvestigator([indexedRow.groupId], newSelectedInvestigator) :
@@ -365,7 +364,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         confirmButtonColor: theme.palette.primary.main,
                                         confirmButtonText: 'כן, המשך',
                                     });
-
                                     if(result.isConfirmed) {
                                         indexedRow.groupId ?
                                             await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
