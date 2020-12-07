@@ -13,6 +13,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     tableCell: {
         padding: '7px'
     },
+    tableCellRoot: {
+        padding: '0'
+    },
     title: {
         margin: 'auto',
         height: '14vh',

@@ -210,7 +210,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return (
                     indexedRow.groupId ?
                     <Tooltip title={indexedRow.groupReason}>
-                        <div style={{height: '51px', width: '10px', backgroundColor: investigationColor.current.get(indexedRow.groupId) }} />
+                        <div style={{height: '8vh', width: '0.75vw', backgroundColor: investigationColor.current.get(indexedRow.groupId) }} />
                     </Tooltip> : null
                 )
             case TableHeadersNames.epidemiologyNumber:
@@ -708,7 +708,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                     <TableCell
-                                                        
+                                                        classes={{root: classes.tableCellRoot}}
                                                         className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
@@ -732,7 +732,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {
                                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                 <TableCell
-                                                                    
+                                                                    classes={{root: classes.tableCellRoot }}
                                                                     className={getTableCellStyles(index, key).join(' ')}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
