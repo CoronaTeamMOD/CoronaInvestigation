@@ -518,7 +518,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => {
-        const changeInvestigationsInvestigatorLogger = logger.setup({
+        const changeInvestigationsInvestigatorLogger = logger.setupVerbose({
             workflow: 'Change investigations investigator',
             user: user.id,
         });
@@ -607,7 +607,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
-        const changeDeskLogger = logger.setup({
+        const changeDeskLogger = logger.setupVerbose({
             workflow: 'Change Groups Desk',
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
