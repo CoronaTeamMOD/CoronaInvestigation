@@ -210,7 +210,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return (
                     indexedRow.groupId ?
                     <Tooltip title={indexedRow.groupReason}>
-                        <div style={{height: '8vh', width: '0.75vw', backgroundColor: investigationColor.current.get(indexedRow.groupId) }} />
+                        <div className={classes.groupColor} 
+                             style={{backgroundColor: investigationColor.current.get(indexedRow.groupId) }} 
+                        />
                     </Tooltip> : null
                 )
             case TableHeadersNames.epidemiologyNumber:
