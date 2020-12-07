@@ -80,7 +80,7 @@ groupedInvestigationsRoute.post('/exclude', adminMiddleWare, (request: Request, 
 })
 
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
-    const invetigationsToGroup: number[] = request.body.invetigationsToGroupIds;
+    const invetigationsToGroup: number[] = request.body.invetigationsToGroup;
     const group: string | Object = request.body.group;
     if (typeof group === 'object') {
         const groupedInvestigationsLogger = logger.setup({

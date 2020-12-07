@@ -12,7 +12,7 @@ import useInvestigationTableFooter from './useInvestigationTableFooter';
 import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
-import { checkedGroupsLimitIncludingNull } from './GroupedInvestigations/useGroupedInvestigations';
+import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -79,9 +79,14 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     }, [checkedInvestigations])
 
     const shouldGroupActionDisabled: boolean = useMemo(() => {
-        const groupIds = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const trimmedGroupidIds = Array.from(new Set(groupIds));
-        return trimmedGroupidIds.length > checkedGroupsLimitIncludingNull || (trimmedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
+        const trimmedGroup = checkedInvestigations.reduce<{
+            uniqueGroupIds: string[],
+            epidemiologyNumbers: number[]
+        }>(toUniqueGroupsWithNonGroupedInvestigations, {
+            uniqueGroupIds: [],
+            epidemiologyNumbers: []
+        })
+        return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
     }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [

@@ -17,6 +17,25 @@ export interface GroupForm {
 }
 
 export const checkedGroupsLimitIncludingNull = 2;
+export const toUniqueGroupsWithNonGroupedInvestigations =
+    (previous: { uniqueGroupIds: string[]; epidemiologyNumbers: number[]; }, current: InvestigationTableRow) => {
+        if (current.groupId && !previous.uniqueGroupIds.includes(current.groupId as string)) {
+            return {
+                uniqueGroupIds: [...previous.uniqueGroupIds, current.groupId as string],
+                epidemiologyNumbers: previous.epidemiologyNumbers
+            }
+        } else if (!current.groupId) {
+            return {
+                uniqueGroupIds: previous.uniqueGroupIds,
+                epidemiologyNumbers: [...previous.epidemiologyNumbers, current.epidemiologyNumber as number]
+            }
+        } else {
+            return {
+                uniqueGroupIds: previous.uniqueGroupIds,
+                epidemiologyNumbers: previous.epidemiologyNumbers
+            }
+        }
+    }
 
 const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
@@ -26,12 +45,17 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
     const { alertError } = useCustomSwal();
 
     const onSubmit = (data: GroupForm) => {
-        const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
-        const groupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const trimmedGroupidIds = Array.from(new Set(groupIds));
-        if (trimmedGroupidIds.length === checkedGroupsLimitIncludingNull
-            && trimmedGroupidIds.findIndex((groupId: string) => groupId === null) !== -1) {
-            const group = trimmedGroupidIds.find((groupId: string) => groupId !== null);
+        const trimmedGroup = invetigationsToGroup.reduce<{
+            uniqueGroupIds: string[],
+            epidemiologyNumbers: number[]
+        }>(toUniqueGroupsWithNonGroupedInvestigations, {
+            uniqueGroupIds: [],
+            epidemiologyNumbers: []
+        })
+        if (trimmedGroup.uniqueGroupIds.length === 1
+            && trimmedGroup.epidemiologyNumbers.length > 0) {
+            const group = trimmedGroup.uniqueGroupIds[0];
+            const invetigationsToGroup = trimmedGroup.epidemiologyNumbers
             const groupToUpdateLogger = logger.setup({
                 workflow: 'update grouped investigations',
                 user: userId,
@@ -39,7 +63,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
             });
             groupToUpdateLogger.info('launching grouped investigations request', Severity.LOW);
             setIsLoading(true);
-            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
+            axios.post('/groupedInvestigations', { group, invetigationsToGroup })
                 .then(() => {
                     groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
                     onClose();
@@ -57,6 +81,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
                 reason: data.reason?.id,
                 otherReason: data.otherReason
             };
+            const invetigationsToGroup = trimmedGroup.epidemiologyNumbers
             const groupToCreateLogger = logger.setup({
                 workflow: 'create grouped investigations',
                 user: userId,
@@ -64,7 +89,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
             });
             groupToCreateLogger.info('launching grouped investigations request', Severity.LOW);
             setIsLoading(true);
-            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
+            axios.post('/groupedInvestigations', { group, invetigationsToGroup })
                 .then(() => {
                     groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
                     onClose();

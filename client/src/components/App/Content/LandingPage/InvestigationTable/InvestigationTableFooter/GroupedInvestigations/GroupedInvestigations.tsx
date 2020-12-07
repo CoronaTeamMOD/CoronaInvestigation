@@ -15,6 +15,7 @@ const title = 'קיבוץ חקירות'
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose, fetchTableData }: Props) => {
     const groupedInvestigation: InvestigationTableRow | undefined = invetigationsToGroup
         .find((investigation: InvestigationTableRow) => investigation.groupId !== null);
+
     const methods = useForm<GroupForm>({
         mode: 'all',
         resolver: yupResolver(validationSchema),

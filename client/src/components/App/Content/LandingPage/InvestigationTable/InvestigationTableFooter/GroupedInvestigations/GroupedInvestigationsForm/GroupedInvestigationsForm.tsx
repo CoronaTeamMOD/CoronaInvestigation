@@ -94,9 +94,7 @@ const GroupedInvestigationsForm = ({ shouldDisable }: Props) => {
                                         disabled={shouldDisable}
                                         test-id={props.name}
                                         value={props.value}
-                                        onChange={(event) => {
-                                            props.onChange(event.target.value)
-                                        }}
+                                        onChange={(event) => props.onChange(event.target.value)}
                                         error={Boolean(get(errors, props.name))}
                                         label={get(errors, props.name)?.message || 'כתוב סיבה'}
                                     />
