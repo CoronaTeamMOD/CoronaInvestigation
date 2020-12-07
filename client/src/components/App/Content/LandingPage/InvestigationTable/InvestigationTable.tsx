@@ -206,6 +206,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
         const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
+            case TableHeadersNames.color: 
+                return (
+                    indexedRow.groupId ?
+                    <Tooltip title={indexedRow.groupReason}>
+                        <div style={{height: '51px', width: '10px', backgroundColor: investigationColor.current.get(indexedRow.groupId) }} />
+                    </Tooltip> : null
+                )
             case TableHeadersNames.epidemiologyNumber:
                 return <InvestigationNumberColumn
                     wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
@@ -701,7 +708,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                             {
                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                     <TableCell
-                                                        style={{ borderRightColor: indexedRow.groupId && key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.groupId) : '' }}
+                                                        
                                                         className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
@@ -725,7 +732,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         {
                                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                 <TableCell
-                                                                    style={{ borderRightColor: indexedGroupedInvestigationRow.groupId && key === TableHeadersNames.multipleCheck ? investigationColor.current.get(row.groupId) : '' }}
+                                                                    
                                                                     className={getTableCellStyles(index, key).join(' ')}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >

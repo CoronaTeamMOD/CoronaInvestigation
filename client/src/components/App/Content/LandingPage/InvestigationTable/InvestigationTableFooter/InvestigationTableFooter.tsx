@@ -153,7 +153,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
                 invetigationsToGroup={checkedInvestigations}
-                fetchTableData={fetchTableData}
             />
         </>
     );

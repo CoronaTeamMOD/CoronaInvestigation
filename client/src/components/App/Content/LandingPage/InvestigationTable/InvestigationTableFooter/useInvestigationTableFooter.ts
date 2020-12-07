@@ -100,6 +100,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleCloseGroupedInvestigations = () => {
         setOpenGroupedInvestigations(false);
         onDialogClose();
+        fetchTableData();
     }
 
     const handleDisbandGroupedInvestigations = (groupIds: string[]) => {

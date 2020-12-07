@@ -37,7 +37,7 @@ export const toUniqueGroupsWithNonGroupedInvestigations =
         }
     }
 
-const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
+const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -67,7 +67,6 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
                 .then(() => {
                     groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
                     onClose();
-                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToUpdateLogger.error(`update grouped investigations was failde due to${err}`, Severity.HIGH);
@@ -93,7 +92,6 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
                 .then(() => {
                     groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
                     onClose();
-                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
@@ -111,7 +109,6 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
 interface useGroupedInvestigationsIncome {
     invetigationsToGroup: InvestigationTableRow[];
     onClose: () => void;
-    fetchTableData: () => void;
 }
 
 interface useGroupedInvestigationsOutcome {

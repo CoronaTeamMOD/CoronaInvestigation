@@ -475,6 +475,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
+            [TableHeadersNames.color]: '',
             [TableHeadersNames.multipleCheck]: row.isChecked,
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
