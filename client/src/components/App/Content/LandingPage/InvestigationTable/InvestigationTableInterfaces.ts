@@ -6,12 +6,12 @@ import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import InvestigatorOption from 'models/InvestigatorOption';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
-    checkedRowsIds: number[];
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
@@ -29,12 +29,9 @@ export interface useInvestigationTableOutcome {
     fetchTableData: () => void;
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
-    setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
-    onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => Promise<void>;
-    onCountyChange: (indexedRow: IndexedInvestigation, newSelectedCountyId: {id: number, value: County} | null) => Promise<void>;
-    onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
+    changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: {id: number, value: County} | null) => Promise<void>;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
@@ -45,4 +42,8 @@ export interface useInvestigationTableOutcome {
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => void;
+    changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
+    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
+    changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
 };

@@ -156,7 +156,7 @@ landingPageRoute.post('/changeGroupDesk', adminMiddleWare, (request: Request, re
     });
     const desk = request.body.desk;
     const selectedGroups = request.body.groupIds;
-    const reason = request.body.reason ? request.body.groupIds : ''; 
+    const reason = request.body.reason ? request.body.reason : ''; 
     changeGroupDeskLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
     graphqlRequest(UPDATE_DESK_BY_GROUP_ID, response.locals, {desk, selectedGroups, reason})
     .then((result: any) => {

@@ -6,7 +6,7 @@ import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box, InputAdornment
+    Slide, Box, InputAdornment, useTheme
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,6 +27,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
@@ -36,7 +37,7 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols } from './InvestigationTablesHeaders';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
 
 export const defaultOrderBy = 'defaultOrder';
@@ -84,8 +85,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const history = useHistory<HistoryState>();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
+    const { alertWarning } = useCustomSwal();
+    const theme = useTheme();
 
-    const [checkedRowsIds, setCheckedRowsIds] = useState<number[]>([]);
+    const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
     const [investigatorAutoCompleteClicked, setInvestigatorAutoCompleteClicked] = useState<boolean>(false);
@@ -138,12 +141,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, onInvestigatorChange, onCountyChange, onDeskChange, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
-        fetchInvestigationsByGroupId, fetchTableData
+        sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
+        moveToTheInvestigationForm, totalCount, handleFilterChange, unassignedInvestigationsCount,
+        fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
-        setAllCounties, setAllStatuses, setAllDesks, checkedRowsIds, currentPage, setCurrentPage, setAllGroupedInvestigations, 
+        setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, 
         investigationColor
     });
 
@@ -151,7 +154,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const totalPageCount = Math.ceil(totalCount / rowsPerPage);
 
-    const isRowSelected = (epidemiologyNumber: number) => checkedRowsIds.includes(epidemiologyNumber);
+    const isRowSelected = (epidemiologyNumber: number) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(epidemiologyNumber);
 
     const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
         switch (key) {
@@ -178,7 +181,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         }
         setSelectedRow(epidemiologyNumber);
-        setCheckedRowsIds([]);
+        setCheckedIndexedRows([]);
     }
 
     const CustomPopper = (props: any) => {
@@ -272,8 +275,23 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         ''
                                 )}
                                 inputValue={selectedInvestigator.userName}
-                                onChange={(event, newSelectedInvestigator) => {
-                                    onInvestigatorChange(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
+                                onChange={async (event, newSelectedInvestigator) => {
+                                    const result = await alertWarning(
+                                        `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${indexedRow.investigatorName}</b> בחוקר <b>${newSelectedInvestigator?.value.userName}</b>?</p>`, {
+                                        showCancelButton: true,
+                                        cancelButtonText: 'לא',
+                                        cancelButtonColor: theme.palette.error.main,
+                                        confirmButtonColor: theme.palette.primary.main,
+                                        confirmButtonText: 'כן, המשך'
+                                    });
+                                    if(result.isConfirmed) {
+                                        indexedRow.groupId ?
+                                            await changeGroupsInvestigator([indexedRow.groupId], newSelectedInvestigator) :
+                                            await changeInvestigationsInvestigator([indexedRow.epidemiologyNumber], newSelectedInvestigator);
+                                        fetchTableData();
+                                    }
+
+                                    setSelectedRow(UNDEFINED_ROW);
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
                                     if (event?.type !== 'blur') {
@@ -314,7 +332,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
                                 if (event?.type !== 'blur') {
-                                    onCountyChange(indexedRow, newSelectedCounty);
+                                    changeCounty(indexedRow, newSelectedCounty);
                                 }
                             }}
                             onInputChange={(event, selectedCounty) => {
@@ -344,8 +362,26 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <Autocomplete
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
-                            onChange={(event, newSelectedDesk) => {
-                                onDeskChange(indexedRow, newSelectedDesk);
+                            onChange={async (event, newSelectedDesk) => {
+                                const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+                                const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+                                if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
+                                    const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
+                                        showCancelButton: true,
+                                        cancelButtonText: 'לא',
+                                        cancelButtonColor: theme.palette.error.main,
+                                        confirmButtonColor: theme.palette.primary.main,
+                                        confirmButtonText: 'כן, המשך',
+                                    });
+                                    if(result.isConfirmed) {
+                                        indexedRow.groupId ?
+                                            await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
+                                            await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
+                                        fetchTableData();
+                                    }
+
+                                    setSelectedRow(UNDEFINED_ROW);
+                                }
                             }}
                             renderInput={(params) =>
                                 <TextField
@@ -405,7 +441,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         {(!wasInvestigationFetchedByGroup) &&
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
-                                markRow(indexedRow.epidemiologyNumber, indexedRow.groupId);
+                                markRow(indexedRow);
                             }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)}
                             className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
@@ -465,31 +501,31 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
     }
 
-    const markRow = async (epidemiologyNumber: number, groupId: string) => {
-        const epidemiologyNumberIndex = checkedRowsIds.findIndex(checkedRow => epidemiologyNumber === checkedRow);
+    const markRow = async (indexedRow: IndexedInvestigation) => {
+        const epidemiologyNumberIndex = checkedIndexedRows.findIndex(checkedRow => indexedRow.epidemiologyNumber === checkedRow.epidemiologyNumber);
         if (epidemiologyNumberIndex !== -1) {
-            const gropuedInvestigationsById = allGroupedInvestigations.get(groupId)
+            const gropuedInvestigationsById = allGroupedInvestigations.get(indexedRow.groupId as string)
             if (gropuedInvestigationsById) {
                 let checkedGroupRows: number[] = []
                 gropuedInvestigationsById.forEach(row => {
                     checkedGroupRows.push(row.epidemiologyNumber)
                 })
-                setCheckedRowsIds(checkedRowsIds.filter(rowId => checkedGroupRows.indexOf(rowId) === -1));
+                setCheckedIndexedRows(checkedIndexedRows.filter(checkedRow => checkedGroupRows.indexOf(checkedRow.epidemiologyNumber as number) === -1));
             } else {
-                setCheckedRowsIds(checkedRowsIds.filter(rowId => rowId !== epidemiologyNumber));
+                setCheckedIndexedRows(checkedIndexedRows.filter(checkedRow => checkedRow.epidemiologyNumber !== indexedRow.epidemiologyNumber));
             }
         } else {
-            if (groupId) {
-                if (!allGroupedInvestigations.get(groupId)) {
-                    await fetchInvestigationsByGroupId(groupId)
+            if (indexedRow.groupId) {
+                if (!allGroupedInvestigations.get(indexedRow.groupId as string)) {
+                    await fetchInvestigationsByGroupId(indexedRow.groupId as string)
                 }
-                let checkedGroupRows: number[] = []
-                allGroupedInvestigations.get(groupId)?.forEach(row => {
-                    checkedGroupRows.push(row.epidemiologyNumber)
+                let checkedGroupRows: IndexedInvestigation[] = []
+                allGroupedInvestigations.get(indexedRow.groupId as string)?.forEach(row => {
+                    checkedGroupRows.push(convertToIndexedRow(row));
                 })
-                setCheckedRowsIds([...checkedRowsIds, ...checkedGroupRows]);
+                setCheckedIndexedRows([...checkedIndexedRows, ...checkedGroupRows]);
             } else {
-                setCheckedRowsIds([...checkedRowsIds, epidemiologyNumber]);
+                setCheckedIndexedRows([...checkedIndexedRows, indexedRow]);
             }
         }
     }
@@ -762,15 +798,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     className={classes.pagination}
                 />
             </Grid>
-            <Slide direction='up' in={checkedRowsIds.length > 0} mountOnEnter unmountOnExit>
+            <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     allInvestigators={getFilteredUsersOfCurrentCounty()}
-                    checkedRowsIds={checkedRowsIds}
+                    checkedIndexedRows={checkedIndexedRows}
                     allDesks={allDesks}
-                    onDialogClose={() => setCheckedRowsIds([])}
+                    onDialogClose={() => setCheckedIndexedRows([])}
                     tableRows={tableRows}
-                    setTableRows={setTableRows}
                     fetchTableData={fetchTableData}
+                    onDeskGroupChange={changeGroupsDesk}
+                    onDeskChange={changeInvestigationsDesk}
+                    onInvestigatorGroupChange={changeGroupsInvestigator}
+                    onInvestigatorChange={changeInvestigationsInvestigator}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}
