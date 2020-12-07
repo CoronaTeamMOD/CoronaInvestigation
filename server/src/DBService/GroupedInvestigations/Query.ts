@@ -60,6 +60,7 @@ query GetAllInvestigationsByGroupId($groupId: UUID!) {
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
           displayName
+          id
         }
         otherReason
       }

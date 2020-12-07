@@ -24,6 +24,8 @@ interface InvestigationTableRow {
     groupId: string;
     canFetchGroup: boolean;
     groupReason: string;
+    otherReason: string;
+    reasonId: number;
 };
 
 export default InvestigationTableRow;

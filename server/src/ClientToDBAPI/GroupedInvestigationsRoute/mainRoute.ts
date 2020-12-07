@@ -5,7 +5,7 @@ import { Severity } from '../../Models/Logger/types';
 import { graphqlRequest } from '../../GraphqlHTTPRequest';
 import { adminMiddleWare } from '../../middlewares/Authentication';
 import { GET_GROUPED_INVESTIGATIONS_REASONS, GET_INVESTIGATIONS_BY_GROUP_ID } from '../../DBService/GroupedInvestigations/Query';
-import { CREATE_GROUPED_INVESTIGATIONS, EXCLUDE_FROM_GROUP, DISBAND_GROUP_IDS } from '../../DBService/GroupedInvestigations/Mutation';
+import { CREATE_GROUPED_INVESTIGATIONS, EXCLUDE_FROM_GROUP, DISBAND_GROUP_IDS, UPDATE_GROUPED_INVESTIGATIONS } from '../../DBService/GroupedInvestigations/Mutation';
 import { convertGroupedInvestigationsData } from './utils';
 
 const groupedInvestigationsRoute = Router();
@@ -43,7 +43,7 @@ groupedInvestigationsRoute.get('/:groupId', adminMiddleWare, (request: Request, 
     graphqlRequest(GET_INVESTIGATIONS_BY_GROUP_ID, response.locals, { groupId: request.params.groupId }).then((result: any) => {
         if (result?.data?.allInvestigations && !result.errors) {
             result.data.orderedInvestigations = result.data.allInvestigations
-            const groupedInvestigationsGrouped = convertGroupedInvestigationsData(result.data);            investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
+            const groupedInvestigationsGrouped = convertGroupedInvestigationsData(result.data); investigationsByGroupIdLogger.info('query investigations by group id successfully', Severity.LOW);
             response.send(groupedInvestigationsGrouped);
         } else {
             investigationsByGroupIdLogger.error(`failed to fetch reasons due to ${JSON.stringify(result.error[0]?.message)}`, Severity.HIGH);
@@ -64,19 +64,70 @@ groupedInvestigationsRoute.post('/exclude', adminMiddleWare, (request: Request, 
     })
     InvestigationToExcludeLogger.info('launching exclude investigation request', Severity.LOW);
     graphqlRequest(EXCLUDE_FROM_GROUP, response.locals, { investigationToExclude })
-    .then(result => {
-        if (result?.data && !result.errors) {
-            InvestigationToExcludeLogger.info('investigation was excluded from group successfully', Severity.LOW);
-            response.send(result);
-        } else {
-            InvestigationToExcludeLogger.error(`investigation was failed to excluded from group due to  ${result.errors[0]?.message}`, Severity.HIGH);
-            response.status(errorStatusCode).send(result.errors[0]?.message);
-        }
-    })
-    .catch(err => {
-        InvestigationToExcludeLogger.error(`investigation's excludation from group failed due to  ${err}`, Severity.HIGH);
-        response.status(errorStatusCode).send(err);
-    })
+        .then(result => {
+            if (result?.data && !result.errors) {
+                InvestigationToExcludeLogger.info('investigation was excluded from group successfully', Severity.LOW);
+                response.send(result);
+            } else {
+                InvestigationToExcludeLogger.error(`investigation was failed to excluded from group due to  ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(errorStatusCode).send(result.errors[0]?.message);
+            }
+        })
+        .catch(err => {
+            InvestigationToExcludeLogger.error(`investigation's excludation from group failed due to  ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send(err);
+        })
+})
+
+groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
+    const invetigationsToGroup: number[] = request.body.invetigationsToGroup;
+    const group: string | Object = request.body.group;
+    if (typeof group === 'object') {
+        const groupedInvestigationsLogger = logger.setup({
+            workflow: `create grouped investigations ${invetigationsToGroup.join(', ')}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        })
+        const groupedInvestigationsToCreate = { ...request.body.group, epidemiologyNumbers: invetigationsToGroup };
+        groupedInvestigationsLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupedInvestigationsToCreate)}`, Severity.LOW);
+        graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, { input: groupedInvestigationsToCreate })
+            .then(result => {
+                if (result?.data) {
+                    groupedInvestigationsLogger.info('grouped investigations creation was successful', Severity.LOW);
+                    response.send(result);
+                } else {
+                    groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${result.errors[0]?.message}`, Severity.HIGH);
+                    response.status(errorStatusCode).send(result.errors[0]?.message);
+                }
+            })
+            .catch(err => {
+                groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${err}`, Severity.HIGH);
+                response.status(errorStatusCode).send(err);
+            })
+    } else {
+        const groupedInvestigationsLogger = logger.setup({
+            workflow: `update grouped investigations ${invetigationsToGroup.join(', ')}`,
+            user: response.locals.user.id,
+            investigation: response.locals.epidemiologynumber
+        })
+        const groupId: string = request.body.group;
+        const groupedInvestigationsToCreate = { epidemiologyNumbers: invetigationsToGroup, val: groupId };
+        groupedInvestigationsLogger.info(`launching update grouped investigations request with the parameters ${JSON.stringify(groupedInvestigationsToCreate)}`, Severity.LOW);
+        graphqlRequest(UPDATE_GROUPED_INVESTIGATIONS, response.locals, { input: groupedInvestigationsToCreate })
+            .then(result => {
+                if (result?.data) {
+                    groupedInvestigationsLogger.info('grouped investigations update was successful', Severity.LOW);
+                    response.send(result);
+                } else {
+                    groupedInvestigationsLogger.error(`grouped investigations update failed due to ${result.errors[0]?.message}`, Severity.HIGH);
+                    response.status(errorStatusCode).send(result.errors[0]?.message);
+                }
+            })
+            .catch(err => {
+                groupedInvestigationsLogger.error(`grouped investigations update failed due to ${err}`, Severity.HIGH);
+                response.status(errorStatusCode).send(err);
+            })
+    }
 })
 
 groupedInvestigationsRoute.post('/disband', adminMiddleWare, (request: Request, response: Response) => {
@@ -88,19 +139,19 @@ groupedInvestigationsRoute.post('/disband', adminMiddleWare, (request: Request, 
     })
     groupIdsToDisbandLogger.info('launching disband group ids request', Severity.LOW);
     graphqlRequest(DISBAND_GROUP_IDS, response.locals, { groupIds: groupIdsToDisband })
-    .then(result => {
-        if (result?.data && !result.errors) {
-            groupIdsToDisbandLogger.info('group ids disbandation was successful', Severity.LOW);
-            response.send(result);
-        } else {
-            groupIdsToDisbandLogger.error(`group ids disbandation failed due to  ${result.errors[0]?.message}`, Severity.HIGH);
-            response.status(errorStatusCode).send(result.errors[0]?.message);
-        }
-    })
-    .catch(err => {
-        groupIdsToDisbandLogger.error(`group ids disbandation failed due to  ${err}`, Severity.HIGH);
-        response.status(errorStatusCode).send(err);
-    })
+        .then(result => {
+            if (result?.data && !result.errors) {
+                groupIdsToDisbandLogger.info('group ids disbandation was successful', Severity.LOW);
+                response.send(result);
+            } else {
+                groupIdsToDisbandLogger.error(`group ids disbandation failed due to  ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(errorStatusCode).send(result.errors[0]?.message);
+            }
+        })
+        .catch(err => {
+            groupIdsToDisbandLogger.error(`group ids disbandation failed due to  ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send(err);
+        })
 })
 
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
@@ -110,22 +161,22 @@ groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, respons
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    const groupedInvestigationsToCreate = {...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup}; 
+    const groupedInvestigationsToCreate = { ...request.body.groupToCreate, epidemiologyNumbers: invetigationsToGroup };
     groupedInvestigationsLogger.info(`launching create grouped investigations request with the parameters ${JSON.stringify(groupedInvestigationsToCreate)}`, Severity.LOW);
-    graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, {input: groupedInvestigationsToCreate})
-    .then(result => {
-        if (result?.data && !result.errors) {
-            groupedInvestigationsLogger.info('grouped investigations creation was successful', Severity.LOW);
-            response.send(result);
-        } else {
-            groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${result.errors[0]?.message}`, Severity.HIGH);
-            response.status(errorStatusCode).send(result.errors[0]?.message);
-        }
-    })
-    .catch(err => {
-        groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${err}`, Severity.HIGH);
-        response.status(errorStatusCode).send(err);
-    })
+    graphqlRequest(CREATE_GROUPED_INVESTIGATIONS, response.locals, { input: groupedInvestigationsToCreate })
+        .then(result => {
+            if (result?.data && !result.errors) {
+                groupedInvestigationsLogger.info('grouped investigations creation was successful', Severity.LOW);
+                response.send(result);
+            } else {
+                groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(errorStatusCode).send(result.errors[0]?.message);
+            }
+        })
+        .catch(err => {
+            groupedInvestigationsLogger.error(`grouped investigations creation failed due to ${err}`, Severity.HIGH);
+            response.status(errorStatusCode).send(err);
+        })
 })
 
 export default groupedInvestigationsRoute;

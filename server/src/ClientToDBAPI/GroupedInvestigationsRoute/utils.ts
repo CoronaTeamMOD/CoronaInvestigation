@@ -44,8 +44,9 @@ interface GroupedInvestigations {
                 }
             };
             investigationGroupByGroupId: {
-                investigationGroupReasonByReason : {
+                investigationGroupReasonByReason: {
                     displayName: string | null;
+                    id: number | null;
                 }
                 otherReason: string | null;
             } | null;
@@ -66,9 +67,9 @@ const mappingInvestigationsGroup = (investigation: GroupedInvestigations['allInv
         },
         desk: investigation.deskByDeskId?.deskName,
         investigationGroupReasonByGroupId: {
-            reason: investigation.investigationGroupByGroupId.otherReason ? 
-            investigation.investigationGroupByGroupId.otherReason :
-            investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName
+            otherReason: investigation.investigationGroupByGroupId?.otherReason,
+            reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
+            reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
         }
     };
 

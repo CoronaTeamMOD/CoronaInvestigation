@@ -42,6 +42,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
           displayName
+          id
         }
         otherReason
       }
@@ -100,6 +101,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
           displayName
+          id
         }
         otherReason
       }
