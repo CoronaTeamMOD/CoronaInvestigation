@@ -559,7 +559,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id,
             investigation: +indexedRow.epidemiologyNumber
         });
-
         changeCountyLogger.info(`alerted to change the county of investigation ${indexedRow.epidemiologyNumber} from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty?.value)}`, Severity.LOW);
         const result: SweetAlertResult<any> = await alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty?.value.displayName}</b>?</p>`, {
             showCancelButton: true,
@@ -611,10 +610,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id,
         });
         const joinedGroupIds = groupIds.join(', ');
-
         changeDeskLogger.info(`performing desk change request for group ${joinedGroupIds}`, Severity.LOW);
         try {
-            axios.post('/landingPage/changeGroupDesk', {
+            await axios.post('/landingPage/changeGroupDesk', {
                 groupIds,
                 desk: newSelectedDesk?.id,
                 reason: transferReason
@@ -634,7 +632,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
         });
-
         changeDeskLogger.info('performing desk change request', Severity.LOW);
         try {
             await axios.post('/landingPage/changeDesk', {
