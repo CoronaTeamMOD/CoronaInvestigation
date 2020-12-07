@@ -7,6 +7,7 @@ import { persistor } from 'redux/store';
 import User from 'models/User';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
 import { setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -62,7 +63,7 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
         await setUserActivityStatus(false);
         await persistor.purge();
         history.replace({state: {}});
-        window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout`;
+        window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout?post_logout_redirect_uri=${indexRoute}`;
     }
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {
