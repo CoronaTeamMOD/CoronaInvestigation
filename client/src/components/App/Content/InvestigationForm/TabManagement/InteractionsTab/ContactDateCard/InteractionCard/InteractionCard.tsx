@@ -24,6 +24,8 @@ import TransportationEventGrid from './PlacesAdditionalGrids/TransportationAddit
 
 import useStyles from './InteractionCardStyles';
 
+const unknownTimeMessage = 'זמן לא ידוע';
+
 const { geriatric, school, medical, office, otherPublicPlaces, privateHouse, religion, transportation } = placeTypesCodesHierarchy;
 
 const InteractionCard: React.FC<Props> = (props: Props) => {
@@ -109,7 +111,12 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                         </Grid>
                         <Grid item xs={10}>
                             <Typography>
-                                {format(interaction.endTime, timeFormat)} - {format(interaction.startTime, timeFormat)}
+                                {
+                                    interaction.unknownTime ? 
+                                        unknownTimeMessage
+                                    : 
+                                    `${format(interaction.endTime, timeFormat)} - ${format(interaction.startTime, timeFormat)}`
+                                }
                             </Typography>
                         </Grid>
                     </Grid>
