@@ -30,7 +30,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
         const groupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
         const trimmedGroupidIds = Array.from(new Set(groupIds));
         if (trimmedGroupidIds.length === checkedGroupsLimitIncludingNull
-            && trimmedGroupidIds.findIndex((groupId: string) => groupId === null) - 1) {
+            && trimmedGroupidIds.findIndex((groupId: string) => groupId === null) !== -1) {
             const group = trimmedGroupidIds.find((groupId: string) => groupId !== null);
             const groupToUpdateLogger = logger.setup({
                 workflow: 'update grouped investigations',
