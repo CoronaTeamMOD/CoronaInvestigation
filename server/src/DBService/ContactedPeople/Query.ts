@@ -10,7 +10,8 @@ query ContactedPeopleAmountByInvestigationId ($investigationId: Int!) {
 
 export const GET_CONTACTED_PEOPLE = gql`
 query ContactedPeopleByInvestigationId ($investigationId: Int!) {
-  allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}}) {
+  allContactedPeople(filter: {contactEventByContactEvent: {investigationId: {equalTo: $investigationId}}},
+    orderBy: [INVOLVED_CONTACT_BY_INVOLVED_CONTACT_ID__INVOLVEMENT_REASON_ASC, PERSON_BY_PERSON_INFO__PHONE_NUMBER_ASC]) {
     nodes {
       personByPersonInfo {
         firstName
