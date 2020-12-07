@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tabsSidebar: {
         flip: false,
-        paddingLeft: '1vw'
+        paddingLeft: '1vw',
+        minWidth: 130
     },
 }));
 
