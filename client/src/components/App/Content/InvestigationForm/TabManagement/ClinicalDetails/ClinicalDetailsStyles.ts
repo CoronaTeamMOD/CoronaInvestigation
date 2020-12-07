@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/styles';
 
 export const useStyles = makeStyles({
     form: {
-        padding: '5vh',
+        padding: '10vh 5vw'
     },
     rowGridItem: {
         display: 'flex',
