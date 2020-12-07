@@ -7,3 +7,11 @@ export const CHANGE_DESK_ID = gql`
     }
   }
 `;
+
+export const UPDATE_DESK_BY_GROUP_ID = gql`
+mutation updateInvestigatorByGroupId($desk: Int!, $selectedGroups: [UUID!]!) {
+  updateDeskByGroupId(input: {desk: $desk, selectedGroups: $selectedGroups}) {
+    clientMutationId
+  }
+}
+`;

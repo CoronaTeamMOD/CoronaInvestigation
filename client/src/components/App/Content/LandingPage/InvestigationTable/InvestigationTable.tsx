@@ -275,7 +275,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             inputValue={currCounty.displayName}
                             onChange={(event, newSelectedCounty) => {
                                 if (event?.type !== 'blur') {
-                                    onCountyChange(indexedRow, newSelectedCounty, indexedRow.county)
+                                    onCountyChange(indexedRow, newSelectedCounty);
                                 }
                             }}
                             onInputChange={(event, selectedCounty) => {
@@ -306,7 +306,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
                             onChange={(event, newSelectedDesk) => {
-                                onDeskChange(indexedRow, newSelectedDesk, indexedRow.investigationDesk)
+                                onDeskChange(indexedRow, newSelectedDesk);
                             }}
                             renderInput={(params) =>
                                 <TextField
