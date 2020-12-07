@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { yupResolver } from '@hookform/resolvers';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip } from '@material-ui/core';
@@ -13,8 +13,7 @@ import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInve
 const title = 'קיבוץ חקירות'
 
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose, fetchTableData }: Props) => {
-    const groupedInvestigation: InvestigationTableRow | undefined = invetigationsToGroup
-        .find((investigation: InvestigationTableRow) => investigation.groupId !== null);
+    const groupedInvestigation = invetigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId !== null);
 
     const methods = useForm<GroupForm>({
         mode: 'all',
@@ -25,6 +24,14 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
             [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation ? groupedInvestigation.otherReason : ''
         }
     });
+
+    useEffect(() => {
+        methods.reset({
+            [GroupedInvestigationsFields.REASON]: groupedInvestigation ?
+                { displayName: groupedInvestigation.groupReason, id: groupedInvestigation.reasonId } : null,
+            [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation ? groupedInvestigation.otherReason : ''
+        })
+    }, [groupedInvestigation])
 
     const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose, fetchTableData });
 
