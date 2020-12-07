@@ -3,6 +3,7 @@ import {makeStyles} from '@material-ui/styles';
 export const useStyles = makeStyles({
     form: {
         padding: '5vh',
+        margin: '5vh'
     },
     rowGridItem: {
         display: 'flex',
