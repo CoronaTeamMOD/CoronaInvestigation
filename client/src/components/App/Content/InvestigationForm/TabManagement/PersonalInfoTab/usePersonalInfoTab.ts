@@ -2,18 +2,18 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 import logger from 'logger/logger';
-import { initDBAddress } from 'models/DBAddress';
 import { Severity } from 'models/Logger';
+import { initDBAddress } from 'models/DBAddress';
 import StoreStateType from 'redux/storeStateType';
 import Occupations from 'models/enums/Occupations';
-import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
-import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
-import InvestigationMainStatus from 'models/enums/InvestigationMainStatus';
 import { setFormState } from 'redux/Form/formActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
+import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
 
 import { usePersonalInfoTabParameters, usePersonalInfoTabOutcome } from './PersonalInfoTabInterfaces';
 import personalInfoValidationSchema from './PersonalInfoValidationSchema';
@@ -221,7 +221,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
                 personalInfoData,
             })
             .then(() => {
-                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatus.NEW;
+                const isInvestigationNew = investigationStatus.mainStatus === InvestigationMainStatusCodes.NEW;
                 savePersonalDataLogger.info(
                     `saved personal details successfully${isInvestigationNew ? ' and updating status to "in progress"' : ''}`,
                     Severity.LOW

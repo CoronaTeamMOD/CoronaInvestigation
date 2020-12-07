@@ -9,6 +9,7 @@ import { graphqlRequest, multipleInvestigationsBulkErrorMessage, areAllResultsVa
 import { GET_ALL_INVESTIGATION_STATUS, GROUP_INVESTIGATIONS, USER_INVESTIGATIONS } from '../../DBService/LandingPage/Query';
 
 import { convertUserInvestigationsData, convertGroupInvestigationsData } from './utils';
+import InvestigationStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
 
 const errorStatusResponse = 500;
 
@@ -35,12 +36,12 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     })
-    graphqlRequest(USER_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
+    graphqlRequest(USER_INVESTIGATIONS, response.locals, getInvestigationsParameters)
         .then((result: any) => {
-            if (result && result.data && result.data.orderedInvestigations &&
-                result.data.orderedInvestigations.nodes) {
+            const orderedInvestigations = result?.data?.orderedInvestigations?.nodes;
+            if (orderedInvestigations) {
                 investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send({allInvestigations: convertUserInvestigationsData(result.data), totalCount: +result.data.orderedInvestigations.totalCount});
+                response.send({allInvestigations: convertUserInvestigationsData(result.data)});
             }
             else {
                 investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
@@ -79,8 +80,7 @@ landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request
     })
     graphqlRequest(GROUP_INVESTIGATIONS(+response.locals.user.investigationGroup), response.locals, getInvestigationsParameters)
         .then((result: any) => {
-            if (result && result.data && result.data.orderedInvestigations &&
-                result.data.orderedInvestigations.nodes) {
+            if (result?.data?.orderedInvestigations?.nodes) {
                 groupInvestigationsLogger.info('got results from the DB', Severity.LOW);
                 response.send({
                     allInvestigations: convertGroupInvestigationsData(result.data), 
@@ -110,7 +110,7 @@ landingPageRoute.get('/investigationStatuses', (request: Request, response: Resp
         .then((result: GetAllInvestigationStatuses) => {
             if (result?.data?.allInvestigationStatuses) {
                 investigationStatusesLogger.info('got results from the DB', Severity.LOW);
-                const convertedStatuses: string[] = result.data.allInvestigationStatuses.nodes.map(status => status.displayName);
+                const convertedStatuses: InvestigationStatus[] = result.data.allInvestigationStatuses.nodes;
                 response.send(convertedStatuses);
             }
             else {

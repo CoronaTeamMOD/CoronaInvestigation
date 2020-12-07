@@ -6,7 +6,7 @@ import * as Actions from './investigationActionTypes';
 const initialState: InvestigationRedux = {
     epidemiologyNumber: defaultEpidemiologyNumber,
     investigationStatus: {
-        mainStatus: '',
+        mainStatus: -1,
         subStatus: '',
         statusReason: ''
     },

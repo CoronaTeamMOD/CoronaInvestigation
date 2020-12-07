@@ -1,7 +1,7 @@
 enum InvestigationMainStatus {
     NEW = 'חדשה',
     IN_PROCESS = 'בטיפול',
-    DONE = 'טופלה',
+    DONE = 'הושלמה',
     CANT_COMPLETE = 'לא ניתן להשלים את החקירה',
 };
 

@@ -1,10 +1,11 @@
 import { MutableRefObject } from 'react';
 
 import User from 'models/User';
+import Desk from 'models/Desk';
 import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
-import Desk from 'models/Desk';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
@@ -16,7 +17,7 @@ export interface useInvestigationTableParameters {
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<Map<number, County>>>;
-    setAllStatuses: React.Dispatch<React.SetStateAction<string[]>>;
+    setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;
     setAllDesks: React.Dispatch<React.SetStateAction<Desk[]>>;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     setAllGroupedInvestigations: React.Dispatch<React.SetStateAction<Map<string, InvestigationTableRow[]>>>;

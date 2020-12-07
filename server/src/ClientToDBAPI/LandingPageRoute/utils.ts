@@ -1,5 +1,7 @@
 import { differenceInYears } from 'date-fns';
 
+import InvestigationMainStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
+
 // All the different interfaces and functions are there for decoupling the user and the group investigations
 
 interface UserInvestigations {
@@ -28,9 +30,7 @@ interface UserInvestigations {
                     } | null
                 }
             };
-            investigationStatusByInvestigationStatus: {
-                displayName: string;
-            }
+            investigationStatusByInvestigationStatus: InvestigationMainStatus;
             investigationSubStatusByInvestigationSubStatus: {
                 displayName: string;
             } | null;
@@ -74,9 +74,7 @@ interface GroupIvestigations {
                     } | null
                 }
             };
-            investigationStatusByInvestigationStatus: {
-                displayName: string;
-            }
+            investigationStatusByInvestigationStatus: InvestigationMainStatus,
             investigationSubStatusByInvestigationSubStatus: {
                 displayName: string;
             } | null;

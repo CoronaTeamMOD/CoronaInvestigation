@@ -1,5 +1,7 @@
 import { differenceInYears } from 'date-fns';
 
+import InvestigationMainStatus from '../../Models/InvestigationStatus/InvestigationMainStatus';
+
 interface GroupedInvestigations {
     allInvestigations: {
         nodes: [{
@@ -26,9 +28,7 @@ interface GroupedInvestigations {
                     } | null
                 }
             };
-            investigationStatusByInvestigationStatus: {
-                displayName: string;
-            }
+            investigationStatusByInvestigationStatus: InvestigationMainStatus
             investigationSubStatusByInvestigationSubStatus: {
                 displayName: string;
             } | null;
