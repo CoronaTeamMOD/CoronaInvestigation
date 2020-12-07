@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -71,8 +72,16 @@ const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 
-const InvestigationTable: React.FC = (): JSX.Element => {
+type StatusFilter = InvestigationMainStatus[];
+type DeskFilter = Desk[];
 
+interface HistoryState {
+    statusFilter?: StatusFilter;
+    deskFilter?: DeskFilter
+}
+
+const InvestigationTable: React.FC = (): JSX.Element => {
+    const history = useHistory<HistoryState>();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
 
@@ -91,12 +100,32 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<InvestigationMainStatus[]>([]);
-    const [filterByDesks, setFilterByDesks] = useState<Desk[]>([]);
+    const [filterByStatuses, setFilterByStatuses] = useState<StatusFilter>([]);
+    const [filterByDesks, setFilterByDesks] = useState<DeskFilter>([]);
     const [searchBarQuery, setSearchBarQuery] = useState<string>('');
     const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
+
+    useEffect(() => {
+        const {location: {state}} = history;
+        const {statusFilter = [], deskFilter = []} = state || {};
+
+        onFiltersChange(deskFilter, statusFilter)
+    }, []);
+
+    useEffect(() => {
+        const {location: {state}} = history;
+
+        history.replace({
+            state: {
+                ...state,
+                statusFilter: filterByStatuses,
+                deskFilter: filterByDesks,
+            }
+        });
+
+    }, [filterByStatuses, filterByDesks]);
 
     const closeDropdowns = () => {
         setInvestigatorAutoCompleteClicked(false);
@@ -376,7 +405,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 event.stopPropagation();
                                 openGroupedInvestigation(indexedRow.epidemiologyNumber)
                                 if (!allGroupedInvestigations.get(indexedRow.groupId)) {
-                                    fetchInvestigationsByGroupId(indexedRow.groupId)      
+                                    fetchInvestigationsByGroupId(indexedRow.groupId)
                                 }
                             }}>
                                 {isGroupShown ?
@@ -387,7 +416,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         }
                     </>
                 )
-            case TableHeadersNames.settings: 
+            case TableHeadersNames.settings:
                 return <SettingsActions
                             epidemiologyNumber={indexedRow.epidemiologyNumber}
                             groupId={indexedRow.groupId}
@@ -462,16 +491,29 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
-        const nextFilterByStatuses = selectedStatuses.map(status => status.id).includes(allStatusesOption.id) ?
-            []
-            :
-            selectedStatuses;
+    const onFiltersChange = (selectedDesks: DeskFilter, selectedStatuses: StatusFilter) => {
+        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
+        const statusFilter = filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id));
+        const desksFilter = filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id));
+
+        setFilterByStatuses(nextFilterByStatuses);
+        setFilterByDesks(selectedDesks);
+
+        handleFilterChange({...statusFilter, ...desksFilter})
+    };
+
+    const generateStatusFilterBySelectedStatues = (selectedStatuses: StatusFilter) => {
+        return selectedStatuses.map(status => status.id).includes(allStatusesOption.id)
+            ? [] : selectedStatuses;
+    };
+
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
+        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
         setFilterByStatuses(nextFilterByStatuses);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
         setFilterByDesks(selectedDesks);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
     }
@@ -522,6 +564,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
                             value={filterByDesks}
+                            getOptionSelected={(option) =>
+                                filterByDesks.map(desk => desk.id)
+                                    .includes(option.id)}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}

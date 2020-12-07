@@ -376,15 +376,18 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
     const handleFilterChange = (filterBy: any) => {
-        let nextFilterRules = {...filterRules};
-        if (Boolean(Object.values(filterBy)[0])) {
-            nextFilterRules = {
-                ...nextFilterRules,
-                ...filterBy
+        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey, filterValue]) => {
+            if (filterValue) {
+                return {
+                    ...previousValue,
+                    [filterKey]: filterValue
+                }
             }
-        } else {
-            delete nextFilterRules[Object.keys(filterBy)[0]];
-        }
+
+            delete previousValue[filterKey as any];
+            return previousValue;
+        }, {...filterRules});
+
         setFilterRules(nextFilterRules);
     }
 
