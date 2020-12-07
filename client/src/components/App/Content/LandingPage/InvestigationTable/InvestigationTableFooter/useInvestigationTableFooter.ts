@@ -8,15 +8,35 @@ import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
+import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
+
+const toUniqueIdsAndEpidemiologyNumbers = (
+    previous: {
+        uniqueGroupIds: string[],
+        epidemiologyNumbers: number[]
+    }, current: IndexedInvestigation) => {
+    if (current.groupId && !previous.uniqueGroupIds.includes(current.groupId as string)) {
+        return {
+            uniqueGroupIds: [...previous.uniqueGroupIds, current.groupId as string],
+            epidemiologyNumbers: previous.epidemiologyNumbers
+        }
+    } else if (!current.groupId) {
+        return {
+            uniqueGroupIds: previous.uniqueGroupIds,
+            epidemiologyNumbers: [...previous.epidemiologyNumbers, current.epidemiologyNumber as number]
+        }
+    }
+
+    return previous;
+}
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData, onDeskChange, onInvestigatorChange, onInvestigatorGroupChange } = parameters;
+            checkedIndexedRows, onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange, onInvestigatorChange, onInvestigatorGroupChange } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -29,40 +49,29 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
-        const updatedRows : InvestigationTableRow[] = tableRows.map(row => 
-            checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(row.epidemiologyNumber) ? 
-            {...row, 
-                [newValueFieldName]: newValue, 
-                transferReason
-            } 
-            : row);
-        setTableRows(updatedRows);
-    }
+    const handleConfirmDesksDialog = async (updatedDesk: Desk, transferReason: string) => {
+        const { uniqueGroupIds, epidemiologyNumbers } =
+            checkedIndexedRows.reduce<{
+                uniqueGroupIds: string[],
+                epidemiologyNumbers: number[]
+            }>(toUniqueIdsAndEpidemiologyNumbers, {
+                uniqueGroupIds: [],
+                epidemiologyNumbers: []
+            });
 
-    const handleConfirmDesksDialog = (updatedDesk: Desk, transferReason: string) => {
-        const checkedRowsIds = checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber);
-        const switchDeskLogger = logger.setup({
-            workflow: 'Switch desk',
-            investigation: checkedRowsIds.join(', '),
-            user: userId
-        });
-        setIsLoading(true);
-        axios.post('/landingPage/changeDesk', {
-            epidemiologyNumbers: checkedRowsIds,
-            updatedDesk: updatedDesk.id,
-            transferReason
-        }).then(() => {
-            switchDeskLogger.info('the desk have been switched successfully', Severity.LOW);
-            updateRows(transferReason, 'investigationDesk', updatedDesk.deskName);
-            handleCloseDesksDialog();
-        })
-        .catch(error => {
-            switchDeskLogger.error(`the investigator swap failed due to: ${error}`, Severity.HIGH);
-            handleCloseDesksDialog();
-            alertError('לא ניתן היה לבצע את ההעברה לדסק');
-        })
-        .finally(() => setIsLoading(false));
+
+        if (uniqueGroupIds.length) {
+            setIsLoading(true);
+            await onDeskGroupChange(uniqueGroupIds, updatedDesk);
+        }
+
+        if (epidemiologyNumbers.length) {
+            setIsLoading(true);
+            await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason);
+        }
+
+        handleCloseInvestigatorsDialog();
+        fetchTableData();
     }
 
     const handleOpenInvestigatorsDialog = () => setOpenInvestigatorsDialog(true);
@@ -78,19 +87,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         checkedIndexedRows.reduce<{
             uniqueGroupIds: string[],
             epidemiologyNumbers: number[]        
-        }>((previous, current) => {
-            if (current.groupId && !previous.uniqueGroupIds.includes(current.groupId as string)) {
-                return {
-                    uniqueGroupIds: [...previous.uniqueGroupIds, current.groupId as string],
-                    epidemiologyNumbers: previous.epidemiologyNumbers
-                }
-            }
-
-            return {
-                uniqueGroupIds: previous.uniqueGroupIds,
-                epidemiologyNumbers: [...previous.epidemiologyNumbers, current.epidemiologyNumber as number]
-            }
-        }, {
+        }>(toUniqueIdsAndEpidemiologyNumbers, {
             uniqueGroupIds: [],
             epidemiologyNumbers: []
         });

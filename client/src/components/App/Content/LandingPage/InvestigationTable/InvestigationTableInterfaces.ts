@@ -29,11 +29,11 @@ export interface useInvestigationTableOutcome {
     fetchTableData: () => void;
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
-    setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: {id: number, value: County} | null) => Promise<void>;
-    changeDesk: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
+    changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null) => Promise<void>;
+    changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;

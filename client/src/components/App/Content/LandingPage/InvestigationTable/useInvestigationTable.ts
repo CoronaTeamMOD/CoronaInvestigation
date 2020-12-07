@@ -604,60 +604,46 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const changeDesk = async (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => {
-        const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-        const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
-
+    const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null) => {
         const changeDeskLogger = logger.setup({
-            workflow: 'Change Investigation Desk',
+            workflow: 'Change Groups Desk',
             user: user.id,
-            investigation: +indexedRow.epidemiologyNumber
+        });
+        const joinedGroupIds = groupIds.join(', ');
+
+        changeDeskLogger.info(`performing desk change request for group ${joinedGroupIds}`, Severity.LOW);
+        try {
+            axios.post('/landingPage/changeGroupDesk', {
+                groupIds,
+                desk: newSelectedDesk?.id,
+            });
+            changeDeskLogger.info(`changed the desk successfully for group ${joinedGroupIds}`, Severity.LOW);
+            setSelectedRow(UNDEFINED_ROW);
+            fetchTableData();
+        } catch (error) {
+            changeDeskLogger.error(`couldn't change the desk for group ${joinedGroupIds} due to ${error}`, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
+        }
+    };
+
+    const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
+        const changeDeskLogger = logger.setup({
+            workflow: 'Change Groups Desk',
+            user: user.id,
+            investigation: epidemiologyNumbers.join(', ')
         });
 
-        if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
-            changeDeskLogger.info(`alerted to change the desk of investigation ${indexedRow.epidemiologyNumber} from ${indexedRow.investigationDesk} to ${JSON.stringify(newSelectedDesk?.deskName)}`, Severity.LOW);
-            const result: SweetAlertResult<any> = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
-                showCancelButton: true,
-                cancelButtonText: 'לא',
-                cancelButtonColor: theme.palette.error.main,
-                confirmButtonColor: theme.palette.primary.main,
-                confirmButtonText: 'כן, המשך',
+        changeDeskLogger.info('performing desk change request', Severity.LOW);
+        try {
+            await axios.post('/landingPage/changeDesk', {
+                epidemiologyNumbers,
+                updatedDesk: newSelectedDesk?.id,
+                transferReason
             });
-            if (result.isConfirmed) {
-                changeDeskLogger.info(`confirmed changing desk in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-                if (indexedRow.groupId) {
-                    changeDeskLogger.info(`performing desk change request for group ${indexedRow.groupId}`, Severity.LOW);
-                    try {
-                        axios.post('/landingPage/changeGroupDesk', {
-                            groupIds: [indexedRow.groupId],
-                            desk: newSelectedDesk?.id,
-                        });
-                        changeDeskLogger.info(`changed the desk successfully for group ${indexedRow.groupId}`, Severity.LOW);
-                        setSelectedRow(UNDEFINED_ROW);
-                        fetchTableData();
-                    } catch (error) {
-                        changeDeskLogger.error(`couldn't change the desk for group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
-                        alertError(UPDATE_ERROR_TITLE);
-                    }
-                } else {
-                    changeDeskLogger.info('performing desk change request', Severity.LOW);
-                    try {
-                        await axios.post('/landingPage/changeDesk', {
-                            epidemiologyNumbers: [indexedRow.epidemiologyNumber],
-                            updatedDesk: newSelectedDesk?.id,
-                        });
-                        changeDeskLogger.info('changed the desk successfully', Severity.LOW);
-                        setSelectedRow(UNDEFINED_ROW);
-                        fetchTableData();
-                    } catch (error) {
-                        changeDeskLogger.error(`couldn't change the desk due to ${error}`, Severity.HIGH);
-                        alertError(UPDATE_ERROR_TITLE);
-                    }
-                }
-            } else if (result.isDismissed) {
-                changeDeskLogger.info('dismissed changing the desk', Severity.LOW);
-                setSelectedRow(UNDEFINED_ROW);
-            }
+            changeDeskLogger.info('changed the desk successfully', Severity.LOW);
+        } catch (error) {
+            changeDeskLogger.error(`couldn't change the desk due to ${error}`, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
         }
     }
 
@@ -763,7 +749,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     return {
         tableRows: rows,
         fetchTableData,
-        setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
         getTableCellStyles,
@@ -775,7 +760,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         onOk,
         snackbarOpen,
         moveToTheInvestigationForm,
-        changeDesk,
+        changeGroupsDesk,
+        changeInvestigationsDesk,
         totalCount,
         handleFilterChange,
         unassignedInvestigationsCount,

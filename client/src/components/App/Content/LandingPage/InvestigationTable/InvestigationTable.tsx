@@ -141,8 +141,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeDesk, getTableCellStyles,
-        moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
+        sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
+        moveToTheInvestigationForm, totalCount, handleFilterChange, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
@@ -354,8 +354,27 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <Autocomplete
                             options={allDesks}
                             getOptionLabel={(option) => option.deskName}
-                            onChange={(event, newSelectedDesk) => {
-                                changeDesk(indexedRow, newSelectedDesk);
+                            onChange={async (event, newSelectedDesk) => {
+                                const switchDeskTitle = `<p>האם אתה בטוח שאתה רוצה להחליף את דסק <b>${indexedRow.investigationDesk}</b> בדסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+                                const enterDeskTitle = `<p>האם אתה בטוח שאתה רוצה לבחור את דסק <b>${newSelectedDesk?.deskName}</b>?</p>`;
+                                if (newSelectedDesk?.deskName !== indexedRow.investigationDesk) {
+                                    const result = await alertWarning(indexedRow.investigationDesk ? switchDeskTitle : enterDeskTitle, {
+                                        showCancelButton: true,
+                                        cancelButtonText: 'לא',
+                                        cancelButtonColor: theme.palette.error.main,
+                                        confirmButtonColor: theme.palette.primary.main,
+                                        confirmButtonText: 'כן, המשך',
+                                    });
+
+                                    if(result.isConfirmed) {
+                                        indexedRow.groupId ?
+                                            await changeGroupsDesk([indexedRow.groupId], newSelectedDesk) :
+                                            await changeInvestigationsDesk([indexedRow.epidemiologyNumber], newSelectedDesk);
+                                        fetchTableData();
+                                    }
+
+                                    setSelectedRow(UNDEFINED_ROW);
+                                }
                             }}
                             renderInput={(params) =>
                                 <TextField
@@ -779,9 +798,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     allDesks={allDesks}
                     onDialogClose={() => setCheckedIndexedRows([])}
                     tableRows={tableRows}
-                    setTableRows={setTableRows}
                     fetchTableData={fetchTableData}
-                    onDeskChange={changeDesk}
+                    onDeskGroupChange={changeGroupsDesk}
+                    onDeskChange={changeInvestigationsDesk}
                     onInvestigatorGroupChange={changeGroupsInvestigator}
                     onInvestigatorChange={changeInvestigationsInvestigator}
                 />
