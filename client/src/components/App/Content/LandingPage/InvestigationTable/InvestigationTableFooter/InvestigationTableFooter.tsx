@@ -33,7 +33,7 @@ const multipleAssignments = 'הקצאות';
     
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-    const { checkedRowsIds, allDesks, allInvestigators, clearCheckedRows, tableRows, setTableRows, fetchTableData } = props;
+    const { checkedRowsIds, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -51,7 +51,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                      checkedRowsIds, tableRows, setTableRows, fetchTableData, clearCheckedRows })
+                                      checkedRowsIds, tableRows, setTableRows, fetchTableData, onDialogClose })
 
     const classes = useStyle(isScreenWide)();
 
@@ -123,7 +123,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                                                     disabled={cardAction.disabled}
                                                     errorMessage={cardAction.errorMessage}
                                                 />)}
-                <IconButton onClick={clearCheckedRows}>
+                <IconButton onClick={onDialogClose}>
                     <Close />
                 </IconButton>
             </Card>
@@ -152,7 +152,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 export default InvestigationTableFooter;
 
 interface Props {
-    clearCheckedRows: () => void;
+    onDialogClose: () => void;
     checkedRowsIds: number[];
     allDesks: Desk[];
     allInvestigators: InvestigatorOption[];

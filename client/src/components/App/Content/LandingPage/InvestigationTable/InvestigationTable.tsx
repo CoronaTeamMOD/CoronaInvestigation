@@ -712,7 +712,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     allInvestigators={getFilteredUsersOfCurrentCounty()}
                     checkedRowsIds={checkedRowsIds}
                     allDesks={allDesks}
-                    clearCheckedRows={() => setCheckedRowsIds([])}
+                    onDialogClose={() => setCheckedRowsIds([])}
                     tableRows={tableRows}
                     setTableRows={setTableRows}
                     fetchTableData={fetchTableData}

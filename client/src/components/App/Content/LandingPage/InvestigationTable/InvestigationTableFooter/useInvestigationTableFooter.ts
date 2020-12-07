@@ -16,7 +16,7 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedRowsIds, tableRows, setTableRows, clearCheckedRows, fetchTableData } = parameters;
+            checkedRowsIds, tableRows, setTableRows, onDialogClose, fetchTableData } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -26,7 +26,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseDesksDialog = () => {
         setOpenDesksDialog(false);
-        clearCheckedRows();
+        onDialogClose();
     }
 
     const updateRows = (transferReason: string, newValueFieldName: keyof InvestigationTableRow, newValue: any) => {
@@ -68,7 +68,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseInvestigatorsDialog = () => {
         setOpenInvestigatorsDialog(false);
-        clearCheckedRows();
+        onDialogClose();
     }
 
     const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
@@ -99,7 +99,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseGroupedInvestigations = () => {
         setOpenGroupedInvestigations(false);
-        clearCheckedRows();
+        onDialogClose();
     }
 
     const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
