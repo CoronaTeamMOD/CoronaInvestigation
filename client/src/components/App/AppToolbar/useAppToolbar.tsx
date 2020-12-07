@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { persistor } from 'redux/store';
 
 import User from 'models/User';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
 import { setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -25,6 +25,7 @@ export interface useTopToolbarOutcome  {
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
     const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const history = useHistory();
     const classes = useStyles();
     const { alertError } = useCustomSwal();
     
@@ -60,7 +61,8 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     const logout = async () => {
         await setUserActivityStatus(false);
         await persistor.purge();
-        window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout?post_logout_redirect_uri=${indexRoute}`;
+        history.replace({state: {}});
+        window.location.href = `${window.location.protocol}//${window.location.hostname}/.auth/logout`;
     }
 
     const setUserActivityStatus = (isActive: boolean) : Promise<any> => {

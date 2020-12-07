@@ -115,12 +115,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        const {location: {state, pathname}} = history;
+        const {location: {state}} = history;
 
-        history.push(pathname, {
-            ...state,
-            statusFilter: filterByStatuses,
-            deskFilter: filterByDesks,
+        history.replace({
+            state: {
+                ...state,
+                statusFilter: filterByStatuses,
+                deskFilter: filterByDesks,
+            }
         });
 
     }, [filterByStatuses, filterByDesks]);
