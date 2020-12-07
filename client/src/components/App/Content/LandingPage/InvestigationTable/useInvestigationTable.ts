@@ -570,10 +570,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             confirmButtonColor: theme.palette.primary.main,
             confirmButtonText: 'כן, המשך'
         });
-
         if (result.isConfirmed) {
             changeCountyLogger.info(`confirmed changing county in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-
             if(indexedRow.groupId) {
                 changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
                 try {
@@ -628,10 +626,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 confirmButtonColor: theme.palette.primary.main,
                 confirmButtonText: 'כן, המשך',
             });
-
             if (result.isConfirmed) {
                 changeDeskLogger.info(`confirmed changing desk in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-
                 if (indexedRow.groupId) {
                     changeDeskLogger.info(`performing desk change request for group ${indexedRow.groupId}`, Severity.LOW);
                     try {
