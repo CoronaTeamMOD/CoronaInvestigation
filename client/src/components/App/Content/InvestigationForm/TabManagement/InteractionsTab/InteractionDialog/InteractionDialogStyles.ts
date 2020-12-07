@@ -4,7 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     dialogPaper: {
-        width: '77vw',
+        width: '95vw',
         height: '92vh',
     },
     dialogTitleWrapper: {
