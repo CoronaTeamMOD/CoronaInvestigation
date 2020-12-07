@@ -75,13 +75,13 @@ const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 type StatusFilter = InvestigationMainStatus[];
 type DeskFilter = Desk[];
 
-interface SandyM {
+interface HistoryState {
     statusFilter?: StatusFilter;
     deskFilter?: DeskFilter
 }
 
 const InvestigationTable: React.FC = (): JSX.Element => {
-    const history = useHistory<SandyM>();
+    const history = useHistory<HistoryState>();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
 
@@ -110,19 +110,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     useEffect(() => {
         const {location: {state}} = history;
         const {statusFilter = [], deskFilter = []} = state || {};
-        console.log('loaded state:', statusFilter, deskFilter)
 
         onFiltersChange(deskFilter, statusFilter)
     }, []);
 
     useEffect(() => {
-        console.log('filterByStatuses', filterByStatuses, 'filterByDesks', filterByDesks)
         const {location: {state, pathname}} = history;
-        console.log('state', state, 'state to be pushed', {
-            ...state,
-            statusFilter: filterByStatuses,
-            deskFilter: filterByDesks,
-        })
 
         history.push(pathname, {
             ...state,
@@ -515,13 +508,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
         const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
         setFilterByStatuses(nextFilterByStatuses);
-        console.log('onSelectedStatusesChange', nextFilterByStatuses)
         handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
     }
 
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
-        console.log('onSelectedDesksChange', selectedDesks);
-
         setFilterByDesks(selectedDesks);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
     }
