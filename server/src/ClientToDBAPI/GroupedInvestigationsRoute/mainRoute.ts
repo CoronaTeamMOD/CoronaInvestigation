@@ -81,8 +81,8 @@ groupedInvestigationsRoute.post('/exclude', adminMiddleWare, (request: Request, 
 
 groupedInvestigationsRoute.post('/', adminMiddleWare, (request: Request, response: Response) => {
     const invetigationsToGroup: number[] = request.body.invetigationsToGroupIds;
-    const createOrUpdate: string = request.body.createOrUpdate;
-    if (createOrUpdate === 'Create') {
+    const group: string | Object = request.body.group;
+    if (typeof group === 'object') {
         const groupedInvestigationsLogger = logger.setup({
             workflow: `create grouped investigations ${invetigationsToGroup.join(', ')}`,
             user: response.locals.user.id,

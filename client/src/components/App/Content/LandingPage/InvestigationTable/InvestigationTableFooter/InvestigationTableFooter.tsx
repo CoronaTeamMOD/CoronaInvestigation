@@ -30,9 +30,9 @@ const singleInvestigation = 'חקירה';
 const multipleInvestigations = 'חקירות';
 const singleAssignment = 'הקצאה';
 const multipleAssignments = 'הקצאות';
-    
+
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
-        
+
     const { checkedRowsIds, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -50,13 +50,15 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
-    } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                      checkedRowsIds, tableRows, setTableRows, fetchTableData, onDialogClose })
+    } = useInvestigationTableFooter({
+        setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
+        checkedRowsIds, tableRows, setTableRows, fetchTableData, onDialogClose
+    })
 
     const classes = useStyle(isScreenWide)();
 
     const isSingleInvestigation = checkedRowsIds.length === 1;
-    
+
     const checkedInvestigations: InvestigationTableRow[] = useMemo(() => {
         return tableRows.filter((tableRow: InvestigationTableRow) => checkedRowsIds.includes(tableRow.epidemiologyNumber));
     }, [tableRows, checkedRowsIds])
@@ -66,7 +68,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             return {
                 disabled: true,
                 groupIds: []
-            } 
+            }
         } else {
             return {
                 disabled: false,
@@ -76,9 +78,9 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     }, [checkedInvestigations])
 
     const shouldGroupActionDisabled: boolean = useMemo(() => {
-        const groupIdsWithRepeation = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const groupIdsWithoutRepeation = groupIdsWithRepeation.filter((item, pos) => groupIdsWithRepeation.indexOf(item) === pos && item !== null);
-        return groupIdsWithoutRepeation.length > 1 || checkedInvestigations.length < 2
+        const groupIds = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
+        const trimedGroupidIds = Array.from(new Set(groupIds));
+        return trimedGroupidIds.length > 2 || (trimedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
     }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [
@@ -86,14 +88,14 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: CollectionsBookmark,
             displayTitle: 'קיבוץ חקירות',
             disabled: shouldGroupActionDisabled,
-            errorMessage: shouldGroupActionDisabled ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת': '',
+            errorMessage: shouldGroupActionDisabled ? 'שים לב לא ניתן לקבץ חקירה שכבר מקובצת' : '',
             onClick: handleOpenGroupedInvestigations
         },
         {
             icon: CallSplit,
             displayTitle: 'ביטול קיבוץ',
             disabled: disbandAction.disabled,
-            errorMessage: disbandAction.disabled ? 'שים לב, לא ניתן לבטל חקירה שאינה מקובצת': '',
+            errorMessage: disbandAction.disabled ? 'שים לב, לא ניתן לבטל חקירה שאינה מקובצת' : '',
             onClick: () => handleDisbandGroupedInvestigations(disbandAction.groupIds)
         },
         {
@@ -118,28 +120,28 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                     <Typography>{isSingleInvestigation ? 'אחת' : multipleInvestigations}</Typography>
                 </div>
                 {cardActions.map(cardAction => <FooterAction
-                                                    key={cardAction.displayTitle} 
-                                                    icon={cardAction.icon} 
-                                                    displayTitle={cardAction.displayTitle} 
-                                                    onClick={cardAction.onClick} 
-                                                    disabled={cardAction.disabled}
-                                                    errorMessage={cardAction.errorMessage}
-                                                />)}
+                    key={cardAction.displayTitle}
+                    icon={cardAction.icon}
+                    displayTitle={cardAction.displayTitle}
+                    onClick={cardAction.onClick}
+                    disabled={cardAction.disabled}
+                    errorMessage={cardAction.errorMessage}
+                />)}
                 <IconButton onClick={onDialogClose}>
                     <Close />
                 </IconButton>
             </Card>
-            <TransferInvestigationDesk 
-                open={openDesksDialog} 
-                onConfirm={handleConfirmDesksDialog} 
+            <TransferInvestigationDesk
+                open={openDesksDialog}
+                onConfirm={handleConfirmDesksDialog}
                 onClose={handleCloseDesksDialog}
-                allDesks={allDesks} 
+                allDesks={allDesks}
             />
-            <TransferInvestigationInvestigator 
-                open={openInvestigatorsDialog} 
-                onConfirm={handleConfirmInvestigatorsDialog} 
-                onClose={handleCloseInvestigatorsDialog} 
-                allInvestigators={allInvestigators} 
+            <TransferInvestigationInvestigator
+                open={openInvestigatorsDialog}
+                onConfirm={handleConfirmInvestigatorsDialog}
+                onClose={handleCloseInvestigatorsDialog}
+                allInvestigators={allInvestigators}
             />
             <GroupedInvestigations
                 open={openGroupedInvestigations}

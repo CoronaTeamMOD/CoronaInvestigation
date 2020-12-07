@@ -24,20 +24,19 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
     const { alertError } = useCustomSwal();
 
     const onSubmit = (data: GroupForm) => {
-        const groupIdsWithRepeation = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const groupIdsWithoutRepeation = groupIdsWithRepeation.filter((item, pos) => groupIdsWithRepeation.indexOf(item) === pos && item !== null);
-        if (groupIdsWithoutRepeation.length > 0) {
-            const group = groupIdsWithoutRepeation[0];
-            const createOrUpdate = 'Update'
+        const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
+        const groupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
+        const trimedGroupidIds = Array.from(new Set(groupIds));
+        if (trimedGroupidIds.length === 2 && trimedGroupidIds.findIndex((groupId: string) => groupId === null) > -1) {
+            const group = trimedGroupidIds.find((groupId: string) => groupId !== null);
             const groupToUpdateLogger = logger.setup({
                 workflow: 'update grouped investigations',
                 user: userId,
                 investigation: epidemiologyNumber
             });
             groupToUpdateLogger.info('launching grouped investigations request', Severity.LOW);
-            const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
             setIsLoading(true);
-            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds, createOrUpdate })
+            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
                 .then(() => {
                     onClose();
                     groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
@@ -60,10 +59,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
                 investigation: epidemiologyNumber
             });
             groupToCreateLogger.info('launching grouped investigations request', Severity.LOW);
-            const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
             setIsLoading(true);
-            const createOrUpdate = 'Create'
-            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds, createOrUpdate })
+            axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
                 .then(() => {
                     onClose();
                     groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
