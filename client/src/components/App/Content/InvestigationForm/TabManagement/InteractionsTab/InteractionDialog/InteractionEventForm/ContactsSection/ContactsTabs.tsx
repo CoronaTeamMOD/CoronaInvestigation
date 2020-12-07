@@ -33,7 +33,7 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
     const classes = useStyles();
 
     const {palette: {action: {active}}} = useTheme();
-    const tabClasses = {wrapper: classes.tab, selected: classes.selected, labelIcon: classes.icon};
+    const tabClasses = {wrapper: classes.tab, selected: classes.selected, labelIcon: classes.labelIcon};
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setTab(newValue);
@@ -42,7 +42,7 @@ const ContactsTabs = ({isVisible}: {isVisible: boolean}) => {
     return (
         <div className={isVisible ? classes.tabs : formClasses.hidden}>
             <Tabs
-                classes={{indicator: classes.tabIndicator}}
+                classes={{indicator: classes.tabIndicator, root: classes.tabsSidebar}}
                 indicatorColor='primary'
                 orientation='vertical'
                 value={currentTab}

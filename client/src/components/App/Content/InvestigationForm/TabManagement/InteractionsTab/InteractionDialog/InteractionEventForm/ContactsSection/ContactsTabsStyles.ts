@@ -9,24 +9,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     tabs: {
         display: 'flex'
     },
-    icon: {
+    labelIcon: {
+        '@media screen and (max-width: 1250px)': {
+            minWidth: 180
+        },
+        padding: '0',
         '& svg': {
             paddingLeft: '0.5vw',
             flip: false,
-        }
+        },
     },
     selected: {
         color: theme.palette.primary.main,
     },
-    collapse: {
-        '@media screen and (max-width: 1700px)': {
-            width: '60vw'
-        },
-        width: '64vw'
-    },
     tabIndicator: {
         width: '0.2vw'
-    }
+    },
+    tabsSidebar: {
+        flip: false,
+        paddingLeft: '1vw',
+        minWidth: 130
+    },
 }));
 
 export default useStyles;
