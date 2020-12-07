@@ -1,6 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import {NavLink, NavLinkProps, useLocation, useHistory} from 'react-router-dom';
 import { ExitToApp, Home, SupervisorAccount } from '@material-ui/icons';
 import { AppBar, Toolbar, Typography, Tooltip, IconButton } from '@material-ui/core';
 
@@ -14,6 +13,24 @@ const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
   allowedUserTypes: [UserType.ADMIN, UserType.SUPER_ADMIN],
   allowedRoutes: [landingPageRoute, usersManagementRoute]
+};
+
+const StatePersistentNavLink = (props: NavLinkProps) => {
+  const history = useHistory();
+  const { classes } = useAppToolbar();
+
+  const handleNavClick: NavLinkProps['onClick'] = (event) => {
+    event.preventDefault(); // prevent state reset on reroute
+    history.push(props.to as string, history.location.state);
+  };
+
+  return (
+      <NavLink {...props} location={history.location}
+               onClick={handleNavClick}
+               activeClassName={classes.activeItem} className={classes.menuItem}>
+        {props.children}
+      </NavLink>
+  )
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
@@ -30,14 +47,14 @@ const AppToolbar: React.FC = (): JSX.Element => {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
             <div className={classes.navButtons}>
-              <NavLink activeClassName={classes.activeItem} className={classes.menuItem} exact to={landingPageRoute}>
+              <StatePersistentNavLink exact to={landingPageRoute}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
-              </NavLink>
-              <NavLink activeClassName={classes.activeItem} className={classes.menuItem} exact to={usersManagementRoute}>
+              </StatePersistentNavLink>
+              <StatePersistentNavLink exact to={usersManagementRoute}>
                 <SupervisorAccount className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
-              </NavLink>
+              </StatePersistentNavLink>
             </div>
           }
         </div>
