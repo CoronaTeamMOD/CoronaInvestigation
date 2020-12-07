@@ -49,7 +49,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
             user: userId,
             investigation: epidemiologyNumber
         });
-
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,
