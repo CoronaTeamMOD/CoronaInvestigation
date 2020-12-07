@@ -80,8 +80,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
 
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         const groupIds = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const trimedGroupidIds = Array.from(new Set(groupIds));
-        return trimedGroupidIds.length > checkedGroupsLimitIncludingNull || (trimedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
+        const trimmedGroupidIds = Array.from(new Set(groupIds));
+        return trimmedGroupidIds.length > checkedGroupsLimitIncludingNull || (trimmedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
     }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [

@@ -28,10 +28,10 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
     const onSubmit = (data: GroupForm) => {
         const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
         const groupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
-        const trimedGroupidIds = Array.from(new Set(groupIds));
-        if (trimedGroupidIds.length === checkedGroupsLimitIncludingNull
-            && trimedGroupidIds.findIndex((groupId: string) => groupId === null) - 1) {
-            const group = trimedGroupidIds.find((groupId: string) => groupId !== null);
+        const trimmedGroupidIds = Array.from(new Set(groupIds));
+        if (trimmedGroupidIds.length === checkedGroupsLimitIncludingNull
+            && trimmedGroupidIds.findIndex((groupId: string) => groupId === null) - 1) {
+            const group = trimmedGroupidIds.find((groupId: string) => groupId !== null);
             const groupToUpdateLogger = logger.setup({
                 workflow: 'update grouped investigations',
                 user: userId,
