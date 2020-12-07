@@ -4,10 +4,7 @@ import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     dialogPaper: {
-        '@media screen and (max-width: 1370px)': {
-            width: '95vw',
-        },
-        width: '77vw',
+        width: '95vw',
         height: '92vh',
     },
     dialogTitleWrapper: {
