@@ -13,6 +13,13 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     tableCell: {
         padding: '7px'
     },
+    tableCellRoot: {
+        padding: '0'
+    },
+    groupColor: {
+        height: '8vh',
+        width: '0.75vw'
+    },
     title: {
         margin: 'auto',
         height: '14vh',

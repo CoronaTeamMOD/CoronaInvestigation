@@ -4,6 +4,7 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 export const investigatorIdPropertyName = 'investigatorId';
 
 export enum TableHeadersNames {
+    color = 'color',
     multipleCheck = 'multipleCheck',
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
@@ -36,6 +37,7 @@ export type Order = SortOrder.asc | SortOrder.desc;
 export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean };
 
 export const TableHeaders: IndexedInvestigation = {
+    [TableHeadersNames.color]: '',
     [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תאריך תחילת המחלה',
@@ -64,6 +66,7 @@ export const TableHeaders: IndexedInvestigation = {
 }
 
 export const adminCols: string[] = [
+    TableHeadersNames.color,
     TableHeadersNames.multipleCheck,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
@@ -94,6 +97,7 @@ export const userCols: string[] = [
 ]
 
 export const sortableCols: sortableHeaders = {
+    [TableHeadersNames.color]: false,
     [TableHeadersNames.multipleCheck]: false,
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,

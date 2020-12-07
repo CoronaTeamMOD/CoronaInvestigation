@@ -475,6 +475,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const convertToIndexedRow = (row: InvestigationTableRow): IndexedInvestigationData => {
         return {
+            [TableHeadersNames.color]: '',
             [TableHeadersNames.multipleCheck]: row.isChecked,
             [TableHeadersNames.epidemiologyNumber]: row.epidemiologyNumber,
             [TableHeadersNames.coronaTestDate]: getFormattedDate(row.coronaTestDate),
@@ -681,7 +682,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         let classNames = [];
 
         classNames.push(classes.font);
-        classNames.push(classes.tableCell);
+        if (cellKey !== TableHeadersNames.color) {
+            classNames.push(classes.tableCell);
+        }
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
