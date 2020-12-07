@@ -12,6 +12,8 @@ export interface InvestigationTableFooterParameters {
     setOpenGroupedInvestigations: React.Dispatch<React.SetStateAction<boolean>>;
     fetchTableData: () => void;
     onDialogClose: () => void;
+    onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
+    onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => Promise<void>;
 }
 
 export interface InvestigationTableFooterOutcome {

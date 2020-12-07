@@ -762,6 +762,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     tableRows={tableRows}
                     setTableRows={setTableRows}
                     fetchTableData={fetchTableData}
+                    onDeskChange={changeDesk}
+                    onInvestigatorChange={changeInvestigator}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}

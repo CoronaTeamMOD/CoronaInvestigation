@@ -16,7 +16,7 @@ import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } f
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData } = parameters;
+            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData, onDeskChange, onInvestigatorChange } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 

@@ -34,8 +34,8 @@ const singleAssignment = 'הקצאה';
 const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
-
-    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData } = props;
+        
+    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData, onDeskChange, onInvestigatorChange } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                    checkedIndexedRows, tableRows, setTableRows, fetchTableData, onDialogClose });
+                                    checkedIndexedRows, tableRows, setTableRows, fetchTableData, onDialogClose, onDeskChange, onInvestigatorChange });
 
     const classes = useStyle(isScreenWide)();
 
@@ -168,4 +168,6 @@ interface Props {
     tableRows: InvestigationTableRow[];
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     fetchTableData: () => void;
+    onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
+    onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => Promise<void>;
 }
