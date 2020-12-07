@@ -10,6 +10,7 @@ export interface InvestigationTableFooterParameters {
     setOpenInvestigatorsDialog: React.Dispatch<React.SetStateAction<boolean>>;
     setOpenGroupedInvestigations: React.Dispatch<React.SetStateAction<boolean>>;
     fetchTableData: () => void;
+    onDialogClose: () => void;
 }
 
 export interface InvestigationTableFooterOutcome {
