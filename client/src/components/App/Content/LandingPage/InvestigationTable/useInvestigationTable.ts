@@ -392,25 +392,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }, {familyMembers: [], educationMembers: []});
      */
     const handleFilterChange = (filterBy: any) => {
-        console.log('handleFilterChange', filterBy);
-        // let nextFilterRules = { ...filterRules };
-        // Object.entries(filterBy).reduce((prevObject, [filterKey, filterValue]) => (Boolean(filterValue) ? prevObject : (prevObject[filterKey] = filterValue, prevObject)), {})
-
-        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey,filterValue ]) => {
-            // if(filterValue === null) {
-            //     return {
-            //         ...previousValue,
-            //         [filterKey]: []
-            //     }
-            // }
+        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey, filterValue]) => {
             if (filterValue) {
                 return {
                     ...previousValue,
-                   [filterKey]: filterValue
+                    [filterKey]: filterValue
                 }
             }
+
+            delete previousValue[filterKey as any];
             return previousValue;
-        }, filterRules);
+        }, {...filterRules});
 
         // if (Object.values(filterBy)[0] !== null) {
         //     nextFilterRules = {

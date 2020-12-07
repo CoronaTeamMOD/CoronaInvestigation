@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
@@ -108,7 +108,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
 
     useEffect(() => {
-        const {location: {state: {statusFilter = [], deskFilter = []} = {}}} = history;
+        const {location: {state}} = history;
+        const {statusFilter = [], deskFilter = []} = state || {};
         console.log('loaded state:', statusFilter, deskFilter)
 
         onFiltersChange(deskFilter, statusFilter)
@@ -571,6 +572,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
                             value={filterByDesks}
+                            getOptionSelected={(option) =>
+                                filterByDesks.map(desk => desk.id)
+                                    .includes(option.id)}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
