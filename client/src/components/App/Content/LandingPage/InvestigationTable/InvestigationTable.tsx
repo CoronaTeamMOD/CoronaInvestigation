@@ -6,7 +6,7 @@ import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box, InputAdornment
+    Slide, Box, InputAdornment, useTheme
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,6 +27,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
@@ -84,6 +85,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const history = useHistory<HistoryState>();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
+    const { alertWarning } = useCustomSwal();
+    const theme = useTheme();
 
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
@@ -140,7 +143,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, changeInvestigator, changeCounty, changeDesk, getTableCellStyles,
         moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
-        fetchInvestigationsByGroupId, fetchTableData
+        fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, 
@@ -263,8 +266,24 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         ''
                                 )}
                                 inputValue={selectedInvestigator.userName}
-                                onChange={(event, newSelectedInvestigator) => {
-                                    changeInvestigator(indexedRow, newSelectedInvestigator, indexedRow.investigatorName)
+                                onChange={async (event, newSelectedInvestigator) => {
+                                    const result = await alertWarning(
+                                        `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${indexedRow.investigatorName}</b> בחוקר <b>${newSelectedInvestigator?.value.userName}</b>?</p>`, {
+                                        showCancelButton: true,
+                                        cancelButtonText: 'לא',
+                                        cancelButtonColor: theme.palette.error.main,
+                                        confirmButtonColor: theme.palette.primary.main,
+                                        confirmButtonText: 'כן, המשך'
+                                    });
+
+                                    if(result.isConfirmed) {
+                                        indexedRow.groupId ?
+                                            await changeGroupsInvestigator([indexedRow.groupId], newSelectedInvestigator) :
+                                            await changeInvestigationsInvestigator([indexedRow.epidemiologyNumber], newSelectedInvestigator);
+                                        fetchTableData();
+                                    }
+
+                                    setSelectedRow(UNDEFINED_ROW);
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
                                     if (event?.type !== 'blur') {

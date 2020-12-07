@@ -514,59 +514,42 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const changeInvestigator = async (indexedRow: IndexedInvestigation, newSelectedInvestigator: InvestigatorOption, currentSelectedInvestigator: string) => {
-        const changeInvestigatorLogger = logger.setup({
-            workflow: 'Change Investigation Investigator',
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
+        const changeGroupsInvestigatorLogger = logger.setup({
+            workflow: 'Change groups investigator',
             user: user.id,
-            investigation: +indexedRow.epidemiologyNumber
         });
-
-        const result = await alertWarning(
-            `<p> האם אתה בטוח שאתה רוצה להחליף את החוקר <b>${currentSelectedInvestigator}</b> בחוקר <b>${newSelectedInvestigator.value.userName}</b>?</p>`, {
-            showCancelButton: true,
-            cancelButtonText: 'לא',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
-        });
-
-        if (result.isConfirmed) {
-            changeInvestigatorLogger.info(`confirmed changing investigator in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-
-            if (indexedRow.groupId) {
-                changeInvestigatorLogger.info(`performing investigator change request for group ${indexedRow.groupId}`, Severity.LOW);
-                try {
-                    await axios.post('/users/changeGroupInvestigator', {
-                        groupIds: [indexedRow.groupId],
-                        user: newSelectedInvestigator.id
-                    });
-                    changeInvestigatorLogger.info(`the investigator have been changed successfully for group ${indexedRow.groupId}`, Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeInvestigatorLogger.error(`couldn't change investigator of group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            } else {
-                changeInvestigatorLogger.info('performing investigator change request', Severity.LOW);
-                try {
-                    await axios.post('/users/changeInvestigator', {
-                        epidemiologyNumbers: [indexedRow.epidemiologyNumber],
-                        user: newSelectedInvestigator.id
-                    });
-                    changeInvestigatorLogger.info('the investigator have been changed successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            }
-        } else if (result.isDismissed) {
-            changeInvestigatorLogger.info('the admin denied the investigator from being changed', Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
+        const joinedGroupIds = groupIds.join(', ');
+        changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
+        try {
+            await axios.post('/users/changeGroupInvestigator', {
+                groupIds,
+                user: investigator?.id
+            });
+            changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
+        } catch (error) {
+            changeGroupsInvestigatorLogger.error(`couldn't change investigator of groups ${joinedGroupIds} due to ${error}`, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
         }
-    }
+    };
+
+    const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => {
+        const changeInvestigationsInvestigatorLogger = logger.setup({
+            workflow: 'Change investigations investigator',
+            user: user.id,
+        });
+        changeInvestigationsInvestigatorLogger.info('performing investigator change request', Severity.LOW);
+        try {
+            await axios.post('/users/changeInvestigator', {
+                epidemiologyNumbers,
+                user: investigator?.id
+            });
+            changeInvestigationsInvestigatorLogger.info('the investigator have been changed successfully', Severity.LOW);
+        } catch (error) {
+            changeInvestigationsInvestigatorLogger.error('couldnt change investigator due to ' + error, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
+        }
+    };
 
     const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County} | null) => {
         const changeCountyLogger = logger.setup({
@@ -782,7 +765,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setTableRows: setRows,
         onInvestigationRowClick,
         convertToIndexedRow,
-        changeInvestigator,
         getTableCellStyles,
         sortInvestigationTable,
         getUserMapKeyByValue,
@@ -796,7 +778,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         totalCount,
         handleFilterChange,
         unassignedInvestigationsCount,
-        fetchInvestigationsByGroupId
+        fetchInvestigationsByGroupId,
+        changeGroupsInvestigator,
+        changeInvestigationsInvestigator,
     };
 };
 

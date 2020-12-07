@@ -6,6 +6,7 @@ import County from 'models/County';
 import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import InvestigatorOption from 'models/InvestigatorOption';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
@@ -31,7 +32,6 @@ export interface useInvestigationTableOutcome {
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
-    changeInvestigator: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => Promise<void>;
     changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: {id: number, value: County} | null) => Promise<void>;
     changeDesk: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
@@ -44,4 +44,6 @@ export interface useInvestigationTableOutcome {
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => void;
+    changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null) => Promise<void>;
+    changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => Promise<void>;
 };
