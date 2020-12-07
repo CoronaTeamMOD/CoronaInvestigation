@@ -12,11 +12,12 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
 import { InvestigationTableFooterOutcome, InvestigationTableFooterParameters } from './InvestigationTableFooterInterfaces';
+import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
         
     const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData, onDeskChange, onInvestigatorChange } = parameters;
+            checkedIndexedRows, tableRows, setTableRows, onDialogClose, fetchTableData, onDeskChange, onInvestigatorChange, onInvestigatorGroupChange } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -72,29 +73,41 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleConfirmInvestigatorsDialog = (updatedIvestigator: InvestigatorOption, transferReason: string) => {
-        const checkedRowsIds = checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber);
-        const changeInvestigatorLogger = logger.setup({
-            workflow: 'Switch investigator',
-            investigation: checkedRowsIds.join(', '),
-            user: userId
+    const handleConfirmInvestigatorsDialog = async (updatedIvestigator: InvestigatorOption, transferReason: string) => {
+
+        const { uniqueGroupIds, epidemiologyNumbers } = 
+        checkedIndexedRows.reduce<{
+            uniqueGroupIds: string[],
+            epidemiologyNumbers: number[]        
+        }>((previous, current) => {
+            if (current.groupId && !previous.uniqueGroupIds.includes(current.groupId as string)) {
+                return {
+                    uniqueGroupIds: [...previous.uniqueGroupIds, current.groupId as string],
+                    epidemiologyNumbers: previous.epidemiologyNumbers
+                }
+            }
+
+            return {
+                uniqueGroupIds: previous.uniqueGroupIds,
+                epidemiologyNumbers: [...previous.epidemiologyNumbers, current.epidemiologyNumber as number]
+            }
+        }, {
+            uniqueGroupIds: [],
+            epidemiologyNumbers: []
         });
-        setIsLoading(true);
-        axios.post('/users/changeInvestigator', {
-            epidemiologyNumbers: checkedRowsIds,
-            user: updatedIvestigator.id,
-            transferReason
-        }).then(() => {
-            changeInvestigatorLogger.info('the investigator have been switched successfully', Severity.LOW);
-            updateRows(transferReason, 'investigator', updatedIvestigator.value);
-            handleCloseInvestigatorsDialog();
-        })
-        .catch(error => {
-            changeInvestigatorLogger.error(`the investigator swap failed due to: ${error}`, Severity.HIGH);
-            handleCloseInvestigatorsDialog();
-            alertError('לא ניתן היה לבצע את ההעברה לחוקר');
-        })
-        .finally(() => setIsLoading(false));
+
+        if(uniqueGroupIds.length) {
+            setIsLoading(true);
+            await onInvestigatorGroupChange(uniqueGroupIds, updatedIvestigator);    
+        }
+
+        if(epidemiologyNumbers.length) {
+            setIsLoading(true);
+            await onInvestigatorChange(epidemiologyNumbers, updatedIvestigator);
+        }
+
+        handleCloseInvestigatorsDialog();
+        fetchTableData();
     }
 
     const handleOpenGroupedInvestigations = () => setOpenGroupedInvestigations(true);

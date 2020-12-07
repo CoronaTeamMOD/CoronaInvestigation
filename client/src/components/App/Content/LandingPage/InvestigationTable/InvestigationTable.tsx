@@ -141,7 +141,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, changeInvestigator, changeCounty, changeDesk, getTableCellStyles,
+        sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeDesk, getTableCellStyles,
         moveToTheInvestigationForm, setTableRows, totalCount, handleFilterChange, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator
     } = useInvestigationTable({
@@ -782,7 +782,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     setTableRows={setTableRows}
                     fetchTableData={fetchTableData}
                     onDeskChange={changeDesk}
-                    onInvestigatorChange={changeInvestigator}
+                    onInvestigatorGroupChange={changeGroupsInvestigator}
+                    onInvestigatorChange={changeInvestigationsInvestigator}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}

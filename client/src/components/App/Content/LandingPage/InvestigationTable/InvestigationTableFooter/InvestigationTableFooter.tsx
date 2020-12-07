@@ -35,7 +35,8 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, setTableRows, fetchTableData, onDeskChange, onInvestigatorChange } = props;
+    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose,
+            tableRows, setTableRows, fetchTableData, onDeskChange, onInvestigatorGroupChange, onInvestigatorChange } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -52,8 +53,19 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleConfirmDesksDialog,
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
-    } = useInvestigationTableFooter({ setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-                                    checkedIndexedRows, tableRows, setTableRows, fetchTableData, onDialogClose, onDeskChange, onInvestigatorChange });
+    } = useInvestigationTableFooter({ 
+        setOpenDesksDialog, 
+        setOpenInvestigatorsDialog, 
+        setOpenGroupedInvestigations,
+        checkedIndexedRows, 
+        tableRows, 
+        setTableRows, 
+        fetchTableData, 
+        onDialogClose, 
+        onDeskChange, 
+        onInvestigatorChange, 
+        onInvestigatorGroupChange 
+    });
 
     const classes = useStyle(isScreenWide)();
 
@@ -169,5 +181,6 @@ interface Props {
     setTableRows: React.Dispatch<React.SetStateAction<InvestigationTableRow[]>>;
     fetchTableData: () => void;
     onDeskChange: (indexedRow: IndexedInvestigation, newSelectedDesk: Desk | null) => Promise<void>;
-    onInvestigatorChange: (indexedRow: IndexedInvestigation, newSelectedInvestigator: any, currentSelectedInvestigator: string) => Promise<void>;
+    onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null) => Promise<void>;
+    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null) => Promise<void>;
 }
