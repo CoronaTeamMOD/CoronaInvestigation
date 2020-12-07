@@ -9,8 +9,8 @@ export const CHANGE_DESK_ID = gql`
 `;
 
 export const UPDATE_DESK_BY_GROUP_ID = gql`
-mutation updateInvestigatorByGroupId($desk: Int!, $selectedGroups: [UUID!]!) {
-  updateDeskByGroupId(input: {desk: $desk, selectedGroups: $selectedGroups}) {
+mutation updateInvestigatorByGroupId($desk: Int!, $selectedGroups: [UUID!]!, $reason: String) {
+  updateDeskByGroupId(input: {desk: $desk, selectedGroups: $selectedGroups, reason: $reason}) {
     clientMutationId
   }
 }

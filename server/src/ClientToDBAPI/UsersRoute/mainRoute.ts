@@ -124,8 +124,9 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     });
     const newInvestigator = request.body.user;
     const selectedGroups = request.body.groupIds;
+    const reason = request.body.reason ? request.body.groupIds : ''; 
     changeGroupInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, reason})
     .then((result: any) => {
         if (result?.data && !result.errors) {
             changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
