@@ -514,7 +514,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : 0;
     }
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup({
             workflow: 'Change groups investigator',
             user: user.id,
@@ -524,7 +524,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         try {
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
-                user: investigator?.id
+                user: investigator?.id,
+                reason: transferReason
             });
             changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
         } catch (error) {
@@ -604,7 +605,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null) => {
+    const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => {
         const changeDeskLogger = logger.setup({
             workflow: 'Change Groups Desk',
             user: user.id,
@@ -616,6 +617,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             axios.post('/landingPage/changeGroupDesk', {
                 groupIds,
                 desk: newSelectedDesk?.id,
+                reason: transferReason
             });
             changeDeskLogger.info(`changed the desk successfully for group ${joinedGroupIds}`, Severity.LOW);
             setSelectedRow(UNDEFINED_ROW);

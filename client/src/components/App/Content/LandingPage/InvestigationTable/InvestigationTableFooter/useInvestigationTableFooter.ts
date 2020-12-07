@@ -62,7 +62,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
         if (uniqueGroupIds.length) {
             setIsLoading(true);
-            await onDeskGroupChange(uniqueGroupIds, updatedDesk);
+            await onDeskGroupChange(uniqueGroupIds, updatedDesk, transferReason);
         }
 
         if (epidemiologyNumbers.length) {
@@ -94,7 +94,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
         if(uniqueGroupIds.length) {
             setIsLoading(true);
-            await onInvestigatorGroupChange(uniqueGroupIds, updatedIvestigator);    
+            await onInvestigatorGroupChange(uniqueGroupIds, updatedIvestigator, transferReason);    
         }
 
         if(epidemiologyNumbers.length) {

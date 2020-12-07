@@ -178,8 +178,8 @@ interface Props {
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
     fetchTableData: () => void;
-    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null) => Promise<void>;
+    onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
-    onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null) => Promise<void>;
+    onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
 }
