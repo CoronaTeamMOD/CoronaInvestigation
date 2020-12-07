@@ -58,8 +58,7 @@ const ContactQuestioning: React.FC<Props> = ({id}: Props): JSX.Element => {
                 <form id={`form-${id}`} onSubmit={(e) => saveContacted(e)}>
                     <FormTitle title={`טופס תשאול מגעים (${allContactedInteractions.length})`}/>
                     {
-                        allContactedInteractions.sort((firstInteractedContact, secondInteractedContact) =>
-                            firstInteractedContact.phoneNumber ? firstInteractedContact.phoneNumber.localeCompare(secondInteractedContact.phoneNumber) : 0).map((interactedContact) => {
+                        allContactedInteractions.map((interactedContact) => {
                             const isFamilyContact : boolean = isInvolvedThroughFamily(interactedContact.involvementReason);
                             return <div key={interactedContact.id} className={classes.form}>
                                 <Accordion className={classes.accordion} style={{borderRadius: '3vw'}}>
