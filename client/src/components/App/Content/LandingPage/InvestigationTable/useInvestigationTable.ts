@@ -521,8 +521,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             changeInvestigatorLogger.info(`confirmed changing investigator in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
 
             if(indexedRow.groupId) {
+                changeInvestigatorLogger.info(`performing investigator change request for group ${indexedRow.groupId}`, Severity.LOW);
                 try {
-                    changeInvestigatorLogger.info(`performing investigator change request for group ${indexedRow.groupId}`, Severity.LOW);
                     await axios.post('/users/changeGroupInvestigator', {
                         groupIds: [indexedRow.groupId],
                         user: newSelectedInvestigator.id
@@ -535,8 +535,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     alertError(UPDATE_ERROR_TITLE);
                 }
             } else {
+                changeInvestigatorLogger.info('performing investigator change request', Severity.LOW);
                 try {
-                    changeInvestigatorLogger.info('performing investigator change request', Severity.LOW);
                     await axios.post('/users/changeInvestigator', {
                         epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                         user: newSelectedInvestigator.id
@@ -575,8 +575,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             changeCountyLogger.info(`confirmed changing county in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
 
             if(indexedRow.groupId) {
+                changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
                 try {
-                    changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
                     axios.post('/users/changeGroupCounty', {
                         groupIds: [indexedRow.groupId],
                         county: newSelectedCounty?.id,
@@ -589,8 +589,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     alertError(UPDATE_ERROR_TITLE);
                 }    
             } else {
+                changeCountyLogger.info('performing county change request', Severity.LOW);
                 try {
-                    changeCountyLogger.info('performing county change request', Severity.LOW);
                     axios.post('/users/changeCounty', {
                         epidemiologyNumber: indexedRow.epidemiologyNumber,
                         updatedCounty: newSelectedCounty?.id,
@@ -633,8 +633,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 changeDeskLogger.info(`confirmed changing desk in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
 
                 if (indexedRow.groupId) {
+                    changeDeskLogger.info(`performing desk change request for group ${indexedRow.groupId}`, Severity.LOW);
                     try {
-                        changeDeskLogger.info(`performing desk change request for group ${indexedRow.groupId}`, Severity.LOW);
                         axios.post('/landingPage/changeGroupDesk', {
                             groupIds: [indexedRow.groupId],
                             desk: newSelectedDesk?.id,
@@ -647,8 +647,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         alertError(UPDATE_ERROR_TITLE);
                     }
                 } else {
+                    changeDeskLogger.info('performing desk change request', Severity.LOW);
                     try {
-                        changeDeskLogger.info('performing desk change request', Severity.LOW);
                         await axios.post('/landingPage/changeDesk', {
                             epidemiologyNumbers: [indexedRow.epidemiologyNumber],
                             updatedDesk: newSelectedDesk?.id,
