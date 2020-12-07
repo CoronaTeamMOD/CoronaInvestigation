@@ -13,16 +13,18 @@ import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInve
 const title = 'קיבוץ חקירות'
 
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose, fetchTableData }: Props) => {
-
+    const groupedInvestigation: InvestigationTableRow | undefined = invetigationsToGroup
+        .find((investigation: InvestigationTableRow) => investigation.groupId !== null);
     const methods = useForm<GroupForm>({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues: {
-            [GroupedInvestigationsFields.REASON]: null,
-            [GroupedInvestigationsFields.OTHER_REASON]: ''
+            [GroupedInvestigationsFields.REASON]: groupedInvestigation ?
+                { displayName: groupedInvestigation.groupReason, id: groupedInvestigation.reasonId } : null,
+            [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation ? groupedInvestigation.otherReason : ''
         }
     });
- 
+
     const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose, fetchTableData });
 
     return (
@@ -36,22 +38,22 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <DialogContent>
                         <GroupedInvestigationsTable invetigationsToGroup={invetigationsToGroup} />
-                        <GroupedInvestigationsForm />
+                        <GroupedInvestigationsForm shouldDisable={Boolean(groupedInvestigation)} />
                     </DialogContent>
                     <DialogActions>
-                        <Button 
+                        <Button
                             onClick={onClose}
                             variant='contained'
                             color='default'
                         >
                             ביטול
                         </Button>
-                        <Tooltip title={!methods.formState.isValid ? 'יש לבחור סיבה': ''}>
+                        <Tooltip title={!methods.formState.isValid ? 'יש לבחור סיבה' : ''}>
                             <span>
                                 <Button
                                     type='submit'
                                     disabled={!methods.formState.isValid}
-                                    variant='contained' 
+                                    variant='contained'
                                     color='primary'
                                 >
                                     אישור

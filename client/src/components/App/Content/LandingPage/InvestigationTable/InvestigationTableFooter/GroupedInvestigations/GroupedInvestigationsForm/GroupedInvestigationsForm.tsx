@@ -13,7 +13,7 @@ import useGroupedInvestigationsForm, { Reason } from './useGroupedInvestigations
 
 const reasonTitle = 'בחר סיבה...'
 
-const GroupedInvestigationsForm : React.FC = () => {
+const GroupedInvestigationsForm = ({ shouldDisable }: Props) => {
 
     const [isReasonsAutoCompleteOpen, setIsReasonsAutoCompleteOpen] = useState<boolean>(false);
     const [reasons, setReasons] = useState<Reason[]>([]);
@@ -36,22 +36,25 @@ const GroupedInvestigationsForm : React.FC = () => {
     }, [reasonsAutoCompleteLoaded])
 
     useEffect(() => {
-        setValue(GroupedInvestigationsFields.OTHER_REASON, '');
+        if (reason !== OTHER) {
+            setValue(GroupedInvestigationsFields.OTHER_REASON, '');
+        }
     }, [reason])
 
     return (
         <Grid className={classes.container}>
             <Grid container justify='flex-start'>
                 <FormInput xs={8} fieldName='סיבת קיבוץ'>
-                    <Controller 
+                    <Controller
                         name={GroupedInvestigationsFields.REASON}
                         control={control}
                         render={(props) => (
-                              <Autocomplete 
+                            <Autocomplete
+                                disabled={shouldDisable}
                                 options={reasons}
                                 getOptionLabel={(option) => option ? option?.displayName : option}
                                 value={props.value}
-                                onChange={(event, selectedReason) => 
+                                onChange={(event, selectedReason) =>
                                     props.onChange(selectedReason || null)
                                 }
                                 onBlur={props.onBlur}
@@ -87,10 +90,13 @@ const GroupedInvestigationsForm : React.FC = () => {
                                 name={GroupedInvestigationsFields.OTHER_REASON}
                                 control={control}
                                 render={(props) => (
-                                    <TextField 
+                                    <TextField
+                                        disabled={shouldDisable}
                                         test-id={props.name}
                                         value={props.value}
-                                        onChange={(event) => props.onChange(event.target.value)}
+                                        onChange={(event) => {
+                                            props.onChange(event.target.value)
+                                        }}
                                         error={Boolean(get(errors, props.name))}
                                         label={get(errors, props.name)?.message || 'כתוב סיבה'}
                                     />
@@ -104,4 +110,7 @@ const GroupedInvestigationsForm : React.FC = () => {
     );
 };
 
+interface Props {
+    shouldDisable: boolean;
+}
 export default GroupedInvestigationsForm;

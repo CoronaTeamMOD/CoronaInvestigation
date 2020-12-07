@@ -39,8 +39,9 @@ interface UserInvestigations {
                 userName: string;
             };
             investigationGroupByGroupId: {
-                investigationGroupReasonByReason : {
+                investigationGroupReasonByReason: {
                     displayName: string;
+                    id: number;
                 }
                 otherReason: string;
             } | null;
@@ -89,8 +90,9 @@ interface GroupIvestigations {
                 }
             };
             investigationGroupByGroupId: {
-                investigationGroupReasonByReason : {
+                investigationGroupReasonByReason: {
                     displayName: string | null;
+                    id: number;
                 }
                 otherReason: string | null;
             } | null;
@@ -111,10 +113,9 @@ const mappingUserInvestigations = (investigation: UserInvestigations['orderedInv
         },
         desk: investigation.deskByDeskId?.deskName,
         investigationGroupReasonByGroupId: {
-            reason: investigation.investigationGroupByGroupId?
-            (investigation.investigationGroupByGroupId.otherReason ? 
-            investigation.investigationGroupByGroupId.otherReason :
-            investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName) : null
+            otherReason: investigation.investigationGroupByGroupId?.otherReason,
+            reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
+            reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
         }
     };
 
@@ -139,10 +140,9 @@ const mappingGroupInvestigations = (investigation: UserInvestigations['orderedIn
         },
         desk: investigation.deskByDeskId?.deskName,
         investigationGroupReasonByGroupId: {
-            reason: investigation.investigationGroupByGroupId?
-            (investigation.investigationGroupByGroupId.otherReason ? 
-            investigation.investigationGroupByGroupId.otherReason :
-            investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName) : null
+            otherReason: investigation.investigationGroupByGroupId?.otherReason,
+            reason: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.displayName,
+            reasonId: investigation.investigationGroupByGroupId?.investigationGroupReasonByReason.id
         }
     };
 

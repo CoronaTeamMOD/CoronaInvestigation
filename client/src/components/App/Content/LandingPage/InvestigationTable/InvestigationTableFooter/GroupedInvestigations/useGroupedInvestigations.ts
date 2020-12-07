@@ -16,6 +16,8 @@ export interface GroupForm {
     otherReason: string;
 }
 
+export const checkedGroupsLimitIncludingNull = 2;
+
 const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
@@ -27,7 +29,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
         const invetigationsToGroupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.epidemiologyNumber);
         const groupIds = invetigationsToGroup.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
         const trimedGroupidIds = Array.from(new Set(groupIds));
-        if (trimedGroupidIds.length === 2 && trimedGroupidIds.findIndex((groupId: string) => groupId === null) > -1) {
+        if (trimedGroupidIds.length === checkedGroupsLimitIncludingNull
+            && trimedGroupidIds.findIndex((groupId: string) => groupId === null) - 1) {
             const group = trimedGroupidIds.find((groupId: string) => groupId !== null);
             const groupToUpdateLogger = logger.setup({
                 workflow: 'update grouped investigations',
@@ -38,8 +41,9 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
             setIsLoading(true);
             axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
                 .then(() => {
-                    onClose();
                     groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
+                    onClose();
+                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToUpdateLogger.error(`update grouped investigations was failde due to${err}`, Severity.HIGH);
@@ -62,8 +66,9 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
             setIsLoading(true);
             axios.post('/groupedInvestigations', { group, invetigationsToGroupIds })
                 .then(() => {
-                    onClose();
                     groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
+                    onClose();
+                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);

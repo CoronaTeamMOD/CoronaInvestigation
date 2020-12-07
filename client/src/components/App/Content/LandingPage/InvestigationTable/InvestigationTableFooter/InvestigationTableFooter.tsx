@@ -12,6 +12,7 @@ import useInvestigationTableFooter from './useInvestigationTableFooter';
 import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
 import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
 import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
+import { checkedGroupsLimitIncludingNull } from './GroupedInvestigations/useGroupedInvestigations';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -80,7 +81,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
     const shouldGroupActionDisabled: boolean = useMemo(() => {
         const groupIds = checkedInvestigations.map((invetigationToGroup: InvestigationTableRow) => invetigationToGroup.groupId);
         const trimedGroupidIds = Array.from(new Set(groupIds));
-        return trimedGroupidIds.length > 2 || (trimedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
+        return trimedGroupidIds.length > checkedGroupsLimitIncludingNull || (trimedGroupidIds.findIndex((groupId: string) => groupId === null) === -1) || checkedInvestigations.length < 2
     }, [checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [
