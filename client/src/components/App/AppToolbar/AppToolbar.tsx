@@ -8,6 +8,7 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
 import useAppToolbar from './useAppToolbar';
+import useStyles from './AppToolbarStyles';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
@@ -16,8 +17,8 @@ const navButtonsWhitelist = {
 };
 
 const StatePersistentNavLink = (props: NavLinkProps) => {
+  const classes = useStyles();
   const history = useHistory();
-  const { classes } = useAppToolbar();
 
   const handleNavClick: NavLinkProps['onClick'] = (event) => {
     event.preventDefault(); // prevent state reset on reroute
@@ -34,7 +35,9 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-  const { user, isActive, logout, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
+  const { user, isActive, logout, setUserActivityStatus, countyDisplayName } = useAppToolbar();
+  
+  const classes = useStyles();
   const location = useLocation();
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -10,9 +10,8 @@ import County from 'models/County';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import userType from 'models/enums/UserType';
-import { persistor, store } from 'redux/store';
+import { persistor } from 'redux/store';
 import Investigator from 'models/Investigator';
-import { timeout } from 'Utils/Timeout/Timeout';
 import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
@@ -24,14 +23,13 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
-import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
+import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import InvestigatorOption from 'models/InvestigatorOption';
 import Desk from 'models/Desk';
 
 import useStyle from './InvestigationTableStyles';
-import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
+import { defaultOrderBy, rowsPerPage, defaultPage, HistoryState } from './InvestigationTable';
 import {
     TableHeadersNames,
     IndexedInvestigation,
@@ -39,8 +37,7 @@ import {
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import useInvestigatedPersonInfo
-    from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
+import { useHistory } from 'react-router-dom';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -111,21 +108,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const classes = useStyle(false)();
     const { alertError, alertWarning } = useCustomSwal();
+    const history = useHistory<HistoryState>();
+    const { filterRules: historyFilterRules = {} } = useMemo(() => {
+        const { location: { state } } = history;
+        return state || {};
+    }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [filterRules, setFilterRules] = useState<any>({});
+    const [filterRules, setFilterRules] = useState<any>(historyFilterRules);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
-    const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
-    const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
     const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
@@ -174,15 +174,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     useEffect(() => {
-        setIsLoading(isCurrentlyLoadingInvestigation);
-    }, [isCurrentlyLoadingInvestigation])
-
-    useEffect(() => {
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage = (broadcastEvent: MessageEvent) =>
-            setIsInInvestigation(broadcastEvent.data.isInInvestigation);
+        windowTabsBroadcatChannel.current.onmessage = () => fetchTableData();
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
@@ -192,13 +187,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW);
-        setIsInInvestigation(true);
-        setIsCurrentlyLoading(true);
         await persistor.flush();
         window.open(investigationURL);
-        timeout(15000).then(() => {
-            store.getState().investigation.isCurrentlyLoading && setIsCurrentlyLoading(false);
-        });
+        fetchTableData();
     }
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
@@ -397,19 +388,22 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             delete previousValue[filterKey as any];
             return previousValue;
         }, { ...filterRules });
-
+        const { location: { state } } = history;
+        history.replace({
+            state: {
+                ...state,
+                filterRules: nextFilterRules
+            }
+        });
         setFilterRules(nextFilterRules);
-    }
-
-    useEffect(() => {
         setCurrentPage(defaultPage);
-    }, [filterRules, orderBy]);
+    }
 
     useEffect(() => {
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, isInInvestigations, currentPage, orderBy, filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
@@ -677,6 +671,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const sortInvestigationTable = (orderByValue: string) => {
         setIsDefaultOrder(orderByValue === defaultOrderBy);
         setOrderBy(orderByValue);
+        setCurrentPage(defaultPage);
     }
 
     const fetchInvestigationsByGroupId = async (groupId: string) => {

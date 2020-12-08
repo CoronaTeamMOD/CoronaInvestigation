@@ -11,23 +11,21 @@ import { indexRoute } from 'Utils/Routes/Routes';
 import StoreStateType from 'redux/storeStateType';
 import { setIsActive } from 'redux/User/userActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
+import { UserState } from 'redux/User/userReducer';
 
-import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 export interface useTopToolbarOutcome  {
     logout: () => void;
     setUserActivityStatus: (isActive: boolean) => Promise<any>;
     getCountyByUser: () => void;
-    classes: AppToolbarClasses;
     user: User;
     isActive: boolean | null;
     countyDisplayName: string;
 }
 
 const useAppToolbar = () :  useTopToolbarOutcome => {
-    const user = useSelector<StoreStateType, User>(state => state.user.data);
+    const user = useSelector<StoreStateType, UserState>(state => state.user);
     const history = useHistory();
-    const classes = useStyles();
     const { alertError } = useCustomSwal();
     
     const [countyDisplayName, setCountyDisplayName] = React.useState<string>('');
@@ -37,11 +35,11 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     });
 
     React.useEffect(() => {
-        if (user.investigationGroup !== -1) {
+        if (user.isLoggedIn) {
             getCountyByUser();
             getUserActivityStatus();
         }
-    }, [user.investigationGroup]);
+    }, [user.isLoggedIn]);
 
     const getUserActivityStatus = () => {
         getUserActivityStatusLogger.info('started user activity status fetching', Severity.LOW);
@@ -97,11 +95,10 @@ const useAppToolbar = () :  useTopToolbarOutcome => {
     }
 
     return {
-        user,
-        isActive: user.isActive,
+        user: user.data,
+        isActive: user.data.isActive,
         logout,
         setUserActivityStatus,
-        classes,
         getCountyByUser,
         countyDisplayName
     }
