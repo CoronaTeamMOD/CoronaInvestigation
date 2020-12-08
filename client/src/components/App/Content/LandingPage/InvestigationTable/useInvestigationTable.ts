@@ -361,7 +361,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             });
                         setRows(investigationRows);
                         investigationRows
-                            .filter((row) => row.groupId !== null || !investigationColor.current.has(row.groupId))
+                            .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
                             .forEach((row) => {
                                 // We have this color range so the group colors aren't too dark nor bright
                                 const minColorValue = 50;
