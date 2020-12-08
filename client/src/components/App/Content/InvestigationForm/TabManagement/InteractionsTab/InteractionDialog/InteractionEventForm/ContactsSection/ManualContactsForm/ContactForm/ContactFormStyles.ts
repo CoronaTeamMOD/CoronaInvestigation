@@ -1,23 +1,15 @@
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
-    newContactField: {
-        '@media screen and (min-width: 1870px)': {
-            width: '15vw',
-            marginLeft: '-3.5vw',
-        },
-    },
-    contactAdditionalDetails: {
-        '@media screen and (min-width: 1870px)': {
-            marginRight: '-3vw',
-        },
-    },
     additionalInfoItem: {
-        paddingRight: '10vw'
+        paddingRight: '10rem'
     },
     moreContactDetails: {
-        width: '40vw',
-        margin: '1vh',
+        width: '40rem',
+        margin: '1rem',
+    },
+    inputForm: {
+        width: '16rem'
     }
 });
 
