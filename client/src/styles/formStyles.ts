@@ -1,8 +1,8 @@
-import {makeStyles} from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     hidden: {
-      display:'none'
+        display: 'none'
     },
     form: {
         display: 'flex',
@@ -72,6 +72,9 @@ const useStyles = makeStyles({
     },
     longTextInput: {
         width: '30vw'
+    },
+    formSize: {
+        width: '100vw'
     }
 });
 
