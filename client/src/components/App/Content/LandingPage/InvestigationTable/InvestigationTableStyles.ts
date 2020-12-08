@@ -169,7 +169,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     searchBar: {
         justifyContent: 'flex-end',
-        width: '20vw'
+        width: '20vw',
+        backgroundColor: 'white',
+        borderRadius: '20px'
     },
     searchBarIcons: {
         marginRight: '-1vw'

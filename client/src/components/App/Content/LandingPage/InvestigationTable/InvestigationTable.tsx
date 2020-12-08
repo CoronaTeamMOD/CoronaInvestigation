@@ -52,7 +52,7 @@ const hasNoSourceOrganization = 'לא שויך למסגרת';
 const hasNoDesk = 'לא שויך לדסק';
 const complexInvestigationMessage = 'חקירה מורכבת';
 const noPriorityMessage = 'חסר תעדוף';
-const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם או טלפון...';
+const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
 
 const defaultInvestigator = {
@@ -486,8 +486,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
     const clearSearchBarQuery = () => {
-        phoneAndIdentityNumberRegex.test(searchBarQuery) ? handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES]('')) :
-            handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](''));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.DEFAULT_FILTER](''));
         setSearchBarQuery('');
     }
 
@@ -564,9 +563,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const onSearchClick = () => {
-        phoneAndIdentityNumberRegex.test(searchBarQuery) ?
-            handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](searchBarQuery)) :
-            handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](searchBarQuery));
+        if (searchBarQuery === '') {
+            clearSearchBarQuery();
+        } else {
+            phoneAndIdentityNumberRegex.test(searchBarQuery) ?
+                handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](searchBarQuery)) :
+                handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](searchBarQuery));
+        }
     }
 
     const filterIconByToggle = () => {
