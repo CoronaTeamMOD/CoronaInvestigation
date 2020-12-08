@@ -175,9 +175,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     horizontalSticky: {
         left: 'unset'
     },
-    groupedInvestigation: {
-        flip: false
-    },
     padCheckboxWithoutGroup: {
         marginRight: theme.spacing(6.5)
     }

@@ -654,10 +654,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
-        } else if (cellKey === TableHeadersNames.multipleCheck) {
-            classNames.push(classes.groupedInvestigation);
-        }
-
+        } 
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&
