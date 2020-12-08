@@ -122,7 +122,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
-    const currInvestigatorId = useSelector<StoreStateType, string>(state => state.investigation.creator);
     const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
