@@ -177,7 +177,7 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
                     <Grid item xs={6}>
                         <AlphanumericTextField
-                            disabled={isFieldDisabled}
+                            disabled
                             testId='isolationEndDate'
                             name='isolationEndDate'
                             value={formattedIsolationEndDate}
