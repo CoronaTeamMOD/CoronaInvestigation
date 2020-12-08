@@ -145,8 +145,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator? : string) => {
-        const investigatorTocheck = investigationInvestigator || currInvestigatorId;
-        return investigationStatus === InvestigationMainStatusCodes.NEW && (user.userType === userType.INVESTIGATOR || investigatorTocheck === user.id);
+        return investigationStatus === InvestigationMainStatusCodes.NEW && 
+                (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
     };
 
     const fetchAllInvestigationStatuses = () => {
