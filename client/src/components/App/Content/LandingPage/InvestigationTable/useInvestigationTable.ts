@@ -10,9 +10,8 @@ import County from 'models/County';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import userType from 'models/enums/UserType';
-import { persistor, store } from 'redux/store';
+import { persistor } from 'redux/store';
 import Investigator from 'models/Investigator';
-import { timeout } from 'Utils/Timeout/Timeout';
 import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
@@ -26,7 +25,7 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
-import { setAxiosInterceptorId, setIsCurrentlyLoading } from 'redux/Investigation/investigationActionCreators';
+import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import InvestigatorOption from 'models/InvestigatorOption';
 import Desk from 'models/Desk';
 
@@ -121,7 +120,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
-    const isCurrentlyLoadingInvestigation = useSelector<StoreStateType, boolean>(state => state.investigation.isCurrentlyLoading);
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
@@ -174,10 +172,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     useEffect(() => {
-        setIsLoading(isCurrentlyLoadingInvestigation);
-    }, [isCurrentlyLoadingInvestigation])
-
-    useEffect(() => {
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
@@ -193,12 +187,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW);
         setIsInInvestigation(true);
-        setIsCurrentlyLoading(true);
         await persistor.flush();
         window.open(investigationURL);
-        timeout(15000).then(() => {
-            store.getState().investigation.isCurrentlyLoading && setIsCurrentlyLoading(false);
-        });
     }
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
@@ -399,11 +389,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }, { ...filterRules });
 
         setFilterRules(nextFilterRules);
-    }
-
-    useEffect(() => {
         setCurrentPage(defaultPage);
-    }, [filterRules, orderBy]);
+    }
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -677,6 +664,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const sortInvestigationTable = (orderByValue: string) => {
         setIsDefaultOrder(orderByValue === defaultOrderBy);
         setOrderBy(orderByValue);
+        setCurrentPage(defaultPage);
     }
 
     const fetchInvestigationsByGroupId = async (groupId: string) => {
