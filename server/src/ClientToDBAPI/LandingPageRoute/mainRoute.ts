@@ -41,7 +41,10 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
             const orderedInvestigations = result?.data?.orderedInvestigations?.nodes;
             if (orderedInvestigations) {
                 investigationsLogger.info('got investigations from the DB', Severity.LOW);
-                response.send({allInvestigations: convertUserInvestigationsData(result.data)});
+                response.send({
+                                allInvestigations: convertUserInvestigationsData(result.data),
+                                totalCount: +result.data.orderedInvestigations.totalCount
+                              });
             }
             else {
                 investigationsLogger.error(`got errors in querying the investigations from the DB ${JSON.stringify(result)}`, Severity.HIGH);
