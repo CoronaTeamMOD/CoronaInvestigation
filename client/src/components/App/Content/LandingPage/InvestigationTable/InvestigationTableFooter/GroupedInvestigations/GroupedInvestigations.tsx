@@ -11,30 +11,46 @@ import GroupedInvestigationsForm from './GroupedInvestigationsForm/GroupedInvest
 import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInvestigationsTable';
 import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInvestigationsFields';
 
-const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose }: Props) => {
+const GroupedInvestigations: React.FC<Props> = (props: Props) => {
 
-    const groupedInvestigation = invetigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId !== null);
-    const title = groupedInvestigation ? 'הוספת חקירות לקיבוץ' : 'קיבוץ חקירות'
+    const { open, invetigationsToGroup, allGroupedInvestigations, onClose, fetchTableData, fetchInvestigationsByGroupId } = props
 
     const methods = useForm<GroupForm>({
         mode: 'all',
         resolver: yupResolver(validationSchema),
         defaultValues: {
-            [GroupedInvestigationsFields.REASON]: groupedInvestigation ?
-                { displayName: groupedInvestigation.groupReason, id: groupedInvestigation.reasonId } : null,
-            [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation ? groupedInvestigation.otherReason : ''
+            [GroupedInvestigationsFields.REASON]: null,
+            [GroupedInvestigationsFields.OTHER_REASON]: ''
         }
     });
+    
+    const groupedInvestigation = useMemo(() => {
+        return invetigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId);
+    }, [invetigationsToGroup]);
+    
+    const title = groupedInvestigation ? 'הוספת חקירות לקיבוץ' : 'קיבוץ חקירות'
+
+    const investigationsToDisplay: InvestigationTableRow[] = useMemo(() => {
+        if (groupedInvestigation) {
+            const groupedInvestigations = allGroupedInvestigations.get(groupedInvestigation.groupId)
+                ?.filter((investigation: InvestigationTableRow) => investigation.epidemiologyNumber !== groupedInvestigation.epidemiologyNumber);
+            const investigationsToDisplayUpdateMode = groupedInvestigations && invetigationsToGroup.concat(groupedInvestigations);
+            return investigationsToDisplayUpdateMode ? investigationsToDisplayUpdateMode: [];
+        } else {
+            return invetigationsToGroup;
+        }
+    }, [groupedInvestigation, invetigationsToGroup, allGroupedInvestigations])
 
     useEffect(() => {
-        methods.reset({
-            [GroupedInvestigationsFields.REASON]: groupedInvestigation ?
-                { displayName: groupedInvestigation.groupReason, id: groupedInvestigation.reasonId } : null,
-            [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation ? groupedInvestigation.otherReason : ''
-        })
+        if (groupedInvestigation) {
+            methods.reset({
+                [GroupedInvestigationsFields.REASON]: { displayName: groupedInvestigation?.groupReason, id: groupedInvestigation?.reasonId },
+                [GroupedInvestigationsFields.OTHER_REASON]: groupedInvestigation?.otherReason
+            })
+        }
     }, [groupedInvestigation])
 
-    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose });
+    const { onSubmit } = useGroupedInvestigations({ invetigationsToGroup, onClose, fetchTableData, fetchInvestigationsByGroupId});
 
     return (
         <Dialog open={open}>
@@ -46,8 +62,8 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <DialogContent>
-                        <GroupedInvestigationsTable invetigationsToGroup={invetigationsToGroup} />
-                        <GroupedInvestigationsForm shouldDisable={Boolean(groupedInvestigation)} />
+                        <GroupedInvestigationsTable investigations={investigationsToDisplay} />
+                        <GroupedInvestigationsForm shouldDisable={groupedInvestigation !== undefined} />
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -78,8 +94,11 @@ const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, on
 
 interface Props {
     open: boolean;
-    onClose: () => void;
     invetigationsToGroup: InvestigationTableRow[];
+    allGroupedInvestigations: Map<string, InvestigationTableRow[]>
+    onClose: () => void;
+    fetchTableData: () => void;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
 }
 
 export default GroupedInvestigations;

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
@@ -810,6 +810,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onDeskChange={changeInvestigationsDesk}
                     onInvestigatorGroupChange={changeGroupsInvestigator}
                     onInvestigatorChange={changeInvestigationsInvestigator}
+                    allGroupedInvestigations={allGroupedInvestigations}
+                    fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                 />
             </Slide>
             <RefreshSnackbar isOpen={snackbarOpen}

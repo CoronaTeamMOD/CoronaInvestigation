@@ -37,7 +37,7 @@ export const toUniqueGroupsWithNonGroupedInvestigations =
         }
     }
 
-const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
+const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData, fetchInvestigationsByGroupId }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
@@ -52,8 +52,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
             uniqueGroupIds: [],
             epidemiologyNumbers: []
         })
-        if (trimmedGroup.uniqueGroupIds.length === 1
-            && trimmedGroup.epidemiologyNumbers.length > 0) {
+        // Check whether there is one grouped investigation and at least one investigation without a group 
+        if (trimmedGroup.uniqueGroupIds.length === 1 && trimmedGroup.epidemiologyNumbers.length > 0) {
             const group = trimmedGroup.uniqueGroupIds[0];
             const invetigationsToGroup = trimmedGroup.epidemiologyNumbers
             const groupToUpdateLogger = logger.setup({
@@ -67,6 +67,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
                 .then(() => {
                     groupToUpdateLogger.info('update grouped investigations successfully', Severity.LOW);
                     onClose();
+                    fetchInvestigationsByGroupId(group);
+                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToUpdateLogger.error(`update grouped investigations was failde due to${err}`, Severity.HIGH);
@@ -92,6 +94,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
                 .then(() => {
                     groupToCreateLogger.info('create grouped investigations successfully', Severity.LOW);
                     onClose();
+                    fetchTableData();
                 })
                 .catch((err) => {
                     groupToCreateLogger.error(`create grouped investigations was failde due to${err}`, Severity.HIGH);
@@ -109,6 +112,8 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose }: useGroupedI
 interface useGroupedInvestigationsIncome {
     invetigationsToGroup: InvestigationTableRow[];
     onClose: () => void;
+    fetchTableData: () => void;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
 }
 
 interface useGroupedInvestigationsOutcome {

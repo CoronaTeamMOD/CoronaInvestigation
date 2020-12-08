@@ -107,7 +107,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     const handleCloseGroupedInvestigations = () => {
         setOpenGroupedInvestigations(false);
         onDialogClose();
-        fetchTableData();
     }
 
     const handleDisbandGroupedInvestigations = (groupIds: string[]) => {
@@ -132,6 +131,7 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
                 })
                 .then(() => {
                     groupIdsToDisbandLogger.info('group ids was disbanded successfully', Severity.LOW);
+                    onDialogClose();
                     fetchTableData();
                 })
                 .catch(err => {
