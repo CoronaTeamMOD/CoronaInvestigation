@@ -62,7 +62,7 @@ const GroupedInvestigations: React.FC<Props> = (props: Props) => {
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <DialogContent>
-                        <GroupedInvestigationsTable investigationsToDisplay={investigationsToDisplay} />
+                        <GroupedInvestigationsTable investigations={investigationsToDisplay} />
                         <GroupedInvestigationsForm shouldDisable={groupedInvestigation !== undefined} />
                     </DialogContent>
                     <DialogActions>
