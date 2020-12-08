@@ -15,7 +15,7 @@ const tableHeaders = {
     [TableHeadersNames.statusReason]: 'סטטוס ביצוע'
 };
 
-const GroupedInvestigationsTable = ({ invetigationsToGroup }: Props) => {
+const GroupedInvestigationsTable = ({ investigationsToDisplay }: Props) => {
 
     const classes = useStyles();
 
@@ -37,7 +37,7 @@ const GroupedInvestigationsTable = ({ invetigationsToGroup }: Props) => {
                 </TableHead>
                 <TableBody>
                     {
-                        invetigationsToGroup.map((investigationToGroup: InvestigationTableRow) => (
+                        investigationsToDisplay.map((investigationToGroup: InvestigationTableRow) => (
                             <TableRow>
                                 {
                                     Object.keys(tableHeaders).map((cellHeader: string) => (
@@ -58,7 +58,7 @@ const GroupedInvestigationsTable = ({ invetigationsToGroup }: Props) => {
 };
 
 interface Props {
-    invetigationsToGroup: InvestigationTableRow[];
+    investigationsToDisplay: InvestigationTableRow[];
 }
 
 export default GroupedInvestigationsTable;

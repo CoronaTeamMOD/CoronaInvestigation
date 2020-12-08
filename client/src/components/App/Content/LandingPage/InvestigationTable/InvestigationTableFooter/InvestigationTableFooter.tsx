@@ -35,8 +35,8 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
         
-    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose,
-            tableRows, fetchTableData, onDeskChange, onDeskGroupChange, onInvestigatorGroupChange, onInvestigatorChange } = props;
+    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
+            onDeskGroupChange, onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -163,6 +163,9 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 open={openGroupedInvestigations}
                 onClose={handleCloseGroupedInvestigations}
                 invetigationsToGroup={checkedInvestigations}
+                allGroupedInvestigations={allGroupedInvestigations}
+                fetchTableData={fetchTableData}
+                fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
             />
         </>
     );
@@ -176,7 +179,9 @@ interface Props {
     allDesks: Desk[];
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
+    allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     fetchTableData: () => void;
+    fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
