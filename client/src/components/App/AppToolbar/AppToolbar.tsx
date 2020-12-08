@@ -8,6 +8,7 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
 import useAppToolbar from './useAppToolbar';
+import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
@@ -15,9 +16,12 @@ const navButtonsWhitelist = {
   allowedRoutes: [landingPageRoute, usersManagementRoute]
 };
 
-const StatePersistentNavLink = (props: NavLinkProps) => {
+interface StatePersistentNavLinkProps extends NavLinkProps {
+  classes: AppToolbarClasses;
+}
+
+const StatePersistentNavLink = (props: StatePersistentNavLinkProps) => {
   const history = useHistory();
-  const { classes } = useAppToolbar();
 
   const handleNavClick: NavLinkProps['onClick'] = (event) => {
     event.preventDefault(); // prevent state reset on reroute
@@ -27,14 +31,16 @@ const StatePersistentNavLink = (props: NavLinkProps) => {
   return (
       <NavLink {...props} location={history.location}
                onClick={handleNavClick}
-               activeClassName={classes.activeItem} className={classes.menuItem}>
+               activeClassName={props.classes.activeItem} className={props.classes.menuItem}>
         {props.children}
       </NavLink>
   )
 };
 
 const AppToolbar: React.FC = (): JSX.Element => {
-  const { user, isActive, logout, setUserActivityStatus, classes, countyDisplayName } = useAppToolbar();
+  const { user, isActive, logout, setUserActivityStatus, countyDisplayName } = useAppToolbar();
+  
+  const classes = useStyles();
   const location = useLocation();
 
   return (
@@ -47,11 +53,11 @@ const AppToolbar: React.FC = (): JSX.Element => {
             navButtonsWhitelist.allowedUserTypes.includes(user.userType) &&
             navButtonsWhitelist.allowedRoutes.includes(location.pathname) &&
             <div className={classes.navButtons}>
-              <StatePersistentNavLink exact to={landingPageRoute}>
+              <StatePersistentNavLink classes={classes} exact to={landingPageRoute}>
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
-              <StatePersistentNavLink exact to={usersManagementRoute}>
+              <StatePersistentNavLink classes={classes} exact to={usersManagementRoute}>
                 <SupervisorAccount className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
               </StatePersistentNavLink>
