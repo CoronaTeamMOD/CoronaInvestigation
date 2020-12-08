@@ -176,8 +176,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
                     fetchClinicalDetailsLogger.info('got results back from the server', Severity.LOW);
                     const patientClinicalDetails = result.data;
                     let patientAddress = patientClinicalDetails.isolationAddress;
-                    if (tabsValidations[id] === null && !patientAddress.cityByCity && !patientAddress.streetByStreet &&
-                        !patientAddress.floor && !patientAddress.houseNum) {
+                    if (tabsValidations[id] === null && !patientAddress?.cityByCity && !patientAddress?.streetByStreet &&
+                        !patientAddress?.floor && !patientAddress?.houseNum) {
                         patientAddress = address;
                     }
                     else {
