@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-         IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+    Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse
+} from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +19,7 @@ import useUsersManagementTable from './useUsersManagement';
 import UserInfoDialog from './UserInfoDialog/UserInfoDialog';
 import UsersFilter from './UsersFilter/UsersFilter';
 
-const rowsPerPage: number = 7;
+const rowsPerPage: number = 100;
 export const defaultPage: number = 1;
 
 interface CellNameSort {
@@ -28,8 +30,8 @@ interface CellNameSort {
 const usersManagementTitle = 'ניהול משתמשים';
 
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
-                                       UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
-                                       UsersManagementTableHeadersNames.DESK];
+UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
+UsersManagementTableHeadersNames.DESK];
 
 const UsersManagement: React.FC = () => {
     const [page, setPage] = useState<number>(defaultPage);
@@ -37,8 +39,8 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
     const { users, counties, sourcesOrganization, userTypes, languages,
-            totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
-    useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
+        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
+        useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
 
@@ -49,7 +51,7 @@ const UsersManagement: React.FC = () => {
             setCellNameSort({
                 name: cellName,
                 direction: cellNameSort.name !== cellName ? SortOrder.asc :
-                           cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
+                    cellNameSort.direction === SortOrder.asc ? SortOrder.desc : SortOrder.asc
             });
         }
     }
@@ -79,7 +81,7 @@ const UsersManagement: React.FC = () => {
             case UsersManagementTableHeadersNames.DESK: {
                 return row[cellName] ? row[cellName] : noDeskAssignment
             }
-            default: 
+            default:
                 return row[cellName]
         }
     }
@@ -105,7 +107,7 @@ const UsersManagement: React.FC = () => {
                     </IconButton>
                 </Tooltip>
             </Grid>
-            <Collapse in={isFilterOpen}  style={{minHeight: 'unset'}}>
+            <Collapse in={isFilterOpen} style={{ minHeight: 'unset' }}>
                 <Paper className={classes.filtersContent}>
                     <UsersFilter
                         sourcesOrganization={sourcesOrganization}
