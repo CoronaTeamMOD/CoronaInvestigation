@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -29,7 +29,7 @@ import InvestigatorOption from 'models/InvestigatorOption';
 import Desk from 'models/Desk';
 
 import useStyle from './InvestigationTableStyles';
-import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
+import { defaultOrderBy, rowsPerPage, defaultPage, HistoryState } from './InvestigationTable';
 import {
     TableHeadersNames,
     IndexedInvestigation,
@@ -37,6 +37,7 @@ import {
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import { useHistory } from 'react-router-dom';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -107,12 +108,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const classes = useStyle(false)();
     const { alertError, alertWarning } = useCustomSwal();
+    const history = useHistory<HistoryState>();
+    const { filterRules: historyFilterRules = {} } = useMemo(() => {
+        const { location: { state } } = history;
+        return state || {};
+    }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [filterRules, setFilterRules] = useState<any>({});
+    const [filterRules, setFilterRules] = useState<any>(historyFilterRules);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -382,7 +388,13 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             delete previousValue[filterKey as any];
             return previousValue;
         }, { ...filterRules });
-
+        const { location: { state } } = history;
+        history.replace({
+            state: {
+                ...state,
+                filterRules: nextFilterRules
+            }
+        });
         setFilterRules(nextFilterRules);
         setCurrentPage(defaultPage);
     }

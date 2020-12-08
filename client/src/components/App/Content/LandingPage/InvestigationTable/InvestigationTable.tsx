@@ -76,18 +76,23 @@ const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 type StatusFilter = InvestigationMainStatus[];
 type DeskFilter = Desk[];
 
-interface HistoryState {
+export interface HistoryState {
+    filterRules?: any;
     statusFilter?: StatusFilter;
-    deskFilter?: DeskFilter
+    deskFilter?: DeskFilter;
 }
 
 const InvestigationTable: React.FC = (): JSX.Element => {
-    const history = useHistory<HistoryState>();
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const classes = useStyles(isScreenWide)();
     const { alertWarning } = useCustomSwal();
     const theme = useTheme();
-
+    const history = useHistory<HistoryState>();
+    const { statusFilter: historyStatusFilter = [], deskFilter: historyDeskFilter = [] } = useMemo(() => {
+        const { location: { state } } = history;
+        return state || {};
+    }, []);
+    
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
@@ -103,32 +108,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<StatusFilter>([]);
-    const [filterByDesks, setFilterByDesks] = useState<DeskFilter>([]);
+    const [filterByStatuses, setFilterByStatuses] = useState<StatusFilter>(historyStatusFilter);
+    const [filterByDesks, setFilterByDesks] = useState<DeskFilter>(historyDeskFilter);
     const [searchBarQuery, setSearchBarQuery] = useState<string>('');
     const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
-
-    useEffect(() => {
-        const { location: { state } } = history;
-        const { statusFilter = [], deskFilter = [] } = state || {};
-
-        onFiltersChange(deskFilter, statusFilter)
-    }, []);
-
-    useEffect(() => {
-        const { location: { state } } = history;
-
-        history.replace({
-            state: {
-                ...state,
-                statusFilter: filterByStatuses,
-                deskFilter: filterByDesks,
-            }
-        });
-
-    }, [filterByStatuses, filterByDesks]);
 
     const closeDropdowns = () => {
         setInvestigatorAutoCompleteClicked(false);
@@ -536,17 +521,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const onFiltersChange = (selectedDesks: DeskFilter, selectedStatuses: StatusFilter) => {
-        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
-        const statusFilter = filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id));
-        const desksFilter = filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id));
-
-        setFilterByStatuses(nextFilterByStatuses);
-        setFilterByDesks(selectedDesks);
-
-        handleFilterChange({ ...statusFilter, ...desksFilter })
-    };
-
     const generateStatusFilterBySelectedStatues = (selectedStatuses: StatusFilter) => {
         return selectedStatuses.map(status => status.id).includes(allStatusesOption.id)
             ? [] : selectedStatuses;
@@ -554,11 +528,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
         const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
+        const { location: { state } } = history;
+        history.replace({
+            state: {
+                ...state,
+                statusFilter: nextFilterByStatuses
+            }
+        });
         setFilterByStatuses(nextFilterByStatuses);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
     }
 
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
+        const { location: { state } } = history;
+        history.replace({
+            state: {
+                ...state,
+                deskFilter: selectedDesks
+            }
+        });
         setFilterByDesks(selectedDesks);
         handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
     }
