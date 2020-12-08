@@ -54,10 +54,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         color: '#424242',
         whiteSpace: 'nowrap'
     },
-    swalTitle: {
-        fontSize: '1.5vw',
-        fontFamily: 'Assistant',
-    },
     filterByDeskCard: {
         padding: '1vh 1vw',
         width: '13vw',
@@ -178,10 +174,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     horizontalSticky: {
         left: 'unset'
-    },
-    groupedInvestigation: {
-        flip: false,
-        borderRight: '10px solid #ffffff00'
     },
     padCheckboxWithoutGroup: {
         marginRight: theme.spacing(6.5)
