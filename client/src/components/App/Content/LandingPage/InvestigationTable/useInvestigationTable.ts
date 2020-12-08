@@ -23,7 +23,6 @@ import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
-import { setIsInInvestigation } from 'redux/IsInInvestigations/isInInvestigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -38,8 +37,6 @@ import {
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
 import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import useInvestigatedPersonInfo
-    from '../../InvestigationForm/InvestigationInfo/InvestigatedPersonInfo/useInvestigatedPersonInfo';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -123,7 +120,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
-    const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
     const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
@@ -175,8 +171,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage = (broadcastEvent: MessageEvent) =>
-            setIsInInvestigation(broadcastEvent.data.isInInvestigation);
+        windowTabsBroadcatChannel.current.onmessage = () => fetchTableData();
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
@@ -186,9 +181,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         });
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW);
-        setIsInInvestigation(true);
         await persistor.flush();
         window.open(investigationURL);
+        fetchTableData();
     }
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
@@ -396,7 +391,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, isInInvestigations, currentPage, orderBy, filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
