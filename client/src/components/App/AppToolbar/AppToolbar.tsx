@@ -54,7 +54,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
                 <Home className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> עמוד הבית</Typography>
               </StatePersistentNavLink>
-              <StatePersistentNavLink classes={classes} exact to={usersManagementRoute}>
+              <StatePersistentNavLink exact to={usersManagementRoute}>
                 <SupervisorAccount className={classes.menuIcon} />
                 <Typography className={classes.menuTypo}> ניהול משתמשים</Typography>
               </StatePersistentNavLink>
