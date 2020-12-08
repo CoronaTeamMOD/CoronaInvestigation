@@ -52,7 +52,6 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
             uniqueGroupIds: [],
             epidemiologyNumbers: []
         })
-        // check if there is grouped investigations and at least one investigations without group 
         // Check whether there is one grouped investigation and at least one investigation without a group 
         if (trimmedGroup.uniqueGroupIds.length === 1 && trimmedGroup.epidemiologyNumbers.length > 0) {
             const group = trimmedGroup.uniqueGroupIds[0];
