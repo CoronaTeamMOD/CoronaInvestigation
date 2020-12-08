@@ -106,7 +106,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         .then((result) => {
             if (result?.data && result.headers['content-type'].includes('application/json')) {
                 loadInvolvedContactsLogger.info('got response successfully', Severity.LOW);
-                const involvedContacts : InvolvedContact[] = result?.data;
+                const involvedContacts : InvolvedContact[] = result?.data.map((involvedContact: any) => ({...involvedContact, isolationCity: involvedContact.city}));
                 const { familyMembers, educationMembers } = groupInvolvedContacts(involvedContacts);
                 familyMembersStateContext.familyMembers = familyMembers;
                 setEducationMembers(educationMembers);
