@@ -10,11 +10,11 @@ import validationSchema from './GroupedInvestigationsForm/GroupedInvestigationsS
 import GroupedInvestigationsForm from './GroupedInvestigationsForm/GroupedInvestigationsForm';
 import GroupedInvestigationsTable from './GroupedInvestigationsTable/GroupedInvestigationsTable';
 import GroupedInvestigationsFields from './GroupedInvestigationsForm/GroupedInvestigationsFields';
-const title = 'קיבוץ חקירות'
 
 const GroupedInvestigations: React.FC<Props> = ({ invetigationsToGroup, open, onClose }: Props) => {
 
     const groupedInvestigation = invetigationsToGroup.find((investigation: InvestigationTableRow) => investigation.groupId !== null);
+    const title = groupedInvestigation ? 'הוספת חקירות לקיבוץ' : 'קיבוץ חקירות'
 
     const methods = useForm<GroupForm>({
         mode: 'all',
