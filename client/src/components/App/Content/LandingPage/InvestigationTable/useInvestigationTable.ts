@@ -109,8 +109,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
-    const { shouldUpdateInvestigationStatus } = useInvestigatedPersonInfo();
-
     const classes = useStyle(false)();
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -128,7 +126,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const isInInvestigations = useSelector<StoreStateType, boolean>(state => state.isInInvestigation);
-
     const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
@@ -149,6 +146,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 desksByCountyIdLogger.error(err, Severity.HIGH);
             })
     }
+
+    const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator? : string) => {
+        return investigationStatus === InvestigationMainStatusCodes.NEW && 
+                (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
+    };
 
     const fetchAllInvestigationStatuses = () => {
         const investigationStatusesLogger = logger.setup({
@@ -432,7 +434,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if (investigationRow.investigationStatus.id === InvestigationMainStatusCodes.NEW && shouldUpdateInvestigationStatus(investigationRow.investigatorId)) {
+        if ( canChangeStatusNewToInProcess(investigationRow.investigationStatus.id,investigationRow.investigatorId)) {
             investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
