@@ -8,7 +8,7 @@ import IsActiveToggle from 'commons/IsActiveToggle/IsActiveToggle';
 import { landingPageRoute, usersManagementRoute } from 'Utils/Routes/Routes';
 
 import useAppToolbar from './useAppToolbar';
-import useStyles, { AppToolbarClasses } from './AppToolbarStyles';
+import useStyles from './AppToolbarStyles';
 
 const toggleMessage = 'מה הסטטוס שלך?';
 const navButtonsWhitelist = {
@@ -16,11 +16,8 @@ const navButtonsWhitelist = {
   allowedRoutes: [landingPageRoute, usersManagementRoute]
 };
 
-interface StatePersistentNavLinkProps extends NavLinkProps {
-  classes: AppToolbarClasses;
-}
-
-const StatePersistentNavLink = (props: StatePersistentNavLinkProps) => {
+const StatePersistentNavLink = (props: NavLinkProps) => {
+  const classes = useStyles();
   const history = useHistory();
 
   const handleNavClick: NavLinkProps['onClick'] = (event) => {
@@ -31,7 +28,7 @@ const StatePersistentNavLink = (props: StatePersistentNavLinkProps) => {
   return (
       <NavLink {...props} location={history.location}
                onClick={handleNavClick}
-               activeClassName={props.classes.activeItem} className={props.classes.menuItem}>
+               activeClassName={classes.activeItem} className={classes.menuItem}>
         {props.children}
       </NavLink>
   )
