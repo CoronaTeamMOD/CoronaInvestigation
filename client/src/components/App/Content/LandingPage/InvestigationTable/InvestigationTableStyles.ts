@@ -17,8 +17,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         padding: '0'
     },
     groupColor: {
-        height: '8vh',
-        width: '0.75vw'
+        height: '4.2rem',
+        width: '1rem'
     },
     title: {
         margin: 'auto',
