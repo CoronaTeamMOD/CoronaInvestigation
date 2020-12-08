@@ -150,7 +150,7 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
     let newInvestigator = 'admin.group' + request.body.county;
     const selectedGroups = request.body.groupIds;
     changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, wasInvestigationTransferred: true})
     .then((result: any) => {
         if (result?.data && !result.errors) {
             changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
