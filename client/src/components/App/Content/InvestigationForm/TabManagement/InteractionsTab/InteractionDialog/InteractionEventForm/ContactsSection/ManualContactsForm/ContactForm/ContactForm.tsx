@@ -153,22 +153,24 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                     </FormControl>
                 </FormInput>
             </Grid>
-            <FormInput xs={12} labelLength={2} fieldName={contactTypeMoreDetails}>
-                <Controller
-                    name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
-                    control={control}
-                    render={(props) => (
-                        <AlphanumericTextField
-                            disabled={isFieldDisabled}
-                            name={props.name}
-                            value={props.value}
-                            onChange={(newValue: string) => props.onChange(newValue as string)}
-                            onBlur={props.onBlur}
-                            className={classes.moreContactDetails}
-                        />
-                    )}
-                />
-            </FormInput>
+            <Grid container justify='flex-start' spacing={2}>
+                <FormInput xs={12} labelLength={2} fieldName={contactTypeMoreDetails}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
+                        control={control}
+                        render={(props) => (
+                            <AlphanumericTextField
+                                disabled={isFieldDisabled}
+                                name={props.name}
+                                value={props.value}
+                                onChange={(newValue: string) => props.onChange(newValue as string)}
+                                onBlur={props.onBlur}
+                                className={classes.moreContactDetails}
+                            />
+                        )}
+                    />
+                </FormInput>
+            </Grid>
         </div>
     );
 };

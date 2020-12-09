@@ -2,14 +2,14 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({
     additionalInfoItem: {
-        paddingRight: '10rem'
+        paddingRight: '10vw'
     },
     moreContactDetails: {
-        width: '40rem',
-        margin: '1rem',
+        width: '36vw',
+        margin: '1vw',
     },
     inputForm: {
-        width: '16rem'
+        width: '16vw'
     }
 });
 
