@@ -78,7 +78,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
             </FormInput>
             <FormInput xs={2} fieldName={contactedFamilyRelationshop}>
                 <Typography variant='caption'>
-                    {familyRelationship || noDataIndication}
+                    {familyRelationship?.displayName || noDataIndication}
                 </Typography>
             </FormInput>
         </>

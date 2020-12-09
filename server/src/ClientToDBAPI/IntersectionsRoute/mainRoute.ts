@@ -232,7 +232,7 @@ const convertInvolvedContact = (contact: InvolvedContactDB) => ({
     involvementReason: contact.involvementReason,
     educationGrade: contact.educationGrade,
     educationClassNumber: contact.educationClassNumber,
-    ...contact.familyRelationshipByFamilyRelationship,
+    familyRelationship: contact.familyRelationship,
     ...contact.cityByIsolationCity,
     ...contact.personByPersonId,
     ...contact.subOccupationByInstitutionName,
