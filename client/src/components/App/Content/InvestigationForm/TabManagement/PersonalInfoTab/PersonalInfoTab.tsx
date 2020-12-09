@@ -368,7 +368,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     </FormRowWithInput>
                     <FormRowWithInput fieldName={ADDRESS_LABEL}>
                         <>
-                            <Grid item xs={2} className={classes.personalInfoItem}>
+                            <Grid item xs={3} className={classes.personalInfoItem}>
                                 <Controller
                                     name={PersonalInfoDataContextFields.CITY}
                                     control={methods.control}
