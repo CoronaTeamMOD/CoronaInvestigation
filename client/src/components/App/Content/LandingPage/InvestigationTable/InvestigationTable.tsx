@@ -92,7 +92,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         const { location: { state } } = history;
         return state || {};
     }, []);
-    
+
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
     const [selectedInvestigator, setSelectedInvestigator] = useState<Investigator>(defaultInvestigator);
@@ -174,7 +174,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const UnassignedWarning = () => (
-        <Tooltip title='לא הוקצה חוקר לחקירה'>
+        <Tooltip arrow placement='top' title='לא הוקצה חוקר לחקירה'>
             <Warning className={classes.warningIcon} />
         </Tooltip>
     )
@@ -197,7 +197,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.color:
                 return (
                     indexedRow.groupId ?
-                        <Tooltip title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
+                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}
                             />
