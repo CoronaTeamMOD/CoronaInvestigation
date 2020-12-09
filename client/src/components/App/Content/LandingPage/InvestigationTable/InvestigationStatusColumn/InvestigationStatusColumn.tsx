@@ -60,13 +60,13 @@ const InvestigationStatusColumn = (props: Props) => {
             }
             {
                 investigationStatus.id === InvestigationMainStatusCodes.CANT_COMPLETE && investigationSubStatus &&
-                <Tooltip title={investigationSubStatus} arrow>
+                <Tooltip title={investigationSubStatus} placement='top' arrow>
                     <Info className={classes.investigatonIcon} fontSize='small' color='error' />
                 </Tooltip>
             }
             {
                 (investigationStatus.id === InvestigationMainStatusCodes.IN_PROCESS && statusReason) &&
-                <Tooltip title={statusReason} arrow>
+                <Tooltip title={statusReason} placement='top' arrow>
                     <Info className={classes.investigatonIcon} fontSize='small' color='primary' />
                 </Tooltip>
             }
