@@ -471,7 +471,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
     const clearSearchBarQuery = () => {
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.DEFAULT_FILTER](''));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](''));
         setSearchBarQuery('');
     }
 
