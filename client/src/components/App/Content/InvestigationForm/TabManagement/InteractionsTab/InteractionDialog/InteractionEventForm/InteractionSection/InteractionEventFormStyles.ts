@@ -1,4 +1,4 @@
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
 import theme from 'styles/theme';
 
@@ -20,7 +20,8 @@ const useStyles = makeStyles({
         flip: false
     },
     contactedPersonContainer: {
-        paddingBottom: '5vh'
+        paddingBottom: '5vh',
+        paddingTop: '2vh'
     },
     contactDate: {
         '@media screen and (min-width: 1870px)': {
