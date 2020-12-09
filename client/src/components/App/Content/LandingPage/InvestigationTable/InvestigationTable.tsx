@@ -375,12 +375,20 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         !(user.userType === userType.INVESTIGATOR && investigationStatus === InvestigationMainStatus.DONE)
 
     const counterDescription: string = useMemo(() => {
+<<<<<<< Updated upstream
         const adminMessage = `, מתוכן ${filteredTableRows.filter(filteredRow => filteredRow.investigator.id.startsWith('admin.group')).length} לא מוקצות`;
         return `כרגע מוצגות ${filteredTableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
  
       }, [filteredTableRows]);
     
     
+=======
+        const adminMessage = `, מתוכן ${unassignedInvestigationsCount} לא מוקצות`;
+        return `ישנן ${totalCount}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+
+    }, [tableRows, unassignedInvestigationsCount]);
+
+>>>>>>> Stashed changes
     return (
         <>
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
