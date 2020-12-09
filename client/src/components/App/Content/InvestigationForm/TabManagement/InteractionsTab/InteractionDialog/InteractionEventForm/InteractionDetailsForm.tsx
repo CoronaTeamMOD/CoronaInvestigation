@@ -68,6 +68,7 @@ const InteractionDetailsForm = (props: Props) => {
                     idNumber: familyMember.identificationNumber,
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
                     involvedContactId: familyMember.id,
+                    familyRelationship: familyMember.familyRelationship?.id
                 };
 
                 contacts.push(familyContact);

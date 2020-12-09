@@ -27,6 +27,9 @@ const useFamilyContactsUtils = () => {
             case FamilyContactsTableHeadersNames.BIRTH_DATE: {
                 return format(new Date(cellValue), birthDateFormat);
             }
+            case FamilyContactsTableHeadersNames.FAMILY_RELATIONSHIP: {
+                return cellValue.displayName;
+            }
             default: 
                 return cellValue;
         }

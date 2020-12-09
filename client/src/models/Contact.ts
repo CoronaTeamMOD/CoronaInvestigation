@@ -14,6 +14,7 @@ interface Contact {
     startTime?: Date;
     involvedContactId?: number;
     involvedContact?: InvolvedContact | null;
+    familyRelationship?: number;
 };
 
 export default Contact;

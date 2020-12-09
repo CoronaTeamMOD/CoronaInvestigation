@@ -11,7 +11,8 @@ export interface GetInvolvedContactsResponse {
 
 export interface InvolvedContactDB {
     id: number;
-    familyRelationshipByFamilyRelationship: {
+    familyRelationship: {
+        id: number,
         displayName: string;
     },
     personByPersonId: {

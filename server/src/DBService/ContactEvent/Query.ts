@@ -29,8 +29,9 @@ query getAllContactTypes {
 
 const involvedFieldsToQuery = `
 id
-familyRelationshipByFamilyRelationship {
-  familyRelationship: displayName
+familyRelationship: familyRelationshipByFamilyRelationship {
+  id
+  displayName
 }
 personByPersonId {
   birthDate
