@@ -108,9 +108,6 @@ const ContactQuestioningInfo: React.FC<Props> = (props: Props): JSX.Element => {
                     <b>שם משפחה:</b> {interactedContact.lastName}
                 </Typography>
                 <Typography variant='body2'>
-                    <b>מספר טלפון:</b> {interactedContact.phoneNumber ? interactedContact.phoneNumber : 'אין מספר'}
-                </Typography>
-                <Typography variant='body2'>
                     <b>תאריך המגע:</b> {format(new Date(interactedContact.contactDate), 'dd/MM/yyyy')}
                 </Typography>
                 {
@@ -137,4 +134,4 @@ interface Props {
     updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
     contactStatuses: ContactStatus[];
     saveContact: (interactedContact: InteractedContact) => boolean;
-}
+};
