@@ -1,6 +1,8 @@
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
+const tableWidth = '96vw';
+
 const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
         height: '80vh',
@@ -11,7 +13,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     tableCell: {
-        padding: '7px'
+        padding: '7px 0'
     },
     tableCellRoot: {
         padding: '0'
@@ -23,10 +25,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     title: {
         margin: 'auto',
         height: '14vh',
-        width: '90vw',
+        width: tableWidth,
     },
     tableContainer: {
-        width: '90vw',
+        width: tableWidth,
         height: isWide ? '67vh' : '61vh',
         marginBottom: '2vh'
     },
@@ -52,7 +54,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     font: {
         color: '#424242',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        fontSize: '0.9rem'    
     },
     filterByDeskCard: {
         padding: '1vh 1vw',
@@ -64,7 +67,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontSize: '1.2vw',
     },
     tableHeaderRow: {
-        width: '90vw',
+        width: tableWidth,
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -72,7 +75,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     tableHeaderCell: {
         whiteSpace: 'nowrap',
-        fontSize: '1.1rem'
+        fontSize: '0.97rem'
     },
     sortResetButton: {
         fontWeight: 600
@@ -86,7 +89,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         height: '8vh',
     },
     filterTableRow: {
-        width: '90vw',
+        width: tableWidth,
         alignItems: 'center',
         justifyContent: 'flex-end',
         display: 'flex'
@@ -147,7 +150,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     selectedInvestigator: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     warningIcon: {
         color: theme.palette.warning.main,
