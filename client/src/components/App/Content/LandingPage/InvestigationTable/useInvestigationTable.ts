@@ -354,14 +354,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const blue = getFlooredRandomNumber(minColorValue, maxColorValue);
                                 investigationColor.current.set(row.groupId, `rgb(${red}, ${green}, ${blue})`);
                             });
-                            setIsLoading(false);
+                        setIsLoading(false);
                     } else {
                         fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM);
                     }
                 })
                 .catch((err: any) => {
                     alertError('אופס... לא הצלחנו לשלוף');
-                    setIsLoading(false)
+                    setIsLoading(false);
                     fetchInvestigationsLogger.error(err, Severity.HIGH);
                 })
         }
