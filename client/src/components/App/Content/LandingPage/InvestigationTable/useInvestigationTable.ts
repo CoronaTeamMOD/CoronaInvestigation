@@ -388,8 +388,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const handleFilterChange = (filterBy: any) => {
-        const { location: { state } } = history;
-        const {filterRules} = state;
+        const { location: { state = {}} } = history;
+        const {filterRules= {}} = state;
         const nextFilterRules = getGraphQLConditionsFromFilters(filterBy, { ...filterRules });
 
         history.replace({
@@ -406,7 +406,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, history?.location?.state?.filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, history.location.state?.filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
