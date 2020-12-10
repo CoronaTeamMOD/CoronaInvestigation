@@ -173,7 +173,6 @@ const ExposureForm = (props: any) => {
         <DatePick
           maxDateMessage={MAX_DATE_ERROR_MESSAGE}
           invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
-          error={false}
           FormHelperTextProps={{classes:{root: classes.errorLabel}}}
           maxDate={new Date(validationDate)}
           testId='exposureDate'
