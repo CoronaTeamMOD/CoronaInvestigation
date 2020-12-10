@@ -21,7 +21,7 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 import useStyles from './ExposureFormStyles';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
-const MAX_DATE_ERROR_MESSAGE =  'לא ניתן להזין תאריך עתידי מתאריך תחילת המחלה';
+const MAX_DATE_ERROR_MESSAGE =  'לא ניתן להזין תאריך מאוחר מתאריך תחילת המחלה';
 const INVALID_DATE_ERROR_MESSAGE =  'תאריך לא חוקי';
 
 const displayPatientFields: CovidPatientFields = {
