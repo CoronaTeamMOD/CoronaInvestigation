@@ -54,8 +54,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     exposures.some(exposure => exposure.wasAbroad && isFlightInvalid(exposure))
     , [exposures]);
 
-  const [coronaTestDate, setCoronaTestDate] = useState<Date>();
-
   const doesHaveConfirmedExposures = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasConfirmedExposure);
   const doesHaveFlights = (checkedExposures: Exposure[]) => checkedExposures.some(exposure => exposure.wasAbroad);
 
@@ -110,17 +108,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
             getCoronaTestDateLogger.error(`failed to get resorts response due to ${error}`, Severity.HIGH);
           })
         }
-      })
-      .then(() => {
-        getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW);
-        axios.get('/clinicalDetails/coronaTestDate/' + investigationId).then((res: any) => {
-          if (res.data) {
-            getCoronaTestDateLogger.info('got results back from the server', Severity.LOW);
-            setCoronaTestDate(convertDate(res.data.coronaTestDate));
-          } else {
-            getCoronaTestDateLogger.warn('got status 200 but wrong data', Severity.HIGH);
-          }
-        })
       })
       .catch((error) => {
         fetchExposuresAndFlightsLogger.error(`got error from server: ${error}`, Severity.HIGH);
@@ -223,7 +210,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
                     exposure.wasConfirmedExposure &&
                     <>
                       <ExposureForm
-                        coronaTestDate={coronaTestDate}
                         key={(exposure.id || '') + index.toString()}
                         fieldsNames={fieldsNames}
                         exposureAndFlightsData={exposure}

@@ -1,18 +1,18 @@
 import React from 'react';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-import { StandardTextFieldProps } from '@material-ui/core';
 import { Variant } from '@material-ui/core/styles/createTypography';
 import { ParsableDate } from '@material-ui/pickers/constants/prop-types';
+import { KeyboardDatePicker, KeyboardDatePickerProps } from '@material-ui/pickers';
 
 import { useStyles } from './DatePickStyles';
 
 const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
   const classes = useStyles({});
 
-  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate, disabled } = props;
+  const { labelText, value, onChange, onBlur, error, useBigCalender, maxDate, disabled, ...rest } = props;
 
   return (
     <KeyboardDatePicker
+      {...rest}
       disabled={disabled}
       error={error}
       test-id={props.testId}
@@ -40,7 +40,7 @@ const DatePick: React.FC<Props> = (props: Props): JSX.Element => {
 
 export default DatePick;
 
-interface Props extends StandardTextFieldProps {
+interface Props extends KeyboardDatePickerProps {
   labelText?: string;
   labelTextVariant?: Variant;
   useBigCalender?: boolean;

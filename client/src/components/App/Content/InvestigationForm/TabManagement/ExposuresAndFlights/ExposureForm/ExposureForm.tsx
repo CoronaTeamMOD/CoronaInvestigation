@@ -21,6 +21,8 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 import useStyles from './ExposureFormStyles';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
+const MAX_DATE_ERROR_MESSAGE =  'לא ניתן להזין תאריך מאוחר מתאריך תחילת המחלה';
+const INVALID_DATE_ERROR_MESSAGE =  'תאריך לא חוקי';
 
 const displayPatientFields: CovidPatientFields = {
   fullName: 'שם',
@@ -42,11 +44,13 @@ const invalidAge = -1;
 export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {
-  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, coronaTestDate, } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField } = props;
 
   const classes = useStyles();
   const formClasses = useFormStyles();
   const { alertError } = useCustomSwal();
+
+  const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
   const [exposureSourceSearch, setExposureSourceSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -88,8 +92,8 @@ const ExposureForm = (props: any) => {
         user: userId
       });
       setIsLoading(true);
-      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`, Severity.LOW);
-      axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
+      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${validationDate}`, Severity.LOW);
+      axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${validationDate}`)
         .then(result => {
           if (result?.data && result.headers['content-type'].includes('application/json')) {
             confirmedExposuresLogger.info('got results back from the server', Severity.LOW);
@@ -167,7 +171,10 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput fieldName='תאריך החשיפה:'>
         <DatePick
-          maxDate={new Date()}
+          maxDateMessage={MAX_DATE_ERROR_MESSAGE}
+          invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
+          FormHelperTextProps={{classes:{root: classes.errorLabel}}}
+          maxDate={new Date(validationDate)}
           testId='exposureDate'
           labelText='תאריך'
           value={exposureAndFlightsData[fieldsNames.date]}
