@@ -1,30 +1,39 @@
 import React, { useState } from 'react';
-import { Typography, IconButton, Menu, MenuItem } from '@material-ui/core';
+import { Typography, IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import { SvgIconComponent, MoreVert, CallSplit } from '@material-ui/icons';
+
+import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import useSettingsActions from './useSettingsActions'
 
 interface settingsAction {
     key: number;
     icon: SvgIconComponent;
-    displayTitle: string;
     disabled: boolean;
+    disabledMessage: string;
+    displayTitle: string;
     onClick: () => void;
 }
     
 const SettingsActions = (props: Props) => {
 
-    const { epidemiologyNumber, groupId, fetchTableData, fetchInvestigationsByGroupId } = props;
+    const { epidemiologyNumber, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
+            fetchTableData, fetchInvestigationsByGroupId } = props;
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const { excludeInvestigationFromGroup } = useSettingsActions({ setAnchorEl, fetchTableData, fetchInvestigationsByGroupId });
-
+    const { excludeInvestigationFromGroup } = useSettingsActions({ allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId });
+    
+    const shouldExcludeDisabled = () => {
+        return !(checkGroupedInvestigationOpen.includes(epidemiologyNumber) || Boolean(allGroupedInvestigations.get(groupId)))
+    }
+    
     const settingsAction: settingsAction[]  = [
         {
             key: 1,
             icon: CallSplit,
-            disabled: groupId === null,
+            disabled: shouldExcludeDisabled(),
+            disabledMessage: shouldExcludeDisabled() ? 'לחקירה אין קבוצה או שהקבוצה אינה נפתחה': '',
             displayTitle: 'הוצא חקירה מקבוצה',
             onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId)
         }
@@ -54,14 +63,18 @@ const SettingsActions = (props: Props) => {
                 {
                     settingsAction.map((action: settingsAction, index: number) => {
                         return (
-                            <MenuItem
-                                key={action.key}
-                                disabled={action.disabled}
-                                onClick={(event: React.MouseEvent<HTMLElement>) => onActionClick(event, index)}
-                            >
-                                {React.createElement(action.icon)}
-                                <Typography>{action.displayTitle}</Typography>
-                            </MenuItem>
+                            <Tooltip title={action.disabledMessage} placement='top-end'>
+                                <span>                                
+                                    <MenuItem
+                                        key={action.key}
+                                        disabled={action.disabled}
+                                        onClick={(event: React.MouseEvent<HTMLElement>) => onActionClick(event, index)}
+                                    >
+                                        {React.createElement(action.icon)}
+                                        <Typography>{action.displayTitle}</Typography>
+                                    </MenuItem>
+                                </span>
+                            </Tooltip>
                         )
                     })
                 }   
@@ -73,6 +86,8 @@ const SettingsActions = (props: Props) => {
 interface Props {
     epidemiologyNumber: number;
     groupId: string;
+    allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
+    checkGroupedInvestigationOpen: number[];
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
 }
