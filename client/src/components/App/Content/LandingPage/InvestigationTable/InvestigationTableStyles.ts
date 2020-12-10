@@ -183,7 +183,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         marginRight: theme.spacing(6.5)
     },
     popover: {
-        width: '250px',
+        width: 250,
         padding: theme.spacing(1)
     }
 }));
