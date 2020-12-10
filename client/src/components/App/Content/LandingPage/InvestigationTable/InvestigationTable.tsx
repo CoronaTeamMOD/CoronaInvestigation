@@ -428,7 +428,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 event.stopPropagation();
                                 markRow(indexedRow);
                             }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} size='small'
-                                className={[(indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup), classes.multipleSelectCheckbox].join(' ')} />}
+                                className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
                             <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
                                 <IconButton onClick={(event) => {

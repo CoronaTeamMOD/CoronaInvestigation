@@ -181,11 +181,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     padCheckboxWithoutGroup: {
         marginRight: theme.spacing(6.5)
-    },
-    multipleSelectCheckbox: {
-        //transform: 'scale(0.5)'
-    },
-
+    }
 }));
 
 export default useStyles;
