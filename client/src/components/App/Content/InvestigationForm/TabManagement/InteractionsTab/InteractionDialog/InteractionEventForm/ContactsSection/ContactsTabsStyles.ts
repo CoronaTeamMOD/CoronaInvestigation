@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     tab: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        width: '10vw'
+        width: '13vw'
     },
     tabs: {
         display: 'flex'

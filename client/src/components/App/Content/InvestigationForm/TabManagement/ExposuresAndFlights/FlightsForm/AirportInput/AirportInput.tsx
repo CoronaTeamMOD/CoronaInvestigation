@@ -4,10 +4,10 @@ import StoreStateType from 'redux/storeStateType';
 import { createFilterOptions } from '@material-ui/lab';
 
 import Country from 'models/Country';
+import useFormStyles from 'styles/formStyles';
 import AutocompletedField from 'commons/AutoCompletedField/AutocompletedField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 
-import useFormStyles from 'styles/formStyles';
 import useStyles from './AirportInputStyles';
 
 const AirportInput = (props: any) => {
@@ -38,7 +38,7 @@ const AirportInput = (props: any) => {
 
     return (
         <div className={formStyles.inputRow}>
-            <>
+            <div className={classes.countryAutocomplete}>
                 <AutocompletedField
                     value={country}
                     options={options}
@@ -48,7 +48,7 @@ const AirportInput = (props: any) => {
                     label='מדינה'
                     placeholder='מדינה'
                 />
-            </>
+            </div>
             <>
                 <AlphanumericTextField
                     name={cityFieldName}
