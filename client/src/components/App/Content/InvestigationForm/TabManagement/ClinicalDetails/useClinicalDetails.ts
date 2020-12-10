@@ -18,6 +18,8 @@ import ClinicalDetailsSchema from './ClinicalDetailsSchema';
 import useSymptomsFields from './SymptomsFields/useSymptomsFields';
 import {useClinicalDetailsIncome, useClinicalDetailsOutcome} from './useClinicalDetailsInterfaces';
 
+const otherOptionDescription = 'אחר';
+
 export const initialClinicalDetails: ClinicalDetailsData = {
     isolationStartDate: null,
     isolationEndDate: null,
@@ -119,6 +121,12 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         });
     };
 
+    const sortedIsolationSource = (fetchedIsolationSources : IsolationSource[]) : IsolationSource[] => {
+        const otherIndex : number = fetchedIsolationSources.findIndex(source => source.description === otherOptionDescription);
+        const otherIsolationSource : IsolationSource[] = fetchedIsolationSources.splice(otherIndex, 1);
+        return fetchedIsolationSources.concat(otherIsolationSource);
+    }
+
     const getIsolationSources = () => {
         const getIsolationSourcesLogger = logger.setup({
             workflow: 'Fetching Isolation Sources',
@@ -129,7 +137,8 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         axios.get('/clinicalDetails/isolationSources').then(result => {
             if (result?.data) {
                 getIsolationSourcesLogger.info('got results back from the server', Severity.LOW);
-                setIsolationSources(result.data);
+                const fetchedIsolationSources : IsolationSource[] = sortedIsolationSource(result.data);
+                setIsolationSources(fetchedIsolationSources);
             } else {
                 getIsolationSourcesLogger.warn('got status 200 but wrong data', Severity.HIGH);
             }

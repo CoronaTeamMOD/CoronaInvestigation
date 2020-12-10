@@ -16,7 +16,7 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
     [InvestigationsFilterByFields.FULL_NAME]: (values: string) => {
         return Boolean(values) ?
             {
-                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { equalTo: values } } },
+                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } },
                 or: [
                     { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: "" } } } },
                     { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: "" } } } }]
@@ -33,8 +33,8 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             {
                 investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: "" } } },
                 or: [{ epidemiologyNumber: { equalTo: Number(values) } },
-                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { equalTo: values } } } },
-                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { equalTo: values } } } }]
+                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
+                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }]
             } :
             {
                 investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: "" } } },

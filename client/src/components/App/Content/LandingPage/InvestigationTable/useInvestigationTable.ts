@@ -16,7 +16,6 @@ import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
-import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -109,16 +108,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false)();
     const { alertError, alertWarning } = useCustomSwal();
     const history = useHistory<HistoryState>();
-    const { filterRules: historyFilterRules = {} } = useMemo(() => {
-        const { location: { state } } = history;
-        return state || {};
-    }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [filterRules, setFilterRules] = useState<any>(historyFilterRules);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -126,7 +120,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
-    const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
+    const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
@@ -147,9 +141,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
     }
 
-    const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator? : string) => {
-        return investigationStatus === InvestigationMainStatusCodes.NEW && 
-                (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
+    const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator?: string) => {
+        return investigationStatus === InvestigationMainStatusCodes.NEW &&
+            (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
     };
 
     const fetchAllInvestigationStatuses = () => {
@@ -177,8 +171,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage = () => fetchTableData();
-    }, [])
+    }, []);
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         const investigationClickLogger = logger.setup({
@@ -190,29 +183,28 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         await persistor.flush();
         window.open(investigationURL);
         fetchTableData();
-    }
+    };
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
             user: user.id
         });
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
-            return axios.post('landingPage/groupInvestigations', {
-                orderBy,
-                size: rowsPerPage,
-                currentPage: currentPage,
-                filterRules
-            })
-        }
-        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
-        return axios.post('/landingPage/investigations', {
+
+        const requestData = {
             orderBy,
             size: rowsPerPage,
             currentPage: currentPage,
-            filterRules
-        });
+            filterRules: history.location.state?.filterRules,
+        };
+
+        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
+            return axios.post('landingPage/groupInvestigations', requestData)
+        }
+
+        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
+        return axios.post('/landingPage/investigations', requestData);
     }
 
     const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
@@ -278,12 +270,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             workflow: 'Getting Investigations',
             user: user.id
         });
-        setIsLoading(true);
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            fetchAllCountyUsers();
-            fetchAllCounties();
-        }
-        if (user.userName !== initialUserState.data.userName) {
+        if (isLoggedIn) {
+            setIsLoading(true);
+            if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+                fetchAllCountyUsers();
+                fetchAllCounties();
+            }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
@@ -374,10 +366,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
+    useEffect(() => {
+        windowTabsBroadcastChannel.current.onmessage = () => fetchTableData();
+    });
+
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
-    const handleFilterChange = (filterBy: any) => {
-        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey, filterValue]) => {
+    const getGraphQLConditionsFromFilters = (conditions: any, aggFilters: any) => {
+        return Object.entries(conditions).reduce((previousValue, [filterKey, filterValue]) => {
             if (filterValue) {
                 return {
                     ...previousValue,
@@ -387,23 +383,29 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
             delete previousValue[filterKey as any];
             return previousValue;
-        }, { ...filterRules });
-        const { location: { state } } = history;
+        }, aggFilters);
+    };
+
+    const handleFilterChange = (filterBy: any) => {
+        const { location: { state = {}} } = history;
+        const {filterRules= {}} = state;
+        const nextFilterRules = getGraphQLConditionsFromFilters(filterBy, { ...filterRules });
+
         history.replace({
             state: {
                 ...state,
-                filterRules: nextFilterRules
+                filterRules: nextFilterRules,
             }
         });
-        setFilterRules(nextFilterRules);
+
         setCurrentPage(defaultPage);
-    }
+    };
 
     useEffect(() => {
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, history.location.state?.filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({
@@ -428,7 +430,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if ( canChangeStatusNewToInProcess(investigationRow.investigationStatus.id,investigationRow.investigatorId)) {
+        if (canChangeStatusNewToInProcess(investigationRow.investigationStatus.id, investigationRow.investigatorId)) {
             investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
@@ -550,7 +552,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County} | null) => {
+    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
         const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
@@ -654,7 +656,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
-        } 
+        }
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&
@@ -671,7 +673,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     }
 
-    const fetchInvestigationsByGroupId = async (groupId: string) => {
+    const fetchInvestigationsByGroupId = async (groupId: string): Promise<InvestigationTableRow[]> => {
         const investigationsByGroupIdLogger = logger.setup({
             workflow: 'get investigations by group id',
             user: user.id,
@@ -731,12 +733,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
+                return investigationRows;
             } else {
                 investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                return [];
             }
         } catch (err) {
             alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
             investigationsByGroupIdLogger.error(err, Severity.HIGH);
+            return [];
         } finally {
             setIsLoading(false)
         }

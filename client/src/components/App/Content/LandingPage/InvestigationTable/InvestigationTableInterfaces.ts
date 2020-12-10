@@ -31,7 +31,7 @@ export interface useInvestigationTableOutcome {
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
-    changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: {id: number, value: County} | null) => Promise<void>;
+    changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: { id: number, value: County } | null) => Promise<void>;
     getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
@@ -41,7 +41,7 @@ export interface useInvestigationTableOutcome {
     totalCount: number;
     handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
-    fetchInvestigationsByGroupId: (groupId: string) => void;
+    fetchInvestigationsByGroupId: (groupId: string) => Promise<InvestigationTableRow[]>;
     changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;

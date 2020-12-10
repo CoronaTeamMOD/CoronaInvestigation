@@ -27,6 +27,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
     const classes = useStyles();
     const age: number = differenceInYears(new Date(), new Date(interactedContact.birthDate));
     const contactAge = interactedContact.birthDate && !isNaN(age as number) ? age === 0 ? '0' : age : null;
+    const PHONE_LABEL = 'טלפון';
 
     const { shouldDisableContact } = useStatusUtils();
     const shouldDisableIdByReopen = interactedContact.creationTime ? shouldDisableContact(interactedContact.creationTime) : false;
@@ -95,6 +96,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                         />
                 </Grid>
                 <Grid container item>
+                    <FieldName xs={5} fieldName={PHONE_LABEL}/>
+                     <NumericTextField
+                         disabled={isFieldDisabled}
+                         testId='phoneNumber'
+                         name={InteractedContactFields.PHONE_NUMBER}
+                            value={interactedContact.phoneNumber}
+                            onChange={(newValue: string) =>
+                                updateInteractedContact(interactedContact, InteractedContactFields.PHONE_NUMBER, newValue)
+                            }
+                            placeholder='הכנס טלפון:'
+                        />
+                </Grid>
+                <Grid container item>
                     <FieldName xs={5} fieldName={ADDITIONAL_PHONE_LABEL}/>
                      <NumericTextField
                          disabled={isFieldDisabled}
@@ -104,7 +118,7 @@ const ContactQuestioningPersonal: React.FC<Props> = (props: Props): JSX.Element 
                             onChange={(newValue: string) =>
                                 updateInteractedContact(interactedContact, InteractedContactFields.ADDITIONAL_PHONE_NUMBER, newValue)
                             }
-                            placeholder='הכנס טלפון:'
+                            placeholder='הכנס טלפון נוסף:'
                         />
                 </Grid>
             </Grid>

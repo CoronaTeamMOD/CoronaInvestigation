@@ -1,5 +1,7 @@
 import {makeStyles} from '@material-ui/styles';
 
+import theme from 'styles/theme';
+
 const useStyles = makeStyles({
     exposureSourceTextFied: {
         width: '60vw',
@@ -39,6 +41,9 @@ const useStyles = makeStyles({
     swalText: {
         fontFamily: 'Assistant',
     },
+    errorLabel: {
+        color: theme.palette.error.main
+    }
 });
 
 export default useStyles;

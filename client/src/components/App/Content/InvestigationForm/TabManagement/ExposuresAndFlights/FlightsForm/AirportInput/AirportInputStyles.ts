@@ -10,6 +10,9 @@ const useStyles = makeStyles({
     },
     airportTextField: {
         marginLeft: '1vw',
+    },
+    countryAutocomplete: {
+        width: '19vw',
     }
 });
 

@@ -13,7 +13,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     tableCell: {
-        padding: '7px'
+        padding: '7px 0'
     },
     tableCellRoot: {
         padding: '0'
@@ -54,7 +54,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     font: {
         color: '#424242',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        fontSize: '0.9rem'
     },
     filterByDeskCard: {
         padding: '1vh 1vw',
@@ -74,7 +75,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     tableHeaderCell: {
         whiteSpace: 'nowrap',
-        fontSize: '1.1rem'
+        fontSize: '0.97rem'
     },
     sortResetButton: {
         fontWeight: 600
@@ -149,7 +150,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     selectedInvestigator: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     warningIcon: {
         color: theme.palette.warning.main,
@@ -179,6 +181,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     padCheckboxWithoutGroup: {
         marginRight: theme.spacing(6.5)
+    },
+    popover: {
+        width: 250,
+        padding: theme.spacing(1)
     }
 }));
 

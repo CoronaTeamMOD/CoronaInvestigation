@@ -6,7 +6,7 @@ import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box, InputAdornment, useTheme
+    Slide, Box, InputAdornment, useTheme, Popover
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,9 +72,10 @@ const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקי
 const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
+const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
 
-type StatusFilter = InvestigationMainStatus[];
-type DeskFilter = Desk[];
+type StatusFilter = number[];
+type DeskFilter = number[];
 
 export interface HistoryState {
     filterRules?: any;
@@ -114,7 +115,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [shouldOpenPopover, setShouldOpenPopover] = React.useState<boolean>(false);
 
+    const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setAnchorEl(null);
+    };
     const closeDropdowns = () => {
         setInvestigatorAutoCompleteClicked(false);
         setCountyAutoCompleteClicked(false);
@@ -187,7 +198,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 if (!value.deskByDeskId) {
                     return false;
                 }
-                return filterByDesks.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+                return filterByDesks.includes(value.deskByDeskId.id);
             });
     }
 
@@ -427,16 +438,22 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
                                 markRow(indexedRow);
-                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)}
+                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} size='small'
                                 className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
                             <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
-                                <IconButton onClick={(event) => {
+                                <IconButton onClick={async (event) => {
+                                    setShouldOpenPopover(false);
+                                    handleOpenGroupClick(event);
+                                    let groupToOpen = allGroupedInvestigations.get(indexedRow.groupId);
                                     event.stopPropagation();
-                                    openGroupedInvestigation(indexedRow.epidemiologyNumber)
                                     if (!allGroupedInvestigations.get(indexedRow.groupId)) {
-                                        fetchInvestigationsByGroupId(indexedRow.groupId)
+                                        groupToOpen = await fetchInvestigationsByGroupId(indexedRow.groupId)
                                     }
+                                    if (groupToOpen !== undefined && groupToOpen?.length > 1) {
+                                        openGroupedInvestigation(indexedRow.epidemiologyNumber, indexedRow.groupId)
+                                    }
+                                    setShouldOpenPopover(groupToOpen?.length === 1)
                                 }}>
                                     {isGroupShown ?
                                         <KeyboardArrowDown /> :
@@ -450,6 +467,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return <SettingsActions
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
                     groupId={indexedRow.groupId}
+                    allGroupedInvestigations={allGroupedInvestigations}
+                    checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                     fetchTableData={fetchTableData}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                 />
@@ -514,19 +533,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
     }
 
-    const openGroupedInvestigation = (epidemiologyNumber: number) => {
+    const openGroupedInvestigation = (epidemiologyNumber: number, groupId: string) => {
         checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const generateStatusFilterBySelectedStatues = (selectedStatuses: StatusFilter) => {
-        return selectedStatuses.map(status => status.id).includes(allStatusesOption.id)
+    const generateStatusFilterBySelectedStatues = (selectedStatuses: InvestigationMainStatus[]) => {
+        return selectedStatuses.includes(allStatusesOption)
             ? [] : selectedStatuses;
     };
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
-        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
+        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses).map(filter => filter.id);
         const { location: { state } } = history;
         history.replace({
             state: {
@@ -535,20 +554,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         });
         setFilterByStatuses(nextFilterByStatuses);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
+        const selectedDesksIds = selectedDesks.map(desk => desk.id);
         const { location: { state } } = history;
         history.replace({
             state: {
                 ...state,
-                deskFilter: selectedDesks
+                deskFilter: selectedDesksIds
             }
         });
-        setFilterByDesks(selectedDesks);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
-    }
+        setFilterByDesks(selectedDesksIds);
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesksIds));
+    };
 
     const onSearchClick = () => {
         if (searchBarQuery === '') {
@@ -573,7 +593,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const counterDescription: string = useMemo(() => {
         const adminMessage = `, מתוכן ${unassignedInvestigationsCount} לא מוקצות`;
-        return `ישנן ${tableRows.length}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
+        return `ישנן ${totalCount}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
 
     }, [tableRows, unassignedInvestigationsCount]);
 
@@ -597,12 +617,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             disableCloseOnSelect
                             multiple
                             options={allDesks}
+                            value={allDesks.filter(desk => filterByDesks.includes(desk.id))}
                             getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
-                            value={filterByDesks}
-                            getOptionSelected={(option) =>
-                                filterByDesks.map(desk => desk.id)
-                                    .includes(option.id)}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
@@ -677,9 +694,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 disableCloseOnSelect
                                 multiple
                                 options={allStatuses}
+                                value={allStatuses.filter(status => filterByStatuses.includes(status.id))}
                                 getOptionLabel={(option) => option.displayName}
                                 onChange={onSelectedStatusesChange}
-                                value={filterByStatuses}
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
@@ -738,6 +755,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
+                                                        padding='none'
                                                         className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
@@ -808,6 +826,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
                 message={refreshPromptMessage} />
+            <Popover
+                open={Boolean(anchorEl) && shouldOpenPopover}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography className={classes.popover}>{emptyGroupText}</Typography>
+            </Popover>
         </div>
     );
 }
