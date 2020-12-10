@@ -16,7 +16,6 @@ import { activateIsLoading } from 'Utils/axios';
 import StoreStateType from 'redux/storeStateType';
 import { BC_TABS_NAME } from 'models/BroadcastMessage';
 import usePageRefresh from 'Utils/vendor/usePageRefresh';
-import { initialUserState } from 'redux/User/userReducer';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -142,9 +141,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             })
     }
 
-    const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator? : string) => {
-        return investigationStatus === InvestigationMainStatusCodes.NEW && 
-                (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
+    const canChangeStatusNewToInProcess = (investigationStatus: Number, investigationInvestigator?: string) => {
+        return investigationStatus === InvestigationMainStatusCodes.NEW &&
+            (user.userType === userType.INVESTIGATOR || investigationInvestigator === user.id);
     };
 
     const fetchAllInvestigationStatuses = () => {
@@ -431,7 +430,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const indexOfInvestigationObject = rows.findIndex(currInvestigationRow => currInvestigationRow.epidemiologyNumber === investigationRow.epidemiologyNumber);
         indexOfInvestigationObject !== -1 &&
             setCreator(rows[indexOfInvestigationObject].investigator.id);
-        if ( canChangeStatusNewToInProcess(investigationRow.investigationStatus.id,investigationRow.investigatorId)) {
+        if (canChangeStatusNewToInProcess(investigationRow.investigationStatus.id, investigationRow.investigatorId)) {
             investigationClickLogger.info('the user clicked a new investigation', Severity.LOW);
             axios.post('/investigationInfo/updateInvestigationStartTime', {
                 epidemiologyNumber: investigationRow.epidemiologyNumber
@@ -553,7 +552,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County} | null) => {
+    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
         const changeCountyLogger = logger.setup({
             workflow: 'Change Investigation County',
             user: user.id,
@@ -657,7 +656,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
-        } 
+        }
         if ((isDefaultOrder && !isLoading) &&
             (rows.length - 1 !== rowIndex) &&
             rows[rowIndex]?.coronaTestDate &&
@@ -674,7 +673,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     }
 
-    const fetchInvestigationsByGroupId = async (groupId: string) => {
+    const fetchInvestigationsByGroupId = async (groupId: string): Promise<InvestigationTableRow[]> => {
         const investigationsByGroupIdLogger = logger.setup({
             workflow: 'get investigations by group id',
             user: user.id,
@@ -734,12 +733,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
+                return investigationRows;
             } else {
                 investigationsByGroupIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
+                return [];
             }
         } catch (err) {
             alertError('לא הצלחנו לשלוף את כל החקירות בקבוצה');
             investigationsByGroupIdLogger.error(err, Severity.HIGH);
+            return [];
         } finally {
             setIsLoading(false)
         }
