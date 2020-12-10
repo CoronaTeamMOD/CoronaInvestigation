@@ -363,7 +363,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                     alertError('אופס... לא הצלחנו לשלוף');
                     setIsLoading(false);
                     fetchInvestigationsLogger.error(err, Severity.HIGH);
-                })
+                });
         }
     };
 
