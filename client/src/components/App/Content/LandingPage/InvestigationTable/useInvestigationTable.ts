@@ -109,16 +109,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false)();
     const { alertError, alertWarning } = useCustomSwal();
     const history = useHistory<HistoryState>();
-    const { filterRules: historyFilterRules = {} } = useMemo(() => {
-        const { location: { state } } = history;
-        return state || {};
-    }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [filterRules, setFilterRules] = useState<any>(historyFilterRules);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
@@ -177,7 +172,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-    }, [])
+    }, []);
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
         const investigationClickLogger = logger.setup({
@@ -189,29 +184,28 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         await persistor.flush();
         window.open(investigationURL);
         fetchTableData();
-    }
+    };
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup({
             workflow: 'Getting Investigations',
             user: user.id
         });
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
-            return axios.post('landingPage/groupInvestigations', {
-                orderBy,
-                size: rowsPerPage,
-                currentPage: currentPage,
-                filterRules
-            })
-        }
-        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
-        return axios.post('/landingPage/investigations', {
+
+        const requestData = {
             orderBy,
             size: rowsPerPage,
             currentPage: currentPage,
-            filterRules
-        });
+            filterRules: history.location.state.filterRules,
+        };
+
+        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+            getInvestigationsLogger.info('user is admin so landingPage/groupInvestigations route is chosen', Severity.LOW);
+            return axios.post('landingPage/groupInvestigations', requestData)
+        }
+
+        getInvestigationsLogger.info('user isnt admin so landingPage/investigations route is chosen', Severity.LOW);
+        return axios.post('/landingPage/investigations', requestData);
     }
 
     const sortUsersByAvailability = (fisrtUser: User, secondUser: User) =>
@@ -379,8 +373,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
-    const handleFilterChange = (filterBy: any) => {
-        const nextFilterRules = Object.entries(filterBy).reduce((previousValue, [filterKey, filterValue]) => {
+    const getGraphQLConditionsFromFilters = (conditions: any, aggFilters: any) => {
+        return Object.entries(conditions).reduce((previousValue, [filterKey, filterValue]) => {
             if (filterValue) {
                 return {
                     ...previousValue,
@@ -390,23 +384,29 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
             delete previousValue[filterKey as any];
             return previousValue;
-        }, { ...filterRules });
+        }, aggFilters);
+    };
+
+    const handleFilterChange = (filterBy: any) => {
         const { location: { state } } = history;
+        const {filterRules} = state;
+        const nextFilterRules = getGraphQLConditionsFromFilters(filterBy, { ...filterRules });
+
         history.replace({
             state: {
                 ...state,
-                filterRules: nextFilterRules
+                filterRules: nextFilterRules,
             }
         });
-        setFilterRules(nextFilterRules);
+
         setCurrentPage(defaultPage);
-    }
+    };
 
     useEffect(() => {
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, history.location.state.filterRules]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setup({

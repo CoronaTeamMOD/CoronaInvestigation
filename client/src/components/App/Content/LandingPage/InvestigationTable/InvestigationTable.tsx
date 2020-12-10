@@ -73,8 +73,8 @@ const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 
-type StatusFilter = InvestigationMainStatus[];
-type DeskFilter = Desk[];
+type StatusFilter = number[];
+type DeskFilter = number[];
 
 export interface HistoryState {
     filterRules?: any;
@@ -187,7 +187,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 if (!value.deskByDeskId) {
                     return false;
                 }
-                return filterByDesks.map((desk: Desk) => desk.id).includes(value.deskByDeskId.id);
+                return filterByDesks.includes(value.deskByDeskId.id);
             });
     }
 
@@ -520,13 +520,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const generateStatusFilterBySelectedStatues = (selectedStatuses: StatusFilter) => {
-        return selectedStatuses.map(status => status.id).includes(allStatusesOption.id)
+    const generateStatusFilterBySelectedStatues = (selectedStatuses: InvestigationMainStatus[]) => {
+        return selectedStatuses.includes(allStatusesOption)
             ? [] : selectedStatuses;
     };
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: StatusFilter) => {
-        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses);
+    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
+        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses).map(filter => filter.id);
         const { location: { state } } = history;
         history.replace({
             state: {
@@ -535,20 +535,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             }
         });
         setFilterByStatuses(nextFilterByStatuses);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses.map(status => status.id)));
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
     }
 
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: DeskFilter) => {
+    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
+        const selectedDesksIds = selectedDesks.map(desk => desk.id);
         const { location: { state } } = history;
         history.replace({
             state: {
                 ...state,
-                deskFilter: selectedDesks
+                deskFilter: selectedDesksIds
             }
         });
-        setFilterByDesks(selectedDesks);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesks.map(desk => desk.id)));
-    }
+        setFilterByDesks(selectedDesksIds);
+        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesksIds));
+    };
 
     const onSearchClick = () => {
         if (searchBarQuery === '') {
@@ -597,12 +598,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             disableCloseOnSelect
                             multiple
                             options={allDesks}
+                            value={allDesks.filter(desk => filterByDesks.includes(desk.id))}
                             getOptionLabel={(option) => option.deskName}
                             onChange={onSelectedDesksChange}
-                            value={filterByDesks}
-                            getOptionSelected={(option) =>
-                                filterByDesks.map(desk => desk.id)
-                                    .includes(option.id)}
                             renderInput={(params) =>
                                 <TextField
                                     {...params}
@@ -677,9 +675,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 disableCloseOnSelect
                                 multiple
                                 options={allStatuses}
+                                value={allStatuses.filter(status => filterByStatuses.includes(status.id))}
                                 getOptionLabel={(option) => option.displayName}
                                 onChange={onSelectedStatusesChange}
-                                value={filterByStatuses}
                                 renderInput={(params) =>
                                     <TextField
                                         {...params}
