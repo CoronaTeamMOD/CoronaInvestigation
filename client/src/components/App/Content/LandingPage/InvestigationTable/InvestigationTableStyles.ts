@@ -55,7 +55,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     font: {
         color: '#424242',
         whiteSpace: 'nowrap',
-        fontSize: '0.9rem'    
+        fontSize: '0.9rem'
     },
     filterByDeskCard: {
         padding: '1vh 1vw',
@@ -181,6 +181,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     padCheckboxWithoutGroup: {
         marginRight: theme.spacing(6.5)
+    },
+    popover: {
+        width: '250px',
+        padding: theme.spacing(1)
     }
 }));
 

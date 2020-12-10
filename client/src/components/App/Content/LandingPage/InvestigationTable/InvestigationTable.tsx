@@ -6,7 +6,7 @@ import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
     useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
-    Slide, Box, InputAdornment, useTheme
+    Slide, Box, InputAdornment, useTheme, Popover
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,6 +72,7 @@ const refreshPromptMessage = 'שים לב, ייתכן כי התווספו חקי
 const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
+const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
 
 type StatusFilter = InvestigationMainStatus[];
 type DeskFilter = Desk[];
@@ -114,7 +115,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [shouldOpenPopover, setShouldOpenPopover] = React.useState<boolean>(false);
 
+    const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        setAnchorEl(null);
+    };
     const closeDropdowns = () => {
         setInvestigatorAutoCompleteClicked(false);
         setCountyAutoCompleteClicked(false);
@@ -431,12 +442,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
                         {indexedRow.canFetchGroup &&
                             <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
-                                <IconButton onClick={(event) => {
+                                <IconButton onClick={async (event) => {
+                                    setShouldOpenPopover(false);
+                                    handleOpenGroupClick(event);
+                                    let groupToOpen = allGroupedInvestigations.get(indexedRow.groupId);
                                     event.stopPropagation();
-                                    openGroupedInvestigation(indexedRow.epidemiologyNumber)
                                     if (!allGroupedInvestigations.get(indexedRow.groupId)) {
-                                        fetchInvestigationsByGroupId(indexedRow.groupId)
+                                        groupToOpen = await fetchInvestigationsByGroupId(indexedRow.groupId)
                                     }
+                                    if (groupToOpen !== undefined && groupToOpen?.length > 1) {
+                                        openGroupedInvestigation(indexedRow.epidemiologyNumber, indexedRow.groupId)
+                                    }
+                                    setShouldOpenPopover(groupToOpen?.length === 1)
                                 }}>
                                     {isGroupShown ?
                                         <KeyboardArrowDown /> :
@@ -514,7 +531,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         }
     }
 
-    const openGroupedInvestigation = (epidemiologyNumber: number) => {
+    const openGroupedInvestigation = (epidemiologyNumber: number, groupId: string) => {
         checkGroupedInvestigationOpen.includes(epidemiologyNumber) ?
             setCheckGroupedInvestigationOpen(checkGroupedInvestigationOpen.filter(rowId => rowId !== epidemiologyNumber)) :
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
@@ -809,6 +826,21 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             <RefreshSnackbar isOpen={snackbarOpen}
                 onClose={onCancel} onOk={onOk}
                 message={refreshPromptMessage} />
+            <Popover
+                open={Boolean(anchorEl) && shouldOpenPopover}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography className={classes.popover}>{emptyGroupText}</Typography>
+            </Popover>
         </div>
     );
 }
