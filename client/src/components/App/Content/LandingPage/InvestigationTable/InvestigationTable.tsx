@@ -427,8 +427,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <Checkbox onClick={(event) => {
                                 event.stopPropagation();
                                 markRow(indexedRow);
-                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)}
-                                className={indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup} />}
+                            }} color='primary' checked={isRowSelected(indexedRow.epidemiologyNumber)} size='small'
+                                className={[(indexedRow.groupId ? '' : classes.padCheckboxWithoutGroup), classes.multipleSelectCheckbox].join(' ')} />}
                         {indexedRow.canFetchGroup &&
                             <Tooltip title={isGroupShown ? hideInvestigationGroupText : showInvestigationGroupText} placement='top' arrow>
                                 <IconButton onClick={(event) => {
@@ -738,6 +738,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                 Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
+                                                        padding='none'
                                                         className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
