@@ -15,7 +15,7 @@ const MAX_CHARS_ALLOWED = 500;
 const stringAlphabet = yup
     .string()
     .matches(/^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/, errorMessage)
-    .max(500, maxLengthErrorMessage);
+    .max(MAX_CHARS_ALLOWED, maxLengthErrorMessage);
 
 const commentFieldName = 'comment';
 const commentSchema = yup.object().shape({ [commentFieldName]: yup.string() });
@@ -33,7 +33,6 @@ const CommentInput = ({ commentInput, handleInput }: Props) => {
                 name={commentFieldName}
                 multiline fullWidth
                 validationSchema={stringAlphabet}
-                inputProps={{ maxLength: MAX_CHARS_ALLOWED }}
                 placeholder={COMMENT_PLACEHOLDER}
                 value={commentInput} onChange={handleInput}
             />
