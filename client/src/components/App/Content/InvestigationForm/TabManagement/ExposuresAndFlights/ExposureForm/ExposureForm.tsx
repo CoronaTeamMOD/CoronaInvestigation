@@ -44,11 +44,13 @@ const invalidAge = -1;
 export const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 
 const ExposureForm = (props: any) => {
-  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField, coronaTestDate, } = props;
+  const { exposureAndFlightsData, fieldsNames, handleChangeExposureDataAndFlightsField } = props;
 
   const classes = useStyles();
   const formClasses = useFormStyles();
   const { alertError } = useCustomSwal();
+
+  const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
 
   const [exposureSourceSearch, setExposureSourceSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -90,8 +92,8 @@ const ExposureForm = (props: any) => {
         user: userId
       });
       setIsLoading(true);
-      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${coronaTestDate}`, Severity.LOW);
-      axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${coronaTestDate}`)
+      confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${validationDate}`, Severity.LOW);
+      axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${validationDate}`)
         .then(result => {
           if (result?.data && result.headers['content-type'].includes('application/json')) {
             confirmedExposuresLogger.info('got results back from the server', Severity.LOW);
@@ -173,7 +175,7 @@ const ExposureForm = (props: any) => {
           invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
           error={false}
           FormHelperTextProps={{classes:{root: classes.errorLabel}}}
-          maxDate={new Date()}
+          maxDate={new Date(validationDate)}
           testId='exposureDate'
           labelText='תאריך'
           value={exposureAndFlightsData[fieldsNames.date]}
