@@ -1,6 +1,8 @@
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
+const tableWidth = '96vw';
+
 const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     content: {
         height: '80vh',
@@ -23,10 +25,10 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     title: {
         margin: 'auto',
         height: '14vh',
-        width: '90vw',
+        width: tableWidth,
     },
     tableContainer: {
-        width: '90vw',
+        width: tableWidth,
         height: isWide ? '67vh' : '61vh',
         marginBottom: '2vh'
     },
@@ -64,7 +66,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontSize: '1.2vw',
     },
     tableHeaderRow: {
-        width: '90vw',
+        width: tableWidth,
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -86,7 +88,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         height: '8vh',
     },
     filterTableRow: {
-        width: '90vw',
+        width: tableWidth,
         alignItems: 'center',
         justifyContent: 'flex-end',
         display: 'flex'
