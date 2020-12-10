@@ -40,7 +40,7 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.color]: '',
     [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מספר אפידמיולוגי',
-    [TableHeadersNames.coronaTestDate]: 'תאריך תחילת המחלה',
+    [TableHeadersNames.coronaTestDate]: 'תחילת המחלה',
     [TableHeadersNames.isComplex]: '',
     [TableHeadersNames.priority]: 'עדיפות',
     [TableHeadersNames.fullName]: 'שם מלא',
