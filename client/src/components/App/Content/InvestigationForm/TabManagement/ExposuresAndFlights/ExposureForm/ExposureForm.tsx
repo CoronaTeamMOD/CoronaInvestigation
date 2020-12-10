@@ -21,6 +21,8 @@ import PlacesTypesAndSubTypes from 'commons/Forms/PlacesTypesAndSubTypes/PlacesT
 import useStyles from './ExposureFormStyles';
 
 const INSERT_EXPOSURE_SOURCE_SEARCH = 'הזן שם פרטי, שם משפחה, מספר זיהוי או מספר טלפון';
+const MAX_DATE_ERROR_MESSAGE =  'לא ניתן להזין תאריך עתידי מתאריך תחילת המחלה';
+const INVALID_DATE_ERROR_MESSAGE =  'תאריך לא חוקי';
 
 const displayPatientFields: CovidPatientFields = {
   fullName: 'שם',
@@ -167,6 +169,10 @@ const ExposureForm = (props: any) => {
 
       <FormRowWithInput fieldName='תאריך החשיפה:'>
         <DatePick
+          maxDateMessage={MAX_DATE_ERROR_MESSAGE}
+          invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
+          error={false}
+          FormHelperTextProps={{classes:{root: classes.errorLabel}}}
           maxDate={new Date()}
           testId='exposureDate'
           labelText='תאריך'
