@@ -450,6 +450,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 return <SettingsActions
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
                     groupId={indexedRow.groupId}
+                    allGroupedInvestigations={allGroupedInvestigations}
+                    checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                     fetchTableData={fetchTableData}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                 />
