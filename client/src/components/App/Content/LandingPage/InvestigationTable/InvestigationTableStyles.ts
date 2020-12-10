@@ -54,7 +54,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     font: {
         color: '#424242',
-        whiteSpace: 'nowrap'    
+        whiteSpace: 'nowrap',
+        fontSize: '0.9rem'    
     },
     filterByDeskCard: {
         padding: '1vh 1vw',
@@ -74,7 +75,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     tableHeaderCell: {
         whiteSpace: 'nowrap',
-        fontSize: '1.1rem'
+        fontSize: '0.97rem'
     },
     sortResetButton: {
         fontWeight: 600
@@ -182,7 +183,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         marginRight: theme.spacing(6.5)
     },
     multipleSelectCheckbox: {
-        // transform: 'scale(0.5)'
+        //transform: 'scale(0.5)'
     },
 
 }));
