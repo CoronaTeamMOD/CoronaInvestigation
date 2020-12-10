@@ -126,7 +126,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const isLoading = useSelector<StoreStateType, boolean>(state => state.isLoading);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
-    const windowTabsBroadcatChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
+    const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
@@ -177,7 +177,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchAllInvestigationStatuses();
         fetchAllDesksByCountyId();
         startWaiting();
-        windowTabsBroadcatChannel.current.onmessage = () => fetchTableData();
     }, [])
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
@@ -278,12 +277,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             workflow: 'Getting Investigations',
             user: user.id
         });
-        setIsLoading(true);
-        if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
-            fetchAllCountyUsers();
-            fetchAllCounties();
-        }
-        if (user.userName !== initialUserState.data.userName) {
+        if (isLoggedIn) {
+            setIsLoading(true);
+            if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
+                fetchAllCountyUsers();
+                fetchAllCounties();
+            }
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
@@ -373,6 +372,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 });
         }
     };
+
+    useEffect(() => {
+        windowTabsBroadcastChannel.current.onmessage = () => fetchTableData();
+    });
 
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
