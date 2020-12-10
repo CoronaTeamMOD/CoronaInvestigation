@@ -13,7 +13,7 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         alignItems: 'center',
     },
     tableCell: {
-        padding: '7px'
+        padding: '7px 0'
     },
     tableCellRoot: {
         padding: '0'
