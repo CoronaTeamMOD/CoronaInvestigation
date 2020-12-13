@@ -675,7 +675,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const fetchInvestigationsByGroupId = async (groupId: string): Promise<InvestigationTableRow[]> => {
-        console.log('fetchInvestigationsByGroupId')
         const investigationsByGroupIdLogger = logger.setup({
             workflow: 'get investigations by group id',
             user: user.id,
