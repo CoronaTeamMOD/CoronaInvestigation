@@ -64,6 +64,7 @@ describe('investigationForm tests', () => {
         const expectedFirstSwal = {
             icon: 'warning',
             title: 'האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?',
+            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,

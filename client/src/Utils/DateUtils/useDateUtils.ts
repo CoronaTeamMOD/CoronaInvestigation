@@ -4,7 +4,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 export const symptomsWithKnownStartDate: number = 4;
 export const nonSymptomaticPatient: number = 7;
-export const symptomsWithUnknownStartDate: number = 10;
+export const symptomsWithUnknownStartDate: number = 7;
 const maxInvestigatedDays: number = 21;
 
 export const useDateUtils = (): useDateUtilsOutCome => {
