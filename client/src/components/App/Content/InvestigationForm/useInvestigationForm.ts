@@ -186,7 +186,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
         });
         finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
         alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
-            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד יועברו בעת סיום החקירה לסטאטוס הושלם תחקור ולא ניתן יהיה לערוך אותם.',
+            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
