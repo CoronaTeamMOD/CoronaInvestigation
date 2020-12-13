@@ -207,7 +207,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         switch (cellName) {
             case TableHeadersNames.color:
                 return (
-                    indexedRow.groupId ?
+                    indexedRow.canFetchGroup ?
                         <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}
