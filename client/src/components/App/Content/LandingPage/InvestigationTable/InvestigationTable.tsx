@@ -644,10 +644,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
                                                 const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).length!;
-                                                console.log(index === currentGroupedInvestigationsLength - 1);
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
-                                                console.log(indexedGroupedInvestigationRow.epidemiologyNumber);
                                                 return (
                                                     <TableRow selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                         key={indexedGroupedInvestigationRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
