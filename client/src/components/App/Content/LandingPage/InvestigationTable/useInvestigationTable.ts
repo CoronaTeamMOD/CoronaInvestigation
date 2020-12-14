@@ -646,7 +646,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNested? : boolean , isGroupShown? :boolean) => {
+    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNestedCell? : boolean , isGroupShown? :boolean) => {
         let classNames = [];
 
         classNames.push(classes.font);
@@ -658,12 +658,27 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
-        if (isGroupShown) {
-            classNames.push(classes.openedTableCell);
+
+        if(isLastNestedCell === undefined) {
+            if(cellNeedsABorder(rowIndex)) {
+                classNames.push(classes.rowBorder)
+            }
+            if(isGroupShown){
+                    classNames.push(classes.nestedTableCell);
+                    if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
+                        classNames.push(classes.openedTableCell);
+                    }
+            }
+        } else if(isLastNestedCell) {
+            classNames.push(classes.rowBorder)
+        } else {
             classNames.push(classes.nestedTableCell);
         }
 
-        if(isLastNested === undefined) {
+        return classNames;
+    }
+
+    const cellNeedsABorder = (rowIndex : number) => {
             const currentRow = rows[rowIndex];
             const nextRow = rows[rowIndex + 1];
 
@@ -673,19 +688,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                  nextRow.coronaTestDate :
                                  "9999/12/31" ));
 
-            if ((isDefaultOrder && !isLoading) &&
+            return ((isDefaultOrder && !isLoading) &&
                 isNotLastRow &&
                 hasATestDate &&
-                isLastOfDate && !isGroupShown) {
-                classNames.push(classes.rowBorder)
-            }
-        } else if(isLastNested) {
-            classNames.push(classes.rowBorder)
-        } else {
-            classNames.push(classes.nestedTableCell);
-        }
-
-        return classNames;
+                isLastOfDate)
     }
 
     const sortInvestigationTable = (orderByValue: string) => {
