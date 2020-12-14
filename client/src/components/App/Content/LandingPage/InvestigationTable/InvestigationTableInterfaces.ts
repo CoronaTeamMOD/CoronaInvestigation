@@ -41,7 +41,7 @@ export interface useInvestigationTableOutcome {
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
     getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
     changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: { id: number, value: County } | null) => Promise<void>;
-    getTableCellStyles: (rowIndex: number, cellKey: string , nested : boolean) => string[];
+    getTableCellStyles: (rowIndex: number, cellKey: string , lastNested? : boolean , isGroupShown? : boolean) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
     onCancel: () => void;

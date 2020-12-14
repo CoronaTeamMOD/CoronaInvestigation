@@ -610,7 +610,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNested : boolean) => {
+    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNested? : boolean , isGroupShown? :boolean) => {
         let classNames = [];
 
         classNames.push(classes.font);
@@ -624,28 +624,31 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
+        if (isGroupShown) {
+            classNames.push(classes.openedTableCell);
+            classNames.push(classes.nestedTableCell);
+        }
 
-        if(!isLastNested) {
+        if(isLastNested === undefined) {
             const currentRow = rows[rowIndex];
             const nextRow = rows[rowIndex + 1];
 
             const isNotLastRow = (rows.length - 1 !== rowIndex);
             const hasATestDate = Boolean(currentRow?.coronaTestDate);
-            const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ? nextRow.coronaTestDate : "9999/12/31" ));
-            const isLastOfGroup = Boolean(nextRow) && currentRow.groupId !== null ? 
-                                    currentRow?.groupId !== nextRow?.groupId :
-                                    false ;
-
-            console.log(currentRow.epidemiologyNumber , currentRow.groupId)
+            const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
+                                 nextRow.coronaTestDate :
+                                 "9999/12/31" ));
 
             if ((isDefaultOrder && !isLoading) &&
                 isNotLastRow &&
                 hasATestDate &&
-                (isLastOfGroup || isLastOfDate)) {
+                isLastOfDate && !isGroupShown) {
                 classNames.push(classes.rowBorder)
             }
-        } else {
+        } else if(isLastNested) {
             classNames.push(classes.rowBorder)
+        } else {
+            classNames.push(classes.nestedTableCell);
         }
 
         return classNames;

@@ -613,11 +613,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 }
                             </TableRow>
                         </TableHead>
-                        {console.log(`--------`)}
                         <TableBody>
                             {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
+                                const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
+
                                 return (
                                     <>
                                         <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
@@ -630,7 +631,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
                                                         padding='none'
-                                                        className={getTableCellStyles(index, key , false).join(' ')}
+                                                        className={getTableCellStyles(index, key , undefined , isGroupShown).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
                                                         {
@@ -643,7 +644,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
                                                 const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).length!;
-                                                
+                                                console.log(index === currentGroupedInvestigationsLength - 1);
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 console.log(indexedGroupedInvestigationRow.epidemiologyNumber);
