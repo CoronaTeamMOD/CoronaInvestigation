@@ -39,7 +39,9 @@ export interface useInvestigationTableOutcome {
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
-    getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
+    getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
+    changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: { id: number, value: County } | null) => Promise<void>;
+    getTableCellStyles: (rowIndex: number, cellKey: string , nested : boolean) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
     onCancel: () => void;

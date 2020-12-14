@@ -610,7 +610,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getTableCellStyles = (rowIndex: number, cellKey: string) => {
+    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNested : boolean) => {
         let classNames = [];
 
         classNames.push(classes.font);
@@ -625,22 +625,26 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.priorityTableCell);
         }
 
-        const currentRow = rows[rowIndex];
-        const nextRow = rows[rowIndex + 1];
+        if(!isLastNested) {
+            const currentRow = rows[rowIndex];
+            const nextRow = rows[rowIndex + 1];
 
-        const isNotLastRow = (rows.length - 1 !== rowIndex);
-        const hasATestDate = Boolean(currentRow?.coronaTestDate);
-        const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ? nextRow.coronaTestDate : "9999/12/31" ));
-        const isLastOfGroup = Boolean(nextRow) ? 
-                                currentRow?.groupId !== nextRow?.groupId :
-                                false ;
+            const isNotLastRow = (rows.length - 1 !== rowIndex);
+            const hasATestDate = Boolean(currentRow?.coronaTestDate);
+            const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ? nextRow.coronaTestDate : "9999/12/31" ));
+            const isLastOfGroup = Boolean(nextRow) && currentRow.groupId !== null ? 
+                                    currentRow?.groupId !== nextRow?.groupId :
+                                    false ;
 
-        console.log(currentRow.epidemiologyNumber);
+            console.log(currentRow.epidemiologyNumber , currentRow.groupId)
 
-        if ((isDefaultOrder && !isLoading) &&
-            isNotLastRow &&
-            hasATestDate &&
-            isLastOfDate) {
+            if ((isDefaultOrder && !isLoading) &&
+                isNotLastRow &&
+                hasATestDate &&
+                (isLastOfGroup || isLastOfDate)) {
+                classNames.push(classes.rowBorder)
+            }
+        } else {
             classNames.push(classes.rowBorder)
         }
 
