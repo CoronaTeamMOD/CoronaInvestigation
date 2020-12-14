@@ -203,11 +203,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
-        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
+        const wasInvestigationFetchedByGroup = Boolean(indexedRow.groupId) && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.color:
                 return (
-                    indexedRow.canFetchGroup ?
+                    Boolean(indexedRow.groupId) ?
                         <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}
@@ -740,6 +740,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 }
                             </TableRow>
                         </TableHead>
+                        {console.log(`--------`)}
                         <TableBody>
                             {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
@@ -756,7 +757,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
                                                         padding='none'
-                                                        className={getTableCellStyles(index, key).join(' ')}
+                                                        className={getTableCellStyles(index, key , false).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
                                                         {
@@ -768,8 +769,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         </TableRow>
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
+                                                const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).length!;
+                                                
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
+                                                console.log(indexedGroupedInvestigationRow.epidemiologyNumber);
                                                 return (
                                                     <TableRow selected={isRowSelected(indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                         key={indexedGroupedInvestigationRow.epidemiologyNumber} classes={{ selected: classes.checkedRow }}
@@ -780,7 +784,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                 <TableCell
                                                                     classes={{ root: classes.tableCellRoot }}
-                                                                    className={getTableCellStyles(index, key).join(' ')}
+                                                                    className={getTableCellStyles(index, key , index === currentGroupedInvestigationsLength - 1).join(' ')}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
                                                                     {
