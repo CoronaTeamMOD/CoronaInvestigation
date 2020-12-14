@@ -52,6 +52,12 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     rowBorder: {
         borderBottom: '3px solid rgb(222, 218, 218)'
     },
+    openedTableCell: {
+        borderTop: '3px solid rgb(222, 218, 218)'
+    },
+    nestedTableCell: {
+        borderBottom: 'none'
+    },
     font: {
         color: '#424242',
         whiteSpace: 'nowrap',
