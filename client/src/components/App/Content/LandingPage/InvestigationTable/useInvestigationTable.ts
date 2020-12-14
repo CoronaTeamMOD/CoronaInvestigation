@@ -279,7 +279,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
-                    fetchInvestigationsLogger.info('got respond from the server', Severity.LOW);
+                    fetchInvestigationsLogger.info('got response from the server', Severity.LOW);
 
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
@@ -658,10 +658,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         } else if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
+
+        const currentRow = rows[rowIndex];
+        const nextRow = rows[rowIndex + 1];
+
+        const isNotLastRow = (rows.length - 1 !== rowIndex);
+        const hasATestDate = Boolean(currentRow?.coronaTestDate);
+        const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ? nextRow.coronaTestDate : "9999/12/31" ));
+        const isLastOfGroup = Boolean(nextRow) ? 
+                                currentRow?.groupId !== nextRow?.groupId :
+                                false ;
+
+        console.log(currentRow.epidemiologyNumber);
+
         if ((isDefaultOrder && !isLoading) &&
-            (rows.length - 1 !== rowIndex) &&
-            rows[rowIndex]?.coronaTestDate &&
-            (getFormattedDate(rows[rowIndex]?.coronaTestDate) !== getFormattedDate(rows[rowIndex + 1]?.coronaTestDate))) {
+            isNotLastRow &&
+            hasATestDate &&
+            isLastOfDate) {
             classNames.push(classes.rowBorder)
         }
 
