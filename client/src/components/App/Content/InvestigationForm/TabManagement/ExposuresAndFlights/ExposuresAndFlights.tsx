@@ -171,7 +171,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
         <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
           <div className={classes.subForm}>
             <FormTitle title='חשיפה אפשרית' />
-
             <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
               <Toggle
                 value={wereConfirmedExposures}
