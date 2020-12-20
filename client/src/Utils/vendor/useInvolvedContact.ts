@@ -7,7 +7,7 @@ const useInvolvedContact = () => {
     
     const isInvolved = (involvementReason: number | null | undefined) => involvementReason;
     const isInvolvedThroughFamily = (involvementReason: number | null) => involvementReason === InvolvementReason.FAMILY;
-    const shouldDisableDeleteContact = (isContactComplete: boolean, contact: Contact) => isContactComplete || (contact.creationTime && shouldDisableContact(contact.creationTime)) as boolean;
+    const shouldDisableDeleteContact = (isContactComplete: boolean, contact: Contact) => isContactComplete || (contact.creationTime && shouldDisableContact(contact.creationTime));
 
     return {
         isInvolved,
