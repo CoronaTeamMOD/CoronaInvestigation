@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
@@ -14,12 +14,7 @@ import LandingPage from './LandingPage/defaultLandingPage/LandingPage';
 import adminLandingPage from './LandingPage/adminLandingPage/adminLandingPage';
 
 const Content: React.FC<Props> = ({ isSignUpOpen, handleSaveUser, handleCloseSignUp }): JSX.Element => {
-
     const userType = useSelector<StoreStateType, number>(state => state.user.data.userType);
-
-    useEffect(() => {
-        console.log(userType)
-    }, [userType])
 
     return (
         <>

@@ -122,6 +122,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
+    // use for admin landing page
     const fetchAllDesksByCountyId = () => {
         const desksByCountyIdLogger = logger.setup({
             workflow: 'Getting Desks by county id',

@@ -113,6 +113,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
             timer: 1750,
             showConfirmButton: false
         });
+        //לעבור לעמוד נחיתה אדמינים אם אדמין
         timeout(LandingPageTimer).then(() => history.push(landingPageRoute));
     };
 

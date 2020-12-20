@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import React, { useMemo, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import React, { useMemo, useState, useRef } from 'react';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, ArrowForward } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -20,6 +20,8 @@ import Investigator from 'models/Investigator';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import InvestigatorOption from 'models/InvestigatorOption';
+import { adminLandingPageRoute } from 'Utils/Routes/Routes';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
@@ -27,7 +29,6 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
@@ -37,8 +38,8 @@ import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTa
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -54,6 +55,7 @@ const complexInvestigationMessage = 'חקירה מורכבת';
 const noPriorityMessage = 'חסר תעדוף';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
+const returnToAdminLandingPage = 'חזרה לדף הנחיתה';
 
 const defaultInvestigator = {
     id: '',
@@ -604,7 +606,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2}></Grid>
+                <Grid item xs={2}>
+                    <Tooltip title={returnToAdminLandingPage}>
+                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
+                            <ArrowForward/>
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
                 <Grid item xs={8}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
