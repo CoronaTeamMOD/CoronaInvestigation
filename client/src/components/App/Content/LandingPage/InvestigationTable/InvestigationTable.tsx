@@ -39,6 +39,7 @@ import InvestigationNumberColumn from './InvestigationNumberColumn/Investigation
 import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
+import DeskFilter from './DeskFilter/DeskFilter';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -611,28 +612,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={2} >
-                    <Card className={classes.filterByDeskCard}>
-                        <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
-                        <Autocomplete
-                            disableCloseOnSelect
-                            multiple
-                            options={allDesks}
-                            value={allDesks.filter(desk => filterByDesks.includes(desk.id))}
-                            getOptionLabel={(option) => option.deskName}
-                            onChange={onSelectedDesksChange}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                />
-                            }
-                            renderTags={(tags: Desk[]) => {
-                                const additionalTagsAmount = tags.length - 1;
-                                const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                return tags[0].deskName + additionalDisplay;
-                            }}
-                            classes={{ inputRoot: classes.autocompleteInput }}
-                        />
-                    </Card>
+                    <DeskFilter desks={allDesks} filteredDesks={filterByDesks} onDeskChange={onSelectedDesksChange} />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>

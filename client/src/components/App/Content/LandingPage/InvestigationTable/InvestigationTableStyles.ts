@@ -57,15 +57,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         whiteSpace: 'nowrap',
         fontSize: '0.9rem'
     },
-    filterByDeskCard: {
-        padding: '1vh 1vw',
-        width: '13vw',
-        borderRadius: 15,
-        left: 0
-    },
-    deskFilterTitle: {
-        fontSize: '1.2vw',
-    },
     tableHeaderRow: {
         width: tableWidth,
         alignItems: 'center',
