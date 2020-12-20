@@ -3,10 +3,11 @@ import { format } from 'date-fns';
 import { KeyboardArrowDown, KeyboardArrowLeft } from '@material-ui/icons';
 import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 
+import useFormStyles from 'styles/formStyles';
 import DayOfWeek from 'models/enums/DayOfWeek';
+import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import PrimaryButton from 'commons/Buttons/PrimaryButton/PrimaryButton';
-import useFormStyles from 'styles/formStyles';
 
 import useStyles from './ContactDateCardStyles';
 import InteractionCard from './InteractionCard/InteractionCard';
@@ -17,6 +18,10 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
         onEditClick, onDeleteClick, loadInteractions, loadInvolvedContacts, onDeleteContactClick, allInteractions } = props;
 
     const [areInteractionsOpen, setAreInteractionsOpen] = React.useState<boolean>(false);
+
+    const { isInvolvedThroughFamily } = useInvolvedContact();
+
+    const areThereFamilyContacts = (interaction: Interaction) => interaction.contacts.some(contact => isInvolvedThroughFamily(contact.involvedContact?.involvementReason || null))
 
     const classes = useStyles();
     const formClasses = useFormStyles();
@@ -58,7 +63,7 @@ const ContactDateCard: React.FC<Props> = (props: Props) => {
                         loadInvolvedContacts={loadInvolvedContacts}
                         onEditClick={() => onEditClick(interaction)}
                         onDeleteContactClick={onDeleteContactClick}
-                        onDeleteClick={() => interaction.id && onDeleteClick(interaction.id)}
+                        onDeleteClick={() => interaction.id && onDeleteClick(interaction.id, areThereFamilyContacts(interaction))}
                         key={interaction.id ? interaction.id : interaction.startTime.getTime()} interaction={interaction} />
                 )}
             </Collapse>
@@ -72,10 +77,10 @@ interface Props {
     interactions: Interaction[] | undefined;
     createNewInteractionEvent: () => void;
     onEditClick: (interaction: Interaction) => void;
-    onDeleteClick: (contactEventId: number) => void;
+    onDeleteClick: (contactEventId: number, areThereFamilyContacts: boolean) => void;
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
-    onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
+    onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
 };
 
 export default ContactDateCard;
