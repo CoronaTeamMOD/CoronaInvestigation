@@ -7,9 +7,18 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
             :
             {};
     },
-    [InvestigationsFilterByFields.DESK_ID]: (values: number[]) => {
-        return values.length > 0 ?
-            { deskId: { in: values } }
+    [InvestigationsFilterByFields.DESK_ID]: (deskIds: number[]) => {
+        if (deskIds.includes(-1)) {
+            return {
+                or: [
+                    { deskId: { in: deskIds.filter(deskId => deskId !== -1) } },
+                    { deskId: { isNull: true } }
+                ]
+            }
+        }
+
+        return deskIds.length > 0 ?
+            { deskId: { in: deskIds } }
             :
             {};
     },

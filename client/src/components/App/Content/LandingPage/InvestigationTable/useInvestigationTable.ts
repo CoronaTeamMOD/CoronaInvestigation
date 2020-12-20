@@ -148,7 +148,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);
-        updateFilterHistory('desksFilter', desksIds);
+        updateFilterHistory('deskFilter', desksIds);
         setDeskFilter(desksIds);
         setCurrentPage(defaultPage);
     };
@@ -181,7 +181,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
-                    setAllDesks(result.data);
+                    setAllDesks([{ id: -1, deskName: 'לא שוייך לדסק' }, ...result.data]);
                 } else {
                     desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
@@ -568,7 +568,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: {id: number, value: County} | null) => {
+    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
         const changeCountyLogger = logger.setupVerbose({
             workflow: 'Change Investigation County',
             user: user.id,
@@ -620,7 +620,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => {
-        const changeDeskLogger= logger.setup('Change Investigation Desk');
+        const changeDeskLogger = logger.setup('Change Investigation Desk');
         const joinedGroupIds = groupIds.join(', ');
         changeDeskLogger.info(`performing desk change request for group ${joinedGroupIds}`, Severity.LOW);
         try {
