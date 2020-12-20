@@ -1,12 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Button, Typography } from '@material-ui/core';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
-import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
@@ -30,9 +28,6 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
     const [data, setData] = React.useState<ParsedExcelRow[] | undefined>();
     
     const buttonRef = React.useRef<HTMLInputElement>(null);
-    
-    const epidemiologyNumber = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     
     const existingContacts : Contact[] = allInteractions
     .flatMap(interaction => interaction.contacts
@@ -58,11 +53,7 @@ const ContactUploader = ({ contactEvent, onSave, allInteractions }: ExcelUploade
 
     const saveDataInFile = (contacts?: ParsedExcelRow[]) => {
         if(contacts && contacts.length > 0) {
-            const dataInFileLogger = logger.setup({
-                workflow: 'Saving Contacted People Excel',
-                user: userId,
-                investigation: epidemiologyNumber,
-            })
+            const dataInFileLogger = logger.setup('Saving Contacted People Excel')
             dataInFileLogger.info('launching saving contacted people excel request', Severity.LOW);
 
             const validationErrors = contacts.reduce<string[]>((aggregatedArr, contact) => {

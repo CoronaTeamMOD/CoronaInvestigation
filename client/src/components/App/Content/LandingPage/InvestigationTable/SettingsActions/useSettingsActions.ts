@@ -29,7 +29,7 @@ const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsAction
             })
             .then(result => {
                 if (result.value) {
-                    const groupIdsToDisbandLogger = logger.setup({
+                    const groupIdsToDisbandLogger = logger.setupVerbose({
                         workflow: `disband group ids ${groupId}`,
                         user: userId
                     });
@@ -59,11 +59,11 @@ const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsAction
             })
             .then(result => {
                 if (result.value) {
-                    const excludeInvestigationFromGroupLogger = logger.setup({
-                            workflow: `exclude investigation ${epidemiologyNumber} from group`,
-                            user: userId,
-                            investigation: epidemiologyNumber
-                        });
+                    const excludeInvestigationFromGroupLogger = logger.setupVerbose({
+                        workflow: `exclude investigation ${epidemiologyNumber} from group`,
+                        user: userId,
+                        investigation: epidemiologyNumber
+                    });
                     excludeInvestigationFromGroupLogger.info('launching exclude investigation request', Severity.LOW);
                     setIsLoading(true);
                     axios.post('/groupedInvestigations/exclude', { investigationToExclude: epidemiologyNumber })

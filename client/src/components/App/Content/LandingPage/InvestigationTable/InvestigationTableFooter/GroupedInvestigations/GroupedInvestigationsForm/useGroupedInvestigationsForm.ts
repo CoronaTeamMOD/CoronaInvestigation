@@ -1,9 +1,7 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger'
 import { Severity } from 'models/Logger';
-import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 export interface Reason {
@@ -15,15 +13,8 @@ const useGroupedInvestigationsForm = ({ setReasons }: useGroupedInvestigationsFo
 
     const { alertError } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
     const fetchReasons = () => {
-        const reasonsLogger = logger.setup({
-            workflow: 'Fetching reasons for grouped investigations',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const reasonsLogger = logger.setup('Fetching reasons for grouped investigations');
         reasonsLogger.info('launching reasons request', Severity.LOW);
         axios.get('/groupedInvestigations/reasons')
             .then((result: any) => {

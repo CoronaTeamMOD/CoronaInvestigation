@@ -1,7 +1,5 @@
 import React from 'react';
 import logger from 'logger/logger';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 import { Tooltip } from '@material-ui/core';
 import { Info, LockOpen } from '@material-ui/icons';
 
@@ -22,7 +20,6 @@ const InvestigationStatusColumn = (props: Props) => {
             (InvestigationMainStatusCodes.CANT_COMPLETE && investigationSubStatus) ||
             (investigationStatus.id === InvestigationMainStatusCodes.IN_PROCESS && statusReason))
         , [investigationStatus])
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { alertError } = useCustomSwal();
 
@@ -30,11 +27,7 @@ const InvestigationStatusColumn = (props: Props) => {
 
     const onIconClicked = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         event.stopPropagation();
-        const iconLogger = logger.setup({
-            workflow: 'Ending Investigation',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const iconLogger = logger.setup('Ending Investigation');
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
             investigationSubStatus: null,

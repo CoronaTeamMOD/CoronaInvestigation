@@ -57,7 +57,6 @@ const ExposureForm = (props: any) => {
   const [optionalCovidPatients, setOptionalCovidPatients] = useState<CovidPatient[]>([]);
 
   const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-  const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
   const selectedExposureSourceDisplay = (exposureSource: CovidPatient): string => {
     const fields: string[] = [];
@@ -86,11 +85,7 @@ const ExposureForm = (props: any) => {
   useEffect(() => {
     if (exposureAndFlightsData.exposureSource || exposureSourceSearch.length < minSourceSearchLengthToSearch) setOptionalCovidPatients([]);
     else {
-      const confirmedExposuresLogger = logger.setup({
-        workflow: 'Fetching list of confirmed exposures',
-        investigation: epidemiologyNumber,
-        user: userId
-      });
+      const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
       setIsLoading(true);
       confirmedExposuresLogger.info(`launching request with parameters ${exposureSourceSearch} and ${validationDate}`, Severity.LOW);
       axios.get(`/exposure/optionalExposureSources/${exposureSourceSearch}/${validationDate}`)

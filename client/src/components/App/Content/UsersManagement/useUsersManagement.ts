@@ -55,11 +55,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     const fetchUsers = () => {
-        const fetchUsersLogger = logger.setup({
-            workflow: 'Fetching users',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const fetchUsersLogger = logger.setup('Fetching users');
         fetchUsersLogger.info('launching users request', Severity.LOW);
         const fetchUsersRoute = getUsersRoute(); 
         if (fetchUsersRoute !== '') {
@@ -92,11 +88,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     const fetchSourcesOrganization = () => {
-        const fetchSourcesOrganizationLogger = logger.setup({
-            workflow: 'Fetching sourcesOrganization',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const fetchSourcesOrganizationLogger = logger.setup('Fetching sourcesOrganization');
         fetchSourcesOrganizationLogger.info('launching sourcesOrganization request', Severity.LOW);
         axios.get('/users/sourcesOrganization')
             .then(result => {
@@ -112,11 +104,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     const fetchCounties = () => {
-        const fetchCountiesLogger = logger.setup({
-            workflow: 'Fetching counties',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const fetchCountiesLogger = logger.setup('Fetching counties');
         fetchCountiesLogger.info('launching counties request', Severity.LOW);
         axios.get('/counties')
             .then(result => {
@@ -132,11 +120,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     };
 
     const fetchUserTypes = () => {
-        const fetchUserTypesLogger = logger.setup({
-            workflow: 'Fetching userTypes',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const fetchUserTypesLogger = logger.setup('Fetching userTypes');
         fetchUserTypesLogger.info('launching userTypes request', Severity.LOW);
         axios.get('/users/userTypes')
             .then(result => {
@@ -153,11 +137,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     }
 
     const fetchLanguages = () => {
-        const fetchLanguagesLogger = logger.setup({
-            workflow: 'Fetching languages',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const fetchLanguagesLogger = logger.setup('Fetching languages');
         fetchLanguagesLogger.info('launching languages request', Severity.LOW);
         axios.get('/users/languages')
             .then(result => {
