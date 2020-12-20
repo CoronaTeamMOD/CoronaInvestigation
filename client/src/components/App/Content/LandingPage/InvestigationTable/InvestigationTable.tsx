@@ -427,8 +427,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     investigationStatus={investigationStatus}
                     investigationSubStatus={indexedRow.investigationSubStatus}
                     statusReason={indexedRow.statusReason}
-                    epidemiologyNumber={epidemiologyNumber}
-                    moveToTheInvestigationForm={moveToTheInvestigationForm}
                 />;
             case TableHeadersNames.multipleCheck:
                 const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
@@ -466,12 +464,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.settings:
                 return <SettingsActions
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
+                    investigationStatus={indexedRow.investigationStatus}
                     groupId={indexedRow.groupId}
                     allGroupedInvestigations={allGroupedInvestigations}
                     checkGroupedInvestigationOpen={checkGroupedInvestigationOpen}
                     fetchTableData={fetchTableData}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                />
+                    moveToTheInvestigationForm={moveToTheInvestigationForm}
+                /> 
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
