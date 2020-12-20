@@ -155,7 +155,13 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     popover: {
         width: 250,
         padding: theme.spacing(1)
-    }
+    },
+    tableRowTooltip: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginRight: 110,
+        flip: false
+    },
 }))();
 
 export default useStyles;

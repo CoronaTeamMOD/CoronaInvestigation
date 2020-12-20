@@ -67,7 +67,9 @@ export const createRowData = (
     otherReason: string,
     reasonId: number,
     subOccupation: string,
-    parentOccupation: string
+    parentOccupation: string,
+    creationDate: Date,
+    startTime: Date,
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -93,7 +95,9 @@ export const createRowData = (
     otherReason,
     reasonId,
     subOccupation,
-    parentOccupation
+    parentOccupation,
+    creationDate,
+    startTime,
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -404,7 +408,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     otherReason,
                                     reasonId,
                                     subOccupation,
-                                    parentOccupation
+                                    parentOccupation,
+                                    investigation.creationDate,
+                                    investigation.startTime,
                                 )
                             });
                         investigationRows
@@ -665,9 +671,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.columnBorder);
         }
         else
-            if (cellKey === TableHeadersNames.priority) {
-                classNames.push(classes.priorityTableCell);
-            }
+        if (cellKey === TableHeadersNames.priority) {
+            classNames.push(classes.priorityTableCell);
+        }
 
         return classNames;
     }
@@ -779,8 +785,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             otherReason,
                             reasonId,
                             subOccupation,
-                            parentOccupation
-
+                            parentOccupation,
+                            investigation.creationDate,
+                            investigation.startTime,
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
