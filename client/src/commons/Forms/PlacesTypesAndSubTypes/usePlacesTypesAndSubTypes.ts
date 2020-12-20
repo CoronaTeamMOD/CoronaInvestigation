@@ -1,6 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import StoreStateType from 'redux/storeStateType';
 
 import axios from 'Utils/axios';
 import logger from 'logger/logger';
@@ -10,17 +8,11 @@ import { usePlacesTypesAndSubTypesIncome } from './usePlacesTypesAndSubTypesInte
 
 
 const usePlacesTypesAndSubTypes = (parameters: usePlacesTypesAndSubTypesIncome) => {
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { setPlacesSubTypesByTypes } = parameters;
 
     const getPlacesSubTypesByTypes = () => {
-        const getPlacesSubTypesByTypesLogger = logger.setup({
-            workflow: 'Fetching Places And Sub Types By Types',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const getPlacesSubTypesByTypesLogger = logger.setup('Fetching Places And Sub Types By Types');
         getPlacesSubTypesByTypesLogger.info('launching places and sub types by types request', Severity.LOW);
         axios.get('/intersections/getPlacesSubTypesByTypes').then(
             result => {

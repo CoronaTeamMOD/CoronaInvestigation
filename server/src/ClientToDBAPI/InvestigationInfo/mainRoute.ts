@@ -11,7 +11,8 @@ import {
     UPDATE_INVESTIGATION_END_TIME,
     COMMENT,
     UPDATE_INVESTIGAION_SETTINGS_FAMILY_DATA,
-    UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA
+    UPDATE_INVESTIGATED_PATIENT_RESORTS_DATA,
+    CLOSE_ISOLATED_CONTACT
 } from '../../DBService/InvestigationInfo/Mutation';
 import { GET_INVESTIGATED_PATIENT_RESORTS_DATA } from '../../DBService/InvestigationInfo/Query';
 import InvestigationMainStatusCodes from '../../Models/InvestigationStatus/InvestigationMainStatusCodes';
@@ -101,6 +102,7 @@ investigationInfo.post('/comment', (request: Request, response: Response) => {
 investigationInfo.post('/updateInvestigationStatus', (request: Request, response: Response) => {
     const { investigationMainStatus, investigationSubStatus, statusReason, epidemiologyNumber } = request.body;
     const currentWorkflow = investigationMainStatus === InvestigationMainStatusCodes.DONE ? 'Ending Investigation' : 'Investigation click';
+
     const updateInvestigationStatusLogger = logger.setup({
         workflow: currentWorkflow,
         user: response.locals.user.id,
@@ -110,33 +112,44 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
         epidemiologyNumber,
         status: investigationMainStatus
     })}`, Severity.LOW);
+
     graphqlRequest(UPDATE_INVESTIGATION_STATUS, response.locals, {
         epidemiologyNumber,
         investigationStatus: investigationMainStatus,
         investigationSubStatus: investigationSubStatus,
         statusReason: statusReason
-    })
-        .then((result: any) => {
+    }).then((result: any) => {
             if (result?.data && !result.errors) {
                 updateInvestigationStatusLogger.info('the investigation status was updated successfully', Severity.LOW);
+
                 if (investigationMainStatus === InvestigationMainStatusCodes.DONE) {
-                            const investigationEndTime = new Date();
-                            updateInvestigationStatusLogger.info(`launching graphql API request to update end time with parameters: ${JSON.stringify({
-                                epidemiologyNumber,
-                                investigationEndTime
-                            })}`, Severity.LOW);
-                            graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
-                                epidemiologyNumber,
-                                investigationEndTime
-                            })
-                                .then(() => {
-                                    updateInvestigationStatusLogger.info('got respond from the DB in the request to update end time', Severity.LOW);
-                                    response.send({ message: 'updated the investigation status and end time successfully' });
-                                }).catch(err => {
-                                    updateInvestigationStatusLogger.error(`failed to update the investigation end time due to: ${err}`, Severity.HIGH);
-                                    response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
-                                });
-                       
+                    updateInvestigationStatusLogger.info(`Trying to close all isloated contactes which are not closed yet with parameters:
+                        ${JSON.stringify(epidemiologyNumber)}`, Severity.LOW);
+                    graphqlRequest(CLOSE_ISOLATED_CONTACT, response.locals, {epiNumber: epidemiologyNumber}).then(() => {
+                        updateInvestigationStatusLogger.info(`Closed succesfully all isloated contactes which were not closed yet with parameters:
+                            ${JSON.stringify(epidemiologyNumber)}`, Severity.LOW);
+
+                        const investigationEndTime = new Date();
+    
+                        updateInvestigationStatusLogger.info(`launching graphql API request to update end time with parameters: ${JSON.stringify({
+                            epidemiologyNumber,
+                            investigationEndTime
+                        })}`, Severity.LOW);
+
+                        graphqlRequest(UPDATE_INVESTIGATION_END_TIME, response.locals, {
+                            epidemiologyNumber,
+                            investigationEndTime
+                        }).then(() => {
+                            updateInvestigationStatusLogger.info('got respond from the DB in the request to update end time', Severity.LOW);
+                            response.send({ message: 'updated the investigation status and end time successfully' });
+                        }).catch(err => {
+                            updateInvestigationStatusLogger.error(`failed to update the investigation end time due to: ${err}`, Severity.HIGH);
+                            response.status(errorStatusCode).json({ message: 'failed to update the investigation end time' });
+                        });
+                    })
+                    .catch((err)=> {
+                        updateInvestigationStatusLogger.error(`failed to close all isloated contactes which are not closed yet, because: ${err}`, Severity.HIGH);
+                    })     
                 } else {
                     response.send({ message: 'updated the investigation status successfully' });
                 }
@@ -144,11 +157,11 @@ investigationInfo.post('/updateInvestigationStatus', (request: Request, response
                 updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${JSON.stringify(result)}`, Severity.HIGH);
                 response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
             }
-        })
-        .catch(err => {
-            updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${err}`, Severity.HIGH);
-            response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
-        });
+    })
+    .catch(err => {
+        updateInvestigationStatusLogger.error(`failed to update investigation status due to: ${err}`, Severity.HIGH);
+        response.status(errorStatusCode).json({ message: 'failed to update investigation status' });
+    });
 });
 
 investigationInfo.post('/updateInvestigationStartTime', (request: Request, response: Response) => {

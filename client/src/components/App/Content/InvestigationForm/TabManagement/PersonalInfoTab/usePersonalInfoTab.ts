@@ -22,7 +22,6 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
 
     const { alertError } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>((state) => state.investigation.investigationStatus);
@@ -36,43 +35,27 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     const fetchPersonalInfo = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
         trigger: (payload?: string | string[]) => Promise<boolean>
     ) => {
-        const occupationsLogger = logger.setup({
-            workflow: 'Fetching Occupations',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const occupationsLogger = logger.setup('Fetching Occupations');
         occupationsLogger.info('launching occupations request', Severity.LOW);
         axios.get('/personalDetails/occupations').then((res: any) => {
             occupationsLogger.info('got results back from the server', Severity.LOW);
             occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName);
         });
-        const hmosLogger = logger.setup({
-            workflow: 'Fetching HMOs',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const hmosLogger = logger.setup('Fetching HMOs');
         hmosLogger.info('launching HMOs request', Severity.LOW);
         axios.get('/personalDetails/hmos').then((res: any) => {
             hmosLogger.info('got results back from the server', Severity.LOW);
             res && res.data && res.data.data && setInsuranceCompanies(res.data.data.allHmos.nodes.map((node: any) => node.displayName));
         });
 
-        const investigatedPatientRolesLogger = logger.setup({
-            workflow: 'Fetching investigated patient roles',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const investigatedPatientRolesLogger = logger.setup('Fetching investigated patient roles');
         investigatedPatientRolesLogger.info('launching investigated patient roles request', Severity.LOW);
         axios.get('/personalDetails/investigatedPatientRoles').then((res: any) => {
             investigatedPatientRolesLogger.info('got results back from the server', Severity.LOW);
             setInvestigatedPatientRoles(res?.data);
         });
 
-        const personalDetailsLogger = logger.setup({
-            workflow: 'Fetching Personal Details',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const personalDetailsLogger = logger.setup('Fetching Personal Details');
         personalDetailsLogger.info('launching personal data request', Severity.LOW);
         setIsLoading(true);
         axios.get('/personalDetails/investigatedPatientPersonalInfoFields?epidemioligyNumber=' + epidemiologyNumber).then((res: any) => {
@@ -141,11 +124,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     }
 
     const getSubOccupations = (parentOccupation: string) => {
-        const subOccupationsLogger = logger.setup({
-            workflow: 'Fetching Sub Occupation by Parent Occupation',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const subOccupationsLogger = logger.setup('Fetching Sub Occupation by Parent Occupation');
         subOccupationsLogger.info(`launching sub occupations request with parameter: ${parentOccupation}`, Severity.LOW);
         axios.get('/personalDetails/subOccupations?parentOccupation=' + parentOccupation).then((res: any) => {
             if (res && res.data && res.data.data) {
@@ -163,11 +142,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     }
 
     const getEducationSubOccupations = (city: string) => {
-        const educationSubOccupationsLogger = logger.setup({
-            workflow: 'Fetching Education Sub Occupation by City',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const educationSubOccupationsLogger = logger.setup('Fetching Education Sub Occupation by City');
         educationSubOccupationsLogger.info(`launching education sub occupations request with parameter: ${city}`, Severity.LOW);
         axios.get('/personalDetails/educationSubOccupations?city=' + city).then((res: any) => {
             if (res && res.data && res.data.data) {
@@ -186,11 +161,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     }
 
     const getStreetsByCity = (cityId: string) => {
-        const streetsByCityLogger = logger.setup({
-            workflow: 'Getting streets of city',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const streetsByCityLogger = logger.setup('Getting streets of city');
         streetsByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW);
         axios.get('/addressDetails/city/' + cityId + '/streets').then((res: any) => {
             if (res && res.data) {
@@ -208,11 +179,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     }
 
     const savePersonalData = (personalInfoData: PersonalInfoDbData, data: { [x: string]: any }, id: number) => {
-        const savePersonalDataLogger = logger.setup({
-            workflow: 'Saving personal details tab',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const savePersonalDataLogger = logger.setup('Saving personal details tab');
         savePersonalDataLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
         axios.post('/personalDetails/updatePersonalDetails',

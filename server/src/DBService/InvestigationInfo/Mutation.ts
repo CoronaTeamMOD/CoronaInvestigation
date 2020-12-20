@@ -47,3 +47,13 @@ mutation investigationSettingsFamilyData ($allowUncontactedFamily: Boolean!, $id
   }
 }
 `;
+
+export const CLOSE_ISOLATED_CONTACT = gql`
+mutation closeIsolateContacts ($epiNumber: Int!) {
+  closeIsolateContacts(input: {epiNumber: $epiNumber}) {
+    clientMutationId
+  }
+}
+`;
+
+

@@ -17,7 +17,6 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
         const { alertError } = useCustomSwal();
 
         const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-        const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
         const saveInteractions = async (interactionsDataToSave: InteractionEventDialogData) => {
             const locationAddress = interactionsDataToSave[InteractionEventDialogFields.LOCATION_ADDRESS] ?
@@ -32,11 +31,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 }))
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
-                const updateInteractionsLogger = logger.setup({
-                    workflow: 'Update Interaction',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                })
+                const updateInteractionsLogger = logger.setup('Update Interaction')
                 updateInteractionsLogger.info('launching update interaction request', Severity.LOW);
                 axios.post('/intersections/updateContactEvent', parsedData)
                 .then((response) => {
@@ -53,11 +48,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                     }
                 )
             } else {
-                const createInteractionsLogger = logger.setup({
-                    workflow: 'Create Interaction',
-                    user: userId,
-                    investigation: epidemiologyNumber
-                });
+                const createInteractionsLogger = logger.setup('Create Interaction');
                 createInteractionsLogger.info('launching create interaction request', Severity.LOW);
                 axios.post('/intersections/createContactEvent', parsedData).then((response) => {
                     if (response.data?.data?.updateContactEventFunction) {

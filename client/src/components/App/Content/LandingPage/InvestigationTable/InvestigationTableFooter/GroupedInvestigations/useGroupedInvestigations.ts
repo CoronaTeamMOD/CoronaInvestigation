@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger'
 import { Severity } from 'models/Logger';
-import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal'
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
@@ -39,9 +37,6 @@ export const toUniqueGroupsWithNonGroupedInvestigations =
 
 const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableData, fetchInvestigationsByGroupId }: useGroupedInvestigationsIncome): useGroupedInvestigationsOutcome => {
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-
     const { alertError } = useCustomSwal();
 
     const onSubmit = (data: GroupForm) => {
@@ -56,11 +51,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
         if (trimmedGroup.uniqueGroupIds.length === 1 && trimmedGroup.epidemiologyNumbers.length > 0) {
             const group = trimmedGroup.uniqueGroupIds[0];
             const invetigationsToGroup = trimmedGroup.epidemiologyNumbers
-            const groupToUpdateLogger = logger.setup({
-                workflow: 'update grouped investigations',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            const groupToUpdateLogger = logger.setup('update grouped investigations');
             groupToUpdateLogger.info('launching grouped investigations request', Severity.LOW);
             setIsLoading(true);
             axios.post('/groupedInvestigations', { group, invetigationsToGroup })
@@ -83,11 +74,7 @@ const useGroupedInvestigations = ({ invetigationsToGroup, onClose, fetchTableDat
                 otherReason: data.otherReason
             };
             const invetigationsToGroup = trimmedGroup.epidemiologyNumbers
-            const groupToCreateLogger = logger.setup({
-                workflow: 'create grouped investigations',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            const groupToCreateLogger = logger.setup('create grouped investigations');
             groupToCreateLogger.info('launching grouped investigations request', Severity.LOW);
             setIsLoading(true);
             axios.post('/groupedInvestigations', { group, invetigationsToGroup })

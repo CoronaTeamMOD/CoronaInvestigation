@@ -41,11 +41,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     const [areThereContacts, setAreThereContacts] = useState<boolean>(false);
 
     const initializeTabShow = () => {
-        const tabShowLogger = logger.setup({
-            workflow: 'Getting Amount Of Contacts',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const tabShowLogger = logger.setup('Getting Amount Of Contacts');
         tabShowLogger.info('launching amount of contacts request', Severity.LOW);
         axios.get('/contactedPeople/amountOfContacts/' + epidemiologyNumber).then((result: any) => {
             tabShowLogger.info('amount of contacts request was successful', Severity.LOW);
@@ -57,11 +53,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
 
     const fetchCities = () => {
         if (cities && cities.size === 0) {
-            const cityLogger = logger.setup({
-                workflow: 'Fetching Cities',
-                user: userId,
-                investigation: epidemiologyNumber
-            });
+            const cityLogger = logger.setup('Fetching Cities');
             cityLogger.info('launching cities request', Severity.LOW);
             axios.get('/addressDetails/cities')
                 .then((result: any) => {
@@ -79,11 +71,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchContactTypes = () => {
-        const contactTypesLogger = logger.setup({
-            workflow: 'Fetching Contact Types',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const contactTypesLogger = logger.setup('Fetching Contact Types');
         contactTypesLogger.info('launching contact types request', Severity.LOW);
         axios.get('/intersections/contactTypes')
             .then((result: any) => {
@@ -100,11 +88,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }
 
     const fetchCountries = () => {
-        const countriesLogger = logger.setup({
-            workflow: 'Fetching Countries',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const countriesLogger = logger.setup('Fetching Countries');
         countriesLogger.info('launching countries request', Severity.LOW);
         axios.get('/addressDetails/countries')
             .then((result: any) => {
@@ -121,11 +105,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchSubStatusesByStatus = (parentStatus: number) => {
-        const subStatusesByStatusLogger = logger.setup({
-            workflow: 'Fetching Sub Statuses',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const subStatusesByStatusLogger = logger.setup('Fetching Sub Statuses');
         subStatusesByStatusLogger.info('launching sub statuses request', Severity.LOW);
         axios.get('/investigationInfo/subStatuses/' + parentStatus).then((result: any) => {
             subStatusesByStatusLogger.info(`recieved DB response ${JSON.stringify(result)}`, Severity.LOW);
@@ -139,11 +119,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     };
 
     const fetchStatuses = () => {
-        const statusesLogger = logger.setup({
-            workflow: 'GraphQL GET statuses request to the DB',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const statusesLogger = logger.setup('GraphQL GET statuses request to the DB');
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -179,13 +155,10 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
     }, [investigationStatus.mainStatus]);
 
     const confirmFinishInvestigation = (epidemiologyNumber: number, onCancel: () => void) => {
-        const finishInvestigationLogger= logger.setup({
-            workflow: 'Ending Investigation',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const finishInvestigationLogger= logger.setup('Ending Investigation');
         finishInvestigationLogger.info('the user has been offered the oppurtunity to finish the investigation',  Severity.LOW);
         alertWarning('האם אתה בטוח שאתה רוצה לסיים ולשמור את החקירה?', {
+            text: 'שים לב, מגעים אשר עבורם הוקם דיווח בידוד יועברו בעת סיום החקירה לסטאטוס "הושלם תחקור" ולא ניתן יהיה לערוך אותם.',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,

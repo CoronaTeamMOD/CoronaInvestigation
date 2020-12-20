@@ -39,7 +39,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
   const investigatedPatientId = useSelector<StoreStateType, number>((state) => state.investigation.investigatedPatient.investigatedPatientId);
-  const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
   const methods = useForm();
 
@@ -73,17 +72,9 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const convertDate = (dbDate: Date | null) => dbDate ? new Date(dbDate) : undefined;
 
   const fetchExposuresAndFlights = () => {
-    const fetchExposuresAndFlightsLogger = logger.setup({
-      workflow: 'Fetching Exposures And Flights',
-      investigation: investigationId,
-      user: userId
-    });
+    const fetchExposuresAndFlightsLogger = logger.setup('Fetching Exposures And Flights');
 
-    const getCoronaTestDateLogger = logger.setup({
-      workflow: 'Getting Corona Test Date',
-      investigation: investigationId,
-      user: userId
-    });
+    const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
 
     fetchExposuresAndFlightsLogger.info('launching exposures and flights request', Severity.LOW);
     axios
@@ -116,11 +107,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   }
 
   const fetchResortsData: () => Promise<ResortData> = async () => {
-    const fetchResortsDataLogger = logger.setup({
-      workflow: 'Fetching investigated patient resorts data',
-      investigation: investigationId,
-      user: userId
-    });
+    const fetchResortsDataLogger = logger.setup('Fetching investigated patient resorts data');
     fetchResortsDataLogger.info('launching investigated patient resorts request', Severity.LOW);
     const result = await axios.get('investigationInfo/resorts/' + investigatedPatientId);
     fetchResortsDataLogger.info('got investigated patient resorts response successfully', Severity.LOW);
@@ -164,11 +151,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
   const saveExposure = (event: React.ChangeEvent<{}>) => {
     event.preventDefault();
-    const saveExposureLogger = logger.setup({
-      workflow: 'Saving Exposures And Flights tab',
-      investigation: investigationId,
-      user: userId
-    });
+    const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
     saveExposureLogger.info('launching the server request', Severity.LOW);
     const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
     Promise.all(tabSavePromises)

@@ -53,7 +53,6 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
     const tabsValidations  = useSelector<StoreStateType, (boolean | null)[]>(store => store.formsValidations[epidemiologyNumber]);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const address = useSelector<StoreStateType, DBAddress>(state => state.address);
     const [coronaTestDate, setCoronaTestDate] = useState<Date | null>(null);
     const [isolationSources, setIsolationSources] = React.useState<IsolationSource[]>([]);
@@ -68,11 +67,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }, []);
 
     const getSymptoms = () => {
-        const getSymptomsLogger = logger.setup({
-            workflow: 'Fetching Symptoms',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getSymptomsLogger = logger.setup('Fetching Symptoms');
         getSymptomsLogger.info('launching symptoms request', Severity.LOW);
         axios.get('/clinicalDetails/symptoms').then(result => {
             if (result && result.data && result.data.data) {
@@ -86,11 +81,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const getCoronaTestDate = () => {
-        const fetchCoronaTestDateLogger = logger.setup({
-            workflow: 'Fetching corona test date',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const fetchCoronaTestDateLogger = logger.setup('Fetching corona test date');
         fetchCoronaTestDateLogger.info('launching corona test date post request', Severity.LOW);
         axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
             if (Boolean(res?.data)) {
@@ -105,11 +96,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }
 
     const getBackgroundDiseases = () => {
-        const getBackgroundDiseasesLogger = logger.setup({
-            workflow: 'Fetching Background Diseases',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getBackgroundDiseasesLogger = logger.setup('Fetching Background Diseases');
         getBackgroundDiseasesLogger.info('launching background diseases request', Severity.LOW);
         axios.get('/clinicalDetails/backgroundDiseases').then(result => {
             if (result?.data && result.data.data) {
@@ -128,11 +115,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }
 
     const getIsolationSources = () => {
-        const getIsolationSourcesLogger = logger.setup({
-            workflow: 'Fetching Isolation Sources',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getIsolationSourcesLogger = logger.setup('Fetching Isolation Sources');
         getIsolationSourcesLogger.info('Start isolation sources request', Severity.LOW);
         axios.get('/clinicalDetails/isolationSources').then(result => {
             if (result?.data) {
@@ -147,11 +130,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }
 
     const getStreetByCity = (cityId: string) => {
-        const getStreetByCityLogger = logger.setup({
-            workflow: 'Getting streets of city',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getStreetByCityLogger = logger.setup('Getting streets of city');
         getStreetByCityLogger.info(`launching request to server with parameter ${cityId}`, Severity.LOW);
         axios.get('/addressDetails/city/' + cityId + '/streets').then(result => {
             if (result?.data) {
@@ -172,11 +151,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
         reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
         trigger: (payload?: string | string[]) => Promise<boolean>
     ) => {
-        const fetchClinicalDetailsLogger = logger.setup({
-            workflow: 'Fetching Clinical Details',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const fetchClinicalDetailsLogger = logger.setup('Fetching Clinical Details');
         fetchClinicalDetailsLogger.info('launching clinical data request', Severity.LOW);
         setIsLoading(true);
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
@@ -235,11 +210,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     };
 
     const deleteIrrelevantContactEvents = (symptomsStartDate: Date | null, doesHaveSymptoms: boolean) => {
-        const deleteIrrelevantEventsLogger = logger.setup({
-           workflow: 'Deleting irrelevant contact events',
-           investigation: epidemiologyNumber,
-           user: userId
-        });
+        const deleteIrrelevantEventsLogger = logger.setup('Deleting irrelevant contact events');
         if(Boolean(coronaTestDate)) {
             const allDatesToInvestigate = getDatesToInvestigate(doesHaveSymptoms, symptomsStartDate, coronaTestDate);
             if(allDatesToInvestigate.length > 0) {
@@ -265,11 +236,7 @@ const useClinicalDetails = (parameters: useClinicalDetailsIncome): useClinicalDe
     }
 
     const saveClinicalDetailsToDB = (clinicalDetails: ClinicalDetailsData, validationDate: Date, id: number) => {
-        const saveClinicalDetailsLogger = logger.setup({
-            workflow: 'Saving clinical details tab',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const saveClinicalDetailsLogger = logger.setup('Saving clinical details tab');
         saveClinicalDetailsLogger.info('launching the server request', Severity.LOW);
         setIsLoading(true);
         axios.post('/clinicalDetails/saveClinicalDetails', ({
