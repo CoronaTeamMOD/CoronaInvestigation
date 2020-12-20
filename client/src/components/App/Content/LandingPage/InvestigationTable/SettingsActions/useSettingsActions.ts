@@ -8,14 +8,36 @@ import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsActionsOutcome => {
 
-    const { allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId} = props;
+    const { allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm} = props;
 
     const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { alertError, alertWarning } = useCustomSwal();
+
+    const reopenInvestigation = (epidemiologyNumber: number) => {
+        const reopenLogger = logger.setup({
+            workflow: 'Reopen Investigation',
+            user: userId,
+            investigation: epidemiologyNumber
+        });
+        axios.post('/investigationInfo/updateInvestigationStatus', {
+            investigationMainStatus: InvestigationMainStatusCodes.IN_PROCESS,
+            investigationSubStatus: null,
+            statusReason: null,
+            epidemiologyNumber
+        }).then(() => {
+            reopenLogger.info('reopen investigation and update status request was successful', Severity.LOW);
+            moveToTheInvestigationForm(epidemiologyNumber);
+        })
+            .catch((error) => {
+                reopenLogger.error(`got errors in server result while reopening investigation: ${error}`, Severity.HIGH);
+                alertError('לא ניתן לפתוח את החקירה מחדש');
+            })
+    }
 
     const excludeInvestigationFromGroup = (epidemiologyNumber: number, groupId: string) => {
         const investigationsLeftInTheGroup = allGroupedInvestigations.get(groupId)?.length;
@@ -84,7 +106,8 @@ const useSettingsActions = (props: useSettingsActionsIncome ): useSettingsAction
     }
 
     return {
-        excludeInvestigationFromGroup
+        excludeInvestigationFromGroup,
+        reopenInvestigation
     }
 }
 
@@ -93,10 +116,12 @@ interface useSettingsActionsIncome {
     setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
+    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 }
 
 interface useSettingsActionsOutcome {
     excludeInvestigationFromGroup: (epidemiologyNumber: number, groupId: string) => void;
+    reopenInvestigation: (epidemiologyNumber: number) => void;
 }
 
 export default useSettingsActions;
