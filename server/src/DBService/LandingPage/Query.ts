@@ -127,20 +127,6 @@ query GetUserById($userId: String!) {
 }
 `;
 
-export const GET_ALL_COUNTIES = gql`
-query getAllAvailableCounties {
-  allCounties {
-    nodes {
-      id
-      districtByDistrictId {
-        displayName
-      }
-      displayName
-    }
-  }
-}
-`;
-
 export const GET_ALL_INVESTIGATION_STATUS = gql`
 query allInvestigationStatuses {
   allInvestigationStatuses {
