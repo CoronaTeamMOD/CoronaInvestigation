@@ -160,16 +160,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             />
                         </Tooltip> : null
                 )
-            case TableHeadersNames.epidemiologyNumber:
-                return <InvestigationNumberColumn
-                    wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
-                    epidemiologyNumber={indexedRow.epidemiologyNumber}
-                    transferReason={indexedRow.transferReason}
-                />
+            case TableHeadersNames.rowIndicators:
+                return (
+                    <InvestigationIndicatorsColumn isComplex={indexedRow.isComplex}
+                                                   wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
+                                                   transferReason={indexedRow.transferReason}
+                    />
+                );
             case TableHeadersNames.investigatorName:
                 if (selectedRow === indexedRow.epidemiologyNumber && shouldOpenInvestigatorAllocation) {
                     return (
-                        <InvestigatorAllocationDialog 
+                        <InvestigatorAllocationDialog
                             isOpen={shouldOpenInvestigatorAllocation}
                             setIsOpen={setShouldOpenInvestigatorsAllocation}
                             investigators={getFilteredUsersOfCurrentCounty()}
@@ -180,7 +181,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     )
                 } else {
                     return (
-                        <InvestigatorAllocationCell 
+                        <InvestigatorAllocationCell
                             investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
                             epidemiologyNumber={indexedRow.epidemiologyNumber}
                             epiNumOnInvestigatorNameHover={epiNumOnInvestigatorNameHover}
@@ -239,11 +240,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                   const parentOccupation = Boolean(subOccupation) ?  tableRows[index].parentOccupation : '';
                   return    <Tooltip title={parentOccupation} placement='top'>
                                 <div>{subOccupation || '-'}</div>
-                            </Tooltip>    
+                            </Tooltip>
             case TableHeadersNames.comment:
                     return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                             defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
-                            
+
             case TableHeadersNames.phoneNumber:
                 return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
                          defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
