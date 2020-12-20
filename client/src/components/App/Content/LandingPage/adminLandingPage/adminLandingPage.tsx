@@ -21,7 +21,7 @@ const LandingPage: React.FC = (): JSX.Element => {
     return (
         <div className={classes.content}>
             <Typography><b>{'נפת ' + countyDisplayName}</b></Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={5}>
                 <Grid item xs={3}>
                     <Card className={classes.desksCard}>
                         <CardContent className={classes.desksCardContent}>
@@ -51,7 +51,7 @@ const LandingPage: React.FC = (): JSX.Element => {
                     </Card>
                 </Grid>
                 <Grid item xs={9}>
-                    <Card className={classes.timeRangeCard}>
+                    <Card className={classes.filtersCard}>
                         <CardContent className={classes.TimeRangeCardContent}>
                             <div>נתונים</div>
                         </CardContent>

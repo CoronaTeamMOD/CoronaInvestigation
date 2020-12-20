@@ -16,6 +16,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '30vh',
         borderRadius: '1vw',
     },
+    filtersCard: {
+        width: '67vw',
+        height: '30vh',
+        borderRadius: '1vw',
+    },
     timeRangeCard: {
         width: '15vw',
         height: '17vh',
@@ -23,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     unassignedCard: {
         width: '14vw',
-        height: '15vh',
+        height: '14vh',
         borderRadius: '1vw',
     },
     cardTitle: {
