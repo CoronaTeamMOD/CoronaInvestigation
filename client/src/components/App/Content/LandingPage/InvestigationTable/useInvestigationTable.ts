@@ -105,7 +105,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
-    const classes = useStyle(false)();
+    const classes = useStyle(false);
     const { alertError, alertWarning } = useCustomSwal();
     const history = useHistory<HistoryState>();
 

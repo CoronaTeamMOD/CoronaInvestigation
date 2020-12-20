@@ -85,7 +85,7 @@ export interface HistoryState {
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
-    const classes = useStyles(isScreenWide)();
+    const classes = useStyles(isScreenWide);
     const { alertWarning } = useCustomSwal();
     const theme = useTheme();
     const history = useHistory<HistoryState>();

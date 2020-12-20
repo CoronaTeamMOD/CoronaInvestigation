@@ -186,6 +186,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         width: 250,
         padding: theme.spacing(1)
     }
-}));
+}))();
 
 export default useStyles;
