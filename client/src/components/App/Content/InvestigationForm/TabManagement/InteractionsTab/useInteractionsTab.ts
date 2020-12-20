@@ -18,6 +18,11 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
 const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
+const contactDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק מגע זה?';
+const familyContactDeleteWarningText = 'שים לב שבמידה והוא רלוונטי לחקירה, תצטרך להוסיף אותו לאירוע אחר';
+const familyContactEventDeleteWarningText = 'שים לב שבמידה ומגעי המשפחה רלוונטיים לחקירה, תצטרך להוסיף אותם לאירוע אחר';
+const eventDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את האירוע?';
+const eventDeleteWarningText = 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו.';
 
 interface GroupedInvolvedGroups {
     familyMembers: InvolvedContact[];
@@ -147,8 +152,16 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         getInteractionsTabSettings();
     }, []);
 
+    const postDeleteLoading = (areFamilyContactsInvolved: boolean) => {
+        if (areFamilyContactsInvolved) {
+            loadInvolvedContacts();
+            getInteractionsTabSettings();
+        }
+        loadInteractions();
+    }
+
     useEffect(() => {
-            setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
@@ -160,11 +173,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const handleDeleteContactEvent = (contactEventId: number) => {
+    const handleDeleteContactEvent = (contactEventId: number, areThereFamilyContacts: boolean) => {
         const deletingInteractionsLogger = logger.setup('Deleting Interaction');
-        alertWarning('האם אתה בטוח שתרצה למחוק את האירוע?',
+        alertWarning(eventDeleteWarningTitle,
         {
-            text: 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו',
+            text: `${eventDeleteWarningText} ${areThereFamilyContacts ? familyContactEventDeleteWarningText : ''}`,
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -173,9 +186,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).then((result) => {
             if (result.value) {
                 deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
-                axios.delete('/intersections/deleteContactEvent', {params: {contactEventId}}).then(() => {
+                axios.delete('/intersections/deleteContactEvent', {
+                    params: {contactEventId, investigationId: epidemiologyNumber}
+                }).then(() => {
                     deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
-                    setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
+                    postDeleteLoading(areThereFamilyContacts);
                 }).catch((error) => {
                     deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(eventDeleteFailedMsg);
@@ -184,9 +199,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     }
 
-    const handleDeleteContactedPerson = (contactedPersonId: number, contactEventId: number) => {
+    const handleDeleteContactedPerson = (contactedPersonId: number, involvedContactId: number | null) => {
         const deleteContactedPersonLogger = logger.setup('Deleting Contacted Person');
-        alertWarning('האם אתה בטוח שתרצה למחוק את מגע?', {
+        const isThisFamilyContact = Boolean(involvedContactId);
+        alertWarning(contactDeleteWarningTitle, {
+            text: isThisFamilyContact ? familyContactDeleteWarningText : '',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -196,10 +213,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             if (result.value) {
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW);
                 axios.delete('/intersections/contactedPerson', {
-                    params: { contactedPersonId }
+                    params: { contactedPersonId,  involvedContactId, investigationId: epidemiologyNumber }
                 }).then(() => {
                     deleteContactedPersonLogger.info('interaction was deleted successfully', Severity.LOW);
-                    loadInteractions();
+                    postDeleteLoading(isThisFamilyContact);
                 }).catch((error) => {
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(contactDeleteFailedMsg);

@@ -32,7 +32,7 @@ const birthDateFormat = 'dd/MM/yyyy';
 
 const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
 
-    const { contact, onDeleteContactClick, eventId, isContactComplete } = props;
+    const { contact, onDeleteContactClick, isContactComplete } = props;
 
     const formClasses = useFormStyles();
     const classes = useStyles();
@@ -138,7 +138,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         disabled={shouldDisableDeleteContact(isContactComplete, contact)}
                         test-id='deleteContactLocation'
                         onClick={() => {
-                            contact.serialId && onDeleteContactClick(contact.serialId, eventId)
+                            contact.serialId && onDeleteContactClick(contact.serialId, contact.involvedContactId || null)
                         }}>
                         <Delete />
                     </IconButton>
@@ -152,7 +152,6 @@ export default ContactGrid;
 
 interface Props {
     contact: Contact;
-    onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
-    eventId: number;
+    onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
     isContactComplete: boolean;
 };
