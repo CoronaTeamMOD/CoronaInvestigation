@@ -643,7 +643,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         </TableRow>
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
-                                                const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).length!;
+                                                const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).length! - 1;
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
@@ -656,7 +656,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                 <TableCell
                                                                     classes={{ root: classes.tableCellRoot }}
-                                                                    className={getTableCellStyles(index, key , index === currentGroupedInvestigationsLength - 1).join(' ')}
+                                                                    className={getTableCellStyles(index, key , index === currentGroupedInvestigationsLength).join(' ')}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
                                                                     {
