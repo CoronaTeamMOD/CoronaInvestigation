@@ -203,11 +203,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     }
 
     const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
-        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
+        const wasInvestigationFetchedByGroup = Boolean(indexedRow.groupId) && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.color:
                 return (
-                    indexedRow.groupId ?
+                    Boolean(indexedRow.groupId) ?
                         <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
                             <div className={classes.groupColor}
                                 style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}

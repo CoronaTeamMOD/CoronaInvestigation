@@ -328,7 +328,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     reasonId
                                 )
                             });
-                        setRows(investigationRows);
                         investigationRows
                             .filter((row) => row.groupId !== null && !investigationColor.current.has(row.groupId))
                             .forEach((row) => {
@@ -340,6 +339,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const blue = getFlooredRandomNumber(minColorValue, maxColorValue);
                                 investigationColor.current.set(row.groupId, `rgb(${red}, ${green}, ${blue})`);
                             });
+                        setRows(investigationRows);
                         setIsLoading(false);
                     } else {
                         fetchInvestigationsLogger.warn('user investigation group is invalid', Severity.MEDIUM);
