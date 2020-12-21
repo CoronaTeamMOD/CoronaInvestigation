@@ -11,16 +11,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '93.5vh',
         backgroundColor: primaryBackgroundColor,
     },
-    desksCard: {
-        width: '15vw',
-        height: '30vh',
-        borderRadius: '1vw',
-    },
-    filtersCard: {
-        width: '67vw',
-        height: '30vh',
-        borderRadius: '1vw',
-    },
     timeRangeCard: {
         width: '15vw',
         height: '17vh',
@@ -33,9 +23,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     cardTitle: {
         fontSize: '0.9vw',
-    },
-    desksCardContent: {
-        height: '72%',
     },
     TimeRangeCardContent: {
         height: '52%',
