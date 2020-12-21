@@ -68,7 +68,9 @@ export const createRowData = (
     canFetchGroup: boolean,
     groupReason: string,
     otherReason: string,
-    reasonId: number
+    reasonId: number,
+    subOccupation: string,
+    parentOccupation: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -92,7 +94,9 @@ export const createRowData = (
     canFetchGroup,
     groupReason,
     otherReason,
-    reasonId
+    reasonId,
+    subOccupation,
+    parentOccupation
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -362,7 +366,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const otherReason = user ? investigation?.investigationGroupReasonByGroupId?.otherReason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                    '';
+                                    ''; 
+                                const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
+                                const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -385,7 +391,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     canFetchGroup,
                                     groupReason,
                                     otherReason,
-                                    reasonId
+                                    reasonId,
+                                    subOccupation,
+                                    parentOccupation
                                 )
                             });
                         investigationRows
@@ -501,12 +509,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.phoneNumber]: row.phoneNumber,
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
+            [TableHeadersNames.subOccupation]: row.subOccupation,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.statusReason]: row.statusReason,
-            [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
             [TableHeadersNames.comment]: row.comment,
             [TableHeadersNames.statusReason]: row.statusReason,
@@ -526,10 +534,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     }
 
-    const getCountyMapKeyByValue = (map: Map<number, County>, value: string): number => {
-        const key = Array.from(map.keys()).find(key => map.get(key)?.displayName === value);
-        return key ? key : 0;
-    }
 
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
@@ -566,57 +570,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             alertError(UPDATE_ERROR_TITLE);
         }
     };
-
-    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
-        const changeCountyLogger = logger.setupVerbose({
-            workflow: 'Change Investigation County',
-            user: user.id,
-            investigation: +indexedRow.epidemiologyNumber
-        });
-        changeCountyLogger.info(`alerted to change the county of investigation ${indexedRow.epidemiologyNumber} from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty?.value)}`, Severity.LOW);
-        const result: SweetAlertResult<any> = await alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty?.value.displayName}</b>?</p>`, {
-            showCancelButton: true,
-            cancelButtonText: 'לא',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
-        });
-        if (result.isConfirmed) {
-            changeCountyLogger.info(`confirmed changing county in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-            if (indexedRow.groupId) {
-                changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
-                try {
-                    axios.post('/users/changeGroupCounty', {
-                        groupIds: [indexedRow.groupId],
-                        county: newSelectedCounty?.id,
-                    });
-                    changeCountyLogger.info(`changed the county successfully for group ${indexedRow.groupId}`, Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeCountyLogger.error(`couldn't change the county for group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            } else {
-                changeCountyLogger.info('performing county change request', Severity.LOW);
-                try {
-                    axios.post('/users/changeCounty', {
-                        epidemiologyNumber: indexedRow.epidemiologyNumber,
-                        updatedCounty: newSelectedCounty?.id,
-                    });
-                    changeCountyLogger.info('changed the county successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeCountyLogger.error(`couldn't change the county due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            }
-        } else if (result.isDismissed) {
-            changeCountyLogger.info('dismissed changing the county', Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
-        }
-    }
 
     const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => {
         const changeDeskLogger = logger.setup('Change Investigation Desk');
@@ -666,7 +619,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
-        } else if (cellKey === TableHeadersNames.priority) {
+        } 
+        else 
+        if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
         if ((isDefaultOrder && !isLoading) &&
@@ -715,6 +670,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                             investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                             '';
+                        const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
+                        const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
+
                         return createRowData(
                             investigation.epidemiologyNumber,
                             investigation.coronaTestDate,
@@ -737,7 +695,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             canFetchGroup,
                             groupReason,
                             otherReason,
-                            reasonId
+                            reasonId,
+                            subOccupation,
+                            parentOccupation
+                            
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
@@ -763,8 +724,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         getTableCellStyles,
         sortInvestigationTable,
         getUserMapKeyByValue,
-        getCountyMapKeyByValue,
-        changeCounty,
         onCancel,
         onOk,
         snackbarOpen,

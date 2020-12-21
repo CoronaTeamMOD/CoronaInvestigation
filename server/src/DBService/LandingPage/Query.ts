@@ -17,6 +17,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        subOccupationBySubOccupation{
+          displayName
+          parentOccupation
+        }
         covidPatientByCovidPatient {
           birthDate
           fullName
@@ -69,6 +73,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        subOccupationBySubOccupation{
+          displayName
+          parentOccupation
+        }
         covidPatientByCovidPatient {
           birthDate
           fullName

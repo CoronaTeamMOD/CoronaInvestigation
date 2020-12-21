@@ -26,6 +26,8 @@ interface InvestigationTableRow {
     groupReason: string;
     otherReason: string;
     reasonId: number;
+    subOccupation: string;
+    parentOccupation:string;
 };
 
 export default InvestigationTableRow;
