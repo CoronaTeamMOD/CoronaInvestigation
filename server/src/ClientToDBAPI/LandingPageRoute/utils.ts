@@ -19,6 +19,10 @@ interface UserInvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                subOccupationBySubOccupation: {
+                    displayName: string;
+                    parentOccupation: string;
+                  }
                 covidPatientByCovidPatient: {
                     birthDate: Date;
                     fullName: string;
@@ -64,6 +68,10 @@ interface GroupIvestigations {
                 deskName: string;
             } | null;
             investigatedPatientByInvestigatedPatientId: {
+                subOccupationBySubOccupation: {
+                    displayName: string;
+                    parentOccupation: string;
+                  }
                 covidPatientByCovidPatient: {
                     birthDate: Date;
                     fullName: string;

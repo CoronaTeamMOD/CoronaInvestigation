@@ -114,8 +114,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const investigationColor = useRef<Map<string, string>>(new Map())
 
     const {
-        onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
-        sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
+        onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow,
+        sortInvestigationTable, getUserMapKeyByValue, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
@@ -137,13 +137,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.stopPropagation();
                 setInvestigatorAutoCompleteClicked(true);
                 setCountyAutoCompleteClicked(false);
-                setDeskAutoCompleteClicked(false);
-                break;
-            }
-            case TableHeadersNames.county: {
-                event.stopPropagation();
-                setCountyAutoCompleteClicked(true);
-                setInvestigatorAutoCompleteClicked(false);
                 setDeskAutoCompleteClicked(false);
                 break;
             }
@@ -181,8 +174,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             });
     }
 
-    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
-        const wasInvestigationFetchedByGroup = Boolean(indexedRow.groupId) && !indexedRow.canFetchGroup;
+    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }, index:number) => {
+        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.color:
                 return (
@@ -298,38 +291,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </div>
                     )
                 }
-            case TableHeadersNames.county:
-                if (selectedRow === indexedRow.epidemiologyNumber && countyAutoCompleteClicked) {
-                    return (
-                        <Autocomplete
-                            options={Array.from(allCounties, ([id, value]) => ({ id, value }))}
-                            getOptionLabel={(option) => option.value.displayName}
-                            inputValue={currCounty.displayName}
-                            onChange={(event, newSelectedCounty) => {
-                                if (event?.type !== 'blur') {
-                                    changeCounty(indexedRow, newSelectedCounty);
-                                }
-                            }}
-                            onInputChange={(event, selectedCounty) => {
-                                if (event?.type !== 'blur') {
-                                    const updatedCounty: County = {
-                                        id: getCountyMapKeyByValue(allCounties, selectedCounty),
-                                        displayName: selectedCounty
-                                    }
-                                    setCurrCounty(updatedCounty);
-                                }
-                            }}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    placeholder='נפה'
-                                />
-                            }
-                        />)
-                }
-                else {
-                    return indexedRow[cellName as keyof typeof TableHeadersNames]
-                }
             case TableHeadersNames.investigationDesk:
                 if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
@@ -376,26 +337,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames];
                     return deskValue ? deskValue : unassignedToDesk
                 }
-            case TableHeadersNames.priority:
-                let cssClass = '';
-                if (indexedRow.isComplex) {
-                    cssClass = classes.priorityWithComplex
-                } else {
-                    if (isScreenWide) {
-                        cssClass = classes.priorityWithoutComplex;
-                    } else {
-                        cssClass = classes.priorityWithoutComplexSmall;
-                    }
-                }
-
-                return (
-                    <div className={classes.priorityCell}>
-                        {indexedRow.isComplex && <ComplexityIcon tooltipText={complexInvestigationMessage} />}
-                        <span className={cssClass}>
-                            {indexedRow[cellName as keyof typeof TableHeadersNames] || noPriorityMessage}
-                        </span>
-                    </div>
-                );
+              case TableHeadersNames.subOccupation:
+                  const subOccupation = indexedRow[cellName as keyof typeof TableHeadersNames];
+                  const parentOccupation = Boolean(subOccupation) ?  tableRows[index].parentOccupation : '';
+                  return    <Tooltip title={parentOccupation} placement='top'>
+                                <div>{subOccupation || '-'}</div>
+                            </Tooltip>    
             case TableHeadersNames.comment:
                 return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
                     scrollableRef={tableContainerRef.current} />
@@ -686,7 +633,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
                                                         {
-                                                            getTableCell(key, indexedRow)
+                                                            getTableCell(key, indexedRow, index)
                                                         }
                                                     </TableCell>
                                                 ))
@@ -710,7 +657,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
                                                                     {
-                                                                        getTableCell(key, indexedGroupedInvestigationRow)
+                                                                        getTableCell(key, indexedGroupedInvestigationRow, index)
                                                                     }
                                                                 </TableCell>
                                                             ))
