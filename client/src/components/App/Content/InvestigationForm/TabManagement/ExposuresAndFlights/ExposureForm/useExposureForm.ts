@@ -15,7 +15,6 @@ export const displayPatientFields: CovidPatientFields = {
     age: 'גיל',
     address: 'כתובת',
 }
-  
 
 const minFullNameLengthToSearch = 2;
 const minNumbersLengthToSearch = 4;
@@ -24,9 +23,7 @@ const phoneAndIdentityNumberRegex = /^([\da-zA-Z]+)$/;
 const useExposureForm = (props : Props) => {
     const { alertError } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
     const validationDate = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const {exposureAndFlightsData , exposureSourceSearchString} = props;
 
@@ -41,13 +38,8 @@ const useExposureForm = (props : Props) => {
             exposureSourceSearchString.length < minSourceSearchLengthToSearch
         ) {
             return [];
-            //setOptionalCovidPatients([]); 
         } else {
-            const confirmedExposuresLogger = logger.setup({
-                workflow: "Fetching list of confirmed exposures",
-                investigation: epidemiologyNumber,
-                user: userId,
-            });
+            const confirmedExposuresLogger = logger.setup('Fetching list of confirmed exposures');
             setIsLoading(true);
             confirmedExposuresLogger.info(
                 `launching request with parameters ${exposureSourceSearchString} and ${validationDate}`,
@@ -69,7 +61,6 @@ const useExposureForm = (props : Props) => {
                             Severity.LOW
                         );
                         return result.data;
-                        // setOptionalCovidPatients(result.data); 
                     } else {
                         confirmedExposuresLogger.warn(
                             "got status 200 but wrong data",
