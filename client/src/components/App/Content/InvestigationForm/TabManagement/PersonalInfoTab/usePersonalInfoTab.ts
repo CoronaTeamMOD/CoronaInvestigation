@@ -11,6 +11,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 import { PersonalInfoDbData } from 'models/Contexts/PersonalInfoContextData';
+import { setOccupations } from 'redux/Occupations/occupationsActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setInvestigatedPatientId } from 'redux/Investigation/investigationActionCreators';
 import useComplexitySwal from 'commons/InvestigationComplexity/ComplexityUtils/ComplexitySwal';
@@ -29,7 +30,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
     const { complexityErrorAlert } = useComplexitySwal();
 
     const { setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setInvestigatedPatientRoles,
-        setCityName, setStreetName, setStreets, occupationsStateContext, setInsuranceCompany,
+        setCityName, setStreetName, setStreets, setInsuranceCompany,
     } = parameters;
 
     const fetchPersonalInfo = (reset: (values?: Record<string, any>, omitResetState?: Record<string, boolean>) => void,
@@ -39,7 +40,7 @@ const usePersonalInfoTab = (parameters: usePersonalInfoTabParameters): usePerson
         occupationsLogger.info('launching occupations request', Severity.LOW);
         axios.get('/personalDetails/occupations').then((res: any) => {
             occupationsLogger.info('got results back from the server', Severity.LOW);
-            occupationsStateContext.occupations = res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName);
+            setOccupations(res?.data?.data?.allOccupations?.nodes?.map((node: any) => node.displayName));
         });
         const hmosLogger = logger.setup('Fetching HMOs');
         hmosLogger.info('launching HMOs request', Severity.LOW);

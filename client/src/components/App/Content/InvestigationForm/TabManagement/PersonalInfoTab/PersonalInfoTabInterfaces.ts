@@ -1,11 +1,9 @@
 import Street from 'models/Street';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
-import { OccupationsContext } from 'commons/Contexts/OccupationsContext';
 import { PersonalInfoDbData, PersonalInfoFormData } from 'models/Contexts/PersonalInfoContextData';
 
 export interface usePersonalInfoTabParameters {
-    occupationsStateContext: OccupationsContext;
     setInsuranceCompanies: React.Dispatch<React.SetStateAction<string[]>>;
     setPersonalInfoData: React.Dispatch<React.SetStateAction<PersonalInfoFormData>>;
     setSubOccupations: React.Dispatch<React.SetStateAction<SubOccupationAndStreet[]>>;

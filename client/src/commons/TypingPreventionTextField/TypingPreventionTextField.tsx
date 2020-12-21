@@ -10,7 +10,7 @@ import TypePreventiveTextFieldType from './TypingPreventionTextFieldTypes';
 const TypePreventiveTextField: TypePreventiveTextFieldType = (props) => {
     const {  testId, name, onChange,  validationSchema,  label,...textFieldProps } = props;
     const { errors, setError, clearErrors } = useFormContext(); 
-    
+
     const value = !props.value ? '' : props.value;
     
     const conditionalyTriggerOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
