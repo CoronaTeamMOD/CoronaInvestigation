@@ -201,18 +201,18 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
 
     const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
-        const setUpdateActivityStatusLogger = logger.setup('GraphQL request to the DB');
-        setUpdateActivityStatusLogger.info('started is user active updating', Severity.LOW);
+        const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
+        setUpdateActivityStatusLogger.info('send request to server for updating user activity status', Severity.LOW);
         return axios.post('users/updateIsUserActiveById', {
             isActive,
             userId
         }).then((result) => {
             if(result.data)
                 fetchUsers();
-                setUpdateActivityStatusLogger.info('updated is user active successfully', Severity.LOW);
+                setUpdateActivityStatusLogger.info('updated user activity status successfully', Severity.LOW);
         }).catch((error) => {
             alertError('לא הצלחנו לעדכן את הסטטוס שלך');
-            setUpdateActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH);
+            setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
         });
     }
 
