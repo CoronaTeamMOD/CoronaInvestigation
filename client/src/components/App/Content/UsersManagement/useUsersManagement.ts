@@ -200,6 +200,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
 
+    const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
+        const setUpdateActivityStatusLogger = logger.setup('GraphQL request to the DB');
+        setUpdateActivityStatusLogger.info('started is user active updating', Severity.LOW);
+        return axios.post('users/updateIsUserActiveById', {
+            isActive,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateActivityStatusLogger.info('updated is user active successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את הסטטוס שלך');
+            setUpdateActivityStatusLogger.error(`error in updating is user active ${error}`, Severity.HIGH);
+        });
+    }
+
     return {
         users,
         counties,
@@ -211,7 +227,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         isBadgeInVisible,
         watchUserInfo,
         handleCloseDialog,
-        handleFilterChange
+        handleFilterChange,
+        setUserActivityStatus
     }
 }
 
@@ -234,6 +251,7 @@ interface useUsersManagementOutCome {
     watchUserInfo: (row: any) => void;
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
+    setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
 }
 
 export default useUsersManagement;

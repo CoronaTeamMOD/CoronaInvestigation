@@ -7,7 +7,7 @@ import { useTheme } from '@material-ui/core';
 
 const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JSX.Element => {
     const classes = useStyles();
-    const {value, setUserActivityStatus, ...rest} = props;
+    const {value, onToggle, ...rest} = props;
     const theme = useTheme();
 
     const activeButtonStyle = {
@@ -24,13 +24,13 @@ const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JS
         <ToggleButtonGroup {...rest} ref={ref} value={value} exclusive size='small' className={classes.isActiveToggle}>
             <ToggleButton className={classes.toggle}
                           style={value ? activeButtonStyle : {}}
-                          onClick={()=> value === false && setUserActivityStatus(true)}
+                          onClick={()=> value === false && onToggle(true)}
                           value={value}>
                 פעיל
             </ToggleButton>
             <ToggleButton className={classes.toggle}
                           style={!value ? notActiveButtonStyle : {}}
-                          onClick={()=> value === true && setUserActivityStatus(false)}
+                          onClick={()=> value === true && onToggle(false)}
                           value={value}>
                 לא פעיל
             </ToggleButton>
@@ -39,6 +39,6 @@ const IsActiveToggle: React.FC<Props> = React.forwardRef((props: Props, ref): JS
 });
 
 interface Props extends ToggleButtonGroupProps {
-    setUserActivityStatus: (isActive: boolean) => void;
+    onToggle: (isActive: boolean) => void;
 }
 export default IsActiveToggle;

@@ -42,11 +42,11 @@ usersRoute.get('/userActivityStatus', (request: Request, response: Response) => 
         })
 })
 
-usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
+const updateIsUserActive = (response: Response, id: string, isActive: Boolean) => {
     const updateIsActiveStatusVariables = {
-        id: response.locals.user.id,
-        isActive: request.body.isActive
-    }
+        id,
+        isActive
+    };
     const updateIsUserActiveLogger = logger.setup({
         workflow: 'Updating user activity status',
         user: response.locals.user.id,
@@ -67,6 +67,14 @@ usersRoute.post('/updateIsUserActive', (request: Request, response: Response) =>
             updateIsUserActiveLogger.error(`failed to get response from the graphql API due to: ${error}`, Severity.HIGH);
             response.status(RESPONSE_ERROR_CODE).send('Error while trying to activate / deactivate user')
         })
+}
+
+usersRoute.post('/updateIsUserActive', (request: Request, response: Response) => {
+    updateIsUserActive(response, response.locals.user.id, request.body.isActive);
+})
+
+usersRoute.post('/updateIsUserActiveById', adminMiddleWare, (request: Request, response: Response) => {
+    updateIsUserActive(response, request.body.userId, request.body.isActive);
 })
 
 usersRoute.get('/user', (request: Request, response: Response) => {

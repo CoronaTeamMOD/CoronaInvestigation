@@ -39,7 +39,7 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
     const { users, counties, sourcesOrganization, userTypes, languages,
-        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange } =
+        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus } =
         useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -65,7 +65,7 @@ const UsersManagement: React.FC = () => {
                 return (
                     <IsActiveToggle
                         value={row[cellName]}
-                        setUserActivityStatus={(isActive: boolean) => console.log(isActive)}
+                        onToggle={(isActive) => setUserActivityStatus(isActive, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     />
                 )
             }
