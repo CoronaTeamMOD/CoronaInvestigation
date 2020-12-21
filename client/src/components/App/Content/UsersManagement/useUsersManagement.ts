@@ -211,7 +211,7 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
                 fetchUsers();
                 setUpdateActivityStatusLogger.info('updated user activity status successfully', Severity.LOW);
         }).catch((error) => {
-            alertError('לא הצלחנו לעדכן את הסטטוס שלך');
+            alertError('לא הצלחנו לעדכן את סטטוס הפעילות של המשתמש');
             setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
         });
     }
