@@ -156,7 +156,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeSearchQuery = (newSearchQuery: string) => {
         if (stringAlphanum.isValidSync(newSearchQuery)) {
             setSearchQuery(newSearchQuery);
-
             if(!isSearchQueryValid) {
                 setIsSearchQueryValid(true);
             }
