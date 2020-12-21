@@ -12,7 +12,7 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
         <>
             <Button
                 {...rest}
-                style={{ color: 'white', height: '8vh', width: '7vw', borderRadius: '0.5vw' }}
+                style={{ color: 'white', height: '9vh', width: '7vw', borderRadius: '0.8vw' }}
                 variant='contained'
                 size='large'
             >

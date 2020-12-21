@@ -607,12 +607,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
                 <Grid item xs={2}>
-                    {/* {show only if admin} */}
-                    <Tooltip title={returnToAdminLandingPage}>
-                        <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
-                            <ArrowForward/>
-                        </IconButton>
-                    </Tooltip>
+                    {
+                        (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) &&
+                        <Tooltip title={returnToAdminLandingPage}>
+                            <IconButton color='primary' onClick={() => history.push(adminLandingPageRoute)}>
+                                <ArrowForward />
+                            </IconButton>
+                        </Tooltip>
+                    }
                 </Grid>
                 <Grid item xs={8}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
