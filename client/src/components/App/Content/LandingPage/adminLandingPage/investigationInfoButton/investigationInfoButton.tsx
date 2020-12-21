@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonProps } from '@material-ui/core';
+import { Button, ButtonProps, Typography } from '@material-ui/core';
 
 import useStyles from './investigationInfoButtonStyles';
 
@@ -12,11 +12,14 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
         <>
             <Button
                 {...rest}
-                style={{ color: 'white', height: '9vh', width: '7vw', borderRadius: '0.8vw' }}
+                style={{ color: 'white', height: '10vh', width: '8vw', borderRadius: '0.8vw'}}
                 variant='contained'
                 size='large'
             >
-                {amountOfInvestigations + ' ' + text}
+                <div>
+                    <Typography className={classes.text}><b>{amountOfInvestigations}</b></Typography>
+                    <Typography className={classes.text}><b>{text}</b></Typography>
+                </div>
             </Button>
         </>
     )

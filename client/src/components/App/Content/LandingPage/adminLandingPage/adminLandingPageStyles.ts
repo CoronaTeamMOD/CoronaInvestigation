@@ -11,6 +11,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '93.5vh',
         backgroundColor: primaryBackgroundColor,
     },
+    countyDisplayName: {
+        fontSize: '1.5vw',
+    },
+    gridContainer: {
+        paddingTop: '3vh',
+    },
     timeRangeCard: {
         width: '15vw',
         height: '17vh',

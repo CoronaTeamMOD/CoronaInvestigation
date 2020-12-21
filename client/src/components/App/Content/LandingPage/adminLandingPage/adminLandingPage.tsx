@@ -16,8 +16,10 @@ const LandingPage: React.FC = (): JSX.Element => {
 
     return (
         <div className={classes.content}>
-            <Typography><b>{'נפת ' + countyDisplayName}</b></Typography>
-            <Grid container spacing={5}>
+            <Typography color='textPrimary' className={classes.countyDisplayName}>
+                <b>{'נפת ' + countyDisplayName}</b>
+            </Typography>
+            <Grid container spacing={5} className={classes.gridContainer}>
                 <Grid item xs={3}>
                     <DesksFilterCard/>
                 </Grid>

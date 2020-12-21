@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Card, CardActions, CardContent, Grid } from '@material-ui/core';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import { Card, CardActions, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
 
@@ -14,11 +15,10 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
 
     return (
         <Card className={classes.filtersCard}>
-            <CardContent>
-                <div>נתונים</div>
-            </CardContent>
             <CardActions>
                 <Grid container>
+                    <Grid item xs={3}>
+                    </Grid>
                     <Grid item xs={2}>
                         <InvestigationInfoButton
                             amountOfInvestigations={22}
@@ -47,13 +47,19 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                             className={classes.assignedToNotActiveButton}
                         />
                     </Grid>
-                    <Button
-                        onClick={() => {
-                            history.push(landingPageRoute)
-                            console.log('filter')
-                        }}>
-                        חקירות בסך הכל
-                    </Button>
+                    <Grid item xs={1}>
+                    </Grid>
+                    <div>
+                        <div className={classes.investigationAmount}>
+                            <Typography className={classes.investigationAmountText}><b>{102}</b></Typography>
+                        </div>
+                        <div className={classes.allInvestigations}>
+                            <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
+                            <IconButton onClick={() => history.push(landingPageRoute)}>
+                                <NavigateBeforeIcon style={{backgroundColor: 'lightGrey', borderRadius: '2vw'}} />
+                            </IconButton>
+                        </div>
+                    </div>
                 </Grid>
             </CardActions>
         </Card>
