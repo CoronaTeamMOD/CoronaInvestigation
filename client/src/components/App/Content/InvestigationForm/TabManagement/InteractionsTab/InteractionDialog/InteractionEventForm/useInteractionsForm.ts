@@ -27,7 +27,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
                 [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
                 [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave?.contacts?.map((contact: Contact) => ({
                     ...contact,
-                    id: contact.idNumber
+                    identificationType: contact.identificationNumber ? contact.identificationType : null
                 }))
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {

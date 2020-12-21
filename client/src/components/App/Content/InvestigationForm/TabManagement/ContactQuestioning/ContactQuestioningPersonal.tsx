@@ -7,12 +7,13 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import IdentificationNumberTextField from 'commons/IdentificationNumberTextField/IdentificationNumberTextField';
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -82,19 +83,27 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     <Toggle
                                         disabled={isFieldDisabled}
                                         test-id="identificationType"
-                                        value={isPassport}
-                                        firstOption="ת.ז"
-                                        secondOption="דרכון"
+                                        firstOption={{value: IdentificationTypes.ID, name: IdentificationTypes.ID}}
+                                        secondOption={{value: IdentificationTypes.PASSPORT, name: IdentificationTypes.PASSPORT}}
+                                        value={interactedContact.identificationType}
                                         onChange={(event, value) => {
                                             if (value !== null) {
-                                                setIsPassport(value);
-                                                props.onChange(
-                                                    value
-                                                        ? IdentificationTypes.PASSPORT
-                                                        : IdentificationTypes.ID
-                                                );
+                                                updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, value);
                                             }
                                         }}
+                                        // value={isPassport}
+                                        // firstOption="ת.ז"
+                                        // secondOption="דרכון"
+                                        // onChange={(event, value) => {
+                                        //     if (value !== null) {
+                                        //         setIsPassport(value);
+                                        //         props.onChange(
+                                        //             value
+                                        //                 ? IdentificationTypes.PASSPORT
+                                        //                 : IdentificationTypes.ID
+                                        //         );
+                                        //     }
+                                        // }}
                                     />
                                 );
                             }}
@@ -112,6 +121,10 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                 return (
                                     <IdentificationTextField
                                         {...props}
+                                        //value={interactedContact.identificationNumber}
+                                        // onChange={(newValue: string) =>
+                                        //     updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue || null)
+                                        // }
                                         disabled={shouldIdDisable}
                                         testId="identificationNumber"
                                         onChange={(newValue: string) => {

@@ -4,12 +4,14 @@ import {useEffect, useState} from 'react';
 import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
+import Contact from 'models/Contact';
 import {Severity} from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
 import InvolvedContact from 'models/InvolvedContact';
 import { useDateUtils } from 'Utils/DateUtils/useDateUtils';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvolvementReason from 'models/enums/InvolvementReason';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import useGoogleApiAutocomplete from 'commons/LocationInputField/useGoogleApiAutocomplete';
 

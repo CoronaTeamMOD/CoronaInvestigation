@@ -81,11 +81,7 @@ const convertDBEvent = (event: ContactEvent) => {
         }
         return {
             ...personNoData,
-            serialId: personNoData.id,
-            firstName: personByPersonInfo.firstName,
-            lastName: personByPersonInfo.lastName,
-            phoneNumber: personByPersonInfo.phoneNumber,
-            idNumber: personByPersonInfo.identificationNumber,
+            ...personByPersonInfo,
             involvedContact: convertedInvolvedContact,
         };
     });

@@ -18,12 +18,8 @@ import InteractedContact from 'models/InteractedContact';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-import useContactFields from 'Utils/vendor/useContactFields';
-import {
-    OCCUPATION_LABEL,
-    RELEVANT_OCCUPATION_LABEL,
-} from '../PersonalInfoTab/PersonalInfoTab';
-
+import useContactFields from 'Utils/Contacts/useContactFields';
+import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {
     const {control , getValues} = useFormContext();

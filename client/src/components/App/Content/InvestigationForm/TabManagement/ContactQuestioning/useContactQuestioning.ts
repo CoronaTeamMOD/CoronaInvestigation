@@ -9,7 +9,7 @@ import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
-import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 
 import {
     FormInputs,

@@ -7,7 +7,7 @@ import PlaceSubType from 'models/PlaceSubType';
 import InvolvedContact from 'models/InvolvedContact';
 import { familyMembersContext } from 'commons/Contexts/FamilyMembersContext';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
-import useDuplicateContactId, {IdToCheck} from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId, {IdToCheck} from 'Utils/Contacts/useDuplicateContactId';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
@@ -65,10 +65,11 @@ const InteractionDetailsForm = (props: Props) => {
                     firstName: familyMember.firstName,
                     lastName: familyMember.lastName,
                     phoneNumber: familyMember.phoneNumber,
-                    idNumber: familyMember.identificationNumber,
+                    identificationNumber: familyMember.identificationNumber,
                     contactType: ContactTypeKeys.CONTACT_TYPE_TIGHT,
                     involvedContactId: familyMember.id,
                     familyRelationship: familyMember.familyRelationship?.id
+                    identificationType: familyMember.identificationType
                 };
 
                 contacts.push(familyContact);
@@ -85,15 +86,15 @@ const InteractionDetailsForm = (props: Props) => {
         const interactionDataToSave = convertData(data);
         const allContactsIds: IdToCheck[] = interactions.map(interaction => interaction.contacts).flat().map((contact) => {
             return ({
-                id: contact[InteractionEventContactFields.ID],
-                serialId: contact[InteractionEventContactFields.SERIAL_ID]
+                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
+                serialId: contact[InteractionEventContactFields.ID]
             })
         });
 
         const newIds: IdToCheck[] = interactionDataToSave[InteractionEventDialogFields.CONTACTS].map((contact: Contact) => {
             return ({
-                id: contact[InteractionEventContactFields.ID],
-                serialId: contact[InteractionEventContactFields.SERIAL_ID]
+                id: contact[InteractionEventContactFields.IDENTIFICATION_NUMBER],
+                serialId: contact[InteractionEventContactFields.ID]
             })
         });
 
@@ -117,11 +118,11 @@ const InteractionDetailsForm = (props: Props) => {
             [InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]: Boolean(data[InteractionEventDialogFields.EXTERNALIZATION_APPROVAL]),
             [InteractionEventDialogFields.CONTACTS]: data[InteractionEventDialogFields.CONTACTS] ?
                 data[InteractionEventDialogFields.CONTACTS].map((contact: Contact, index: number) => {
-                    const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.SERIAL_ID}`)
+                    const serialId = methods.watch<string, number>(`${InteractionEventDialogFields.CONTACTS}[${index}].${InteractionEventContactFields.ID}`)
                     if (serialId) {
                         return {
                             ...contact,
-                            [InteractionEventContactFields.SERIAL_ID]: serialId
+                            [InteractionEventContactFields.ID]: serialId
                         }
                     } else {
                         return contact

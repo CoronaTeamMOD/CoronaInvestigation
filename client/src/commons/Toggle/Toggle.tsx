@@ -5,6 +5,9 @@ import theme from 'styles/theme';
 
 import { useStyles } from './ToggleStyles';
 
+const defaultFirstOption : Option = { name: 'לא', value:false };
+const defaultSecondOption : Option = { name: 'כן', value:true };
+
 const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
     const classes = useStyles({});
 
@@ -14,19 +17,22 @@ const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
         color: 'white'
     }
 
+    const chosenFirstOption = firstOption || defaultFirstOption;
+    const chosenSecondOption = secondOption || defaultSecondOption;
+
     return (
         <ToggleButtonGroup value={value} exclusive {...rest}>
             <ToggleButton className={classes.toggle} 
                 disabled={disabled}
-                style={value === false ? activeButtonStyle : {}}
-                value={false}>
-                {firstOption ? firstOption : 'לא'}
+                style={value === chosenFirstOption.value ? activeButtonStyle : {}}
+                value={chosenFirstOption.value}>
+                {chosenFirstOption.name}
             </ToggleButton>
             <ToggleButton className={classes.toggle}
                 disabled={disabled}
-                style={value === true ? activeButtonStyle : {}}
-                value={true}>
-                {secondOption ? secondOption : 'כן'}
+                style={value === chosenSecondOption.value ? activeButtonStyle : {}}
+                value={chosenSecondOption.value}>
+                {chosenSecondOption.name}
             </ToggleButton>
         </ToggleButtonGroup>
     );
@@ -35,7 +41,12 @@ const Toggle: React.FC<Props> = (props: Props): JSX.Element => {
 export default Toggle;
 
 interface Props extends ToggleButtonGroupProps {
-    firstOption?: string;
-    secondOption?: string;
+    firstOption?: Option;
+    secondOption?: Option;
     disabled?: boolean;
 };
+
+interface Option {
+    name: string,
+    value: any
+}
