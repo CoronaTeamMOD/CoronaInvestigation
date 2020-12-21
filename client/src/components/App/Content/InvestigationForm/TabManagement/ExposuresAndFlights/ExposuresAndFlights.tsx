@@ -13,10 +13,9 @@ import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights'
 
 import useStyles from './ExposuresAndFlightsStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
-import ExposureForm from './ExposureForm/ExposureForm';
 import { useExposuresAndFlights } from './useExposuresAndFlights'
+import PossibleExposure from './Forms/PossibleExposure'; 
 
-const addConfirmedExposureButton: string = 'הוסף חשיפה';
 const addFlightButton: string = 'הוסף טיסה לחול';
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
@@ -40,54 +39,14 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   return (
       <FormProvider {...methods}>
         <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
-          <div className={classes.subForm}>
-            <FormTitle title='חשיפה אפשרית' />
-            <FormRowWithInput testId='wasConfirmedExposure' fieldName='האם היה מגע ידוע עם חולה מאומת?'>
-              <Toggle
-                value={wereConfirmedExposures}
-                onChange={(e, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wereConfirmedExposures, value)
-                  }
-                }}
-              />
-            </FormRowWithInput>
-            <Collapse
-              in={wereConfirmedExposures}
-              className={classes.additionalInformationForm}
-            >
-              <div>
-                {
-                  exposures.map((exposure, index) =>
-                    exposure.wasConfirmedExposure &&
-                    <>
-                      <ExposureForm
-                        key={(exposure.id || '') + index.toString()}
-                        fieldsNames={fieldsNames}
-                        exposureAndFlightsData={exposure}
-                        handleChangeExposureDataAndFlightsField={
-                          (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
-                        }
-                      />
-                      <Divider />
-                    </>
-                  )
-                }
-                <IconButton
-                  test-id='addConfirmedExposure'
-                  onClick={() => onExposureAdded(true, false)}
-                  disabled={disableConfirmedExposureAddition}
-                >
-                  <AddCircle color={disableConfirmedExposureAddition ? 'disabled' : 'primary'} />
-                </IconButton>
-                <Typography
-                  variant='caption'
-                >
-                  {addConfirmedExposureButton}
-                </Typography>
-              </div>
-            </Collapse>
-          </div>
+          <PossibleExposure
+            wereConfirmedExposures={wereConfirmedExposures}
+            onExposuresStatusChange={onExposuresStatusChange}
+            exposures={exposures}
+            handleChangeExposureDataAndFlightsField={handleChangeExposureDataAndFlightsField}
+            onExposureAdded={onExposureAdded}
+            disableConfirmedExposureAddition={disableConfirmedExposureAddition}
+          />
 
           <Divider />
 
