@@ -647,8 +647,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNestedCell? : boolean , isGroupShown? :boolean) => {
-        const isNestedCell = isLastNestedCell === undefined;
-
+        const isNestedCell = isLastNestedCell !== undefined;
         let classNames = [];
 
         classNames.push(classes.font);
@@ -665,15 +664,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             if(cellNeedsABorder(rowIndex)) {
                 classNames.push(classes.rowBorder);
             }
-            if(isGroupShown){
-                    classNames.push(classes.nestedTableCell);
-                    if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
-                        classNames.push(classes.openedTableCell);
-                    }
+            if(isGroupShown) {
+                classNames.push(classes.nestedTableCell);
+                if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
+                    classNames.push(classes.openedTableCell);
+                }
             }
         } else if(isLastNestedCell) {
+            console.log(isLastNestedCell);
             classNames.push(classes.rowBorder);
         } else {
+            console.log(isLastNestedCell);
             classNames.push(classes.nestedTableCell);
         }
 
