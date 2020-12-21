@@ -16,6 +16,7 @@ export default interface StoreStateType {
     cities: Map<string, City>;
     countries: Map<string, Country>;
     contactTypes: Map<number, ContactType>;
+    occupations: string[];
     subStatuses: string[];
     statuses: InvestigationMainStatus[];
     formsValidations: { [key: number]: (boolean | null)[] };

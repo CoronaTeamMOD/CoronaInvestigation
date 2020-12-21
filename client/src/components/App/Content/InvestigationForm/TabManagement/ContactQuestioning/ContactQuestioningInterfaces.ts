@@ -1,9 +1,13 @@
-
 import { Dispatch, SetStateAction } from 'react';
 
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
 import InteractedContactFields from 'models/enums/InteractedContact';
+
+export interface FormInputs {
+    form : InteractedContact[]
+}
+
 
 export interface useContactQuestioningParameters {
     id: number;
@@ -15,12 +19,18 @@ export interface useContactQuestioningParameters {
 
 export interface useContactQuestioningOutcome {
     saveContact: (interactedContact: InteractedContact) => boolean;
-    updateInteractedContact: (interactedContact: InteractedContact, fieldToUpdate: InteractedContactFields, value: any) => void;
-    changeIdentificationType: (interactedContact: InteractedContact, booleanValue: boolean) => void;
     loadInteractedContacts: () => void;
-    saveContactQuestioning: () => void;
+    saveContactQuestioning: (formState: InteractedContact[]) => void;
     loadFamilyRelationships: () => void;
     loadContactStatuses: () => void;
-    checkForSpecificDuplicateIds: (idToCheck: string, interactedContactId: number) => boolean;
+    checkForSpecificDuplicateIds: (
+        idToCheck: string,
+        interactedContactId: number
+    ) => boolean;
     checkAllContactsForDuplicateIds: () => boolean;
+    onSubmit: (data: FormInputs) => void;
+    parsePerson: (
+        person: InteractedContact,
+        index: number
+    ) => InteractedContact;
 }

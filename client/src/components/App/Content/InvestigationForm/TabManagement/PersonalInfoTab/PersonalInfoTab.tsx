@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { yupResolver } from '@hookform/resolvers';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm, FormProvider } from 'react-hook-form';
 import { Grid, RadioGroup, FormControlLabel, Radio, TextField, FormLabel, FormControl, Collapse, Select, MenuItem, InputLabel } from '@material-ui/core';
 
@@ -13,7 +13,6 @@ import Occupations from 'models/enums/Occupations';
 import { setAddress } from 'redux/Address/AddressActionCreators';
 import SubOccupationAndStreet from 'models/SubOccupationAndStreet';
 import investigatedPatientRole from 'models/investigatedPatientRole';
-import { occupationsContext } from 'commons/Contexts/OccupationsContext';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 import { initialPersonalInfo } from 'commons/Contexts/PersonalInfoStateContext';
@@ -54,8 +53,6 @@ const defaultRole = { id: -1, displayName: '' };
 const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const classes = useStyles({});
 
-    const occupationsStateContext = useContext(occupationsContext);
-
     const [subOccupationName, setSubOccupationName] = useState<string>('');
     const [insuranceCompanies, setInsuranceCompanies] = useState<string[]>(['']);
     const [subOccupations, setSubOccupations] = useState<SubOccupationAndStreet[]>([]);
@@ -72,11 +69,12 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const [investigatedPatientRoles, setInvestigatedPatientRoles] = useState<investigatedPatientRole[]>([]);
 
     const cities = useSelector<StoreStateType, Map<string, City>>(state => state.cities);
+    const occupations = useSelector<StoreStateType , string[]>(state => state.occupations);
     const investigationId = useSelector<StoreStateType, number>((state) => state.investigation.epidemiologyNumber);
 
     const { fetchPersonalInfo, getSubOccupations, getEducationSubOccupations, getStreetsByCity, savePersonalData } = usePersonalInfoTab({
         setInsuranceCompanies, setPersonalInfoData, setSubOccupations, setSubOccupationName, setCityName, setStreetName,
-        setStreets, occupationsStateContext, setInsuranceCompany, setInvestigatedPatientRoles,
+        setStreets, setInsuranceCompany, setInvestigatedPatientRoles,
     });
 
     const methods = useForm({
@@ -508,7 +506,7 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                                 <FormLabel component='legend'
                                                     className={classes.fontSize15}><b>{OCCUPATION_LABEL}</b></FormLabel>
                                                 {
-                                                    occupationsStateContext.occupations.map((occupationOption) => {
+                                                    occupations.map((occupationOption) => {
                                                         return (
                                                             <div className={classes.occupation}>
                                                                 <FormControlLabel
