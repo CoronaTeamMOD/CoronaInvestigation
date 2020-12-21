@@ -17,16 +17,16 @@ export const CREATE_CONTACT_EVENT = gql`
 `;
 
 export const DELETE_CONTACT_EVENT = gql`
-    mutation deleteContactEvent($contactEventId: Int!) {
-        deleteContactEventById(input: {id: $contactEventId}) {
+    mutation deleteContactEvent($contactEventId: Int!, $investigationId: Int!) {
+        deleteContactEventFunction(input: {contactEventId: $contactEventId, investigationId: $investigationId}) {
             clientMutationId
         }
     }
 `;
 
 export const DELETE_CONTACTED_PERSON = gql`
-    mutation DeleteContactedPerson($contactedPersonId: Int!) {
-        deleteContactedPersonById(input: {id: $contactedPersonId}) {
+    mutation deleteContactedPerson($contactedPersonId: Int!, $investigationId: Int!, $involvedContactId: Int) {
+        deleteContactedPersonFunction(input: {contactedPersonId: $contactedPersonId, investigationId: $investigationId, involvedContactId: $involvedContactId}) {
             clientMutationId
         }
     }

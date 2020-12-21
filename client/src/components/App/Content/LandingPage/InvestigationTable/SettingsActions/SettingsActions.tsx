@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Typography, IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
-import { SvgIconComponent, MoreVert, CallSplit } from '@material-ui/icons';
+import { SvgIconComponent, MoreVert, CallSplit, LockOpen } from '@material-ui/icons';
 
 import InvestigationTableRow from 'models/InvestigationTableRow';
+import InvestigationMainStatus from 'models/InvestigationMainStatus';
+import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import useSettingsActions from './useSettingsActions'
 
@@ -17,15 +19,20 @@ interface settingsAction {
     
 const SettingsActions = (props: Props) => {
 
-    const { epidemiologyNumber, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
-            fetchTableData, fetchInvestigationsByGroupId } = props;
+    const { epidemiologyNumber, investigationStatus, groupId, allGroupedInvestigations, checkGroupedInvestigationOpen,
+            fetchTableData, fetchInvestigationsByGroupId, moveToTheInvestigationForm } = props;
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    const { excludeInvestigationFromGroup } = useSettingsActions({ allGroupedInvestigations, setAnchorEl, fetchTableData, fetchInvestigationsByGroupId });
+    const { excludeInvestigationFromGroup, reopenInvestigation } = useSettingsActions({ allGroupedInvestigations, setAnchorEl, fetchTableData, 
+                                                                    fetchInvestigationsByGroupId, moveToTheInvestigationForm });
     
     const shouldExcludeDisabled = () => {
         return !(checkGroupedInvestigationOpen.includes(epidemiologyNumber) || Boolean(allGroupedInvestigations.get(groupId)))
+    }
+
+    const shouldReopenInvestigation = () => {
+        return investigationStatus.id === InvestigationMainStatusCodes.DONE;
     }
     
     const settingsAction: settingsAction[]  = [
@@ -36,6 +43,14 @@ const SettingsActions = (props: Props) => {
             disabledMessage: shouldExcludeDisabled() ? 'לחקירה אין קבוצה או שהקבוצה אינה נפתחה': '',
             displayTitle: 'הוצא חקירה מקבוצה',
             onClick: () => excludeInvestigationFromGroup(epidemiologyNumber, groupId)
+        },
+        {
+            key: 2,
+            icon: LockOpen,
+            disabled: !shouldReopenInvestigation(),
+            disabledMessage: !shouldReopenInvestigation() ? 'החקירה עדיין לא הושלמה' : '',
+            displayTitle: 'פתיחה מחודשת',
+            onClick: () => reopenInvestigation(epidemiologyNumber)
         }
     ]
 
@@ -85,11 +100,13 @@ const SettingsActions = (props: Props) => {
 
 interface Props {
     epidemiologyNumber: number;
+    investigationStatus: InvestigationMainStatus;
     groupId: string;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     checkGroupedInvestigationOpen: number[];
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
+    moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
 }
 
 export default SettingsActions;

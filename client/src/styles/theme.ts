@@ -60,15 +60,6 @@ const theme = createMuiTheme({
                 fontSize: 16
             }
         },
-        //@ts-ignore
-        MuiAutocomplete: {
-            inputRoot: {
-                '&&[class*="MuiOutlinedInput-root"][class*="MuiOutlinedInput-marginDense"] $input': {
-                    flip: false,
-                    padding: '1px 10px 1px 10px'
-                }
-            }
-        },
         MuiSelect: {
             select: {
                 '&:focus': {

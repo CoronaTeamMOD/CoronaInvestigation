@@ -189,8 +189,11 @@ intersectionsRoute.delete('/deleteContactEvent', (request: Request, response: Re
         investigation: response.locals.epidemiologynumber
     });
     deleteContactEventLogger.info('launcing DB request', Severity.LOW);
-    const contactEventId = +request.query.contactEventId;
-    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, {contactEventId})
+    const queryVariables = {
+        contactEventId: +request.query.contactEventId,
+        investigationId: +request.query.investigationId
+    };
+    graphqlRequest(DELETE_CONTACT_EVENT, response.locals, queryVariables)
         .then(result => {
             if (result?.data && !result.errors) {
                 deleteContactEventLogger.info('got response from DB', Severity.LOW);
@@ -213,12 +216,23 @@ intersectionsRoute.delete('/contactedPerson', (request: Request, response: Respo
         user: response.locals.user.id,
         investigation: response.locals.epidemiologynumber
     });
+    const queryVariables = {
+        contactedPersonId: +request.query.contactedPersonId,
+        involvedContactId: request.query.involvedContactId ? +request.query.involvedContactId : null,
+        investigationId: +request.query.investigationId,
+    }
+    console.log(queryVariables);
     contactedPersonLogger.info('launcing DB request', Severity.LOW);
-    const contactedPersonId = +request.query.contactedPersonId;
-    graphqlRequest(DELETE_CONTACTED_PERSON, response.locals, {contactedPersonId})
+    graphqlRequest(DELETE_CONTACTED_PERSON, response.locals, queryVariables)
         .then(result => {
-            contactedPersonLogger.info('got response from DB', Severity.LOW);
-            response.send(result);
+            if (result.data && !result.errors) {
+                contactedPersonLogger.info('got response from DB', Severity.LOW);
+                response.send(result);
+            } else {
+                const errorMessage = result.errors[0]?.message;
+                contactedPersonLogger.error(`got errors approaching the graphql API ${errorMessage}`, Severity.HIGH);
+                response.status(errorStatusCode).send('error in deleting event: ' + errorMessage);    
+            }
         })
         .catch(err => {
             contactedPersonLogger.error(`got errors approaching the graphql API ${err}`, Severity.HIGH);

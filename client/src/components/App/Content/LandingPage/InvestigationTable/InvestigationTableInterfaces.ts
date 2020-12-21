@@ -10,6 +10,15 @@ import InvestigatorOption from 'models/InvestigatorOption';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
+export type StatusFilter = number[];
+export type DeskFilter = number[];
+
+export interface HistoryState {
+    filterRules?: any;
+    statusFilter?: StatusFilter;
+    deskFilter?: DeskFilter;
+}
+
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
     currentPage: number;
@@ -40,11 +49,17 @@ export interface useInvestigationTableOutcome {
     snackbarOpen: boolean;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
     totalCount: number;
-    handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => Promise<InvestigationTableRow[]>;
     changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    statusFilter: StatusFilter;
+    changeStatusFilter: (statuses: InvestigationMainStatus[]) => void;
+    deskFilter: DeskFilter;
+    changeDeskFilter: (desks: Desk[]) => void;
+    searchQuery: string;
+    changeSearchQuery: (searchQuery: string) => void;
+    isSearchQueryValid: boolean;
 };

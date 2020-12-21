@@ -42,8 +42,7 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
     
     const { shouldDisableContact } = useStatusUtils();
     
-    const areThereInvolvedContacts = interaction.contacts.some((contact: Contact) => contact.involvedContactId !== null);
-    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime) || areThereInvolvedContacts;
+    const shouldDisableDeleteInteraction = completedContacts?.length > 0 || shouldDisableContact(interaction.creationTime);
 
     return (
         <Card className={classes.container}>
@@ -144,7 +143,6 @@ const InteractionCard: React.FC<Props> = (props: Props) => {
                                     isContactComplete={isFieldDisabled(person.serialId)}
                                     contact={person}
                                     onDeleteContactClick={onDeleteContactClick}
-                                    eventId={interaction.id ? interaction.id : -1}
                                 /> 
                             </Grid>
                         ))}
@@ -162,7 +160,7 @@ interface Props {
     onDeleteClick: () => void;
     loadInteractions: () => void;
     loadInvolvedContacts: () => void;
-    onDeleteContactClick: (contactedPersonId: number, contactEventId: number) => void;
+    onDeleteContactClick: (contactedPersonId: number, involvedContactId: number | null) => void;
 };
 
 export default InteractionCard;

@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { SweetAlertResult } from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
+import Desk from 'models/Desk';
 import User from 'models/User';
 import theme from 'styles/theme';
 import County from 'models/County';
@@ -20,23 +22,24 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
+import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import { setLastOpenedEpidemiologyNum } from 'redux/Investigation/investigationActionCreators';
 import { setInvestigationStatus, setCreator } from 'redux/Investigation/investigationActionCreators';
 import { setAxiosInterceptorId } from 'redux/Investigation/investigationActionCreators';
 import InvestigatorOption from 'models/InvestigatorOption';
-import Desk from 'models/Desk';
 
 import useStyle from './InvestigationTableStyles';
-import { defaultOrderBy, rowsPerPage, defaultPage, HistoryState } from './InvestigationTable';
+import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
     IndexedInvestigation,
     IndexedInvestigationData,
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
-import { useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
-import { useHistory } from 'react-router-dom';
+import { DeskFilter, HistoryState, StatusFilter, useInvestigationTableOutcome, useInvestigationTableParameters } from './InvestigationTableInterfaces';
+import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm';
+import filterCreators from './FilterCreators';
 
 const investigationURL = '/investigation';
 const getFlooredRandomNumber = (min: number, max: number): number => (
@@ -65,7 +68,9 @@ export const createRowData = (
     canFetchGroup: boolean,
     groupReason: string,
     otherReason: string,
-    reasonId: number
+    reasonId: number,
+    subOccupation: string,
+    parentOccupation: string
 ): InvestigationTableRow => ({
     isChecked: false,
     epidemiologyNumber,
@@ -89,7 +94,9 @@ export const createRowData = (
     canFetchGroup,
     groupReason,
     otherReason,
-    reasonId
+    reasonId,
+    subOccupation,
+    parentOccupation
 });
 
 const TABLE_REFRESH_INTERVAL = 30;
@@ -105,15 +112,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations, allGroupedInvestigations,
         investigationColor } = parameters;
 
-    const classes = useStyle(false)();
+    const classes = useStyle(false);
     const { alertError, alertWarning } = useCustomSwal();
     const history = useHistory<HistoryState>();
+    const { statusFilter: historyStatusFilter = [], deskFilter: historyDeskFilter = [] } = useMemo(() => {
+        const { location: { state } } = history;
+        return state || {};
+    }, []);
 
     const [rows, setRows] = useState<InvestigationTableRow[]>([]);
     const [isDefaultOrder, setIsDefaultOrder] = useState<boolean>(true);
     const [orderBy, setOrderBy] = useState<string>(defaultOrderBy);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [unassignedInvestigationsCount, setUnassignedInvestigationsCount] = useState<number>(0);
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>(historyStatusFilter);
+    const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [isSearchQueryValid, setIsSearchQueryValid] = useState<boolean>(true);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
@@ -122,15 +137,54 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
-    const fetchAllDesksByCountyId = () => {
-        const desksByCountyIdLogger = logger.setup({
-            workflow: 'Getting Desks by county id',
+    const generateStatusFilterBySelectedStatues = (statuses: InvestigationMainStatus[]) => {
+        return statuses.includes(allStatusesOption)
+            ? [] : statuses;
+    };
+
+    const changeStatusFilter = (statuses: InvestigationMainStatus[]) => {
+        const statusesIds = generateStatusFilterBySelectedStatues(statuses).map(status => status.id);
+        updateFilterHistory('statusFilter', statusesIds);
+        setStatusFilter(statusesIds);
+        setCurrentPage(defaultPage);
+    };
+
+
+    const changeDeskFilter = (desks: Desk[]) => {
+        const desksIds = desks.map(desk => desk.id);
+        updateFilterHistory('deskFilter', desksIds);
+        setDeskFilter(desksIds);
+        setCurrentPage(defaultPage);
+    };
+
+    const changeSearchQuery = (newSearchQuery: string) => {
+        if (stringAlphanum.isValidSync(newSearchQuery)) {
+            setSearchQuery(newSearchQuery);
+            if(!isSearchQueryValid) {
+                setIsSearchQueryValid(true);
+            }
+        } else {
+            setIsSearchQueryValid(false);
+        }
+    };
+
+    const updateFilterHistory = (key: string, value: any) => {
+        const { location: { state } } = history;
+        history.replace({
+            state: {
+                ...state,
+                [key]: value
+            }
         });
+    };
+
+    const fetchAllDesksByCountyId = () => {
+        const desksByCountyIdLogger = logger.setup('Getting Desks by county id');
         axios.get('/desks/county')
             .then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     desksByCountyIdLogger.info('The desks were fetched successfully', Severity.LOW);
-                    setAllDesks(result.data);
+                    setAllDesks([{ id: -1, deskName: 'לא שוייך לדסק' }, ...result.data]);
                 } else {
                     desksByCountyIdLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);
                 }
@@ -147,9 +201,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchAllInvestigationStatuses = () => {
-        const investigationStatusesLogger = logger.setup({
-            workflow: 'GraphQL GET statuses request to the DB',
-        });
+        const investigationStatusesLogger = logger.setup('GraphQL GET statuses request to the DB');
         axios.get('/landingPage/investigationStatuses').
             then((result) => {
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
@@ -174,9 +226,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }, []);
 
     const moveToTheInvestigationForm = async (epidemiologyNumberVal: number) => {
-        const investigationClickLogger = logger.setup({
+        const investigationClickLogger = logger.setupVerbose({
             workflow: 'Investigation click',
-            investigation: epidemiologyNumberVal
+            investigation: epidemiologyNumberVal,
+            user: user.id
         });
         setLastOpenedEpidemiologyNum(epidemiologyNumberVal);
         investigationClickLogger.info(`Entered investigation: ${epidemiologyNumberVal}`, Severity.LOW);
@@ -186,16 +239,21 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
-        const getInvestigationsLogger = logger.setup({
-            workflow: 'Getting Investigations',
-            user: user.id
-        });
+        const getInvestigationsLogger = logger.setup('Getting Investigations');
+        
+        const searchQueryFilter = phoneAndIdentityNumberRegex.test(searchQuery)? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery);
+
+        const filterRules = {
+            ...filterCreators.DESK_ID(deskFilter),
+            ...filterCreators.STATUS(statusFilter),
+            ...searchQueryFilter,
+        };
 
         const requestData = {
             orderBy,
             size: rowsPerPage,
             currentPage: currentPage,
-            filterRules: history.location.state?.filterRules,
+            filterRules,
         };
 
         if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
@@ -212,10 +270,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fisrtUser.activeInvestigationsCount - secondUser.activeInvestigationsCount
 
     const fetchAllCountyUsers = () => {
-        const countyUsersLogger = logger.setup({
-            workflow: 'Getting group users',
-            user: user.id
-        });
+        const countyUsersLogger = logger.setup('Getting group users');
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
         axios.get(`/users/group`)
             .then((result: any) => {
@@ -242,9 +297,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const fetchAllCounties = () => {
-        const fetchAllCountiesLogger = logger.setup({
-            workflow: 'GraphQL request to the DB',
-        });
+        const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
         axios.get('/counties').then((result: any) => {
             const allCounties: Map<number, County> = new Map();
             result && result.data && result.data.forEach((county: any) => {
@@ -266,10 +319,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const fetchTableData = () => {
-        const fetchInvestigationsLogger = logger.setup({
-            workflow: 'Getting Investigations',
-            user: user.id
-        });
+        const fetchInvestigationsLogger = logger.setup('Getting Investigations');
         if (isLoggedIn) {
             setIsLoading(true);
             if (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) {
@@ -316,7 +366,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const otherReason = user ? investigation?.investigationGroupReasonByGroupId?.otherReason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                    '';
+                                    ''; 
+                                const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
+                                const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
                                 return createRowData(
                                     investigation.epidemiologyNumber,
                                     investigation.coronaTestDate,
@@ -339,7 +391,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     canFetchGroup,
                                     groupReason,
                                     otherReason,
-                                    reasonId
+                                    reasonId,
+                                    subOccupation,
+                                    parentOccupation
                                 )
                             });
                         investigationRows
@@ -373,43 +427,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const { startWaiting, onCancel, onOk, snackbarOpen } = usePageRefresh(fetchTableData, TABLE_REFRESH_INTERVAL);
 
-    const getGraphQLConditionsFromFilters = (conditions: any, aggFilters: any) => {
-        return Object.entries(conditions).reduce((previousValue, [filterKey, filterValue]) => {
-            if (filterValue) {
-                return {
-                    ...previousValue,
-                    [filterKey]: filterValue
-                }
-            }
-
-            delete previousValue[filterKey as any];
-            return previousValue;
-        }, aggFilters);
-    };
-
-    const handleFilterChange = (filterBy: any) => {
-        const { location: { state = {}} } = history;
-        const {filterRules= {}} = state;
-        const nextFilterRules = getGraphQLConditionsFromFilters(filterBy, { ...filterRules });
-
-        history.replace({
-            state: {
-                ...state,
-                filterRules: nextFilterRules,
-            }
-        });
-
-        setCurrentPage(defaultPage);
-    };
-
     useEffect(() => {
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, history.location.state?.filterRules]);
+    }, [isLoggedIn, currentPage, orderBy, statusFilter, deskFilter]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
-        const investigationClickLogger = logger.setup({
+        const investigationClickLogger = logger.setupVerbose({
             workflow: 'Investigation click',
             investigation: investigationRow.epidemiologyNumber,
             user: user.id
@@ -484,12 +509,12 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             [TableHeadersNames.phoneNumber]: row.phoneNumber,
             [TableHeadersNames.age]: row.age,
             [TableHeadersNames.city]: row.city,
+            [TableHeadersNames.subOccupation]: row.subOccupation,
             [TableHeadersNames.investigatorName]: row.investigator.userName,
             [investigatorIdPropertyName]: row.investigator.id,
             [TableHeadersNames.investigationStatus]: row.mainStatus,
             [TableHeadersNames.investigationSubStatus]: row.subStatus,
             [TableHeadersNames.statusReason]: row.statusReason,
-            [TableHeadersNames.county]: row.county ? row.county.displayName : '',
             [TableHeadersNames.investigationDesk]: row.investigationDesk,
             [TableHeadersNames.comment]: row.comment,
             [TableHeadersNames.statusReason]: row.statusReason,
@@ -509,16 +534,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     }
 
-    const getCountyMapKeyByValue = (map: Map<number, County>, value: string): number => {
-        const key = Array.from(map.keys()).find(key => map.get(key)?.displayName === value);
-        return key ? key : 0;
-    }
 
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
-        const changeGroupsInvestigatorLogger = logger.setup({
-            workflow: 'Change groups investigator',
-            user: user.id,
-        });
+        const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
         changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
         try {
@@ -535,7 +553,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeInvestigationsInvestigator = async (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => {
-        const changeInvestigationsInvestigatorLogger = logger.setup({
+        const changeInvestigationsInvestigatorLogger = logger.setupVerbose({
             workflow: 'Change investigations investigator',
             user: user.id,
         });
@@ -553,62 +571,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
-    const changeCounty = async (indexedRow: IndexedInvestigation, newSelectedCounty: { id: number, value: County } | null) => {
-        const changeCountyLogger = logger.setup({
-            workflow: 'Change Investigation County',
-            user: user.id,
-            investigation: +indexedRow.epidemiologyNumber
-        });
-        changeCountyLogger.info(`alerted to change the county of investigation ${indexedRow.epidemiologyNumber} from ${indexedRow.county} to ${JSON.stringify(newSelectedCounty?.value)}`, Severity.LOW);
-        const result: SweetAlertResult<any> = await alertWarning(`<p>האם אתה בטוח שאתה רוצה להחליף את נפה <b>${indexedRow.county}</b> בנפה <b>${newSelectedCounty?.value.displayName}</b>?</p>`, {
-            showCancelButton: true,
-            cancelButtonText: 'לא',
-            cancelButtonColor: theme.palette.error.main,
-            confirmButtonColor: theme.palette.primary.main,
-            confirmButtonText: 'כן, המשך'
-        });
-        if (result.isConfirmed) {
-            changeCountyLogger.info(`confirmed changing county in investigation ${indexedRow.epidemiologyNumber}`, Severity.LOW);
-            if (indexedRow.groupId) {
-                changeCountyLogger.info(`performing county change request for group ${indexedRow.groupId}`, Severity.LOW);
-                try {
-                    axios.post('/users/changeGroupCounty', {
-                        groupIds: [indexedRow.groupId],
-                        county: newSelectedCounty?.id,
-                    });
-                    changeCountyLogger.info(`changed the county successfully for group ${indexedRow.groupId}`, Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeCountyLogger.error(`couldn't change the county for group ${indexedRow.groupId} due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            } else {
-                changeCountyLogger.info('performing county change request', Severity.LOW);
-                try {
-                    axios.post('/users/changeCounty', {
-                        epidemiologyNumber: indexedRow.epidemiologyNumber,
-                        updatedCounty: newSelectedCounty?.id,
-                    });
-                    changeCountyLogger.info('changed the county successfully', Severity.LOW);
-                    setSelectedRow(UNDEFINED_ROW);
-                    fetchTableData();
-                } catch (error) {
-                    changeCountyLogger.error(`couldn't change the county due to ${error}`, Severity.HIGH);
-                    alertError(UPDATE_ERROR_TITLE);
-                }
-            }
-        } else if (result.isDismissed) {
-            changeCountyLogger.info('dismissed changing the county', Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
-        }
-    }
-
     const changeGroupsDesk = async (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => {
-        const changeDeskLogger = logger.setup({
-            workflow: 'Change Groups Desk',
-            user: user.id,
-        });
+        const changeDeskLogger = logger.setup('Change Investigation Desk');
         const joinedGroupIds = groupIds.join(', ');
         changeDeskLogger.info(`performing desk change request for group ${joinedGroupIds}`, Severity.LOW);
         try {
@@ -627,7 +591,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     };
 
     const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
-        const changeDeskLogger = logger.setup({
+        const changeDeskLogger = logger.setupVerbose({
             workflow: 'Change Groups Desk',
             user: user.id,
             investigation: epidemiologyNumbers.join(', ')
@@ -654,7 +618,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
-        } else if (cellKey === TableHeadersNames.priority) {
+        } 
+        else 
+        if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
 
@@ -712,11 +678,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const fetchInvestigationsByGroupId = async (groupId: string): Promise<InvestigationTableRow[]> => {
-        const investigationsByGroupIdLogger = logger.setup({
-            workflow: 'get investigations by group id',
-            user: user.id,
-            investigation: epidemiologyNumber
-        });
+        const investigationsByGroupIdLogger = logger.setup('get investigations by group id');
         investigationsByGroupIdLogger.info('send get investigations by group id request', Severity.LOW);
         setIsLoading(true)
         try {
@@ -745,6 +707,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                         const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                             investigation.investigationSubStatusByInvestigationSubStatus.displayName :
                             '';
+                        const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
+                        const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
+
                         return createRowData(
                             investigation.epidemiologyNumber,
                             investigation.coronaTestDate,
@@ -767,7 +732,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             canFetchGroup,
                             groupReason,
                             otherReason,
-                            reasonId
+                            reasonId,
+                            subOccupation,
+                            parentOccupation
+                            
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
@@ -794,8 +762,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         getRegularCellStyle,
         sortInvestigationTable,
         getUserMapKeyByValue,
-        getCountyMapKeyByValue,
-        changeCounty,
         onCancel,
         onOk,
         snackbarOpen,
@@ -803,11 +769,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeGroupsDesk,
         changeInvestigationsDesk,
         totalCount,
-        handleFilterChange,
         unassignedInvestigationsCount,
         fetchInvestigationsByGroupId,
         changeGroupsInvestigator,
         changeInvestigationsInvestigator,
+        statusFilter,
+        changeStatusFilter,
+        deskFilter,
+        changeDeskFilter,
+        searchQuery,
+        changeSearchQuery,
+        isSearchQueryValid
     };
 };
 

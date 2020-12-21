@@ -17,6 +17,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        subOccupationBySubOccupation{
+          displayName
+          parentOccupation
+        }
         covidPatientByCovidPatient {
           birthDate
           fullName
@@ -69,6 +73,10 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
         deskName
       }
       investigatedPatientByInvestigatedPatientId {
+        subOccupationBySubOccupation{
+          displayName
+          parentOccupation
+        }
         covidPatientByCovidPatient {
           birthDate
           fullName
@@ -123,20 +131,6 @@ query GetUserById($userId: String!) {
     serialNumber
     userName
     userType
-  }
-}
-`;
-
-export const GET_ALL_COUNTIES = gql`
-query getAllAvailableCounties {
-  allCounties {
-    nodes {
-      id
-      districtByDistrictId {
-        displayName
-      }
-      displayName
-    }
   }
 }
 `;

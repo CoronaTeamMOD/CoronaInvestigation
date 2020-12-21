@@ -2,7 +2,7 @@ import { gql } from 'postgraphile';
 
 export const GET_ALL_COUNTIES = gql`
 query allCounties {
-  allCounties {
+  allCounties(filter: {isDisplayed: {equalTo: true}}) {
     nodes {
       id
       displayName,
