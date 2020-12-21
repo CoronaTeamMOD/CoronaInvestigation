@@ -12,6 +12,7 @@ import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 
 import {
+    FormInputs,
     useContactQuestioningOutcome,
     useContactQuestioningParameters,
 } from './ContactQuestioningInterfaces';
@@ -344,12 +345,12 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
     };
 
-    const onSubmit = (data: { form: InteractedContact[] }) => {
+    const onSubmit = (data: FormInputs) => {
         const parsedFormData = parseFormBeforeSending(data);
         saveContactQuestioning(parsedFormData);
     };
 
-    const parseFormBeforeSending = (data: { form: InteractedContact[] }) => {
+    const parseFormBeforeSending = (data: FormInputs) => {
         const { form } = data;
         const mappedForm = form.map(
             (person: InteractedContact, index: number) => {

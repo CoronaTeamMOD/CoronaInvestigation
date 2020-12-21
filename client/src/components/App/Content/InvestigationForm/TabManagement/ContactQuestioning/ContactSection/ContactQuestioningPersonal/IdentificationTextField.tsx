@@ -11,7 +11,7 @@ const stringAlphabet = yup
   .matches(/^[a-zA-Z\u0590-\u05fe0-9\/\s]*$/, errorMessage)
   .max(50, maxLengthErrorMessage);
 
-const IdentificationTextField = (props : any) => {
+const IdentificationTextField = (props : Props) => {
   return (
     <TypePreventiveTextField
         {...props}
@@ -20,5 +20,18 @@ const IdentificationTextField = (props : any) => {
     />
   );
 };
+
+interface Props{
+    disabled?: boolean,
+    testId?: string,
+    name: string,
+    value: string | null,
+    onChange: (value: string) => void,
+    onBlur?: (event: React.ChangeEvent<{}>) => void,
+    placeholder?: string,
+    label?: string,
+    className?: string,
+}
+
 
 export default IdentificationTextField;
