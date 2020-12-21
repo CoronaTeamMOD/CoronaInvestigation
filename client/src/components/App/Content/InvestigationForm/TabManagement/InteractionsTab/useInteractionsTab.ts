@@ -18,6 +18,11 @@ import {useInteractionsTabOutcome, useInteractionsTabParameters} from './useInte
 const eventDeleteFailedMsg = 'לא הצלחנו למחוק את האירוע, אנא נסה שוב בעוד כמה דקות';
 const contactDeleteFailedMsg = 'לא הצלחנו למחוק את המגע, אנא נסה שוב בעוד כמה דקות';
 const settingsSaveFailedMsg = 'לא הצלחנו לשמור את ההעדפה להתעלם מהמגעים, נסו עוד כמה דקות';
+const contactDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק מגע זה?';
+const familyContactDeleteWarningText = 'שים לב שבמידה והוא רלוונטי לחקירה, תצטרך להוסיף אותו לאירוע אחר';
+const familyContactEventDeleteWarningText = 'שים לב שבמידה ומגעי המשפחה רלוונטיים לחקירה, תצטרך להוסיף אותם לאירוע אחר';
+const eventDeleteWarningTitle = 'האם אתה בטוח שתרצה למחוק את האירוע?';
+const eventDeleteWarningText = 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו.';
 
 interface GroupedInvolvedGroups {
     familyMembers: InvolvedContact[];
@@ -36,16 +41,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     const [symptomsStartDate, setSymptomsStartDate] = useState<Date | null>(null);
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const { getDatesToInvestigate, convertDate } = useDateUtils();
     
     const getCoronaTestDate = () => {
-        const getCoronaTestDateLogger = logger.setup({
-            workflow: 'Getting Corona Test Date',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getCoronaTestDateLogger = logger.setup('Getting Corona Test Date');
         getCoronaTestDateLogger.info('launching Corona Test Date request', Severity.LOW);
 
         axios.get(`/clinicalDetails/coronaTestDate`).then((res: any) => {
@@ -59,11 +59,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const getClinicalDetailsSymptoms = () => {
-        const getClinicalDetailsSymptomsLogger = logger.setup({
-            workflow: 'Fetching Clinical Details',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const getClinicalDetailsSymptomsLogger = logger.setup('Fetching Clinical Details');
         getClinicalDetailsSymptomsLogger.info('launching clinical data request', Severity.LOW);
         axios.get(`/clinicalDetails/getInvestigatedPatientClinicalDetailsFields?epidemiologyNumber=${epidemiologyNumber}`).then(
             result => {
@@ -96,11 +92,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const loadInvolvedContacts = () => {
-        const loadInvolvedContactsLogger = logger.setup({
-          workflow: 'loading involved contacts',
-          investigation: epidemiologyNumber,
-          user: userId
-        });
+        const loadInvolvedContactsLogger = logger.setup('loading involved contacts');
         loadInvolvedContactsLogger.info('launching db request', Severity.LOW);
         axios.get(`/intersections/involvedContacts/${epidemiologyNumber}`)
         .then((result) => {
@@ -119,11 +111,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const getInteractionsTabSettings = () => {
-        const interactionsTabSettingsLogger = logger.setup({
-            workflow: 'fetching interactions tab settings data',
-            investigation: epidemiologyNumber,
-            user: userId
-          });
+        const interactionsTabSettingsLogger = logger.setup('fetching interactions tab settings data');
           interactionsTabSettingsLogger.info('launching db request', Severity.LOW);
           axios.get(`/investigationInfo/interactionsTabSettings/${epidemiologyNumber}`)
           .then((result) => {
@@ -139,11 +127,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const loadInteractions = () => {
-        const loadInteractionsLogger = logger.setup({
-            workflow: 'Fetching Interactions',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const loadInteractionsLogger = logger.setup('Fetching Interactions');
         loadInteractionsLogger.info('launching interactions request', Severity.LOW);
         axios.get(`/intersections/contactEvent/${epidemiologyNumber}`)
             .then((result) => {
@@ -168,8 +152,16 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         getInteractionsTabSettings();
     }, []);
 
+    const postDeleteLoading = (areFamilyContactsInvolved: boolean) => {
+        if (areFamilyContactsInvolved) {
+            loadInvolvedContacts();
+            getInteractionsTabSettings();
+        }
+        loadInteractions();
+    }
+
     useEffect(() => {
-            setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
+        setDatesToInvestigate(getDatesToInvestigate(doesHaveSymptoms,symptomsStartDate,coronaTestDate));
     }, [coronaTestDate, doesHaveSymptoms, symptomsStartDate]);
 
     const convertDBInteractionToInteraction = (dbInteraction: any): InteractionEventDialogData => {
@@ -181,15 +173,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         })
     }
 
-    const handleDeleteContactEvent = (contactEventId: number) => {
-        const deletingInteractionsLogger = logger.setup({
-            workflow: 'Deleting Interaction',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
-        alertWarning('האם אתה בטוח שתרצה למחוק את האירוע?',
+    const handleDeleteContactEvent = (contactEventId: number, areThereFamilyContacts: boolean) => {
+        const deletingInteractionsLogger = logger.setup('Deleting Interaction');
+        alertWarning(eventDeleteWarningTitle,
         {
-            text: 'שים לב, בעת מחיקת האירוע ימחקו כל המגעים שנכחו בו',
+            text: `${eventDeleteWarningText} ${areThereFamilyContacts ? familyContactEventDeleteWarningText : ''}`,
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -198,9 +186,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         }).then((result) => {
             if (result.value) {
                 deletingInteractionsLogger.info('launching interaction delete request', Severity.LOW);
-                axios.delete('/intersections/deleteContactEvent', {params: {contactEventId}}).then(() => {
+                axios.delete('/intersections/deleteContactEvent', {
+                    params: {contactEventId, investigationId: epidemiologyNumber}
+                }).then(() => {
                     deletingInteractionsLogger.info('interaction was deleted successfully', Severity.LOW)
-                    setInteractions(interactions.filter((interaction: InteractionEventDialogData) => interaction.id !== contactEventId));
+                    postDeleteLoading(areThereFamilyContacts);
                 }).catch((error) => {
                     deletingInteractionsLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(eventDeleteFailedMsg);
@@ -209,13 +199,11 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
         });
     }
 
-    const handleDeleteContactedPerson = (contactedPersonId: number, contactEventId: number) => {
-        const deleteContactedPersonLogger = logger.setup({
-            workflow: 'Deleting Contacted Person',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
-        alertWarning('האם אתה בטוח שתרצה למחוק את מגע?', {
+    const handleDeleteContactedPerson = (contactedPersonId: number, involvedContactId: number | null) => {
+        const deleteContactedPersonLogger = logger.setup('Deleting Contacted Person');
+        const isThisFamilyContact = Boolean(involvedContactId);
+        alertWarning(contactDeleteWarningTitle, {
+            text: isThisFamilyContact ? familyContactDeleteWarningText : '',
             showCancelButton: true,
             cancelButtonText: 'בטל',
             cancelButtonColor: theme.palette.error.main,
@@ -225,10 +213,10 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
             if (result.value) {
                 deleteContactedPersonLogger.info('launching interaction delete request', Severity.LOW);
                 axios.delete('/intersections/contactedPerson', {
-                    params: { contactedPersonId }
+                    params: { contactedPersonId,  involvedContactId, investigationId: epidemiologyNumber }
                 }).then(() => {
                     deleteContactedPersonLogger.info('interaction was deleted successfully', Severity.LOW);
-                    loadInteractions();
+                    postDeleteLoading(isThisFamilyContact);
                 }).catch((error) => {
                     deleteContactedPersonLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
                     alertError(contactDeleteFailedMsg);
@@ -239,11 +227,7 @@ const useInteractionsTab = (parameters: useInteractionsTabParameters): useIntera
     }
 
     const saveInvestigaionSettingsFamily = () => {
-        const saveInvestigaionSettingsLogger = logger.setup({
-            workflow: 'Saving investigaion settings family data',
-            investigation: epidemiologyNumber,
-            user: userId
-        });
+        const saveInvestigaionSettingsLogger = logger.setup('Saving investigaion settings family data');
         axios.post('/investigationInfo/investigationSettingsFamily', {
             id: epidemiologyNumber,
             allowUncontactedFamily: true,

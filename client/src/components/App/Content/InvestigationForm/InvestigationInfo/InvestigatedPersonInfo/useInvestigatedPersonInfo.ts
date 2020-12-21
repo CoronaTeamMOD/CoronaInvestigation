@@ -4,13 +4,11 @@ import axios from 'Utils/axios';
 import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
-import userType from 'models/enums/UserType';
 import StoreStateType from 'redux/storeStateType';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import { InvestigationStatus } from 'models/InvestigationStatus';
 import BroadcastMessage, { BC_TABS_NAME } from 'models/BroadcastMessage';
-import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 import { transferredSubStatus } from 'components/App/Content/LandingPage/InvestigationTable/useInvestigationTable';
 
@@ -22,8 +20,6 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const { updateIsDeceased, updateIsCurrentlyHospitialized } = useStatusUtils();
     const { alertSuccess, alertWarning, alertError } = useCustomSwal();
 
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
-    const userRole = useSelector<StoreStateType, number>(state => state.user.data.userType);
     const investigationStatus = useSelector<StoreStateType, InvestigationStatus>(state => state.investigation.investigationStatus);
 
     const handleInvestigationFinish = () => {
@@ -44,11 +40,7 @@ const useInvestigatedPersonInfo = (): InvestigatedPersonInfoOutcome => {
     const updateInvestigationStatus = (epidemiologyNumber: number) => {
         const subStatus = investigationStatus.subStatus === '' ? null : investigationStatus.subStatus;
         const statusReason = investigationStatus.statusReason === '' ? null : investigationStatus.statusReason;
-        const updateInvestigationStatusLogger = logger.setup({
-            workflow: 'Update Investigation Status',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const updateInvestigationStatusLogger = logger.setup('Update Investigation Status');
         updateInvestigationStatusLogger.info('launching investigation status request', Severity.LOW);
         axios.post('/investigationInfo/updateInvestigationStatus', {
             investigationMainStatus: investigationStatus.mainStatus,

@@ -65,7 +65,6 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
 
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const lastOpenedEpidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.lastOpenedEpidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     React.useEffect(() => {
         if (lastOpenedEpidemiologyNumber !== defaultEpidemiologyNumber) {
@@ -77,11 +76,7 @@ const InvestigationInfoBar: React.FC<Props> = ({ currentTab }: Props) => {
     }, []);
 
     React.useEffect(() => {
-        const investigationInfoLogger = logger.setup({
-            workflow: 'Fetching investigation Info',
-            user: userId,
-            investigation: epidemiologyNumber
-        });
+        const investigationInfoLogger = logger.setup('Fetching investigation Info');
         investigationInfoLogger.info('launching investigation info request', Severity.LOW);
         epidemiologyNumber !== defaultEpidemiologyNumber &&
             axios.get(`/investigationInfo/staticInfo?investigationId=${epidemiologyNumber}`

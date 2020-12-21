@@ -1,9 +1,7 @@
 import { format } from 'date-fns';
-import { useSelector } from 'react-redux';
 
 import logger from 'logger/logger';
 import Contact from 'models/Contact';
-import StoreStateType from 'redux/storeStateType';
 import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -20,8 +18,6 @@ const displayDateFormat = 'dd/MM/yyyy';
 const useDuplicateContactId = () => {
     
     const { alertWarning } = useCustomSwal();
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
-    const userId = useSelector<StoreStateType, string>(state => state.user.data.id);
 
     const findDuplicateIds = (idsToCheck: ContactId[]) => {
         const trimmedIds: ContactId[] = idsToCheck.filter(id => id);
@@ -50,11 +46,7 @@ const useDuplicateContactId = () => {
     }
 
     const handleExcelDuplicateIdsError = (duplicateIdsContacts: Contact[]) => {
-        const loadContactsLogger = logger.setup({
-            workflow: 'Load contacts from excel',
-            user: userId,
-            investigation: epidemiologyNumber
-        })
+        const loadContactsLogger = logger.setup('Load contacts from excel');
         loadContactsLogger.error('Didnt load contacts due to duplicate ids', Severity.MEDIUM);
         const errorText = "לא ניתן לטעון את האקסל כי מספרי הזיהוי הבאים כבר קיימים בחקירה \r\n" + 
             duplicateIdsContacts.map(contact => 
@@ -89,11 +81,7 @@ const useDuplicateContactId = () => {
     }
 
     const handleDuplicateIdsError = (duplicateIds: (string | undefined)[]) => {
-        const duplicateIdsLogger = logger.setup({
-            workflow: 'Create/Update contacts',
-            user: userId,
-            investigation: epidemiologyNumber
-        })
+        const duplicateIdsLogger = logger.setup('Create/Update contacts');
         duplicateIdsLogger.error('Didnt save contacts due to duplicate ids', Severity.MEDIUM);
         const errorText = duplicateIds?.length > 1 ?
             `שים לב, מספרי זיהוי ${duplicateIds?.join(', ')} כבר קיימים בחקירה! אנא בצע את השינויים הנדרשים` :

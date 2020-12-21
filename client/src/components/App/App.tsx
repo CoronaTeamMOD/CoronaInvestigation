@@ -64,9 +64,7 @@ const App: React.FC = (): JSX.Element => {
     }, []);
 
     const initUser = async () => {
-        const initUserLogger = logger.setup({
-            workflow: 'login to the app',
-        });
+        const initUserLogger = logger.setup('login to the app');
         const { userId, userName } = notInLocalEnv() ? await getAuthUserData() : getStubAuthUserData();
         initUserLogger.info('before environment condition', Severity.LOW);
         fetchUser(userId, userName);
@@ -80,10 +78,7 @@ const App: React.FC = (): JSX.Element => {
     const handleCloseSignUp = () => setIsSignUpOpen(false);
 
     const fetchUser = (userId: string, userName: string) => {
-        const fetchUserLogger = logger.setup({
-            workflow: 'Getting user details',
-            user: user.id
-        });
+        const fetchUserLogger = logger.setup('Getting user details');
         fetchUserLogger.info('launch request to the server', Severity.LOW);
         setIsLoading(true);
         axios.get(`/users/user`).then((result: any) => {

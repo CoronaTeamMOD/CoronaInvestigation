@@ -5,43 +5,38 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
         return values.length > 0 ?
             { investigationStatus: { in: values } }
             :
-            { investigationStatus: null };
+            {};
     },
-    [InvestigationsFilterByFields.DESK_ID]: (values: number[]) => {
-        return values.length > 0 ?
-            { deskId: { in: values } }
+    [InvestigationsFilterByFields.DESK_ID]: (deskIds: number[]) => {
+        if (deskIds.includes(-1)) {
+            return {
+                or: [
+                    { deskId: { in: deskIds.filter(deskId => deskId !== -1) } },
+                    { deskId: { isNull: true } }
+                ]
+            }
+        }
+
+        return deskIds.length > 0 ?
+            { deskId: { in: deskIds } }
             :
-            { deskId: null };
+            {};
     },
     [InvestigationsFilterByFields.FULL_NAME]: (values: string) => {
         return Boolean(values) ?
-            {
-                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } },
-                or: [
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: "" } } } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: "" } } } }]
-            } :
-            {
-                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: "" } } },
-                or: [
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: "" } } } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: "" } } } }]
-            };
+            { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: values } } } } :
+            {};
     },
     [InvestigationsFilterByFields.NUMERIC_PROPERTIES]: (values: string) => {
         return Boolean(values) ?
             {
-                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: "" } } },
-                or: [{ epidemiologyNumber: { equalTo: Number(values) } },
-                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
-                { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }]
-            } :
-            {
-                investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { fullName: { includes: "" } } },
                 or: [
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: "" } } } },
-                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: "" } } } }]
-            }
+                    { epidemiologyNumber: { equalTo: Number(values) } },
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { primaryPhone: { includes: values } } } },
+                    { investigatedPatientByInvestigatedPatientId: { covidPatientByCovidPatient: { identityNumber: { includes: values } } } }
+                ]
+            } :
+            {}
     }
 };
 

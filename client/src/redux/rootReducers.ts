@@ -7,14 +7,16 @@ import StoreStateType from './storeStateType';
 import genderReducer from './Gender/GenderReducer';
 import countryReducer from './Country/countryReducer';
 import addressReducer from './Address/AddressReducer';
-import isLoadingReducer from './IsLoading/isLoadingReducer';
 import statusesReducer from './Status/statusesReducer';
+import isLoadingReducer from './IsLoading/isLoadingReducer';
 import contactTypeReducer from './ContactType/contactTypeReducer';
 import subStatusesReducer from './SubStatuses/subStatusesReducer';
+import occupationsReducer from './Occupations/occupationsReducer';
 import investigationReducer from './Investigation/investigationReducer';
 import isInInvestigationReducer from './IsInInvestigations/isInInvestigationReducer';
 
 export default combineReducers<StoreStateType>({
+     occupations: occupationsReducer,
      user: userReducer,
      isLoading: isLoadingReducer,
      isInInvestigation: isInInvestigationReducer,

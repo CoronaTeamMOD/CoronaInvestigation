@@ -14,7 +14,6 @@ export enum TableHeadersNames {
     phoneNumber = 'phoneNumber',
     age = 'age',
     city = 'city',
-    county = 'county',
     investigatorName = 'investigatorName',
     investigationStatus = 'investigationStatus',
     investigationSubStatus = 'investigationSubStatus',
@@ -28,7 +27,8 @@ export enum TableHeadersNames {
     otherReason = 'otherReason',
     reasonId = 'reasonId',
     canFetchGroup = 'canFetchGroup',
-    settings = 'settings'
+    settings = 'settings',
+    subOccupation = 'subOccupation'
 }
 
 export type IndexedInvestigation = { [T in keyof typeof TableHeadersNames]: string | number | boolean | InvestigationMainStatus };
@@ -48,11 +48,11 @@ export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.age]: 'גיל',
     [TableHeadersNames.city]: '	עיר מגורים',
     [TableHeadersNames.investigatorName]: 'חוקר מבצע',
-    [TableHeadersNames.county]: 'נפה מבצעת',
     [TableHeadersNames.investigationStatus]: 'סטטוס ביצוע',
     [TableHeadersNames.investigationSubStatus]: 'סטסטוס ביצוע - מידע נוסף',
     [TableHeadersNames.statusReason]: 'סיבה לסטטוס בטיפול',
     [TableHeadersNames.investigationDesk]: 'דסק מבצע',
+    [TableHeadersNames.subOccupation]: 'מוסד',
     [TableHeadersNames.comment]: ' ',
     [TableHeadersNames.statusReason]: '',
     [TableHeadersNames.wasInvestigationTransferred]: '',
@@ -70,13 +70,12 @@ export const adminCols: string[] = [
     TableHeadersNames.multipleCheck,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
-    TableHeadersNames.priority,
     TableHeadersNames.fullName,
     TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
+    TableHeadersNames.subOccupation,
     TableHeadersNames.investigatorName,
-    TableHeadersNames.county,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
@@ -86,12 +85,12 @@ export const adminCols: string[] = [
 export const userCols: string[] = [
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
-    TableHeadersNames.priority,
     TableHeadersNames.investigationStatus,
     TableHeadersNames.fullName,
     TableHeadersNames.phoneNumber,
     TableHeadersNames.age,
     TableHeadersNames.city,
+    TableHeadersNames.subOccupation,
     TableHeadersNames.investigationDesk,
     TableHeadersNames.comment,
 ]
@@ -108,7 +107,6 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.age]: true,
     [TableHeadersNames.city]: true,
     [TableHeadersNames.investigatorName]: true,
-    [TableHeadersNames.county]: false,
     [TableHeadersNames.investigationStatus]: true,
     [TableHeadersNames.investigationSubStatus]: false,
     [TableHeadersNames.statusReason]: false,
@@ -122,5 +120,6 @@ export const sortableCols: sortableHeaders = {
     [TableHeadersNames.groupReason]: false,
     [TableHeadersNames.otherReason]: false,
     [TableHeadersNames.reasonId]: false,
-    [TableHeadersNames.settings]: false
+    [TableHeadersNames.settings]: false,
+    [TableHeadersNames.subOccupation]: false
 }

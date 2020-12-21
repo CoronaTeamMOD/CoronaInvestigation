@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flip: false,
     },
     menuItem: {
-        minHeight: '3vh'
+        minHeight: '3vh',
     },
     statusAutoComplete: {
         width: '11vw',

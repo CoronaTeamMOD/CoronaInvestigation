@@ -10,6 +10,15 @@ import InvestigatorOption from 'models/InvestigatorOption';
 
 import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
 
+export type StatusFilter = number[];
+export type DeskFilter = number[];
+
+export interface HistoryState {
+    filterRules?: any;
+    statusFilter?: StatusFilter;
+    deskFilter?: DeskFilter;
+}
+
 export interface useInvestigationTableParameters {
     selectedInvestigator: Investigator;
     currentPage: number;
@@ -30,20 +39,25 @@ export interface useInvestigationTableOutcome {
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
     getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
-    getCountyMapKeyByValue: (map: Map<number, County>, value: string) => number;
-    changeCounty: (indexedRow: IndexedInvestigation, newSelectedCountyId: { id: number, value: County } | null) => Promise<void>;
-    getTableCellStyles: (rowIndex: number, cellKey: string) => string[];
+    getNestedCellStyle: (cellKey: string , isLast : boolean) => string[];
+    getRegularCellStyle: (rowIndex: number, cellKey: string , isGroupShown : boolean) => string[];
     sortInvestigationTable: (orderByValue: string) => void;
     onOk: () => void;
     onCancel: () => void;
     snackbarOpen: boolean;
     moveToTheInvestigationForm: (epidemiologyNumber: number) => void;
     totalCount: number;
-    handleFilterChange: (filterBy: any) => void;
     unassignedInvestigationsCount: number;
     fetchInvestigationsByGroupId: (groupId: string) => Promise<InvestigationTableRow[]>;
     changeGroupsInvestigator: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeInvestigationsInvestigator: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     changeGroupsDesk: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     changeInvestigationsDesk: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    statusFilter: StatusFilter;
+    changeStatusFilter: (statuses: InvestigationMainStatus[]) => void;
+    deskFilter: DeskFilter;
+    changeDeskFilter: (desks: Desk[]) => void;
+    searchQuery: string;
+    changeSearchQuery: (searchQuery: string) => void;
+    isSearchQueryValid: boolean;
 };
