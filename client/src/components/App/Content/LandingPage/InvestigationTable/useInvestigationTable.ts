@@ -611,7 +611,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     }
 
     const getDefaultCellStyles = (cellKey : string) => {
-        const classNames: string[] = [];
+        let classNames: string[] = [];
         classNames.push(classes.font);
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
