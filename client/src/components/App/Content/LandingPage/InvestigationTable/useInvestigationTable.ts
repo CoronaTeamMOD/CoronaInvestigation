@@ -610,10 +610,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getTableCellStyles = (rowIndex: number, cellKey: string , isLastNestedCell? : boolean , isGroupShown? :boolean) => {
-        const isNestedCell = isLastNestedCell !== undefined;
-        let classNames = [];
-
+    const getDefaultCellStyles = (cellKey : string) => {
+        const classNames: string[] = [];
         classNames.push(classes.font);
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
@@ -626,22 +624,32 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             classNames.push(classes.priorityTableCell);
         }
 
-        if(!isNestedCell) {
-            if(cellNeedsABorder(rowIndex)) {
-                classNames.push(classes.rowBorder);
-            }
-            if(isGroupShown) {
-                classNames.push(classes.nestedTableCell);
-                if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
-                    classNames.push(classes.openedTableCell);
-                }
-            }
-        } else if(isLastNestedCell) {
-            console.log(isLastNestedCell);
+        return classNames;
+    }
+
+    const getNestedCellStyle = (cellKey: string , isLast : boolean ) => {
+        let classNames = getDefaultCellStyles(cellKey);
+
+        if(isLast) {
             classNames.push(classes.rowBorder);
         } else {
-            console.log(isLastNestedCell);
             classNames.push(classes.nestedTableCell);
+        }
+
+        return classNames;
+    }
+
+    const getRegularCellStyle = (rowIndex: number, cellKey: string , isGroupShown :boolean) => {
+        let classNames = getDefaultCellStyles(cellKey);
+
+        if(cellNeedsABorder(rowIndex)) {
+            classNames.push(classes.rowBorder);
+        }
+        if(isGroupShown) {
+            classNames.push(classes.nestedTableCell);
+            if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
+                classNames.push(classes.openedTableCell);
+            }
         }
 
         return classNames;
@@ -750,7 +758,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchTableData,
         onInvestigationRowClick,
         convertToIndexedRow,
-        getTableCellStyles,
+        getNestedCellStyle,
+        getRegularCellStyle,
         sortInvestigationTable,
         getUserMapKeyByValue,
         onCancel,
