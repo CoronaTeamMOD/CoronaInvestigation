@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center'
     },
     autocomplete: {
-        width: '80%',
+        width: '100%',
     },
 }));
 

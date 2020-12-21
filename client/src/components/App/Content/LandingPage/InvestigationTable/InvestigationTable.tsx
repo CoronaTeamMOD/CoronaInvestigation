@@ -551,13 +551,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2}></Grid>
-                <Grid item xs={8}>
+                <Grid item xs={2}/>
+                <Grid item xs={7}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} >
+                <Grid item xs={3} >
                     <DeskFilter desks={allDesks} filteredDesks={deskFilter} onDeskChange={onSelectedDesksChange} />
                 </Grid>
             </Grid>

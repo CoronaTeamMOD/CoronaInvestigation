@@ -17,11 +17,12 @@ const DeskFilter = ({ desks, filteredDesks, onDeskChange }: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Typography variant='h6'>הדסקים בהם הנך צופה כעת:</Typography>
+            <Typography variant='subtitle1'>הדסקים בהם הנך צופה כעת:</Typography>
             <Autocomplete
                 className={classes.autocomplete}
                 disableCloseOnSelect
                 multiple
+                size='small'
                 options={desks}
                 value={desks.filter(desk => filteredDesks.includes(desk.id))}
                 getOptionLabel={(option) => option.deskName}
@@ -31,11 +32,7 @@ const DeskFilter = ({ desks, filteredDesks, onDeskChange }: Props) => {
                         {...params}
                     />
                 }
-                renderTags={(tags: Desk[]) => {
-                    const additionalTagsAmount = tags.length - 1;
-                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                    return tags[0].deskName + additionalDisplay;
-                }}
+                limitTags={2}
             />
         </Card>
     )

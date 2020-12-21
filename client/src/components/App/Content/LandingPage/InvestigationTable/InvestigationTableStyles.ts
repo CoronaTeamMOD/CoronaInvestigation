@@ -24,7 +24,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     title: {
         margin: 'auto',
-        height: '14vh',
+        paddingTop: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
         width: tableWidth,
     },
     tableContainer: {
