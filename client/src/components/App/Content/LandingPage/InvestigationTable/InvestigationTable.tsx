@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import React, { useMemo, useState, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
@@ -24,21 +23,18 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
-import { stringAlphanum } from 'commons/AlphanumericTextField/AlphanumericTextField';
 import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
-import filterCreators from './FilterCreators';
 import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
-import useInvestigationTable, { UNDEFINED_ROW, allStatusesOption } from './useInvestigationTable';
+import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
-import { phoneAndIdentityNumberRegex } from '../../InvestigationForm/TabManagement/ExposuresAndFlights/ExposureForm/ExposureForm'
+import DeskFilter from './DeskFilter/DeskFilter';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -74,25 +70,11 @@ const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
 
-type StatusFilter = number[];
-type DeskFilter = number[];
-
-export interface HistoryState {
-    filterRules?: any;
-    statusFilter?: StatusFilter;
-    deskFilter?: DeskFilter;
-}
-
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
-    const classes = useStyles(isScreenWide)();
+    const classes = useStyles(isScreenWide);
     const { alertWarning } = useCustomSwal();
     const theme = useTheme();
-    const history = useHistory<HistoryState>();
-    const { statusFilter: historyStatusFilter = [], deskFilter: historyDeskFilter = [] } = useMemo(() => {
-        const { location: { state } } = history;
-        return state || {};
-    }, []);
 
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
     const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
@@ -109,10 +91,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<StatusFilter>(historyStatusFilter);
-    const [filterByDesks, setFilterByDesks] = useState<DeskFilter>(historyDeskFilter);
-    const [searchBarQuery, setSearchBarQuery] = useState<string>('');
-    const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = React.useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -138,8 +116,9 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow, getCountyMapKeyByValue,
         sortInvestigationTable, getUserMapKeyByValue, changeCounty, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
-        moveToTheInvestigationForm, totalCount, handleFilterChange, unassignedInvestigationsCount,
-        fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator
+        moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
+        fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
+        statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
     } = useInvestigationTable({
         selectedInvestigator, setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
@@ -192,13 +171,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
-        return filterByDesks.length === 0 ?
+        return deskFilter.length === 0 ?
             allUsersOfCountyArray :
             allUsersOfCountyArray.filter(({ id, value }) => {
                 if (!value.deskByDeskId) {
                     return false;
                 }
-                return filterByDesks.includes(value.deskByDeskId.id);
+                return deskFilter.includes(value.deskByDeskId.id);
             });
     }
 
@@ -490,18 +469,11 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const toggleFilterRow = () => setShowFilterRow(!showFilterRow);
 
     const clearSearchBarQuery = () => {
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](''));
-        setSearchBarQuery('');
+        changeSearchQuery('');
     }
 
-    const onSearchBarType = (typedInQuery: string) => {
-        if (stringAlphanum.isValidSync(typedInQuery)) {
-            setSearchBarQuery(typedInQuery)
-            !isSearchBarValid &&
-                setIsSearchBarValid(true);
-        } else {
-            setIsSearchBarValid(false);
-        }
+    const onSearchBarType = (newSearchQuery: string) => {
+        changeSearchQuery(newSearchQuery);
     }
 
     const markRow = async (indexedRow: IndexedInvestigation) => {
@@ -539,44 +511,19 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const generateStatusFilterBySelectedStatues = (selectedStatuses: InvestigationMainStatus[]) => {
-        return selectedStatuses.includes(allStatusesOption)
-            ? [] : selectedStatuses;
-    };
-
     const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
-        const nextFilterByStatuses = generateStatusFilterBySelectedStatues(selectedStatuses).map(filter => filter.id);
-        const { location: { state } } = history;
-        history.replace({
-            state: {
-                ...state,
-                statusFilter: nextFilterByStatuses
-            }
-        });
-        setFilterByStatuses(nextFilterByStatuses);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.STATUS](nextFilterByStatuses));
+        changeStatusFilter(selectedStatuses);
     }
 
     const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
-        const selectedDesksIds = selectedDesks.map(desk => desk.id);
-        const { location: { state } } = history;
-        history.replace({
-            state: {
-                ...state,
-                deskFilter: selectedDesksIds
-            }
-        });
-        setFilterByDesks(selectedDesksIds);
-        handleFilterChange(filterCreators[InvestigationsFilterByFields.DESK_ID](selectedDesksIds));
+        changeDeskFilter(selectedDesks);
     };
 
     const onSearchClick = () => {
-        if (searchBarQuery === '') {
-            clearSearchBarQuery();
+        if(currentPage !== defaultPage) {
+            setCurrentPage(defaultPage);
         } else {
-            phoneAndIdentityNumberRegex.test(searchBarQuery) ?
-                handleFilterChange(filterCreators[InvestigationsFilterByFields.NUMERIC_PROPERTIES](searchBarQuery)) :
-                handleFilterChange(filterCreators[InvestigationsFilterByFields.FULL_NAME](searchBarQuery));
+            fetchTableData();
         }
     }
 
@@ -604,35 +551,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2}></Grid>
-                <Grid item xs={8}>
+                <Grid item xs={2}/>
+                <Grid item xs={7}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
                     </Typography>
                 </Grid>
-                <Grid item xs={2} >
-                    <Card className={classes.filterByDeskCard}>
-                        <Typography className={classes.deskFilterTitle}>הדסקים בהם הנך צופה כעת:</Typography>
-                        <Autocomplete
-                            disableCloseOnSelect
-                            multiple
-                            options={allDesks}
-                            value={allDesks.filter(desk => filterByDesks.includes(desk.id))}
-                            getOptionLabel={(option) => option.deskName}
-                            onChange={onSelectedDesksChange}
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                />
-                            }
-                            renderTags={(tags: Desk[]) => {
-                                const additionalTagsAmount = tags.length - 1;
-                                const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                return tags[0].deskName + additionalDisplay;
-                            }}
-                            classes={{ inputRoot: classes.autocompleteInput }}
-                        />
-                    </Card>
+                <Grid item xs={3} >
+                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onDeskChange={onSelectedDesksChange} />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
@@ -643,18 +569,18 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     <Box justifyContent='flex-end'>
                         <TextField
                             className={classes.searchBar}
-                            value={searchBarQuery}
+                            value={searchQuery}
                             onChange={event => onSearchBarType(event.target.value)}
                             onKeyPress={event => {
                                 event.key === 'Enter' &&
                                     onSearchClick();
                             }}
-                            label={isSearchBarValid ? searchBarLabel : searchBarError}
+                            label={isSearchQueryValid ? searchBarLabel : searchBarError}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position='end'>
                                         {
-                                            Boolean(searchBarQuery) &&
+                                            searchQuery.length > 0 &&
                                             <IconButton className={classes.searchBarIcons} onClick={clearSearchBarQuery}>
                                                 <Close />
                                             </IconButton>
@@ -666,7 +592,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
                                 ),
                             }}
-                            error={!isSearchBarValid}
+                            error={!isSearchQueryValid}
                         />
                         <Button
                             color='primary'
@@ -694,7 +620,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 disableCloseOnSelect
                                 multiple
                                 options={allStatuses}
-                                value={allStatuses.filter(status => filterByStatuses.includes(status.id))}
+                                value={allStatuses.filter(status => statusFilter.includes(status.id))}
                                 getOptionLabel={(option) => option.displayName}
                                 onChange={onSelectedStatusesChange}
                                 renderInput={(params) =>

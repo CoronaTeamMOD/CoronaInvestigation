@@ -24,7 +24,8 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     },
     title: {
         margin: 'auto',
-        height: '14vh',
+        paddingTop: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
         width: tableWidth,
     },
     tableContainer: {
@@ -56,15 +57,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         color: '#424242',
         whiteSpace: 'nowrap',
         fontSize: '0.9rem'
-    },
-    filterByDeskCard: {
-        padding: '1vh 1vw',
-        width: '13vw',
-        borderRadius: 15,
-        left: 0
-    },
-    deskFilterTitle: {
-        fontSize: '1.2vw',
     },
     tableHeaderRow: {
         width: tableWidth,
@@ -186,6 +178,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         width: 250,
         padding: theme.spacing(1)
     }
-}));
+}))();
 
 export default useStyles;
