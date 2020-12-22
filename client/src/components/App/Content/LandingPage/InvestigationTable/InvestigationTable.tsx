@@ -35,6 +35,7 @@ import InvestigationNumberColumn from './InvestigationNumberColumn/Investigation
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
+import StatusFilter from './StatusFilter/StatusFilter';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -559,30 +560,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 </div>
                 <Grid container justify="flex-end" className={classes.filterTableRow}>
                     <Collapse in={showFilterRow}>
-                        <Card className={classes.filterTableCard}>
-                            <Typography>סינון לפי</Typography>
-                            <Typography>סטטוס:</Typography>
-                            <Autocomplete
-                                classes={{ inputRoot: classes.autocompleteInput }}
-                                disableCloseOnSelect
-                                multiple
-                                options={allStatuses}
-                                value={allStatuses.filter(status => statusFilter.includes(status.id))}
-                                getOptionLabel={(option) => option.displayName}
-                                onChange={onSelectedStatusesChange}
-                                renderInput={(params) =>
-                                    <TextField
-                                        {...params}
-                                    />
-                                }
-                                renderTags={(tags) => {
-                                    const additionalTagsAmount = tags.length - 1;
-                                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                    return tags[0].displayName + additionalDisplay;
-                                }}
+                        <StatusFilter
+                            statuses={allStatuses}
+                            filteredStatuses={statusFilter}
+                            onStatusChange={onSelectedStatusesChange}
+                            onClose={closeFilterRow}
                             />
-                            <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>
-                        </Card>
                     </Collapse>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>

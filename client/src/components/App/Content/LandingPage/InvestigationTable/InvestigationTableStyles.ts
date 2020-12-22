@@ -78,14 +78,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     sortResetButton: {
         fontWeight: 600
     },
-    filterTableCard: {
-        width: '30vw',
-        display: 'flex',
-        justifyContent: 'space-evenly',
-        margin: '1vh 0',
-        alignItems: 'center',
-        height: '8vh',
-    },
     filterTableRow: {
         width: tableWidth,
         alignItems: 'center',
@@ -102,12 +94,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
         fontWeight: 600,
         justifyContent: 'flex-end',
         direction: 'ltr'
-    },
-    autocompleteInput: {
-        paddingRight: 'unset' + '!important',
-        padding: '1vh 0',
-        width: '12vw',
-        fontSize: '1vw'
     },
     activeSortIcon: {
         '&$active': {
