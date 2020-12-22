@@ -4,7 +4,7 @@ import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button, Popper,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
+    useMediaQuery, Tooltip, Collapse, IconButton, Badge, Grid, Checkbox,
     Slide, Box, InputAdornment, useTheme, Popover
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +23,6 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigationTableStyles';
@@ -36,6 +35,7 @@ import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
 import StatusFilter from './StatusFilter/StatusFilter';
+import { ColorColumn } from './Columns/ColorColumn/ColorColumn';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -181,12 +181,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.color:
                 return (
                     Boolean(indexedRow.groupId) ?
-                        <Tooltip arrow placement='top' title={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}>
-                            <div className={classes.groupColor}
-                                style={{ backgroundColor: investigationColor.current.get(indexedRow.groupId) }}
-                            />
-                        </Tooltip> : null
-                )
+                        <ColorColumn
+                            reason={indexedRow.otherReason !== '' ? indexedRow.otherReason : indexedRow.groupReason}
+                            color={investigationColor.current.get(indexedRow.groupId) as string}
+                        />
+                        : null
+                );
             case TableHeadersNames.epidemiologyNumber:
                 return <EpidemiologyNumberColumn
                     wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
