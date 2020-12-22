@@ -5,13 +5,13 @@ import theme from 'styles/theme';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
-import useStyles from './InvestigatorAllocationStyles';
+import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
 
 const title = 'הקצאת חקירה';
 const unSelectedRow = -1;
 
-const InvestigatorAllocation: React.FC<Props> = (props) => {
+const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
     const { isOpen, setIsOpen, investigators, allocateInvestigationToInvestigator, groupId, epidemiologyNumber } = props;
 
@@ -40,7 +40,6 @@ const InvestigatorAllocation: React.FC<Props> = (props) => {
             }
         })
     }
-
     return (
         <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => setIsOpen(false)}>
             <DialogTitle>
@@ -67,7 +66,7 @@ const InvestigatorAllocation: React.FC<Props> = (props) => {
                     ביטול
                 </Button>
                 <Tooltip title={shouldButtonDisabled ? 'לא נבחר חוקר' : ''}>    
-                    <span>
+                    <span> {/* The span role is to wrap the button to make sure the tooltip work properly even if the button is disabled */}
                         <Button
                             form='investigatorAllocation'
                             variant='contained'
@@ -93,4 +92,4 @@ interface Props {
     epidemiologyNumber: number;
 }
 
-export default InvestigatorAllocation;
+export default InvestigatorAllocationDialog;

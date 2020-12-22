@@ -13,19 +13,6 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
 
     const classes = useStyles();
 
-    const getTableHeader = (cellName: string) => {
-        switch(cellName) {
-            case TableHeadersNames.pauseInvestigationsCount:
-                return (
-                    <Tooltip title={pauseInvestigationsCountTitle}>
-                        <b>{get(TableHeaders, cellName)}</b>
-                    </Tooltip>
-                )
-            default: 
-                return <b>{get(TableHeaders, cellName)}</b>
-        }
-    }
-
     const getTableCell = (investigator: User, cellName: string) => {
         switch(cellName) {
             case TableHeadersNames.deskName: 
@@ -58,7 +45,9 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                             Object.keys(TableHeaders).map((cellName: string) => {
                                 return (
                                     <TableCell key={cellName}>
-                                        { getTableHeader(cellName) }
+                                        <Tooltip title={cellName === TableHeadersNames.pauseInvestigationsCount ? pauseInvestigationsCountTitle: ''}>
+                                            <b>{get(TableHeaders, cellName)}</b>
+                                        </Tooltip>
                                     </TableCell>
                                 )
                             })
@@ -72,9 +61,9 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSe
                                 key={investigator.id}
                                 selected={selectedRow === index}
                                 onClick={() => setSelectedRow(index)}
+                                classes={{ selected: classes.selected }}
                                 className={classes.tableRow}
-                                classes={{selected: classes.selectedRow}}
-                            >
+                                >
                                 {
                                     Object.keys(TableHeaders).map((cellHeader: string) => (
                                         <TableCell key={cellHeader}>

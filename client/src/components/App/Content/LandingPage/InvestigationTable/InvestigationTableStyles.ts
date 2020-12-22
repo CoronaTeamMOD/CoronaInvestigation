@@ -128,25 +128,11 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     priorityTableCell: {
         paddingLeft: '0'
     },
-    selectedInvestigator: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    warningIcon: {
-        color: theme.palette.warning.main,
-        paddingLeft: theme.spacing(1),
-        flip: false
-    },
     counterLabel: {
         fontWeight: 600
     },
     checkedRow: {
         backgroundColor: 'rgb(202, 222, 234)!important'
-    },
-    editIcon: {
-        paddingLeft: '0.3vw'
     },
     pagination: {
         marginTop: '0'

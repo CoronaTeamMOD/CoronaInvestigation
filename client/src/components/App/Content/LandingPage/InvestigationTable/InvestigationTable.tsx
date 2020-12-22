@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, Edit } from '@material-ui/icons';
+import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, Edit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -27,7 +27,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigationTableStyles';
 import SettingsActions from './SettingsActions/SettingsActions';
-import InvestigatorAllocation from './InvestigatorAllocation/InvestigatorAllocation';
+import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
 import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
@@ -36,6 +36,7 @@ import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCo
 import DeskFilter from './DeskFilter/DeskFilter';
 import StatusFilter from './StatusFilter/StatusFilter';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
+import InvestigatorAllocationCell from './InvestigatorAllocation/InvestigatorAllocationCell';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -128,12 +129,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const UnassignedWarning = () => (
-        <Tooltip arrow placement='top' title='לא הוקצה חוקר לחקירה'>
-            <Warning className={classes.warningIcon} />
-        </Tooltip>
-    )
-
     const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
         return deskFilter.length === 0 ?
@@ -149,6 +144,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const allocateInvestigationToInvestigator = async (groupId: string, epidemiologyNumber: number, investigatorToAllocate: InvestigatorOption) => {
         groupId ? await changeGroupsInvestigator([groupId], investigatorToAllocate) :
                   await changeInvestigationsInvestigator([epidemiologyNumber], investigatorToAllocate);
+        groupId && fetchInvestigationsByGroupId(groupId);
         fetchTableData();
     }
 
@@ -173,7 +169,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             case TableHeadersNames.investigatorName:
                 if (selectedRow === indexedRow.epidemiologyNumber && shouldOpenInvestigatorAllocation) {
                     return (
-                        <InvestigatorAllocation 
+                        <InvestigatorAllocationDialog 
                             isOpen={shouldOpenInvestigatorAllocation}
                             setIsOpen={setShouldOpenInvestigatorsAllocation}
                             investigators={getFilteredUsersOfCurrentCounty()}
@@ -183,14 +179,13 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         />
                     )
                 } else {
-                    const isUnassigned = indexedRow.investigatorName === 'לא משויך';
                     return (
-                        <div className={classes.selectedInvestigator}>
-                            {isUnassigned && epiNumOnInvestigatorNameHover !== indexedRow.epidemiologyNumber && <UnassignedWarning />}
-                            {indexedRow[cellName as keyof typeof TableHeadersNames]}
-                            {epiNumOnInvestigatorNameHover === indexedRow.epidemiologyNumber && <Edit fontSize='small' className={classes.editIcon} />}
-                            
-                        </div>
+                        <InvestigatorAllocationCell 
+                            investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                            epidemiologyNumber={indexedRow.epidemiologyNumber}
+                            epiNumOnInvestigatorNameHover={epiNumOnInvestigatorNameHover}
+                            setEpiNumOnInvestigatorNameHover={setEpiNumOnInvestigatorNameHover}
+                        />
                     )
                 }
             case TableHeadersNames.investigationDesk:
@@ -520,8 +515,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
                                                         className={getRegularCellStyle(index, key , isGroupShown).join(' ')}
-                                                        onMouseOver={() => key === TableHeadersNames.investigatorName && setEpiNumOnInvestigatorNameHover(indexedRow.epidemiologyNumber)}
-                                                        onMouseLeave={() => setEpiNumOnInvestigatorNameHover(defaultEpidemiologyNumber)}
                                                         padding='none'
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
@@ -548,8 +541,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                 <TableCell
                                                                     classes={{ root: classes.tableCellRoot }}
                                                                     className={getNestedCellStyle(key , index + 1 === currentGroupedInvestigationsLength).join(' ')}
-                                                                    onMouseOver={() => key === TableHeadersNames.investigatorName && setEpiNumOnInvestigatorNameHover(row.epidemiologyNumber)}
-                                                                    onMouseLeave={() => setEpiNumOnInvestigatorNameHover(defaultEpidemiologyNumber)}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
                                                                     {
