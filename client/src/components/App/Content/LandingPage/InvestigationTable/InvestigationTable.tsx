@@ -4,7 +4,7 @@ import { Autocomplete, Pagination } from '@material-ui/lab';
 import {
     Paper, Table, TableRow, TableBody, TableCell, Typography,
     TableHead, TableContainer, TextField, TableSortLabel, Button,
-    useMediaQuery, Tooltip, Card, Collapse, IconButton, Badge, Grid, Checkbox,
+    useMediaQuery, Tooltip, Collapse, IconButton, Badge, Grid, Checkbox,
     Slide, Box, InputAdornment, useTheme, Popover
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +23,6 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/ComplexityIcon';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigationTableStyles';
@@ -43,15 +42,8 @@ export const defaultPage = 1;
 const resetSortButtonText = 'סידור לפי תעדוף';
 const welcomeMessage = 'היי, אלו הן החקירות שהוקצו לך היום. בואו נקטע את שרשראות ההדבקה!';
 const noInvestigationsMessage = 'היי,אין חקירות לביצוע!';
-const complexInvestigationMessage = 'חקירה מורכבת';
-const noPriorityMessage = 'חסר תעדוף';
 const searchBarLabel = 'הכנס מס\' אפידימיולוגי, ת\"ז, שם מלא או טלפון...';
 const searchBarError = 'יש להכניס רק אותיות ומספרים';
-
-const defaultCounty = {
-    id: 0,
-    displayName: ''
-}
 
 export const rowsPerPage = 100;
 
@@ -78,10 +70,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [showFilterRow, setShowFilterRow] = useState<boolean>(false);
     const [allDesks, setAllDesks] = useState<Desk[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
-    const [filterByStatuses, setFilterByStatuses] = useState<StatusFilter>(historyStatusFilter);
-    const [filterByDesks, setFilterByDesks] = useState<DeskFilter>(historyDeskFilter);
-    const [searchBarQuery, setSearchBarQuery] = useState<string>('');
-    const [isSearchBarValid, setIsSearchBarValid] = useState<boolean>(true);
     const [checkGroupedInvestigationOpen, setCheckGroupedInvestigationOpen] = useState<number[]>([])
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -164,7 +152,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         fetchTableData();
     }
 
-    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }) => {
+    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }, index:number) => {
         const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.color:
