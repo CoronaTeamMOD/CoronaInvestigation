@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, TextField, Typography } from '@material-ui/core';
+import { Card, Checkbox, TextField, Typography } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
 import Desk from 'models/Desk';
@@ -32,6 +32,16 @@ const DeskFilter = ({ desks, filteredDesks, onDeskChange }: Props) => {
                         {...params}
                     />
                 }
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
+                            size='small'
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                        />
+                        {option.deskName}
+                    </>
+                )}
                 limitTags={2}
             />
         </Card>
