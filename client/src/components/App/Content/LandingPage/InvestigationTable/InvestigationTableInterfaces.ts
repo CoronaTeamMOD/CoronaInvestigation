@@ -3,7 +3,6 @@ import { MutableRefObject } from 'react';
 import User from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
-import Investigator from 'models/Investigator';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import InvestigatorOption from 'models/InvestigatorOption';
@@ -20,7 +19,6 @@ export interface HistoryState {
 }
 
 export interface useInvestigationTableParameters {
-    selectedInvestigator: Investigator;
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
     setSelectedRow: React.Dispatch<React.SetStateAction<number>>;

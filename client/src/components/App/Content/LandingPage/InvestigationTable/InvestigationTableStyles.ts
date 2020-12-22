@@ -145,6 +145,9 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     checkedRow: {
         backgroundColor: 'rgb(202, 222, 234)!important'
     },
+    editIcon: {
+        paddingLeft: '0.3vw'
+    },
     pagination: {
         marginTop: '0'
     },
