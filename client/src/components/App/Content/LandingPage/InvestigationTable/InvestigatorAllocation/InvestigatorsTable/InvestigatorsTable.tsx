@@ -4,11 +4,14 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import User from 'models/User';
 import { get } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
+import useStyles from './InvestigatorsTableStyles';
 import { TableHeadersNames, TableHeaders } from './InvestigatorsTableHeaders';
 
 const pauseInvestigationsCountTitle = 'חקירות הממתינות להשלמת מידע/העברה';
 
-const InvestigatorsTable: React.FC<Props> = ({ investigators }) => {
+const InvestigatorsTable: React.FC<Props> = ({ investigators, selectedRow, setSelectedRow }) => {
+
+    const classes = useStyles();
 
     const getTableHeader = (cellName: string) => {
         switch(cellName) {
@@ -54,7 +57,7 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators }) => {
                         {
                             Object.keys(TableHeaders).map((cellName: string) => {
                                 return (
-                                    <TableCell>
+                                    <TableCell key={cellName}>
                                         { getTableHeader(cellName) }
                                     </TableCell>
                                 )
@@ -64,11 +67,17 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators }) => {
                 </TableHead>
                 <TableBody>
                     {
-                        investigators.map((investigator: User) => (
-                            <TableRow>
+                        investigators.map((investigator: User, index: number) => (
+                            <TableRow 
+                                key={investigator.id}
+                                selected={selectedRow === index}
+                                onClick={() => setSelectedRow(index)}
+                                className={classes.tableRow}
+                                classes={{selected: classes.selectedRow}}
+                            >
                                 {
                                     Object.keys(TableHeaders).map((cellHeader: string) => (
-                                        <TableCell>
+                                        <TableCell key={cellHeader}>
                                             { getTableCell(investigator, cellHeader) }
                                         </TableCell>
                                     ))
@@ -84,6 +93,8 @@ const InvestigatorsTable: React.FC<Props> = ({ investigators }) => {
 
 interface Props {
     investigators: User[];
+    selectedRow: number;
+    setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default InvestigatorsTable;
