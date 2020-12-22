@@ -566,7 +566,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 filteredStatuses={statusFilter}
                                 onStatusChange={onSelectedStatusesChange}
                                 onClose={closeFilterRow}
-                                />
+                            />
                         </Collapse>
                     </Grid>
                 </Grid>
