@@ -6,6 +6,7 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import useStyles from '../ExposuresAndFlightsStyles';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface Props {
     wasInEilat: boolean;
@@ -14,32 +15,54 @@ interface Props {
 }
 
 export const EilatOrDeadSea = (props: Props) => {
+	const { control } = useFormContext();
+
     const { wasInEilat , wasInDeadSea , onExposuresStatusChange } = props;
     const classes = useStyles();
 
     return (
-        <div className={classes.subForm}>
-            <FormTitle title='חזרה מאילת או מים המלח' />
-             <FormRowWithInput fieldName='חזר מאילת'>
-              <Toggle
-                value={wasInEilat}
-                onChange={(event, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wasInEilat, value);
-                  }
-                }}
-              />
-            </FormRowWithInput>
-            <FormRowWithInput fieldName='חזר מים המלח'>
-              <Toggle
-                value={wasInDeadSea}
-                onChange={(event, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
-                  }
-                }}
-              />
-            </FormRowWithInput>
-          </div>
-    )
+		<div className={classes.subForm}>
+			<FormTitle title='חזרה מאילת או מים המלח' />
+			<FormRowWithInput fieldName='חזר מאילת'>
+				<Controller
+					control={control}
+					name={fieldsNames.wasInEilat}
+					defaultValue={wasInEilat}
+					render={(props) => {
+						return (
+							<Toggle
+								{...props}
+								onChange={(event, value) => {
+									if (value !== null) {
+										props.onChange(value);
+										onExposuresStatusChange(fieldsNames.wasInEilat, value);
+									}
+								}}
+							/>
+						);
+					}}
+				/>
+			</FormRowWithInput>
+			<FormRowWithInput fieldName='חזר מים המלח'>
+			<Controller
+					control={control}
+					name={fieldsNames.wasInEilat}
+					defaultValue={wasInDeadSea}
+					render={ (props) => {
+						return (
+							<Toggle
+							{...props}
+							onChange={(event, value) => {
+								if (value !== null) {
+									props.onChange(value);
+									onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
+								}
+							}}
+						/>
+						)
+					}}
+					/>
+			</FormRowWithInput>
+		</div>
+	);
 }
