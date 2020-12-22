@@ -2,7 +2,9 @@ import React from 'react'
 import { Card, Checkbox, IconButton, TextField, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
+
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
 import useStyles from './StatusFilterStyles';
 
