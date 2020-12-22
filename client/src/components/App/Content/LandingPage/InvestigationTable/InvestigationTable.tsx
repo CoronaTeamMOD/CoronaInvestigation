@@ -35,6 +35,7 @@ import InvestigationNumberColumn from './InvestigationNumberColumn/Investigation
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
+import StatusFilter from './StatusFilter/StatusFilter';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -505,7 +506,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={3} >
-                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onDeskChange={onSelectedDesksChange} />
+                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onFilterChange={onSelectedDesksChange} />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
@@ -557,33 +558,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Button>
                     </Box>
                 </div>
-                <Grid container justify="flex-end" className={classes.filterTableRow}>
-                    <Collapse in={showFilterRow}>
-                        <Card className={classes.filterTableCard}>
-                            <Typography>סינון לפי</Typography>
-                            <Typography>סטטוס:</Typography>
-                            <Autocomplete
-                                classes={{ inputRoot: classes.autocompleteInput }}
-                                disableCloseOnSelect
-                                multiple
-                                options={allStatuses}
-                                value={allStatuses.filter(status => statusFilter.includes(status.id))}
-                                getOptionLabel={(option) => option.displayName}
-                                onChange={onSelectedStatusesChange}
-                                renderInput={(params) =>
-                                    <TextField
-                                        {...params}
-                                    />
-                                }
-                                renderTags={(tags) => {
-                                    const additionalTagsAmount = tags.length - 1;
-                                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                                    return tags[0].displayName + additionalDisplay;
-                                }}
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                    <Grid item xs={12} md={4}>
+                        <Collapse in={showFilterRow}>
+                            <StatusFilter
+                                statuses={allStatuses}
+                                filteredStatuses={statusFilter}
+                                onFilterChange={onSelectedStatusesChange}
+                                onClose={closeFilterRow}
                             />
-                            <IconButton onClick={() => closeFilterRow()}><Close /></IconButton>
-                        </Card>
-                    </Collapse>
+                        </Collapse>
+                    </Grid>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>

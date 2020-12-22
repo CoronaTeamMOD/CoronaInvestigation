@@ -105,7 +105,6 @@ const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
 export const transferredSubStatus = 'נדרשת העברה';
-export const allStatusesOption: InvestigationMainStatus = { id: -1, displayName: 'הכל' };
 
 const useInvestigationTable = (parameters: useInvestigationTableParameters): useInvestigationTableOutcome => {
     const { setSelectedRow, setAllCounties, setAllUsersOfCurrCounty,
@@ -137,13 +136,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const axiosInterceptorId = useSelector<StoreStateType, number>(state => state.investigation.axiosInterceptorId);
     const windowTabsBroadcastChannel = useRef(new BroadcastChannel(BC_TABS_NAME));
 
-    const generateStatusFilterBySelectedStatues = (statuses: InvestigationMainStatus[]) => {
-        return statuses.includes(allStatusesOption)
-            ? [] : statuses;
-    };
-
     const changeStatusFilter = (statuses: InvestigationMainStatus[]) => {
-        const statusesIds = generateStatusFilterBySelectedStatues(statuses).map(status => status.id);
+        const statusesIds = statuses.map(status => status.id);
         updateFilterHistory('statusFilter', statusesIds);
         setStatusFilter(statusesIds);
         setCurrentPage(defaultPage);
@@ -207,7 +201,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 if (result?.data && result.headers['content-type'].includes('application/json')) {
                     investigationStatusesLogger.info('The investigations statuses were fetched successfully', Severity.LOW);
                     const allStatuses: InvestigationMainStatus[] = result.data;
-                    allStatuses.unshift(allStatusesOption);
                     setAllStatuses(allStatuses);
                 } else {
                     investigationStatusesLogger.error('Got 200 status code but results structure isnt as expected', Severity.HIGH);

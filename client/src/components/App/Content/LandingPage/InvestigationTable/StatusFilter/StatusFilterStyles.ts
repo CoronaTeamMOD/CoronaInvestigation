@@ -3,14 +3,14 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
-        padding: theme.spacing(1.5),
-        borderRadius: 16,
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: theme.spacing(1),
+        marginBottom: theme.spacing(1)
     },
     autocomplete: {
-        width: '100%',
+        width: '60%'
     },
     optionCheckbox: {
         marginLeft: theme.spacing(1),
