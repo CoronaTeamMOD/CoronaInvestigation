@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Edit } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, Edit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -26,7 +26,6 @@ import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCo
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigationTableStyles';
-import CommentDisplay from './commentDisplay/commentDisplay';
 import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigatorAllocation from './InvestigatorAllocation/InvestigatorAllocation';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
@@ -36,6 +35,7 @@ import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
 import StatusFilter from './StatusFilter/StatusFilter';
+import ClickableTooltip from './clickableTooltip/clickableTooltip';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -246,8 +246,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 <div>{subOccupation || '-'}</div>
                             </Tooltip>    
             case TableHeadersNames.comment:
-                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    scrollableRef={tableContainerRef.current} />
+                    return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                            defaultValue='אין הערה' scrollableRef={tableContainerRef.current} InputIcon={Comment} />
+                            
+            case TableHeadersNames.phoneNumber:
+                return <ClickableTooltip value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                         defaultValue='' scrollableRef={tableContainerRef.current} InputIcon={Call} />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 return investigationStatus && <InvestigationStatusColumn
