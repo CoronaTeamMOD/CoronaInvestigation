@@ -2,9 +2,9 @@ import React from 'react';
 import { ReplyAll } from '@material-ui/icons';
 import { Tooltip, Typography } from '@material-ui/core';
 
-import useStyles from './InvestigationStatusNumberStyles';
+import useStyles from './EpidemiologyNumberStyles';
 
-const InvestigationNumberColumn = (props: Props) => {
+const EpidemiologyNumberColumn = (props: Props) => {
 
     const { wasInvestigationTransferred, epidemiologyNumber, transferReason } = props;
 
@@ -29,4 +29,4 @@ interface Props {
     transferReason: string;
 };
 
-export default InvestigationNumberColumn;
+export default EpidemiologyNumberColumn;

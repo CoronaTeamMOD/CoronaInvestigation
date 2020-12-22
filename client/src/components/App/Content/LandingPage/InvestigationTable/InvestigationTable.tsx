@@ -30,8 +30,8 @@ import useStyles from './InvestigationTableStyles';
 import CommentDisplay from './commentDisplay/commentDisplay';
 import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
-import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
-import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
+import InvestigationStatusColumn from './Columns/InvestigationStatusColumn/InvestigationStatusColumn';
+import EpidemiologyNumberColumn from './Columns/EpidemiologyNumberColumn/EpidemiologyNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
@@ -188,7 +188,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Tooltip> : null
                 )
             case TableHeadersNames.epidemiologyNumber:
-                return <InvestigationNumberColumn
+                return <EpidemiologyNumberColumn
                     wasInvestigationTransferred={indexedRow.wasInvestigationTransferred}
                     epidemiologyNumber={indexedRow.epidemiologyNumber}
                     transferReason={indexedRow.transferReason}
