@@ -9,10 +9,10 @@ import useStyles from './DeskFilterStyles';
 interface Props {
     desks: Desk[];
     filteredDesks: number[];
-    onDeskChange: (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => void;
+    onFilterChange: (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => void;
 }
 
-const DeskFilter = ({ desks, filteredDesks, onDeskChange }: Props) => {
+const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
     const classes = useStyles();
 
     return (
@@ -26,7 +26,7 @@ const DeskFilter = ({ desks, filteredDesks, onDeskChange }: Props) => {
                 options={desks}
                 value={desks.filter(desk => filteredDesks.includes(desk.id))}
                 getOptionLabel={(option) => option.deskName}
-                onChange={onDeskChange}
+                onChange={onFilterChange}
                 renderInput={(params) =>
                     <TextField
                         {...params}

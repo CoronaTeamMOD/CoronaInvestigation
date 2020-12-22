@@ -506,7 +506,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={3} >
-                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onDeskChange={onSelectedDesksChange} />
+                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onFilterChange={onSelectedDesksChange} />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
@@ -564,7 +564,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             <StatusFilter
                                 statuses={allStatuses}
                                 filteredStatuses={statusFilter}
-                                onStatusChange={onSelectedStatusesChange}
+                                onFilterChange={onSelectedStatusesChange}
                                 onClose={closeFilterRow}
                             />
                         </Collapse>

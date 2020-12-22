@@ -9,11 +9,11 @@ import useStyles from './StatusFilterStyles';
 interface Props {
     statuses: InvestigationMainStatus[];
     filteredStatuses: StatusFilterType;
-    onStatusChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
+    onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
     onClose: () => void;
 }
 
-const StatusFilter = ({ statuses, filteredStatuses, onStatusChange, onClose }: Props) => {
+const StatusFilter = ({ statuses, filteredStatuses, onFilterChange, onClose }: Props) => {
     const classes = useStyles();
 
     return (
@@ -29,7 +29,7 @@ const StatusFilter = ({ statuses, filteredStatuses, onStatusChange, onClose }: P
                 options={statuses}
                 value={statuses.filter(status => filteredStatuses.includes(status.id))}
                 getOptionLabel={(option) => option.displayName}
-                onChange={onStatusChange}
+                onChange={onFilterChange}
                 renderInput={(params) =>
                     <TextField
                         {...params}
