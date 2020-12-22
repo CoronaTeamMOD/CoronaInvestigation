@@ -18,7 +18,7 @@ const StatusFilter = ({ statuses, filteredStatuses, onFilterChange, onClose }: P
 
     return (
         <Card className={classes.card}>
-            <Typography>
+            <Typography variant='body2'>
                 סינון לפי סטטוס:&nbsp;
             </Typography>
             <Autocomplete

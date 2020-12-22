@@ -17,7 +17,7 @@ const DeskFilter = ({ desks, filteredDesks, onFilterChange }: Props) => {
 
     return (
         <Card className={classes.card}>
-            <Typography variant='subtitle1'>הדסקים בהם הנך צופה כעת:</Typography>
+            <Typography variant='body2'>הדסקים בהם הנך צופה כעת:</Typography>
             <Autocomplete
                 className={classes.autocomplete}
                 disableCloseOnSelect
