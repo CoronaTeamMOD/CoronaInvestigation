@@ -21,11 +21,11 @@ interface Props {
     exposures: Exposure[];
     handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void; 
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
-	disableFlightAddition: boolean;
+  	disableFlightAddition: boolean;
 }
 
 export const BackFromAbroad = (props: Props) => {
-	const { control , watch} = useFormContext();
+	const { control , watch } = useFormContext();
     const { fieldContainer } = useFormStyles();
     const {
         wereFlights,
@@ -37,7 +37,7 @@ export const BackFromAbroad = (props: Props) => {
     } = props;
     const classes = useStyles();
 
-	const watchWereFlights = watch(fieldsNames.wereFlights , wereFlights);
+	  const watchWereFlights = watch(fieldsNames.wereFlights , wereFlights);
 
     return (
         <div className={classes.subForm}>

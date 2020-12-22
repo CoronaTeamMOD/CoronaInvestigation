@@ -122,8 +122,8 @@ export const useExposuresAndFlights = (props : Props) => {
 
     const onExposuresStatusChange = (fieldName: any, value: any) => {
         setExposureDataAndFlights({
-        ...exposureAndFlightsData,
-        [fieldName]: value
+            ...exposureAndFlightsData,
+            [fieldName]: value
         });
     };
 
@@ -137,10 +137,11 @@ export const useExposuresAndFlights = (props : Props) => {
         });
     }
 
-    const saveExposure = () => {
+    const saveExposure = (data : any , ids : (number | null)[]) => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
         saveExposureLogger.info('launching the server request', Severity.LOW);
-        const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
+        
+        const tabSavePromises = [saveExposureAndFlightData(data , ids), saveResortsData(data)];
         Promise.all(tabSavePromises)
         .then(() => {
         saveExposureLogger.info('saved confirmed exposures, flights and resorts data successfully', Severity.LOW);

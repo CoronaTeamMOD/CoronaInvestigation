@@ -7,13 +7,15 @@ import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights'
 import PossibleExposure from './Forms/PossibleExposure'; 
 import { EilatOrDeadSea } from './Forms/EilatOrDeadSea';
 import { BackFromAbroad } from './Forms/BackFromAbroad';
+import { FormData } from './ExposuresAndFlightsInterfaces';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
+
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
-
-  const methods = useForm();
+  const ids = exposures.map(exposure => exposure.id);
+  const methods = useForm<FormData>();
 
   useEffect(() => {
     methods.reset({
@@ -34,15 +36,13 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     disableFlightAddition
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
 
-  const onSubmit = (data : any) => {
-    console.log(data);
-    saveExposure();
+  const onSubmit = (data : FormData) => {
+    saveExposure(data , ids);
   }
 
   return (
       <FormProvider {...methods}>
         <form id={`form-${id}`} onSubmit={methods.handleSubmit(onSubmit)}>
-          <input type="submit" value="sbmt"/>
           <PossibleExposure
             wereConfirmedExposures={wereConfirmedExposures}
             onExposuresStatusChange={onExposuresStatusChange}

@@ -6,11 +6,17 @@ import {fieldsNames, ExposureAndFlightsDetailsAndSet, Exposure } from 'commons/C
 import axios from '../axios';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
+import ResortData from 'models/ResortData';
+import { FormData } from 'components/App/Content/InvestigationForm/TabManagement/ExposuresAndFlights/ExposuresAndFlightsInterfaces';
 
 const exposureDeleteCondition = 
     (wereFlights: boolean, wereConfirmedExposures: boolean) : (exposure: Exposure) => boolean => {
-    if (!wereConfirmedExposures) return (exposure: Exposure) => exposure.wasConfirmedExposure;
-    if (!wereFlights) return (exposure: Exposure) => exposure.wasAbroad;
+    if (!wereConfirmedExposures) {
+        return (exposure: Exposure) => exposure.exposureSource !== undefined
+    };
+    if (!wereFlights) {
+        return (exposure: Exposure) => exposure.flightDestinationCountry !== undefined
+    };
     return (exposure: Exposure) => false;
 }
 
@@ -23,8 +29,8 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const investigatedPatientId = useSelector<StoreStateType, number>(state => state.investigation.investigatedPatient.investigatedPatientId);
 
-    const saveResortsData = () : Promise<void> => {
-        let { wasInEilat, wasInDeadSea } = exposuresAndFlightsVariables.exposureAndFlightsData;
+    const saveResortsData = (data : ResortData) : Promise<void> => {
+        let { wasInEilat, wasInDeadSea } = data;
         const saveResortsDataLogger = logger.setup('Saving investigated patient resort data');
         saveResortsDataLogger.info('launching the server request', Severity.LOW);
 
@@ -35,26 +41,28 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         });
     } 
 
-    const saveExposureAndFlightData = async () : Promise<void> => {
-        let { exposures, wereFlights, wereConfirmedExposures, exposuresToDelete } = exposuresAndFlightsVariables.exposureAndFlightsData;
+    const saveExposureAndFlightData = async (data : FormData , ids : (number | null)[]) : Promise<void> => {
+        let { exposures, wereFlights, wereConfirmedExposures } = data;
+        const formattedExposure = formatExposures(exposures , ids);
+        let exposuresToDelete : number[] = [];
         let filteredExposures : (Exposure | DBExposure)[] = [];
         const saveExposureAndFlightDataLogger = logger.setup('Saving Exposures And Flights');
+
         if (!wereFlights && !wereConfirmedExposures) {
-            exposuresToDelete = exposures.map(exposure => exposure.id).filter(id => id);
+            exposuresToDelete = formattedExposure.map((exposure : any) => exposure.id).filter((id : any) => id);
         } else {
-            const filterCondition : (exposure: Exposure) => boolean = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
-            exposures.forEach(exposure => {
+            const filterCondition = exposureDeleteCondition(wereFlights, wereConfirmedExposures);
+            formattedExposure.forEach((exposure : any) => {
                 if (filterCondition(exposure)) {
                     exposure.id && exposuresToDelete.push(exposure.id);
                 } else {
                     filteredExposures.push(exposure);
                 }
             });
-    
             filteredExposures = (filteredExposures as Exposure[]).map(extractExposureData);
         }
         saveExposureAndFlightDataLogger.info('launching the server request', Severity.LOW);
-        
+
         return axios.post('/exposure/updateExposures', {
             exposures: filteredExposures,
             investigationId: epidemiologyNumber,
@@ -62,11 +70,17 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
         });
     }
 
-    const extractExposureData =  (exposuresAndFlightsData : Exposure ) => {
+    const formatExposures = (exposures : Exposure[] , ids : (number|null)[] ) : Exposure[] => {
+        return exposures.map((exposure : any , i : number) => {return {...exposure , id : ids[i]}} )
+    }
+
+    const extractExposureData =  (exposuresAndFlightsData : Exposure) => {
         let exposureAndDataToReturn: (Exposure | DBExposure) = exposuresAndFlightsData;
-        if (!exposuresAndFlightsData.wasConfirmedExposure) {
+        if (exposuresAndFlightsData.flightDestinationCountry !== undefined) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
+                [fieldsNames.wasConfirmedExposure] : false,
+                [fieldsNames.wasAbroad]: true,
                 [fieldsNames.exposureSource]: null,
                 [fieldsNames.date]: undefined,
                 [fieldsNames.address]: null,
@@ -79,9 +93,11 @@ const useExposuresSaving = (exposuresAndFlightsVariables: ExposureAndFlightsDeta
                 exposureAddress: exposuresAndFlightsData.exposureAddress ||  null
             }
         }
-        if (!exposuresAndFlightsData.wasAbroad) {
+        if (exposuresAndFlightsData.exposureSource !== undefined) {
             exposureAndDataToReturn = {
                 ...exposureAndDataToReturn,
+                [fieldsNames.wasConfirmedExposure] : true,
+                [fieldsNames.wasAbroad]: false,
                 [fieldsNames.destinationCountry]: null,
                 [fieldsNames.destinationCity]: '',
                 [fieldsNames.destinationAirport]: '',

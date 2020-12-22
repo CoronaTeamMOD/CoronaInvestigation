@@ -47,7 +47,7 @@ export const EilatOrDeadSea = (props: Props) => {
 			<FormRowWithInput fieldName='חזר מים המלח'>
 			<Controller
 					control={control}
-					name={fieldsNames.wasInEilat}
+					name={fieldsNames.wasInDeadSea}
 					defaultValue={wasInDeadSea}
 					render={ (props) => {
 						return (

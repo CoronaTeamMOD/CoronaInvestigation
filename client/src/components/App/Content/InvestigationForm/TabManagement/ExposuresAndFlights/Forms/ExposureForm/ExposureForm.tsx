@@ -30,7 +30,7 @@ const ExposureForm = (props: any) => {
 	const classes = useStyles();
 	const formClasses = useFormStyles();
 
-	const { control , setValue} = useFormContext();
+	const { control , setValue , register } = useFormContext();
 
 	const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
 
@@ -44,7 +44,6 @@ const ExposureForm = (props: any) => {
 		exposureAndFlightsData,
 		exposureSourceSearchString,
 	});
-
 	useEffect(() => {
 		const setOptionalCovidPatientsAsync = async () => {
 			const optionalCovidPatients = await fetchOptionalCovidPatients({ setIsLoading });
@@ -61,7 +60,7 @@ const ExposureForm = (props: any) => {
 
     useEffect(() => {
         setValue(`exposures[${index}].${fieldsNames.placeType}`, exposureAndFlightsData[fieldsNames.placeType] )
-        setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
+		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
     } , []);
 
 	return (
