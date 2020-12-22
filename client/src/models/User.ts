@@ -1,4 +1,5 @@
 import Desk from './Desk';
+import Language from './Language';
 
 interface User {
     id: string;
@@ -9,6 +10,8 @@ interface User {
     userName: string;
     newInvestigationsCount: number;
     activeInvestigationsCount: number;
+    pauseInvestigationsCount: number;
+    languages: Language[];
     userType: number;
     sourceOrganization: string;
     deskName: string;

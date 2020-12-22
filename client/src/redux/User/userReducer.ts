@@ -18,6 +18,8 @@ export const initialUserState: UserState = {
         serialNumber: -1,
         activeInvestigationsCount: 0,
         newInvestigationsCount: 0,
+        pauseInvestigationsCount: 0,
+        languages: [],
         userType: userType.INVESTIGATOR,
         sourceOrganization: '',
         deskName: '',

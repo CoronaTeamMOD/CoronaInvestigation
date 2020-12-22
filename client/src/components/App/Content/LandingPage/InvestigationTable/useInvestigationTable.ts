@@ -2,12 +2,10 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { SweetAlertResult } from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
-import theme from 'styles/theme';
 import County from 'models/County';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
@@ -33,7 +31,6 @@ import useStyle from './InvestigationTableStyles';
 import { defaultOrderBy, rowsPerPage, defaultPage } from './InvestigationTable';
 import {
     TableHeadersNames,
-    IndexedInvestigation,
     IndexedInvestigationData,
     investigatorIdPropertyName
 } from './InvestigationTablesHeaders';
@@ -112,7 +109,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         investigationColor } = parameters;
 
     const classes = useStyle(false);
-    const { alertError, alertWarning } = useCustomSwal();
+    const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
     const { statusFilter: historyStatusFilter = [], deskFilter: historyDeskFilter = [] } = useMemo(() => {
         const { location: { state } } = history;
@@ -265,7 +262,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCountyUsers = () => {
         const countyUsersLogger = logger.setup('Getting group users');
         countyUsersLogger.info('requesting the server the connected admin group users', Severity.LOW);
-        axios.get(`/users/group`)
+        axios.get('/users/group')
             .then((result: any) => {
                 let countyUsers: Map<string, User> = new Map();
                 if (result && result.data) {
@@ -274,6 +271,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             ...user,
                             newInvestigationsCount: user.newInvestigationsCount.totalCount,
                             activeInvestigationsCount: user.activeInvestigationsCount.totalCount,
+                            pauseInvestigationsCount: user.pauseInvestigationsCount.totalCount
                         })
                         countyUsers = new Map(Array.from(countyUsers.entries())
                             .sort((fisrtUser, secondUser) => sortUsersByAvailability(fisrtUser[1], secondUser[1])));
@@ -285,7 +283,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 }
             }).catch(err => {
                 countyUsersLogger.error(err, Severity.HIGH);
-                alertError(FETCH_ERROR_TITLE);
+                alertError('לא ניתן היה לשלוף חוקרים');
             });
     }
 
@@ -526,7 +524,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
         return key ? key : ''
     }
-
 
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');

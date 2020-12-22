@@ -110,13 +110,6 @@ usersRoute.post('/changeInvestigator', adminMiddleWare, (request: Request, respo
             response.send(results[0]?.data);
         } else {
             changeInvestigatorLogger.error(`desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`, Severity.HIGH);
-            logger.error({
-                service: Service.SERVER,
-                severity: Severity.HIGH,
-                workflow: 'Switch investigator',
-                step: `desk id hasnt been changed in the DB in investigations ${epidemiologyNumbers}, due to: ${multipleInvestigationsBulkErrorMessage(results, epidemiologyNumbers)}`,
-                user: response.locals.user.id
-            });
             response.sendStatus(RESPONSE_ERROR_CODE);
         }
     }).catch(err => {
@@ -198,24 +191,30 @@ usersRoute.get('/userTypes', (request: Request, response: Response) => {
 
 usersRoute.get('/group', adminMiddleWare, (request: Request, response: Response) => {
     const groupLogger = logger.setup({
-        workflow: 'Switch investigator',
+        workflow: `fetch investigators by county ${response.locals.user.investigationGroup}`,
         user: response.locals.user.id,
     });
-    groupLogger.info(`querying the graphql API with parameters ${JSON.stringify({ investigationGroup: response.locals.user.investigationGroup })}`, Severity.LOW);
+    groupLogger.info('requesting the graphql API', Severity.LOW);
     graphqlRequest(GET_ACTIVE_GROUP_USERS, response.locals, { investigationGroup: +response.locals.user.investigationGroup })
         .then((result: any) => {
-            let users: User[] = [];
-            if (result && result.data && result.data.allUsers) {
+            if (result.data && !result.errors) {
+                let users: User[] = [];
                 groupLogger.info('got group users from the DB', Severity.LOW);
-                users = result.data.allUsers.nodes.map((user: User) => ({
+                users = result.data.allUsers.nodes.map((user: any) => ({
                     ...user,
+                    languages: user.languages.nodes.map((language: any) => language?.language),
                     token: ''
                 }));
+                response.send(users);
             } else {
-                groupLogger.error('didnt get group users from the DB', Severity.HIGH);
+                groupLogger.error(`didnt get group users from the DB due to ${result.errors[0]?.message}`, Severity.HIGH);
+                response.status(RESPONSE_ERROR_CODE).send(result.errors[0]?.message);
             }
-            return response.send(users);
-        });
+        })
+        .catch(err => {
+            groupLogger.error(`couldnt query investigators due to ${err}`, Severity.CRITICAL);
+            response.status(RESPONSE_ERROR_CODE).send(`couldn't query investigators`);
+        })
 });
 
 usersRoute.post('/changeCounty', adminMiddleWare, (request: Request, response: Response) => {

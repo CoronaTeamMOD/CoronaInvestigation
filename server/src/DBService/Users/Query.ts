@@ -41,6 +41,14 @@ query AllGroupUsers($investigationGroup: Int!) {
       activeInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}}) {
         totalCount
       }
+      pauseInvestigationsCount: investigationsByCreator(filter: {investigationStatus: {equalTo: ${String(InvestigationMainStatusCodes.IN_PROCESS)}}, investigationSubStatus: {isNull: false}}) {
+        totalCount
+      }
+      languages: userLanguagesByUserId {
+        nodes {
+          language
+        }
+      }
       userType
       sourceOrganization
       deskByDeskId {
