@@ -152,7 +152,6 @@ const ExposureForm = (props: any) => {
 								value={exposureAndFlightsData[fieldsNames.date]}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
-									handleChangeExposureDataAndFlightsField(index , fieldsNames.date, newDate);
                                     }
                                 }
 							/>
@@ -189,11 +188,9 @@ const ExposureForm = (props: any) => {
             placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
             onPlaceTypeChange={(value) => {
                 setValue(`exposures[${index}].${fieldsNames.placeType}` , value);
-                handleChangeExposureDataAndFlightsField(index , fieldsNames.placeType, value);
             }}
             onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
                 setValue(`exposures[${index}].${fieldsNames.placeSubType}` , placeSubType);
-                handleChangeExposureDataAndFlightsField(index , fieldsNames.placeSubType, placeSubType?.id || null);
                 }
             }
             />

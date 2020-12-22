@@ -61,7 +61,6 @@ const FlightsForm = (props: any) => {
 									labelText='מתאריך'
 									onChange={(newDate: Date) => {
 										props.onChange(newDate);
-										handleChangeExposureDataAndFlightsField(fieldsNames.flightStartDate, newDate);
 									}}
 								/>
 							);
@@ -82,7 +81,6 @@ const FlightsForm = (props: any) => {
 									labelText='עד'
 									onChange={(newDate: Date) => {
 										props.onChange(newDate);
-										handleChangeExposureDataAndFlightsField(fieldsNames.flightEndDate, newDate);
 									}}
 								/>
 							);
@@ -103,7 +101,6 @@ const FlightsForm = (props: any) => {
 								testId='airlineCompany'
 								onChange={(value) => {
 									props.onChange(value);
-									handleChangeExposureDataAndFlightsField(fieldsNames.airline, value);
 								}}
 								placeholder='הזן חברת תעופה'
 							/>
@@ -124,7 +121,6 @@ const FlightsForm = (props: any) => {
 								testId='airlineNumber'
 								onChange={(value) => {
 									props.onChange(value);
-									handleChangeExposureDataAndFlightsField(fieldsNames.flightNumber, value)
 									}
 								}
 								placeholder='הזן מספר טיסה'

@@ -12,13 +12,12 @@ import useStyles from '../ExposuresAndFlightsStyles';
 interface Props {
     wasInEilat: boolean;
     wasInDeadSea: boolean;
-    onExposuresStatusChange: (fieldName: any, value: any) => void;
 }
 
 export const EilatOrDeadSea = (props: Props) => {
 	const { control } = useFormContext();
 
-    const { wasInEilat , wasInDeadSea , onExposuresStatusChange } = props;
+    const { wasInEilat , wasInDeadSea} = props;
     const classes = useStyles();
 
     return (
@@ -36,7 +35,6 @@ export const EilatOrDeadSea = (props: Props) => {
 								onChange={(event, value) => {
 									if (value !== null) {
 										props.onChange(value);
-										onExposuresStatusChange(fieldsNames.wasInEilat, value);
 									}
 								}}
 							/>
@@ -56,7 +54,6 @@ export const EilatOrDeadSea = (props: Props) => {
 							onChange={(event, value) => {
 								if (value !== null) {
 									props.onChange(value);
-									onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
 								}
 							}}
 						/>

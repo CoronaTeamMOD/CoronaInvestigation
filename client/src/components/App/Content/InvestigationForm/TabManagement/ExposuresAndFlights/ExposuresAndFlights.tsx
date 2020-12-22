@@ -57,7 +57,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
           <EilatOrDeadSea 
             wasInEilat={wasInEilat}
             wasInDeadSea={wasInDeadSea}
-            onExposuresStatusChange={onExposuresStatusChange}
           />
 
           <Divider />

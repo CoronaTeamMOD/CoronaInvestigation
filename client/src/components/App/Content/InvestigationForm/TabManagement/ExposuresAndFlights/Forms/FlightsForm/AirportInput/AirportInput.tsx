@@ -104,7 +104,6 @@ const AirportInput = (props: any) => {
                                 {...props}
 								onChange={(value) => {
                                     props.onChange(value);
-                                    handleChangeExposureDataAndFlightsField(airportFieldName, value)
                                 }}
 								placeholder='שדה תעופה'
 								label='שדה תעופה'
