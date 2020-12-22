@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, IconButton, TextField, Typography } from '@material-ui/core';
+import { Card, Checkbox, IconButton, TextField, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
@@ -35,6 +35,16 @@ const StatusFilter = ({ statuses, filteredStatuses, onStatusChange, onClose }: P
                         {...params}
                     />
                 }
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
+                            size='small'
+                            className={classes.optionCheckbox}
+                            checked={selected}
+                        />
+                        {option.displayName}
+                    </>
+                )}
                 limitTags={2}
             />
             <IconButton onClick={() => onClose()}><Close /></IconButton>

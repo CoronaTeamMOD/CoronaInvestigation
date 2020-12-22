@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     autocomplete: {
         width: '60%'
     },
+    optionCheckbox: {
+        marginLeft: theme.spacing(1),
+        flip: false
+    }
 }));
 
 export default useStyles;
