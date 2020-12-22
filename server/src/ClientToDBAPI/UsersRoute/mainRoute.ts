@@ -132,9 +132,10 @@ usersRoute.post('/changeGroupInvestigator', adminMiddleWare, (request: Request, 
     });
     const newInvestigator = request.body.user;
     const selectedGroups = request.body.groupIds;
+    const userCounty = response.locals.user.investigationGroup;
     const reason = request.body.reason ? request.body.reason : ''; 
     changeGroupInvestigatorLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, reason})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, userCounty, reason})
     .then((result: any) => {
         if (result?.data && !result.errors) {
             changeGroupInvestigatorLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
@@ -157,8 +158,9 @@ usersRoute.post('/changeGroupCounty', adminMiddleWare, (request: Request, respon
     });
     let newInvestigator = 'admin.group' + request.body.county;
     const selectedGroups = request.body.groupIds;
+    const userCounty = response.locals.user.investigationGroup;
     changeGroupCountyLogger.info(`querying the graphql API with parameters ${JSON.stringify(request.body)}`, Severity.LOW);
-    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, wasInvestigationTransferred: true})
+    graphqlRequest(UPDATE_INVESTIGATOR_BY_GROUP_ID, response.locals, {newInvestigator, selectedGroups, userCounty, wasInvestigationTransferred: true})
     .then((result: any) => {
         if (result?.data && !result.errors) {
             changeGroupCountyLogger.info(`investigator have been changed in the DB for group: ${selectedGroups}`, Severity.LOW);
