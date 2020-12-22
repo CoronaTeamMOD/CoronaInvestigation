@@ -18,10 +18,6 @@ const useStyles = (isWide: boolean) => makeStyles((theme: Theme) => ({
     tableCellRoot: {
         padding: '0'
     },
-    groupColor: {
-        height: '4.2rem',
-        width: '1rem'
-    },
     title: {
         margin: 'auto',
         paddingTop: theme.spacing(1),
