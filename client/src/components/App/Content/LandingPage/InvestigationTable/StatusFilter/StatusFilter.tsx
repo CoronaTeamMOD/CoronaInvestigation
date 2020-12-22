@@ -18,10 +18,12 @@ const StatusFilter = ({ statuses, filteredStatuses, onStatusChange, onClose }: P
 
     return (
         <Card className={classes.card}>
-            <Typography>סינון לפי</Typography>
-            <Typography>סטטוס:</Typography>
+            <Typography>
+                סינון לפי סטטוס:&nbsp;
+            </Typography>
             <Autocomplete
-                classes={{ inputRoot: classes.autocompleteInput }}
+                className={classes.autocomplete}
+                size='small'
                 disableCloseOnSelect
                 multiple
                 options={statuses}
@@ -33,11 +35,7 @@ const StatusFilter = ({ statuses, filteredStatuses, onStatusChange, onClose }: P
                         {...params}
                     />
                 }
-                renderTags={(tags) => {
-                    const additionalTagsAmount = tags.length - 1;
-                    const additionalDisplay = additionalTagsAmount > 0 ? ` (+${additionalTagsAmount})` : '';
-                    return tags[0].displayName + additionalDisplay;
-                }}
+                limitTags={2}
             />
             <IconButton onClick={() => onClose()}><Close /></IconButton>
         </Card>

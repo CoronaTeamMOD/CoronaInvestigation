@@ -3,18 +3,14 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
-        width: '30vw',
         display: 'flex',
-        justifyContent: 'space-evenly',
-        margin: '1vh 0',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        height: '8vh',
+        padding: theme.spacing(1),
+        marginBottom: theme.spacing(1)
     },
-    autocompleteInput: {
-        paddingRight: 'unset' + '!important',
-        padding: '1vh 0',
-        width: '12vw',
-        fontSize: '1vw'
+    autocomplete: {
+        width: '60%'
     },
 }));
 

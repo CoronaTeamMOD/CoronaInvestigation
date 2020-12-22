@@ -558,15 +558,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         </Button>
                     </Box>
                 </div>
-                <Grid container justify="flex-end" className={classes.filterTableRow}>
-                    <Collapse in={showFilterRow}>
-                        <StatusFilter
-                            statuses={allStatuses}
-                            filteredStatuses={statusFilter}
-                            onStatusChange={onSelectedStatusesChange}
-                            onClose={closeFilterRow}
-                            />
-                    </Collapse>
+                <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
+                    <Grid item xs={12} md={4}>
+                        <Collapse in={showFilterRow}>
+                            <StatusFilter
+                                statuses={allStatuses}
+                                filteredStatuses={statusFilter}
+                                onStatusChange={onSelectedStatusesChange}
+                                onClose={closeFilterRow}
+                                />
+                        </Collapse>
+                    </Grid>
                 </Grid>
                 <TableContainer ref={tableContainerRef} component={Paper} className={classes.tableContainer}>
                     <Table aria-label='simple table' stickyHeader id='LandingPageTable'>
