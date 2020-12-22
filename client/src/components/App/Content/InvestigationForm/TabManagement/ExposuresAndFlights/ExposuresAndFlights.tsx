@@ -24,9 +24,15 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     disableFlightAddition
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
 
+  const onSubmit = (data : any) => {
+    console.log(data);
+    saveExposure();
+  }
+
   return (
       <FormProvider {...methods}>
-        <form id={`form-${id}`} onSubmit={(e) => saveExposure(e)}>
+        <form id={`form-${id}`} onSubmit={methods.handleSubmit(onSubmit)}>
+          <input type="submit" value="sbmt"/>
           <PossibleExposure
             wereConfirmedExposures={wereConfirmedExposures}
             onExposuresStatusChange={onExposuresStatusChange}

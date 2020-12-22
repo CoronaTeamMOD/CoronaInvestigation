@@ -111,8 +111,10 @@ export const useExposuresAndFlights = (props : Props) => {
     }, []);
 
     const handleChangeExposureDataAndFlightsField = (index: number, fieldName: string, value: any) => {
+        console.log(index , fieldName , value);
         const updatedExpousres = [...exposureAndFlightsData.exposures];
         const updatedExposure = { ...updatedExpousres[index], [fieldName]: value };
+        console.log(updatedExposure);
         updatedExpousres.splice(index, 1, updatedExposure);
         setExposureDataAndFlights({
         ...exposureAndFlightsData,
@@ -137,8 +139,7 @@ export const useExposuresAndFlights = (props : Props) => {
         });
     }
 
-    const saveExposure = (event: React.ChangeEvent<{}>) => {
-        event.preventDefault();
+    const saveExposure = () => {
         const saveExposureLogger = logger.setup('Saving Exposures And Flights tab');
         saveExposureLogger.info('launching the server request', Severity.LOW);
         const tabSavePromises = [saveExposureAndFlightData(), saveResortsData()];
