@@ -15,6 +15,7 @@ import useStyles from './ExposuresAndFlightsStyles';
 import FlightsForm from './FlightsForm/FlightsForm';
 import { useExposuresAndFlights } from './useExposuresAndFlights'
 import PossibleExposure from './Forms/PossibleExposure'; 
+import { EilatOrDeadSea } from './Forms/EilatOrDeadSea';
 
 const addFlightButton: string = 'הוסף טיסה לחול';
 
@@ -50,29 +51,11 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
 
           <Divider />
 
-          <div className={classes.subForm}>
-            <FormTitle title='חזרה מאילת או מים המלח' />
-             <FormRowWithInput fieldName='חזר מאילת'>
-              <Toggle
-                value={wasInEilat}
-                onChange={(event, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wasInEilat, value);
-                  }
-                }}
-              />
-            </FormRowWithInput>
-            <FormRowWithInput fieldName='חזר מים המלח'>
-              <Toggle
-                value={wasInDeadSea}
-                onChange={(event, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wasInDeadSea, value);
-                  }
-                }}
-              />
-            </FormRowWithInput>
-          </div>
+          <EilatOrDeadSea 
+            wasInEilat={wasInEilat}
+            wasInDeadSea={wasInDeadSea}
+            onExposuresStatusChange={onExposuresStatusChange}
+          />
 
           <Divider />
 
