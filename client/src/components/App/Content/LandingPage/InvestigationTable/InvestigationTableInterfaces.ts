@@ -38,7 +38,7 @@ export interface useInvestigationTableOutcome {
     fetchTableData: () => void;
     onInvestigationRowClick: (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => void;
     convertToIndexedRow: (row: InvestigationTableRow) => { [T in keyof IndexedInvestigationData]: any };
-    getUserMapKeyByValue: (map: Map<string, User>, value: string) => string;
+    getInvestigatorMapKeyByValue: (map: Map<string, User>, value: string) => Investigator | null;
     getNestedCellStyle: (cellKey: string , isLast : boolean) => string[];
     getRegularCellStyle: (rowIndex: number, cellKey: string , isGroupShown : boolean) => string[];
     sortInvestigationTable: (orderByValue: string) => void;

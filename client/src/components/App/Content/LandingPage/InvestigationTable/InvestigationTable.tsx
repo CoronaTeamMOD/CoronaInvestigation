@@ -55,7 +55,8 @@ const searchBarError = 'יש להכניס רק אותיות ומספרים';
 const defaultInvestigator = {
     id: '',
     countyId: 0,
-    userName: ''
+    userName: '',
+    isActive: true
 };
 
 const defaultCounty = {
@@ -116,7 +117,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow,
-        sortInvestigationTable, getUserMapKeyByValue, changeGroupsDesk, changeInvestigationsDesk, getNestedCellStyle, getRegularCellStyle,
+        sortInvestigationTable, getInvestigatorMapKeyByValue, changeGroupsDesk, changeInvestigationsDesk, getNestedCellStyle, getRegularCellStyle,
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
@@ -264,11 +265,15 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                 }}
                                 onInputChange={(event, selectedInvestigatorName) => {
                                     if (event?.type !== 'blur') {
-                                        const updatedInvestigator = {
-                                            id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
-                                            userName: selectedInvestigatorName
+                                        const updatedInvestigator = getInvestigatorMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName);
+                                        // const updatedInvestigator = {
+                                        //     id: getUserMapKeyByValue(allUsersOfCurrCounty, selectedInvestigatorName),
+                                        //     userName: selectedInvestigatorName
+                                        // }
+                                        if(updatedInvestigator){
+                                            setSelectedInvestigator(updatedInvestigator);
                                         }
-                                        setSelectedInvestigator(updatedInvestigator);
+
                                     }
                                 }}
                                 renderInput={(params) =>

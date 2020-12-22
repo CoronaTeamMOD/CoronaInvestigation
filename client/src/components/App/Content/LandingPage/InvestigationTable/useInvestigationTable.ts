@@ -375,7 +375,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                     patientCity ? patientCity.displayName : '',
                                     desk,
                                     county,
-                                    { id: user.id, userName: user.userName },
+                                    { id: user.id, userName: user.userName,isActive: user.isActive },
                                     investigation.comment,
                                     statusReason,
                                     wasInvestigationTransferred,
@@ -522,11 +522,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getUserMapKeyByValue = (map: Map<string, User>, value: string): string => {
-        const key = Array.from(map.keys()).find(key => map.get(key)?.userName === value);
-        return key ? key : ''
-    }
 
+    const getInvestigatorMapKeyByValue = (map: Map<string, User>, value: string): Investigator | null => {
+        const user = Array.from(map.values()).find(user =>user.userName === value);
+        return user ? {id: user?.id, userName: user?.userName, isActive: user?.isActive}  : null;
+    }
 
     const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
@@ -716,7 +716,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             patientCity ? patientCity.displayName : '',
                             desk,
                             county,
-                            { id: user.id, userName: user.userName },
+                            { id: user.id, userName: user.userName, isActive: user.IsActive },
                             investigation.comment,
                             statusReason,
                             wasInvestigationTransferred,
@@ -754,7 +754,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         getNestedCellStyle,
         getRegularCellStyle,
         sortInvestigationTable,
-        getUserMapKeyByValue,
+        getInvestigatorMapKeyByValue,
         onCancel,
         onOk,
         snackbarOpen,
