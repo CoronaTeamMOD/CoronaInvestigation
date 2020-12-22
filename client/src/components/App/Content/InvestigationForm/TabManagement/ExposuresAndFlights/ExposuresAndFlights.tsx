@@ -1,4 +1,4 @@
-import React , { useContext } from 'react';
+import React , { useContext , useEffect} from 'react';
 import { Divider } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -14,6 +14,16 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
 
   const methods = useForm();
+
+  useEffect(() => {
+    methods.reset({
+      wasInEilat,
+      wasInDeadSea,
+      exposures,
+      wereFlights,
+      wereConfirmedExposures
+    })
+  }, [exposureAndFlightsData])
 
   const {
     saveExposure,

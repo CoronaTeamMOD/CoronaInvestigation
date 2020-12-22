@@ -1,4 +1,5 @@
 import React from 'react'
+import { Controller, useFormContext } from 'react-hook-form';
 
 import Toggle from 'commons/Toggle/Toggle';
 import FormTitle from 'commons/FormTitle/FormTitle';
@@ -6,7 +7,7 @@ import { fieldsNames } from 'commons/Contexts/ExposuresAndFlights';
 import FormRowWithInput from 'commons/FormRowWithInput/FormRowWithInput';
 
 import useStyles from '../ExposuresAndFlightsStyles';
-import { Controller, useFormContext } from 'react-hook-form';
+
 
 interface Props {
     wasInEilat: boolean;

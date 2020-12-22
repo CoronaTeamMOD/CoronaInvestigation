@@ -1,5 +1,6 @@
 import React from 'react';
 import { AddCircle } from '@material-ui/icons';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Collapse, Divider , IconButton , Typography } from '@material-ui/core';
 
 import Toggle from 'commons/Toggle/Toggle';
@@ -20,10 +21,11 @@ interface Props {
     exposures: Exposure[];
     handleChangeExposureDataAndFlightsField: (index: number, fieldName: string, value: any) => void; 
     onExposureAdded: (wasConfirmedExposure: boolean, wasAbroad: boolean) => void;
-    disableFlightAddition: boolean;
+	disableFlightAddition: boolean;
 }
 
 export const BackFromAbroad = (props: Props) => {
+	const { control , watch} = useFormContext();
     const { fieldContainer } = useFormStyles();
     const {
         wereFlights,
@@ -31,27 +33,38 @@ export const BackFromAbroad = (props: Props) => {
         exposures,
         handleChangeExposureDataAndFlightsField, 
         onExposureAdded,
-        disableFlightAddition
+		disableFlightAddition,
     } = props;
     const classes = useStyles();
+
+	const watchWereFlights = watch(fieldsNames.wereFlights , wereFlights);
 
     return (
         <div className={classes.subForm}>
             <FormTitle title='חזרה מחו״ל' />
 
             <FormRowWithInput testId='wasAbroad' fieldName='האם חזר מחו״ל?'>
-              <Toggle
-                value={wereFlights}
-                onChange={(event, value) => {
-                  if (value !== null) {
-                    onExposuresStatusChange(fieldsNames.wereFlights, value)
-                  }
-                }}
-              />
+				<Controller 
+					control={control}
+					name={fieldsNames.wereFlights}
+					defaultValue={wereFlights}
+					render={(props) => {
+						return (
+							<Toggle
+							{...props}
+							onChange={(event, value) => {
+							if (value !== null) {
+								onExposuresStatusChange(fieldsNames.wereFlights, value)
+							}
+							}}
+						/>
+						)
+					}}
+				/>
             </FormRowWithInput>
 
             <Collapse
-              in={wereFlights}
+              in={watchWereFlights}
               className={classes.additionalInformationForm}
             >
               <div>
@@ -64,6 +77,7 @@ export const BackFromAbroad = (props: Props) => {
                         fieldsNames={fieldsNames}
                         key={(exposure.id || '') + index.toString()}
                         exposureAndFlightsData={exposure}
+                        index={index}
                         handleChangeExposureDataAndFlightsField={
                           (fieldName: string, value: any) => handleChangeExposureDataAndFlightsField(index, fieldName, value)
                         }

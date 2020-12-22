@@ -42,7 +42,7 @@ const PossibleExposure = (props: Props) => {
 	
 	const { control , watch } = useFormContext();
 	
-	const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures);
+    const watchWasConfirmedExposure = watch(fieldsNames.wereConfirmedExposures , wereConfirmedExposures);
 
     return (
         <div className={classes.subForm}>

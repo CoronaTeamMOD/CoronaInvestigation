@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import StoreStateType from 'redux/storeStateType';
 import { createFilterOptions } from '@material-ui/lab';
+import { Controller , useFormContext } from 'react-hook-form';
 
 import Country from 'models/Country';
 import useFormStyles from 'styles/formStyles';
@@ -10,8 +11,20 @@ import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTex
 
 import useStyles from './AirportInputStyles';
 
+
 const AirportInput = (props: any) => {
-    const { country, countryFieldName, city, cityFieldName, airport, airportFieldName, handleChangeExposureDataAndFlightsField} = props;
+    const {
+		country,
+		countryFieldName,
+		city,
+		cityFieldName,
+		airport,
+		airportFieldName,
+		handleChangeExposureDataAndFlightsField,
+		index,
+	} = props;
+
+    const {control} = useFormContext();
 
     const classes = useStyles();
     const formStyles = useFormStyles();
@@ -37,37 +50,72 @@ const AirportInput = (props: any) => {
     };
 
     return (
-        <div className={formStyles.inputRow}>
-            <div className={classes.countryAutocomplete}>
-                <AutocompletedField
-                    value={country}
-                    options={options}
-                    onChange={(event, newValue) => handleCountryChange(newValue)}
-                    getOptionLabel={(option) => getLabel(option)}
-                    filterOptions={filterOptions}
-                    label='מדינה'
-                    placeholder='מדינה'
-                />
-            </div>
-            <>
-                <AlphanumericTextField
-                    name={cityFieldName}
-                    value={city}
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(cityFieldName, value)}
-                    placeholder='עיר'
-                    label='עיר'
-                />
-                <AlphanumericTextField
-                    name={airportFieldName}
-                    value={airport}
-                    onChange={(value) => handleChangeExposureDataAndFlightsField(airportFieldName, value)}
-                    placeholder='שדה תעופה'
-                    label='שדה תעופה'
-                    className={classes.airportTextField}
-                />
-            </>
-        </div>
-    );
+		<div className={formStyles.inputRow}>
+			<div className={classes.countryAutocomplete}>
+				<Controller
+					control={control}
+                    name={`exposures[${index}].${countryFieldName}`}
+                    defaultValue={country}
+					render={(props) => {
+						return (
+							<AutocompletedField
+                                {...props}
+								options={options}
+								onChange={(event, newValue) => {
+									const formattedValue = newValue ? newValue.id : null;
+									props.onChange(formattedValue);
+									handleCountryChange(newValue);
+								}}
+								getOptionLabel={(option) => getLabel(option)}
+								filterOptions={filterOptions}
+								label='מדינה'
+								placeholder='מדינה'
+							/>
+						);
+					}}
+				/>
+			</div>
+			<>
+				<Controller
+					control={control}
+                    name={`exposures[${index}].${cityFieldName}`}
+                    defaultValue={city}
+					render={(props) => {
+						return (
+							<AlphanumericTextField
+								{...props}
+								onChange={(value) => {
+									props.onChange(value);
+									handleChangeExposureDataAndFlightsField(cityFieldName, value);
+								}}
+								placeholder='עיר'
+								label='עיר'
+							/>
+						);
+					}}
+				/>
+				<Controller
+					control={control}
+                    name={`exposures[${index}].${airportFieldName}`}
+                    defaultValue={airport}
+					render={(props) => {
+						return (
+							<AlphanumericTextField
+                                {...props}
+								onChange={(value) => {
+                                    props.onChange(value);
+                                    handleChangeExposureDataAndFlightsField(airportFieldName, value)
+                                }}
+								placeholder='שדה תעופה'
+								label='שדה תעופה'
+								className={classes.airportTextField}
+							/>
+						);
+					}}
+				/>
+			</>
+		</div>
+	);
 };
 
 export default AirportInput;
