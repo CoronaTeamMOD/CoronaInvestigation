@@ -30,7 +30,6 @@ import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
-import InvestigationNumberColumn from './InvestigationNumberColumn/InvestigationNumberColumn';
 import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
