@@ -1,12 +1,11 @@
 import React from 'react';
-import {Comment} from '@material-ui/icons';
 import {Tooltip, ClickAwayListener, IconButton} from '@material-ui/core';
+import { SvgIconComponent } from '@material-ui/icons';
 
-import useStyles from './commentDisplayStyles';
+import useStyles from './clickableTooltipStyles';
 
-const noCommentMessage = 'אין הערה';
 
-const CommentDisplay = ({comment, scrollableRef}: Props) => {
+const IconTooltip = ({value, defaultValue, scrollableRef, InputIcon}: Props) => {
     const [isTooltipOpen, setIsTooltipOpen] = React.useState<boolean>(false);
 
     const handleTooltipClose = () => setIsTooltipOpen(false);
@@ -38,9 +37,9 @@ const CommentDisplay = ({comment, scrollableRef}: Props) => {
             onClose={handleTooltipClose}
             open={isTooltipOpen}
                    disableHoverListener
-            title={comment || noCommentMessage}>
+            title={value || defaultValue || ''}>
                   <IconButton onClick={handleTooltipToggle}>
-                      <Comment color={comment ? 'primary' : 'disabled'}/>
+                      <InputIcon color={value ? 'primary' : 'disabled'}/>
                   </IconButton>
           </Tooltip>
       </ClickAwayListener>
@@ -48,8 +47,10 @@ const CommentDisplay = ({comment, scrollableRef}: Props) => {
 }
 
 interface Props {
-    comment: string | null;
+    value: string | null;
+    defaultValue?: string;
     scrollableRef?: HTMLElement;
+    InputIcon: SvgIconComponent;
 }
 
-export default CommentDisplay;
+export default IconTooltip;

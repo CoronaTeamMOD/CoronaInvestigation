@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search } from '@material-ui/icons';
+import { Refresh, Warning, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -27,7 +27,7 @@ import ComplexityIcon from 'commons/InvestigationComplexity/ComplexityIcon/Compl
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigationTableStyles';
-import CommentDisplay from './commentDisplay/commentDisplay';
+import ImageTooltipDisplay from './clickableTooltip/clickableTooltip'
 import SettingsActions from './SettingsActions/SettingsActions';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
@@ -115,7 +115,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const {
         onCancel, onOk, snackbarOpen, tableRows, onInvestigationRowClick, convertToIndexedRow,
-        sortInvestigationTable, getUserMapKeyByValue, changeGroupsDesk, changeInvestigationsDesk, getNestedCellStyle,getRegularCellStyle
+        sortInvestigationTable, getUserMapKeyByValue, changeGroupsDesk, changeInvestigationsDesk, getTableCellStyles,
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
@@ -174,8 +174,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             });
     }
 
-    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }, index:number) => {
-        const wasInvestigationFetchedByGroup = Boolean(indexedRow.groupId) && !indexedRow.canFetchGroup;
+    const getTableCell = (cellName: string, indexedRow: { [T in keyof typeof TableHeadersNames]: any }, index: number) => {
+        const wasInvestigationFetchedByGroup = indexedRow.groupId && !indexedRow.canFetchGroup;
         switch (cellName) {
             case TableHeadersNames.color:
                 return (
@@ -337,15 +337,25 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     const deskValue = indexedRow[cellName as keyof typeof TableHeadersNames];
                     return deskValue ? deskValue : unassignedToDesk
                 }
-              case TableHeadersNames.subOccupation:
-                  const subOccupation = indexedRow[cellName as keyof typeof TableHeadersNames];
-                  const parentOccupation = Boolean(subOccupation) ?  tableRows[index].parentOccupation : '';
-                  return    <Tooltip title={parentOccupation} placement='top'>
-                                <div>{subOccupation || '-'}</div>
-                            </Tooltip>    
+            case TableHeadersNames.subOccupation:
+                const subOccupation = indexedRow[cellName as keyof typeof TableHeadersNames];
+                const parentOccupation = Boolean(subOccupation) ? tableRows[index].parentOccupation : '';
+                return <Tooltip title={parentOccupation} placement='top'>
+                    <div>{subOccupation || '-'}</div>
+                </Tooltip>
             case TableHeadersNames.comment:
-                return <CommentDisplay comment={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                    scrollableRef={tableContainerRef.current} />
+                return <ImageTooltipDisplay value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        defaultValue='אין הערה'
+                        scrollableRef={tableContainerRef.current}
+                        InputIcon={Comment}
+                />
+            case TableHeadersNames.phoneNumber:
+                return <ImageTooltipDisplay
+                        value={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        defaultValue=''
+                        scrollableRef={tableContainerRef.current}
+                        InputIcon={Call}
+                    />
             case TableHeadersNames.investigationStatus:
                 const investigationStatus = indexedRow[cellName as keyof typeof TableHeadersNames];
                 const epidemiologyNumber = indexedRow[TableHeadersNames.epidemiologyNumber];
@@ -397,7 +407,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     fetchTableData={fetchTableData}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
                     moveToTheInvestigationForm={moveToTheInvestigationForm}
-                /> 
+                />
             default:
                 return indexedRow[cellName as keyof typeof TableHeadersNames]
         }
@@ -467,7 +477,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     };
 
     const onSearchClick = () => {
-        if(currentPage !== defaultPage) {
+        if (currentPage !== defaultPage) {
             setCurrentPage(defaultPage);
         } else {
             fetchTableData();
@@ -498,7 +508,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 event.key === 'Escape' && closeDropdowns()}
         >
             <Grid className={classes.title} container alignItems='center' justify='space-between'>
-                <Grid item xs={2}/>
+                <Grid item xs={2} />
                 <Grid item xs={7}>
                     <Typography color='textPrimary' className={classes.welcomeMessage}>
                         {tableRows.length === 0 ? noInvestigationsMessage : welcomeMessage}
@@ -617,8 +627,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                             {tableRows.map((row: InvestigationTableRow, index: number) => {
                                 const indexedRow = convertToIndexedRow(row);
                                 const isRowClickable = isInvestigationRowClickable(row.mainStatus);
-                                const isGroupShown = checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber);
-
                                 return (
                                     <>
                                         <TableRow selected={isRowSelected(indexedRow.epidemiologyNumber)}
@@ -631,7 +639,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                     <TableCell
                                                         classes={{ root: classes.tableCellRoot }}
                                                         padding='none'
-                                                        className={getRegularCellStyle(index, key , isGroupShown).join(' ')}
+                                                        className={getTableCellStyles(index, key).join(' ')}
                                                         onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
                                                     >
                                                         {
@@ -643,7 +651,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         </TableRow>
                                         {checkGroupedInvestigationOpen.includes(indexedRow.epidemiologyNumber) &&
                                             allGroupedInvestigations.get(indexedRow.groupId)?.filter((row: InvestigationTableRow) => row.epidemiologyNumber !== indexedRow.epidemiologyNumber).map((row: InvestigationTableRow, index: number) => {
-                                                const currentGroupedInvestigationsLength = allGroupedInvestigations.get(indexedRow.groupId)?.length! - 1; // not including row head
                                                 const indexedGroupedInvestigationRow = convertToIndexedRow(row);
                                                 const isGroupedRowClickable = isInvestigationRowClickable(row.mainStatus);
                                                 return (
@@ -656,7 +663,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                             Object.values((user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminCols : userCols).map((key: string) => (
                                                                 <TableCell
                                                                     classes={{ root: classes.tableCellRoot }}
-                                                                    className={getNestedCellStyle(key , index + 1 === currentGroupedInvestigationsLength).join(' ')}
+                                                                    className={getTableCellStyles(index, key).join(' ')}
                                                                     onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
                                                                 >
                                                                     {

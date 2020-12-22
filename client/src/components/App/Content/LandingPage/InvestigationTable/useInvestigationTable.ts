@@ -329,7 +329,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             fetchInvestigationsLogger.info(`launching the selected request to the DB ordering by ${orderBy}`, Severity.LOW);
             getInvestigationsAxiosRequest(orderBy)
                 .then((response: any) => {
-                    fetchInvestigationsLogger.info('got response from the server', Severity.LOW);
+                    fetchInvestigationsLogger.info('got respond from the server', Severity.LOW);
 
                     const { data } = response;
                     let allInvestigationsRawData: any = [];
@@ -610,8 +610,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getDefaultCellStyles = (cellKey : string) => {
-        let classNames: string[] = [];
+    const getTableCellStyles = (rowIndex: number, cellKey: string) => {
+        let classNames = [];
+
         classNames.push(classes.font);
         if (cellKey !== TableHeadersNames.color) {
             classNames.push(classes.tableCell);
@@ -623,52 +624,14 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (cellKey === TableHeadersNames.priority) {
             classNames.push(classes.priorityTableCell);
         }
-
-        return classNames;
-    }
-
-    const getNestedCellStyle = (cellKey: string , isLast : boolean ) => {
-        let classNames = getDefaultCellStyles(cellKey);
-
-        if(isLast) {
-            classNames.push(classes.rowBorder);
-        } else {
-            classNames.push(classes.nestedTableCell);
+        if ((isDefaultOrder && !isLoading) &&
+            (rows.length - 1 !== rowIndex) &&
+            rows[rowIndex]?.coronaTestDate &&
+            (getFormattedDate(rows[rowIndex]?.coronaTestDate) !== getFormattedDate(rows[rowIndex + 1]?.coronaTestDate))) {
+            classNames.push(classes.rowBorder)
         }
 
         return classNames;
-    }
-
-    const getRegularCellStyle = (rowIndex: number, cellKey: string , isGroupShown :boolean) => {
-        let classNames = getDefaultCellStyles(cellKey);
-
-        if(cellNeedsABorder(rowIndex)) {
-            classNames.push(classes.rowBorder);
-        }
-        if(isGroupShown) {
-            classNames.push(classes.nestedTableCell);
-            if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
-                classNames.push(classes.openedTableCell);
-            }
-        }
-
-        return classNames;
-    }
-
-    const cellNeedsABorder = (rowIndex : number) => {
-            const currentRow = rows[rowIndex];
-            const nextRow = rows[rowIndex + 1];
-
-            const isNotLastRow = (rows.length - 1 !== rowIndex);
-            const hasATestDate = Boolean(currentRow?.coronaTestDate);
-            const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
-                                 nextRow.coronaTestDate :
-                                 "9999/12/31" ));
-
-            return ((isDefaultOrder && !isLoading) &&
-                isNotLastRow &&
-                hasATestDate &&
-                isLastOfDate)
     }
 
     const sortInvestigationTable = (orderByValue: string) => {
@@ -758,8 +721,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         fetchTableData,
         onInvestigationRowClick,
         convertToIndexedRow,
-        getNestedCellStyle,
-        getRegularCellStyle,
+        getTableCellStyles,
         sortInvestigationTable,
         getUserMapKeyByValue,
         onCancel,
