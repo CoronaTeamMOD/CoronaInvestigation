@@ -30,7 +30,6 @@ const PossibleExposure = (props: Props) => {
         onExposureAdded, 
         disableConfirmedExposureAddition
     } = props;
-
     const classes = useStyles();
 
     return (

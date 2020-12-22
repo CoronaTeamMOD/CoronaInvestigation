@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const EilatOrDeadSea = (props: Props) => {
-    const {wasInEilat , wasInDeadSea , onExposuresStatusChange} = props;
+    const { wasInEilat , wasInDeadSea , onExposuresStatusChange } = props;
     const classes = useStyles();
 
     return (
