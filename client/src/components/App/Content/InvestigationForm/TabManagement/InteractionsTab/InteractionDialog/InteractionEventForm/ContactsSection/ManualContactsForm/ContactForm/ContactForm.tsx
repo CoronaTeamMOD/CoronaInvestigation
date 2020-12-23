@@ -1,36 +1,32 @@
-import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
 
+import Toggle from 'commons/Toggle/Toggle';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/vendor/useContactFields';
+import ContactFieldName from 'models/enums/ContactFieldName';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
+import useContactFields from 'Utils/Contacts/useContactFields';
+import IdentificationTypes from 'models/enums/IdentificationTypes';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
 import useStyles from './ContactFormStyles';
 import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
 
-const contactedPersonPhone: string = 'מספר טלפון';
-const contactedPersonFirstName: string = 'שם פרטי';
-const contactedPersonLastName: string = 'שם משפחה';
-const contactedPersonID: string = 'ת.ז';
-const contactTypeName: string = 'סוג מגע';
-const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע';
-
 const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
@@ -38,6 +34,11 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
 
+    const defaultIdentificationType = getValues()?.contacts ? getValues().contacts[updatedContactIndex]?.identificationType : contactIdentificationType;
+    const [isPassport, setIsPassport] = useState<boolean>(
+        defaultIdentificationType === IdentificationTypes.PASSPORT
+    );
+    
     const { shouldDisableContact } = useStatusUtils();
 
     useEffect(() => {
@@ -53,7 +54,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     return (
         <div test-id='contactFormContainer' key='addContactFields'>
             <Grid container justify='flex-start' spacing={6}>
-                <FormInput xs={4} labelLength={3} fieldName={contactedPersonFirstName}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.FIRST_NAME}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                         control={control}
@@ -61,7 +62,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                             <AlphabetTextField
                                 disabled={isFieldDisabled}
                                 name={props.name}
-                                key='contactedPersonFirstName'
+                                key='firstName'
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue as string)}
                                 label={FIRST_NAME_LABEL}
@@ -71,7 +72,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={contactedPersonLastName}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.LAST_NAME}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
                         control={control}
@@ -79,7 +80,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                             <AlphabetTextField
                                 disabled={isFieldDisabled}
                                 name={props.name}
-                                key='contactedPersonLastName'
+                                key='lastName'
                                 value={props.value}
                                 onChange={(newValue: string) => props.onChange(newValue as string)}
                                 onBlur={props.onBlur}
@@ -89,7 +90,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={contactedPersonPhone}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.PHONE}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
                         control={control}
@@ -108,12 +109,39 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                 </FormInput>
             </Grid>
             <Grid container justify='flex-start' spacing={6}>
-                <FormInput xs={4} labelLength={3} fieldName={contactedPersonID}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                     <Controller
-                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.ID}`}
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`}
+                        control={control}
+                        defaultValue={defaultIdentificationType}
+                        render={(props) => (
+                            <Toggle
+                                value={isPassport}
+                                onChange={(event, value) => {
+                                    if (value !== null) {
+                                        setIsPassport(value);
+                                        props.onChange(
+                                            value
+                                                ? IdentificationTypes.PASSPORT
+                                                : IdentificationTypes.ID
+                                        );
+                                    }
+                                }}
+                                disabled={isFieldDisabled}
+                                test-id={InteractionEventContactFields.IDENTIFICATION_TYPE}
+                                onBlur={props.onBlur}
+                                firstOption={IdentificationTypes.ID}
+                                secondOption={IdentificationTypes.PASSPORT}
+                            />
+                        )}
+                    />
+                </FormInput>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_NUMBER}>
+                    <Controller
+                        name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`}
                         control={control}
                         render={(props) => (
-                            <NumericTextField
+                            <IdentificationTextField
                                 disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
@@ -124,7 +152,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={contactTypeName}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.CONTACT_TYPE}>
                     <FormControl fullWidth>
                         <div>
                             <Controller
@@ -154,7 +182,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                 </FormInput>
             </Grid>
             <Grid container justify='flex-start' spacing={2}>
-                <FormInput xs={12} labelLength={2} fieldName={contactTypeMoreDetails}>
+                <FormInput xs={12} labelLength={2} fieldName={ContactFieldName.EXTRA_INFO}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
                         control={control}
@@ -181,4 +209,5 @@ interface Props {
     updatedContactIndex: number;
     contactStatus?: InteractedContact['contactStatus'];
     contactCreationTime?: Date;
+    contactIdentificationType?: string;
 };

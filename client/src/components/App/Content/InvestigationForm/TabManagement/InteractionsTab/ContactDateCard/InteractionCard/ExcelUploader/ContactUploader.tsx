@@ -7,9 +7,9 @@ import Contact from 'models/Contact';
 import { Severity } from 'models/Logger';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import Interaction from 'models/Contexts/InteractionEventDialogData';
-import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 import { ParsedExcelRow } from 'models/enums/contactQuestioningExcelFields';
-import useContactFields, { ValidationReason } from 'Utils/vendor/useContactFields';
+import useContactFields, { ValidationReason } from 'Utils/Contacts/useContactFields';
 
 import useStyles from './ExcelUploaderStyles';
 import useContactExcel from './useContactExcel';

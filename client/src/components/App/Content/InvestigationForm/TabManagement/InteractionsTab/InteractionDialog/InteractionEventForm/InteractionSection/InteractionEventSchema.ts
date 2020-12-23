@@ -1,9 +1,9 @@
 import * as yup from 'yup';
 
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema';
 
 const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
@@ -59,11 +59,8 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
-          [InteractionEventContactFields.ID]: yup.string().nullable()
-            .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
-            .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-            .test('isValid', "ת.ז לא תקינה", id => isIdValid(id))
-    })),
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
+        })),
   });
 
 export default interactionEventSchema;
