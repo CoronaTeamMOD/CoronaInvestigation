@@ -70,7 +70,9 @@ begin
 	    	last_name  = LastName,
 	    	phone_number = phoneNumber,
 	    	identification_Number = identificationNumber,
-	    	identification_type = identificationType
+	    	identification_type = (case when identificationNumber is null then null
+				 				  	     when identificationType is null then 'ת"ז' 
+				 				  	   else identificationType end)
 	   	from contacted_person 
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
 	
@@ -95,7 +97,9 @@ begin
 				identification_type,
 				identification_number
 				)
-				VALUES(firstName,lastName, phoneNumber,identificationType, identificationNumber);
+				VALUES(firstName,lastName, phoneNumber,(case when identificationNumber is null then null
+				 				  	     when identificationType is null then 'ת"ז' 
+				 				  	   else identificationType end), identificationNumber);
 
 				personId := currval('person_id_seq');
 				INSERT INTO public.contacted_person

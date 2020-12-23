@@ -13,7 +13,7 @@ import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import IdentificationNumberTextField from 'commons/IdentificationNumberTextField/IdentificationNumberTextField';
+import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
@@ -110,9 +110,8 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }
                             render={(props) => {
                                 return (
-                                    <IdentificationNumberTextField
+                                    <IdentificationTextField
                                         {...props}
-                                        value={interactedContact.identificationNumber}
                                         disabled={shouldIdDisable}
                                         testId="identificationNumber"
                                         onChange={(newValue: string) => {

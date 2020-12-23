@@ -14,14 +14,13 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
-import IdentificationNumberTextField from 'commons/IdentificationNumberTextField/IdentificationNumberTextField';
+import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import { contactType, extraInfo, firstName, identificationNumber, identificationType, lastName, phone } from 'Utils/Contacts/contactsFieldsNames';
 
 import useStyles from './ContactFormStyles';
 import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
-import Contact from 'models/Contact';
 
 const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
@@ -35,10 +34,10 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
 
-    const formValues = getValues().form
-        ? getValues().form[updatedContactIndex].identificationType : contactIdentificationType;
+    const defaultIdentificationType = getValues().form
+        ? getValues().form[updatedContactIndex]?.identificationType : contactIdentificationType;
     const [isPassport, setIsPassport] = useState<boolean>(
-        formValues === IdentificationTypes.PASSPORT
+        defaultIdentificationType === IdentificationTypes.PASSPORT
     );
     
     const { shouldDisableContact } = useStatusUtils();
@@ -115,7 +114,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`}
                         control={control}
-                        defaultValue={formValues}
+                        defaultValue={defaultIdentificationType}
                         render={(props) => (
                             <Toggle
                                 value={isPassport}
@@ -143,7 +142,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`}
                         control={control}
                         render={(props) => (
-                            <IdentificationNumberTextField
+                            <IdentificationTextField
                                 disabled={isFieldDisabled || (contactCreationTime ? shouldDisableContact(contactCreationTime) : false)}
                                 name={props.name}
                                 value={props.value}
