@@ -27,7 +27,6 @@ import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
 
 import DeskFilter from './DeskFilter/DeskFilter';
-import useStyles from './InvestigationTableStyles';
 import TableFilter from './TableFilter/TableFilter';
 import SettingsActions from './SettingsActions/SettingsActions';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
@@ -39,6 +38,7 @@ import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorA
 import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
 import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import InfoItem from '../../InvestigationForm/InvestigationInfo/InfoItem';
+import useStyles, {useTooltipStyles} from './InvestigationTableStyles';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -55,6 +55,39 @@ const unassignedToDesk = 'לא שוייך לדסק';
 const showInvestigationGroupText = 'הצג חקירות קשורות';
 const hideInvestigationGroupText = 'הסתר חקירות קשורות';
 const emptyGroupText = 'שים לב, בסבירות גבוהה לחקירה זו קובצו חקירות ישנות שכבר לא קיימות במערכת'
+const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
+
+interface RowTooltipProps {
+    creationDate: InvestigationTableRow['creationDate'];
+    startTime: InvestigationTableRow['startTime'];
+    children: React.ReactElement;
+}
+
+const RowTooltip = (props: RowTooltipProps) => {
+    const {creationDate, startTime} = props;
+    const enterDelay = 800;
+    const tooltipClasses = useTooltipStyles();
+
+    const formatDate = (date: Date) => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
+
+    const title = (creationDate || startTime)
+        ? <>
+            {<InfoItem size='small' name='תאריך הגעת החקירה' value={formatDate(creationDate)}/>}
+            {<InfoItem size='small' name='תאריך תחילת החקירה' value={formatDate(startTime)}/>}
+        </>
+        : noDataMessage;
+
+    return <Tooltip title={title} enterDelay={enterDelay} enterNextDelay={enterDelay}
+                    classes={{tooltip: tooltipClasses.content}}
+                    PopperProps={{
+                        placement: 'right',
+                        modifiers: {
+                            inner: { enabled: true },
+                        },
+                    }}>
+        {props.children}
+    </Tooltip>
+};
 
 const InvestigationTable: React.FC = (): JSX.Element => {
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
@@ -133,29 +166,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const RowTooltip = (props: React.PropsWithChildren<{creationDate: Date; startTime: Date;}>) => {
-        const {creationDate, startTime} = props;
-        const enterDelay = 800;
-        const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
-        const formatDate = (date: Date) => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
-
-        const title = <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={formatDate(creationDate)}/>}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={formatDate(startTime)}/>}
-            {!(creationDate || startTime) && noDataMessage}
-        </>;
-
-        return <Tooltip title={title} enterDelay={enterDelay} enterNextDelay={enterDelay}
-                        classes={{tooltip: classes.tableRowTooltip}}
-                        PopperProps={{
-                            placement: 'right',
-                            modifiers: {
-                                inner: { enabled: true },
-                            },
-                        }}>
-            {props.children as React.ReactElement}
-        </Tooltip>
-    };
     const getFilteredUsersOfCurrentCounty = (): InvestigatorOption[] => {
         const allUsersOfCountyArray = Array.from(allUsersOfCurrCounty, ([id, value]) => ({ id, value }));
         return deskFilter.length === 0 ?
