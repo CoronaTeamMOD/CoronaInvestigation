@@ -15,6 +15,7 @@ export interface useContactQuestioningParameters {
     setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
+    getValues: any;
 }
 
 export interface useContactQuestioningOutcome {
@@ -28,7 +29,7 @@ export interface useContactQuestioningOutcome {
         interactedContactId: number
     ) => boolean;
     checkAllContactsForDuplicateIds: () => boolean;
-    onSubmit: (data: FormInputs) => void;
+    onSubmit: (data: React.FormEvent) => void;
     parsePerson: (
         person: InteractedContact,
         index: number

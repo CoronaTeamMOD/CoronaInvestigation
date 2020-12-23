@@ -33,7 +33,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         resolver: yupResolver(ContactQuestioningSchema),
     });
 
-    console.log('errs' , methods.errors);
+    const {getValues , trigger} = methods;
+    
     const {
         onSubmit,
         parsePerson,
@@ -47,6 +48,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         allContactedInteractions,
         setFamilyRelationships,
         setContactStatuses,
+        getValues,
     });
 
     useEffect(() => {
@@ -55,12 +57,16 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         loadContactStatuses();
     }, []);
 
+    useEffect(() => {
+        trigger();
+    } , [allContactedInteractions]);
+
     return (
         <>
             <FormProvider {...methods}>
                 <form
                     id={`form-${id}`}
-                    onSubmit={methods.handleSubmit(onSubmit)}
+                    onSubmit={(e : React.FormEvent) => {onSubmit(e)}}
                 >
                     <FormTitle
                         title={`טופס תשאול מגעים (${allContactedInteractions.length})`}
@@ -73,16 +79,16 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
                                 );
                                 return (
                                     <Grid item xs={12}>
-                                    <InteractedContactAccordion
-                                        interactedContact={interactedContact}
-                                        index={index}
-                                        contactStatuses={contactStatuses}
-                                        saveContact={saveContact}
-                                        parsePerson={parsePerson}
-                                        isFamilyContact={isFamilyContact}
-                                        familyRelationships={familyRelationships}
-                                        shouldDisable={shouldDisable}
-                                    />
+                                        <InteractedContactAccordion
+                                            interactedContact={interactedContact}
+                                            index={index}
+                                            contactStatuses={contactStatuses}
+                                            saveContact={saveContact}
+                                            parsePerson={parsePerson}
+                                            isFamilyContact={isFamilyContact}
+                                            familyRelationships={familyRelationships}
+                                            shouldDisable={shouldDisable}
+                                        />
                                     </Grid>
                                 );
                             }

@@ -11,6 +11,8 @@ import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
 
+import ContactQuestioningSchema from './ContactSection/Schemas/ContactQuestioningSchema';
+
 import {
     FormInputs,
     useContactQuestioningOutcome,
@@ -24,7 +26,7 @@ import {
 } from 'Utils/DateUtils/useDateUtils';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses} = parameters;
+    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses , getValues} = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const { convertDate } = useDateUtils();
@@ -98,7 +100,11 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
             .catch(err => {
                 contactLogger.error(`got the following error from the server: ${err}`, Severity.HIGH);
             })
-            .finally(() => setFormState(epidemiologyNumber, id, true))
+            .finally(() => {
+                ContactQuestioningSchema.isValid(formState).then(valid => {
+                    setFormState(epidemiologyNumber, id, valid);
+                })
+            })
         }        
     };
 
@@ -345,8 +351,10 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
         );
     };
 
-    const onSubmit = (data: FormInputs) => {
-        const parsedFormData = parseFormBeforeSending(data);
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const data = getValues();
+        const parsedFormData = parseFormBeforeSending(data as FormInputs);
         saveContactQuestioning(parsedFormData);
     };
 
