@@ -1,5 +1,6 @@
-import React , { useContext , useEffect} from 'react';
 import { Divider } from '@material-ui/core';
+import { yupResolver } from '@hookform/resolvers';
+import React , { useContext , useEffect} from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights';
@@ -27,6 +28,10 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
     })
   }, [exposureAndFlightsData])
 
+  useEffect(() => {
+    console.log(methods.errors);
+  }, [methods.errors])
+
   const {
     saveExposure,
     onExposuresStatusChange,
@@ -37,6 +42,7 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
 
   const onSubmit = (data : FormData) => {
+    console.log("data" , data);
     saveExposure(data , ids);
   }
 

@@ -168,7 +168,7 @@ const ExposureForm = (props: any) => {
                     render={(props) => {
                         return (
                             <Map
-                            name={fieldsNames.address}
+							name={fieldsNames.address}
                             setSelectedAddress={(newAddress) => {
                                 props.onChange(newAddress);
                                 handleChangeExposureDataAndFlightsField(index , fieldsNames.address, newAddress)
