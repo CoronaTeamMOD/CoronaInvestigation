@@ -46,6 +46,7 @@ const ManualContactsForm = () => {
                                 updatedContactIndex={index}
                                 contactStatus={contact.contactStatus}
                                 contactCreationTime={contact.creationTime}
+                                contactIdentificationType={contact.identificationType}
                             />
                         </Grid>
                     ))

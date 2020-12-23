@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
@@ -21,12 +21,13 @@ import { contactType, extraInfo, firstName, identificationNumber, identification
 
 import useStyles from './ContactFormStyles';
 import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
+import Contact from 'models/Contact';
 
 const FIRST_NAME_LABEL = 'שם פרטי*';
 const LAST_NAME_LABEL = 'שם משפחה*';
 const PHONE_NUMBER_LABEL = 'מספר טלפון';
 
-const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime }: Props): JSX.Element => {
+const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, contactCreationTime, contactIdentificationType }: Props): JSX.Element => {
     const { control, setValue, getValues } = useFormContext();
 
     const classes = useStyles();
@@ -34,6 +35,12 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
 
+    const formValues = getValues().form
+        ? getValues().form[updatedContactIndex].identificationType : contactIdentificationType;
+    const [isPassport, setIsPassport] = useState<boolean>(
+        formValues === IdentificationTypes.PASSPORT
+    );
+    
     const { shouldDisableContact } = useStatusUtils();
 
     useEffect(() => {
@@ -108,19 +115,25 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`}
                         control={control}
+                        defaultValue={formValues}
                         render={(props) => (
                             <Toggle
-                                disabled={isFieldDisabled}
-                                test-id={InteractionEventContactFields.IDENTIFICATION_TYPE}
-                                value={props.value}
-                                onBlur={props.onBlur}
-                                onChange={(e, value) => {
+                                value={isPassport}
+                                onChange={(event, value) => {
                                     if (value !== null) {
-                                        props.onChange(value);
+                                        setIsPassport(value);
+                                        props.onChange(
+                                            value
+                                                ? IdentificationTypes.PASSPORT
+                                                : IdentificationTypes.ID
+                                        );
                                     }
                                 }}
-                                firstOption={{value: IdentificationTypes.ID, name: IdentificationTypes.ID}}
-                                secondOption={{value: IdentificationTypes.PASSPORT, name: IdentificationTypes.PASSPORT}}
+                                disabled={isFieldDisabled}
+                                test-id={InteractionEventContactFields.IDENTIFICATION_TYPE}
+                                onBlur={props.onBlur}
+                                firstOption={IdentificationTypes.ID}
+                                secondOption={IdentificationTypes.PASSPORT}
                             />
                         )}
                     />
@@ -198,4 +211,5 @@ interface Props {
     updatedContactIndex: number;
     contactStatus?: InteractedContact['contactStatus'];
     contactCreationTime?: Date;
+    contactIdentificationType?: string;
 };

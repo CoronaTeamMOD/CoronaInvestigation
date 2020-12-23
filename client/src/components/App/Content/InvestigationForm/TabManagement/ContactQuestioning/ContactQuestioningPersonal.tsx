@@ -17,7 +17,6 @@ import IdentificationNumberTextField from 'commons/IdentificationNumberTextField
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
-import IdentificationTextField from './ContactSection/ContactQuestioningPersonal/IdentificationTextField';
 
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
@@ -83,27 +82,19 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     <Toggle
                                         disabled={isFieldDisabled}
                                         test-id="identificationType"
-                                        firstOption={{value: IdentificationTypes.ID, name: IdentificationTypes.ID}}
-                                        secondOption={{value: IdentificationTypes.PASSPORT, name: IdentificationTypes.PASSPORT}}
-                                        value={interactedContact.identificationType}
+                                        firstOption={IdentificationTypes.ID}
+                                        secondOption={IdentificationTypes.PASSPORT}
+                                        value={isPassport}
                                         onChange={(event, value) => {
                                             if (value !== null) {
-                                                updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_TYPE, value);
+                                                setIsPassport(value);
+                                                props.onChange(
+                                                    value
+                                                        ? IdentificationTypes.PASSPORT
+                                                        : IdentificationTypes.ID
+                                                );
                                             }
                                         }}
-                                        // value={isPassport}
-                                        // firstOption="ת.ז"
-                                        // secondOption="דרכון"
-                                        // onChange={(event, value) => {
-                                        //     if (value !== null) {
-                                        //         setIsPassport(value);
-                                        //         props.onChange(
-                                        //             value
-                                        //                 ? IdentificationTypes.PASSPORT
-                                        //                 : IdentificationTypes.ID
-                                        //         );
-                                        //     }
-                                        // }}
                                     />
                                 );
                             }}
@@ -119,12 +110,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                             }
                             render={(props) => {
                                 return (
-                                    <IdentificationTextField
+                                    <IdentificationNumberTextField
                                         {...props}
-                                        //value={interactedContact.identificationNumber}
-                                        // onChange={(newValue: string) =>
-                                        //     updateInteractedContact(interactedContact, InteractedContactFields.IDENTIFICATION_NUMBER, newValue || null)
-                                        // }
+                                        value={interactedContact.identificationNumber}
                                         disabled={shouldIdDisable}
                                         testId="identificationNumber"
                                         onChange={(newValue: string) => {

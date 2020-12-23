@@ -137,7 +137,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         disabled={shouldDisableDeleteContact(isContactComplete, contact)}
                         test-id='deleteContactLocation'
                         onClick={() => {
-                            contact.serialId && onDeleteContactClick(contact.id, contact.involvedContactId || null)
+                            contact.id && onDeleteContactClick(contact.id, contact.involvedContactId || null)
                         }}>
                         <Delete />
                     </IconButton>
