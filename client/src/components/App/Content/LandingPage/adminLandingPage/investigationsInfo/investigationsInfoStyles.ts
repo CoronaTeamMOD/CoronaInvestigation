@@ -34,6 +34,10 @@ const useStyles = makeStyles({
     },
     allInvestigationsText: {
         fontSize: '1.3vw',
+    },
+    navigateIcon: {
+        backgroundColor: 'lightGrey',
+        borderRadius: '2vw',
     }
 });
 

@@ -56,7 +56,7 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                         <div className={classes.allInvestigations}>
                             <Typography className={classes.allInvestigationsText}><b>חקירות בסך הכל</b></Typography>
                             <IconButton onClick={() => history.push(landingPageRoute)}>
-                                <NavigateBeforeIcon style={{backgroundColor: 'lightGrey', borderRadius: '2vw'}} />
+                                <NavigateBeforeIcon className={classes.navigateIcon} />
                             </IconButton>
                         </div>
                     </div>

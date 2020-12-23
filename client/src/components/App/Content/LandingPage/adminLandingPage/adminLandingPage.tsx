@@ -6,6 +6,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 
 import useStyles from './adminLandingPageStyles';
+import UnassignedCard from '../UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 
@@ -48,17 +49,7 @@ const LandingPage: React.FC = (): JSX.Element => {
                     </Card>
                 </Grid>
                 <Grid item xs={3}>
-                    <Card className={classes.unassignedCard}>
-                        <CardContent className={classes.TimeRangeCardContent}>
-                            <Typography>13 חקירות</Typography>
-                            <Typography>ממתינות להקצאה</Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button>
-                                חקירות
-                            </Button>
-                        </CardActions>
-                    </Card>
+                    <UnassignedCard />
                 </Grid>
             </Grid>
         </div>

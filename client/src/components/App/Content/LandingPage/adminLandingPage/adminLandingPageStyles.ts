@@ -22,11 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: '17vh',
         borderRadius: '1vw',
     },
-    unassignedCard: {
-        width: '14vw',
-        height: '14vh',
-        borderRadius: '1vw',
-    },
     cardTitle: {
         fontSize: '0.9vw',
     },
