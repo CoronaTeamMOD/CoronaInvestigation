@@ -13,7 +13,7 @@ import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
-    const { control, getValues } = useFormContext();
+    const { control, getValues , watch} = useFormContext();
     const {
         interactedContact,
         index,
@@ -27,14 +27,22 @@ const ReachContact = (props: Props) => {
         ''
     );
 
+    const formValues = getValues().form
+    ? getValues().form[index]
+    : interactedContact;
+
+    const watchContactStatus = watch(`form[${index}].contactStatus`)
+
+    const currentContactStatus = watchContactStatus ? watchContactStatus : formValues.contactStatus;
+
     const currentValue = contactStatuses.find(
         (contactStatus: ContactStatus) =>
-            contactStatus.id === interactedContact.contactStatus
+            contactStatus.id === currentContactStatus
     );
 
-    const formValues = getValues().form
-        ? getValues().form[index]
-        : interactedContact;
+    console.log(currentContactStatus , currentValue);
+
+
     const { isFieldDisabled } = useContactFields(formValues.contactStatus);
 
     const { changeContactStatus } = useReachContact({
@@ -61,7 +69,7 @@ const ReachContact = (props: Props) => {
                                     getOptionLabel={(option) =>
                                         option.displayName
                                     }
-                                    inputValue={contactStatusInput}
+                                    inputValue={currentValue?.displayName}
                                     value={currentValue}
                                     onChange={(e, data) =>
                                         changeContactStatus(
@@ -70,16 +78,6 @@ const ReachContact = (props: Props) => {
                                             props.onChange
                                         )
                                     }
-                                    onInputChange={(
-                                        event,
-                                        newContactStatus
-                                    ) => {
-                                        if (event?.type !== 'blur') {
-                                            setContactStatusInput(
-                                                newContactStatus
-                                            );
-                                        }
-                                    }}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}

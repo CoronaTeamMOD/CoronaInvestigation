@@ -5,7 +5,7 @@ import theme from 'styles/theme';
 
 const InvalidFormIcon = () => {
     return (
-        <Tooltip title={'טופס לא ולידי'} arrow>
+        <Tooltip title={'ישנם שדות לא תקינים'} arrow>
             <ErrorOutlineIcon style={{ color : theme.palette.error.main}}/>
         </Tooltip>
     )
