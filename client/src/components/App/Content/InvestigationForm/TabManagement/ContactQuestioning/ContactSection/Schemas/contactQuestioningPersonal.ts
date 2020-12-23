@@ -11,24 +11,31 @@ export const contactQuestioningPersonal = {
         .string()
         .required('סוג זיהוי חובה'),
     [InteractedContactFields.IDENTIFICATION_NUMBER]: yup
-        .string()
-        .when(InteractedContactFields.IDENTIFICATION_TYPE, {
-            is: IdentificationTypes.ID,
-            then: yup
-                .string()
-                .nullable()
-                .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
-                .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-                .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
-            otherwise: yup.string().nullable().test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
+        .string().when(InteractedContactFields.CONTACT_STATUS,{
+            is: 5,
+            then: yup.string().nullable(),
+            otherwise: yup.string().when(InteractedContactFields.IDENTIFICATION_TYPE, {
+                is: IdentificationTypes.ID,
+                then: yup
+                    .string()
+                    .nullable()
+                    .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
+                    .length(9, 'ת.ז מכילה 9 מספרים בלבד')
+                    .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
+                otherwise: yup.string().nullable().test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
+            })
         }),
     [InteractedContactFields.BIRTH_DATE]: yup.date().nullable(),
     [InteractedContactFields.PHONE_NUMBER]: yup
-        .string()
-        .nullable()
-        .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+        .string().when(InteractedContactFields.CONTACT_STATUS,{
+            is: 5,
+            then: yup.string().nullable(),
+            otherwise: yup.string().nullable().matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+        }),
     [InteractedContactFields.ADDITIONAL_PHONE_NUMBER]: yup
-        .string()
-        .nullable()
-        .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+        .string().when(InteractedContactFields.CONTACT_STATUS,{
+            is: 5,
+            then: yup.string().nullable(),
+            otherwise: yup.string().nullable().matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
+        }),
 };

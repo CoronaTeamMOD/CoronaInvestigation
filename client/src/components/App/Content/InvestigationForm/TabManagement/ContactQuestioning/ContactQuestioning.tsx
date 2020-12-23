@@ -32,6 +32,8 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         mode: 'all',
         resolver: yupResolver(ContactQuestioningSchema),
     });
+
+    console.log('errs' , methods.errors);
     const {
         onSubmit,
         parsePerson,
