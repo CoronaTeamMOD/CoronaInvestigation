@@ -9,6 +9,7 @@ import Country from 'models/Country';
 import { Severity } from 'models/Logger';
 import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
+import EducationGrade from 'models/EducationGrade';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import { setCities } from 'redux/City/cityActionCreators';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
@@ -21,6 +22,7 @@ import  BroadcastMessage, { BC_TABS_NAME }  from 'models/BroadcastMessage';
 import { setContactType } from 'redux/ContactType/contactTypeActionCreators';
 import { setSubStatuses } from 'redux/SubStatuses/subStatusesActionCreators';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
+import { setEducationGrade } from 'redux/EducationGrade/educationGradeActionCreators';
 import InvestigationComplexityByStatus from 'models/enums/InvestigationComplexityByStatus';
 
 import { defaultUser } from './InvestigationInfo/InvestigationInfoBar';
@@ -135,6 +137,25 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             })
     };
 
+    const fetchEducationGrades = () => {
+        const educationGradesLogger = logger.setup('Fetching education grades');
+        educationGradesLogger.info('launching education grades request', Severity.LOW);
+        axios.get('/education/educationGrades')
+        .then((result: any) => {
+            if (result?.data && result.headers['content-type'].includes('application/json')) {
+                educationGradesLogger.info('educationGrades request was successful', Severity.LOW);
+                const educationGrades: Map<number, EducationGrade> = new Map();
+                result.data.forEach((grade: EducationGrade) => educationGrades.set(grade.id, grade));
+                setEducationGrade(educationGrades);
+            } else {
+                educationGradesLogger.error('educationGrades request was successful but data isnt as expected', Severity.LOW);
+            }
+        })
+        .catch(error => {
+            educationGradesLogger.error(`got errors in server result: ${error}`, Severity.HIGH);
+        });
+    };
+
     useEffect(() => {
         if (epidemiologyNumber !== defaultEpidemiologyNumber && userId !== defaultUser.id) {
             fetchCities();
@@ -143,6 +164,7 @@ const useInvestigationForm = (): useInvestigationFormOutcome => {
             fetchStatuses();
             initializeTabShow();
             investigationStatus.mainStatus && fetchSubStatusesByStatus(investigationStatus.mainStatus);
+            fetchEducationGrades();
         }
     }, [epidemiologyNumber, userId]);
 
