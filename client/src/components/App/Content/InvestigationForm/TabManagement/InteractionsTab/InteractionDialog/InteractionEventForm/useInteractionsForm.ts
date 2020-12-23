@@ -9,7 +9,6 @@ import useDBParser from 'Utils/vendor/useDBParsing';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InteractionEventDialogData from 'models/Contexts/InteractionEventDialogData';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 
 const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFormOutcome => {
         const { loadInteractions, loadInvolvedContacts, onDialogClose} = props;

@@ -34,8 +34,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(state => state.contactTypes);
     const { isFieldDisabled } = useContactFields(contactStatus);
 
-    const defaultIdentificationType = getValues().form
-        ? getValues().form[updatedContactIndex]?.identificationType : contactIdentificationType;
+    const defaultIdentificationType = getValues()?.contacts ? getValues().contacts[updatedContactIndex]?.identificationType : contactIdentificationType;
     const [isPassport, setIsPassport] = useState<boolean>(
         defaultIdentificationType === IdentificationTypes.PASSPORT
     );
