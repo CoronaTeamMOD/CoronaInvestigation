@@ -133,18 +133,20 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         setCheckedIndexedRows([]);
     }
 
-    const RowTooltip = (props: PropsWithChildren<{creationDate: Date; startTime: Date;}>) => {
+    const RowTooltip = (props: React.PropsWithChildren<{creationDate: Date; startTime: Date;}>) => {
         const {creationDate, startTime} = props;
+        const enterDelay = 800;
         const noDataMessage = 'אין מידע אודות תאריכים לחקירה זו';
-        const formatDate = (date: Date) => format(new Date(date), 'dd/MM/yyyy');
+        const formatDate = (date: Date) => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
 
         const title = <>
-            {creationDate && <InfoItem size='small' name='תאריך הגעת החקירה' value={formatDate(creationDate)}/>}
-            {startTime && <InfoItem size='small' name='תאריך תחילת החקירה' value={formatDate(startTime)}/>}
+            {<InfoItem size='small' name='תאריך הגעת החקירה' value={formatDate(creationDate)}/>}
+            {<InfoItem size='small' name='תאריך תחילת החקירה' value={formatDate(startTime)}/>}
             {!(creationDate || startTime) && noDataMessage}
         </>;
 
-        return <Tooltip title={title} enterDelay={200}  classes={{tooltip: classes.tableRowTooltip}}
+        return <Tooltip title={title} enterDelay={enterDelay} enterNextDelay={enterDelay}
+                        classes={{tooltip: classes.tableRowTooltip}}
                         PopperProps={{
                             placement: 'right',
                             modifiers: {
