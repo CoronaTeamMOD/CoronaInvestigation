@@ -1,7 +1,6 @@
-import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles({
     unassignedCard: {
         width: '14vw',
         height: '8vh',
@@ -14,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     investigationNumberText: {
         fontSize: '1.2vw',
-        color: theme.palette.error.main,
+        color: '#F95959',
     },
     investigationAmountText: {
         fontSize: '1.2vw',
@@ -30,6 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: 'lightGrey',
         borderRadius: '2vw',
     }
-}));
+});
 
 export default useStyles;

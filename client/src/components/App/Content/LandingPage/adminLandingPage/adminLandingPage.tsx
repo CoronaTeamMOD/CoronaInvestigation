@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@material-ui/core';
 
 import DatePick from 'commons/DatePick/DatePick';
@@ -10,7 +9,7 @@ import UnassignedCard from '../UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 
-const LandingPage: React.FC = (): JSX.Element => {
+const AdminLandingPage: React.FC = (): JSX.Element => {
     const classes = useStyles();
 
     const { countyDisplayName } = useAppToolbar();
@@ -56,4 +55,4 @@ const LandingPage: React.FC = (): JSX.Element => {
     )
 }
 
-export default LandingPage;
+export default AdminLandingPage;
