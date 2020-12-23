@@ -15,10 +15,10 @@ import Toggle from 'commons/Toggle/Toggle';
 import StoreStateType from 'redux/storeStateType';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import useStyles from './ContactQuestioningStyles';
-import useContactFields from 'Utils/Contacts/useContactFields';
 import { OCCUPATION_LABEL, RELEVANT_OCCUPATION_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
 
 const ContactQuestioningCheck: React.FC<Props> = (props: Props): JSX.Element => {

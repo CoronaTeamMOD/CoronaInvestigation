@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
-import { isIdValid , isPassportValid} from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import { idLength, isIdValid , isPassportValid, maxIdentificationLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 
 const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/;
 
@@ -15,12 +15,16 @@ export const contactQuestioningPersonal = {
         .when(InteractedContactFields.IDENTIFICATION_TYPE, {
             is: IdentificationTypes.ID,
             then: yup
-                .string()
-                .nullable()
-                .matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
-                .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-                .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
-            otherwise: yup.string().nullable().test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
+              .string()
+              .nullable()
+              .matches(idBasicValidation, 'ת.ז חייבת להכיל ספרות בלבד')
+              .length(idLength, `ת.ז מכילה ${idLength} ספרות בלבד`)
+              .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
+            otherwise: yup
+                    .string()
+                    .nullable()
+                    .max(maxIdentificationLength, `דרכון מכיל ${maxIdentificationLength} ספרות בלבד`)
+                    .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
         }),
     [InteractedContactFields.BIRTH_DATE]: yup.date().nullable(),
     [InteractedContactFields.PHONE_NUMBER]: yup

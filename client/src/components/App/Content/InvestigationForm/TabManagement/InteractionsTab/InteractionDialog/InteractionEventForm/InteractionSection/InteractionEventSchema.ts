@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 
-import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import { isIdValid } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
-import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
-import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
+import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
+import { isIdValid , isPassportValid, idLength, maxIdentificationLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
+import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
+import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
@@ -60,16 +60,26 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup.string().nullable()
-          .when(InteractionEventContactFields.IDENTIFICATION_TYPE,
-            {
-                is: IdentificationTypes.ID,
-                then: yup.string().matches(/^\d+|^$/, 'ת.ז חייבת להכיל מספרים בלבד')
-                .length(9, 'ת.ז מכילה 9 מספרים בלבד')
-                .test('isValid', "ת.ז לא תקינה", id => isIdValid(id)),
-                else: yup.string()
-            }
-    )})),
+        [InteractionEventContactFields.IDENTIFICATION_TYPE]: yup
+          .string()
+          .required('סוג זיהוי חובה'),
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup
+          .string()
+          .when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
+              is: IdentificationTypes.ID,
+              then: yup
+                .string()
+                .nullable()
+                .matches(idBasicValidation, 'ת.ז חייבת להכיל ספרות בלבד')
+                .length(idLength, `ת.ז מכילה ${idLength} ספרות בלבד`)
+                .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
+              otherwise: yup
+                      .string()
+                      .nullable()
+                      .max(maxIdentificationLength, `דרכון מכיל ${maxIdentificationLength} ספרות בלבד`)
+                      .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
+            }),
+        })),
   });
 
 export default interactionEventSchema;

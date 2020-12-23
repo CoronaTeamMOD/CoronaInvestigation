@@ -1,15 +1,16 @@
 import React from 'react';
 import * as yup from 'yup';
 
+import { generalIdentificationValidation, maxIdentificationLength } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import TypePreventiveTextField from 'commons/TypingPreventionTextField/TypingPreventionTextField';
 
-const errorMessage = 'השדה יכול להכיל רק אותיות, מספרים וסלשים';
-const maxLengthErrorMessage = 'השדה יכול להכיל 15 אותיות בלבד';
+const errorMessage = 'הוכנס תו לא וולידי';
+const maxLengthErrorMessage = `השדה יכול להכיל ${maxIdentificationLength} תווים בלבד`;
 
 export const stringAlphanum = yup
   .string()
-  .matches(/^[a-zA-Z0-9\s\/]*$/, errorMessage)
-  .max(50, maxLengthErrorMessage);
+  .matches(generalIdentificationValidation, errorMessage)
+  .max(maxIdentificationLength, maxLengthErrorMessage);
 
 const IdentificationTextField = (props : Props) => {
   return (
