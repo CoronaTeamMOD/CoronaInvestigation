@@ -111,7 +111,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const classes = useStyle(false);
     const { alertError } = useCustomSwal();
     const history = useHistory<HistoryState>();
-    const { statusFilter: historyStatusFilter = [], deskFilter: historyDeskFilter = [] } = useMemo(() => {
+    const { statusFilter: historyStatusFilter = [], 
+            deskFilter: historyDeskFilter = [], 
+            inactiveUserFilter : historyInactiveUserFilter = false, 
+            unassignedUserFilter : historyUnassignedUserFilter = false } = useMemo(() => {
         const { location: { state } } = history;
         return state || {};
     }, []);
@@ -125,6 +128,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const [deskFilter, setDeskFilter] = useState<DeskFilter>(historyDeskFilter);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [isSearchQueryValid, setIsSearchQueryValid] = useState<boolean>(true);
+    const [unassignedUserFilter, setUnassignedUserFilter] = useState<boolean>(historyUnassignedUserFilter);
+    const [inactiveUserFilter, setInactiveUserFilter] = useState<boolean>(historyInactiveUserFilter);
 
     const user = useSelector<StoreStateType, User>(state => state.user.data);
     const isLoggedIn = useSelector<StoreStateType, boolean>(state => state.user.isLoggedIn);
@@ -140,6 +145,17 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         setCurrentPage(defaultPage);
     };
 
+    const changeUnassginedUserFilter = (value: boolean) => {
+        updateFilterHistory('unassignedUserFilter', value);
+        setUnassignedUserFilter(value);
+        setCurrentPage(defaultPage);
+    }
+
+    const changeInactiveUserFilter = (value: boolean) => {
+        updateFilterHistory('inactiveUserFilter', value);
+        setInactiveUserFilter(value);
+        setCurrentPage(defaultPage);
+    }
 
     const changeDeskFilter = (desks: Desk[]) => {
         const desksIds = desks.map(desk => desk.id);
@@ -236,6 +252,10 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         const filterRules = {
             ...filterCreators.DESK_ID(deskFilter),
             ...filterCreators.STATUS(statusFilter),
+            userByCreator: {
+                ...filterCreators.UNASSIGNED_USER(unassignedUserFilter),
+                ...filterCreators.INACTIVE_USER(inactiveUserFilter),
+            },
             ...searchQueryFilter,
         };
 
@@ -422,7 +442,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         if (isLoggedIn) {
             fetchTableData();
         }
-    }, [isLoggedIn, currentPage, orderBy, statusFilter, deskFilter]);
+    }, [isLoggedIn, currentPage, orderBy, statusFilter, deskFilter, unassignedUserFilter, inactiveUserFilter]);
 
     const onInvestigationRowClick = (investigationRow: { [T in keyof IndexedInvestigationData]: any }) => {
         const investigationClickLogger = logger.setupVerbose({
@@ -770,7 +790,11 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         changeDeskFilter,
         searchQuery,
         changeSearchQuery,
-        isSearchQueryValid
+        isSearchQueryValid,
+        changeUnassginedUserFilter,
+        unassignedUserFilter,
+        changeInactiveUserFilter,
+        inactiveUserFilter
     };
 };
 
