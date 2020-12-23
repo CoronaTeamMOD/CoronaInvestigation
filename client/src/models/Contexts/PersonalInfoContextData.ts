@@ -1,5 +1,6 @@
-import DBAddress from '../DBAddress';
+import EducationGrade from 'models/EducationGrade';
 
+import DBAddress from '../DBAddress';
 export interface PersonalInfoDbData {
     phoneNumber: string | null;
     additionalPhoneNumber: string | null;
@@ -12,7 +13,7 @@ export interface PersonalInfoDbData {
     institutionName: string | null;
     otherOccupationExtraInfo: string | null;
     role: number | null;
-    educationGrade: string | null;
+    educationGrade: EducationGrade | null;
     educationClassNumber: number | null;
 };
 
@@ -31,6 +32,6 @@ export interface PersonalInfoFormData {
     institutionName: string;
     otherOccupationExtraInfo: string;
     role: number;
-    educationGrade: string;
+    educationGrade: string | null;
     educationClassNumber: number;
 };

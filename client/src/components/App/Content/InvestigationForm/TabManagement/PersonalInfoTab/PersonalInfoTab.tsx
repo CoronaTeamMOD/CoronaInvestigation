@@ -146,23 +146,23 @@ const PersonalInfoTab: React.FC<Props> = ({ id }: Props): JSX.Element => {
     const convertToDBData = (): PersonalInfoDbData => {
         const data = methods.getValues();
         return {
-            phoneNumber: data.phoneNumber !== '' ? data.phoneNumber : null,
-            additionalPhoneNumber: data.additionalPhoneNumber !== '' ? data.additionalPhoneNumber : null,
-            contactPhoneNumber: data.contactPhoneNumber !== '' ? data.contactPhoneNumber : null,
-            contactInfo: data.contactInfo !== '' ? data.contactInfo : null,
-            insuranceCompany: data.insuranceCompany !== '' ? data.insuranceCompany : null,
+            phoneNumber: data.phoneNumber || null,
+            additionalPhoneNumber: data.additionalPhoneNumber || null,
+            contactPhoneNumber: data.contactPhoneNumber || null,
+            contactInfo: data.contactInfo || null,
+            insuranceCompany: data.insuranceCompany || null,
             address: {
-                city: data.city ? data.city : null,
-                street: data.street ? data.street : null,
-                floor: data.floor ? data.floor : null,
-                houseNum: data.houseNum ? data.houseNum : null
+                city: data.city || null,
+                street: data.street || null,
+                floor: data.floor || null,
+                houseNum: data.houseNum || null
             },
-            relevantOccupation: data.relevantOccupation !== undefined ? data.relevantOccupation : null,
-            educationOccupationCity: data.educationOccupationCity ? data.educationOccupationCity : null,
-            institutionName: data.institutionName ? data.institutionName : null,
-            otherOccupationExtraInfo: data.otherOccupationExtraInfo ? data.otherOccupationExtraInfo : null,
-            role: data.role ? data.role : null,
-            educationGrade: data.educationGrade ? data.educationGrade : null,
+            relevantOccupation: data.relevantOccupation || null,
+            educationOccupationCity: data.educationOccupationCity || null,
+            institutionName: data.institutionName || null,
+            otherOccupationExtraInfo: data.otherOccupationExtraInfo || null,
+            role: data.role || null,
+            educationGrade: data.educationGrade || null,
             educationClassNumber: data.educationClassNumber ? +data.educationClassNumber : null,
         }
     }

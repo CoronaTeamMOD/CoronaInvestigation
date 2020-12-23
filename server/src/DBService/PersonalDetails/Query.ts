@@ -48,7 +48,10 @@ query getInvestigatedPatientDetails($id: Int!) {
         hmo
         additionalPhoneNumber
         role
-        educationGrade
+        educationGrade: educationGradeByEducationGrade {
+          id
+          displayName
+        }
         educationClassNumber
         subOccupationBySubOccupation {
           city
