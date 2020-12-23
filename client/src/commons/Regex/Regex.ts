@@ -1,0 +1,1 @@
+export const TRANSFER_REASON_REGEX = /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/
