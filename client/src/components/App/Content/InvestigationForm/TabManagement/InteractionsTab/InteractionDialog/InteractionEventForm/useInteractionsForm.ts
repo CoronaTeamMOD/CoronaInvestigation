@@ -25,11 +25,7 @@ const useInteractionsForm = (props: useInteractionFormIncome): useInteractionFor
             const parsedData = {
                 ...interactionsDataToSave,
                 [InteractionEventDialogFields.LOCATION_ADDRESS]: locationAddress,
-                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber,
-                [InteractionEventDialogFields.CONTACTS]: interactionsDataToSave?.contacts?.map((contact: Contact) => ({
-                    ...contact,
-                    identificationType: contact.identificationType || IdentificationTypes.ID
-                }))
+                [InteractionEventDialogFields.INVESTIGATION_ID]: epidemiologyNumber
             };
             if (interactionsDataToSave[InteractionEventDialogFields.ID]) {
                 const updateInteractionsLogger = logger.setup('Update Interaction')
