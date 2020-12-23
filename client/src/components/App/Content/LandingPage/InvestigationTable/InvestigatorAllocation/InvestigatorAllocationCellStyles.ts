@@ -8,6 +8,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    inActiveInvestigator: {
+        color: '#F95959',
+        fontWeight: 'bold'
+    },
     warningIcon: {
         color: theme.palette.warning.main,
         paddingLeft: theme.spacing(1),

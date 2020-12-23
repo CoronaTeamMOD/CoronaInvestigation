@@ -44,6 +44,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       userByCreator {
         id
         userName
+        isActive
       }
       investigationGroupByGroupId {
         investigationGroupReasonByReason {
@@ -102,6 +103,7 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       userByCreator {
         id
         userName
+        isActive
         countyByInvestigationGroup {
           displayName
           id

@@ -41,6 +41,7 @@ interface UserInvestigations {
             userByCreator: {
                 id: string;
                 userName: string;
+                isActive: boolean;
             };
             investigationGroupByGroupId: {
                 investigationGroupReasonByReason: {
@@ -90,6 +91,7 @@ interface GroupIvestigations {
             userByCreator: {
                 id: string;
                 userName: string;
+                isActive: boolean;
                 countyByInvestigationGroup: {
                     districtByDistrictId: {
                         displayName: string;

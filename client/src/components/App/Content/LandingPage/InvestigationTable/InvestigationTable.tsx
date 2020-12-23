@@ -212,7 +212,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     return (
                         <InvestigatorAllocationCell
                             investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                        />  
+                            isInvestigatorActive={tableRows[index].investigator?.isActive}
+                            />  
                     )
             case TableHeadersNames.investigationDesk:
                 if (selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
