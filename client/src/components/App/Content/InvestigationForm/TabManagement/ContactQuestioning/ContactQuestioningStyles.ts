@@ -8,8 +8,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     title: {
         paddingLeft: '2vw',
     },
+    accordionContainer: {
+        padding : '2vw'
+    },
     accordion: {
         margin: theme.spacing(2),
+        padding: theme.spacing(1)
+    },
+    errorAccordion: {
+        border: `2px solid ${theme.palette.error.light}`,
     },
     avatar: {
         backgroundColor: theme.palette.primary.main,
@@ -48,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '17vw',
         display: 'flex',
         flexDirection: 'row',
-    },
+    }
 }));
 
 export default useStyles;
