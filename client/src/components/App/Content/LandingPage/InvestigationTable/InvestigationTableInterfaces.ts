@@ -3,11 +3,11 @@ import { MutableRefObject } from 'react';
 import User from 'models/User';
 import Desk from 'models/Desk';
 import County from 'models/County';
+import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
-import InvestigatorOption from 'models/InvestigatorOption';
 
-import { IndexedInvestigation, IndexedInvestigationData } from './InvestigationTablesHeaders';
+import { IndexedInvestigationData } from './InvestigationTablesHeaders';
 
 export type StatusFilter = number[];
 export type DeskFilter = number[];
@@ -16,6 +16,8 @@ export interface HistoryState {
     filterRules?: any;
     statusFilter?: StatusFilter;
     deskFilter?: DeskFilter;
+    unassignedUserFilter?: boolean;
+    inactiveUserFilter?: boolean;
 }
 
 export interface useInvestigationTableParameters {
@@ -58,4 +60,8 @@ export interface useInvestigationTableOutcome {
     searchQuery: string;
     changeSearchQuery: (searchQuery: string) => void;
     isSearchQueryValid: boolean;
+    changeUnassginedUserFilter: (isFilterOn: boolean) => void;
+    unassignedUserFilter: boolean;
+    changeInactiveUserFilter: (isFilterOn: boolean) => void;
+    inactiveUserFilter: boolean;
 };

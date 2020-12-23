@@ -60,14 +60,15 @@ landingPageRoute.post('/investigations', (request: Request, response: Response) 
 landingPageRoute.post('/groupInvestigations', adminMiddleWare, (request: Request, response: Response) => {
     const { orderBy, size, currentPage, filterRules } = request.body;
     const filterBy = {
+        ...filterRules,
         userByCreator: {
+            ...filterRules.userByCreator,
             countyByInvestigationGroup: {
                 id: {
                     equalTo: +response.locals.user.investigationGroup
                 }
             }
         },
-        ...filterRules
     };
     const getInvestigationsParameters = {
         filter: filterBy,

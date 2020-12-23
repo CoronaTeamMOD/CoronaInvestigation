@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call, Edit } from '@material-ui/icons';
+import { Refresh, Close, KeyboardArrowDown, KeyboardArrowLeft, Search, Comment, Call } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
 import User from 'models/User';
@@ -19,24 +19,24 @@ import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
 import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigatorOption from 'models/InvestigatorOption';
+import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 import RefreshSnackbar from 'commons/RefreshSnackbar/RefreshSnackbar';
 import InvestigationMainStatusCodes from 'models/enums/InvestigationMainStatusCodes';
-import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
-import useStyles from './InvestigationTableStyles';
-import SettingsActions from './SettingsActions/SettingsActions';
-import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
-import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
-import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
-import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
-import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
-import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 import DeskFilter from './DeskFilter/DeskFilter';
-import StatusFilter from './StatusFilter/StatusFilter';
+import useStyles from './InvestigationTableStyles';
+import TableFilter from './TableFilter/TableFilter';
+import SettingsActions from './SettingsActions/SettingsActions';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
+import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
+import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationCell from './InvestigatorAllocation/InvestigatorAllocationCell';
+import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
+import InvestigatorAllocationDialog from './InvestigatorAllocation/InvestigatorAllocationDialog';
+import InvestigationIndicatorsColumn from './InvestigationIndicatorsColumn/InvestigationIndicatorsColumn';
+import { TableHeadersNames, TableHeaders, adminCols, userCols, Order, sortableCols, IndexedInvestigation } from './InvestigationTablesHeaders';
 
 export const defaultOrderBy = 'defaultOrder';
 export const defaultPage = 1;
@@ -99,6 +99,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         moveToTheInvestigationForm, totalCount, unassignedInvestigationsCount,
         fetchInvestigationsByGroupId, fetchTableData, changeGroupsInvestigator, changeInvestigationsInvestigator,
         statusFilter, changeStatusFilter, deskFilter, changeDeskFilter, searchQuery, changeSearchQuery, isSearchQueryValid,
+        changeUnassginedUserFilter, unassignedUserFilter, changeInactiveUserFilter, inactiveUserFilter
     } = useInvestigationTable({
         setSelectedRow, setAllUsersOfCurrCounty, allGroupedInvestigations,
         setAllCounties, setAllStatuses, setAllDesks, currentPage, setCurrentPage, setAllGroupedInvestigations,
@@ -359,14 +360,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
             setCheckGroupedInvestigationOpen([...checkGroupedInvestigationOpen, epidemiologyNumber])
     }
 
-    const onSelectedStatusesChange = (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => {
-        changeStatusFilter(selectedStatuses);
-    }
-
-    const onSelectedDesksChange = (event: React.ChangeEvent<{}>, selectedDesks: Desk[]) => {
-        changeDeskFilter(selectedDesks);
-    };
-
     const onSearchClick = () => {
         if(currentPage !== defaultPage) {
             setCurrentPage(defaultPage);
@@ -387,7 +380,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         !(user.userType === userType.INVESTIGATOR && investigationStatus.id === InvestigationMainStatusCodes.DONE)
 
     const counterDescription: string = useMemo(() => {
-        const adminMessage = `, מתוכן ${unassignedInvestigationsCount} לא מוקצות`;
+        const adminMessage = `, ${unassignedInvestigationsCount} לא מוקצות`;
         return `ישנן ${totalCount}  חקירות בסך הכל ${(user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) ? adminMessage : ``}`;
 
     }, [tableRows, unassignedInvestigationsCount]);
@@ -406,7 +399,10 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Typography>
                 </Grid>
                 <Grid item xs={3} >
-                    <DeskFilter desks={allDesks} filteredDesks={deskFilter} onFilterChange={onSelectedDesksChange} />
+                    <DeskFilter 
+                        desks={allDesks}
+                        filteredDesks={deskFilter}
+                        onFilterChange={(event, value) => changeDeskFilter(value)} />
                 </Grid>
             </Grid>
             <Grid className={classes.content}>
@@ -459,13 +455,17 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     </Box>
                 </div>
                 <Grid container justify='flex-end' alignItems='center' className={classes.filterTableRow}>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                         <Collapse in={showFilterRow}>
-                            <StatusFilter
+                            <TableFilter
                                 statuses={allStatuses}
                                 filteredStatuses={statusFilter}
-                                onFilterChange={onSelectedStatusesChange}
+                                onFilterChange={(event, value) => changeStatusFilter(value)}
                                 onClose={closeFilterRow}
+                                changeInactiveUserFilter={changeInactiveUserFilter}
+                                changeUnassginedUserFilter={changeUnassginedUserFilter}
+                                inactiveUserFilter={inactiveUserFilter}
+                                unassignedUserFilter={unassignedUserFilter}
                             />
                         </Collapse>
                     </Grid>
