@@ -167,7 +167,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const changeSearchQuery = (newSearchQuery: string) => {
         if (stringAlphanum.isValidSync(newSearchQuery)) {
             setSearchQuery(newSearchQuery);
-            if(!isSearchQueryValid) {
+            if (!isSearchQueryValid) {
                 setIsSearchQueryValid(true);
             }
         } else {
@@ -246,8 +246,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
 
     const getInvestigationsAxiosRequest = (orderBy: string): any => {
         const getInvestigationsLogger = logger.setup('Getting Investigations');
-        
-        const searchQueryFilter = phoneAndIdentityNumberRegex.test(searchQuery)? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery);
+
+        const searchQueryFilter = phoneAndIdentityNumberRegex.test(searchQuery) ? filterCreators.NUMERIC_PROPERTIES(searchQuery) : filterCreators.FULL_NAME(searchQuery);
 
         const filterRules = {
             ...filterCreators.DESK_ID(deskFilter),
@@ -310,9 +310,9 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
     const fetchAllCounties = () => {
         const fetchAllCountiesLogger = logger.setup('GraphQL request to the DB');
         axios.get('/counties').then((result: any) => {
-            const allCounties: Map<number, County> = new Map();
+            const allCounties: County[] = [];
             result && result.data && result.data.forEach((county: any) => {
-                allCounties.set(county.id, {
+                allCounties.push({
                     id: county.id,
                     displayName: `${county.district} - ${county.displayName}`
                 })
@@ -377,7 +377,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                                 const otherReason = user ? investigation?.investigationGroupReasonByGroupId?.otherReason : '';
                                 const subStatus = investigation.investigationSubStatusByInvestigationSubStatus ?
                                     investigation.investigationSubStatusByInvestigationSubStatus.displayName :
-                                    ''; 
+                                    '';
                                 const subOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.displayName;
                                 const parentOccupation = investigation?.investigatedPatientByInvestigatedPatientId?.subOccupationBySubOccupation?.parentOccupation;
                                 return createRowData(
@@ -601,6 +601,23 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     };
 
+    const changeGroupsCounty = (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => {
+        const changeCountyLogger = logger.setup('Change Investigation County');
+        try {
+            axios.post('/users/changeGroupCounty', {
+                groupIds,
+                county: newSelectedCounty?.id,
+                transferReason
+            });
+            changeCountyLogger.info(`changed the county successfully for groups ${groupIds}`, Severity.LOW);
+            setSelectedRow(UNDEFINED_ROW);
+            fetchTableData();
+        } catch (error) {
+            changeCountyLogger.error(`couldn't change the county for groups ${groupIds} due to ${error}`, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
+        }
+    };
+
     const changeInvestigationsDesk = async (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => {
         const changeDeskLogger = logger.setupVerbose({
             workflow: 'Change Groups Desk',
@@ -621,7 +638,24 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
     }
 
-    const getDefaultCellStyles = (cellKey : string) => {
+    const changeInvestigationCounty = (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => {
+        const changeCountyLogger = logger.setup('Change Investigations County');
+        try {
+            axios.post('/users/changeCounty', {
+                epidemiologyNumbers,
+                updatedCounty: newSelectedCounty?.id,
+                transferReason
+            });
+            changeCountyLogger.info(`changed the county successfully for ${epidemiologyNumbers}`, Severity.LOW);
+            setSelectedRow(UNDEFINED_ROW);
+            fetchTableData();
+        } catch (error) {
+            changeCountyLogger.error(`couldn't change the county for ${epidemiologyNumbers} due to ${error}`, Severity.HIGH);
+            alertError(UPDATE_ERROR_TITLE);
+        }
+    }
+
+    const getDefaultCellStyles = (cellKey: string) => {
         let classNames: string[] = [];
         classNames.push(classes.font);
         if (cellKey !== TableHeadersNames.color) {
@@ -629,19 +663,19 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         }
         if (cellKey === TableHeadersNames.investigatorName) {
             classNames.push(classes.columnBorder);
-        } 
-        else 
-        if (cellKey === TableHeadersNames.priority) {
-            classNames.push(classes.priorityTableCell);
         }
+        else
+            if (cellKey === TableHeadersNames.priority) {
+                classNames.push(classes.priorityTableCell);
+            }
 
         return classNames;
     }
 
-    const getNestedCellStyle = (cellKey: string , isLast : boolean ) => {
+    const getNestedCellStyle = (cellKey: string, isLast: boolean) => {
         let classNames = getDefaultCellStyles(cellKey);
 
-        if(isLast) {
+        if (isLast) {
             classNames.push(classes.rowBorder);
         } else {
             classNames.push(classes.nestedTableCell);
@@ -650,15 +684,15 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return classNames;
     }
 
-    const getRegularCellStyle = (rowIndex: number, cellKey: string , isGroupShown :boolean) => {
+    const getRegularCellStyle = (rowIndex: number, cellKey: string, isGroupShown: boolean) => {
         let classNames = getDefaultCellStyles(cellKey);
 
-        if(cellNeedsABorder(rowIndex)) {
+        if (cellNeedsABorder(rowIndex)) {
             classNames.push(classes.rowBorder);
         }
-        if(isGroupShown) {
+        if (isGroupShown) {
             classNames.push(classes.nestedTableCell);
-            if(rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
+            if (rowIndex !== 0 && !cellNeedsABorder(rowIndex - 1)) {
                 classNames.push(classes.openedTableCell);
             }
         }
@@ -666,20 +700,20 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return classNames;
     }
 
-    const cellNeedsABorder = (rowIndex : number) => {
-            const currentRow = rows[rowIndex];
-            const nextRow = rows[rowIndex + 1];
+    const cellNeedsABorder = (rowIndex: number) => {
+        const currentRow = rows[rowIndex];
+        const nextRow = rows[rowIndex + 1];
 
-            const isNotLastRow = (rows.length - 1 !== rowIndex);
-            const hasATestDate = Boolean(currentRow?.coronaTestDate);
-            const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
-                                 nextRow.coronaTestDate :
-                                 "9999/12/31" ));
+        const isNotLastRow = (rows.length - 1 !== rowIndex);
+        const hasATestDate = Boolean(currentRow?.coronaTestDate);
+        const isLastOfDate = (getFormattedDate(currentRow?.coronaTestDate) !== getFormattedDate(Boolean(nextRow) ?
+            nextRow.coronaTestDate :
+            "9999/12/31"));
 
-            return ((isDefaultOrder && !isLoading) &&
-                isNotLastRow &&
-                hasATestDate &&
-                isLastOfDate)
+        return ((isDefaultOrder && !isLoading) &&
+            isNotLastRow &&
+            hasATestDate &&
+            isLastOfDate)
     }
 
     const sortInvestigationTable = (orderByValue: string) => {
@@ -746,7 +780,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                             reasonId,
                             subOccupation,
                             parentOccupation
-                            
+
                         )
                     });
                 setAllGroupedInvestigations(allGroupedInvestigations.set(groupId, investigationRows))
@@ -779,6 +813,8 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         moveToTheInvestigationForm,
         changeGroupsDesk,
         changeInvestigationsDesk,
+        changeGroupsCounty,
+        changeInvestigationCounty,
         totalCount,
         unassignedInvestigationsCount,
         fetchInvestigationsByGroupId,
