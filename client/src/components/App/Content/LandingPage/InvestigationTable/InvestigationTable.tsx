@@ -63,21 +63,23 @@ interface RowTooltipProps {
     children: React.ReactElement;
 }
 
+const tooltipEnterDelay = 800;
 const RowTooltip = (props: RowTooltipProps) => {
     const {creationDate, startTime} = props;
-    const enterDelay = 800;
     const tooltipClasses = useTooltipStyles();
 
-    const formatDate = (date: Date) => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
+    const formatDate = (date: Date): string => date ? format(new Date(date), 'dd/MM/yyyy') : 'אין מידע';
+    const creationDateLabel = useMemo(() => formatDate(creationDate), [creationDate]);
+    const startTimeLabel = useMemo(() => formatDate(startTime), [startTime]);
 
     const title = (creationDate || startTime)
         ? <>
-            {<InfoItem size='small' name='תאריך הגעת החקירה' value={formatDate(creationDate)}/>}
-            {<InfoItem size='small' name='תאריך תחילת החקירה' value={formatDate(startTime)}/>}
+            {<InfoItem size='small' name='תאריך הגעת החקירה' value={creationDateLabel}/>}
+            {<InfoItem size='small' name='תאריך תחילת החקירה' value={startTimeLabel}/>}
         </>
         : noDataMessage;
 
-    return <Tooltip title={title} enterDelay={enterDelay} enterNextDelay={enterDelay}
+    return <Tooltip title={title} enterDelay={tooltipEnterDelay} enterNextDelay={tooltipEnterDelay}
                     classes={{tooltip: tooltipClasses.content}}
                     PopperProps={{
                         placement: 'right',
