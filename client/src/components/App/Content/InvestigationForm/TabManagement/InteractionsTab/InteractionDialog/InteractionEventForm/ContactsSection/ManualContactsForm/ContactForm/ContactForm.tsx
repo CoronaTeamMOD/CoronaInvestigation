@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, Grid, MenuItem, Select } from '@material-ui/core';
 
@@ -8,16 +8,16 @@ import ContactType from 'models/ContactType';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InteractedContact from 'models/InteractedContact';
+import ContactFieldName from 'models/enums/ContactFieldName';
+import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
-import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
-import { contactType, extraInfo, firstName, identificationNumber, identificationType, lastName, phone } from 'Utils/Contacts/contactsFieldsNames';
 
 import useStyles from './ContactFormStyles';
 import ContactTypeKeys from '../../../InteractionSection/ContactForm/ContactTypeKeys';
@@ -54,7 +54,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
     return (
         <div test-id='contactFormContainer' key='addContactFields'>
             <Grid container justify='flex-start' spacing={6}>
-                <FormInput xs={4} labelLength={3} fieldName={firstName}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.FIRST_NAME}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                         control={control}
@@ -72,7 +72,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={lastName}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.LAST_NAME}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
                         control={control}
@@ -90,7 +90,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={phone}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.PHONE}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.PHONE_NUMBER}`}
                         control={control}
@@ -109,7 +109,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                 </FormInput>
             </Grid>
             <Grid container justify='flex-start' spacing={6}>
-                <FormInput xs={4} labelLength={3} fieldName={identificationType}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_TYPE}`}
                         control={control}
@@ -136,7 +136,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={identificationNumber}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.IDENTIFICATION_NUMBER}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.IDENTIFICATION_NUMBER}`}
                         control={control}
@@ -152,7 +152,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         )}
                     />
                 </FormInput>
-                <FormInput xs={4} labelLength={3} fieldName={contactType}>
+                <FormInput xs={4} labelLength={3} fieldName={ContactFieldName.CONTACT_TYPE}>
                     <FormControl fullWidth>
                         <div>
                             <Controller
@@ -182,7 +182,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                 </FormInput>
             </Grid>
             <Grid container justify='flex-start' spacing={2}>
-                <FormInput xs={12} labelLength={2} fieldName={extraInfo}>
+                <FormInput xs={12} labelLength={2} fieldName={ContactFieldName.EXTRA_INFO}>
                     <Controller
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.EXTRA_INFO}`}
                         control={control}

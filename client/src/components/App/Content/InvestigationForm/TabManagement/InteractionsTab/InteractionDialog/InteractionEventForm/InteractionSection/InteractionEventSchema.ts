@@ -1,10 +1,9 @@
 import * as yup from 'yup';
 
-import IdentificationTypes from 'models/enums/IdentificationTypes';
 import placeTypesCodesHierarchy from 'Utils/placeTypesCodesHierarchy';
-import { isIdValid , isPassportValid, idLength, maxIdentificationLength, idBasicValidation } from 'Utils/auxiliaryFunctions/auxiliaryFunctions';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
+import ContactIdValidationSchema from 'Utils/Contacts/ContactIdValidationSchema';
 
 const phoneNumberMatchValidation = /^(0(?:[23489]|5[0-689]|7[2346789])(?![01])(\d{7}))$|^$/
 
@@ -60,23 +59,7 @@ const interactionEventSchema = yup.object().shape({
         [InteractionEventContactFields.LAST_NAME]: yup.string().nullable().required('שם משפחה חובה'),
         [InteractionEventContactFields.PHONE_NUMBER]: yup.string().nullable()
           .matches(phoneNumberMatchValidation, 'מספר טלפון לא תקין'),
-        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: yup
-          .string()
-          .when(InteractionEventContactFields.IDENTIFICATION_TYPE, {
-              is: IdentificationTypes.PASSPORT,
-              then: yup
-                .string()
-                .nullable()
-                .max(maxIdentificationLength, `דרכון מכיל ${maxIdentificationLength} ספרות בלבד`)
-                .test('isValid', 'דרכון לא תקין', (id) => isPassportValid(id)) ,
-              otherwise: 
-                yup
-                .string()
-                .nullable()
-                .matches(idBasicValidation, 'ת.ז חייבת להכיל ספרות בלבד')
-                .length(idLength, `ת.ז מכילה ${idLength} ספרות בלבד`)
-                .test('isValid', 'ת.ז לא תקינה', (id) => isIdValid(id)),
-            }),
+        [InteractionEventContactFields.IDENTIFICATION_NUMBER]: ContactIdValidationSchema
         })),
   });
 

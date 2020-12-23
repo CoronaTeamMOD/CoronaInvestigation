@@ -10,9 +10,9 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InvolvedContact from 'models/InvolvedContact';
+import ContactFieldName from 'models/enums/ContactFieldName';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
-import { contactType, extraInfo, firstName, identificationNumber, identificationType, lastName, phone } from 'Utils/Contacts/contactsFieldsNames';
 
 import useStyles from './ContactGridStyles';
 
@@ -87,34 +87,34 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                             <FamilyContactIcon/>
                         </Grid>
                     }
-                    <FormInput xs={2} fieldName={firstName}>
+                    <FormInput xs={2} fieldName={ContactFieldName.FIRST_NAME}>
                         <Typography variant='caption'>
                             {contact.firstName || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={lastName}>
+                    <FormInput xs={2} fieldName={ContactFieldName.LAST_NAME}>
                         <Typography variant='caption'>
                             {contact.lastName || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={identificationType}>
+                    <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                         <Typography variant='caption'>
                             {contact.identificationType || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={identificationNumber}>
+                    <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_NUMBER}>
                         <Typography variant='caption'>
                             {contact.identificationNumber || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={phone}>
+                    <FormInput xs={2} fieldName={ContactFieldName.PHONE}>
                         <Typography variant='caption'>
                             {contact.phoneNumber || noDataIndication}
                         </Typography>
                     </FormInput>
                 </Grid>
                 <Grid item xs={12} className={formClasses.formRow}>
-                    <FormInput xs={2} fieldName={contactType}>
+                    <FormInput xs={2} fieldName={ContactFieldName.CONTACT_TYPE}>
                         <Typography variant='caption'>
                             {contact.contactType ? contactTypes.get(+contact.contactType)?.displayName : noDataIndication}
                         </Typography>
@@ -123,7 +123,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         isFamilyContact ?
                             familyContactsAdditionalFields()
                         : contact.extraInfo &&
-                            <FormInput xs={10} fieldName={extraInfo}>
+                            <FormInput xs={10} fieldName={ContactFieldName.EXTRA_INFO}>
                                 <Typography variant='caption'>
                                     {contact.extraInfo}
                                 </Typography>
