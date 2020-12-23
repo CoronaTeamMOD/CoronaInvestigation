@@ -5,6 +5,8 @@ const useStyles = makeStyles({
         width: '65vw',
         height: '30vh',
         borderRadius: '1vw',
+        display: 'flex',
+        flexDirection: 'column-reverse',
     },
     newButton: {
         backgroundColor: '#1F78B4',
@@ -17,6 +19,7 @@ const useStyles = makeStyles({
     },
     assignedToNotActiveButton: {
         backgroundColor: '#F95959',
+        fontSize: '0.1vw'
     },
     investigationAmount: {
         display: 'flex',

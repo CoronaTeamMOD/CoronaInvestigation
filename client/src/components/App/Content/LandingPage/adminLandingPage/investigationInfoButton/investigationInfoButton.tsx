@@ -12,12 +12,12 @@ const InvestigationInfoButton: React.FC<Props> = (props: Props): JSX.Element => 
         <>
             <Button
                 {...rest}
-                style={{ color: 'white', height: '10vh', width: '8vw', borderRadius: '0.8vw'}}
+                style={{ color: 'white', height: '11vh', width: '9vw', borderRadius: '0.8vw'}}
                 variant='contained'
                 size='large'
             >
                 <div>
-                    <Typography className={classes.text}><b>{amountOfInvestigations}</b></Typography>
+                    <Typography className={classes.amountOfInvestigations}><b>{amountOfInvestigations}</b></Typography>
                     <Typography className={classes.text}><b>{text}</b></Typography>
                 </div>
             </Button>
