@@ -37,7 +37,7 @@ const useReachContact = (props: Props) => {
                 });
             } else {
                 alertError('לא ניתן לשנות סטטוס להושלם', {
-                    text: 'ישנם שדות לא תקינים בטופס',
+                    text: 'שים לב שלמגע זה ישנם שדות לא תקינים',
                     showCancelButton: false,
                     confirmButtonColor: theme.palette.primary.main,
                     confirmButtonText: 'אוקי',

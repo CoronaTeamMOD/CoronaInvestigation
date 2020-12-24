@@ -16,7 +16,13 @@ const ContactDetails = (props: Props) => {
     const { errors } = useFormContext();
     const { index , interactedContact } = props;
 
-    const formHasErrors = errors.form ? Boolean(errors.form[index]) : false;
+    const formErrors = errors.form ? errors.form[index] : {};
+    let formHasErrors = false;
+    for(let key in formErrors) {
+        if(formErrors[key] !== undefined) {
+            formHasErrors = true;
+        }
+    }
 
     const { isInvolvedThroughFamily } = useInvolvedContact();
     const contactTypes = useSelector<StoreStateType, Map<number, ContactType>>(

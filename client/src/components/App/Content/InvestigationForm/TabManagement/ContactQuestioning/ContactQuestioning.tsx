@@ -59,7 +59,9 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
     }, []);
 
     useEffect(() => {
-        trigger();
+        if(allContactedInteractions){
+            trigger();
+        }
     } , [allContactedInteractions]);
 
     return (

@@ -41,8 +41,13 @@ const InteractedContactAccordion = (props: Props) => {
         classesList.push(classes.accordion);
 
         if(errors.form) {
-            if(errors.form[index] !== undefined){
-                classesList.push(classes.errorAccordion)
+            const currentErrors = errors.form[index];
+            if(currentErrors !== undefined){
+                for(let key in currentErrors){
+                    if(currentErrors[key] !== undefined) {
+                        classesList.push(classes.errorAccordion)
+                    }
+                }
             }
         }
         return classesList.join(" ")
