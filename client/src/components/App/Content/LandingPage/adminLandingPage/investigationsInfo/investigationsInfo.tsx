@@ -6,7 +6,7 @@ import { Card, CardActions, Grid, IconButton, Typography } from '@material-ui/co
 import { landingPageRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './investigationsInfoStyles';
-import InvestigationInfoButton from '../investigationInfoButton/investigationInfoButton';
+import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
 const InvestigationsInfo: React.FC = (): JSX.Element => {
     const classes = useStyles();

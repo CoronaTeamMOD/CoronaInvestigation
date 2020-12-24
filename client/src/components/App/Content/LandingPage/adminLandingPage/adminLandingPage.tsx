@@ -5,7 +5,7 @@ import DatePick from 'commons/DatePick/DatePick';
 import useAppToolbar from 'components/App/AppToolbar/useAppToolbar';
 
 import useStyles from './adminLandingPageStyles';
-import UnassignedCard from '../UnassignedCard/UnassignedCard';
+import UnassignedCard from './UnassignedCard/UnassignedCard';
 import DesksFilterCard from './desksFilterCard/desksFilterCard';
 import InvestigationsInfo from './investigationsInfo/investigationsInfo';
 

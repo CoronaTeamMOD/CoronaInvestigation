@@ -5,15 +5,16 @@ const useStyles = makeStyles({
         width: '14vw',
         height: '8vh',
         borderRadius: '1vw',
-        padding: '1vw'
+        padding: '1vw',
+        cursor: 'pointer',
     },
     investigationAmount: {
         display: 'flex',
-        justifyContent: 'center',
     },
     investigationNumberText: {
         fontSize: '1.2vw',
         color: '#F95959',
+        marginRight: '0.8vw',
     },
     investigationAmountText: {
         fontSize: '1.2vw',
