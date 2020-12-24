@@ -36,6 +36,11 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         return message;     
     }
 
+    const closeDialog = () => {
+        setInvestigatorToAllocateIndex(unSelectedRow);
+        handleCloseDialog();
+    }
+
     const handleClick = () => {
         const alertMessage = createAlertMessage();
         alertWarning(alertMessage, {
@@ -48,13 +53,13 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         .then(result => {
             if (result.value) {
                 allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, investigators[investigatorToAllocateIndex]);
-                handleCloseDialog();
+                closeDialog();
             }
         })
     }
-    
+
     return (
-        <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => handleCloseDialog()}>
+        <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => closeDialog()}>
             <DialogTitle>
                 <b>
                     {title}
@@ -74,7 +79,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     color='default'
                     onClick={(event) => {
                         event.stopPropagation();
-                        handleCloseDialog()
+                        closeDialog();
                     }}
                 >
                     ביטול
