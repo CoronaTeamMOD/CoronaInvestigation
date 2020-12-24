@@ -20,8 +20,8 @@ export interface InvestigationTableFooterOutcome {
     handleCloseDesksDialog: () => void;
     handleOpenGroupedInvestigations: () => void;
     handleCloseGroupedInvestigations: () => void;
-    handleOpenInvesigatorAloocationDialog: () => void;
-    handleCloseInvesigatorAloocationDialog: () => void;
+    handleOpenInvesigatorAllocationDialog: () => void;
+    handleCloseInvesigatorAllocationDialog: () => void;
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
     handleConfirmCountiesDialog: (updatedCounty: County, transferReason: string) => void;
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;

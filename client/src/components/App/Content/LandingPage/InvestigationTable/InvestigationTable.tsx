@@ -112,7 +112,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [allGroupedInvestigations, setAllGroupedInvestigations] = useState<Map<string, InvestigationTableRow[]>>(new Map());
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
-    const [isOpenInvestigatorAllocation, setIsOpenInvestigatorsAllocation] = useState<boolean>(false);
+    const [isInvestigatorAllocationDialogOpen, setIsInvestigatorAllocationDialogOpen] = useState<boolean>(false);
 
     const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -153,7 +153,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
         switch (key) {
             case TableHeadersNames.investigatorName: {
                 event.stopPropagation();
-                setIsOpenInvestigatorsAllocation(true);
+                setIsInvestigatorAllocationDialogOpen(true);
                 setDeskAutoCompleteClicked(false);
                 break;
             }
@@ -210,25 +210,23 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     />
                 );
             case TableHeadersNames.investigatorName:
-                if (selectedRow === indexedRow.epidemiologyNumber && isOpenInvestigatorAllocation) {
                     return (
-                        <InvestigatorAllocationDialog
-                            isOpen={isOpenInvestigatorAllocation}
-                            handleCloseDialog={() => setIsOpenInvestigatorsAllocation(false)}
-                            investigators={getFilteredUsersOfCurrentCounty()}
-                            allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
-                            groupIds={[indexedRow.groupId]}
-                            epidemiologyNumbers={[indexedRow.epidemiologyNumber]}
-                        />
+                        <>
+                            { selectedRow === indexedRow.epidemiologyNumber && isInvestigatorAllocationDialogOpen && 
+                                <InvestigatorAllocationDialog
+                                    isOpen={isInvestigatorAllocationDialogOpen}
+                                    handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
+                                    investigators={getFilteredUsersOfCurrentCounty()}
+                                    allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
+                                    groupIds={[indexedRow.groupId]}
+                                    epidemiologyNumbers={[indexedRow.epidemiologyNumber]}
+                                /> 
+                            }
+                            <InvestigatorAllocationCell
+                                investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                            />
+                        </>
                     )
-                } else {
-                    return (
-                        <InvestigatorAllocationCell
-                            investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                            epidemiologyNumber={indexedRow.epidemiologyNumber}
-                        />
-                    )
-                }
             case TableHeadersNames.investigationDesk:
                 if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
@@ -630,8 +628,8 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     onCountyGroupChange={changeGroupsCounty}
                     allGroupedInvestigations={allGroupedInvestigations}
                     fetchInvestigationsByGroupId={fetchInvestigationsByGroupId}
-                    isInvestigatorAllocationDialogOpen={isOpenInvestigatorAllocation}
-                    setIsInvestigatorAllocationDialogOpen={setIsOpenInvestigatorsAllocation}
+                    isInvestigatorAllocationDialogOpen={isInvestigatorAllocationDialogOpen}
+                    setIsInvestigatorAllocationDialogOpen={setIsInvestigatorAllocationDialogOpen}
                     allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 />
             </Slide>

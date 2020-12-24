@@ -51,9 +51,9 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
         onDialogClose();
     }
 
-    const handleOpenInvesigatorAloocationDialog = () => setIsInvestigatorAllocationDialogOpen(true);
+    const handleOpenInvesigatorAllocationDialog = () => setIsInvestigatorAllocationDialogOpen(true);
 
-    const handleCloseInvesigatorAloocationDialog = () => {
+    const handleCloseInvesigatorAllocationDialog = () => {
         setIsInvestigatorAllocationDialogOpen(false);
         onDialogClose();
     }
@@ -146,8 +146,8 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
-        handleOpenInvesigatorAloocationDialog,
-        handleCloseInvesigatorAloocationDialog,
+        handleOpenInvesigatorAllocationDialog,
+        handleCloseInvesigatorAllocationDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,

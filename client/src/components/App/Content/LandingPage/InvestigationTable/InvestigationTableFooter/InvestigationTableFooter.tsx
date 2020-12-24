@@ -50,8 +50,8 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleCloseDesksDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
-        handleOpenInvesigatorAloocationDialog,
-        handleCloseInvesigatorAloocationDialog,
+        handleOpenInvesigatorAllocationDialog,
+        handleCloseInvesigatorAllocationDialog,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
         handleDisbandGroupedInvestigations
@@ -129,7 +129,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: PersonPin,
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
             errorMessage: '',
-            onClick: handleOpenInvesigatorAloocationDialog
+            onClick: handleOpenInvesigatorAllocationDialog
         }
     ]
 
@@ -162,7 +162,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             />
             <InvestigatorAllocationDialog
                 isOpen={isInvestigatorAllocationDialogOpen}
-                handleCloseDialog={handleCloseInvesigatorAloocationDialog}
+                handleCloseDialog={handleCloseInvesigatorAllocationDialog}
                 investigators={allInvestigators}
                 allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
                 groupIds={trimmedGroup.uniqueGroupIds}
