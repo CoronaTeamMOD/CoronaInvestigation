@@ -1,8 +1,11 @@
+
+import { useSelector } from 'react-redux';
 import { Divider } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
 import React , { useContext , useEffect} from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import StoreStateType from 'redux/storeStateType';
 import { exposureAndFlightsContext } from 'commons/Contexts/ExposuresAndFlights';
 
 import PossibleExposure from './Forms/PossibleExposure'; 
@@ -17,9 +20,11 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
   const ids = exposures.map(exposure => exposure.id);
+  const validationDate : Date = useSelector<StoreStateType, Date>(state => state.investigation.validationDate);
+
   const methods = useForm<FormData>({
     mode: 'all',
-    resolver: yupResolver(ExposureSchema)
+    resolver: yupResolver(ExposureSchema(validationDate))
   });
 
   useEffect(() => {

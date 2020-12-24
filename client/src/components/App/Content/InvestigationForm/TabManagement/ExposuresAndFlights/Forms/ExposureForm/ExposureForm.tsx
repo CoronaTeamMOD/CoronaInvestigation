@@ -30,7 +30,7 @@ const ExposureForm = (props: any) => {
 	const classes = useStyles();
 	const formClasses = useFormStyles();
 
-	const { control , setValue , register } = useFormContext();
+	const { control , setValue , errors } = useFormContext();
 
 	const validationDate = useSelector<StoreStateType, Date>((state) => state.investigation.validationDate);
 
@@ -63,6 +63,19 @@ const ExposureForm = (props: any) => {
 		setValue(`exposures[${index}].${fieldsNames.placeSubType}`, exposureAndFlightsData[fieldsNames.placeSubType] )
     } , []);
 
+	const getDateLabel = (dateError : {message? : string , type? : string}) => {
+		if(dateError.message) {
+			if(dateError.type === "typeError") {
+				return 'תאריך לא ולידי'
+			}
+			return dateError.message;
+		}
+		return 'תאריך'
+	}
+
+	const currentErrors = errors ? (errors.exposures ? errors.exposures[index] : {}) : {};
+	const dateError = currentErrors.exposureDate ? currentErrors.exposureDate : {};
+
 	return (
 		<Grid className={formClasses.form} container justify='flex-start'>
 			<FormRowWithInput fieldName='פרטי החולה:'>
@@ -73,7 +86,7 @@ const ExposureForm = (props: any) => {
 					render={(props) => {
 						return (
 							<ExposureSearchTextField
-								name={ExposureFields.exposureSource}
+								name={`exposures[${index}].${fieldsNames.exposureSource}`}
 								className={classes.exposureSourceTextFied}
 								onChange={(value) => {
 									setExposureSourceSearchString(value);
@@ -141,6 +154,7 @@ const ExposureForm = (props: any) => {
 					render={(props) => {
 						return (
 							<DatePick
+								name={`exposures[${index}].${fieldsNames.date}`}
 								maxDateMessage={MAX_DATE_ERROR_MESSAGE}
 								invalidDateMessage={INVALID_DATE_ERROR_MESSAGE}
 								FormHelperTextProps={{
@@ -148,7 +162,8 @@ const ExposureForm = (props: any) => {
 								}}
 								maxDate={new Date(validationDate)}
 								testId='exposureDate'
-								labelText='תאריך'
+								labelText={getDateLabel(dateError)}
+								error={Boolean(dateError.message)}
 								value={exposureAndFlightsData[fieldsNames.date]}
                                 onChange={(newDate: Date) => {
                                     props.onChange(newDate);
@@ -181,18 +196,18 @@ const ExposureForm = (props: any) => {
                     />
 			</FormRowWithInput>
             <PlacesTypesAndSubTypes
-            size='Tab'
-            placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
-            placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
-            placeType={exposureAndFlightsData[fieldsNames.placeType]}
-            placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
-            onPlaceTypeChange={(value) => {
-                setValue(`exposures[${index}].${fieldsNames.placeType}` , value);
-            }}
-            onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
-                setValue(`exposures[${index}].${fieldsNames.placeSubType}` , placeSubType);
-                }
-            }
+				size='Tab'
+				placeTypeName={`exposures[${index}].${fieldsNames.placeType}`}
+				placeSubTypeName={`exposures[${index}].${fieldsNames.placeSubType}`}
+				placeType={exposureAndFlightsData[fieldsNames.placeType]}
+				placeSubType={exposureAndFlightsData[fieldsNames.placeSubType]}
+				onPlaceTypeChange={(value) => {
+					setValue(`exposures[${index}].${fieldsNames.placeType}` , value);
+				}}
+				onPlaceSubTypeChange={(placeSubType: PlaceSubType | null) => {
+					setValue(`exposures[${index}].${fieldsNames.placeSubType}` , placeSubType);
+					}
+				}
             />
 		</Grid>
 	);
