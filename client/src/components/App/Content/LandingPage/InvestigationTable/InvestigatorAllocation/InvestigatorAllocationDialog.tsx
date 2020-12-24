@@ -14,7 +14,7 @@ const unSelectedRow = -1;
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, setIsOpen, investigators, allocateInvestigationToInvestigator, groupId, epidemiologyNumber } = props;
+    const { isOpen, setIsOpen, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
 
@@ -25,8 +25,19 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
        return investigatorToAllocateIndex === unSelectedRow;
     }, [investigatorToAllocateIndex])
 
+    const createAlertMessage = () => {
+        let message = '<p>האם אתה בטוח שתרצה להעביר ';
+        if ((groupIds.length && groupIds[0]) || epidemiologyNumbers.length > 1) {
+            message += 'את כל החקירות ';
+        } else if (epidemiologyNumbers.length === 1) {
+            message += `את חקירה מספר <b>${epidemiologyNumbers[0]}</b> `;            
+        }
+        message += `לחוקר <b>${investigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
+        return message;     
+    }
+
     const handleClick = () => {
-        const alertMessage = `<p>האם אתה בטוח שתרצה להעביר ${groupId ? 'את כל החקירות בקבוצה': `את חקירה מספר <b>${epidemiologyNumber}</b>`} לחוקר <b>${investigators[investigatorToAllocateIndex].value.userName}</b>?</p>`;
+        const alertMessage = createAlertMessage();
         alertWarning(alertMessage, {
             showCancelButton: true,
             cancelButtonText: 'בטל',
@@ -36,11 +47,12 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         })
         .then(result => {
             if (result.value) {
-                allocateInvestigationToInvestigator(groupId, epidemiologyNumber, investigators[investigatorToAllocateIndex]);
+                allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, investigators[investigatorToAllocateIndex]);
                 setIsOpen(false);
             }
         })
     }
+    
     return (
         <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => setIsOpen(false)}>
             <DialogTitle>
@@ -89,9 +101,9 @@ interface Props {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     investigators: InvestigatorOption[];
-    allocateInvestigationToInvestigator: (groupId: string, epidemiologyNumber: number, investigatorToAllocate: InvestigatorOption) => void;
-    groupId: string;
-    epidemiologyNumber: number;
+    allocateInvestigationToInvestigator: (groupId: string[], epidemiologyNumber: number[], investigatorToAllocate: InvestigatorOption) => void;
+    groupIds: string[];
+    epidemiologyNumbers: number[];
 }
 
 export default InvestigatorAllocationDialog;
