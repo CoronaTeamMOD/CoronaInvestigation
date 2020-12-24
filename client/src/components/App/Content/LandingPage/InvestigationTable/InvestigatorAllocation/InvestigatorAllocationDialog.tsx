@@ -7,6 +7,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './InvestigatorAllocationDialogStyles';
 import InvestigatorsTable from './InvestigatorsTable/InvestigatorsTable';
+import TransferInvestigationDialogNote from '../InvestigationTableFooter/TransferInvestigationsDialogs/TransferInvestigationDialogNote';
 
 const title = 'הקצאת חקירה';
 const unSelectedRow = -1;
@@ -54,6 +55,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     setSelectedRow={setInvestigatorToAllocateIndex}
                 />
             </DialogContent>
+            <TransferInvestigationDialogNote />
             <DialogActions>
                 <Button
                     variant='contained'
