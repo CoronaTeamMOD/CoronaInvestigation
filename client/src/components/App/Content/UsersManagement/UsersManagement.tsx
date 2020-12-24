@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
@@ -28,7 +28,7 @@ interface CellNameSort {
 }
 
 const usersManagementTitle = 'ניהול משתמשים';
-
+const sourceOrganizationLabel = 'מסגרת';
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
 UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
 UsersManagementTableHeadersNames.DESK];
@@ -39,7 +39,8 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
     const { users, counties, sourcesOrganization, userTypes, languages,
-        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus } =
+        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
+        setUserSourceOrganization } =
         useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -80,6 +81,38 @@ const UsersManagement: React.FC = () => {
             }
             case UsersManagementTableHeadersNames.DESK: {
                 return row[cellName] ? row[cellName] : noDeskAssignment
+            }
+            case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
+                return (
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left'
+                            },
+                            getContentAnchorEl: null
+                        }}
+                        variant='outlined'
+                        className={classes.sourceOrganization}
+                        label={sourceOrganizationLabel}
+                        value={row.sourceOrganization}
+                        onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                    >
+                        {
+                            sourcesOrganization.map(sourceOrganization => (
+                                <MenuItem
+                                    key={sourceOrganization.displayName}
+                                    value={sourceOrganization.displayName}>
+                                    {sourceOrganization.displayName}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
+                )
             }
             default:
                 return row[cellName]

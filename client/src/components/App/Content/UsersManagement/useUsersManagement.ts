@@ -215,6 +215,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         });
     }
 
+    const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
+        const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
+        setUpdateSourcesOrganizationLogger.info('send request to server for updating user source organization', Severity.LOW);
+        axios.post('users/updateSourceOrganizationById', {
+            sourceOrganization,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateSourcesOrganizationLogger.info('updated user source organization successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את מסגרת המשתמש');
+            setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
+        });
+    }
+
     return {
         users,
         counties,
@@ -227,7 +243,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         watchUserInfo,
         handleCloseDialog,
         handleFilterChange,
-        setUserActivityStatus
+        setUserActivityStatus,
+        setUserSourceOrganization,
     }
 }
 
@@ -251,6 +268,7 @@ interface useUsersManagementOutCome {
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
+    setUserSourceOrganization : (sourceOrganization: string, userId: string) => void;
 }
 
 export default useUsersManagement;

@@ -11,6 +11,17 @@ export const UPDATE_IS_USER_ACTIVE = gql`
     }
 `;
 
+export const UPDATE_SOURCE_ORGANIZATION = gql`
+    mutation updateUserSourceOrganization($id: String!, $sourceOrganization: String!) {
+      updateUserById(input: {userPatch: {sourceOrganization: $sourceOrganization}, id: $id}) {
+        user {
+          id
+          sourceOrganization
+        }
+      }
+    }
+`;
+
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
