@@ -552,7 +552,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     }
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
         changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
@@ -560,7 +560,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
                 user: investigator?.id,
-                reason: transferReason
             });
             changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
         } catch (error) {

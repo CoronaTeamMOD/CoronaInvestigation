@@ -14,7 +14,7 @@ const unSelectedRow = -1;
 
 const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
-    const { isOpen, setIsOpen, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers } = props;
+    const { isOpen, handleCloseDialog, investigators, allocateInvestigationToInvestigator, groupIds, epidemiologyNumbers } = props;
 
     const [investigatorToAllocateIndex, setInvestigatorToAllocateIndex] = useState<number>(unSelectedRow);
 
@@ -48,13 +48,13 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
         .then(result => {
             if (result.value) {
                 allocateInvestigationToInvestigator(groupIds, epidemiologyNumbers, investigators[investigatorToAllocateIndex]);
-                setIsOpen(false);
+                handleCloseDialog();
             }
         })
     }
     
     return (
-        <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => setIsOpen(false)}>
+        <Dialog open={isOpen} maxWidth='md' classes={{paper: classes.dialog}} onClose={() => handleCloseDialog()}>
             <DialogTitle>
                 <b>
                     {title}
@@ -74,7 +74,7 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
                     color='default'
                     onClick={(event) => {
                         event.stopPropagation();
-                        setIsOpen(false)
+                        handleCloseDialog()
                     }}
                 >
                     ביטול
@@ -99,9 +99,9 @@ const InvestigatorAllocationDialog: React.FC<Props> = (props) => {
 
 interface Props {
     isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    handleCloseDialog: () => void;
     investigators: InvestigatorOption[];
-    allocateInvestigationToInvestigator: (groupId: string[], epidemiologyNumber: number[], investigatorToAllocate: InvestigatorOption) => void;
+    allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
     groupIds: string[];
     epidemiologyNumbers: number[];
 }
