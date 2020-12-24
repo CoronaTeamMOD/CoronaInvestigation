@@ -79,7 +79,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
 
     const handleIsolation = (value: boolean , onChange : (...event: any[]) => void) => {
         const contactWithIsolationRequirement = {...formatContactToValidate(), doesNeedIsolation: value};
-        console.log(formatContactToValidate());
         const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
         if(!contactValidation.valid) {
             alertError(contactValidation.error)
@@ -114,14 +113,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             ? contactedCity
             : { id: "-1", displayName: "..." },
     };
-
-    if(errors.form){
-        if(errors.form[index]) {
-            console.log(formValues);
-            console.log(errors.form[index]);
-        }
-    }
-
     
     return (
         <Grid item xs={3}>
