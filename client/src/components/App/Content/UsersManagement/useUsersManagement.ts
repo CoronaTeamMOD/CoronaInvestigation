@@ -215,10 +215,10 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         });
     }
 
-    const setUserSourceOrganization = (sourceOrganization: string, userId: string) : Promise<any> => {
+    const setUserSourceOrganization = (sourceOrganization: string, userId: string) => {
         const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
         setUpdateSourcesOrganizationLogger.info('send request to server for updating user source organization', Severity.LOW);
-        return axios.post('users/updateSourceOrganizationById', {
+        axios.post('users/updateSourceOrganizationById', {
             sourceOrganization,
             userId
         }).then((result) => {
@@ -268,7 +268,7 @@ interface useUsersManagementOutCome {
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
-    setUserSourceOrganization : (sourceOrganization: string, userId: string) => Promise<any>;
+    setUserSourceOrganization : (sourceOrganization: string, userId: string) => void;
 }
 
 export default useUsersManagement;
