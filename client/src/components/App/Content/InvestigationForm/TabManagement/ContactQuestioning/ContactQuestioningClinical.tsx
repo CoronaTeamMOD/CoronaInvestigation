@@ -57,12 +57,12 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
     const formattedIsolationEndDate = format(new Date(isolationEndDate), 'dd/MM/yyyy');
 
     const formatContactToValidate = () => {
-        let newConatct = formValues;
-        newConatct.firstName = interactedContact.firstName;
-        newConatct.lastName = interactedContact.lastName;
-        newConatct.contactType = interactedContact.contactType;
-
-        return newConatct;
+        return {
+            ...formValues,
+            firstName: interactedContact.firstName,
+            lastName:  interactedContact.lastName,
+            contactType: interactedContact.contactType,
+        }
     }
 
     const isIdAndPhoneNumValid = () : boolean => {
@@ -72,7 +72,6 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
             if(currentFormErrors) {
                 return Boolean(formErrors[index].id) || Boolean(formErrors[index].phoneNumber)
             }
-            return true;
         }
         return true;
     }
