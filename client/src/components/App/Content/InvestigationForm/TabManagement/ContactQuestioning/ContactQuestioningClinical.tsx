@@ -65,11 +65,26 @@ const ContactQuestioningClinical: React.FC<Props> = (props: Props): JSX.Element 
         return newConatct;
     }
 
+    const isIdAndPhoneNumValid = () : boolean => {
+        const formErrors = errors.form;
+        if(formErrors) {
+            const currentFormErrors = formErrors[index];
+            if(currentFormErrors) {
+                return Boolean(formErrors[index].id) || Boolean(formErrors[index].phoneNumber)
+            }
+            return true;
+        }
+        return true;
+    }
+
     const handleIsolation = (value: boolean , onChange : (...event: any[]) => void) => {
         const contactWithIsolationRequirement = {...formatContactToValidate(), doesNeedIsolation: value};
+        console.log(formatContactToValidate());
         const contactValidation = validateContact(contactWithIsolationRequirement, ValidationReason.HANDLE_ISOLATION);
         if(!contactValidation.valid) {
             alertError(contactValidation.error)
+        } else if(!isIdAndPhoneNumValid()) {
+            alertError('שים לב, ישנם שדות לא ולידים ולכן לא ניתן להקים דיווח בידוד');
         } else {
             value ?
             alertWarning('האם אתה בטוח שתרצה להקים דיווח בידוד?', {
