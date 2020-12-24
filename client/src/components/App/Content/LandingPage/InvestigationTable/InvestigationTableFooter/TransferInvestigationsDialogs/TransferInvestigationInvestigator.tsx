@@ -90,6 +90,9 @@ const TransferInvestigationDesk = (props: Props) => {
                             }
                         />
                     </div>
+                    <div>
+                        <Typography variant='body2'> שים לב, הפעולה תתבצע רק על חקירות השייכות לנפתך </Typography>
+                    </div>
                 </>
             </TransferInvestigationDialog>
         </FormProvider>
