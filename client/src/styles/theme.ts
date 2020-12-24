@@ -35,7 +35,7 @@ const theme = createMuiTheme({
             contrastText: '#fff',
         },
         text: {
-            primary: 'rgb(117,117,117)'
+            primary: 'rgb(74, 74, 74)'
         },
     },
     direction: 'rtl',
@@ -49,6 +49,7 @@ const theme = createMuiTheme({
         MuiOutlinedInput: {
             root: {
                 borderRadius: 24,
+                fontWeight: 500
             },
             inputMarginDense: {
                 paddingTop: 6.5,
@@ -57,7 +58,8 @@ const theme = createMuiTheme({
         },
         MuiInputLabel: {
             root: {
-                fontSize: 16
+                fontSize: 16,
+                fontWeight: 500
             }
         },
         MuiSelect: {
@@ -69,7 +71,8 @@ const theme = createMuiTheme({
         },
         MuiTableCell: {
             root: {
-                textAlign: 'center'
+                textAlign: 'center',
+                fontWeight: 500
             }
         }
     },
