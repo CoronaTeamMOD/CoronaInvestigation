@@ -10,13 +10,17 @@ import { EilatOrDeadSea } from './Forms/EilatOrDeadSea';
 import { BackFromAbroad } from './Forms/BackFromAbroad';
 import { FormData } from './ExposuresAndFlightsInterfaces';
 import { useExposuresAndFlights } from './useExposuresAndFlights';
+import ExposureSchema from './Schema/exposuresAndFlightsSchema';
 
 
 const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   const { exposureAndFlightsData, setExposureDataAndFlights } = useContext(exposureAndFlightsContext);
   const { exposures, wereFlights, wereConfirmedExposures, wasInEilat, wasInDeadSea } = exposureAndFlightsData;
   const ids = exposures.map(exposure => exposure.id);
-  const methods = useForm<FormData>();
+  const methods = useForm<FormData>({
+    mode: 'all',
+    resolver: yupResolver(ExposureSchema)
+  });
 
   useEffect(() => {
     methods.reset({
@@ -42,7 +46,6 @@ const ExposuresAndFlights: React.FC<Props> = ({ id }: Props): JSX.Element => {
   } = useExposuresAndFlights({exposures, wereConfirmedExposures, wereFlights , exposureAndFlightsData , setExposureDataAndFlights , id});
 
   const onSubmit = (data : FormData) => {
-    console.log("data" , data);
     saveExposure(data , ids);
   }
 
