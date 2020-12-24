@@ -87,19 +87,19 @@ const UsersManagement: React.FC = () => {
                     <Select
                         MenuProps={{
                             anchorOrigin: {
-                                vertical: "bottom",
-                                horizontal: "left"
+                                vertical: 'bottom',
+                                horizontal: 'left'
                             },
                             transformOrigin: {
-                                vertical: "top",
-                                horizontal: "left"
+                                vertical: 'top',
+                                horizontal: 'left'
                             },
                             getContentAnchorEl: null
                         }}
                         variant='outlined'
                         className={classes.sourceOrganization}
                         label={sourceOrganizationLabel}
-                        value={row[cellName]}
+                        value={row.sourceOrganization}
                         onChange={(event: React.ChangeEvent<any>) => setUserSourceOrganization(event.target.value as string, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
                     >
                         {
