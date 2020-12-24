@@ -1,5 +1,7 @@
 import InvestigationsFilterByFields from 'models/enums/InvestigationsFilterByFields';
 
+const unassignedUserName = 'לא משויך';
+
 const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => Exclude<any, void>) } = {
     [InvestigationsFilterByFields.STATUS]: (values: string[]) => {
         return values.length > 0 ?
@@ -37,7 +39,19 @@ const filterCreators: { [T in InvestigationsFilterByFields]: ((values: any) => E
                 ]
             } :
             {}
-    }
+    },
+    [InvestigationsFilterByFields.UNASSIGNED_USER]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            { userName: {equalTo: unassignedUserName} }
+            :
+            {};
+    },
+    [InvestigationsFilterByFields.INACTIVE_USER]: (isFilterOn: boolean) => {
+        return isFilterOn ?
+            { isActive: {equalTo: false} }
+            :
+            {};
+    },
 };
 
 export default filterCreators;

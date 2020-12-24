@@ -4,7 +4,6 @@ import TransferInvestigationInvestigatorInputNames from './TransferInvestigation
 
 const errorMessage = 'סיבה לא תקנית';
 const investigatorRequiredMessage = 'יש לבחור חוקר';
-const reasonRequiredMessage = 'יש לכתוב סיבה';
 const maxLengthErrorMessage = 'הסיבה חייבת להיות עד 200 תווים';
 
 const schema = yup.object().shape<{[T in TransferInvestigationInvestigatorInputNames]: any}>({
@@ -13,7 +12,6 @@ const schema = yup.object().shape<{[T in TransferInvestigationInvestigatorInputN
         value: yup.object()
     }).nullable().required(investigatorRequiredMessage),
     [TransferInvestigationInvestigatorInputNames.REASON]: yup.string()
-                                                             .required(reasonRequiredMessage)
                                                              .matches( /^[a-zA-Z\u0590-\u05fe\s0-9-+*!?'"():_,.\/\\]*$/, errorMessage)
                                                              .max(200, maxLengthErrorMessage)
 });

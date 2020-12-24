@@ -49,10 +49,10 @@ begin
 		select trim(nullif((person->'lastName')::text,'null'),'"') into lastName;
 		select trim(nullif((person->'phoneNumber')::text,'null'),'"') into phoneNumber;
 		select trim(nullif((person->'extraInfo')::text,'null'),'"') into extraInfo;
-		select trim(nullif((person->'id')::text,'null'),'"')  into identificationNumber;
-		select trim(nullif((person->'identificationType')::text,'null'),'"')  into identificationType;
+		select trim(nullif((person->'identificationNumber')::text,'null'),'"')  into identificationNumber;
+		select replace(trim(nullif((person->'identificationType')::text,'null'),'"'),'\', '')  into identificationType;
 		select trim(nullif((person->'gender')::text,'null'),'"') into igender;
-	   	select trim(nullif((person->'serialId')::text,'null'),'"')::int4 into contacted_person_id;  
+	   	select trim(nullif((person->'id')::text,'null'),'"')::int4 into contacted_person_id;  
  		select trim(nullif((person->'contactType')::text,'null'),'"')::int4 into contactType;
 		select trim(nullif((person->'involvedContactId')::text,'null'),'"')::int4 into involvedContactId;
 		select trim(nullif((person->'familyRelationship')::text,'null'),'"')::int4 into familyRelationship;
@@ -64,7 +64,7 @@ begin
 	    set extra_info = extraInfo,
 		contact_type = contactType
 	    where id = contacted_person_id ;
-	    
+		
 	    update person 
 	    set first_name = firstName,
 	    	last_name  = LastName,
@@ -73,8 +73,7 @@ begin
 	    	identification_type = (case when identificationNumber is null then null
 				 				  	     when identificationType is null then 'ת"ז' 
 				 				  	   else identificationType end)
-		  
-	   from contacted_person 
+	   	from contacted_person 
 	    where person.id= contacted_person.person_info and contacted_person.id = contacted_person_id;
 	
 	   else 
@@ -91,15 +90,16 @@ begin
 				where id = involvedContactId;
 			else
 				raise notice 'insert contacted person';
-				INSERT INTO public.person(first_name, 
-				last_name,phone_number, 
+				INSERT INTO public.person(
+				first_name, 
+				last_name,
+				phone_number, 
 				identification_type,
-				identification_number)
-				select firstName,lastName, phoneNumber,
-						(case when identificationNumber is null then null
-							  when identificationType is null then 'ת"ז' 
-							  else identificationType end),
-							  identificationNumber;
+				identification_number
+				)
+				VALUES(firstName,lastName, phoneNumber,(case when identificationNumber is null then null
+				 				  	     when identificationType is null then 'ת"ז' 
+				 				  	   else identificationType end), identificationNumber);
 
 				personId := currval('person_id_seq');
 				INSERT INTO public.contacted_person

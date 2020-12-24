@@ -9,7 +9,7 @@ import { Severity } from 'models/Logger';
 import InteractedContact from 'models/InteractedContact';
 import { setFormState } from 'redux/Form/formActionCreators';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
-import useDuplicateContactId from 'Utils/vendor/useDuplicateContactId';
+import useDuplicateContactId from 'Utils/Contacts/useDuplicateContactId';
 
 import {
     FormInputs,
@@ -79,13 +79,13 @@ const useContactQuestioning = (parameters: useContactQuestioningParameters): use
     const saveContactQuestioning = (formState: InteractedContact[]) => {
         if (
             !checkDuplicateIds(
-                allContactedInteractions.map(
+                formState.map(
                     (contact: InteractedContact) => contact.identificationNumber
                 )
             )
         ) {
             const contactsSavingVariable = {
-                unSavedContacts: {contacts: allContactedInteractions}
+                unSavedContacts: {contacts: formState}
             }
             const contactLogger = logger.setup('Saving all contacts');
             contactLogger.info(`launching server request with parameter: ${JSON.stringify(contactsSavingVariable)}`, Severity.LOW);

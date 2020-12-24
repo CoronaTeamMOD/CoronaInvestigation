@@ -3,7 +3,6 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {useFormContext, Controller } from 'react-hook-form';
 import {Grid, Typography, Divider, Collapse, Checkbox, FormControlLabel} from '@material-ui/core';
 
-import Contact from 'models/Contact';
 import Toggle from 'commons/Toggle/Toggle';
 import useFormStyles from 'styles/formStyles';
 import TimePick from 'commons/DatePick/TimePick';
@@ -19,16 +18,6 @@ import AddressForm from './AddressForm/AddressForm';
 import useStyles from './InteractionEventFormStyles';
 import PlaceNameForm from './PlaceNameForm/PlaceNameForm';
 import BusinessContactForm from './BusinessContactForm/BusinessContactForm';
-
-export const defaultContact: Contact = {
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    idNumber: '',
-    contactType: -1,
-    creationTime: new Date(),
-    involvedContact: null,
-};
 
 const InteractionEventForm: React.FC<InteractionEventFormProps> = (
     { onPlaceSubTypeChange, isVisible, interactionData, isNewInteraction }: InteractionEventFormProps): JSX.Element => {

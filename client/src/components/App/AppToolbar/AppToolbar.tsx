@@ -66,7 +66,7 @@ const AppToolbar: React.FC = (): JSX.Element => {
             <Tooltip title={toggleMessage} arrow>
               <IsActiveToggle
                 value={isActive}
-                setUserActivityStatus={setUserActivityStatus}
+                onToggle={setUserActivityStatus}
                 exclusive
               />
             </Tooltip>

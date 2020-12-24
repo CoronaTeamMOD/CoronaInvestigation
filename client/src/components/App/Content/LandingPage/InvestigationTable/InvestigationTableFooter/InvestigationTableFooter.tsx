@@ -3,17 +3,18 @@ import { Card, IconButton, Typography, useMediaQuery } from '@material-ui/core';
 import { SvgIconComponent, Close, Send, PersonPin, CollectionsBookmark, CallSplit } from '@material-ui/icons';
 
 import Desk from 'models/Desk';
+import County from 'models/County';
 import InvestigatorOption from 'models/InvestigatorOption';
 import InvestigationTableRow from 'models/InvestigationTableRow';
 
 import FooterAction from './FooterAction/FooterAction';
 import useStyle from './InvestigationTableFooterStyles';
+import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import useInvestigationTableFooter from './useInvestigationTableFooter';
 import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
-import TransferInvestigationDesk from './TransferInvestigationsDialogs/TransferInvestigationDesk';
-import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
 import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
-import { IndexedInvestigation } from '../InvestigationTablesHeaders';
+import TransferInvestigationTabsDialog from './TransferInvestigationsDialogs/TransferInvestigationTabsDialog';
+import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -34,9 +35,10 @@ const singleAssignment = 'הקצאה';
 const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
-        
-    const { checkedIndexedRows, allDesks, allInvestigators, onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-            onDeskGroupChange, onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
+
+    const { checkedIndexedRows, allDesks, allCounties, allInvestigators, onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
+        onDeskGroupChange, onCountyChange, onCountyGroupChange,
+        onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
@@ -51,25 +53,28 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
+        handleConfirmCountiesDialog,
         handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
-    } = useInvestigationTableFooter({ 
-        setOpenDesksDialog, 
-        setOpenInvestigatorsDialog, 
+    } = useInvestigationTableFooter({
+        setOpenDesksDialog,
+        setOpenInvestigatorsDialog,
         setOpenGroupedInvestigations,
-        checkedIndexedRows, 
-        fetchTableData, 
-        onDialogClose, 
-        onDeskChange, 
+        checkedIndexedRows,
+        fetchTableData,
+        onDialogClose,
+        onDeskChange,
         onDeskGroupChange,
-        onInvestigatorChange, 
-        onInvestigatorGroupChange 
+        onCountyChange,
+        onCountyGroupChange,
+        onInvestigatorChange,
+        onInvestigatorGroupChange
     });
 
     const classes = useStyle(isScreenWide)();
 
     const isSingleInvestigation = checkedIndexedRows.length === 1;
-    
+
     const checkedInvestigations: InvestigationTableRow[] = useMemo(() => {
         return tableRows.filter((tableRow: InvestigationTableRow) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(tableRow.epidemiologyNumber));
     }, [tableRows, checkedIndexedRows])
@@ -147,11 +152,13 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                     <Close />
                 </IconButton>
             </Card>
-            <TransferInvestigationDesk
+            <TransferInvestigationTabsDialog
                 open={openDesksDialog}
-                onConfirm={handleConfirmDesksDialog}
+                onDeskTransfer={handleConfirmDesksDialog}
+                onCountyTransfer={handleConfirmCountiesDialog}
                 onClose={handleCloseDesksDialog}
                 allDesks={allDesks}
+                allCounties={allCounties}
             />
             <TransferInvestigationInvestigator
                 open={openInvestigatorsDialog}
@@ -177,6 +184,7 @@ interface Props {
     onDialogClose: () => void;
     checkedIndexedRows: IndexedInvestigation[];
     allDesks: Desk[];
+    allCounties: County[];
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
@@ -184,6 +192,8 @@ interface Props {
     fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
+    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
 }

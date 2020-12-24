@@ -63,6 +63,8 @@ query AllInvestigations($orderBy: String!, $offset: Int!, $size: Int!, $filter: 
       comment
       epidemiologyNumber
       coronaTestDate
+      startTime
+      creationDate
       complexityCode
       priority
       statusReason

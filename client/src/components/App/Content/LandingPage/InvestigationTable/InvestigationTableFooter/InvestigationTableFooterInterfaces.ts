@@ -1,3 +1,4 @@
+import County from 'models/County';
 import Desk from 'models/Desk';
 import InvestigatorOption from 'models/InvestigatorOption';
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
@@ -11,6 +12,8 @@ export interface InvestigationTableFooterParameters {
     onDialogClose: () => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
+    onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
+    onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
     onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
     onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
 }
@@ -23,6 +26,7 @@ export interface InvestigationTableFooterOutcome {
     handleOpenGroupedInvestigations: () => void;
     handleCloseGroupedInvestigations: () => void;
     handleConfirmDesksDialog: (updatedDesk: Desk, transferReason: string) => void;
+    handleConfirmCountiesDialog: (updatedCounty: County, transferReason: string) => void;
     handleConfirmInvestigatorsDialog: (updatedIvestigator: InvestigatorOption, transferReason: string) => void;
     handleDisbandGroupedInvestigations: (groupIds: string[]) => void;
 };

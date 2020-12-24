@@ -51,7 +51,9 @@ describe('investigationTable tests', () => {
             newRowData.county,
             newRowData.investigator,
             newRowData.comment,
-            newRowData.statusReason
+            newRowData.statusReason,
+            newRowData.creationDate,
+            newRowData.startTime,
         );
 
         expect(newRow).toEqual(newRowData);
@@ -73,7 +75,9 @@ describe('investigationTable tests', () => {
             newRowData.county,
             newRowData.investigator,
             newRowData.comment,
-            newRowData.statusReason
+            newRowData.statusReason,
+            newRowData.creationDate,
+            newRowData.startTime,
         );
 
         expect(newRow).not.toEqual(newRowData);

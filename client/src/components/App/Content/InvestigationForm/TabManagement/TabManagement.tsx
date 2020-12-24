@@ -49,7 +49,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
             id: TabId.CONTACTS_QUESTIONING,
             name: orderedTabsNames[4],
             displayComponent: <ContactQuestioning id={4} />
-        }
+        },
     ];
 
     const classes = useStyles({});

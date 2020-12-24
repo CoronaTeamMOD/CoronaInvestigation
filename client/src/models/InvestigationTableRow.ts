@@ -28,6 +28,8 @@ interface InvestigationTableRow {
     reasonId: number;
     subOccupation: string;
     parentOccupation:string;
+    creationDate: Date;
+    startTime: Date;
 };
 
 export default InvestigationTableRow;

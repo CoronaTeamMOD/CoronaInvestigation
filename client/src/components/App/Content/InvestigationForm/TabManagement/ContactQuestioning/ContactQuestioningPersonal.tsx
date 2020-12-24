@@ -7,16 +7,16 @@ import Toggle from 'commons/Toggle/Toggle';
 import DatePick from 'commons/DatePick/DatePick';
 import FieldName from 'commons/FieldName/FieldName';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import InteractedContactFields from 'models/enums/InteractedContact';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
+import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
 
 import useStyles from './ContactQuestioningStyles';
 import { ADDITIONAL_PHONE_LABEL } from '../PersonalInfoTab/PersonalInfoTab';
-import IdentificationTextField from './ContactSection/ContactQuestioningPersonal/IdentificationTextField';
 
 const ContactQuestioningPersonal: React.FC<Props> = (
     props: Props
@@ -82,9 +82,9 @@ const ContactQuestioningPersonal: React.FC<Props> = (
                                     <Toggle
                                         disabled={isFieldDisabled}
                                         test-id="identificationType"
+                                        firstOption={IdentificationTypes.ID}
+                                        secondOption={IdentificationTypes.PASSPORT}
                                         value={isPassport}
-                                        firstOption="ת.ז"
-                                        secondOption="דרכון"
                                         onChange={(event, value) => {
                                             if (value !== null) {
                                                 setIsPassport(value);

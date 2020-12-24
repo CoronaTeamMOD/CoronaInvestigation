@@ -42,7 +42,6 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
     const [isBadgeInVisible, setIsBadgeInVisible] = useState<boolean>(true);
     
     const user = useSelector<StoreStateType, User>(state => state.user.data);
-    const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
 
     const { alertError } = useCustomSwal();
     
@@ -200,6 +199,22 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
 
     const handleCloseDialog = () => setUserDialog({ isOpen: false, info: {} })
 
+    const setUserActivityStatus = (isActive: boolean, userId: string) : Promise<any> => {
+        const setUpdateActivityStatusLogger = logger.setup('Updating user activity status');
+        setUpdateActivityStatusLogger.info('send request to server for updating user activity status', Severity.LOW);
+        return axios.post('users/updateIsUserActiveById', {
+            isActive,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateActivityStatusLogger.info('updated user activity status successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את סטטוס הפעילות של המשתמש');
+            setUpdateActivityStatusLogger.error(`error in updating user activity status ${error}`, Severity.HIGH);
+        });
+    }
+
     return {
         users,
         counties,
@@ -211,7 +226,8 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         isBadgeInVisible,
         watchUserInfo,
         handleCloseDialog,
-        handleFilterChange
+        handleFilterChange,
+        setUserActivityStatus
     }
 }
 
@@ -234,6 +250,7 @@ interface useUsersManagementOutCome {
     watchUserInfo: (row: any) => void;
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
+    setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
 }
 
 export default useUsersManagement;
