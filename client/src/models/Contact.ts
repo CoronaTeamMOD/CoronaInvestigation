@@ -2,11 +2,12 @@ import InvolvedContact from './InvolvedContact';
 import InteractedContact from './InteractedContact';
 
 interface Contact {
-    serialId?: number;
+    id?: number;
     firstName: string;
     lastName: string;
     phoneNumber?: string;
-    idNumber?: string;
+    identificationNumber?: string;
+    identificationType: string;
     contactType: number;
     extraInfo?: string;
     contactStatus?: InteractedContact['contactStatus'];

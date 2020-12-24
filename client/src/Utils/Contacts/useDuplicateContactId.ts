@@ -25,14 +25,14 @@ const useDuplicateContactId = () => {
     }
 
     const checkExcelDuplicateKeys = (excelContacts: InteractedContact[], exisistingContacts: Contact[]) => {
-        const exisistingContactsIds : ContactId[]  =  exisistingContacts.map(contact => contact.idNumber);
+        const exisistingContactsIds : ContactId[]  =  exisistingContacts.map(contact => contact.identificationNumber);
         const excelContactsIds : ContactId[]  =  excelContacts.map(contact => contact.identificationNumber);
         
         const allContacts : ContactId[] = exisistingContactsIds.concat(excelContactsIds);
 
         const duplicateIds = findDuplicateIds(allContacts);
         if (duplicateIds.length > 0) {
-            const invalidContacts = exisistingContacts.filter(contact => duplicateIds.includes(contact.idNumber));
+            const invalidContacts = exisistingContacts.filter(contact => duplicateIds.includes(contact.identificationNumber));
             if (invalidContacts.length > 0) {
                 handleExcelDuplicateIdsError(invalidContacts);
             } else {
@@ -50,7 +50,7 @@ const useDuplicateContactId = () => {
         loadContactsLogger.error('Didnt load contacts due to duplicate ids', Severity.MEDIUM);
         const errorText = "לא ניתן לטעון את האקסל כי מספרי הזיהוי הבאים כבר קיימים בחקירה \r\n" + 
             duplicateIdsContacts.map(contact => 
-                `${format(new Date(contact.startTime as Date), displayDateFormat)}: ${contact.idNumber}`).join("\r\n");
+                `${format(new Date(contact.startTime as Date), displayDateFormat)}: ${contact.identificationNumber}`).join("\r\n");
         alertWarning(errorText);
     }
 

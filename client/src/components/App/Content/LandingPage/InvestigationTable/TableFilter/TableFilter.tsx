@@ -1,27 +1,33 @@
 import React from 'react'
-import { Card, Checkbox, IconButton, TextField, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { Card, Checkbox, IconButton, TextField, Typography } from '@material-ui/core';
 
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
+import useStyles from './TableFilterStyles';
 import { StatusFilter as StatusFilterType } from '../InvestigationTableInterfaces';
-import useStyles from './StatusFilterStyles';
 
 interface Props {
     statuses: InvestigationMainStatus[];
     filteredStatuses: StatusFilterType;
+    unassignedUserFilter: boolean;
+    inactiveUserFilter: boolean;
+    changeUnassginedUserFilter: (isFilterOn: boolean) => void;
+    changeInactiveUserFilter: (isFilterOn: boolean) => void;
     onFilterChange: (event: React.ChangeEvent<{}>, selectedStatuses: InvestigationMainStatus[]) => void;
     onClose: () => void;
 }
 
-const StatusFilter = ({ statuses, filteredStatuses, onFilterChange, onClose }: Props) => {
+const TableFilter = (props: Props) => {
     const classes = useStyles();
+
+    const { statuses, filteredStatuses, onFilterChange, onClose, changeInactiveUserFilter, changeUnassginedUserFilter, inactiveUserFilter, unassignedUserFilter } = props;
 
     return (
         <Card className={classes.card}>
             <Typography variant='body2'>
-                סינון לפי סטטוס:&nbsp;
+                <b>סינון לפי סטטוס</b>
             </Typography>
             <Autocomplete
                 className={classes.autocomplete}
@@ -49,9 +55,25 @@ const StatusFilter = ({ statuses, filteredStatuses, onFilterChange, onClose }: P
                 )}
                 limitTags={2}
             />
+            <Checkbox
+                onChange={(event) => changeUnassginedUserFilter(event.target.checked)}
+                color='primary'
+                checked={unassignedUserFilter}
+            />
+            <Typography variant='body2'>
+                <b>חקירות לא משויכות</b>
+            </Typography>
+            <Checkbox
+                onChange={(event) => changeInactiveUserFilter(event.target.checked)}
+                color='primary'
+                checked={inactiveUserFilter}
+            />
+            <Typography variant='body2'>
+                <b>חקירות משויכות לחוקרים לא פעילים</b>
+            </Typography>
             <IconButton onClick={() => onClose()}><Close /></IconButton>
         </Card>
     )
 }
 
-export default StatusFilter
+export default TableFilter

@@ -7,7 +7,7 @@ import ContactStatus from 'models/ContactStatus';
 import FormTitle from 'commons/FormTitle/FormTitle';
 import InteractedContact from 'models/InteractedContact';
 import FamilyRelationship from 'models/FamilyRelationship';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
 import useStyles from './ContactQuestioningStyles';

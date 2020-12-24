@@ -5,6 +5,7 @@ export const investigatorIdPropertyName = 'investigatorId';
 
 export enum TableHeadersNames {
     color = 'color',
+    rowIndicators = 'rowIndicators',
     multipleCheck = 'multipleCheck',
     epidemiologyNumber = 'epidemiologyNumber',
     coronaTestDate = 'coronaTestDate',
@@ -38,6 +39,7 @@ export type sortableHeaders = { [T in keyof typeof TableHeadersNames]: boolean }
 
 export const TableHeaders: IndexedInvestigation = {
     [TableHeadersNames.color]: '',
+    [TableHeadersNames.rowIndicators]: '',
     [TableHeadersNames.multipleCheck]: '',
     [TableHeadersNames.epidemiologyNumber]: 'מס. אפידמיולוגי',
     [TableHeadersNames.coronaTestDate]: 'תחילת המחלה',
@@ -68,6 +70,7 @@ export const TableHeaders: IndexedInvestigation = {
 export const adminCols: string[] = [
     TableHeadersNames.color,
     TableHeadersNames.multipleCheck,
+    TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.fullName,
@@ -83,6 +86,7 @@ export const adminCols: string[] = [
 ]
 
 export const userCols: string[] = [
+    TableHeadersNames.rowIndicators,
     TableHeadersNames.epidemiologyNumber,
     TableHeadersNames.coronaTestDate,
     TableHeadersNames.investigationStatus,
@@ -97,6 +101,7 @@ export const userCols: string[] = [
 
 export const sortableCols: sortableHeaders = {
     [TableHeadersNames.color]: false,
+    [TableHeadersNames.rowIndicators]: false,
     [TableHeadersNames.multipleCheck]: false,
     [TableHeadersNames.epidemiologyNumber]: true,
     [TableHeadersNames.coronaTestDate]: true,

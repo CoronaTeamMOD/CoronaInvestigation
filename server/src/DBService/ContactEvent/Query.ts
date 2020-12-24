@@ -106,8 +106,8 @@ query getEventAndPeopleByInvestigationID($currInvestigation: Int!) {
           personByPersonInfo {
             firstName
             identificationNumber
+            identificationType
             lastName
-            gender
             phoneNumber
           }
           involvedContact: involvedContactByInvolvedContactId {

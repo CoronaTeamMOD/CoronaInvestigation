@@ -4,7 +4,7 @@ import theme from 'styles/theme';
 import ContactStatus from 'models/ContactStatus';
 import InteractedContact from 'models/InteractedContact';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
-import { COMPLETE_STATUS } from 'Utils/vendor/useContactFields';
+import { COMPLETE_STATUS } from 'Utils/Contacts/useContactFields';
 
 const useReachContact = (props: Props) => {
     const { errors } = useFormContext();

@@ -6,7 +6,7 @@ import { Autocomplete } from '@material-ui/lab';
 import ContactStatus from 'models/ContactStatus';
 import PhoneDial from 'commons/PhoneDial/PhoneDial';
 import InteractedContact from 'models/InteractedContact';
-import useContactFields from 'Utils/vendor/useContactFields';
+import useContactFields from 'Utils/Contacts/useContactFields';
 import InteractedContactFields from 'models/enums/InteractedContact';
 
 import useReachContact from './useReachContact';

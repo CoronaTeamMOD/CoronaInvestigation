@@ -10,17 +10,12 @@ import useFormStyles from 'styles/formStyles';
 import StoreStateType from 'redux/storeStateType';
 import FormInput from 'commons/FormInput/FormInput';
 import InvolvedContact from 'models/InvolvedContact';
+import ContactFieldName from 'models/enums/ContactFieldName';
 import FamilyContactIcon from 'commons/Icons/FamilyContactIcon';
 import useInvolvedContact from 'Utils/vendor/useInvolvedContact';
 
 import useStyles from './ContactGridStyles';
 
-const contactedPersonPhone: string = 'טלפון ראשי';
-const contactedPersonFirstName: string = 'שם פרטי';
-const contactedPersonLastName: string = 'שם משפחה';
-const contactedPersonID: string = 'ת.ז';
-const contactType: string = 'סוג המגע';
-const contactTypeMoreDetails: string = 'פירוט נוסף על אופי המגע';
 const contactedBirthdate: string = 'תאריך לידה';
 const contactedAge: string = 'גיל';
 const contactedAdditionalPhone: string = 'טלפון משני';
@@ -55,7 +50,6 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
     const familyContactsAdditionalFields = () => {
         const { birthDate, isolationCity, additionalPhoneNumber, familyRelationship } = contact.involvedContact as InvolvedContact;
         return <>
-            <Grid xs={1}/>
             <FormInput xs={2} fieldName={contactedAdditionalPhone}>
                 <Typography variant='caption'>
                     {additionalPhoneNumber || noDataIndication}
@@ -89,42 +83,47 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                 <Grid item xs={12} className={formClasses.formRow}>
                     {
                         isFamilyContact &&
-                        <Grid item xs={1}>
+                        <Grid item xs={2}>
                             <FamilyContactIcon/>
                         </Grid>
                     }
-                    <FormInput xs={2} fieldName={contactedPersonFirstName}>
+                    <FormInput xs={2} fieldName={ContactFieldName.FIRST_NAME}>
                         <Typography variant='caption'>
                             {contact.firstName || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={contactedPersonLastName}>
+                    <FormInput xs={2} fieldName={ContactFieldName.LAST_NAME}>
                         <Typography variant='caption'>
                             {contact.lastName || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={contactedPersonID}>
+                    <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_TYPE}>
                         <Typography variant='caption'>
-                            {contact.idNumber || noDataIndication}
+                            {contact.identificationType || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={contactedPersonPhone}>
+                    <FormInput xs={2} fieldName={ContactFieldName.IDENTIFICATION_NUMBER}>
+                        <Typography variant='caption'>
+                            {contact.identificationNumber || noDataIndication}
+                        </Typography>
+                    </FormInput>
+                    <FormInput xs={2} fieldName={ContactFieldName.PHONE}>
                         <Typography variant='caption'>
                             {contact.phoneNumber || noDataIndication}
                         </Typography>
                     </FormInput>
-                    <FormInput xs={2} fieldName={contactType}>
-                        <Typography variant='caption'>
-                            {contactTypes.get(+contact.contactType)?.displayName}
-                        </Typography>
-                    </FormInput>
                 </Grid>
                 <Grid item xs={12} className={formClasses.formRow}>
+                    <FormInput xs={2} fieldName={ContactFieldName.CONTACT_TYPE}>
+                        <Typography variant='caption'>
+                            {contact.contactType ? contactTypes.get(+contact.contactType)?.displayName : noDataIndication}
+                        </Typography>
+                    </FormInput>
                     {
                         isFamilyContact ?
                             familyContactsAdditionalFields()
-                        :
-                            <FormInput fieldName={contactTypeMoreDetails}>
+                        : contact.extraInfo &&
+                            <FormInput xs={10} fieldName={ContactFieldName.EXTRA_INFO}>
                                 <Typography variant='caption'>
                                     {contact.extraInfo}
                                 </Typography>
@@ -138,7 +137,7 @@ const ContactGrid: React.FC<Props> = (props: Props): JSX.Element => {
                         disabled={shouldDisableDeleteContact(isContactComplete, contact)}
                         test-id='deleteContactLocation'
                         onClick={() => {
-                            contact.serialId && onDeleteContactClick(contact.serialId, contact.involvedContactId || null)
+                            contact.id && onDeleteContactClick(contact.id, contact.involvedContactId || null)
                         }}>
                         <Delete />
                     </IconButton>

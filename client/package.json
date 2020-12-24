@@ -8,7 +8,7 @@
         "@types/axios-mock-adapter": "^1.10.0",
         "@types/enzyme": "^3.10.5",
         "@types/enzyme-adapter-react-16": "^1.0.6",
-        "@types/googlemaps": "^3.39.13",
+        "@types/googlemaps": "^3.43.0",
         "@types/http-proxy-middleware": "^0.19.3",
         "@types/jest": "^24.9.1",
         "@types/node": "^12.12.54",
@@ -33,7 +33,7 @@
         "@material-ui/icons": "^4.9.1",
         "@material-ui/lab": "^4.0.0-alpha.56",
         "@material-ui/pickers": "^3.2.10",
-        "@microsoft/applicationinsights-web": "^2.5.9",
+        "@microsoft/applicationinsights-web": "^2.5.10",
         "@reduxjs/toolkit": "^1.4.0",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.5.0",
@@ -60,7 +60,7 @@
         "redux-thunk": "^2.3.0",
         "sweetalert2": "^9.17.2",
         "uuid": "^8.3.1",
-        "xlsx": "^0.16.8",
+        "xlsx": "^0.16.9",
         "yup": "^0.29.3"
     },
     "scripts": {
