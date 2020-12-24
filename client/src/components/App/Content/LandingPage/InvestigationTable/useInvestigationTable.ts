@@ -100,8 +100,17 @@ export const createRowData = (
     startTime,
 });
 
+export interface SelectedRow {
+    epidemiologyNumber: number;
+    groupId: string;
+}
+
+export const DEFAULT_SELECTED_ROW: SelectedRow = {
+    epidemiologyNumber: -1,
+    groupId: ''
+};
+
 const TABLE_REFRESH_INTERVAL = 30;
-export const UNDEFINED_ROW = -1;
 const FETCH_ERROR_TITLE = 'אופס... לא הצלחנו לשלוף';
 const UPDATE_ERROR_TITLE = 'לא הצלחנו לעדכן את החקירה';
 const OPEN_INVESTIGATION_ERROR_TITLE = 'לא הצלחנו לפתוח את החקירה';
@@ -552,7 +561,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
         return key ? key : ''
     }
 
-    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => {
+    const changeGroupsInvestigator = async (groupIds: string[], investigator: InvestigatorOption | null) => {
         const changeGroupsInvestigatorLogger = logger.setup('Change groups investigator');
         const joinedGroupIds = groupIds.join(', ');
         changeGroupsInvestigatorLogger.info(`performing investigator change request for groups ${joinedGroupIds}`, Severity.LOW);
@@ -560,7 +569,6 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
             await axios.post('/users/changeGroupInvestigator', {
                 groupIds,
                 user: investigator?.id,
-                reason: transferReason
             });
             changeGroupsInvestigatorLogger.info(`the investigator have been changed successfully for groups ${joinedGroupIds}`, Severity.LOW);
         } catch (error) {
@@ -599,7 +607,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 reason: transferReason
             });
             changeDeskLogger.info(`changed the desk successfully for group ${joinedGroupIds}`, Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
+            setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
             changeDeskLogger.error(`couldn't change the desk for group ${joinedGroupIds} due to ${error}`, Severity.HIGH);
@@ -616,7 +624,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 transferReason
             });
             changeCountyLogger.info(`changed the county successfully for groups ${groupIds}`, Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
+            setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
             changeCountyLogger.error(`couldn't change the county for groups ${groupIds} due to ${error}`, Severity.HIGH);
@@ -653,7 +661,7 @@ const useInvestigationTable = (parameters: useInvestigationTableParameters): use
                 transferReason
             });
             changeCountyLogger.info(`changed the county successfully for ${epidemiologyNumbers}`, Severity.LOW);
-            setSelectedRow(UNDEFINED_ROW);
+            setSelectedRow(DEFAULT_SELECTED_ROW);
             fetchTableData();
         } catch (error) {
             changeCountyLogger.error(`couldn't change the county for ${epidemiologyNumbers} due to ${error}`, Severity.HIGH);
