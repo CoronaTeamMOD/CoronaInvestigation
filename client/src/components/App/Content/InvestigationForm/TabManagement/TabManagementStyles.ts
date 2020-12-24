@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/styles';
+import theme from 'styles/theme';
 
 const useStyles = makeStyles({
     card: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles({
         color: '#ffcc00'
     },
     icon:{
-        marginTop: '0.8vh'
+        marginTop: theme.spacing(1)
     }
 });
 
