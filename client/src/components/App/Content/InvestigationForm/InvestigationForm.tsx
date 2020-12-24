@@ -59,7 +59,6 @@ const InvestigationForm: React.FC = (): JSX.Element => {
     } = useTabManagement({lastTabDisplayedId});
 
     useEffect(() => {
-        console.log(areThereContacts);
         setLastTabDisplayedId(areThereContacts ? LAST_TAB_ID : LAST_TAB_ID - 1);
         !areThereContacts && setFormState(investigationId, LAST_TAB_ID, true);
     }, [areThereContacts]);
