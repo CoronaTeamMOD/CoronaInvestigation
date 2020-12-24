@@ -18,7 +18,6 @@ import County from 'models/County';
 import userType from 'models/enums/UserType';
 import SortOrder from 'models/enums/SortOrder';
 import StoreStateType from 'redux/storeStateType';
-import { defaultEpidemiologyNumber } from 'Utils/consts';
 import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import InvestigationTableRow from 'models/InvestigationTableRow';
@@ -30,7 +29,7 @@ import DeskFilter from './DeskFilter/DeskFilter';
 import TableFilter from './TableFilter/TableFilter';
 import SettingsActions from './SettingsActions/SettingsActions';
 import ClickableTooltip from './clickableTooltip/clickableTooltip';
-import useInvestigationTable, { UNDEFINED_ROW } from './useInvestigationTable';
+import useInvestigationTable, { SelectedRow, DEFAULT_SELECTED_ROW } from './useInvestigationTable';
 import InvestigationTableFooter from './InvestigationTableFooter/InvestigationTableFooter';
 import InvestigatorAllocationCell from './InvestigatorAllocation/InvestigatorAllocationCell';
 import InvestigationStatusColumn from './InvestigationStatusColumn/InvestigationStatusColumn';
@@ -98,7 +97,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const theme = useTheme();
 
     const [checkedIndexedRows, setCheckedIndexedRows] = useState<IndexedInvestigation[]>([]);
-    const [selectedRow, setSelectedRow] = useState<number>(UNDEFINED_ROW);
+    const [selectedRow, setSelectedRow] = useState<SelectedRow>(DEFAULT_SELECTED_ROW);
     const [deskAutoCompleteClicked, setDeskAutoCompleteClicked] = useState<boolean>(false);
     const [allUsersOfCurrCounty, setAllUsersOfCurrCounty] = useState<Map<string, User>>(new Map());
     const [allCounties, setAllCounties] = useState<County[]>([]);
@@ -149,7 +148,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
 
     const isRowSelected = (epidemiologyNumber: number) => checkedIndexedRows.map(indexedRow => indexedRow.epidemiologyNumber).includes(epidemiologyNumber);
 
-    const handleCellClick = (event: any, key: string, epidemiologyNumber: number) => {
+    const handleCellClick = (event: any, key: string, epidemiologyNumber: number, groupId: string) => {
         switch (key) {
             case TableHeadersNames.investigatorName: {
                 event.stopPropagation();
@@ -163,7 +162,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 break;
             }
         }
-        setSelectedRow(epidemiologyNumber);
+        setSelectedRow({ epidemiologyNumber, groupId});
         setCheckedIndexedRows([]);
     }
 
@@ -211,24 +210,12 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                 );
             case TableHeadersNames.investigatorName:
                     return (
-                        <>
-                            { selectedRow === indexedRow.epidemiologyNumber && isInvestigatorAllocationDialogOpen && 
-                                <InvestigatorAllocationDialog
-                                    isOpen={isInvestigatorAllocationDialogOpen}
-                                    handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
-                                    investigators={getFilteredUsersOfCurrentCounty()}
-                                    allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
-                                    groupIds={[indexedRow.groupId]}
-                                    epidemiologyNumbers={[indexedRow.epidemiologyNumber]}
-                                /> 
-                            }
-                            <InvestigatorAllocationCell
-                                investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
-                            />
-                        </>
+                        <InvestigatorAllocationCell
+                            investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
+                        />  
                     )
             case TableHeadersNames.investigationDesk:
-                if (selectedRow === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
+                if (selectedRow.epidemiologyNumber === indexedRow.epidemiologyNumber && deskAutoCompleteClicked &&
                     (user.userType === userType.ADMIN || user.userType === userType.SUPER_ADMIN) && !wasInvestigationFetchedByGroup) {
                     return (
                         <Autocomplete
@@ -252,7 +239,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                         fetchTableData();
                                     }
 
-                                    setSelectedRow(UNDEFINED_ROW);
+                                    setSelectedRow(DEFAULT_SELECTED_ROW);
                                 }
                             }}
                             renderInput={(params) =>
@@ -556,7 +543,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                             classes={{root: classes.tableCellRoot}}
                                                             className={getRegularCellStyle(index, key, isGroupShown).join(' ')}
                                                             padding='none'
-                                                            onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber)}
+                                                            onClick={(event: any) => handleCellClick(event, key, indexedRow.epidemiologyNumber, indexedRow.groupId)}
                                                         >
                                                             {
                                                                 getTableCell(key, indexedRow, index)
@@ -586,7 +573,7 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                                                                     <TableCell
                                                                         classes={{root: classes.tableCellRoot}}
                                                                         className={getNestedCellStyle(key, index + 1 === currentGroupedInvestigationsLength).join(' ')}
-                                                                        onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber)}
+                                                                        onClick={(event: any) => handleCellClick(event, key, indexedGroupedInvestigationRow.epidemiologyNumber, indexedGroupedInvestigationRow.groupId)}
                                                                     >
                                                                         {
                                                                             getTableCell(key, indexedGroupedInvestigationRow, index)
@@ -613,6 +600,14 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                     className={classes.pagination}
                 />
             </Grid>
+            <InvestigatorAllocationDialog
+                isOpen={isInvestigatorAllocationDialogOpen}
+                handleCloseDialog={() => setIsInvestigatorAllocationDialogOpen(false)}
+                investigators={getFilteredUsersOfCurrentCounty()}
+                allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
+                groupIds={[selectedRow.groupId]}
+                epidemiologyNumbers={[selectedRow.epidemiologyNumber]}
+            /> 
             <Slide direction='up' in={checkedIndexedRows.length > 0} mountOnEnter unmountOnExit>
                 <InvestigationTableFooter
                     allInvestigators={getFilteredUsersOfCurrentCounty()}
