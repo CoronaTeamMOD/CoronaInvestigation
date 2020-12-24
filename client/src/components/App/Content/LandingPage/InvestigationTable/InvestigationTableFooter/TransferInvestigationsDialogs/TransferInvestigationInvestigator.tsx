@@ -92,7 +92,6 @@ const TransferInvestigationDesk = (props: Props) => {
                         />
                     </div>
                         <TransferInvestigationDialogNote />
-                    
                 </>
             </TransferInvestigationDialog>
         </FormProvider>
