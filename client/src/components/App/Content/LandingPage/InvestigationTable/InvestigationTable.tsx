@@ -113,7 +113,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [shouldOpenPopover, setShouldOpenPopover] = useState<boolean>(false);
     const [isOpenInvestigatorAllocation, setIsOpenInvestigatorsAllocation] = useState<boolean>(false);
-    const [epiNumOnInvestigatorNameHover, setEpiNumOnInvestigatorNameHover] = useState<number>(defaultEpidemiologyNumber);
 
     const handleOpenGroupClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -227,8 +226,6 @@ const InvestigationTable: React.FC = (): JSX.Element => {
                         <InvestigatorAllocationCell
                             investigatorName={indexedRow[cellName as keyof typeof TableHeadersNames]}
                             epidemiologyNumber={indexedRow.epidemiologyNumber}
-                            epiNumOnInvestigatorNameHover={epiNumOnInvestigatorNameHover}
-                            setEpiNumOnInvestigatorNameHover={setEpiNumOnInvestigatorNameHover}
                         />
                     )
                 }

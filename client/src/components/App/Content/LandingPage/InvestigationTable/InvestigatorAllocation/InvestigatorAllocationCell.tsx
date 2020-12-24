@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tooltip } from '@material-ui/core';
 import { Warning, Edit } from '@material-ui/icons';
 
@@ -8,7 +8,9 @@ import useStyles from './InvestigatorAllocationCellStyles';
 
 const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 
-    const { investigatorName, epidemiologyNumber, epiNumOnInvestigatorNameHover, setEpiNumOnInvestigatorNameHover, } = props;
+    const { investigatorName, epidemiologyNumber } = props;
+
+    const [epiNumOnInvestigatorNameHover, setEpiNumOnInvestigatorNameHover] = useState<number>(defaultEpidemiologyNumber);
 
     const classes = useStyles();
 
@@ -37,8 +39,6 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 interface Props {
     investigatorName: string;
     epidemiologyNumber: number;
-    epiNumOnInvestigatorNameHover: number;
-    setEpiNumOnInvestigatorNameHover: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default InvestigatorAllocationCell;
