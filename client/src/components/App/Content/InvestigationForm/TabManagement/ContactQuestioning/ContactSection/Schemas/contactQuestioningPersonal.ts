@@ -14,7 +14,7 @@ export const contactQuestioningPersonal = {
             is: 5,
             then: yup.string().nullable(),
             otherwise: ContactIdValidationSchema
-        })
+        }),
     [InteractedContactFields.BIRTH_DATE]: yup.date().nullable(),
     [InteractedContactFields.PHONE_NUMBER]: yup
         .string().when(InteractedContactFields.CONTACT_STATUS,{
