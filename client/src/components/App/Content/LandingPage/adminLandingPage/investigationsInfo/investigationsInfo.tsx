@@ -1,11 +1,14 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import InvestigationChart from 'models/InvestigationChart';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { Card, CardActions, Grid, IconButton, Typography } from '@material-ui/core';
 
 import { landingPageRoute } from 'Utils/Routes/Routes';
 
 import useStyles from './investigationsInfoStyles';
+import InvestigationPieChart from './InvestigationPieChart/InvestigationPieChart';
+import InvestigationChartData from './InvestigationPieChart/InvestigationChartData';
 import InvestigationInfoButton from './investigationInfoButton/investigationInfoButton';
 
 const InvestigationsInfo: React.FC = (): JSX.Element => {
@@ -18,35 +21,21 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
             <CardActions>
                 <Grid container>
                     <Grid item xs={3}>
+                        <div style={{ height: '12vh' }}>
+                            <InvestigationPieChart />
+                        </div>
                     </Grid>
-                    <Grid item xs={2}>
-                        <InvestigationInfoButton
-                            amountOfInvestigations={22}
-                            text='חדשות'
-                            className={classes.newButton}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <InvestigationInfoButton
-                            amountOfInvestigations={45}
-                            text='בטיפול'
-                            className={classes.inProcessButton}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <InvestigationInfoButton
-                            amountOfInvestigations={33}
-                            text='לא משויכות'
-                            className={classes.notAssignedButton}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <InvestigationInfoButton
-                            amountOfInvestigations={12}
-                            text='מוקצות לחוקרים לא פעילים'
-                            className={classes.assignedToNotActiveButton}
-                        />
-                    </Grid>
+                    {
+                        InvestigationChartData.map((InvestigationData: InvestigationChart) => (
+                            <Grid item xs={2}>
+                                <InvestigationInfoButton
+                                    amountOfInvestigations={InvestigationData.value}
+                                    text={InvestigationData.id}
+                                    style={{backgroundColor: InvestigationData.color}}
+                                />
+                            </Grid>
+                        ))
+                    }
                     <Grid item xs={1}>
                     </Grid>
                     <div>
