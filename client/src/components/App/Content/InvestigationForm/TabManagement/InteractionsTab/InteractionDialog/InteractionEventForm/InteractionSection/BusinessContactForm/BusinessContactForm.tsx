@@ -4,7 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import useFormStyles from 'styles/formStyles';
 import FormInput from 'commons/FormInput/FormInput';
-import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
+import AlphabetWithDashTextField from 'commons/AlphabetWithDashTextField/AlphabetWithDashTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
@@ -28,7 +28,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.CONTACT_PERSON_FIRST_NAME}
                             control={control}
                             render={(props) => (
-                                <AlphabetTextField
+                                <AlphabetWithDashTextField
                                     testId='businessContactFirstName'
                                     name={props.name}
                                     value={props.value ? props.value : null}
@@ -43,7 +43,7 @@ const BusinessContactForm: React.FC = (): JSX.Element => {
                             name={InteractionEventDialogFields.CONTACT_PERSON_LAST_NAME}
                             control={control}
                             render={(props) => (
-                                <AlphabetTextField
+                                <AlphabetWithDashTextField
                                     testId='businessContactLastName'
                                     name={props.name}
                                     value={props.value}

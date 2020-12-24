@@ -13,9 +13,9 @@ import useStatusUtils from 'Utils/StatusUtils/useStatusUtils';
 import useContactFields from 'Utils/Contacts/useContactFields';
 import IdentificationTypes from 'models/enums/IdentificationTypes';
 import NumericTextField from 'commons/NumericTextField/NumericTextField';
-import AlphabetTextField from 'commons/AlphabetTextField/AlphabetTextField';
 import AlphanumericTextField from 'commons/AlphanumericTextField/AlphanumericTextField';
 import IdentificationTextField from 'commons/IdentificationTextField/IdentificationTextField';
+import AlphabetWithDashTextField from 'commons/AlphabetWithDashTextField/AlphabetWithDashTextField';
 import InteractionEventDialogFields from 'models/enums/InteractionsEventDialogContext/InteractionEventDialogFields';
 import InteractionEventContactFields from 'models/enums/InteractionsEventDialogContext/InteractionEventContactFields';
 
@@ -59,7 +59,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.FIRST_NAME}`}
                         control={control}
                         render={(props) => (
-                            <AlphabetTextField
+                            <AlphabetWithDashTextField
                                 disabled={isFieldDisabled}
                                 name={props.name}
                                 key='firstName'
@@ -77,7 +77,7 @@ const ContactForm: React.FC<Props> = ({ updatedContactIndex, contactStatus, cont
                         name={`${InteractionEventDialogFields.CONTACTS}[${updatedContactIndex}].${InteractionEventContactFields.LAST_NAME}`}
                         control={control}
                         render={(props) => (
-                            <AlphabetTextField
+                            <AlphabetWithDashTextField
                                 disabled={isFieldDisabled}
                                 name={props.name}
                                 key='lastName'
