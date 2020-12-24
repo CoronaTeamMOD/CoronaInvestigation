@@ -26,7 +26,14 @@ import {
 } from 'Utils/DateUtils/useDateUtils';
 
 const useContactQuestioning = (parameters: useContactQuestioningParameters): useContactQuestioningOutcome => {
-    const {id, setAllContactedInteractions, allContactedInteractions, setFamilyRelationships, setContactStatuses , getValues} = parameters;
+    const {
+        id,
+        setAllContactedInteractions,
+        allContactedInteractions,
+        setFamilyRelationships,
+        setContactStatuses,
+        getValues,
+    } = parameters;
     
     const epidemiologyNumber = useSelector<StoreStateType, number>(state => state.investigation.epidemiologyNumber);
     const { convertDate } = useDateUtils();
