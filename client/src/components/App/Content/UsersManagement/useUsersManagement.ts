@@ -215,6 +215,37 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         });
     }
 
+    const setUserSourceOrganization = (sourceOrganization: string, userId: string) : Promise<any> => {
+        const setUpdateSourcesOrganizationLogger = logger.setup('Updating user source organization');
+        setUpdateSourcesOrganizationLogger.info('send request to server for updating user source organization', Severity.LOW);
+        return axios.post('users/updateSourceOrganizationById', {
+            sourceOrganization,
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setUpdateSourcesOrganizationLogger.info('updated user source organization successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את מסגרת המשתמש');
+            setUpdateSourcesOrganizationLogger.error(`error in updating user source organization ${error}`, Severity.HIGH);
+        });
+    }
+
+    const deleteUserSourceOrganization = (userId: string) : Promise<any> => {
+        const setDeleteSourcesOrganizationLogger = logger.setup('Deleting user source organization');
+        setDeleteSourcesOrganizationLogger.info('send request to server for deleting user source organization', Severity.LOW);
+        return axios.post('users/deleteSourceOrganizationById', {
+            userId
+        }).then((result) => {
+            if(result.data)
+                fetchUsers();
+                setDeleteSourcesOrganizationLogger.info('deleted user source organization successfully', Severity.LOW);
+        }).catch((error) => {
+            alertError('לא הצלחנו לעדכן את מסגרת המשתמש');
+            setDeleteSourcesOrganizationLogger.error(`error in deleting user source organization ${error}`, Severity.HIGH);
+        });
+    }
+
     return {
         users,
         counties,
@@ -227,7 +258,9 @@ const useUsersManagement = ({ page, rowsPerPage, cellNameSort, setPage }: useUse
         watchUserInfo,
         handleCloseDialog,
         handleFilterChange,
-        setUserActivityStatus
+        setUserActivityStatus,
+        setUserSourceOrganization,
+        deleteUserSourceOrganization
     }
 }
 
@@ -251,6 +284,8 @@ interface useUsersManagementOutCome {
     handleCloseDialog: () => void;
     handleFilterChange: (filterBy: any) => void;
     setUserActivityStatus: (isActive: boolean, userId: string) => Promise<any>;
+    setUserSourceOrganization : (sourceOrganization: string, userId: string) => Promise<any>;
+    deleteUserSourceOrganization : (userId: string) => Promise<any>;
 }
 
 export default useUsersManagement;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, TextField
 } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+import { Autocomplete, Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -39,7 +39,8 @@ const UsersManagement: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = React.useState<boolean>(false);
 
     const { users, counties, sourcesOrganization, userTypes, languages,
-        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus } =
+        totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
+        setUserSourceOrganization, deleteUserSourceOrganization } =
         useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -80,6 +81,31 @@ const UsersManagement: React.FC = () => {
             }
             case UsersManagementTableHeadersNames.DESK: {
                 return row[cellName] ? row[cellName] : noDeskAssignment
+            }
+            case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
+                return (
+                    <Autocomplete
+                        options={sourcesOrganization}
+                        getOptionLabel={(option) => {
+                            return option.displayName ? option.displayName : option
+                        }}
+                        getOptionSelected={(option, value) => {
+                           return option.displayName === value
+                        } }
+                        value={row[cellName]}
+                        onChange={(event, newSourceOrganization) => {
+                            newSourceOrganization ?
+                            setUserSourceOrganization(newSourceOrganization.displayName, row[UsersManagementTableHeadersNames.MABAR_USER_NAME]) : 
+                            deleteUserSourceOrganization(row[UsersManagementTableHeadersNames.MABAR_USER_NAME])
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                placeholder='מסגרת'
+                            />
+                        }
+                    />
+                )
             }
             default:
                 return row[cellName]
