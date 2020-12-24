@@ -8,7 +8,6 @@ import theme from 'styles/theme';
 import logger from 'logger/logger';
 import { Severity } from 'models/Logger';
 import StoreStateType from 'redux/storeStateType';
-import InvestigatorOption from 'models/InvestigatorOption';
 import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 import { setIsLoading } from 'redux/IsLoading/isLoadingActionCreators';
 
@@ -37,9 +36,9 @@ const toUniqueIdsAndEpidemiologyNumbers = (
 
 const useInvestigationTableFooter = (parameters: InvestigationTableFooterParameters): InvestigationTableFooterOutcome => {
 
-    const { setOpenDesksDialog, setOpenInvestigatorsDialog, setOpenGroupedInvestigations,
-        checkedIndexedRows, onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
-        onCountyChange, onCountyGroupChange, onInvestigatorChange, onInvestigatorGroupChange } = parameters;
+    const { setOpenDesksDialog, setOpenGroupedInvestigations, setIsInvestigatorAllocationDialogOpen,
+            checkedIndexedRows, onDialogClose, fetchTableData, onDeskChange, onDeskGroupChange,
+            onCountyChange, onCountyGroupChange } = parameters;
 
     const { alertError, alertWarning } = useCustomSwal();
 
@@ -49,6 +48,13 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
 
     const handleCloseDesksDialog = () => {
         setOpenDesksDialog(false);
+        onDialogClose();
+    }
+
+    const handleOpenInvesigatorAllocationDialog = () => setIsInvestigatorAllocationDialogOpen(true);
+
+    const handleCloseInvesigatorAllocationDialog = () => {
+        setIsInvestigatorAllocationDialogOpen(false);
         onDialogClose();
     }
 
@@ -71,7 +77,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             await onDeskChange(epidemiologyNumbers, updatedDesk, transferReason);
         }
 
-        handleCloseInvestigatorsDialog();
         fetchTableData();
     }
 
@@ -94,37 +99,6 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
             await onCountyChange(epidemiologyNumbers, updatedCounty, transferReason);
         }
 
-        handleCloseInvestigatorsDialog();
-        fetchTableData();
-    }
-
-    const handleOpenInvestigatorsDialog = () => setOpenInvestigatorsDialog(true);
-
-    const handleCloseInvestigatorsDialog = () => {
-        setOpenInvestigatorsDialog(false);
-        onDialogClose();
-    }
-
-    const handleConfirmInvestigatorsDialog = async (updatedIvestigator: InvestigatorOption, transferReason: string) => {
-        const { uniqueGroupIds, epidemiologyNumbers } =
-            checkedIndexedRows.reduce<{
-                uniqueGroupIds: string[],
-                epidemiologyNumbers: number[]
-            }>(toUniqueIdsAndEpidemiologyNumbers, {
-                uniqueGroupIds: [],
-                epidemiologyNumbers: []
-            });
-        if (uniqueGroupIds.length) {
-            setIsLoading(true);
-            await onInvestigatorGroupChange(uniqueGroupIds, updatedIvestigator, transferReason);
-        }
-
-        if (epidemiologyNumbers.length) {
-            setIsLoading(true);
-            await onInvestigatorChange(epidemiologyNumbers, updatedIvestigator, transferReason);
-        }
-
-        handleCloseInvestigatorsDialog();
         fetchTableData();
     }
 
@@ -172,13 +146,12 @@ const useInvestigationTableFooter = (parameters: InvestigationTableFooterParamet
     return {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
-        handleOpenInvestigatorsDialog,
-        handleCloseInvestigatorsDialog,
+        handleOpenInvesigatorAllocationDialog,
+        handleCloseInvesigatorAllocationDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
-        handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     }
 }

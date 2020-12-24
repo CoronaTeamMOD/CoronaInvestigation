@@ -8,6 +8,7 @@ import InvestigationTableRow from 'models/InvestigationTableRow';
 import InvestigationMainStatus from 'models/InvestigationMainStatus';
 
 import { IndexedInvestigationData } from './InvestigationTablesHeaders';
+import { SelectedRow } from './useInvestigationTable';
 
 export type StatusFilter = number[];
 export type DeskFilter = number[];
@@ -23,7 +24,7 @@ export interface HistoryState {
 export interface useInvestigationTableParameters {
     currentPage: number;
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
-    setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
+    setSelectedRow: React.Dispatch<React.SetStateAction<SelectedRow>>;
     setAllUsersOfCurrCounty: React.Dispatch<React.SetStateAction<Map<string, User>>>;
     setAllCounties: React.Dispatch<React.SetStateAction<County[]>>;
     setAllStatuses: React.Dispatch<React.SetStateAction<InvestigationMainStatus[]>>;

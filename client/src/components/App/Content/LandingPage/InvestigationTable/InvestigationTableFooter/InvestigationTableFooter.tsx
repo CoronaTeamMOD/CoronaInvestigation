@@ -12,9 +12,9 @@ import useStyle from './InvestigationTableFooterStyles';
 import { IndexedInvestigation } from '../InvestigationTablesHeaders';
 import useInvestigationTableFooter from './useInvestigationTableFooter';
 import GroupedInvestigations from './GroupedInvestigations/GroupedInvestigations'
+import InvestigatorAllocationDialog from '../InvestigatorAllocation/InvestigatorAllocationDialog';
 import { toUniqueGroupsWithNonGroupedInvestigations } from './GroupedInvestigations/useGroupedInvestigations';
 import TransferInvestigationTabsDialog from './TransferInvestigationsDialogs/TransferInvestigationTabsDialog';
-import TransferInvestigationInvestigator from './TransferInvestigationsDialogs/TransferInvestigationInvestigator';
 
 export interface CardActionDescription {
     icon: SvgIconComponent;
@@ -36,30 +36,29 @@ const multipleAssignments = 'הקצאות';
 
 const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props, ref) => {
 
-    const { checkedIndexedRows, allDesks, allCounties, allInvestigators, onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
-        onDeskGroupChange, onCountyChange, onCountyGroupChange,
-        onInvestigatorGroupChange, onInvestigatorChange, fetchTableData, fetchInvestigationsByGroupId } = props;
+    const { checkedIndexedRows, allDesks, allCounties, allInvestigators, isInvestigatorAllocationDialogOpen,
+            onDialogClose, tableRows, allGroupedInvestigations, onDeskChange,
+            onDeskGroupChange, onCountyChange, onCountyGroupChange,
+            fetchTableData, fetchInvestigationsByGroupId, setIsInvestigatorAllocationDialogOpen, allocateInvestigationToInvestigator } = props;
 
     const isScreenWide = useMediaQuery('(min-width: 1680px)');
     const [openDesksDialog, setOpenDesksDialog] = useState<boolean>(false);
-    const [openInvestigatorsDialog, setOpenInvestigatorsDialog] = useState<boolean>(false);
     const [openGroupedInvestigations, setOpenGroupedInvestigations] = useState<boolean>(false);
 
     const {
         handleOpenDesksDialog,
         handleCloseDesksDialog,
-        handleOpenInvestigatorsDialog,
-        handleCloseInvestigatorsDialog,
         handleOpenGroupedInvestigations,
         handleCloseGroupedInvestigations,
+        handleOpenInvesigatorAllocationDialog,
+        handleCloseInvesigatorAllocationDialog,
         handleConfirmDesksDialog,
         handleConfirmCountiesDialog,
-        handleConfirmInvestigatorsDialog,
         handleDisbandGroupedInvestigations
     } = useInvestigationTableFooter({
         setOpenDesksDialog,
-        setOpenInvestigatorsDialog,
         setOpenGroupedInvestigations,
+        setIsInvestigatorAllocationDialogOpen,
         checkedIndexedRows,
         fetchTableData,
         onDialogClose,
@@ -67,8 +66,6 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         onDeskGroupChange,
         onCountyChange,
         onCountyGroupChange,
-        onInvestigatorChange,
-        onInvestigatorGroupChange
     });
 
     const classes = useStyle(isScreenWide)();
@@ -93,16 +90,19 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
         }
     }, [checkedInvestigations])
 
-    const shouldGroupActionDisabled: boolean = useMemo(() => {
-        const trimmedGroup = checkedInvestigations.reduce<{
-            uniqueGroupIds: string[],
-            epidemiologyNumbers: number[]
-        }>(toUniqueGroupsWithNonGroupedInvestigations, {
-            uniqueGroupIds: [],
-            epidemiologyNumbers: []
-        })
-        return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
+    const trimmedGroup = useMemo(() => {
+        return checkedInvestigations.reduce<{
+                uniqueGroupIds: string[],
+                epidemiologyNumbers: number[]
+            }>(toUniqueGroupsWithNonGroupedInvestigations, {
+                uniqueGroupIds: [],
+                epidemiologyNumbers: []
+            })
     }, [checkedInvestigations])
+
+    const shouldGroupActionDisabled: boolean = useMemo(() => {
+        return trimmedGroup.uniqueGroupIds.length > 1 || trimmedGroup.epidemiologyNumbers.length === 0 || checkedInvestigations.length < 2
+    }, [trimmedGroup, checkedInvestigations])
 
     const cardActions: CardActionDescription[] = [
         {
@@ -129,7 +129,7 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
             icon: PersonPin,
             displayTitle: `${isSingleInvestigation ? singleAssignment : multipleAssignments} לחוקר`,
             errorMessage: '',
-            onClick: handleOpenInvestigatorsDialog
+            onClick: handleOpenInvesigatorAllocationDialog
         }
     ]
 
@@ -160,11 +160,13 @@ const InvestigationTableFooter: React.FC<Props> = React.forwardRef((props: Props
                 allDesks={allDesks}
                 allCounties={allCounties}
             />
-            <TransferInvestigationInvestigator
-                open={openInvestigatorsDialog}
-                onConfirm={handleConfirmInvestigatorsDialog}
-                onClose={handleCloseInvestigatorsDialog}
-                allInvestigators={allInvestigators}
+            <InvestigatorAllocationDialog
+                isOpen={isInvestigatorAllocationDialogOpen}
+                handleCloseDialog={handleCloseInvesigatorAllocationDialog}
+                investigators={allInvestigators}
+                allocateInvestigationToInvestigator={allocateInvestigationToInvestigator}
+                groupIds={trimmedGroup.uniqueGroupIds}
+                epidemiologyNumbers={trimmedGroup.epidemiologyNumbers}
             />
             <GroupedInvestigations
                 open={openGroupedInvestigations}
@@ -188,12 +190,13 @@ interface Props {
     allInvestigators: InvestigatorOption[];
     tableRows: InvestigationTableRow[];
     allGroupedInvestigations: Map<string, InvestigationTableRow[]>;
+    isInvestigatorAllocationDialogOpen: boolean;
     fetchTableData: () => void;
     fetchInvestigationsByGroupId: (groupId: string) => void;
     onDeskGroupChange: (groupIds: string[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onDeskChange: (epidemiologyNumbers: number[], newSelectedDesk: Desk | null, transferReason?: string) => Promise<void>;
     onCountyGroupChange: (groupIds: string[], newSelectedCounty: County | null, transferReason: string) => void;
     onCountyChange: (epidemiologyNumbers: number[], newSelectedCounty: County | null, transferReason: string) => void;
-    onInvestigatorGroupChange: (groupIds: string[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
-    onInvestigatorChange: (epidemiologyNumbers: number[], investigator: InvestigatorOption | null, transferReason?: string) => Promise<void>;
+    setIsInvestigatorAllocationDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    allocateInvestigationToInvestigator: (groupIds: string[], epidemiologyNumbers: number[], investigatorToAllocate: InvestigatorOption) => void;
 }

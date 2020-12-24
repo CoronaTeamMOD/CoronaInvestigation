@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tooltip } from '@material-ui/core';
 import { Warning, Edit } from '@material-ui/icons';
-
-import { defaultEpidemiologyNumber } from 'Utils/consts';
 
 import useStyles from './InvestigatorAllocationCellStyles';
 
 const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 
-    const { investigatorName, epidemiologyNumber, epiNumOnInvestigatorNameHover, setEpiNumOnInvestigatorNameHover, } = props;
+    const { investigatorName } = props;
+
+    const [isCellHovered, setIsCellHovered] = useState<boolean>(false);
 
     const classes = useStyles();
 
@@ -23,12 +23,12 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
     return (
         <div 
             className={classes.selectedInvestigator}
-            onMouseOver={() => setEpiNumOnInvestigatorNameHover(epidemiologyNumber)}
-            onMouseLeave={() => setEpiNumOnInvestigatorNameHover(defaultEpidemiologyNumber)}
+            onMouseOver={() => setIsCellHovered(true)}
+            onMouseLeave={() => setIsCellHovered(false)}
         >
-            {isUnassigned && epiNumOnInvestigatorNameHover !== epidemiologyNumber && <UnassignedWarning />}
+            {isUnassigned && isCellHovered && <UnassignedWarning />}
             {investigatorName}
-            {epiNumOnInvestigatorNameHover === epidemiologyNumber && <Edit fontSize='small' className={classes.editIcon} />}
+            {isCellHovered && <Edit fontSize='small' className={classes.editIcon} />}
             
         </div>
     )
@@ -36,9 +36,6 @@ const InvestigatorAllocationCell: React.FC<Props> = (props: Props) => {
 
 interface Props {
     investigatorName: string;
-    epidemiologyNumber: number;
-    epiNumOnInvestigatorNameHover: number;
-    setEpiNumOnInvestigatorNameHover: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default InvestigatorAllocationCell;
