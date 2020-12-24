@@ -5,11 +5,15 @@ const useStyles = makeStyles({
         height: '70vh',
     },
     displayedTab: {
-        height: '93%',
+        height: '90%',
         overflow: 'auto'
     },
     errorIcon:{
         color: '#ffcc00'
+    },
+    icon:{
+        height: '3.5vh',
+        marginTop: '0.8vh'
     }
 });
 
