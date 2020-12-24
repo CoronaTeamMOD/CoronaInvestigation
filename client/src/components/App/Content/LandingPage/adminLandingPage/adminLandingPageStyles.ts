@@ -16,22 +16,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     gridContainer: {
         paddingTop: '3vh',
-    },
-    timeRangeCard: {
-        width: '15vw',
-        height: '17vh',
-        borderRadius: '1vw',
-    },
-    cardTitle: {
-        fontSize: '0.9vw',
-    },
-    TimeRangeCardContent: {
-        height: '52%',
-    },
-    updateButton: {
-        width: '4vw',
-        color: 'white',
-        backgroundColor: theme.palette.primary.dark
     }
 }));
 

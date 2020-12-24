@@ -2,8 +2,8 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles({    
     filtersCard: {
-        width: '65vw',
-        height: '30vh',
+        width: '67vw',
+        height: '35vh',
         borderRadius: '1vw',
         display: 'flex',
         flexDirection: 'column-reverse',
