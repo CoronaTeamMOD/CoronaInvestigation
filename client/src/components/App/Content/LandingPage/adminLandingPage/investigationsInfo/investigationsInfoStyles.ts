@@ -8,6 +8,9 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column-reverse',
     },
+    investigationAmountContainer: {
+        paddingLeft: '2.5vw',
+    },
     investigationAmount: {
         display: 'flex',
         justifyContent: 'center',
@@ -21,6 +24,7 @@ const useStyles = makeStyles({
     },
     allInvestigationsText: {
         fontSize: '1.3vw',
+        paddingTop: '0.6vh',
     },
     navigateIcon: {
         backgroundColor: 'lightGrey',

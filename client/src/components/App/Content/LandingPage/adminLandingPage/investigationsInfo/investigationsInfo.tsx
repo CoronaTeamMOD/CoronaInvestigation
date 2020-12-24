@@ -31,14 +31,14 @@ const InvestigationsInfo: React.FC = (): JSX.Element => {
                                 <InvestigationInfoButton
                                     amountOfInvestigations={InvestigationData.value}
                                     text={InvestigationData.id}
-                                    style={{backgroundColor: InvestigationData.color}}
+                                    style={{ backgroundColor: InvestigationData.color }}
                                 />
                             </Grid>
                         ))
                     }
                     <Grid item xs={1}>
                     </Grid>
-                    <div>
+                    <div className={classes.investigationAmountContainer}>
                         <div className={classes.investigationAmount}>
                             <Typography className={classes.investigationAmountText}><b>{102}</b></Typography>
                         </div>

@@ -19,11 +19,13 @@ const useStyles = makeStyles({
     investigationAmountText: {
         fontSize: '1.2vw',
     },
-    allInvestigations: {
+    unnasignedInvestigations: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '13vw',
     },
-    allInvestigationsText: {
+    unnasignedInvestigationsText: {
         fontSize: '1.3vw',
     },
     navigateIcon: {

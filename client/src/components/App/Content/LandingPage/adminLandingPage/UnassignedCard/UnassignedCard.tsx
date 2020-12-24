@@ -21,8 +21,8 @@ const UnassignedCard: React.FC = (): JSX.Element => {
                     <Typography className={classes.investigationNumberText}><b>13</b></Typography>
                     <Typography className={classes.investigationAmountText}><b>חקירות</b></Typography>
                 </div>
-                <div className={classes.allInvestigations}>
-                    <Typography className={classes.allInvestigationsText}><b>ממתינות להקצאה</b></Typography>
+                <div className={classes.unnasignedInvestigations}>
+                    <Typography className={classes.unnasignedInvestigationsText}><b>ממתינות להקצאה</b></Typography>
                     <NavigateBeforeIcon className={classes.navigateIcon} />
                 </div>
             </Card>

@@ -10,7 +10,7 @@ const InvestigationPieChart: React.FC = (): JSX.Element => {
             enableRadialLabels={false}
             enableSliceLabels={false}
             innerRadius={0.8}
-            borderWidth={2}
+            borderWidth={1}
             borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
             colors={investigationChart => investigationChart.data.color}
         />
