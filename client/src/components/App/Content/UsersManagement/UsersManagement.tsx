@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
     Grid, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
-    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, TextField
+    IconButton, Tooltip, TableSortLabel, Badge, Typography, Collapse, MenuItem, Select
 } from '@material-ui/core';
-import { Autocomplete, Pagination } from '@material-ui/lab';
+import { Pagination } from '@material-ui/lab';
 import { PersonPin } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +28,7 @@ interface CellNameSort {
 }
 
 const usersManagementTitle = 'ניהול משתמשים';
-
+const sourceOrganizationLabel = 'מסגרת';
 const notActiveSortFields: string[] = [UsersManagementTableHeadersNames.WATCH, UsersManagementTableHeadersNames.LANGUAGES,
 UsersManagementTableHeadersNames.COUNTY, UsersManagementTableHeadersNames.USER_TYPE,
 UsersManagementTableHeadersNames.DESK];
@@ -40,7 +40,7 @@ const UsersManagement: React.FC = () => {
 
     const { users, counties, sourcesOrganization, userTypes, languages,
         totalCount, userDialog, isBadgeInVisible, watchUserInfo, handleCloseDialog, handleFilterChange, setUserActivityStatus,
-        setUserSourceOrganization, deleteUserSourceOrganization } =
+        setUserSourceOrganization } =
         useUsersManagementTable({ page, rowsPerPage, cellNameSort, setPage });
 
     const totalPages: number = Math.ceil(totalCount / rowsPerPage);
@@ -84,27 +84,34 @@ const UsersManagement: React.FC = () => {
             }
             case UsersManagementTableHeadersNames.SOURCE_ORGANIZATION : {
                 return (
-                    <Autocomplete
-                        options={sourcesOrganization}
-                        getOptionLabel={(option) => {
-                            return option.displayName ? option.displayName : option
+                    <Select
+                        MenuProps={{
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left"
+                            },
+                            transformOrigin: {
+                                vertical: "top",
+                                horizontal: "left"
+                            },
+                            getContentAnchorEl: null
                         }}
-                        getOptionSelected={(option, value) => {
-                           return option.displayName === value
-                        } }
+                        variant='outlined'
+                        className={classes.sourceOrganization}
+                        label={sourceOrganizationLabel}
                         value={row[cellName]}
-                        onChange={(event, newSourceOrganization) => {
-                            newSourceOrganization ?
-                            setUserSourceOrganization(newSourceOrganization.displayName, row[UsersManagementTableHeadersNames.MABAR_USER_NAME]) : 
-                            deleteUserSourceOrganization(row[UsersManagementTableHeadersNames.MABAR_USER_NAME])
-                        }}
-                        renderInput={(params) =>
-                            <TextField
-                                {...params}
-                                placeholder='מסגרת'
-                            />
+                        onChange={(event: any) => setUserSourceOrganization(event.target.value, row[UsersManagementTableHeadersNames.MABAR_USER_NAME])}
+                    >
+                        {
+                            sourcesOrganization.map(sourceOrganization => (
+                                <MenuItem
+                                    key={sourceOrganization.displayName}
+                                    value={sourceOrganization.displayName}>
+                                    {sourceOrganization.displayName}
+                                </MenuItem>
+                            ))
                         }
-                    />
+                    </Select>
                 )
             }
             default:

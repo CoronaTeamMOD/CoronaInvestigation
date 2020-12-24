@@ -22,17 +22,6 @@ export const UPDATE_SOURCE_ORGANIZATION = gql`
     }
 `;
 
-export const DELETE_SOURCE_ORGANIZATION = gql`
-    mutation deleteUserSourceOrganization($id: String!) {
-      updateUserById(input: {userPatch: {sourceOrganization: null}, id: $id}) {
-        user {
-          id
-          sourceOrganization
-        }
-      }
-    }
-`;
-
 export const UPDATE_INVESTIGATOR = gql`
 mutation ChangeInvestigator($epidemiologyNumber: Int!, $newUser: String!, $transferReason: String) {
     updateInvestigationByEpidemiologyNumber(
