@@ -15,7 +15,7 @@ export interface useContactQuestioningParameters {
     setAllContactedInteractions: Dispatch<SetStateAction<InteractedContact[]>>;
     setFamilyRelationships: Dispatch<SetStateAction<FamilyRelationship[]>>;
     setContactStatuses: Dispatch<SetStateAction<FamilyRelationship[]>>;
-    getValues: any;
+    getValues: () => FormInputs;
 }
 
 export interface useContactQuestioningOutcome {

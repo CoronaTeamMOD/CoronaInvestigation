@@ -13,7 +13,7 @@ import useReachContact from './useReachContact';
 import useStyles from '../ContactQuestioningStyles';
 
 const ReachContact = (props: Props) => {
-    const { control, getValues , watch} = useFormContext();
+    const { control, getValues , watch } = useFormContext();
     const {
         interactedContact,
         index,
@@ -21,18 +21,13 @@ const ReachContact = (props: Props) => {
         saveContact,
         parsePerson,
     } = props;
-
     const classes = useStyles({});
-    const [contactStatusInput, setContactStatusInput] = React.useState<string>(
-        ''
-    );
 
     const formValues = getValues().form
     ? getValues().form[index]
     : interactedContact;
 
     const watchContactStatus = watch(`form[${index}].contactStatus`)
-
     const currentContactStatus = watchContactStatus ? watchContactStatus : formValues.contactStatus;
 
     const currentValue = contactStatuses.find(

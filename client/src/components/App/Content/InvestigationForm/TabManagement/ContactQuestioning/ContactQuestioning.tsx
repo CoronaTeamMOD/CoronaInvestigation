@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { Grid } from '@material-ui/core';
 import { yupResolver } from '@hookform/resolvers';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import {Grid} from '@material-ui/core';
+
 
 import ContactStatus from 'models/ContactStatus';
 import FormTitle from 'commons/FormTitle/FormTitle';
@@ -33,7 +34,7 @@ const ContactQuestioning: React.FC<Props> = ({ id }: Props): JSX.Element => {
         resolver: yupResolver(ContactQuestioningSchema),
     });
 
-    const {getValues , trigger} = methods;
+    const { getValues , trigger } = methods;
     
     const {
         onSubmit,

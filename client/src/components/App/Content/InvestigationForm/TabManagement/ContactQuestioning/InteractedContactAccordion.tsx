@@ -36,7 +36,7 @@ const InteractedContactAccordion = (props: Props) => {
         shouldDisable,
     } = props;
 
-    const getAccordionClass = () : string => {
+    const getAccordionClasses = () : string => {
         let classesList : string[] = [];
         classesList.push(classes.accordion);
 
@@ -51,7 +51,7 @@ const InteractedContactAccordion = (props: Props) => {
     return (
         <div key={interactedContact.id}>
             <Accordion
-                className={getAccordionClass()}
+                className={getAccordionClasses()}
                 style={{ borderRadius: '3vw' }}
             >
                 <AccordionSummary
