@@ -58,6 +58,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
         createStyles({
             root: {
                 fontWeight: theme.typography.fontWeightRegular,
+                minHeight: '7vh'
             },
             wrapper: {
                 flexDirection: 'row-reverse',
@@ -89,7 +90,7 @@ const TabManagement: React.FC<Props> = (tabManagementProps: Props): JSX.Element 
                             onClick={() => { setNextTab(tab.id) }}
                             key={tab.id}
                             label={tab.name}
-                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon /> : undefined}
+                            icon={isTabValid(tab.id) ? <ErrorOutlineIcon className={classes.icon} fontSize={'small'}/> : undefined}
                             className={isTabValid(tab.id) ? classes.errorIcon : undefined}
                         />
                     )
