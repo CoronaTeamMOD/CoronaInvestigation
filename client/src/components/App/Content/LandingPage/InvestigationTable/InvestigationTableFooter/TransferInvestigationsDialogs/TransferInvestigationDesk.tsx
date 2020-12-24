@@ -10,6 +10,7 @@ import useCustomSwal from 'commons/CustomSwal/useCustomSwal';
 
 import useStyles from './TransferDialogsStyles';
 import validationSchema from './TransferInvestigationDeskSchema';
+import TransferInvestigationDialogNote from './TransferInvestigationDialogNote';
 import TransferInvestigationInputsNames from './TransferInvestigationInputsNames';
 
 const defaultValues = {
@@ -102,9 +103,7 @@ const TransferInvestigationDesk = (props: Props) => {
                         }
                     />
                 </div>
-                <div>
-                     <Typography variant='body2'> שים לב, הפעולה תתבצע רק על חקירות השייכות לנפתך </Typography>
-                </div>
+                <TransferInvestigationDialogNote />
                 <DialogActions className={classes.dialogActions}>
                     <Button className={classes.button} variant='contained' onClick={onClose} color='default'>
                         ביטול

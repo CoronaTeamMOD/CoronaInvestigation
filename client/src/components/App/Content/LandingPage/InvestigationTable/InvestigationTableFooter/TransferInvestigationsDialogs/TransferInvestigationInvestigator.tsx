@@ -10,6 +10,7 @@ import useStyles from './TransferDialogsStyles';
 import validationSchema from './TransferInvestigationInvestigatorSchema';
 import TransferInvestigationDialog from './TransferInvestigationDialog';
 import TransferInvestigationInvestigatorInputNames from './TransferInvestigationInvestigatorInputNames';
+import TransferInvestigationDialogNote from './TransferInvestigationDialogNote';
 
 const transferInvestigatorFormName = 'transferInvestigator';
 
@@ -90,9 +91,8 @@ const TransferInvestigationDesk = (props: Props) => {
                             }
                         />
                     </div>
-                    <div>
-                        <Typography variant='body2'> שים לב, הפעולה תתבצע רק על חקירות השייכות לנפתך </Typography>
-                    </div>
+                        <TransferInvestigationDialogNote />
+                    
                 </>
             </TransferInvestigationDialog>
         </FormProvider>
